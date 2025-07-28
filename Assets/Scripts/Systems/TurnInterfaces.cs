@@ -9,7 +9,6 @@ namespace Cardevil.Systems
         void SubscribePlayerInput();
     }
 
-
     public interface IPlayerInputReceiver
     {
         void RecieveInput(CardResult result);

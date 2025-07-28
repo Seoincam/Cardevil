@@ -66,13 +66,7 @@ namespace Cardevil.Systems
         }
 
 
-        // 플레이어 input
-        // - - - - - - - - - - - - -
-        // IPlayerInputHandler
-        public interface IPlayerInputReceiver
-        {
-            void RecieveInput(CardResult result);
-        }
+        #region 플레이어 input
 
         // IPlayerInputHandler
         private TaskCompletionSource<bool> playerTcs;
@@ -90,16 +84,18 @@ namespace Cardevil.Systems
             PlayerInputAsync += HandlePlayerInputAsync;
         }
 
+        # endregion
 
-        // 플레이어 액션 로직
-        // - - - - - - - - - - - - -
-        // IPlayerActionHandler
 
+        #region 플레이어 액션 로직
+
+        // IPlayerInputHandler        
         public void RecieveInput(CardResult result)
         {
             // 플레이어 input 받기
         }
 
+        // IPlayerActionHandler
         public async Task HandlePlayerActionAsync()
         {
             // 애니메이션 등 실행
@@ -121,10 +117,9 @@ namespace Cardevil.Systems
         {
             PlayerActionAsync += HandlePlayerActionAsync;
         }
-
-
-        // 보스 액션 로직
-        // - - - - - - - - - - - - -
+        #endregion
+        
+        #region  보스 액션 로직
         // IBossDamageReceiver
         public void IBossDamageReceiver()
         {
@@ -149,6 +144,8 @@ namespace Cardevil.Systems
                 await Task.Yield();
             }
         }
+
+        # endregion
 
         public void SubscribeBossAction()
         {
