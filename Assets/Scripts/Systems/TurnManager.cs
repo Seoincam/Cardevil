@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Threading.Tasks;
 using UnityEngine.UI;
+using Cardevil.Cards;
 
 namespace Cardevil.Systems
 {
@@ -9,7 +10,7 @@ namespace Cardevil.Systems
         Pause, PlayerInput, Action
     }
 
-    public class TurnManager : Singleton<TurnManager>, IPlayerInputHandler, IPlayerActionHandler, IBossActionHandler
+    public class TurnManager : Singleton<TurnManager>, IPlayerInputHandler, IPlayerInputReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
     {
         [Header("Game State")]
         public GameState gameState = GameState.Pause;
@@ -41,6 +42,8 @@ namespace Cardevil.Systems
             await GameLoopAsync();
         }
 
+        // TODO: Task 추후 다른 방식으로 교체
+        // 각 턴이 끝날 때까지 대기
         private async Task GameLoopAsync()
         {
             while (true)
@@ -63,6 +66,14 @@ namespace Cardevil.Systems
         }
 
 
+        // 플레이어 input
+        // - - - - - - - - - - - - -
+        // IPlayerInputHandler
+        public interface IPlayerInputReceiver
+        {
+            void RecieveInput(CardResult result);
+        }
+
         // IPlayerInputHandler
         private TaskCompletionSource<bool> playerTcs;
 
@@ -79,7 +90,16 @@ namespace Cardevil.Systems
             PlayerInputAsync += HandlePlayerInputAsync;
         }
 
+
+        // 플레이어 액션 로직
+        // - - - - - - - - - - - - -
         // IPlayerActionHandler
+
+        public void RecieveInput(CardResult result)
+        {
+            // 플레이어 input 받기
+        }
+
         public async Task HandlePlayerActionAsync()
         {
             // 애니메이션 등 실행
@@ -100,6 +120,16 @@ namespace Cardevil.Systems
         public void SubscribePlayerAction()
         {
             PlayerActionAsync += HandlePlayerActionAsync;
+        }
+
+
+        // 보스 액션 로직
+        // - - - - - - - - - - - - -
+        // IBossDamageReceiver
+        public void IBossDamageReceiver()
+        {
+            // 파라미터 추후 추가
+            // 데미지 처리    
         }
 
         // IBossActionHandler

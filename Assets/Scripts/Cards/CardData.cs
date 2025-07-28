@@ -37,4 +37,25 @@ namespace Cardevil.Cards
             Value = 0;
         }
     }
+
+    public enum CardCombo
+    {
+        High,
+        OnePair,
+        TwoPair,
+        Triple,
+        Straight,
+        Flush,
+        StraightFlush,  // 스티플
+        FourCard
+    }
+    
+    public struct CardResult
+    {
+        public CardCombo Combo;
+        public int BaseScore;    // 카드들의 합계
+        public int ComboScore;    // 콤보의 추가 점수
+        public int TotalScore;
+        public CardDirection[] directions;
+    }
 }
