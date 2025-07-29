@@ -53,9 +53,10 @@ namespace Cardevil.Cards
     public struct CardResult
     {
         public CardCombo Combo;
-        public int BaseScore;    // 카드들의 합계
-        public int ComboScore;    // 콤보의 추가 점수
-        public int TotalScore;
+        public int BaseDamage;    // 카드들의 합계
+        public int ComboDamage;    // 콤보의 추가 점수
+        public int TotalDamage;
+        
         public CardDirection[] directions;
     }
 }

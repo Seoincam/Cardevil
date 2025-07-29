@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
+using System;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -9,14 +10,17 @@ namespace Cardevil.Cards.CardInteractinos
     {
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
-        public Card selectedCard { get; private set; }
+        public Card draggedCard { get; private set; }
         public List<Card> cards;
+
+        public HashSet<Card> selectedCards = new(4);
+        public event Action onSelectedCardsCountChanged;
 
         [Header("Slots")]
         [SerializeField] GameObject cardSlotPrefab;
         private Transform[] slots = new Transform[6];
 
-        [Header("Reference")]
+        [Header("References")]
         private CardManager cardManager;
 
         [Header("Select Setting")]
@@ -31,53 +35,20 @@ namespace Cardevil.Cards.CardInteractinos
             get => _isOnTrashCan;
             set
             {
+                // 임시 로직. 추후 수정
                 _isOnTrashCan = value;
-                if (selectedCard == null)
+                if (draggedCard == null)
                     return;
 
-                selectedCard.cardVisual.SetCardOnTrashCan(value);
+                draggedCard.cardVisual.SetCardOnTrashCan(value);
             }
         }
 
-        void Awake()
-        {
-            for (int i = 0; i < 6; i++)
-            {
-                var slot = Instantiate(original: cardSlotPrefab, parent: transform);
-                slot.transform.name = $"Slot {i}";
-                slots[i] = slot.transform;
-            }
-        }
 
-        void Update()
-        {
-            if (selectedCard == null)
-                return;
-
-            if (isSwapping)
-                return;
-
-            for (int i = 0; i < cards.Count; i++)
-            {
-                if (selectedCard.transform.position.x > cards[i].transform.position.x)
-                    if (selectedCard.GetSlotIndex() < cards[i].GetSlotIndex())
-                    {
-                        Swap(i);
-                        break;
-                    }
-
-                if (selectedCard.transform.position.x < cards[i].transform.position.x)
-                    if (selectedCard.GetSlotIndex() > cards[i].GetSlotIndex())
-                    {
-                        Swap(i);
-                        break;
-                    }
-            }
-        }
-
-        public void Init(CardManager cardManager)
+        public void Init(CardManager cardManager, Action onSelectedCardsCountChanged)
         {
             this.cardManager = cardManager;
+            this.onSelectedCardsCountChanged += onSelectedCardsCountChanged;
 
             for (int i = 5; i >= 0; i--)
             {
@@ -92,6 +63,44 @@ namespace Cardevil.Cards.CardInteractinos
                 card.BeginDragEvent += BeginDrag;
                 card.EndDragEvent += EndDrag;
             }
+
+            onSelectedCardsCountChanged?.Invoke();
+        }
+
+        void Awake()
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                var slot = Instantiate(original: cardSlotPrefab, parent: transform);
+                slot.transform.name = $"Slot {i}";
+                slots[i] = slot.transform;
+            }
+        }
+
+        void Update()
+        {
+            if (draggedCard == null)
+                return;
+
+            if (isSwapping)
+                return;
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                if (draggedCard.transform.position.x > cards[i].transform.position.x)
+                    if (draggedCard.GetSlotIndex() < cards[i].GetSlotIndex())
+                    {
+                        Swap(i);
+                        break;
+                    }
+
+                if (draggedCard.transform.position.x < cards[i].transform.position.x)
+                    if (draggedCard.GetSlotIndex() > cards[i].GetSlotIndex())
+                    {
+                        Swap(i);
+                        break;
+                    }
+            }
         }
 
         public Card SpawnCard(int slotIndex, CardData cardData)
@@ -105,30 +114,47 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void BeginDrag(Card card)
         {
-            selectedCard = card;
+            draggedCard = card;
         }
 
         private void EndDrag(Card card)
         {
-            if (selectedCard == null)
+            if (draggedCard == null)
                 return;
 
-            selectedCard.transform.DOLocalMove(
-                endValue: selectedCard.isSelected
+            draggedCard.transform.DOLocalMove(
+                endValue: draggedCard.isSelected
                     ? new Vector3(0, selectOffset, 0)
                     : Vector3.zero,
                 duration: .2f
             )
             .SetEase(Ease.OutBack);
 
-            selectedCard = null;
+            draggedCard = null;
         }
+
+        public void AddSelectedCard(Card card)
+        {
+            selectedCards.Add(card);
+
+            var canUseCard = selectedCards.Count > 0;
+            onSelectedCardsCountChanged?.Invoke();
+        }
+
+        public void RemoveSelectedCard(Card card)
+        {
+            selectedCards.Remove(card);
+
+            var canUseCard = selectedCards.Count > 0;
+            onSelectedCardsCountChanged?.Invoke();
+        }
+
 
         private void Swap(int index)
         {
             isSwapping = true;
 
-            var selectedCardSlot = selectedCard.transform.parent;
+            var selectedCardSlot = draggedCard.transform.parent;
             var swappedSlot = cards[index].transform.parent;
 
             cards[index].transform.SetParent(selectedCardSlot);
@@ -136,7 +162,7 @@ namespace Cardevil.Cards.CardInteractinos
                     ? new Vector3(0, selectOffset, 0)
                     : Vector3.zero;
 
-            selectedCard.transform.SetParent(swappedSlot);
+            draggedCard.transform.SetParent(swappedSlot);
 
             isSwapping = false;
         }

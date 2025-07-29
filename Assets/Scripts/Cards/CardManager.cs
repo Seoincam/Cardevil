@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards.CardInteractinos;
+using Cardevil.Systems;
+using Cardevil.Utils;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Cardevil.Cards
@@ -12,13 +15,24 @@ namespace Cardevil.Cards
         [Header("Card Datas")]
         public List<CardData> cardDatas;
 
-        [Header("Reference")]
+        [Header("References")]
         public CardBarGroup barGroup;
+        [SerializeField] Button useCardButton;
+
+        [Header("State")]
+        private bool canUseCard;
+
+        // [Header("Events")]
+        public event Action<CardResult> OnUseCard;
+
 
         void Start()
         {
             Init();
-            barGroup.Init(cardManager: this);
+            TurnManager.Instance.OnGameStateChanged += UpdateCanUseCard;
+
+            barGroup.Init(cardManager: this, onSelectedCardsCountChanged: UpdateCanUseCard);
+            useCardButton.onClick.AddListener(UseCard);
         }
 
         public void Init()
@@ -57,6 +71,27 @@ namespace Cardevil.Cards
                 (cardDatas[i], cardDatas[randomIndex]) = (cardDatas[randomIndex], cardDatas[i]);
             }
         }
+
+        #region Using Card
+        private void UpdateCanUseCard()
+        {
+            canUseCard = TurnManager.Instance.gameState == GameState.PlayerInput
+                ? barGroup.selectedCards.Count > 0
+                : false;
+
+            useCardButton.interactable = canUseCard;
+        }
+
+        private void UseCard()
+        {
+            if (!canUseCard)
+                return;
+
+            var cardResult = CardComboEvaluator.Evaluate(barGroup.selectedCards);
+
+            OnUseCard?.Invoke(cardResult);
+        }
+        #endregion
     }
 }
 

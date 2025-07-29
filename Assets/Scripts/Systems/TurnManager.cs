@@ -1,7 +1,9 @@
 using UnityEngine;
-using System.Threading.Tasks;
 using UnityEngine.UI;
+using System.Collections;
 using Cardevil.Cards;
+using System;
+using System.Linq;
 
 namespace Cardevil.Systems
 {
@@ -10,163 +12,218 @@ namespace Cardevil.Systems
         Pause, PlayerInput, Action
     }
 
-    public class TurnManager : Singleton<TurnManager>, IPlayerInputHandler, IPlayerInputReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
+    public class TurnManager : Singleton<TurnManager>, IPlayerInputHandler, IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
     {
         [Header("Game State")]
         public GameState gameState = GameState.Pause;
+        public bool playerInputReceived;
 
         [Header("References")]
-        public Button useCardButton;
         public Slider playerActionProgressBar;
+        public Text playerActionText;
+
         public Slider bossActionProgressBar;
+        public Text bossActionText;
 
         // [Header("Events")]
-        public delegate Task ActionAsync();
-        public event ActionAsync PlayerInputAsync;
-        public event ActionAsync PlayerActionAsync;
-        public event ActionAsync BossActionAsync;
+        public delegate IEnumerator ActionCoroutine();
+        public event ActionCoroutine PlayerInputCoroutine;
+        public event ActionCoroutine PlayerActionCoroutine;
+        public event ActionCoroutine BossActionCoroutine;
+
+        public event Action OnGameStateChanged;
 
         protected override void Awake()
         {
             base.Awake();
             Application.targetFrameRate = 60;
 
+            var cardManager = FindAnyObjectByType<CardManager>();
+            cardManager.OnUseCard += EndGetInput; // Player Input
+            cardManager.OnUseCard += ReceiveInput; // Player Action
+
             // 이벤트 구독
             SubscribePlayerInput();
             SubscribePlayerAction();
             SubscribeBossAction();
+
+            SubscribeBossDamage();
+            SubscribePlayerDamage();
         }
 
-        async void Start()
+        void Start()
         {
-            await GameLoopAsync();
+            StartCoroutine(GameLoop());
         }
 
-        // TODO: Task 추후 다른 방식으로 교체
-        // 각 턴이 끝날 때까지 대기
-        private async Task GameLoopAsync()
+        private IEnumerator GameLoop()
         {
             while (true)
             {
-                if (PlayerActionAsync == null || PlayerActionAsync == null || BossActionAsync == null)
+                if (PlayerInputCoroutine == null || PlayerActionCoroutine == null || BossActionCoroutine == null)
+                {
+                    yield return null;
                     continue;
+                }
 
-                await PlayerInputAsync.Invoke();
-                // -> 사용한 카드에 따라 효과, 데미지 등을 계산
+                // Player Input
+                yield return StartCoroutine(PlayerInputCoroutine());
+                //  -> 데미지, 이동, 효과 등 계산
 
-                await PlayerActionAsync.Invoke();
-                await Task.Delay(500);
-                // -> 플레이어 액션 후 보스 상태 체크
+                // Player Action
+                yield return StartCoroutine(PlayerActionCoroutine());
+                yield return new WaitForSeconds(0.5f);
+                //  -> 보스 상태 체크
 
-                await BossActionAsync.Invoke();
-                await Task.Delay(500);
-                // -> 보스 액션 후 플레이어 상태 체크
+                // Boss Action
+                yield return StartCoroutine(BossActionCoroutine());
+                yield return new WaitForSeconds(0.5f);
+                //  -> 플레이어 상태 체크
             }
-            // TODO: 추후 break 로직 추가
         }
 
 
-        #region 플레이어 input
-
+        #region Player input
         // IPlayerInputHandler
-        private TaskCompletionSource<bool> playerTcs;
-
-        public async Task HandlePlayerInputAsync()
+        public IEnumerator HandlePlayerInputCoroutine()
         {
-            useCardButton.interactable = true;
+            SetGameState(GameState.PlayerInput);
 
-            playerTcs = new();
-            await playerTcs.Task;
+            while (!playerInputReceived)
+                yield return null;
+            
+            playerInputReceived = false;
+        }
+
+        public void EndGetInput(CardResult _)
+        {
+            playerInputReceived = true;
         }
 
         public void SubscribePlayerInput()
         {
-            PlayerInputAsync += HandlePlayerInputAsync;
+            PlayerInputCoroutine += HandlePlayerInputCoroutine;
         }
-
         # endregion
 
 
-        #region 플레이어 액션 로직
 
-        // IPlayerInputHandler        
-        public void RecieveInput(CardResult result)
+        #region Player Action
+        // IPlayerInputReceiver        
+        public void ReceiveInput(CardResult result)
         {
-            // 플레이어 input 받기
+            playerActionText.text = $@"(임시) Player Input을 받았습니다.
+            콤보: {result.Combo}
+            데미지: {result.TotalDamage}
+            이동: {result.directions.First()}
+            ";
         }
 
-        // IPlayerActionHandler
-        public async Task HandlePlayerActionAsync()
+
+        // IPlayerDamageReceiver
+        public void SubscribeBossDamage()
         {
-            // 애니메이션 등 실행
-            // (임시로 2.5초 대기)
+            OnBossDamageDealt += ReceiveBossDamage;
+        }
+
+        public void ReceiveBossDamage(int amount)
+        {
+            playerActionText.text = $"{amount} 데미지를 받았다!";
+        }
+
+
+        // IPlayerActionHandler
+        public event Action<int> OnPlayerDamageDealt;
+
+        public void SubscribePlayerAction()
+        {
+            PlayerActionCoroutine += HandlePlayerActionCoroutine;
+        }
+
+        public IEnumerator HandlePlayerActionCoroutine()
+        {
+            SetGameState(GameState.Action);
+
+            // 애니메이션 등 실행 (임시로 대기)
             SetProgressBar(playerActionProgressBar, value: 1f);
-            var duration = 2.5f;
+            var duration = 3f;
             var startTime = Time.time;
 
+            // 임시로 진행도 표시
             while (Time.time - startTime < duration)
             {
                 var remaining = duration - (Time.time - startTime);
                 SetProgressBar(playerActionProgressBar, value: remaining / duration);
 
-                await Task.Yield();
+                yield return null;
             }
+
+            playerActionText.text = ". . .";
+            var damage = 15;
+            OnPlayerDamageDealt?.Invoke(damage);
+        } 
+        #endregion
+
+
+
+        #region Boss Action
+        // IBossDamageReceiver
+        public void SubscribePlayerDamage()
+        {
+            OnPlayerDamageDealt += ReceivePlayerDamage;
         }
 
-        public void SubscribePlayerAction()
+        public void UnsubscribePlayerDamage(){}
+
+        public void ReceivePlayerDamage(int amount)
         {
-            PlayerActionAsync += HandlePlayerActionAsync;
+            Debug.Log("2");
+            bossActionText.text = $"{amount} 데미지를 받았다!";
         }
-        #endregion
-        
-        #region  보스 액션 로직
-        // IBossDamageReceiver
-        public void IBossDamageReceiver()
-        {
-            // 파라미터 추후 추가
-            // 데미지 처리    
-        }
+
 
         // IBossActionHandler
-        public async Task HandleBossActionAsync()
+        public event Action<int> OnBossDamageDealt;
+
+        public IEnumerator HandleBossActionCoroutine()
         {
-            // 애니메이션 등 실행
-            // (임시로 2초 대기)
+            // 애니메이션 등 실행 (임시로 3초 대기)
             SetProgressBar(bossActionProgressBar, value: 1f);
             var duration = 2f;
             var startTime = Time.time;
 
+            // 임시로 진행도 표시
             while (Time.time - startTime < duration)
             {
                 var remaining = duration - (Time.time - startTime);
                 SetProgressBar(bossActionProgressBar, value: remaining / duration);
 
-                await Task.Yield();
-            }
-        }
+                if (Time.time - startTime > .48f && Time.time - startTime < .5f)
+                    OnBossDamageDealt?.Invoke(10);
 
-        # endregion
+                yield return null;
+            }
+
+            bossActionText.text = ". . .";
+        }
 
         public void SubscribeBossAction()
         {
-            BossActionAsync += HandleBossActionAsync;
+            BossActionCoroutine += HandleBossActionCoroutine;
         }
+        #endregion
 
 
-        public void OnPlayerUseCard()
-        {
-            useCardButton.interactable = false;
-
-            if (playerTcs != null
-                && !playerTcs.Task.IsCompleted)
-            {
-                playerTcs.TrySetResult(true);
-            }
-        }
 
         private void SetProgressBar(Slider progressBar, float value)
         {
             progressBar.value = value;
+        }
+
+        public void SetGameState(GameState gameState)
+        {
+            this.gameState = gameState;
+            OnGameStateChanged?.Invoke();
         }
     }
 }

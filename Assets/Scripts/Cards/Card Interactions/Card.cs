@@ -78,8 +78,8 @@ namespace Cardevil.Cards.CardInteractinos
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.selectedCard != null
-                && barGroup.selectedCard != this)
+            if (barGroup.draggedCard != null
+                && barGroup.draggedCard != this)
                 return;
 
             BeginDragEvent?.Invoke(this);
@@ -95,8 +95,8 @@ namespace Cardevil.Cards.CardInteractinos
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.selectedCard != null
-                && barGroup.selectedCard != this)
+            if (barGroup.draggedCard != null
+                && barGroup.draggedCard != this)
                 return;
 
             EndDragEvent?.Invoke(this);
@@ -105,15 +105,15 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (barGroup.selectedCard != null
-                && barGroup.selectedCard != this)
+            if (barGroup.draggedCard != null
+                && barGroup.draggedCard != this)
                 return;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (barGroup.selectedCard != null
-                && barGroup.selectedCard != this)
+            if (barGroup.draggedCard != null
+                && barGroup.draggedCard != this)
                 return;
 
             if (isDragging)
@@ -125,8 +125,8 @@ namespace Cardevil.Cards.CardInteractinos
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.selectedCard != null
-                && barGroup.selectedCard != this)
+            if (barGroup.draggedCard != null
+                && barGroup.draggedCard != this)
                 return;
 
             PointerDownEvent?.Invoke(this);
@@ -141,8 +141,8 @@ namespace Cardevil.Cards.CardInteractinos
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.selectedCard != null
-                && barGroup.selectedCard != this)
+            if (barGroup.draggedCard != null
+                && barGroup.draggedCard != this)
                 return;
 
             PointerUpEvent?.Invoke(this);
@@ -150,12 +150,20 @@ namespace Cardevil.Cards.CardInteractinos
             if (pointerUpTime - pointerDownTime > 0.2f)
                 return;
 
-            isSelected = !isSelected;
+            isSelected = barGroup.selectedCards.Count >= 4 
+                ? false
+                : !isSelected;
 
             if (isSelected)
+            {
                 transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
+                barGroup.AddSelectedCard(this);
+            }
             else
+            {
                 transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
+                barGroup.RemoveSelectedCard(this);
+            }
         }
 
 
