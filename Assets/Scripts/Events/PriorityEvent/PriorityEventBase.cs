@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Events
+namespace Cardevil.Events
 {
     /// <summary>
     /// 우선순위 이벤트

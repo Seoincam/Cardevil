@@ -1,7 +1,7 @@
-﻿using Ingame.Field;
+﻿using Cardevil.Ingame.Field;
 using UnityEngine;
 
-namespace Ingame.Entities
+namespace Cardevil.Ingame.Entities
 {
     public class Entity : MonoBehaviour
     {

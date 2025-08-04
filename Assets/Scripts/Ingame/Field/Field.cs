@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Cardevil.Attributes;
 using Cardevil.Utils.Directions;
 using UnityEngine;
 
-namespace Ingame.Field
+namespace Cardevil.Ingame.Field
 {
     /// <summary>
     /// 보드판.

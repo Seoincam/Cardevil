@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
-using Ingame.Entities;
+using Cardevil.Attributes;
+using Cardevil.Ingame.Entities;
 using UnityEngine;
 
-namespace Ingame.Field
+namespace Cardevil.Ingame.Field
 {
     /// <summary>
     /// 타일 클래스.

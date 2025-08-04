@@ -1,54 +1,58 @@
 ﻿using System.Collections.Generic;
+using Cardevil.Attributes;
 using UnityEditor;
 using UnityEngine;
 
 
-/// <summary>
-/// <see cref="VisibleOnly"/> attribute drawer.
-/// </summary>
-[CustomPropertyDrawer(typeof(VisibleOnly))]
-public class VisibleOnlyDrawer : PropertyDrawer
+namespace Cardevil.Editor
 {
-    // Queue<SerializedProperty> queue = new Queue<SerializedProperty>();
-
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    /// <summary>
+    /// <see cref="VisibleOnly"/> attribute drawer.
+    /// </summary>
+    [CustomPropertyDrawer(typeof(VisibleOnly))]
+    public class VisibleOnlyDrawer : PropertyDrawer
     {
-        return EditorGUI.GetPropertyHeight(property, label, true);
-    }
+        // Queue<SerializedProperty> queue = new Queue<SerializedProperty>();
     
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-    {
-        bool originalGuiEnabled = GUI.enabled;
-        bool editable = false;
-        VisibleOnly target = attribute as VisibleOnly;
-        Debug.Assert(target != null, "VisibleOnly attribute is null");
-        if (originalGuiEnabled == false && target.IgnoreParentEditable == false)
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            EditorGUI.PropertyField(position, property, label, true);
-            return;
+            return EditorGUI.GetPropertyHeight(property, label, true);
         }
-        if (Application.isPlaying)
+        
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (target.EditableIn == EditableIn.PlayMode)
+            bool originalGuiEnabled = GUI.enabled;
+            bool editable = false;
+            VisibleOnly target = attribute as VisibleOnly;
+            Debug.Assert(target != null, "VisibleOnly attribute is null");
+            if (originalGuiEnabled == false && target.IgnoreParentEditable == false)
             {
-                editable = true;
+                EditorGUI.PropertyField(position, property, label, true);
+                return;
             }
-        }
-        else
-        {
-            if (target.EditableIn == EditableIn.EditMode)
+            if (Application.isPlaying)
             {
-                editable = true;
+                if (target.EditableIn == EditableIn.PlayMode)
+                {
+                    editable = true;
+                }
             }
-        }
-        if (editable)
-        {
+            else
+            {
+                if (target.EditableIn == EditableIn.EditMode)
+                {
+                    editable = true;
+                }
+            }
+            if (editable)
+            {
+                EditorGUI.PropertyField(position, property, label, true);
+                return;
+            }
+    
+            GUI.enabled = false;
             EditorGUI.PropertyField(position, property, label, true);
-            return;
+            GUI.enabled = originalGuiEnabled;
         }
-
-        GUI.enabled = false;
-        EditorGUI.PropertyField(position, property, label, true);
-        GUI.enabled = originalGuiEnabled;
     }
 }

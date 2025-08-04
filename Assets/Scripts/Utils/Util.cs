@@ -2,6 +2,9 @@
 
 namespace Cardevil.Utils
 {
+    /// <summary>
+    /// 분류하기 힘든 유틸리티 함수들을 모아놓은 static 클래스.
+    /// </summary>
     public static class Util
     {
      

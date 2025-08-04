@@ -1,8 +1,11 @@
 ﻿using Cardevil.Utils.Directions;
 using UnityEngine;
 
-namespace Ingame.Field
+namespace Cardevil.Ingame.Field
 {
+    /// <summary>
+    /// 2D 타일 기반 타일 컨테이너 인터페이스.
+    /// </summary>
     public interface IGridTileContainer
     {
         
