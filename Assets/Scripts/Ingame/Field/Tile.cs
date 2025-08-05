@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cardevil.Attributes;
 using Cardevil.Ingame.Entities;
+using Cardevil.Utils;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
@@ -13,10 +14,17 @@ namespace Cardevil.Ingame.Field
     {
         [Header("Settings")]
         [VisibleOnly, SerializeField] private Field _field;
+        [VisibleOnly, SerializeField] private FieldConfigurationSO _fieldConfiguration;
         [VisibleOnly, SerializeField] private Vector2Int _coordinate;
+        
+        [Header("References")]
+        [VisibleOnly(EditableIn.EditMode), SerializeField] private SpriteRenderer _spriteRenderer;
+        [VisibleOnly(EditableIn.EditMode), SerializeField] private MeshRenderer _meshRenderer;
+
+        [VisibleOnly(EditableIn.EditMode), SerializeField] private Collider _collider;
 
         [Header("Entities")]
-        [SerializeField] private List<Entity> entities = new List<Entity>();
+        [VisibleOnly(EditableIn.EditMode),SerializeField] private List<Entity> entities = new List<Entity>();
 
         public Field Field => _field;
         
@@ -31,7 +39,9 @@ namespace Cardevil.Ingame.Field
         public void Initialize(Field field, Vector2Int coordinate)
         {
             _coordinate = coordinate;
-            transform.position = field.Grid.GetCellCenterWorld(new Vector3Int(coordinate.x, coordinate.y, 0));
+            _field = field;
+            _fieldConfiguration = field.FieldConfiguration;
+            
         }
 
         public bool AddEntity(Entity entity){
@@ -101,9 +111,32 @@ namespace Cardevil.Ingame.Field
             }
         }
         
+        [ContextMenu("Highlight Tile")]
         public void HighLightAttackTile() // 공격받을 타일의 하이라이트 위치
         { 
-
+            SetColor(_fieldConfiguration.DefaultTileHighlightColor);
         }
+        
+        [ContextMenu("UnHighlight Tile")]
+        public void UnHighLightAttackTile() // 공격받을 타일의 하이라이트 제거
+        {
+            SetColor(_fieldConfiguration.DefaultTileColor);
+        }
+
+        public void SetColor(Color color)
+        {
+            if (_spriteRenderer != null)
+            {
+                _spriteRenderer.color = color;
+            }
+            if (_meshRenderer != null)
+            {
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                _meshRenderer.GetPropertyBlock(block);
+                block.SetColor(Hashes.SHADER_COLOR, color);
+            }
+        }
+        
+        
     }
 }

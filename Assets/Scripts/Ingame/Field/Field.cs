@@ -20,16 +20,64 @@ namespace Cardevil.Ingame.Field
     public class Field : MonoBehaviour, IEnumerable<Tile>, IGridTileContainer
     {
         [Header("Settings")]
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] FieldConfigurationSo fieldConfiguration;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] FieldConfigurationSO fieldConfiguration;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] int width = 3;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] int height = 3;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] Tile _tilePrefab;
         [SerializeField] private bool _initOnAwake = true;
         [Header("References")]
         [SerializeField] private Grid grid;
-        [SerializeField, VisibleOnly] private Tile[][] _tileContainer; 
+        [SerializeField, VisibleOnly] private TileLine[] _tileContainer;
+
+        [Serializable]
+        internal class TileLine : IEnumerable<Tile>
+        {
+            [SerializeField] private Tile[] tiles;
+            
+            
+            internal TileLine(int size = 3)
+            {
+                tiles = new Tile[size];
+            }
+
+            public Tile this[int index]
+            {
+                get
+                {
+                    if (index < 0 || index >= tiles.Length)
+                        throw new IndexOutOfRangeException($"Index {index} is out of range for TileLine.");
+                    return tiles[index];
+                }
+                set
+                {
+                    if (index < 0 || index >= tiles.Length)
+                        throw new IndexOutOfRangeException($"Index {index} is out of range for TileLine.");
+                    tiles[index] = value;
+                }
+            }
+
+            public int Length => tiles.Length;
+            public IEnumerator<Tile> GetEnumerator()
+            {
+                for (int i = 0; i < tiles.Length; i++)
+                {
+                    yield return tiles[i];
+                }
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public static implicit operator Tile[](TileLine line)
+            {
+                return line.tiles;
+            }
+        }
         
         
+        public FieldConfigurationSO FieldConfiguration => fieldConfiguration;
         public Grid Grid => grid;
 
 
@@ -43,7 +91,7 @@ namespace Cardevil.Ingame.Field
 
             if (_initOnAwake)
             {
-                InitField(fieldConfiguration.GridSize.x, fieldConfiguration.GridSize.y);
+                InitField(3,3);
             }
         }
 
@@ -53,18 +101,23 @@ namespace Cardevil.Ingame.Field
             ClearTiles();
             this.width = width;
             this.height = height;
-            _tileContainer = new Tile[height][];
-            for (int y = 0; y < height; y++)
+            _tileContainer = new TileLine[height];
+            for (int i = 0; i < height; i++)
             {
-                _tileContainer[y] = new Tile[width];
-                for (int x = 0; x < width; x++)
+                _tileContainer[i] = new TileLine();
+                for (int j = 0; j < width; j++)
                 {
                     Tile tile = Instantiate(_tilePrefab, transform);
-                    tile.Initialize(this, new Vector2Int(x, y));
+                    tile.Initialize(this, new Vector2Int(i,j));
+                    tile.name = $"Tile_({i},{j})";
+                    tile.transform.position = Grid.GetCellCenterWorld(new Vector3Int(i,j, 0));
+                    tile.transform.localScale = Vector3.one * fieldConfiguration.TileSize;
+                    _tileContainer[i][j] = tile;
                 }
             }
         }
 
+        [ContextMenu("Clear Tiles")]
         public void ClearTiles()
         {
             if (_tileContainer == null)
@@ -75,7 +128,20 @@ namespace Cardevil.Ingame.Field
                 foreach (var tile in row)
                 {
                     if (tile != null)
-                        Destroy(tile.gameObject);
+                    {
+                        #if UNITY_EDITOR
+                        if (Application.isPlaying)
+                        {
+                            Destroy(tile.gameObject);
+                        }
+                        else
+                        {
+                            DestroyImmediate(tile.gameObject);
+                        }
+                        #else
+                        Destroy(tile.gameObject);  
+                        #endif  
+                    }
                 }
             }
         }
