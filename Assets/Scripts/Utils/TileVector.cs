@@ -9,9 +9,9 @@ namespace Cardevil.Utils
     {
         public static readonly TileVector Zero = new TileVector(0, 0);
         public static readonly TileVector One = new TileVector(1, 1);
-        public static readonly TileVector Up = new TileVector(-1, 0);
+        public static readonly TileVector Up = new TileVector(1, 0);
         public static readonly TileVector Right = new TileVector(0, 1);
-        public static readonly TileVector Down = new TileVector(1, 0);
+        public static readonly TileVector Down = new TileVector(-1, 0);
         public static readonly TileVector Left = new TileVector(0, -1);
         
         [SerializeField] private int _i;
