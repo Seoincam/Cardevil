@@ -16,7 +16,7 @@ namespace Cardevil.Ingame.Field
         [Header("Settings")]
         [VisibleOnly, SerializeField] private Field _field;
         [VisibleOnly, SerializeField] private FieldConfigurationSO _fieldConfiguration;
-        [VisibleOnly, SerializeField] private TileVector _coordinate;
+        [VisibleOnly(EditableIn.EditMode), SerializeField] private TileVector _coordinate;
         
         [Header("References")]
         [VisibleOnly(EditableIn.EditMode), SerializeField] private SpriteRenderer _spriteRenderer;
