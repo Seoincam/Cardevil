@@ -1,4 +1,4 @@
-using Cardevil.Managers;
+using Cardevil.Manager;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -55,7 +55,7 @@ public class Managers : MonoBehaviour
             s_instance = go.GetComponent<Managers>();
             s_instance._pool.Init();
             s_instance._data.Init();
-            s_instance._sound.Init();
+            // s_instance._sound.Init();                !!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
 		    s_instance._execution.Init();
         }
     }

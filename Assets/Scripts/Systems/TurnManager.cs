@@ -4,6 +4,7 @@ using Cardevil.Cards;
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Cardevil.InGame.Enemy;
 namespace Cardevil.Systems
 {
     public enum GameState
@@ -31,6 +32,7 @@ namespace Cardevil.Systems
         public event TurnStepAsync BossActionAsync;
 
         public event Action OnGameStateChanged;
+
         
         // UniTaskCompletionSource 
 
@@ -220,6 +222,9 @@ namespace Cardevil.Systems
             }
 
             bossActionText.text = ". . .";
+            // 임시 대기 목록
+            Managers.Game.enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
+
         }
 
         public void SubscribeBossAction()
