@@ -12,7 +12,7 @@ namespace Cardevil.Ingame.Field
     {
         [Header("Settings")]
         [VisibleOnly] private Vector2Int _coordinate;
-        
+            
 
         [Header("Entities")]
         [SerializeField] private List<Entity> entities = new List<Entity>();

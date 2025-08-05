@@ -7,7 +7,9 @@ namespace InGame.Cardevil.Enemy
     public class Enemy : MonoBehaviour
     {
         private Field field;
-        private int damage;
+        private int damage; // Enemy의 공격력
+        private float HP; // Enemy의 체력
+        private int attackTurnOrder;
 
         private void Start()
         {
@@ -15,6 +17,19 @@ namespace InGame.Cardevil.Enemy
            
         }
 
+
+
+        #region Attack 관련
+
+        void AttackEnemyTurn()
+        {
+            if()
+        }
+
+        void AttackNoticeSing_Point(int pointNumber_x,int poinNumber_y)
+        {
+            field[pointNumber_x][poinNumber_y].HighLightAttackTile(); // 해당 타일을 하이라이트하기.
+        }
 
         void AttackNoticeSign_Vertical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
         {
@@ -38,12 +53,12 @@ namespace InGame.Cardevil.Enemy
             // 가로는 0,1,2 모두
             for(int x=0;x<3;x++)
             {
-                field[pointNumber][x].GetEntity(); // 찾아보는 타일에 있는 Entity 받아오기
+                field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
                 //Entity중 Player가 있다면
 
                 //데미지 주기
-
+                
             }
         }
 
@@ -53,7 +68,7 @@ namespace InGame.Cardevil.Enemy
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
             {
-                field[x][pointNumber].GetEntity(); // 찾아보는 타일에 있는 Entity 받아오기
+                field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
                 //Entity중 Player가 있다면
 
@@ -61,6 +76,16 @@ namespace InGame.Cardevil.Enemy
 
             }
         }
+        #endregion
 
+        public void GetDamage(float damage)
+        {
+            HP -= damage;
+            if(HP<=0)
+            {
+                //보스 사망 
+                Destroy(this.gameObject);
+            }
+        }
     }
 }
