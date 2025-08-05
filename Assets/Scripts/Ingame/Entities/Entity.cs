@@ -16,7 +16,7 @@ namespace Cardevil.Ingame.Entities
         /// </summary>
         /// <param name="tile"></param>
         /// <param name="moveTransform">transform까지 이동 여부</param>
-        public void MoveTo(Tile tile, bool moveTransform)
+        public void MoveTo(Tile tile, bool moveTransform = false)
         {
             if (tile == null)
             {
@@ -36,6 +36,17 @@ namespace Cardevil.Ingame.Entities
             {
                 transform.position = _currentTile.transform.position;
             }
+        }
+        
+        public void MoveTo(int i, int j, bool moveTransform = false)
+        {
+            Tile targetTile = _currentTile.Field.GetTile(i, j);
+            if (targetTile == null)
+            {
+                Debug.LogError($"Cannot move to tile at ({i}, {j}) - tile does not exist.");
+                return;
+            }
+            MoveTo(targetTile, moveTransform);
         }
     }
 }
