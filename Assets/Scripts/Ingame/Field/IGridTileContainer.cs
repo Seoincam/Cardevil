@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Cardevil.Utils;
+using System.Collections.Generic;
 using Cardevil.Utils.Directions;
 using UnityEngine;
 
@@ -22,7 +23,7 @@ namespace Cardevil.Ingame.Field
         /// </summary>
         /// <param name="worldPosition"></param>
         /// <returns></returns>
-        Vector2Int WorldToCoordinate(Vector3 worldPosition);
+        TileVector WorldToCoordinate(Vector3 worldPosition);
         
         /// <summary>
         /// 타일 좌표계를 월드 좌표계로 변환.
@@ -33,18 +34,18 @@ namespace Cardevil.Ingame.Field
         /// <summary>
         /// 타일 좌표를 받아와 타일을 반환한다.
         /// </summary>
-        /// <param name="coordinate"></param>
+        /// <param name="tiledinate"></param>
         /// <returns></returns>
-        Tile GetTile(Vector2Int coordinate);
+        Tile GetTile(TileVector tile);
         
         /// <summary>
         /// 타일 좌표를 받아와 타일을 반환한다.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
         /// <returns></returns>
         /// <seealso cref="this"/>
-        Tile GetTile(int x, int y);
+        Tile GetTile(int i, int j);
         
         /// <summary>
         /// 타일을 기준으로 방향에 따라 타일을 반환한다.
@@ -59,17 +60,17 @@ namespace Cardevil.Ingame.Field
         /// <summary>
         /// 타일 좌표를 받아와 타일의 월드 좌표를 반환한다.
         /// </summary>
-        /// <param name="coordinate"></param>
+        /// <param name="tiledinate"></param>
         /// <returns></returns>
-        Vector3 GetTilePosition(Vector2Int coordinate);
+        Vector3 GetTilePosition(TileVector tile);
         
         /// <summary>
         /// 타일 좌표를 받아와 타일의 월드 좌표를 반환한다.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
         /// <returns></returns>
-        Vector3 GetTilePosition(int x, int y);
+        Vector3 GetTilePosition(int i, int j);
 
 
         /// <summary>
@@ -82,13 +83,13 @@ namespace Cardevil.Ingame.Field
         /// <summary>
         /// 해당 열의 타일들을 반환
         /// </summary>
-        /// <param name="i"></param>
+        /// <param name="j"></param>
         /// <returns></returns>
-        public List<Tile> GetVerticalTiles(int i);
+        public List<Tile> GetVerticalTiles(int j);
 
         public List<Tile> GetRectangleTiles(int si,int sj, int ei, int ej)
         {
-            return GetRectangleTiles(new Vector2Int(si, sj), new Vector2Int(ei, ej));
+            return GetRectangleTiles(new TileVector(si, sj), new TileVector(ei, ej));
         }
         /// <summary>
         /// 타일 컨테이너의 직사각형 영역에 해당하는 타일들을 반환한다.
@@ -96,7 +97,7 @@ namespace Cardevil.Ingame.Field
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <returns></returns>
-        public List<Tile> GetRectangleTiles(Vector2Int start, Vector2Int end);
+        public List<Tile> GetRectangleTiles(TileVector start, TileVector end);
         
         /// <summary>
         /// 타일 컨테이너의 행을 인덱스로 받아와 해당 행의 타일 배열을 반환한다.

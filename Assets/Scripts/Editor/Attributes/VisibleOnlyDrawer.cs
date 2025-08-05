@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-namespace Cardevil.Editor
+namespace Cardevil.Editors
 {
     /// <summary>
     /// <see cref="VisibleOnly"/> attribute drawer.

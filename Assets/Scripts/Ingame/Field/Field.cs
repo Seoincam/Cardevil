@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Cardevil.Attributes;
+using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using UnityEngine;
 
@@ -108,9 +109,9 @@ namespace Cardevil.Ingame.Field
                 for (int j = 0; j < width; j++)
                 {
                     Tile tile = Instantiate(_tilePrefab, transform);
-                    tile.Initialize(this, new Vector2Int(i,j));
+                    tile.Initialize(this, new TileVector(i, j));
                     tile.name = $"Tile_({i},{j})";
-                    tile.transform.position = Grid.GetCellCenterWorld(new Vector3Int(i,j, 0));
+                    tile.transform.position = Grid.GetCellCenterWorld(new Vector3Int(j,i, 0));
                     tile.transform.localScale = Vector3.one * fieldConfiguration.TileSize;
                     _tileContainer[i][j] = tile;
                 }
@@ -161,47 +162,78 @@ namespace Cardevil.Ingame.Field
                 return null;
             return _tileContainer[cellPosition.y][cellPosition.x];
         }
-        public Vector2Int WorldToCoordinate(Vector3 worldPosition)
+        public TileVector WorldToCoordinate(Vector3 worldPosition)
         {
             var localPosition = transform.InverseTransformPoint(worldPosition);
             var cellPosition = grid.WorldToCell(localPosition);
-            return new Vector2Int(cellPosition.x, cellPosition.y);
+            return new TileVector(cellPosition.y, cellPosition.x);
         }
         
-        public Tile GetTile(Vector2Int coordinate)
+        public Tile GetTile(TileVector tile)
         {
-            return GetTile(coordinate.x, coordinate.y);
+            return GetTile(tile.i, tile.j);
         }
-        public Tile GetTile(int x, int y)
+        public Tile GetTile(int i, int j)
         {
-            if (x < 0 || x >= width || y < 0 || y >= height)
+            if (i < 0 || i >= height || j < 0 || j >= width)
+            {
+                Debug.LogError($"GetTile: Index out of range. ({i}, {j}) is not a valid tile coordinate.");
                 return null;
-            return _tileContainer[y][x];
+            }
+            return _tileContainer[i][j];
         }
         public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
         {
             var coordinate = tile.Coordinate;
-            var nextCoordinate = coordinate + direction.ToVector2Int();
-            if(wrapAround){
-                if (nextCoordinate.x < 0)
-                    nextCoordinate.x = width - 1;
-                else if (nextCoordinate.x >= width)
-                    nextCoordinate.x = 0;
+            var nextCoordinate = coordinate + direction.ToCoordinateVector();
+            if (wrapAround)
+            {
+                while (nextCoordinate.i < 0)
+                    nextCoordinate.i += height;
+                while (nextCoordinate.i >= height)
+                    nextCoordinate.i -= height;
 
-                if (nextCoordinate.y < 0)
-                    nextCoordinate.y = height - 1;
-                else if (nextCoordinate.y >= height)
-                    nextCoordinate.y = 0;
+                while (nextCoordinate.j < 0)
+                    nextCoordinate.j += width;
+                while (nextCoordinate.j >= width)
+                    nextCoordinate.j -= width;
             }
             return GetTile(nextCoordinate);
         }
-        public Vector3 GetTilePosition(Vector2Int coordinate)
+        
+
+        public Tile GetTileByDelta(Tile tile, TileVector delta, bool wrapAround = false)
         {
-            return GetTilePosition(coordinate.x, coordinate.y);
+            var coordinate = tile.Coordinate;
+            var nextCoordinate = coordinate + delta;
+            if (wrapAround)
+            {
+                while (nextCoordinate.i < 0)
+                    nextCoordinate.i += height;
+                while (nextCoordinate.i >= height)
+                    nextCoordinate.i -= height;
+
+                while (nextCoordinate.j < 0)
+                    nextCoordinate.j += width;
+                while (nextCoordinate.j >= width)
+                    nextCoordinate.j -= width;
+            }
+            return GetTile(nextCoordinate);
         }
-        public Vector3 GetTilePosition(int x, int y)
+        
+        
+        public Vector3 GetTilePosition(TileVector tile)
         {
-            return _tileContainer[y][x].transform.position;
+            return GetTilePosition(tile.i, tile.j);
+        }
+        public Vector3 GetTilePosition(int i, int j)
+        {
+            if (i < 0 || i >= height || j < 0 || j >= width)
+            {
+                Debug.LogError($"GetTilePosition: Index out of range. ({i}, {j}) is not a valid tile coordinate.");
+                return Vector3.zero;
+            }
+            return _tileContainer[i][j].transform.position;
         }
 
         public List<Tile> GetHorizontalTiles(int i)
@@ -217,38 +249,41 @@ namespace Cardevil.Ingame.Field
             return horizontalTiles;
         }
         
-        public List<Tile> GetVerticalTiles(int i)
+        public List<Tile> GetVerticalTiles(int j)
         {
             // TODO : 캐싱
-            if (i < 0 || i >= width)
+            if (j < 0 || j >= width)
                 return null;
             List<Tile> verticalTiles = new List<Tile>();
             for (int y = 0; y < height; y++)
             {
-                verticalTiles.Add(_tileContainer[y][i]);
+                verticalTiles.Add(_tileContainer[y][j]);
             }
             return verticalTiles;
         }
 
         public List<Tile> GetRectangleTiles(int si, int sj, int ei, int ej)
         {
-            return GetRectangleTiles(new Vector2Int(si, sj), new Vector2Int(ei, ej));
-        }
-        public List<Tile> GetRectangleTiles(Vector2Int start, Vector2Int end)
-        {
-            // TODO : 캐싱
+            si = Mathf.Clamp(si, 0, height - 1);
+            sj = Mathf.Clamp(sj, 0, width - 1);
+            ei = Mathf.Clamp(ei, 0, height - 1);
+            ej = Mathf.Clamp(ej, 0, width - 1);
             List<Tile> rectangleTiles = new List<Tile>();
-            for (int y = start.y; y <= end.y; y++)
+            for (int i = Mathf.Min(si, ei); i <= Mathf.Max(si, ei); i++)
             {
-                for (int x = start.x; x <= end.x; x++)
+                for (int j = Mathf.Min(sj, ej); j <= Mathf.Max(sj, ej); j++)
                 {
-                    var tile = GetTile(x, y);
-                    if (tile != null)
-                        rectangleTiles.Add(tile);
+                    rectangleTiles.Add(_tileContainer[i][j]);
                 }
             }
             return rectangleTiles;
         }
+
+        public List<Tile> GetRectangleTiles(TileVector start, TileVector end)
+        {
+            return GetRectangleTiles(start.i, start.j, end.i, end.j);
+        }
+        
         
         public Tile[] this[int i]
         {

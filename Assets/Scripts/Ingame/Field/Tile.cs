@@ -4,6 +4,7 @@ using Cardevil.Attributes;
 using Cardevil.Ingame.Entities;
 using Cardevil.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Ingame.Field
 {
@@ -15,7 +16,7 @@ namespace Cardevil.Ingame.Field
         [Header("Settings")]
         [VisibleOnly, SerializeField] private Field _field;
         [VisibleOnly, SerializeField] private FieldConfigurationSO _fieldConfiguration;
-        [VisibleOnly, SerializeField] private Vector2Int _coordinate;
+        [FormerlySerializedAs("_coordinate")] [VisibleOnly, SerializeField] private TileVector tile;
         
         [Header("References")]
         [VisibleOnly(EditableIn.EditMode), SerializeField] private SpriteRenderer _spriteRenderer;
@@ -31,14 +32,14 @@ namespace Cardevil.Ingame.Field
         /// <summary>
         /// 타일의 좌표.(Grid 좌표계)
         /// </summary>
-        public Vector2Int Coordinate
+        public TileVector Coordinate
         {
-            get => _coordinate;
+            get => tile;
         }
 
-        public void Initialize(Field field, Vector2Int coordinate)
+        public void Initialize(Field field, TileVector coordinate)
         {
-            _coordinate = coordinate;
+            this.tile = tile;
             _field = field;
             _fieldConfiguration = field.FieldConfiguration;
             

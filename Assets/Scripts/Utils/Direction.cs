@@ -25,23 +25,18 @@ namespace Cardevil.Utils.Directions
     
     public static class DirectionExtensions
     {
-        public static readonly Vector2Int UpVector = new Vector2Int(0, 1);
-        public static readonly Vector2Int RightVector = new Vector2Int(1, 0);
-        public static readonly Vector2Int DownVector = new Vector2Int(0, -1);
-        public static readonly Vector2Int LeftVector = new Vector2Int(-1, 0);
-        
-        public static Vector2Int ToVector2Int(this Direction direction)
+        public static TileVector ToCoordinateVector(this Direction direction)
         {
             return direction switch
             {
-                Direction.Up => UpVector,
-                Direction.Right => RightVector,
-                Direction.Down => DownVector,
-                Direction.Left => LeftVector,
+                Direction.None => TileVector.Zero,
+                Direction.Up => TileVector.Up,
+                Direction.Right => TileVector.Right,
+                Direction.Down => TileVector.Down,
+                Direction.Left => TileVector.Left,
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
-        
         public static DirectionFlag ToDirectionFlag(this Direction direction)
         {
             return direction switch
@@ -54,5 +49,44 @@ namespace Cardevil.Utils.Directions
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
+        
+        public static Direction Opposite(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Direction.Down,
+                Direction.Right => Direction.Left,
+                Direction.Down => Direction.Up,
+                Direction.Left => Direction.Right,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+        
+        public static Direction Clockwise(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Direction.Right,
+                Direction.Right => Direction.Down,
+                Direction.Down => Direction.Left,
+                Direction.Left => Direction.Up,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+        
+        public static Direction CounterClockwise(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Direction.Left,
+                Direction.Right => Direction.Up,
+                Direction.Down => Direction.Right,
+                Direction.Left => Direction.Down,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+        
+
+        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Cardevil.Ingame.Field;
+using Cardevil.Utils;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Entities
@@ -8,7 +9,7 @@ namespace Cardevil.Ingame.Entities
         private Tile _currentTile;
 
         public Tile CurrentTile => _currentTile;
-        public Vector2Int Coordinate => _currentTile.Coordinate;
+        public TileVector Tile => _currentTile.Coordinate;
 
 
         /// <summary>
@@ -48,5 +49,7 @@ namespace Cardevil.Ingame.Entities
             }
             MoveTo(targetTile, moveTransform);
         }
+
+
     }
 }
