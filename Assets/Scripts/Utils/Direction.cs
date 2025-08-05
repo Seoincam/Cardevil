@@ -25,7 +25,7 @@ namespace Cardevil.Utils.Directions
     
     public static class DirectionExtensions
     {
-        public static TileVector ToCoordinateVector(this Direction direction)
+        public static TileVector ToTileVector(this Direction direction)
         {
             return direction switch
             {
