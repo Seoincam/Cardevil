@@ -73,6 +73,7 @@ namespace Cardevil.Cards
         }
 
         #region Using Card
+
         private void UpdateCanUseCard()
         {
             canUseCard = TurnManager.Instance.gameState == GameState.PlayerInput
@@ -91,6 +92,7 @@ namespace Cardevil.Cards
 
             OnUseCard?.Invoke(cardResult);
         }
+        
         #endregion
     }
 }

@@ -45,10 +45,10 @@ namespace Cardevil.Cards.CardInteractinos
                 : $"{cardData.color} {cardData.value}";
 
             // 이벤트 구독
-            parentCard.PointerDownEvent += PointerDown;
-            parentCard.PointerUpEvent += PointerUp;
-            parentCard.BeginDragEvent += BeginDrag;
-            parentCard.EndDragEvent += EndDrag;
+            parentCard.OnPointerDownEvent += PointerDown;
+            parentCard.OnPointerUpEvent += PointerUp;
+            parentCard.OnBeginDragEvent += BeginDrag;
+            parentCard.OnEndDragEvent += EndDrag;
 
             // 텍스트 설정 (임시)
             if (cardData.type == CardType.Move)

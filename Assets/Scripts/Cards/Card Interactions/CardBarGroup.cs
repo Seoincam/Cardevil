@@ -60,8 +60,8 @@ namespace Cardevil.Cards.CardInteractinos
 
                 var card = SpawnCard(slotIndex: i, cardData);
 
-                card.BeginDragEvent += BeginDrag;
-                card.EndDragEvent += EndDrag;
+                card.OnBeginDragEvent += BeginDrag;
+                card.OnEndDragEvent += EndDrag;
             }
 
             onSelectedCardsCountChanged?.Invoke();

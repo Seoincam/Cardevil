@@ -8,6 +8,7 @@ namespace Cardevil.Cards.CardInteractinos
     {
         [Header("Card")]
         public CardData cardData;
+        private bool isDestroyed = false;
 
         [Header("Visual")]
         [SerializeField] private GameObject cardVisualPrefab;
@@ -26,10 +27,11 @@ namespace Cardevil.Cards.CardInteractinos
         private float moveSpeedLimit = 100f;
 
         [Header("Events")]
-        [HideInInspector] public Action<Card> PointerDownEvent;
-        [HideInInspector] public Action<Card> PointerUpEvent;
-        [HideInInspector] public Action<Card> BeginDragEvent;
-        [HideInInspector] public Action<Card> EndDragEvent;
+        [HideInInspector] public Action<Card> OnPointerDownEvent;
+        [HideInInspector] public Action<Card> OnPointerUpEvent;
+        [HideInInspector] public Action<Card> OnBeginDragEvent;
+        [HideInInspector] public Action<Card> OnEndDragEvent;
+        [HideInInspector] public Action OnDestoryed;
 
         void Update()
         {
@@ -82,7 +84,7 @@ namespace Cardevil.Cards.CardInteractinos
                 && barGroup.draggedCard != this)
                 return;
 
-            BeginDragEvent?.Invoke(this);
+            OnBeginDragEvent?.Invoke(this);
             isDragging = true;
         }
 
@@ -99,7 +101,7 @@ namespace Cardevil.Cards.CardInteractinos
                 && barGroup.draggedCard != this)
                 return;
 
-            EndDragEvent?.Invoke(this);
+            OnEndDragEvent?.Invoke(this);
             isDragging = false;
         }
 
@@ -122,6 +124,9 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (isDestroyed)
+                return; 
+
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
@@ -129,7 +134,7 @@ namespace Cardevil.Cards.CardInteractinos
                 && barGroup.draggedCard != this)
                 return;
 
-            PointerDownEvent?.Invoke(this);
+            OnPointerDownEvent?.Invoke(this);
             pointerDownTime = Time.time;
 
             var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -138,6 +143,9 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (isDestroyed)
+                return; 
+                
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
@@ -145,7 +153,7 @@ namespace Cardevil.Cards.CardInteractinos
                 && barGroup.draggedCard != this)
                 return;
 
-            PointerUpEvent?.Invoke(this);
+            OnPointerUpEvent?.Invoke(this);
             pointerUpTime = Time.time;
             if (pointerUpTime - pointerDownTime > 0.2f)
                 return;
@@ -164,6 +172,11 @@ namespace Cardevil.Cards.CardInteractinos
                 transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
                 barGroup.RemoveSelectedCard(this);
             }
+        }
+
+        private void DestoryCard()
+        {
+            isDestroyed = true;
         }
 
 

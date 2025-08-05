@@ -32,7 +32,7 @@ namespace Cardevil.Utils
 
             // 기본 데미지 유물 판정
 
-            return new CardResult();    
+            return new CardResult(baseDamage: 0, combo: CardCombo.None, moveCards);    
 
 
             // return new CardResult(baseDamage, combo, moveCards);
