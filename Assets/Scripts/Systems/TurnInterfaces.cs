@@ -1,15 +1,16 @@
 using System;
 using System.Collections;
 using Cardevil.Cards;
+using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Systems
 {
     #region Player Input
     public interface IPlayerInputHandler
     {
-        IEnumerator HandlePlayerInputCoroutine();
-        void EndGetInput(CardResult _);
         void SubscribePlayerInput();
+        UniTask HandlePlayerInputAsync();
+        void EndGetInput(CardResult _);
     }
     #endregion
 
@@ -22,7 +23,6 @@ namespace Cardevil.Systems
 
     public interface IPlayerDamageReceiver
     {
-        // IBossActionHandler.OnBossDamageDealt에 ReceiveBossDamage 구독
         void SubscribeBossDamage();
         void ReceiveBossDamage(int amount);
     }
@@ -31,9 +31,8 @@ namespace Cardevil.Systems
     {
         event Action<int> OnPlayerDamageDealt;
 
-        // TurnManager.PlayerActionCoroutine에 HandlePlayerActionCoroutine 구독
         void SubscribePlayerAction();
-        IEnumerator HandlePlayerActionCoroutine();
+        UniTask HandlePlayerActionAsync();
     }
     #endregion
 
@@ -43,7 +42,6 @@ namespace Cardevil.Systems
     {
         event Action<int> OnBossDamageDealt;
 
-        // IPlayerActionHandler.OnPlayerDamageDealt에 ReceiveBossDamage 구독
         void SubscribePlayerDamage();
         void UnsubscribePlayerDamage();
         void ReceivePlayerDamage(int amount);
@@ -51,9 +49,8 @@ namespace Cardevil.Systems
 
     public interface IBossActionHandler
     {
-        // TurnManager.BossActionCoroutine에 HandleBossActionCoroutine 구독
         void SubscribeBossAction();
-        IEnumerator HandleBossActionCoroutine();
+        UniTask HandleBossActionAsync();
     }
     #endregion
 }
