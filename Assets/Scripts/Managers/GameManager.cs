@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Entities;
+using Cardevil.InGame.Enemy;
 
 public class GameManager
 {
 
     public Field field;
     public int turnOrder = 0;
-    private Entity entity; // 임시 플레이어
+    private Entity entity; // 임시 플레이어'
+    public Enemy enemy;
+ 
     public void Clear()
     {
  
@@ -29,7 +32,7 @@ public class GameManager
     //인게임 데이터 초기화 
     public void GameStart()
     {
-
+        
     }
 
     public void StageStart()

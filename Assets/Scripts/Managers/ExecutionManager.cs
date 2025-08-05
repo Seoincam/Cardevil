@@ -1,7 +1,7 @@
-﻿using System.Threading;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Managers
+namespace Cardevil.Manager
 {
 
     using System;
