@@ -1,10 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 using Cardevil.Cards;
 using System;
 using System.Linq;
-
+using Cysharp.Threading.Tasks;
 namespace Cardevil.Systems
 {
     public enum GameState
@@ -16,7 +15,7 @@ namespace Cardevil.Systems
     {
         [Header("Game State")]
         public GameState gameState = GameState.Pause;
-        public bool playerInputReceived;
+        public bool isPlayerInputReceived;
 
         [Header("References")]
         public Slider playerActionProgressBar;
@@ -26,10 +25,10 @@ namespace Cardevil.Systems
         public Text bossActionText;
 
         // [Header("Events")]
-        public delegate IEnumerator ActionCoroutine();
-        public event ActionCoroutine PlayerInputCoroutine;
-        public event ActionCoroutine PlayerActionCoroutine;
-        public event ActionCoroutine BossActionCoroutine;
+        public delegate UniTask TurnStepAsync();
+        public event TurnStepAsync PlayerInputAsync;
+        public event TurnStepAsync PlayerActionAsync;
+        public event TurnStepAsync BossActionAsync;
 
         public event Action OnGameStateChanged;
 
@@ -39,77 +38,85 @@ namespace Cardevil.Systems
             Application.targetFrameRate = 60;
 
             var cardManager = FindAnyObjectByType<CardManager>();
-            cardManager.OnUseCard += EndGetInput; // Player Input
-            cardManager.OnUseCard += ReceiveInput; // Player Action
-
+            
             // 이벤트 구독
             SubscribePlayerInput();
-            SubscribePlayerAction();
-            SubscribeBossAction();
+            cardManager.OnUseCard += EndGetInput;
 
+            SubscribePlayerAction();
             SubscribeBossDamage();
+            cardManager.OnUseCard += ReceiveInput;
+
+            SubscribeBossAction();
             SubscribePlayerDamage();
         }
 
         void Start()
         {
-            StartCoroutine(GameLoop());
+            GameLoopAsync().Forget();
         }
 
-        private IEnumerator GameLoop()
+
+        private async UniTaskVoid GameLoopAsync()
         {
             while (true)
             {
-                if (PlayerInputCoroutine == null || PlayerActionCoroutine == null || BossActionCoroutine == null)
+                if (PlayerInputAsync == null || PlayerActionAsync == null || BossActionAsync == null)
                 {
-                    yield return null;
+                    await UniTask.Yield();
                     continue;
                 }
 
                 // Player Input
-                yield return StartCoroutine(PlayerInputCoroutine());
+                await PlayerInputAsync.Invoke();
                 //  -> 데미지, 이동, 효과 등 계산
 
                 // Player Action
-                yield return StartCoroutine(PlayerActionCoroutine());
-                yield return new WaitForSeconds(0.5f);
+                await PlayerActionAsync.Invoke();
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
                 //  -> 보스 상태 체크
 
                 // Boss Action
-                yield return StartCoroutine(BossActionCoroutine());
-                yield return new WaitForSeconds(0.5f);
+                await BossActionAsync.Invoke();
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
                 //  -> 플레이어 상태 체크
             }
+
+            // TODO: cancel, break 로직 추가
         }
 
 
         #region Player input
+
         // IPlayerInputHandler
-        public IEnumerator HandlePlayerInputCoroutine()
+        public void SubscribePlayerInput()
+        {
+            PlayerInputAsync += HandlePlayerInputAsync;
+        }
+
+        public async UniTask HandlePlayerInputAsync()
         {
             SetGameState(GameState.PlayerInput);
 
-            while (!playerInputReceived)
-                yield return null;
-            
-            playerInputReceived = false;
+            while (!isPlayerInputReceived)
+                await UniTask.Yield();
+
+            isPlayerInputReceived = false;
         }
 
         public void EndGetInput(CardResult _)
         {
-            playerInputReceived = true;
+            isPlayerInputReceived = true;
         }
 
-        public void SubscribePlayerInput()
-        {
-            PlayerInputCoroutine += HandlePlayerInputCoroutine;
-        }
-        # endregion
+        #endregion
 
 
 
         #region Player Action
-        // IPlayerInputReceiver        
+
+        // IPlayerInputReceiver 
+        private int playerDealtDamage;       
         public void ReceiveInput(CardResult result)
         {
             playerActionText.text = $@"(임시) Player Input을 받았습니다.
@@ -117,6 +124,8 @@ namespace Cardevil.Systems
             데미지: {result.TotalDamage}
             이동: {result.directions.First()}
             ";
+
+            playerDealtDamage = result.TotalDamage;
         }
 
 
@@ -137,10 +146,10 @@ namespace Cardevil.Systems
 
         public void SubscribePlayerAction()
         {
-            PlayerActionCoroutine += HandlePlayerActionCoroutine;
+            PlayerActionAsync += HandlePlayerActionAsync;
         }
 
-        public IEnumerator HandlePlayerActionCoroutine()
+        public async UniTask HandlePlayerActionAsync()
         {
             SetGameState(GameState.Action);
 
@@ -149,24 +158,28 @@ namespace Cardevil.Systems
             var duration = 3f;
             var startTime = Time.time;
 
-            // 임시로 진행도 표시
             while (Time.time - startTime < duration)
             {
                 var remaining = duration - (Time.time - startTime);
                 SetProgressBar(playerActionProgressBar, value: remaining / duration);
 
-                yield return null;
+                var elapsed = Time.time - startTime;
+                if (elapsed > .48f && elapsed < .5f)
+                    OnPlayerDamageDealt?.Invoke(playerDealtDamage);
+
+                await UniTask.Yield();
             }
 
             playerActionText.text = ". . .";
-            var damage = 15;
-            OnPlayerDamageDealt?.Invoke(damage);
-        } 
+            
+        }
+
         #endregion
 
 
 
         #region Boss Action
+        
         // IBossDamageReceiver
         public void SubscribePlayerDamage()
         {
@@ -177,7 +190,6 @@ namespace Cardevil.Systems
 
         public void ReceivePlayerDamage(int amount)
         {
-            Debug.Log("2");
             bossActionText.text = $"{amount} 데미지를 받았다!";
         }
 
@@ -185,23 +197,23 @@ namespace Cardevil.Systems
         // IBossActionHandler
         public event Action<int> OnBossDamageDealt;
 
-        public IEnumerator HandleBossActionCoroutine()
+        public async UniTask HandleBossActionAsync()
         {
             // 애니메이션 등 실행 (임시로 3초 대기)
             SetProgressBar(bossActionProgressBar, value: 1f);
             var duration = 2f;
             var startTime = Time.time;
 
-            // 임시로 진행도 표시
             while (Time.time - startTime < duration)
             {
                 var remaining = duration - (Time.time - startTime);
                 SetProgressBar(bossActionProgressBar, value: remaining / duration);
 
-                if (Time.time - startTime > .48f && Time.time - startTime < .5f)
-                    OnBossDamageDealt?.Invoke(10);
+                var elapsed = Time.time - startTime;
+                if (elapsed > .48f && elapsed < .5f)
+                    OnBossDamageDealt?.Invoke(1);
 
-                yield return null;
+                await UniTask.Yield();
             }
 
             bossActionText.text = ". . .";
@@ -209,8 +221,9 @@ namespace Cardevil.Systems
 
         public void SubscribeBossAction()
         {
-            BossActionCoroutine += HandleBossActionCoroutine;
+            BossActionAsync += HandleBossActionAsync;
         }
+        
         #endregion
 
 

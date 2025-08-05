@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards;
 using Cardevil.Cards.CardInteractinos;
+using Random = UnityEngine.Random;
 
 namespace Cardevil.Utils
 {
@@ -19,13 +21,13 @@ namespace Cardevil.Utils
             #region 임시
 
             // BaseScore 계산
-            result.BaseDamage = 10;
+            result.BaseDamage = Random.Range(5, 100);
             // 콤보 판정 로직
             result.Combo = CardCombo.High;
             // ComboScroe 할당
             result.ComboDamage = 9;
             
-            result.directions = new CardDirection[3];
+            result.directions = new CardDirection[4];
             result.directions.Append(CardDirection.Right);
 
             #endregion
