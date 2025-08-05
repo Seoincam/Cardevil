@@ -223,7 +223,7 @@ namespace Cardevil.Systems
 
             bossActionText.text = ". . .";
             // 임시 대기 목록
-            Managers.Game.enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
+            Managers.Game.Enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
 
         }
 

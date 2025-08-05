@@ -4,15 +4,77 @@ using UnityEngine;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Entities;
 using Cardevil.InGame.Enemy;
+using UnityEngine.Serialization;
 
+[Serializable]
 public class GameManager
 {
+    [FormerlySerializedAs("field")] [SerializeField] private Field _field;
+    [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
+    [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
+    [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
 
-    public Field field;
-    public int turnOrder = 0;
-    private Entity entity; // 임시 플레이어'
-    public Enemy enemy;
  
+    
+    public Field Field
+    {
+        get
+        {
+            if (_field == null)
+            {
+                _field = GameObject.FindAnyObjectByType<Field>();
+                if (_field == null)
+                {
+                    Debug.LogError("Field not found in the scene.");
+                }
+            }
+            return _field;
+        }
+        set
+        {
+            _field = value;
+        }
+    }
+
+    public Enemy Enemy
+    {
+        get
+        {
+            return _enemy;
+        }
+        set
+        {
+            _enemy = value;
+        }
+    }
+    public PlayerCharacter Player
+    {
+        get
+        {
+            return _player;
+        }
+        set
+        {
+            _player = value;
+        }
+    }
+    
+    public int TurnOrder
+    {
+        get { return _turnOrder; }
+        set
+        {
+            if (value < 0)
+            {
+                Debug.LogError("TurnOrder cannot be negative.");
+                return;
+            }
+            _turnOrder = value;
+        }
+    }
+    
+    
+    
     public void Clear()
     {
  
@@ -37,7 +99,7 @@ public class GameManager
 
     public void StageStart()
     {
-        turnOrder = 0;
+        TurnOrder = 0;
     }
  
 

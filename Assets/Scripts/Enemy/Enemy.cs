@@ -28,9 +28,9 @@ namespace Cardevil.InGame.Enemy
         private void Start()
         {
            
-            field = Managers.Game.field;
+            field = Managers.Game.Field;
             currentAttackStyle = AttackStyle.UnKnown;
-            Managers.Game.enemy = this;
+            Managers.Game.Enemy = this;
 
         }
 

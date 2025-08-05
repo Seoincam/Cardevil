@@ -84,7 +84,7 @@ namespace Cardevil.Ingame.Field
 
         private void Awake()
         {
-            Managers.Game.field = this; // 시작될때 매니저에 등록
+            Managers.Game.Field = this; // 시작될때 매니저에 등록
             if (fieldConfiguration == null)
             {
                 Debug.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");
@@ -186,7 +186,7 @@ namespace Cardevil.Ingame.Field
         public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
         {
             var coordinate = tile.Coordinate;
-            var nextCoordinate = coordinate + direction.ToCoordinateVector();
+            var nextCoordinate = coordinate + direction.ToTileVector();
             if (wrapAround)
             {
                 while (nextCoordinate.i < 0)

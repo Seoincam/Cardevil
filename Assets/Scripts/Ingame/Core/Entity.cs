@@ -10,6 +10,19 @@ namespace Cardevil.Ingame.Entities
 
         public Tile CurrentTile => _currentTile;
         public TileVector Tile => _currentTile.Coordinate;
+        
+        public void Init(Tile initialTile)
+        {
+            if (initialTile == null)
+            {
+                Debug.LogError("Initial tile cannot be null.");
+                return;
+            }
+
+            _currentTile = initialTile;
+            _currentTile.AddEntity(this);
+            transform.position = _currentTile.transform.position; // Set the entity's position to the tile's position
+        }
 
 
         /// <summary>
@@ -37,6 +50,17 @@ namespace Cardevil.Ingame.Entities
             {
                 transform.position = _currentTile.transform.position;
             }
+        }
+        
+        public void MoveTo(TileVector tileVector, bool moveTransform = false)
+        {
+            Tile targetTile = _currentTile.Field.GetTile(tileVector);
+            if (targetTile == null)
+            {
+                Debug.LogError($"Cannot move to tile at {tileVector} - tile does not exist.");
+                return;
+            }
+            MoveTo(targetTile, moveTransform);
         }
         
         public void MoveTo(int i, int j, bool moveTransform = false)
