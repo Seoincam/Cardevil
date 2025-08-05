@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cardevil.Attributes;
@@ -84,6 +84,7 @@ namespace Cardevil.Ingame.Field
 
         private void Awake()
         {
+            Managers.Game.field = this; // 시작될때 매니저에 등록
             if (fieldConfiguration == null)
             {
                 Debug.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");
