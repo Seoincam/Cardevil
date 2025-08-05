@@ -24,7 +24,7 @@ namespace Cardevil.Cards.CardInteractinos
         private Vector3 pointerOffset;
         private float pointerDownTime;
         private float pointerUpTime;
-        private float moveSpeedLimit = 100f;
+        private float moveSpeedLimit = 4000;
 
         [Header("Events")]
         [HideInInspector] public Action<Card> OnPointerDownEvent;
@@ -43,7 +43,7 @@ namespace Cardevil.Cards.CardInteractinos
                 var direction = (targetPosition - transform.position).normalized;
 
                 var neededVelocity = Vector2.Distance(transform.position, targetPosition) / Time.deltaTime;
-                var velocity = direction * Mathf.Min(10000, neededVelocity);
+                var velocity = direction * Mathf.Min(moveSpeedLimit, neededVelocity);
 
                 transform.Translate(velocity * Time.deltaTime);
             }
@@ -125,7 +125,7 @@ namespace Cardevil.Cards.CardInteractinos
         public void OnPointerDown(PointerEventData eventData)
         {
             if (isDestroyed)
-                return; 
+                return;
 
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
@@ -137,8 +137,13 @@ namespace Cardevil.Cards.CardInteractinos
             OnPointerDownEvent?.Invoke(this);
             pointerDownTime = Time.time;
 
-            var mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            pointerOffset = transform.position - mousePosition;
+            var mousePosition = Input.mousePosition;
+            var offset = transform.position - mousePosition;
+            pointerOffset = offset * (-1);
+            /*
+            이게 왜 -1 붙여야 정상 작동할까??
+            카메라 설정과 관련있을까?
+            */
         }
 
         public void OnPointerUp(PointerEventData eventData)
