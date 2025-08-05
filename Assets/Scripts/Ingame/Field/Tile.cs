@@ -44,6 +44,21 @@ namespace Cardevil.Ingame.Field
             return false;
         }
         
+        public bool RemoveEntity(Entity entity)
+        {
+            if (entity == null)
+            {
+                Debug.LogError("Cannot remove a null entity from the tile.");
+                return false;
+            }
+            
+            if (entities.Contains(entity))
+            {
+                entities.Remove(entity);
+                return true;
+            }
+            return false;
+        }
         public List<Entity> GetEntities()
         {
             return entities;
