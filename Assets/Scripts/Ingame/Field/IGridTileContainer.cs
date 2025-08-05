@@ -1,4 +1,5 @@
-﻿using Cardevil.Utils.Directions;
+﻿using System.Collections.Generic;
+using Cardevil.Utils.Directions;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
@@ -50,8 +51,9 @@ namespace Cardevil.Ingame.Field
         /// </summary>
         /// <param name="tile"></param>
         /// <param name="direction"></param>
+        /// <param name="wrapAround">타일 컨테이너의 경계를 넘어갈 경우, 반대편 타일을 반환할지 여부</param>
         /// <returns></returns>
-        Tile GetTileByDirection(Tile tile, Direction direction);
+        Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false);
         
         
         /// <summary>
@@ -68,6 +70,33 @@ namespace Cardevil.Ingame.Field
         /// <param name="y"></param>
         /// <returns></returns>
         Vector3 GetTilePosition(int x, int y);
+
+
+        /// <summary>
+        /// 해당 행의 타일들을 반환
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public List<Tile> GetHorizontalTiles(int i);
+
+        /// <summary>
+        /// 해당 열의 타일들을 반환
+        /// </summary>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public List<Tile> GetVerticalTiles(int i);
+
+        public List<Tile> GetRectangleTiles(int si,int sj, int ei, int ej)
+        {
+            return GetRectangleTiles(new Vector2Int(si, sj), new Vector2Int(ei, ej));
+        }
+        /// <summary>
+        /// 타일 컨테이너의 직사각형 영역에 해당하는 타일들을 반환한다.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        public List<Tile> GetRectangleTiles(Vector2Int start, Vector2Int end);
         
         /// <summary>
         /// 타일 컨테이너의 행을 인덱스로 받아와 해당 행의 타일 배열을 반환한다.
