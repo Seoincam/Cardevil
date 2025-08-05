@@ -106,7 +106,7 @@ namespace Cardevil.Managers
 
         private IObjectPool<ActionWrapper> _actionWrapperPool;
 
-        private void Init()
+        public void Init()
         {
             _actionWrapperPool = new ObjectPool<ActionWrapper>(() => new ActionWrapper(null),
                 (wrapper => wrapper.Clear()), null, null, false, 10, 50);
