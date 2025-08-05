@@ -67,24 +67,12 @@ namespace Cardevil.Cards
 
 
         // 일반
-        public CardResult(int baseDamage, CardCombo combo, CardDirection[] moves)
+        public CardResult(int baseDamage, CardCombo combo,  CardDirection[] moves)
         {
             this.combo = combo;
             this.baseDamage = baseDamage;
 
             comboDamage = combo == CardCombo.None ? 0 : (int)combo;
-            totalDamage = baseDamage + comboDamage;
-
-            this.moves = moves;
-        }
-
-        // High일 때
-        public CardResult(int baseDamage, int highDamage, CardDirection[] moves)
-        {
-            combo = CardCombo.High;
-            this.baseDamage = baseDamage;
-            comboDamage = highDamage;
-
             totalDamage = baseDamage + comboDamage;
 
             this.moves = moves;

@@ -39,11 +39,11 @@ namespace Cardevil.Cards.CardInteractinos
 
             if (isDragging)
             {
-                var targetPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition) - pointerOffset;
+                var targetPosition = Input.mousePosition - pointerOffset;
                 var direction = (targetPosition - transform.position).normalized;
 
                 var neededVelocity = Vector2.Distance(transform.position, targetPosition) / Time.deltaTime;
-                var velocity = direction * Mathf.Min(moveSpeedLimit, neededVelocity);
+                var velocity = direction * Mathf.Min(10000, neededVelocity);
 
                 transform.Translate(velocity * Time.deltaTime);
             }
@@ -68,11 +68,11 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void ClampPosition()
         {
-            Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-            Vector3 clampedPosition = transform.position;
-            clampedPosition.x = Mathf.Clamp(clampedPosition.x, -screenBounds.x, screenBounds.x);
-            clampedPosition.y = Mathf.Clamp(clampedPosition.y, -screenBounds.y, screenBounds.y);
-            transform.position = new Vector3(clampedPosition.x, clampedPosition.y, 0);
+            // Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+            // Vector3 clampedPosition = transform.position;
+            // clampedPosition.x = Mathf.Clamp(clampedPosition.x, -screenBounds.x, screenBounds.x);
+            // clampedPosition.y = Mathf.Clamp(clampedPosition.y, -screenBounds.y, screenBounds.y);
+            // transform.position = new Vector3(clampedPosition.x, clampedPosition.y, 0);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
