@@ -72,10 +72,21 @@ namespace Cardevil.Ingame.Field
                 return null;
             return tileContainer[y][x];
         }
-        public Tile GetTileByDirection(Tile tile, Direction direction)
+        public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
         {
             var coordinate = tile.Coordinate;
             var nextCoordinate = coordinate + direction.ToVector2Int();
+            if(wrapAround){
+                if (nextCoordinate.x < 0)
+                    nextCoordinate.x = width - 1;
+                else if (nextCoordinate.x >= width)
+                    nextCoordinate.x = 0;
+
+                if (nextCoordinate.y < 0)
+                    nextCoordinate.y = height - 1;
+                else if (nextCoordinate.y >= height)
+                    nextCoordinate.y = 0;
+            }
             return GetTile(nextCoordinate);
         }
         public Vector3 GetTilePosition(Vector2Int coordinate)
@@ -85,6 +96,52 @@ namespace Cardevil.Ingame.Field
         public Vector3 GetTilePosition(int x, int y)
         {
             return tileContainer[y][x].transform.position;
+        }
+
+        public List<Tile> GetHorizontalTiles(int i)
+        {
+            // TODO : 캐싱
+            if (i < 0 || i >= height)
+                return null;
+            List<Tile> horizontalTiles = new List<Tile>();
+            for (int x = 0; x < width; x++)
+            {
+                horizontalTiles.Add(tileContainer[i][x]);
+            }
+            return horizontalTiles;
+        }
+        
+        public List<Tile> GetVerticalTiles(int i)
+        {
+            // TODO : 캐싱
+            if (i < 0 || i >= width)
+                return null;
+            List<Tile> verticalTiles = new List<Tile>();
+            for (int y = 0; y < height; y++)
+            {
+                verticalTiles.Add(tileContainer[y][i]);
+            }
+            return verticalTiles;
+        }
+
+        public List<Tile> GetRectangleTiles(int si, int sj, int ei, int ej)
+        {
+            return GetRectangleTiles(new Vector2Int(si, sj), new Vector2Int(ei, ej));
+        }
+        public List<Tile> GetRectangleTiles(Vector2Int start, Vector2Int end)
+        {
+            // TODO : 캐싱
+            List<Tile> rectangleTiles = new List<Tile>();
+            for (int y = start.y; y <= end.y; y++)
+            {
+                for (int x = start.x; x <= end.x; x++)
+                {
+                    var tile = GetTile(x, y);
+                    if (tile != null)
+                        rectangleTiles.Add(tile);
+                }
+            }
+            return rectangleTiles;
         }
         
         public Tile[] this[int i]

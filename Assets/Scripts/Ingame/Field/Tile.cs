@@ -28,11 +28,28 @@ namespace Cardevil.Ingame.Field
                 _coordinate = value;
             }
         }
+
+        public bool AddEntity(Entity entity){
+            if (entity == null)
+            {
+                Debug.LogError("Cannot add a null entity to the tile.");
+                return false;
+            }
+            
+            if (!entities.Contains(entity))
+            {
+                entities.Add(entity);
+                return true;
+            }
+            return false;
+        }
         
-        public List<Entity> GetEntity()
+        public List<Entity> GetEntities()
         {
             return entities;
         }
+        
+        
 
         public void HighLightAttackTile() // 공격받을 타일의 하이라이트 위치
         { 
