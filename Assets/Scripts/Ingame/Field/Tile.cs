@@ -16,7 +16,7 @@ namespace Cardevil.Ingame.Field
         [Header("Settings")]
         [VisibleOnly, SerializeField] private Field _field;
         [VisibleOnly, SerializeField] private FieldConfigurationSO _fieldConfiguration;
-        [FormerlySerializedAs("_coordinate")] [VisibleOnly, SerializeField] private TileVector tile;
+        [VisibleOnly, SerializeField] private TileVector _coordinate;
         
         [Header("References")]
         [VisibleOnly(EditableIn.EditMode), SerializeField] private SpriteRenderer _spriteRenderer;
@@ -34,12 +34,12 @@ namespace Cardevil.Ingame.Field
         /// </summary>
         public TileVector Coordinate
         {
-            get => tile;
+            get => _coordinate;
         }
 
         public void Initialize(Field field, TileVector coordinate)
         {
-            this.tile = tile;
+            this._coordinate = coordinate;
             _field = field;
             _fieldConfiguration = field.FieldConfiguration;
             

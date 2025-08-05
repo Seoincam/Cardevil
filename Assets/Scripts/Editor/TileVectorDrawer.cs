@@ -8,24 +8,26 @@ namespace Cardevil.Editors
     /// <summary>
     /// <see cref="VisibleOnly"/> attribute drawer.
     /// </summary>
-    [CustomPropertyDrawer(typeof(TileVectorDrawer))]
+    [CustomPropertyDrawer(typeof(TileVector))]
     public class TileVectorDrawer : PropertyDrawer
     {
         
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            return EditorGUI.GetPropertyHeight(property, label, true);
+            // 한줄
+            return EditorGUIUtility.singleLineHeight; 
         }
         private GUIContent _iContent = new GUIContent("i");
         private GUIContent _jContent = new GUIContent("j");
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // Vector2int처럼 그리기
-            EditorGUI.BeginProperty(position, label, property);
             position = EditorGUI.PrefixLabel(position, label);
+            EditorGUI.BeginProperty(position, label, property);
+            
 
-            SerializedProperty iProperty = property.FindPropertyRelative("i");
-            SerializedProperty jProperty = property.FindPropertyRelative("j");
+            SerializedProperty iProperty = property.FindPropertyRelative("_i");
+            SerializedProperty jProperty = property.FindPropertyRelative("_j");
             float width = position.width / 2f;
             Rect iRect = new Rect(position.x, position.y, width, position.height);
             Rect jRect = new Rect(position.x + width, position.y, width, position.height);
