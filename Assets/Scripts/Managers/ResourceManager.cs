@@ -15,10 +15,9 @@ public class ResourceManager
             {
                 name = name.Substring(index + 1);
             }
-            GameObject go = Managers.Pool.GetOriginal(name).gameObject;
-            if (go != null)
+            if (Managers.Pool.TryGetOriginal(name, out Poolable original))
             {
-                return go as T;
+                return original as T;
             }
         }
 

@@ -301,5 +301,24 @@ namespace Cardevil.Manager
                 return null;
             }
         }
+        /// <summary>
+        /// Poolable의 원본을 가져옴.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="original"></param>
+        /// <returns></returns>
+        public bool TryGetOriginal(string type, out Poolable original)
+        {
+            if (_factories.TryGetValue(type, out IFactory<Poolable> factory))
+            {
+                original = factory.Original;
+                return true;
+            }
+            else
+            {
+                original = null;
+                return false;
+            }
+        }
     }
 }
