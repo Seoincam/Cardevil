@@ -11,9 +11,10 @@ public class Managers : MonoBehaviour
     GameManager _game = new GameManager();
     PoolManager _pool = new PoolManager();
     SceneManagerEx _scene = new SceneManagerEx();
-    DataManager _data = new DataManager(); //DataManager°¡ °ãÃÄ¼­ Ãß°¡
+    DataManager _data = new DataManager(); //DataManagerê°€ ê²¹ì³ì„œ ì¶”ê°€
     JsonManager _json = new JsonManager();
     SoundManager _sound = new SoundManager();
+    ExecutionManager _execution = new ExecutionManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -23,6 +24,8 @@ public class Managers : MonoBehaviour
     public static JsonManager Json {  get { return Instance._json; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
+    public static ExecutionManager Execute { get { return Instance._execution; } }
+    
     void Start()
     {
         Init();
@@ -52,6 +55,7 @@ public class Managers : MonoBehaviour
             s_instance._pool.Init();
             s_instance._data.Init();
             s_instance._sound.Init();
+		    s_instance._execution.Init();
         }
     }
 
