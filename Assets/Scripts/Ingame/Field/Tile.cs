@@ -29,5 +29,14 @@ namespace Cardevil.Ingame.Field
             }
         }
         
+        public List<Entity> GetEntity()
+        {
+            return entities;
+        }
+
+        public void HighLightAttackTile() // 공격받을 타일의 하이라이트 위치
+        { 
+
+        }
     }
 }

@@ -12,12 +12,13 @@ namespace Cardevil.Ingame.Field
     /// <remarks>
     /// 일종의 타일 컨테이너 클래스.
     /// 음수인덱스는 지원 안함. 필요시 지원 예정
+    /// Tile [세로값][가로값] 값은 0,1,2 값
     /// </remarks>
+   
     [RequireComponent(typeof(Grid))]
     public class Field : MonoBehaviour, IEnumerable<Tile>, IGridTileContainer
     {
-        
-        private Tile[][] tileContainer;
+        private Tile[][] tileContainer; 
         [SerializeField] private Grid grid;
         public Grid Grid => grid;
         
@@ -120,7 +121,7 @@ namespace Cardevil.Ingame.Field
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return GetEnumerator(); 
         }
     }
 }
