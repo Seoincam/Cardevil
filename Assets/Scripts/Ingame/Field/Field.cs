@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Cardevil.Attributes;
 using Cardevil.Utils.Directions;
@@ -18,24 +19,63 @@ namespace Cardevil.Ingame.Field
     [RequireComponent(typeof(Grid))]
     public class Field : MonoBehaviour, IEnumerable<Tile>, IGridTileContainer
     {
-        private Tile[][] tileContainer; 
-        [SerializeField] private Grid grid;
-        public Grid Grid => grid;
-        
+        [Header("Settings")]
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] FieldConfigurationSo fieldConfiguration;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] int width = 3;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] int height = 3;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] Tile _tilePrefab;
+        [SerializeField] private bool _initOnAwake = true;
+        [Header("References")]
+        [SerializeField] private Grid grid;
+        [SerializeField, VisibleOnly] private Tile[][] _tileContainer; 
         
+        
+        public Grid Grid => grid;
+
+
+        private void Awake()
+        {
+            if (fieldConfiguration == null)
+            {
+                Debug.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");
+                return;
+            }
+
+            if (_initOnAwake)
+            {
+                InitField(fieldConfiguration.GridSize.x, fieldConfiguration.GridSize.y);
+            }
+        }
+
+        [ContextMenu("Init Field")]
         public void InitField(int width, int height)
         {
+            ClearTiles();
             this.width = width;
             this.height = height;
-            tileContainer = new Tile[height][];
+            _tileContainer = new Tile[height][];
             for (int y = 0; y < height; y++)
             {
-                tileContainer[y] = new Tile[width];
+                _tileContainer[y] = new Tile[width];
                 for (int x = 0; x < width; x++)
                 {
-                    // TODO : 타일 초기화 로직
+                    Tile tile = Instantiate(_tilePrefab, transform);
+                    tile.Initialize(this, new Vector2Int(x, y));
+                }
+            }
+        }
+
+        public void ClearTiles()
+        {
+            if (_tileContainer == null)
+                return;
+
+            foreach (var row in _tileContainer)
+            {
+                foreach (var tile in row)
+                {
+                    if (tile != null)
+                        Destroy(tile.gameObject);
                 }
             }
         }
@@ -53,7 +93,7 @@ namespace Cardevil.Ingame.Field
             var cellPosition = grid.WorldToCell(localPosition);
             if (cellPosition.x < 0 || cellPosition.x >= width || cellPosition.y < 0 || cellPosition.y >= height)
                 return null;
-            return tileContainer[cellPosition.y][cellPosition.x];
+            return _tileContainer[cellPosition.y][cellPosition.x];
         }
         public Vector2Int WorldToCoordinate(Vector3 worldPosition)
         {
@@ -70,7 +110,7 @@ namespace Cardevil.Ingame.Field
         {
             if (x < 0 || x >= width || y < 0 || y >= height)
                 return null;
-            return tileContainer[y][x];
+            return _tileContainer[y][x];
         }
         public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
         {
@@ -95,7 +135,7 @@ namespace Cardevil.Ingame.Field
         }
         public Vector3 GetTilePosition(int x, int y)
         {
-            return tileContainer[y][x].transform.position;
+            return _tileContainer[y][x].transform.position;
         }
 
         public List<Tile> GetHorizontalTiles(int i)
@@ -106,7 +146,7 @@ namespace Cardevil.Ingame.Field
             List<Tile> horizontalTiles = new List<Tile>();
             for (int x = 0; x < width; x++)
             {
-                horizontalTiles.Add(tileContainer[i][x]);
+                horizontalTiles.Add(_tileContainer[i][x]);
             }
             return horizontalTiles;
         }
@@ -119,7 +159,7 @@ namespace Cardevil.Ingame.Field
             List<Tile> verticalTiles = new List<Tile>();
             for (int y = 0; y < height; y++)
             {
-                verticalTiles.Add(tileContainer[y][i]);
+                verticalTiles.Add(_tileContainer[y][i]);
             }
             return verticalTiles;
         }
@@ -150,7 +190,7 @@ namespace Cardevil.Ingame.Field
             {
                 if (i < 0 || i >= height)
                     return null;
-                return tileContainer[i];
+                return _tileContainer[i];
             }
         }
         
@@ -171,7 +211,7 @@ namespace Cardevil.Ingame.Field
             {
                 for (int x = 0; x < width; x++)
                 {
-                    yield return tileContainer[y][x];
+                    yield return _tileContainer[y][x];
                 }
             }
         }

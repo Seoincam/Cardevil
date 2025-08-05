@@ -12,8 +12,6 @@ namespace Cardevil.Ingame.Field
     public class Tile : MonoBehaviour
     {
         [Header("Settings")]
-        [VisibleOnly] private Vector2Int _coordinate;
-
         [VisibleOnly, SerializeField] private Field _field;
         [VisibleOnly, SerializeField] private Vector2Int _coordinate;
 
