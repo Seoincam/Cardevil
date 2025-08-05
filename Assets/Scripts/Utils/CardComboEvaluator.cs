@@ -41,47 +41,40 @@ namespace Cardevil.Utils
             }
 
             var combo = CalculateCombo(numberCards);
-            var baseDamage = 0;
-            var comboDamage = 0;
+            var damage = 0;
 
             if (combo == CardCombo.High)
             {
-                baseDamage = numberCards.OrderBy(c => c.value).Last().value;
-                // high 로직
+                damage = numberCards.OrderBy(c => c.value).Last().value;
             }
             else
             {
                 if (combo == CardCombo.OnePair)
                 {
-                    baseDamage = numberCards.GroupBy(c => c.value)
+                    damage = numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 2)
                         .Sum(g => g.Key);
                 }
                 else if (combo == CardCombo.Triple)
                 {
-                    baseDamage = numberCards.GroupBy(c => c.value)
+                    damage = numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 3)
                         .Sum(g => g.Key);
                 }
                 else
-                    baseDamage = numberCards.Sum(c => c.value);
+                    damage = numberCards.Sum(c => c.value);
             }
 
-            comboDamage = (int)combo;
+            damage += (int)combo;
 
-            var totalDamage = baseDamage + comboDamage;
+            // == 데미지 곱 연산 ==
 
-            // 데미지 곱 연산
+            // == 데미지 강화 카드의 존재 여부 ==
 
-            // 데미지 강화 카드의 존재 여부
-
-            // 유물 데미지 판정
+            // == 유물 데미지 판정 ==
 
 
-            return new CardResult(baseDamage: 0, combo: CardCombo.None, moveCards);
-
-
-            
+            return new CardResult(combo, damage, moveCards);
         }
 
         #region 카드 족보 판정

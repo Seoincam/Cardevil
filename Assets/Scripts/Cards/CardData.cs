@@ -58,34 +58,22 @@ namespace Cardevil.Cards
     public struct CardResult
     {
         public CardCombo combo;
-        public int baseDamage;    // 카드들의 합계
-        public int comboDamage;    // 콤보의 추가 점수
-        public int totalDamage;
+        public int damage;
 
         public CardDirection[] moves;
 
 
-
-        // 일반
-        public CardResult(int baseDamage, CardCombo combo,  CardDirection[] moves)
+        public CardResult(CardCombo combo, int damage, CardDirection[] moves)
         {
             this.combo = combo;
-            this.baseDamage = baseDamage;
-
-            comboDamage = combo == CardCombo.None ? 0 : (int)combo;
-            totalDamage = baseDamage + comboDamage;
-
+            this.damage = damage;
             this.moves = moves;
         }
 
-        // 공격 x
         public CardResult(CardDirection[] moves)
         {
             combo = CardCombo.None;
-            baseDamage = 0;
-            comboDamage = 0;
-            totalDamage = 0;
-
+            damage = 0;
             this.moves = moves;
         }
     }

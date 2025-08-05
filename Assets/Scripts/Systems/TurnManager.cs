@@ -126,11 +126,11 @@ namespace Cardevil.Systems
             var move = result.moves.Count() != 0 ? "이동 있음" : "이동 없음";
             playerActionText.text = $@"(임시) Player Input을 받았습니다.
             콤보: {result.combo}
-            데미지: {result.totalDamage}
+            데미지: {result.damage}
             이동: {move}
             ";
 
-            playerDealtDamage = result.totalDamage;
+            playerDealtDamage = result.damage;
         }
 
 
