@@ -52,9 +52,9 @@ namespace Cardevil.Cards.CardInteractinos
             this.barGroup = barGroup;
             this.cardData = cardData;
 
-            transform.name = cardData.Type == CardType.Move
-                ? cardData.Direction.ToString()
-                : $"{cardData.Color} {cardData.Value}";
+            transform.name = cardData.type == CardType.Move
+                ? cardData.direction.ToString()
+                : $"{cardData.color} {cardData.value}";
 
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
             if (visualHandler == null)

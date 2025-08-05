@@ -40,9 +40,9 @@ namespace Cardevil.Cards.CardInteractinos
         {
             this.parentCard = parentCard;
 
-            transform.name = cardData.Type == CardType.Move
-                ? cardData.Direction.ToString()
-                : $"{cardData.Color} {cardData.Value}";
+            transform.name = cardData.type == CardType.Move
+                ? cardData.direction.ToString()
+                : $"{cardData.color} {cardData.value}";
 
             // 이벤트 구독
             parentCard.PointerDownEvent += PointerDown;
@@ -51,15 +51,15 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.EndDragEvent += EndDrag;
 
             // 텍스트 설정 (임시)
-            if (cardData.Type == CardType.Move)
+            if (cardData.type == CardType.Move)
             {
-                text.text = cardData.Direction.ToString();
+                text.text = cardData.direction.ToString();
                 text.fontSize = 35;
             }
             else
             {
-                text.text = cardData.Value == 10 ? "*" : cardData.Value.ToString();
-                switch (cardData.Color)
+                text.text = cardData.value == 11 ? "*" : cardData.value.ToString();
+                switch (cardData.color)
                 {
                     case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
                     case CardColor.Blue: text.color = Color.blue; break;

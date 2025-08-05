@@ -45,9 +45,9 @@ namespace Cardevil.Cards
                 if (color == CardColor.None)
                     continue;
 
-                for (int i = 1; i <= 10; i++)
+                for (int i = 2; i <= 11; i++)
                 {
-                    var cardData = new CardData(color, value: i);
+                    var cardData = new CardData(color, value: i, reinforce: 0);
                     cardDatas.Add(cardData);
                 }
             }
@@ -59,7 +59,7 @@ namespace Cardevil.Cards
 
                 for (int i = 0; i < 2; i++)
                 {
-                    var cardData = new CardData(direction);
+                    var cardData = new CardData(direction, reinforce: 0);
                     cardDatas.Add(cardData);
                 }
             }

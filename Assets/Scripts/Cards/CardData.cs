@@ -7,56 +7,70 @@ namespace Cardevil.Cards
     [System.Serializable]
     public struct CardData
     {
-        public CardType Type;
+        public CardType type;
+
+        public int reinforce;
 
         // Move type
-        public CardDirection Direction;
+        public CardDirection direction;
 
         // Number type
-        public CardColor Color;
-        public int Value; // 1~9, *은 10으로 표기
-
+        public CardColor color;
+        public int value; // 2~10, *은 11으로 표기
 
         // 생성자 (Number)
-        public CardData(CardColor color, int value)
+        public CardData(CardColor color, int value, int reinforce)
         {
-            Type = CardType.Number;
-            Color = color;
-            Value = value;
+            type = CardType.Number;
+            this.color = color;
+            this.value = value;
+            this.reinforce = reinforce;
 
-            Direction = CardDirection.None;
+            direction = CardDirection.None;
         }
 
         // 생성자 (Move)
-        public CardData(CardDirection direction)
+        public CardData(CardDirection direction, int reinforce)
         {
-            Type = CardType.Move;
-            Direction = direction;
+            type = CardType.Move;
+            this.direction = direction;
+            this.reinforce = reinforce;
 
-            Color = CardColor.None;
-            Value = 0;
+            color = CardColor.None;
+            value = 0;
         }
     }
 
     public enum CardCombo
     {
-        High,
-        OnePair,
-        TwoPair,
-        Triple,
-        Straight,
-        Flush,
-        StraightFlush,  // 스티플
-        FourCard
+        High = 0,
+        OnePair = 5,
+        TwoPair = 20,
+        Triple = 30,
+        Straight = 50,
+        Flush = 80,
+        FourCard = 200,
+        StraightFlush = 300  // 스티플
+        
     }
-    
+
     public struct CardResult
     {
-        public CardCombo Combo;
-        public int BaseDamage;    // 카드들의 합계
-        public int ComboDamage;    // 콤보의 추가 점수
-        public int TotalDamage;
-        
-        public CardDirection[] directions;
+        public CardCombo combo;
+        public int baseDamage;    // 카드들의 합계
+        public int comboDamage;    // 콤보의 추가 점수
+        public int totalDamage;
+
+        public CardDirection[] moves;
+
+        public CardResult(int baseDamage, CardCombo combo, CardDirection[] moves)
+        {
+            this.combo = combo;
+            this.baseDamage = baseDamage;
+            this.moves = moves;
+
+            comboDamage = (int)combo;
+            totalDamage = baseDamage + comboDamage;
+        }
     }
 }

@@ -119,13 +119,14 @@ namespace Cardevil.Systems
         private int playerDealtDamage;       
         public void ReceiveInput(CardResult result)
         {
+            var move = result.moves.Count() != 0 ? "이동 있음" : "이동 없음";
             playerActionText.text = $@"(임시) Player Input을 받았습니다.
-            콤보: {result.Combo}
-            데미지: {result.TotalDamage}
-            이동: {result.directions.First()}
+            콤보: {result.combo}
+            데미지: {result.totalDamage}
+            이동: {move}
             ";
 
-            playerDealtDamage = result.TotalDamage;
+            playerDealtDamage = result.totalDamage;
         }
 
 
