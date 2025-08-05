@@ -43,6 +43,8 @@ namespace Cardevil.Cards
 
     public enum CardCombo
     {
+        None = -1,
+
         High = 0,
         OnePair = 5,
         TwoPair = 20,
@@ -51,7 +53,6 @@ namespace Cardevil.Cards
         Flush = 80,
         FourCard = 200,
         StraightFlush = 300  // 스티플
-        
     }
 
     public struct CardResult
@@ -63,14 +64,41 @@ namespace Cardevil.Cards
 
         public CardDirection[] moves;
 
+
+
+        // 일반
         public CardResult(int baseDamage, CardCombo combo, CardDirection[] moves)
         {
             this.combo = combo;
             this.baseDamage = baseDamage;
-            this.moves = moves;
 
-            comboDamage = (int)combo;
+            comboDamage = combo == CardCombo.None ? 0 : (int)combo;
             totalDamage = baseDamage + comboDamage;
+
+            this.moves = moves;
+        }
+
+        // High일 때
+        public CardResult(int baseDamage, int highDamage, CardDirection[] moves)
+        {
+            combo = CardCombo.High;
+            this.baseDamage = baseDamage;
+            comboDamage = highDamage;
+
+            totalDamage = baseDamage + comboDamage;
+
+            this.moves = moves;
+        }
+
+        // 공격 x
+        public CardResult(CardDirection[] moves)
+        {
+            combo = CardCombo.None;
+            baseDamage = 0;
+            comboDamage = 0;
+            totalDamage = 0;
+
+            this.moves = moves;
         }
     }
 }

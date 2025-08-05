@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Cardevil.Cards;
 using Cardevil.Cards.CardInteractinos;
@@ -10,26 +11,37 @@ namespace Cardevil.Utils
         public static CardResult Evaluate(IEnumerable<Card> cardDatas)
         {
             var moveCards = cardDatas.Select(c => c.cardData)
-                .Where(c => c.type == CardType.Move)
-                .Select(c => c.direction)
-                .ToArray();
+                        .Where(c => c.type == CardType.Move)
+                        .Select(c => c.direction)
+                        .ToArray();
 
             var numberCards = cardDatas.Select(c => c.cardData)
-                .Where(c => c.type == CardType.Number)
-                // .Select(c => c.type == CardType.Number)
-                .ToList();
+                        .Where(c => c.type == CardType.Number)
+                        .ToList();
 
-            var baseDamage = numberCards.Sum(c => c.value);
+            // 숫자 카드 판정
+            if (numberCards.Count == 0)
+                return new CardResult(moveCards);
+
+            // 하이 카드 판정
             var combo = CalculateCardCombo(numberCards);
-            var comboDamage = (int)combo;
+            if (combo == CardCombo.High)
+            {
+                var highDamage = numberCards.OrderBy(c => c.value).Last().value;
+            }
 
-            return new CardResult(baseDamage, combo, moveCards);
+            // 기본 데미지 유물 판정
+
+            return new CardResult();    
+
+
+            // return new CardResult(baseDamage, combo, moveCards);
         }
 
         #region 카드 족보 판정
 
         private static CardCombo CalculateCardCombo(List<CardData> cards)
-        {
+        {                
             if (IsStraightFlush(cards))
                 return CardCombo.StraightFlush;
             else if (IsFourCard(cards))
@@ -54,8 +66,8 @@ namespace Cardevil.Utils
                 return false;
 
             var values = cards.Select(c => c.value)
-                .OrderBy(v => v)
-                .ToList();
+                    .OrderBy(v => v)
+                    .ToList();
 
             for (int i = 1; i < cards.Count; i++)
                 if (values[i] != values[i - 1] + 1)
@@ -70,8 +82,8 @@ namespace Cardevil.Utils
                 return false;
 
             return cards.Select(c => c.color)
-                .Distinct()
-                .Count() == 1;
+                    .Distinct()
+                    .Count() == 1;
         }
 
         private static bool IsStraightFlush(List<CardData> cards)
@@ -91,7 +103,7 @@ namespace Cardevil.Utils
         static bool IsTriple(List<CardData> cards)
         {
             return cards.GroupBy(c => c.value)
-                .Any(g => g.Count() == 3);
+                        .Any(g => g.Count() == 3);
         }
 
         static bool IsTwoPair(List<CardData> cards)

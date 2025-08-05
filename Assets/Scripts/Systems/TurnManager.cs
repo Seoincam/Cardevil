@@ -31,6 +31,8 @@ namespace Cardevil.Systems
         public event TurnStepAsync BossActionAsync;
 
         public event Action OnGameStateChanged;
+        
+        // UniTaskCompletionSource 
 
         protected override void Awake()
         {
@@ -38,7 +40,7 @@ namespace Cardevil.Systems
             Application.targetFrameRate = 60;
 
             var cardManager = FindAnyObjectByType<CardManager>();
-            
+
             // 이벤트 구독
             SubscribePlayerInput();
             cardManager.OnUseCard += EndGetInput;
