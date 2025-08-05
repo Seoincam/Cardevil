@@ -148,6 +148,19 @@ namespace Cardevil.Ingame.Field
             }
         }
         
+        public TileVector GetWrappedCoordinate(TileVector tile)
+        {
+            var wrappedI = (tile.i % height + height) % height;
+            var wrappedJ = (tile.j % width + width) % width;
+            return new TileVector(wrappedI, wrappedJ);
+        }
+        public TileVector GetWrappedCoordinate(int i, int j)
+        {
+            var wrappedI = (i % height + height) % height;
+            var wrappedJ = (j % width + width) % width;
+            return new TileVector(wrappedI, wrappedJ);
+        }
+        
         public Vector3 GetCenterPosition()
         {
             var LeftBottom = grid.GetCellCenterWorld(new Vector3Int(0, 0, 0));
