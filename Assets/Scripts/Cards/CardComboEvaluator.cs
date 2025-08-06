@@ -1,10 +1,8 @@
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using Cardevil.Cards;
 using Cardevil.Cards.CardInteractinos;
 
-namespace Cardevil.Utils
+namespace Cardevil.Cards
 {
     public static class CardComboEvaluator
     {
@@ -51,13 +49,13 @@ namespace Cardevil.Utils
             {
                 if (combo == CardCombo.OnePair)
                 {
-                    damage = numberCards.GroupBy(c => c.value)
+                    damage = 2 * numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 2)
                         .Sum(g => g.Key);
                 }
                 else if (combo == CardCombo.Triple)
                 {
-                    damage = numberCards.GroupBy(c => c.value)
+                    damage = 3 * numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 3)
                         .Sum(g => g.Key);
                 }
@@ -77,10 +75,12 @@ namespace Cardevil.Utils
             return new CardResult(combo, damage, moveCards);
         }
 
+
+
         #region 카드 족보 판정
 
         private static CardCombo CalculateCombo(List<CardData> cards)
-        {                
+        {
             if (IsStraightFlush(cards))
                 return CardCombo.StraightFlush;
             else if (IsFourCard(cards))
