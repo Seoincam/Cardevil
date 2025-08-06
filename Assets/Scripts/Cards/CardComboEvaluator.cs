@@ -49,13 +49,13 @@ namespace Cardevil.Cards
             {
                 if (combo == CardCombo.OnePair)
                 {
-                    damage = numberCards.GroupBy(c => c.value)
+                    damage = 2 * numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 2)
                         .Sum(g => g.Key);
                 }
                 else if (combo == CardCombo.Triple)
                 {
-                    damage = numberCards.GroupBy(c => c.value)
+                    damage = 3 * numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 3)
                         .Sum(g => g.Key);
                 }
