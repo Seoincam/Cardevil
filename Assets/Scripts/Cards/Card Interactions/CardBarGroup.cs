@@ -12,7 +12,7 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
         public Card draggedCard { get; private set; }
-        public List<Card> cards;
+        private List<Card> cards = new();
 
         public HashSet<Card> selectedCards = new(4);
         public event Action onSelectedCardsCountChanged;
@@ -28,6 +28,7 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] float selectOffset = 35f;
 
         [Header("Etc")]
+        public bool CanInteraction => canInteraction && !isSwapping;
         private bool canInteraction = true;
         private bool isSwapping = false;
 

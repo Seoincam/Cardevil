@@ -17,9 +17,26 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Reference")]
         private CardBarGroup barGroup;
 
-        [Header("Selection")]
+        [Header("Drag")]
         public bool isSelected;
         public bool isDragging;
+        private bool CanDrag
+        {
+            get
+            {
+                if (isDiscarded)
+                    return false;
+
+                if (barGroup.draggedCard != null
+                    && barGroup.draggedCard != this)
+                    return false;
+
+                if (!barGroup.CanInteraction)
+                    return false;
+
+                return true;
+            }
+        }
 
         private Vector3 pointerOffset;
         private float pointerDownTime;
@@ -41,7 +58,7 @@ namespace Cardevil.Cards.CardInteractinos
             if (isDiscarded)
                 return; 
 
-            ClampPosition();
+            // ClampPosition();
 
             if (isDragging)
             {
@@ -82,40 +99,25 @@ namespace Cardevil.Cards.CardInteractinos
             // clampedPosition.y = Mathf.Clamp(clampedPosition.y, -screenBounds.y, screenBounds.y);
             // transform.position = new Vector3(clampedPosition.x, clampedPosition.y, 0);
         }
-        
+
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (isDiscarded)
-                return; 
-
-            if (barGroup.draggedCard != null
-                && barGroup.draggedCard != this)
+            if (!CanDrag)
                 return;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (isDiscarded)
-                return; 
-
-            if (barGroup.draggedCard != null
-                && barGroup.draggedCard != this)
-                return;
-
-            if (isDragging)
+            if (!CanDrag)
                 return;
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (isDiscarded)
-                return;
-
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.draggedCard != null
-                && barGroup.draggedCard != this)
+            if (!CanDrag)
                 return;
 
             OnPointerDownEvent?.Invoke(this);
@@ -127,14 +129,10 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (isDiscarded)
-                return;
-
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.draggedCard != null
-                && barGroup.draggedCard != this)
+            if (!CanDrag)
                 return;
 
             OnBeginDragEvent?.Invoke(this);
@@ -147,14 +145,10 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (isDiscarded)
-                return; 
-
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.draggedCard != null
-                && barGroup.draggedCard != this)
+            if (!CanDrag)
                 return;
 
             OnEndDragEvent?.Invoke(this);
@@ -163,16 +157,12 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (isDiscarded)
-                return; 
-                
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (barGroup.draggedCard != null
-                && barGroup.draggedCard != this)
+            if (!CanDrag)
                 return;
-
+                
             OnPointerUpEvent?.Invoke(this);
             pointerUpTime = Time.time;
             if (pointerUpTime - pointerDownTime > 0.2f)
