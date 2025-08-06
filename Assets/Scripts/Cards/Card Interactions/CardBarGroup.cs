@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using DG.Tweening;
 using System;
+using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -26,43 +27,18 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Select Setting")]
         [SerializeField] float selectOffset = 35f;
 
-        [Header("Etc")] 
-        private bool isSwapping;
-
-        private bool _isOnTrashCan;
-        public bool isOnTrashCan
-        {
-            get => _isOnTrashCan;
-            set
-            {
-                // 임시 로직. 추후 수정
-                _isOnTrashCan = value;
-                if (draggedCard == null)
-                    return;
-
-                draggedCard.cardVisual.SetCardOnTrashCan(value);
-            }
-        }
-
+        [Header("Etc")]
+        private bool canInteraction = true;
+        private bool isSwapping = false;
 
         public void Init(CardManager cardManager, Action onSelectedCardsCountChanged)
         {
             this.cardManager = cardManager;
             this.onSelectedCardsCountChanged += onSelectedCardsCountChanged;
 
-            for (int i = 5; i >= 0; i--)
-            {
-                if (cardManager.cardDatas.Count == 0)
-                    Debug.LogError("Card Data가 없음.");
+            _ = InitCard();
 
-                var cardData = cardManager.cardDatas.First();
-                cardManager.cardDatas.RemoveAt(0);
-
-                var card = SpawnCard(slotIndex: i, cardData);
-
-                card.OnBeginDragEvent += BeginDrag;
-                card.OnEndDragEvent += EndDrag;
-            }
+            Debug.Log($"덱에 남은 카드: {cardManager.cardDatas.Count}장");
 
             onSelectedCardsCountChanged?.Invoke();
         }
@@ -72,13 +48,22 @@ namespace Cardevil.Cards.CardInteractinos
             for (int i = 0; i < 6; i++)
             {
                 var slot = Instantiate(original: cardSlotPrefab, parent: transform);
-                slot.transform.name = $"Slot {i}";
+                slot.gameObject.SetActive(false);
                 slots[i] = slot.transform;
             }
         }
 
         void Update()
         {
+            // 카드 버리기
+            if (Input.GetKeyDown(KeyCode.Delete))
+            {
+                _ = DiscardSequentially();
+            }
+
+            if (!canInteraction)
+                return;
+
             if (draggedCard == null)
                 return;
 
@@ -101,15 +86,6 @@ namespace Cardevil.Cards.CardInteractinos
                         break;
                     }
             }
-        }
-
-        public Card SpawnCard(int slotIndex, CardData cardData)
-        {
-            var card = Instantiate(original: cardPrefab, parent: slots[slotIndex]).GetComponent<Card>();
-            card.Init(barGroup: this, cardData);
-
-            cards.Add(card);
-            return card;
         }
 
         private void BeginDrag(Card card)
@@ -166,5 +142,95 @@ namespace Cardevil.Cards.CardInteractinos
 
             isSwapping = false;
         }
+
+        public async UniTaskVoid InitCard()
+        {
+            canInteraction = false;
+
+            for (int i = 5; i >= 0; i--)
+            {
+                slots[i].gameObject.SetActive(true);
+                var card = SpawnCard(slotIndex: i);
+                await UniTask.Delay(TimeSpan.FromSeconds(.15f));
+            }
+
+            canInteraction = true;
+        }
+
+        public Card SpawnCard(int slotIndex)
+        {
+            if (cardManager.cardDatas.Count == 0)
+            {
+                Debug.LogError("Card Data가 없음.");
+                return null;
+            }
+                    
+            var cardData = cardManager.cardDatas.First();
+            cardManager.cardDatas.RemoveAt(0);
+
+            var card = Instantiate(original: cardPrefab, parent: slots[slotIndex]).GetComponent<Card>();
+            card.Init(barGroup: this, cardData);
+
+            cards.Add(card);
+
+            // 이벤트 구독
+            card.OnBeginDragEvent += BeginDrag;
+            card.OnEndDragEvent += EndDrag;
+
+            return card;
+        }
+
+        public async UniTaskVoid DiscardSequentially()
+        {
+            canInteraction = false;
+            var duration = .35f;
+
+            // 카드 버리기
+            // - - - - - -
+            var sortedSelect = selectedCards.OrderBy(c => c.GetSlotIndex())
+                .ToList();
+
+            foreach (var card in sortedSelect)
+            {
+                var slotIndex = card.GetSlotIndex();
+                cards.Remove(card);
+                card.Discard(duration);
+                slots[slotIndex].gameObject.SetActive(false);
+                await UniTask.Delay(TimeSpan.FromSeconds(duration));
+                card.Destroy();
+            }
+
+            selectedCards.Clear();
+
+            // slot 정렬
+            // - - - - - -
+            var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
+                        .ToArray();
+
+            foreach (var slot in inactiveSlots)
+            {
+                slot.SetSiblingIndex(2);
+            }
+
+            slots = slots
+                    .OrderBy(t => t.GetSiblingIndex())
+                    .ToArray();
+
+            // 다시 뽑기
+            // - - - - - -
+            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+
+            foreach (var slot in inactiveSlots)
+            {
+                var slotIndex = slot.GetSiblingIndex();
+                slot.gameObject.SetActive(true);
+                SpawnCard(slotIndex);
+                await UniTask.Delay(TimeSpan.FromSeconds(duration - .1f));
+            }
+
+            Debug.Log($"덱에 남은 카드: {cardManager.cardDatas.Count}장");
+            canInteraction = true;
+        }
+        
     }
 }
