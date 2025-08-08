@@ -245,14 +245,23 @@ namespace Cardevil.InGame.Enemy
         }
         #endregion
 
-        public void GetDamage(float damage)
+        public virtual bool GetDamage(float damage)
         {
             HP -= damage;
             if(HP<=0)
             {
-                //보스 사망 
+                // 유닛 사망
                 Destroy(this.gameObject);
+                return true; // 사망시 true 변환 
             }
+
+            return false; // 아직 살아있다
+        }
+
+
+        public void SetAttackOrder(int i)
+        {
+            attackTurnOrder = i;
         }
     }
 }
