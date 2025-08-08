@@ -20,6 +20,7 @@ namespace Cardevil.Ingame.Field
     [RequireComponent(typeof(Grid))]
     public class Field : MonoBehaviour, IEnumerable<Tile>, IGridTileContainer
     {
+        //
         [Header("Settings")]
         [SerializeField, VisibleOnly(EditableIn.EditMode)] FieldConfigurationSO fieldConfiguration;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] int width = 3;

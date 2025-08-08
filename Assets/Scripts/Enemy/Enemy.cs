@@ -5,6 +5,7 @@ using Cardevil.Ingame.Field;
 
 namespace Cardevil.InGame.Enemy
 {
+    //
     public class Enemy : MonoBehaviour
     {
         private Field field;

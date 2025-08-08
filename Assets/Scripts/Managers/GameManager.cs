@@ -9,6 +9,7 @@ using UnityEngine.Serialization;
 [Serializable]
 public class GameManager
 {
+    //
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
     [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
