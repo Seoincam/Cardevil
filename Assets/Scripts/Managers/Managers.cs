@@ -1,4 +1,5 @@
 using Cardevil.Manager;
+using Cardevil.Pools;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -17,6 +18,7 @@ public class Managers : MonoBehaviour
     JsonManager _json = new JsonManager();
     SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
+    EventManager _event = new EventManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -27,6 +29,7 @@ public class Managers : MonoBehaviour
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }
+    public static EventManager Event { get { return Instance._event; } }
     
     void Start()
     {

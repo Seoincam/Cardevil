@@ -112,5 +112,7 @@ namespace Cardevil.Events
         
         
         }
+
+        public override void Clear() => ClearListeners();
     }
 }

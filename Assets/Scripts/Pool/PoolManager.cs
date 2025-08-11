@@ -1,14 +1,14 @@
+using Cardevil.Core;
 using Cardevil.DataStructure;
-using Cardevil.Pools;
 using System;
 using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Manager
+namespace Cardevil.Pools
 {
     [Serializable]
-    public class PoolManager 
+    public class PoolManager : IClearable
     {
         
         [SerializeField] private int _initialSize = 3;

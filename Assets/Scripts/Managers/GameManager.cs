@@ -1,3 +1,4 @@
+using Cardevil.Ingame;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,7 @@ public class GameManager
     [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
+    [SerializeField] private PlayerStatus _playerStatus; // 플레이어 상태 
 
  
     
@@ -74,6 +76,14 @@ public class GameManager
         }
     }
     
+    public PlayerStatus PlayerStatus
+    {
+        get
+        {
+            return _playerStatus;
+        }
+    }
+    
     
     
     public void Clear()
@@ -95,7 +105,7 @@ public class GameManager
     //인게임 데이터 초기화 
     public void GameStart()
     {
-        
+        _playerStatus = new PlayerStatus();
     }
 
     public void StageStart()
