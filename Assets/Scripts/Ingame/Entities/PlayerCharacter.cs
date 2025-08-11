@@ -37,6 +37,7 @@ namespace Cardevil.Ingame.Entities
                     return;
                 }
                 _entity.Init(_initialTile);
+                Managers.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
         }
 

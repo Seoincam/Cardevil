@@ -12,6 +12,23 @@ namespace Cardevil.Test
     /// </summary>
     public class TestControl : MonoBehaviour
     {
+        [Header("Player Test")] 
+        public int setHp = 3;
+        
+        [ContextMenu("Set Player HP")]
+        public void SetPlayerHp()
+        {
+            // 플레이어의 HP를 설정하는 테스트
+            if (Managers.Game.PlayerStatus != null)
+            {
+                Managers.Game.PlayerStatus.CurrentHp = setHp;
+                Debug.Log($"플레이어의 HP를 {setHp}로 설정했습니다.");
+            }
+            else
+            {
+                Debug.LogError("플레이어가 초기화되지 않았습니다.");
+            }
+        }
         
         [Header("Pool Test")]
         public List<Cardevil.Pools.Poolable> poolables = new List<Cardevil.Pools.Poolable>();
