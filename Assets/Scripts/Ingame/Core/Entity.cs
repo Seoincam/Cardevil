@@ -1,5 +1,6 @@
 ﻿using Cardevil.Ingame.Field;
 using Cardevil.Utils;
+using Cardevil.Utils.Directions;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Entities
@@ -10,6 +11,19 @@ namespace Cardevil.Ingame.Entities
 
         public Tile CurrentTile => _currentTile;
         public TileVector Tile => _currentTile.Coordinate;
+        
+        public void Init(Tile initialTile)
+        {
+            if (initialTile == null)
+            {
+                Debug.LogError("Initial tile cannot be null.");
+                return;
+            }
+
+            _currentTile = initialTile;
+            _currentTile.AddEntity(this);
+            transform.position = new Vector3(initialTile.transform.position.x, transform.position.y, initialTile.transform.position.z);
+        }
 
 
         /// <summary>
@@ -35,8 +49,25 @@ namespace Cardevil.Ingame.Entities
 
             if (moveTransform)
             {
-                transform.position = _currentTile.transform.position;
+                transform.position = new Vector3(tile.transform.position.x, transform.position.y, tile.transform.position.z);
             }
+        }
+        
+        public void MoveDirection(Direction direction, int distance = 1, bool moveTransform = false)
+        {
+            Tile targetTile = _currentTile.Field.GetTileByDirection(CurrentTile, direction, true);
+            MoveTo(targetTile, moveTransform);
+        }
+        
+        public void MoveTo(TileVector tileVector, bool moveTransform = false, bool wrapAround = false)
+        {
+            Tile targetTile = _currentTile.Field.GetTile(tileVector);
+            if (targetTile == null)
+            {
+                Debug.LogError($"Cannot move to tile at {tileVector} - tile does not exist.");
+                return;
+            }
+            MoveTo(targetTile, moveTransform);
         }
         
         public void MoveTo(int i, int j, bool moveTransform = false)

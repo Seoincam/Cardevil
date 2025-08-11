@@ -5,6 +5,7 @@ using Cardevil.Ingame.Field;
 
 namespace Cardevil.InGame.Enemy
 {
+    //
     public class Enemy : MonoBehaviour
     {
         private Field field;
@@ -28,9 +29,9 @@ namespace Cardevil.InGame.Enemy
         private void Start()
         {
            
-            field = Managers.Game.field;
+            field = Managers.Game.Field;
             currentAttackStyle = AttackStyle.UnKnown;
-            Managers.Game.enemy = this;
+            Managers.Game.Enemy = this;
 
         }
 
@@ -244,14 +245,23 @@ namespace Cardevil.InGame.Enemy
         }
         #endregion
 
-        public void GetDamage(float damage)
+        public virtual bool GetDamage(float damage)
         {
             HP -= damage;
             if(HP<=0)
             {
-                //보스 사망 
+                // 유닛 사망
                 Destroy(this.gameObject);
+                return true; // 사망시 true 변환 
             }
+
+            return false; // 아직 살아있다
+        }
+
+
+        public void SetAttackOrder(int i)
+        {
+            attackTurnOrder = i;
         }
     }
 }

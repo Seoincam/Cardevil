@@ -9,6 +9,7 @@ namespace Cardevil.Cards.CardInteractinos
     {
         [Header("Card")]
         public Card parentCard;
+        private bool isDiscarded = false;
 
         [Header("Visual")]
         [SerializeField] Image cardImage;
@@ -22,7 +23,7 @@ namespace Cardevil.Cards.CardInteractinos
         private float shadowOffset = 20;
 
         [Header("Follow Setting")]
-        [SerializeField] private float followSpeed = 30;
+        [SerializeField] private float followSpeed = 10;
 
         [Header("Scale Settings")]
         [SerializeField] private float selectScale = 1.25f;
@@ -32,7 +33,6 @@ namespace Cardevil.Cards.CardInteractinos
         void Awake()
         {
             canvas = GetComponent<Canvas>();
-            transform.localPosition = new Vector3(-1000, -150);
             shadowOriginPosition = shadowTransform.localPosition;
         }
 
@@ -46,9 +46,13 @@ namespace Cardevil.Cards.CardInteractinos
 
             // 이벤트 구독
             parentCard.OnPointerDownEvent += PointerDown;
-            parentCard.OnPointerUpEvent += PointerUp;
-            parentCard.OnBeginDragEvent += BeginDrag;
-            parentCard.OnEndDragEvent += EndDrag;
+            parentCard.OnPointerUpEvent += OnPointerUp;
+            parentCard.OnBeginDragEvent += OnBeginDrag;
+            parentCard.OnEndDragEvent += OnEndDrag;
+
+            parentCard.OnSpawn += OnSpawn;
+            parentCard.OnDiscard += OnDiscard;
+            parentCard.OnDestory += Destroy;
 
             // 텍스트 설정 (임시)
             if (cardData.type == CardType.Move)
@@ -76,6 +80,9 @@ namespace Cardevil.Cards.CardInteractinos
             if (!isInitalized || parentCard == null)
                 return;
 
+            if (isDiscarded)
+                return;
+
             FollowWithLerp();
         }
 
@@ -92,7 +99,7 @@ namespace Cardevil.Cards.CardInteractinos
             shadowTransform.localPosition += -Vector3.up * shadowOffset;
         }
 
-        private void PointerUp(Card _)
+        private void OnPointerUp(Card _)
         {
             transform.DOScale(endValue: 1f, duration: scaleTransition)
                 .SetEase(scaleEase);
@@ -100,21 +107,36 @@ namespace Cardevil.Cards.CardInteractinos
             shadowTransform.localPosition = shadowOriginPosition;
         }
 
-        private void BeginDrag(Card _)
+        private void OnBeginDrag(Card _)
         {
             canvas.overrideSorting = true;
         }
 
-        private void EndDrag(Card _)
+        private void OnEndDrag(Card _)
         {
             canvas.overrideSorting = false;
         }
 
-        public void SetCardOnTrashCan(bool onTrashCan)
+        private void OnSpawn()
         {
-            cardImage.color = onTrashCan
-                ? new Color(.85f, .45f, .45f)
-                : Color.white;
+            // var duration = 1f;
+            // cardImage.transform.DORotate(endValue: new Vector3(0, 0, 0), duration);
+        }
+
+        private void OnDiscard(float discardDuration)
+        {
+            isDiscarded = true;
+            canvas.overrideSorting = true;
+
+            cardImage.transform.DORotate(endValue: new Vector3(0, 60, 0), discardDuration)
+                .SetEase(Ease.OutBack);
+            transform.DOLocalJump(endValue: new Vector3(1050, -30, 0), jumpPower: 15f, numJumps: 1, discardDuration);
+        }
+
+        private void Destroy()
+        {
+            DOTween.Kill(transform);
+            Destroy(gameObject);
         }
     }
 }

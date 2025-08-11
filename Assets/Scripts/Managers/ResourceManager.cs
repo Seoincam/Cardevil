@@ -17,7 +17,7 @@ public class ResourceManager
             }
             if (Managers.Pool.TryGetOriginal(name, out Poolable original))
             {
-                return original as T;
+                return original.gameObject as T;
             }
         }
 

@@ -20,6 +20,7 @@ namespace Cardevil.Ingame.Field
     [RequireComponent(typeof(Grid))]
     public class Field : MonoBehaviour, IEnumerable<Tile>, IGridTileContainer
     {
+        //
         [Header("Settings")]
         [SerializeField, VisibleOnly(EditableIn.EditMode)] FieldConfigurationSO fieldConfiguration;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] int width = 3;
@@ -84,7 +85,7 @@ namespace Cardevil.Ingame.Field
 
         private void Awake()
         {
-            Managers.Game.field = this; // 시작될때 매니저에 등록
+            Managers.Game.Field = this; // 시작될때 매니저에 등록
             if (fieldConfiguration == null)
             {
                 Debug.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");
@@ -148,6 +149,19 @@ namespace Cardevil.Ingame.Field
             }
         }
         
+        public TileVector GetWrappedCoordinate(TileVector tile)
+        {
+            var wrappedI = (tile.i % height + height) % height;
+            var wrappedJ = (tile.j % width + width) % width;
+            return new TileVector(wrappedI, wrappedJ);
+        }
+        public TileVector GetWrappedCoordinate(int i, int j)
+        {
+            var wrappedI = (i % height + height) % height;
+            var wrappedJ = (j % width + width) % width;
+            return new TileVector(wrappedI, wrappedJ);
+        }
+        
         public Vector3 GetCenterPosition()
         {
             var LeftBottom = grid.GetCellCenterWorld(new Vector3Int(0, 0, 0));
@@ -186,7 +200,7 @@ namespace Cardevil.Ingame.Field
         public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
         {
             var coordinate = tile.Coordinate;
-            var nextCoordinate = coordinate + direction.ToCoordinateVector();
+            var nextCoordinate = coordinate + direction.ToTileVector();
             if (wrapAround)
             {
                 while (nextCoordinate.i < 0)

@@ -91,6 +91,8 @@ namespace Cardevil.Cards
             var cardResult = CardComboEvaluator.Evaluate(barGroup.selectedCards);
 
             OnUseCard?.Invoke(cardResult);
+
+            _ = barGroup.DiscardSequentially();
         }
         
         #endregion
