@@ -1,3 +1,4 @@
+using Cardevil.Pools;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,10 +15,9 @@ public class ResourceManager
             {
                 name = name.Substring(index + 1);
             }
-            GameObject go = Managers.Pool.GetOriginal(name);
-            if (go != null)
+            if (Managers.Pool.TryGetOriginal(name, out Poolable original))
             {
-                return go as T;
+                return original.gameObject as T;
             }
         }
 
@@ -37,10 +37,12 @@ public class ResourceManager
             Debug.Log($"Failed to load prefab : {path}");
             return null;
         }
-        if (original.GetComponent<Poolable>() != null)
+
+        if (original.TryGetComponent<Poolable>(out Poolable poolable))
         {
-            return Managers.Pool.Pop(original, parent).gameObject;
+            return Managers.Pool.GetFromOriginal(poolable, parent).gameObject;
         }
+
         GameObject go = Object.Instantiate(original, parent);
         go.name = original.name;
 
@@ -67,7 +69,7 @@ public class ResourceManager
         Poolable poolable = go.GetComponent<Poolable>();
         if (poolable != null)
         {
-            Managers.Pool.Push(poolable);
+            poolable.Release();
             return;
         }
         Object.Destroy(go);

@@ -11,7 +11,7 @@ public class Managers : MonoBehaviour
     UI_Manager _ui = new UI_Manager();
     ResourceManager _resource = new ResourceManager();
     GameManager _game = new GameManager();
-    PoolManager _pool = new PoolManager();
+    [SerializeField] PoolManager _pool = new PoolManager();
     SceneManagerEx _scene = new SceneManagerEx();
     DataManager _data = new DataManager(); //DataManager가 겹쳐서 추가
     JsonManager _json = new JsonManager();

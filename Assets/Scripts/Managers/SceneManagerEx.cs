@@ -15,7 +15,7 @@ public class SceneManagerEx
         SceneManager.LoadScene(GetSceneName(type));
     }
 
-    public void LoadScene(string name) // ÀÌ¸§À¸·Î ¾À ·ÎµåÇÏ±â
+    public void LoadScene(string name) // ì´ë¦„ìœ¼ë¡œ ì”¬ ë¡œë“œí•˜ê¸°
     {
         Managers.Clear();
         SceneManager.LoadScene(name);
