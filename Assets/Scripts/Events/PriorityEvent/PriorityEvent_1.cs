@@ -108,5 +108,7 @@ namespace Cardevil.Events
             }
             _keysToClear.Clear();
         }
+
+        public override void Clear() => ClearListeners();
     }
 }
