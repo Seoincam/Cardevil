@@ -37,6 +37,9 @@ public abstract class UI_Base : MonoBehaviour
         }
     }
 
+    
+    protected T Get<T>(Enum type) where T : UnityEngine.Object => Get<T>(Convert.ToInt32(type)); // 최적화에 소폭 악영향. 어차피 몇번 안불리므로 괜찮을듯
+
     protected T Get<T>(int index) where T : UnityEngine.Object //���ε� �� _objects �迭���� ���ϴ� �� Get�ؿ�
     {
         UnityEngine.Object[] objects = null;

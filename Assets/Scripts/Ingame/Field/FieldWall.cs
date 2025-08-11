@@ -6,6 +6,7 @@ namespace Cardevil.Ingame.Field
 {
     public class FieldWall : MonoBehaviour
     {
+        [SerializeField] private GameObject[] _walls;
         private void OnEnable()
         {
             Managers.Event.PlayerHealthChangeEvent.AddListener(OnPlayerHealthChanged,10);
@@ -18,7 +19,14 @@ namespace Cardevil.Ingame.Field
         
         public void OnPlayerHealthChanged(PlayerHealthChangeArgs args)
         {
-            Debug.Log($"Player health changed: {args.OldHealth} -> {args.NewHealth}");
+            for (int i = 0; i < _walls.Length; i++)
+            {
+                if (_walls[i] != null)
+                {
+                    bool isActive = i < args.ModifiedHealth;
+                    _walls[i].SetActive(isActive);
+                }
+            }
         }
 
     }
