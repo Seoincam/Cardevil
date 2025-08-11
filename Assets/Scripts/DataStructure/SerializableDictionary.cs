@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Cardevil.DataStructure
 {
     [System.Serializable]
-    public class SerialzableDict<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
+    public class SerializableDict<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
     {
         [SerializeField] private TKey defaultKey;
     
