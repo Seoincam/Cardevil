@@ -23,8 +23,7 @@ namespace Cardevil.Systems
 
     public interface IPlayerDamageReceiver
     {
-        void SubscribeBossDamage();
-        void ReceiveBossDamage(int amount);
+
     }
 
     public interface IPlayerActionHandler
@@ -40,8 +39,6 @@ namespace Cardevil.Systems
     #region Boss
     public interface IBossDamageReceiver
     {
-        event Action<int> OnBossDamageDealt;
-
         void SubscribePlayerDamage();
         void UnsubscribePlayerDamage();
         void ReceivePlayerDamage(int amount);

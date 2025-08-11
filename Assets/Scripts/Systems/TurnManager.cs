@@ -48,7 +48,6 @@ namespace Cardevil.Systems
             cardManager.OnUseCard += EndGetInput;
 
             SubscribePlayerAction();
-            SubscribeBossDamage();
             cardManager.OnUseCard += ReceiveInput;
 
             SubscribeBossAction();
@@ -59,6 +58,11 @@ namespace Cardevil.Systems
         {
             GameLoopAsync().Forget();
         }
+
+        /*
+            추후 각 인터페이스들을 다른 클래스에서 구현,
+            TurnManager에 이벤트 구독 방식으로 실행
+        */
 
 
         private async UniTaskVoid GameLoopAsync()
@@ -124,8 +128,7 @@ namespace Cardevil.Systems
         public void ReceiveInput(CardResult result)
         {
             var move = result.moves.Count() != 0 ? "이동 있음" : "이동 없음";
-            playerActionText.text = $@"(임시) Player Input을 받았습니다.
-            콤보: {result.combo}
+            playerActionText.text = $@"콤보: {result.combo}
             데미지: {result.damage}
             이동: {move}
             ";
@@ -135,15 +138,6 @@ namespace Cardevil.Systems
 
 
         // IPlayerDamageReceiver
-        public void SubscribeBossDamage()
-        {
-            OnBossDamageDealt += ReceiveBossDamage;
-        }
-
-        public void ReceiveBossDamage(int amount)
-        {
-            playerActionText.text = $"{amount} 데미지를 받았다!";
-        }
 
 
         // IPlayerActionHandler
@@ -159,24 +153,10 @@ namespace Cardevil.Systems
             SetGameState(GameState.Action);
 
             // 애니메이션 등 실행 (임시로 대기)
-            SetProgressBar(playerActionProgressBar, value: 1f);
-            var duration = 3f;
-            var startTime = Time.time;
-
-            while (Time.time - startTime < duration)
-            {
-                var remaining = duration - (Time.time - startTime);
-                SetProgressBar(playerActionProgressBar, value: remaining / duration);
-
-                var elapsed = Time.time - startTime;
-                if (elapsed > .48f && elapsed < .5f)
-                    OnPlayerDamageDealt?.Invoke(playerDealtDamage);
-
-                await UniTask.Yield();
-            }
+            await UpdateProgressBarAsync(bossActionProgressBar, duration: 2f);
+            OnPlayerDamageDealt?.Invoke(playerDealtDamage);
 
             playerActionText.text = ". . .";
-            
         }
 
         #endregion
@@ -200,28 +180,12 @@ namespace Cardevil.Systems
 
 
         // IBossActionHandler
-        public event Action<int> OnBossDamageDealt;
-
         public async UniTask HandleBossActionAsync()
         {
             // 애니메이션 등 실행 (임시로 3초 대기)
-            SetProgressBar(bossActionProgressBar, value: 1f);
-            var duration = 2f;
-            var startTime = Time.time;
-
-            while (Time.time - startTime < duration)
-            {
-                var remaining = duration - (Time.time - startTime);
-                SetProgressBar(bossActionProgressBar, value: remaining / duration);
-
-                var elapsed = Time.time - startTime;
-                if (elapsed > .48f && elapsed < .5f)
-                    OnBossDamageDealt?.Invoke(1);
-
-                await UniTask.Yield();
-            }
-
+            await UpdateProgressBarAsync(bossActionProgressBar, duration: 2f);
             bossActionText.text = ". . .";
+            
             // 임시 대기 목록
             Managers.Game.Enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
 
@@ -239,6 +203,19 @@ namespace Cardevil.Systems
         private void SetProgressBar(Slider progressBar, float value)
         {
             progressBar.value = value;
+        }
+
+        private async UniTask UpdateProgressBarAsync(Slider bar, float duration)
+        {
+            SetProgressBar(bar, 1f);
+            var start = Time.time;
+            while (Time.time - start < duration)
+            {
+                var remain = duration - (Time.time - start);
+                SetProgressBar(bar, remain / duration);
+                await UniTask.Yield();
+            }
+            SetProgressBar(bar, 0f);
         }
 
         public void SetGameState(GameState gameState)
