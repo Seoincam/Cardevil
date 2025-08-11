@@ -1,3 +1,4 @@
+using Cardevil.Events;
 using System;
 using UnityEngine;
 
@@ -7,17 +8,18 @@ namespace Cardevil.Ingame.Field
     {
         private void OnEnable()
         {
-            
+            Managers.Event.PlayerHealthChangeEvent.AddListener(OnPlayerHealthChanged,10);
         }
         private void OnDisable()
         {
-            // Handle any cleanup or state reset when the wall is disabled
+            Managers.Event.PlayerHealthChangeEvent.RemoveListener(OnPlayerHealthChanged,10);
         }
         
         
-        public void OnPlayerHealthChanged(float currentHealth, float maxHealth)
+        public void OnPlayerHealthChanged(PlayerHealthChangeArgs args)
         {
-
+            Debug.Log($"Player health changed: {args.OldHealth} -> {args.NewHealth}");
         }
+
     }
 }
