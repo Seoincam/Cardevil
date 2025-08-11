@@ -31,5 +31,14 @@ namespace Cardevil.Ingame
             get => _maxHP;
             set => _maxHP = value;
         }
+        
+        public void BroadcastInitialStatus()
+        {
+            using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
+            {
+                args.Init(_currentHP, _currentHP);
+                Managers.Event.PlayerHealthChangeEvent.Invoke(args);
+            }
+        }
     }
 }

@@ -106,6 +106,7 @@ public class GameManager
     public void GameStart()
     {
         _playerStatus = new PlayerStatus();
+        _playerStatus.BroadcastInitialStatus();
     }
 
     public void StageStart()

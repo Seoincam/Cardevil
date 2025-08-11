@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-namespace Test
+namespace Cardevil.Test
 {
     /// <summary>
     /// Context menu 등을 통한 테스트용 MonoBehaviour
