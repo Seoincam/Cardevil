@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using System;
 using Cysharp.Threading.Tasks;
+using Cardevil.Systems;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -36,12 +37,6 @@ namespace Cardevil.Cards.CardInteractinos
         {
             this.cardManager = cardManager;
             this.onSelectedCardsCountChanged += onSelectedCardsCountChanged;
-
-            _ = InitCard();
-
-            Debug.Log($"덱에 남은 카드: {cardManager.cardDatas.Count}장");
-
-            onSelectedCardsCountChanged?.Invoke();
         }
 
         void Awake()
@@ -52,6 +47,11 @@ namespace Cardevil.Cards.CardInteractinos
                 slot.gameObject.SetActive(false);
                 slots[i] = slot.transform;
             }
+        }
+
+        void Start()
+        {
+            TurnManager.Instance.PreGameAsync += InitCard;           
         }
 
         void Update()
@@ -144,7 +144,7 @@ namespace Cardevil.Cards.CardInteractinos
             isSwapping = false;
         }
 
-        public async UniTaskVoid InitCard()
+        public async UniTask InitCard()
         {
             canInteraction = false;
 
@@ -156,6 +156,8 @@ namespace Cardevil.Cards.CardInteractinos
             }
 
             canInteraction = true;
+            onSelectedCardsCountChanged?.Invoke();
+            Debug.Log($"덱에 남은 카드: {cardManager.cardDatas.Count}장");
         }
 
         public Card SpawnCard(int slotIndex)
