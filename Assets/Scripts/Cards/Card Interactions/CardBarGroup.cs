@@ -56,11 +56,11 @@ namespace Cardevil.Cards.CardInteractinos
 
         void Update()
         {
-            // 카드 버리기
-            if (Input.GetKeyDown(KeyCode.Delete))
-            {
-                _ = DiscardSequentially();
-            }
+            // // 카드 버리기
+            // if (Input.GetKeyDown(KeyCode.Delete))
+            // {
+            //     _ = DiscardSequentially();
+            // }
 
             if (!canInteraction)
                 return;
@@ -232,6 +232,7 @@ namespace Cardevil.Cards.CardInteractinos
             }
 
             Debug.Log($"덱에 남은 카드: {cardManager.cardDatas.Count}장");
+            onSelectedCardsCountChanged?.Invoke();
             canInteraction = true;
         }
         

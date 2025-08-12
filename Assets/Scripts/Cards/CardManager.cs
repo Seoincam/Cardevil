@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards.CardInteractinos;
 using Cardevil.Systems;
-using Cardevil.Utils;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -18,6 +17,7 @@ namespace Cardevil.Cards
         [Header("References")]
         public CardBarGroup barGroup;
         [SerializeField] Button useCardButton;
+        [SerializeField] Button discardCardButton;
 
         [Header("State")]
         private bool canUseCard;
@@ -33,6 +33,7 @@ namespace Cardevil.Cards
 
             barGroup.Init(cardManager: this, onSelectedCardsCountChanged: UpdateCanUseCard);
             useCardButton.onClick.AddListener(UseCard);
+            discardCardButton.onClick.AddListener(DiscardCard);
         }
 
         public void Init()
@@ -92,6 +93,12 @@ namespace Cardevil.Cards
 
             OnUseCard?.Invoke(cardResult);
 
+            _ = barGroup.DiscardSequentially();
+        }
+
+        private void DiscardCard()
+        {
+            useCardButton.interactable = false;
             _ = barGroup.DiscardSequentially();
         }
         
