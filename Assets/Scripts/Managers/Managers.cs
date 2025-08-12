@@ -68,8 +68,8 @@ public class Managers : MonoBehaviour
     public static void Clear()
     {
         UI.Clear();
-        Pool.Clear();
         Sound.Clear();
+        Pool.Clear();
         Game.Clear();
     }
 
