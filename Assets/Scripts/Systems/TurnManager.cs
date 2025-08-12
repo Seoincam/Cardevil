@@ -4,7 +4,7 @@ using Cardevil.Cards;
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Cardevil.InGame.Enemy;
+
 namespace Cardevil.Systems
 {
     public enum GameState
@@ -12,7 +12,7 @@ namespace Cardevil.Systems
         Pause, PlayerInput, Action
     }
 
-    public class TurnManager : Singleton<TurnManager>, IPlayerInputHandler, IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
+    public class TurnManager : Singleton<TurnManager>, IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
     {
         [Header("Game State")]
         public GameState gameState = GameState.Pause;
@@ -33,30 +33,31 @@ namespace Cardevil.Systems
 
         public event Action OnGameStateChanged;
 
-        
-        // UniTaskCompletionSource 
+        [Header("interfaces")]
+        public IPlayerInputHandler playerInputHandler;
+        public IPlayerActionHandler playerActionHandler;
+
 
         protected override void Awake()
         {
             base.Awake();
             Application.targetFrameRate = 60;
-
-            var cardManager = FindAnyObjectByType<CardManager>();
-
-            // 이벤트 구독
-            SubscribePlayerInput();
-            cardManager.OnUseCard += EndGetInput;
-
-            SubscribePlayerAction();
-            cardManager.OnUseCard += ReceiveInput;
-
-            SubscribeBossAction();
-            SubscribePlayerDamage();
         }
 
         void Start()
         {
+            playerActionHandler = this;
+
+            // 이벤트 구독
+            SubscribePlayerAction();
+            SubscribePlayerInput();
+
+            SubscribeBossAction();
+            SubscribePlayerDamage();
+
+            // 시작
             GameLoopAsync().Forget();
+            SetGameState(GameState.Action);
         }
 
         /*
@@ -75,62 +76,52 @@ namespace Cardevil.Systems
                     continue;
                 }
 
-                // Player Input
-                await PlayerInputAsync.Invoke();
-                //  -> 데미지, 이동, 효과 등 계산
-
-                // Player Action
-                await PlayerActionAsync.Invoke();
-                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-                //  -> 보스 상태 체크
-
                 // Boss Action
                 await BossActionAsync.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
                 //  -> 플레이어 상태 체크
+
+                // Player Input
+                await PlayerInputAsync.Invoke();
+                //  -> 데미지, 이동, 효과 등 계산
+                
+                // Player Action
+                await PlayerActionAsync.Invoke();
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+                //  -> 보스 상태 체크
             }
 
             // TODO: cancel, break 로직 추가
         }
 
 
-        #region Player input
-
-        // IPlayerInputHandler
-        public void SubscribePlayerInput()
-        {
-            PlayerInputAsync += HandlePlayerInputAsync;
-        }
-
-        public async UniTask HandlePlayerInputAsync()
-        {
-            SetGameState(GameState.PlayerInput);
-
-            while (!isPlayerInputReceived)
-                await UniTask.Yield();
-
-            isPlayerInputReceived = false;
-        }
-
-        public void EndGetInput(CardResult _)
-        {
-            isPlayerInputReceived = true;
-        }
-
-        #endregion
-
-
 
         #region Player Action
 
         // IPlayerInputReceiver 
-        private int playerDealtDamage;       
+        private int playerDealtDamage;
+
+        public void SubscribePlayerInput()
+        {
+            playerInputHandler.OnPlayerInputReceived += ReceiveInput;
+        }
+
         public void ReceiveInput(CardResult result)
         {
-            var move = result.moves.Count() != 0 ? "이동 있음" : "이동 없음";
+            var moveText = result.moves?.Length > 0
+                ? string.Join(", ", result.moves.Select(d => d switch
+                {
+                    CardDirection.Up => "상",
+                    CardDirection.Down => "하",
+                    CardDirection.Left => "좌",
+                    CardDirection.Right => "우",
+                    _ => "?"
+                }))
+                : "없음";
+
             playerActionText.text = $@"콤보: {result.combo}
             데미지: {result.damage}
-            이동: {move}
+            이동: {moveText}
             ";
 
             playerDealtDamage = result.damage;
@@ -138,7 +129,7 @@ namespace Cardevil.Systems
 
 
         // IPlayerDamageReceiver
-
+        // 필드 상 플레이어 위치 기반으로 수정
 
         // IPlayerActionHandler
         public event Action<int> OnPlayerDamageDealt;
@@ -153,7 +144,7 @@ namespace Cardevil.Systems
             SetGameState(GameState.Action);
 
             // 애니메이션 등 실행 (임시로 대기)
-            await UpdateProgressBarAsync(bossActionProgressBar, duration: 2f);
+            await UpdateProgressBarAsync(playerActionProgressBar, duration: 2f);
             OnPlayerDamageDealt?.Invoke(playerDealtDamage);
 
             playerActionText.text = ". . .";
@@ -164,14 +155,14 @@ namespace Cardevil.Systems
 
 
         #region Boss Action
-        
+
         // IBossDamageReceiver
         public void SubscribePlayerDamage()
         {
-            OnPlayerDamageDealt += ReceivePlayerDamage;
+            playerActionHandler.OnPlayerDamageDealt += ReceivePlayerDamage;
         }
 
-        public void UnsubscribePlayerDamage(){}
+        public void UnsubscribePlayerDamage() { }
 
         public void ReceivePlayerDamage(int amount)
         {
@@ -185,17 +176,22 @@ namespace Cardevil.Systems
             // 애니메이션 등 실행 (임시로 3초 대기)
             await UpdateProgressBarAsync(bossActionProgressBar, duration: 2f);
             bossActionText.text = ". . .";
-            
+
             // 임시 대기 목록
             Managers.Game.Enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
-
         }
 
         public void SubscribeBossAction()
         {
             BossActionAsync += HandleBossActionAsync;
         }
-        
+
+        public void UnsubscribeBossAction()
+        {
+            // 보스 죽을 때 사용
+            BossActionAsync -= HandleBossActionAsync;
+        }
+
         #endregion
 
 
