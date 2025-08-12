@@ -28,7 +28,6 @@ namespace Cardevil.Sound
         [Header("Audio Clips")]
         private SerializableDict<string, AudioResource> _cachedAudioClips = new ();
         [Header("ETC")]
-        [SerializeField] private SoundEmitter _backgroundEmitter;
         [SerializeField] private List<SoundEmitter> _sfxEmitters = new List<SoundEmitter>();
         [SerializeField] private SerializableDict<string, SoundEmitter> _cachedBackgroundSoundEmitters = new SerializableDict<string, SoundEmitter>();
         [SerializeField] private string _currentPlayingBackgroundMusicName = string.Empty;
@@ -57,12 +56,6 @@ namespace Cardevil.Sound
             {
                 root = new GameObject { name = "@Sound" };
                 Object.DontDestroyOnLoad(root);
-                if (_backgroundEmitter == null)
-                {
-                    SoundEmitter bgmEmitter =
-                        Managers.Pool.Get<SoundEmitter>(PoolManager.Poolables.SoundEmitter, root.transform);
-                    bgmEmitter.name = "BGMEmitter";
-                }
             }
             
             // 사운드 루트 초기화
