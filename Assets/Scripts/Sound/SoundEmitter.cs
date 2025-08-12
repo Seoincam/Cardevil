@@ -15,12 +15,16 @@ namespace Cardevil.Pools
             
         private bool isTargetSet;
         
-        private Poolable poolable;
-        private AudioSource _audioSource;
+        [SerializeField] private Poolable poolable;
+        [SerializeField] private AudioSource _audioSource;
+        
+        public AudioSource AudioSource => _audioSource;
         private void Awake()
         {
-            poolable = GetComponent<Poolable>();
-            _audioSource = GetComponent<AudioSource>();
+            if(poolable == null)
+                poolable = GetComponent<Poolable>();
+            if (_audioSource == null)
+                _audioSource = GetComponent<AudioSource>();
         }
 
         // private void Start()

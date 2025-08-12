@@ -18,8 +18,9 @@ namespace Cardevil.Sound
         [Range(-1f, 1f)] public float PanStereo = 0f;
         [Range(0f, 1.1f)] public float ReverbZoneMix = 1f;
 
-        [Header("Spatialization")] [Range(0f, 1f)]
-        public float SpatialBlend = 1f;
+        [Header("Spatialization")]
+        public bool Spatialize = false;
+        [Range(0f, 1f)] public float SpatialBlend = 1f;
 
         public AudioRolloffMode RolloffMode = AudioRolloffMode.Logarithmic;
         [Range(0.1f, 5f)] public float MinDistance = 0.1f;
@@ -53,6 +54,7 @@ namespace Cardevil.Sound
             audioSource.volume = this.Volume;
             audioSource.pitch = this.Pitch;
             audioSource.panStereo = this.PanStereo;
+            audioSource.spatialize = this.Spatialize;
             audioSource.spatialBlend = this.SpatialBlend;
             audioSource.reverbZoneMix = this.ReverbZoneMix;
             audioSource.dopplerLevel = this.DopplerLevel;
