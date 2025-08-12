@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6e21bd83186449eeafa77b9d5fdf15f2, type: 3}
-  m_Name: DefaiultSfxConfig
+  m_Name: DefaultSfxConfig
   m_EditorClassIdentifier: 
-  MixerGroup: {fileID: 0}
+  MixerGroup: {fileID: -3092559722557660718, guid: b7946aa69d8f0c44eb00457500c7124a, type: 2}
   _priorityLevel: 128
   Mute: 0
   Volume: 1
   Pitch: 1
   PanStereo: 0
   ReverbZoneMix: 1
+  Spatialize: 0
   SpatialBlend: 1
   RolloffMode: 0
   MinDistance: 0.1

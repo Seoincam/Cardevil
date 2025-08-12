@@ -64,14 +64,27 @@ namespace Cardevil.Sound
                     bgmEmitter.name = "BGMEmitter";
                 }
             }
+            // 사운드 루트 초기화
             this.root = root.transform;
+            
+            // ConfigurationSo 초기화
+            if (_defaultBackgroundAudioConfiguration == null)
+            {
+                _defaultBackgroundAudioConfiguration = Resources.Load<AudioConfigurationSO>("Audio/DefaultBgmConfig");
+            }
+            if (_defaultSoundEffectAudioConfiguration == null)
+            {
+                _defaultSoundEffectAudioConfiguration = Managers.Resource.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
+            }
 
+            // 믹서 그룹 초기화
             audioMixerGroups = new AudioMixerGroup[(int)Define.Sound.MaxCount];
             audioMixer = Resources.Load<AudioMixer>("Audio/MainMixer");
             MasterGroup = audioMixer.FindMatchingGroups("Master")[0];
             MusicGroup = audioMixer.FindMatchingGroups("Background")[0];
             SfxGroup = audioMixer.FindMatchingGroups("SFX")[0];
 
+            // 기본 볼륨 설정
             float savedMasterVolume = PlayerPrefs.GetFloat("MasterVolume", defaultVolume);
             float savedMusicVolume = PlayerPrefs.GetFloat("BackgroundVolume", defaultVolume);
             float savedSfxVolume = PlayerPrefs.GetFloat("SFXVolume", defaultVolume);
