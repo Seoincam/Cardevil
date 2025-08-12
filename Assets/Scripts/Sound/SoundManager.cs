@@ -194,7 +194,7 @@ namespace Cardevil.Sound
 
             if (clip == null)
                 return null;
-            SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(PoolManager.Poolables.SoundEmitter);
+            SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
             soundEmitter.transform.SetParent(root);
             soundEmitter.SetTarget(target);
             soundEmitter.doStopOnTargetNull = stopOnTargetNull;
@@ -231,7 +231,7 @@ namespace Cardevil.Sound
         {
             if (clip == null)
                 return null;
-            SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(PoolManager.Poolables.SoundEmitter);
+            SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
             soundEmitter.transform.SetParent(root);
             soundEmitter.transform.position = position;
             soundEmitter.PlayAudioResource(clip, audioConfiguration ?? _defaultSoundEffectAudioConfiguration, isLoop);
@@ -303,7 +303,7 @@ namespace Cardevil.Sound
             }
             else
             {
-                soundEmitter = Managers.Pool.Get<SoundEmitter>(PoolManager.Poolables.SoundEmitter);
+                soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
                 soundEmitter.transform.SetParent(root);
                 soundEmitter.transform.position = Vector3.zero;
                 AudioSource audioSource = soundEmitter.GetComponent<AudioSource>();

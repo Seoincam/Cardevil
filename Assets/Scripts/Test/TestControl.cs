@@ -33,7 +33,7 @@ namespace Cardevil.Test
         [Header("Pool Test")]
         public List<Cardevil.Pools.Poolable> poolables = new List<Cardevil.Pools.Poolable>();
         [FormerlySerializedAs("poolableName")] public string resourcePoolableName = "TestPoolable";
-        public PoolManager.Poolables poolableType = PoolManager.Poolables.TestPoolable;
+        public Poolables poolableType = Poolables.TestPoolable;
         [ContextMenu("Get Test Poolable")]
         public void GetTestPoolableFromResource()
         {

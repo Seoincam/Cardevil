@@ -16,9 +16,9 @@ namespace Cardevil.Pools
     [CreateAssetMenu(fileName = "PoolableFactoryContainer", menuName = "Pool/PoolableFactoryContainer")]
     public class PoolableFactoryContainerSO : ScriptableObject
     {
-        [SerializeField] private SerializableDict<PoolManager.Poolables, PoolableFactorySO> _factories = new ();
+        [SerializeField] private SerializableDict<Poolables, PoolableFactorySO> _factories = new ();
         
-        public SerializableDict<PoolManager.Poolables, PoolableFactorySO> Factories
+        public SerializableDict<Poolables, PoolableFactorySO> Factories
         {
             get => _factories;
         }
@@ -35,14 +35,14 @@ namespace Cardevil.Pools
                     continue;
                 }
 
-                if(Enum.TryParse(typeof(PoolManager.Poolables), factory.Original.name, out var poolableEnum))
+                if(Enum.TryParse(typeof(Poolables), factory.Original.name, out var poolableEnum))
                 {
-                    PoolManager.Poolables poolableType = (PoolManager.Poolables)poolableEnum;
+                    Poolables poolableType = (Poolables)poolableEnum;
                     _factories[poolableType] = factory;
                 }
                 else
                 {
-                    _factories[(PoolManager.Poolables)Random.Range(0, 10000)] = factory;
+                    _factories[(Poolables)Random.Range(0, 10000)] = factory;
                 }
   
             }
