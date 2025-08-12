@@ -26,7 +26,7 @@ namespace Cardevil.Sound
         [SerializeField] private AudioConfigurationSO _defaultBackgroundAudioConfiguration; // 사용하지 않음
         [FormerlySerializedAs("_soundEffectAudioConfiguration")] [SerializeField] private AudioConfigurationSO _defaultSoundEffectAudioConfiguration;
         [Header("Audio Clips")]
-        private SerializableDict<string, AudioClip> _cachedAudioClips = new ();
+        private SerializableDict<string, AudioResource> _cachedAudioClips = new ();
         [Header("ETC")]
         [SerializeField] private SoundEmitter _backgroundEmitter;
         [SerializeField] private List<SoundEmitter> _sfxEmitters = new List<SoundEmitter>();
@@ -64,6 +64,7 @@ namespace Cardevil.Sound
                     bgmEmitter.name = "BGMEmitter";
                 }
             }
+            
             // 사운드 루트 초기화
             this.root = root.transform;
             
@@ -151,11 +152,11 @@ namespace Cardevil.Sound
         
         public SoundEmitter Play(string path, Define.Sound type = Define.Sound.SFX)
         {
-            AudioClip audioClip = GetOrAddAudioClip(path, type);
+            AudioResource audioClip = GetOrAddAudioAudioResource(path, type);
             return Play(audioClip, type);
         }
         
-        public SoundEmitter Play(AudioClip audioClip, Define.Sound type = Define.Sound.SFX)
+        public SoundEmitter Play(AudioResource audioClip, Define.Sound type = Define.Sound.SFX)
         {
             if (audioClip == null)
             {
@@ -181,7 +182,7 @@ namespace Cardevil.Sound
         /// <param name="audioConfiguration"></param>
         public SoundEmitter PlaySfxTo(string path, Transform target, bool stopOnTargetNull = true, AudioConfigurationSO audioConfiguration = null)
         {
-            AudioClip clip = GetOrAddAudioClip(path);
+            AudioResource clip = GetOrAddAudioAudioResource(path);
             if (clip == null)
             {
                 Debug.LogWarning($"AudioClip not found at path: {path}");
@@ -195,7 +196,7 @@ namespace Cardevil.Sound
         /// <param name="clip"></param>
         /// <param name="target"></param>
         /// <param name="stopOnTargetNull"> 해당 타겟 transform이 사라지면 재생 멈춤</param>
-        public SoundEmitter PlaySfxTo(AudioClip clip, Transform target, bool stopOnTargetNull = true, AudioConfigurationSO audioConfiguration = null)
+        public SoundEmitter PlaySfxTo(AudioResource clip, Transform target, bool stopOnTargetNull = true, AudioConfigurationSO audioConfiguration = null)
         {
 
             if (clip == null)
@@ -204,7 +205,7 @@ namespace Cardevil.Sound
             soundEmitter.transform.SetParent(root);
             soundEmitter.SetTarget(target);
             soundEmitter.doStopOnTargetNull = stopOnTargetNull;
-            soundEmitter.PlayAudioClip(clip, audioConfiguration ?? _defaultSoundEffectAudioConfiguration, false);
+            soundEmitter.PlayAudioResource(clip, audioConfiguration ?? _defaultSoundEffectAudioConfiguration, false);
             return soundEmitter;
         }
         
@@ -217,7 +218,7 @@ namespace Cardevil.Sound
         /// <param name="audioConfiguration"></param>
         public SoundEmitter PlaySfxAt(string path, Vector3 position, bool isLoop = false, AudioConfigurationSO audioConfiguration = null)
         {
-            AudioClip clip = GetOrAddAudioClip(path);
+            AudioResource clip = GetOrAddAudioAudioResource(path);
             if (clip == null)
             {
                 Debug.LogWarning($"AudioClip not found at path: {path}");
@@ -233,14 +234,14 @@ namespace Cardevil.Sound
         /// <param name="position"></param>
         /// <param name="isLoop"></param>
         /// <param name="audioConfiguration"></param>
-        public SoundEmitter PlaySfxAt(AudioClip clip, Vector3 position, bool isLoop = false, AudioConfigurationSO audioConfiguration = null)
+        public SoundEmitter PlaySfxAt(AudioResource clip, Vector3 position, bool isLoop = false, AudioConfigurationSO audioConfiguration = null)
         {
             if (clip == null)
                 return null;
             SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(PoolManager.Poolables.SoundEmitter);
             soundEmitter.transform.SetParent(root);
             soundEmitter.transform.position = position;
-            soundEmitter.PlayAudioClip(clip, audioConfiguration ?? _defaultSoundEffectAudioConfiguration, isLoop);
+            soundEmitter.PlayAudioResource(clip, audioConfiguration ?? _defaultSoundEffectAudioConfiguration, isLoop);
             _sfxEmitters.Add(soundEmitter);
             return soundEmitter;
         }
@@ -253,7 +254,7 @@ namespace Cardevil.Sound
         /// <param name="ifPausedResume">이전에 일시정지 되었다면, 이어서 재생</param>
         public void PlayBackgroundMusic(string path, bool ifPausedResume = false)
         {
-            AudioClip clip = GetOrAddAudioClip(path);
+            AudioResource clip = GetOrAddAudioAudioResource(path);
             if (clip == null)
             {
                 Debug.LogWarning($"AudioClip not found at path: {path}");
@@ -268,7 +269,7 @@ namespace Cardevil.Sound
         /// </summary>
         /// <param name="path"></param>
         /// <param name="ifPausedResume">이전에 일시정지 되었다면, 이어서 재생</param>
-        public void PlayBackgroundMusic(AudioClip clip, bool ifPausedResume = false)
+        public void PlayBackgroundMusic(AudioResource clip, bool ifPausedResume = false)
         {
             if (clip == null)
                 return;
@@ -301,7 +302,7 @@ namespace Cardevil.Sound
                 {
                     soundEmitter.transform.SetParent(root);
                     soundEmitter.transform.position = Vector3.zero;
-                    audioSource.clip = clip;
+                    audioSource.resource = clip;
                     audioSource.loop = true;
                     audioSource.time = 0;
                     audioSource.Play();
@@ -314,7 +315,7 @@ namespace Cardevil.Sound
                 soundEmitter.transform.position = Vector3.zero;
                 AudioSource audioSource = soundEmitter.GetComponent<AudioSource>();
                 audioSource.outputAudioMixerGroup = MusicGroup;
-                audioSource.clip = clip;
+                audioSource.resource = clip;
                 audioSource.loop = true;
                 audioSource.Play();
                 audioSource.spatialize = false;
@@ -327,30 +328,30 @@ namespace Cardevil.Sound
 
 
 
-        AudioClip GetOrAddAudioClip(string path, Define.Sound type = Define.Sound.SFX)
+        AudioResource GetOrAddAudioAudioResource(string path, Define.Sound type = Define.Sound.SFX)
         {
             if (path.Contains("Sounds/") == false)
             {
                 path = $"Sounds/{path}";
             }
-            AudioClip audioClip = null;
+            AudioResource audioResource = null;
             if (type == Define.Sound.BGM)
             {
-                audioClip = Managers.Resource.Load<AudioClip>(path);
+                audioResource = Managers.Resource.Load<AudioClip>(path);
             }
             else
             {
-                if (_cachedAudioClips.TryGetValue(path, out audioClip) == false)
+                if (_cachedAudioClips.TryGetValue(path, out audioResource) == false)
                 {
-                    audioClip = Managers.Resource.Load<AudioClip>(path);
-                    _cachedAudioClips.Add(path, audioClip);
+                    audioResource = Managers.Resource.Load<AudioClip>(path);
+                    _cachedAudioClips.Add(path, audioResource);
                 }
             }
-            if (audioClip == null)
+            if (audioResource == null)
             {
                 Debug.Log($"AudioClip Missing : {path}");
             }
-            return audioClip;
+            return audioResource;
         }
 
 

@@ -3,6 +3,7 @@ using Cardevil.Sound;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace Cardevil.Pools
 {
@@ -64,9 +65,10 @@ namespace Cardevil.Pools
         public AudioClip CurrentlyPlayingAudio => _audioSource.clip;
         public bool IsPaused => _audioSource.isPlaying == false && _audioSource.time > 0;
 
-        public void PlayAudioClip(AudioClip clip, AudioConfigurationSO setting, bool isLoop, Vector3 pos = default)
+        public void PlayAudioResource(AudioResource clip, AudioConfigurationSO setting, bool isLoop, Vector3 pos = default)
         {
-            _audioSource.clip = clip;
+            _audioSource.resource = clip;
+            
 
             _audioSource.transform.position = pos;
             _audioSource.loop = isLoop;
