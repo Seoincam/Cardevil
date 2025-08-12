@@ -27,9 +27,14 @@ namespace Cardevil.Systems
 
         // [Header("Events")]
         public delegate UniTask TurnStepAsync();
+
         public event TurnStepAsync PlayerInputAsync;
         public event TurnStepAsync PlayerActionAsync;
         public event TurnStepAsync BossActionAsync;
+
+        // 카드 배분, 보스 설명 등 처리
+        // 처리할 것 많아지면 추후 분리 예정
+        public event TurnStepAsync PreGameAsync;
 
         public event Action OnGameStateChanged;
 
@@ -68,6 +73,11 @@ namespace Cardevil.Systems
 
         private async UniTaskVoid GameLoopAsync()
         {
+            if (PreGameAsync != null)
+            {
+                await PreGameAsync.Invoke();    
+            }
+
             while (true)
             {
                 if (PlayerInputAsync == null || PlayerActionAsync == null || BossActionAsync == null)
@@ -84,7 +94,7 @@ namespace Cardevil.Systems
                 // Player Input
                 await PlayerInputAsync.Invoke();
                 //  -> 데미지, 이동, 효과 등 계산
-                
+
                 // Player Action
                 await PlayerActionAsync.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
