@@ -16,9 +16,9 @@ namespace Cardevil.Pools
     [CreateAssetMenu(fileName = "PoolableFactoryContainer", menuName = "Pool/PoolableFactoryContainer")]
     public class PoolableFactoryContainerSO : ScriptableObject
     {
-        [SerializeField] private SerialzableDict<PoolManager.Poolables, PoolableFactorySO> _factories = new ();
+        [SerializeField] private SerializableDict<PoolManager.Poolables, PoolableFactorySO> _factories = new ();
         
-        public SerialzableDict<PoolManager.Poolables, PoolableFactorySO> Factories
+        public SerializableDict<PoolManager.Poolables, PoolableFactorySO> Factories
         {
             get => _factories;
         }

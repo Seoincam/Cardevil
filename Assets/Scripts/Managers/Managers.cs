@@ -1,5 +1,6 @@
 using Cardevil.Manager;
 using Cardevil.Pools;
+using Cardevil.Sound;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -67,8 +68,8 @@ public class Managers : MonoBehaviour
     public static void Clear()
     {
         UI.Clear();
-        Pool.Clear();
         Sound.Clear();
+        Pool.Clear();
         Game.Clear();
     }
 

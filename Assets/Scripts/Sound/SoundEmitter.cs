@@ -1,0 +1,146 @@
+﻿using Cardevil.Pools;
+using Cardevil.Sound;
+using System;
+using System.Collections;
+using UnityEngine;
+using UnityEngine.Audio;
+
+namespace Cardevil.Pools
+{
+    [RequireComponent(typeof(AudioSource), typeof(Poolable))]
+    public class SoundEmitter : MonoBehaviour
+    {
+        [SerializeField] private Transform targetTransform;
+        
+        public bool doStopOnTargetNull = true;
+            
+        private bool isTargetSet;
+        
+        [SerializeField] private Poolable poolable;
+        [SerializeField] private AudioSource _audioSource;
+        
+        public AudioSource AudioSource => _audioSource;
+        private void Awake()
+        {
+            if(poolable == null)
+                poolable = GetComponent<Poolable>();
+            if (_audioSource == null)
+                _audioSource = GetComponent<AudioSource>();
+        }
+
+        // private void Start()
+        // {
+        //     if (audioSource == null)
+        //     {
+        //         Debug.LogError("AudioSource is not assigned.");
+        //         return;
+        //     }
+        // }
+
+        private void Update()
+        {
+            // 음악 재생이 멈추고, 루프가 아니면 풀에 반환
+            if(!_audioSource.isPlaying && !_audioSource.loop)
+            {
+                ReleaseOrDestroy();
+            }
+        }
+        public void Resume()
+        {
+            _audioSource.Play();
+        }
+
+        public void Pause()
+        {
+            _audioSource.Pause();
+        }
+
+        public void Stop()
+        {
+            _audioSource.Stop();
+        }
+        
+        public bool IsPlaying => _audioSource.isPlaying;
+        public bool IsLooping => _audioSource.loop;
+        public AudioClip CurrentlyPlayingAudio => _audioSource.clip;
+        public bool IsPaused => _audioSource.isPlaying == false && _audioSource.time > 0;
+
+        public void PlayAudioResource(AudioResource clip, AudioConfigurationSO setting, bool isLoop, Vector3 pos = default)
+        {
+            _audioSource.resource = clip;
+            
+
+            _audioSource.transform.position = pos;
+            _audioSource.loop = isLoop;
+            setting.ApplyTo(_audioSource);
+            _audioSource.Play();
+
+            // if (!isLoop)
+            // {
+            //     StartCoroutine(SoundTimer(clip.length));
+            // }
+        }
+        
+        /// <summary>
+        /// 간단하게 사운드 재생
+        /// TODO: 위에걸로 바꿔야함
+        /// </summary>
+        /// <param name="clip"></param>
+        /// <param name="isLoop"></param>
+        public void SimplePlayAudioClip(AudioClip clip, bool isLoop)
+        {
+            _audioSource.clip = clip;
+            _audioSource.loop = isLoop;
+            _audioSource.Play();
+            if (!isLoop)
+            {
+                StartCoroutine(SoundTimer(clip.length));
+            }
+        }
+        
+        private IEnumerator SoundTimer(float time)
+        {
+            yield return new WaitForSeconds(time);
+            ReleaseOrDestroy();
+        }
+        
+        
+        public void SetTarget(Transform target)
+        {
+            targetTransform = target;
+            isTargetSet = target != null;
+        }
+
+        private void LateUpdate()
+        {
+            if (targetTransform != null)
+            {
+                // 타겟이 살아있으면 따라감
+                transform.position = targetTransform.position;
+                transform.rotation = targetTransform.rotation;
+            }
+            else
+            {
+                if(doStopOnTargetNull && isTargetSet)
+                {
+                    // doStopOnTargetNull이 True고 타겟이 죽으면 풀에 반환
+                    _audioSource.Stop();
+                    isTargetSet = false;
+                    ReleaseOrDestroy();
+                }
+            }
+        }
+        
+        public void ReleaseOrDestroy()
+        {
+            if (poolable && poolable._pool != null)
+            {
+                poolable.Release();
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
+}

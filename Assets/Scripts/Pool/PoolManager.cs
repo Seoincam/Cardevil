@@ -23,11 +23,12 @@ namespace Cardevil.Pools
         public enum Poolables
         {
             None,
-            TestPoolable, 
+            TestPoolable,
+            SoundEmitter,
         }
         
-        [SerializeField] private SerialzableDict<string, IFactory<Poolable>> _factories = new();
-        [SerializeField] private SerialzableDict<string, IObjectPool<Poolable>> _pools = new();
+        [SerializeField] private SerializableDict<string, IFactory<Poolable>> _factories = new();
+        [SerializeField] private SerializableDict<string, IObjectPool<Poolable>> _pools = new();
         
         /// <summary>
         /// Root Transform임
