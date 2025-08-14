@@ -2,42 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards.CardInteractinos;
-using Cardevil.Systems;
+using Cardevil.Events;
 using UnityEngine;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Cardevil.Cards
 {
-    public class CardManager : MonoBehaviour
+    public class CardManager
     {
         [Header("Card Datas")]
         public List<CardData> cardDatas;
 
         [Header("References")]
-        public CardBarGroup barGroup;
-        [SerializeField] Button useCardButton;
-        [SerializeField] Button discardCardButton;
+        private CardBarGroup barGroup;
 
         [Header("State")]
-        private bool canUseCard;
+        public bool CanUseCard { get; private set; }
 
         // [Header("Events")]
-        public event Action<CardResult> OnUseCard;
-
-
-        void Start()
-        {
-            Init();
-            TurnManager.Instance.OnGameStateChanged += UpdateCanUseCard;
-
-            barGroup.Init(cardManager: this, onSelectedCardsCountChanged: UpdateCanUseCard);
-            useCardButton.onClick.AddListener(UseCard);
-            discardCardButton.onClick.AddListener(DiscardCard);
-        }
+        public event Action<CardResult> OnCardUsed;
 
         public void Init()
         {
+            Managers.Turn.OnGameStateChanged += UpdateCanUseCard;
+
             // Card data 생성
             cardDatas = new(50);
 
@@ -71,35 +59,52 @@ namespace Cardevil.Cards
                 var randomIndex = Random.Range(0, cardDatas.Count);
                 (cardDatas[i], cardDatas[randomIndex]) = (cardDatas[randomIndex], cardDatas[i]);
             }
+
+            UpdateDeckCardCount();
+
+            barGroup = GameObject.Find("CardBarGroup").GetComponent<CardBarGroup>();
+            if (barGroup == null)
+                Debug.LogError("BarGroup이 씬 내 존재하지 않습니다.");
+            barGroup.Init(onSelectedCardsCountChanged: UpdateCanUseCard);
         }
 
         #region Using Card
 
+        private void UpdateDeckCardCount()
+        {
+            var args = new RemainingCardChangeArgs();
+            args.Init(cardDatas.Count);
+            Managers.Event.RemainingCardChangeEvent?.Invoke(args);    
+        }
+
+        public CardData? DrawCard()
+        {
+            if (cardDatas.Count == 0)
+            {
+                Debug.LogError("Card Data가 없음.");
+                return null;
+            }
+
+            var cardData = cardDatas.First();
+            cardDatas.RemoveAt(0);
+            UpdateDeckCardCount();
+
+            return cardData;
+        }
+
+        public void UseCard(IEnumerable<Card> cards)
+        {
+            var cardResult = CardComboEvaluator.Evaluate(cards);
+            OnCardUsed?.Invoke(cardResult);
+        }
+
         private void UpdateCanUseCard()
         {
-            canUseCard = TurnManager.Instance.gameState == GameState.PlayerInput
+            CanUseCard = Managers.Game.currentState == GameManager.GameState.PlayerInput
                 ? barGroup.selectedCards.Count > 0
                 : false;
 
-            useCardButton.interactable = canUseCard;
-        }
-
-        private void UseCard()
-        {
-            if (!canUseCard)
-                return;
-
-            var cardResult = CardComboEvaluator.Evaluate(barGroup.selectedCards);
-
-            OnUseCard?.Invoke(cardResult);
-
-            _ = barGroup.DiscardSequentially();
-        }
-
-        private void DiscardCard()
-        {
-            useCardButton.interactable = false;
-            _ = barGroup.DiscardSequentially();
+            barGroup.SetUseCardButton(interactable: CanUseCard);
         }
         
         #endregion

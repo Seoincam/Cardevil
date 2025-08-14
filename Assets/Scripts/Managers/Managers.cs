@@ -1,6 +1,8 @@
+using Cardevil.Cards;
 using Cardevil.Manager;
 using Cardevil.Pools;
 using Cardevil.Sound;
+using Cardevil.Systems;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -20,6 +22,8 @@ public class Managers : MonoBehaviour
     SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
     EventManager _event = new EventManager();
+    TurnManager _turn = new TurnManager();
+    CardManager _card = new CardManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -31,6 +35,8 @@ public class Managers : MonoBehaviour
     public static SoundManager Sound { get { return Instance._sound; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }
     public static EventManager Event { get { return Instance._event; } }
+    public static TurnManager Turn { get { return Instance._turn; } }
+    public static CardManager Card { get { return Instance._card; } }
     
     void Start()
     {
@@ -61,7 +67,9 @@ public class Managers : MonoBehaviour
             s_instance._pool.Init();
             s_instance._data.Init();
             // s_instance._sound.Init();                !!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
-		    s_instance._execution.Init();
+            s_instance._execution.Init();
+            s_instance._card.Init();
+            s_instance._turn.Init();
         }
     }
 

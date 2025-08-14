@@ -5,26 +5,23 @@ using UnityEngine;
 
 namespace Cardevil.Cards.CardInteractinos
 {
-    public class PlayerInputHandler : MonoBehaviour, IPlayerInputHandler
+    public class PlayerInputHandler : IPlayerInputHandler
     {
         public event Action<CardResult> OnPlayerInputReceived;
 
         private UniTaskCompletionSource<CardResult> inputTcs;
 
 
-        void Start()
+        public PlayerInputHandler()
         {
-            TurnManager.Instance.playerInputHandler = this;
             SubscribePlayerInput();
-
-            var cardManager = FindAnyObjectByType<CardManager>();
-            cardManager.OnUseCard += OnCardUsed;
+            Managers.Card.OnCardUsed += OnCardUsed;
         }
 
 
         public async UniTask HandlePlayerInputAsync()
         {
-            TurnManager.Instance.SetGameState(GameState.PlayerInput);
+            Managers.Turn.SetGameState(GameManager.GameState.PlayerInput);
 
             inputTcs = new();
             var result = await inputTcs.Task;
@@ -35,7 +32,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void SubscribePlayerInput()
         {
-            TurnManager.Instance.PlayerInputAsync += HandlePlayerInputAsync;
+            Managers.Turn.PlayerInputAsync += HandlePlayerInputAsync;
         }
 
         public void OnCardUsed(CardResult result)
