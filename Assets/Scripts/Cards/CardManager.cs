@@ -72,9 +72,11 @@ namespace Cardevil.Cards
 
         private void UpdateDeckCardCount()
         {
-            var args = new RemainingCardChangeArgs();
-            args.Init(cardDatas.Count);
-            Managers.Event.RemainingCardChangeEvent?.Invoke(args);    
+            using (var args = RemainingCardChangeArgs.Get())
+            {
+                args.Init(cardDatas.Count);
+                Managers.Event.RemainingCardChangeEvent?.Invoke(args);  
+            }
         }
 
         public CardData? DrawCard()
