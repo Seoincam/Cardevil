@@ -4,26 +4,17 @@ using Cardevil.Cards;
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
+using Cardevil.Cards.CardInteractinos;
+using Cardevil.Test;
 
 namespace Cardevil.Systems
 {
-    public enum GameState
+    public class TurnManager : IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
     {
-        Pause, PlayerInput, Action
-    }
+        private DebugScreen debug;
 
-    public class TurnManager : Singleton<TurnManager>, IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
-    {
         [Header("Game State")]
-        public GameState gameState = GameState.Pause;
         public bool isPlayerInputReceived;
-
-        [Header("References")]
-        public Slider playerActionProgressBar;
-        public Text playerActionText;
-
-        public Slider bossActionProgressBar;
-        public Text bossActionText;
 
         // [Header("Events")]
         public delegate UniTask TurnStepAsync();
@@ -42,16 +33,14 @@ namespace Cardevil.Systems
         public IPlayerInputHandler playerInputHandler;
         public IPlayerActionHandler playerActionHandler;
 
-
-        protected override void Awake()
+        public void Init()
         {
-            base.Awake();
-            Application.targetFrameRate = 60;
-        }
-
-        void Start()
-        {
+            playerInputHandler = new PlayerInputHandler();
             playerActionHandler = this;
+
+            debug = GameObject.Find("DebugCanvas").GetComponent<DebugScreen>();
+            if (debug == null)
+                Debug.LogError("DebugScreen을 찾지 못했습니다.");
 
             // 이벤트 구독
             SubscribePlayerAction();
@@ -62,7 +51,7 @@ namespace Cardevil.Systems
 
             // 시작
             GameLoopAsync().Forget();
-            SetGameState(GameState.Action);
+            SetGameState(GameManager.GameState.Action);
         }
 
         /*
@@ -129,10 +118,12 @@ namespace Cardevil.Systems
                 }))
                 : "없음";
 
-            playerActionText.text = $@"콤보: {result.combo}
+            var text = $@"콤보: {result.combo}
             데미지: {result.damage}
             이동: {moveText}
             ";
+
+            debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.InputText, text);
 
             playerDealtDamage = result.damage;
         }
@@ -151,13 +142,12 @@ namespace Cardevil.Systems
 
         public async UniTask HandlePlayerActionAsync()
         {
-            SetGameState(GameState.Action);
+            SetGameState(GameManager.GameState.Action);
 
             // 애니메이션 등 실행 (임시로 대기)
-            await UpdateProgressBarAsync(playerActionProgressBar, duration: 2f);
+            await UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames.PlayerActionProgressBar, duration: 2f);
             OnPlayerDamageDealt?.Invoke(playerDealtDamage);
-
-            playerActionText.text = ". . .";
+            // - -            
         }
 
         #endregion
@@ -176,7 +166,8 @@ namespace Cardevil.Systems
 
         public void ReceivePlayerDamage(int amount)
         {
-            bossActionText.text = $"{amount} 데미지를 받았다!";
+            var text = $"{amount} 데미지를 받았다!";
+            debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.DamageText, text);
         }
 
 
@@ -184,8 +175,8 @@ namespace Cardevil.Systems
         public async UniTask HandleBossActionAsync()
         {
             // 애니메이션 등 실행 (임시로 3초 대기)
-            await UpdateProgressBarAsync(bossActionProgressBar, duration: 2f);
-            bossActionText.text = ". . .";
+            await UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames.BossActionProgressBar, duration: 2f);
+            debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.DamageText, ". . .");
 
             // 임시 대기 목록
             Managers.Game.Enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
@@ -205,28 +196,22 @@ namespace Cardevil.Systems
         #endregion
 
 
-
-        private void SetProgressBar(Slider progressBar, float value)
+        private async UniTask UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames slider, float duration)
         {
-            progressBar.value = value;
-        }
-
-        private async UniTask UpdateProgressBarAsync(Slider bar, float duration)
-        {
-            SetProgressBar(bar, 1f);
+            debug.SetTurnDebugProgressBar(slider, 1f);
             var start = Time.time;
             while (Time.time - start < duration)
             {
                 var remain = duration - (Time.time - start);
-                SetProgressBar(bar, remain / duration);
+                debug.SetTurnDebugProgressBar(slider, remain / duration);
                 await UniTask.Yield();
             }
-            SetProgressBar(bar, 0f);
+            debug.SetTurnDebugProgressBar(slider, 0f);
         }
 
-        public void SetGameState(GameState gameState)
+        public void SetGameState(GameManager.GameState gameState)
         {
-            this.gameState = gameState;
+            Managers.Game.currentState = gameState;
             OnGameStateChanged?.Invoke();
         }
     }
