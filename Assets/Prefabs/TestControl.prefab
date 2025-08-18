@@ -44,4 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 542490d92125404da4d9b18c7a84e6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  setHp: 3
   poolables: []
+  resourcePoolableName: TestPoolable
+  poolableType: 1
+  testAudioResource: {fileID: 8300000, guid: 691a78d7b9efbf644b4779a34429dbff, type: 3}
+  testAudioResourcePath: Dev/music_jingle/Pizzicato jingles/jingles_PIZZI04

@@ -344,6 +344,10 @@ namespace Cardevil.Sound
 
         AudioResource GetOrAddAudioAudioResource(string path, Define.Sound type = Define.Sound.SFX)
         {
+            if (path.StartsWith("/"))
+            {
+                path = path.Substring(1);
+            }
             if (path.Contains("Sounds/") == false)
             {
                 path = $"Sounds/{path}";
