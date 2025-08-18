@@ -4,65 +4,69 @@ using Cardevil.Cards;
 using System;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using Cardevil.InGame.Enemy;
+using Cardevil.Cards.CardInteractinos;
+using Cardevil.Test;
+
 namespace Cardevil.Systems
 {
-    public enum GameState
+    public class TurnManager : IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
     {
-        Pause, PlayerInput, Action
-    }
+        private DebugScreen debug;
 
-    public class TurnManager : Singleton<TurnManager>, IPlayerInputHandler, IPlayerInputReceiver, IPlayerDamageReceiver, IPlayerActionHandler, IBossDamageReceiver, IBossActionHandler
-    {
         [Header("Game State")]
-        public GameState gameState = GameState.Pause;
         public bool isPlayerInputReceived;
-
-        [Header("References")]
-        public Slider playerActionProgressBar;
-        public Text playerActionText;
-
-        public Slider bossActionProgressBar;
-        public Text bossActionText;
 
         // [Header("Events")]
         public delegate UniTask TurnStepAsync();
+
         public event TurnStepAsync PlayerInputAsync;
         public event TurnStepAsync PlayerActionAsync;
         public event TurnStepAsync BossActionAsync;
 
+        // 카드 배분, 보스 설명 등 처리
+        // 처리할 것 많아지면 추후 분리 예정
+        public event TurnStepAsync PreGameAsync;
+
         public event Action OnGameStateChanged;
 
-        
-        // UniTaskCompletionSource 
+        [Header("interfaces")]
+        public IPlayerInputHandler playerInputHandler;
+        public IPlayerActionHandler playerActionHandler;
 
-        protected override void Awake()
+        public void Init()
         {
-            base.Awake();
-            Application.targetFrameRate = 60;
+            playerInputHandler = new PlayerInputHandler();
+            playerActionHandler = this;
 
-            var cardManager = FindAnyObjectByType<CardManager>();
+            debug = GameObject.Find("DebugCanvas").GetComponent<DebugScreen>();
+            if (debug == null)
+                Debug.LogError("DebugScreen을 찾지 못했습니다.");
 
             // 이벤트 구독
-            SubscribePlayerInput();
-            cardManager.OnUseCard += EndGetInput;
-
             SubscribePlayerAction();
-            SubscribeBossDamage();
-            cardManager.OnUseCard += ReceiveInput;
+            SubscribePlayerInput();
 
             SubscribeBossAction();
             SubscribePlayerDamage();
+
+            // 시작
+            GameLoopAsync().Forget();
+            SetGameState(GameManager.GameState.Action);
         }
 
-        void Start()
-        {
-            GameLoopAsync().Forget();
-        }
+        /*
+            추후 각 인터페이스들을 다른 클래스에서 구현,
+            TurnManager에 이벤트 구독 방식으로 실행
+        */
 
 
         private async UniTaskVoid GameLoopAsync()
         {
+            if (PreGameAsync != null)
+            {
+                await PreGameAsync.Invoke();    
+            }
+
             while (true)
             {
                 if (PlayerInputAsync == null || PlayerActionAsync == null || BossActionAsync == null)
@@ -70,6 +74,11 @@ namespace Cardevil.Systems
                     await UniTask.Yield();
                     continue;
                 }
+
+                // Boss Action
+                await BossActionAsync.Invoke();
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+                //  -> 플레이어 상태 체크
 
                 // Player Input
                 await PlayerInputAsync.Invoke();
@@ -79,72 +88,49 @@ namespace Cardevil.Systems
                 await PlayerActionAsync.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
                 //  -> 보스 상태 체크
-
-                // Boss Action
-                await BossActionAsync.Invoke();
-                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-                //  -> 플레이어 상태 체크
             }
 
             // TODO: cancel, break 로직 추가
         }
 
 
-        #region Player input
-
-        // IPlayerInputHandler
-        public void SubscribePlayerInput()
-        {
-            PlayerInputAsync += HandlePlayerInputAsync;
-        }
-
-        public async UniTask HandlePlayerInputAsync()
-        {
-            SetGameState(GameState.PlayerInput);
-
-            while (!isPlayerInputReceived)
-                await UniTask.Yield();
-
-            isPlayerInputReceived = false;
-        }
-
-        public void EndGetInput(CardResult _)
-        {
-            isPlayerInputReceived = true;
-        }
-
-        #endregion
-
-
 
         #region Player Action
 
         // IPlayerInputReceiver 
-        private int playerDealtDamage;       
+        private int playerDealtDamage;
+
+        public void SubscribePlayerInput()
+        {
+            playerInputHandler.OnPlayerInputReceived += ReceiveInput;
+        }
+
         public void ReceiveInput(CardResult result)
         {
-            var move = result.moves.Count() != 0 ? "이동 있음" : "이동 없음";
-            playerActionText.text = $@"(임시) Player Input을 받았습니다.
-            콤보: {result.combo}
+            var moveText = result.moves?.Length > 0
+                ? string.Join(", ", result.moves.Select(d => d switch
+                {
+                    CardDirection.Up => "상",
+                    CardDirection.Down => "하",
+                    CardDirection.Left => "좌",
+                    CardDirection.Right => "우",
+                    _ => "?"
+                }))
+                : "없음";
+
+            var text = $@"콤보: {result.combo}
             데미지: {result.damage}
-            이동: {move}
+            이동: {moveText}
             ";
+
+            debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.InputText, text);
 
             playerDealtDamage = result.damage;
         }
 
 
         // IPlayerDamageReceiver
-        public void SubscribeBossDamage()
-        {
-            OnBossDamageDealt += ReceiveBossDamage;
-        }
-
-        public void ReceiveBossDamage(int amount)
-        {
-            playerActionText.text = $"{amount} 데미지를 받았다!";
-        }
-
+        // 필드 상 플레이어 위치 기반으로 수정
 
         // IPlayerActionHandler
         public event Action<int> OnPlayerDamageDealt;
@@ -156,27 +142,12 @@ namespace Cardevil.Systems
 
         public async UniTask HandlePlayerActionAsync()
         {
-            SetGameState(GameState.Action);
+            SetGameState(GameManager.GameState.Action);
 
             // 애니메이션 등 실행 (임시로 대기)
-            SetProgressBar(playerActionProgressBar, value: 1f);
-            var duration = 3f;
-            var startTime = Time.time;
-
-            while (Time.time - startTime < duration)
-            {
-                var remaining = duration - (Time.time - startTime);
-                SetProgressBar(playerActionProgressBar, value: remaining / duration);
-
-                var elapsed = Time.time - startTime;
-                if (elapsed > .48f && elapsed < .5f)
-                    OnPlayerDamageDealt?.Invoke(playerDealtDamage);
-
-                await UniTask.Yield();
-            }
-
-            playerActionText.text = ". . .";
-            
+            await UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames.PlayerActionProgressBar, duration: 2f);
+            OnPlayerDamageDealt?.Invoke(playerDealtDamage);
+            // - -            
         }
 
         #endregion
@@ -184,66 +155,63 @@ namespace Cardevil.Systems
 
 
         #region Boss Action
-        
+
         // IBossDamageReceiver
         public void SubscribePlayerDamage()
         {
-            OnPlayerDamageDealt += ReceivePlayerDamage;
+            playerActionHandler.OnPlayerDamageDealt += ReceivePlayerDamage;
         }
 
-        public void UnsubscribePlayerDamage(){}
+        public void UnsubscribePlayerDamage() { }
 
         public void ReceivePlayerDamage(int amount)
         {
-            bossActionText.text = $"{amount} 데미지를 받았다!";
+            var text = $"{amount} 데미지를 받았다!";
+            debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.DamageText, text);
         }
 
 
         // IBossActionHandler
-        public event Action<int> OnBossDamageDealt;
-
         public async UniTask HandleBossActionAsync()
         {
             // 애니메이션 등 실행 (임시로 3초 대기)
-            SetProgressBar(bossActionProgressBar, value: 1f);
-            var duration = 2f;
-            var startTime = Time.time;
+            await UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames.BossActionProgressBar, duration: 2f);
+            debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.DamageText, ". . .");
 
-            while (Time.time - startTime < duration)
-            {
-                var remaining = duration - (Time.time - startTime);
-                SetProgressBar(bossActionProgressBar, value: remaining / duration);
-
-                var elapsed = Time.time - startTime;
-                if (elapsed > .48f && elapsed < .5f)
-                    OnBossDamageDealt?.Invoke(1);
-
-                await UniTask.Yield();
-            }
-
-            bossActionText.text = ". . .";
             // 임시 대기 목록
             Managers.Game.Enemy.AttackEnemyTurnStart(); // Enemy Attack 시작
-
         }
 
         public void SubscribeBossAction()
         {
             BossActionAsync += HandleBossActionAsync;
         }
-        
+
+        public void UnsubscribeBossAction()
+        {
+            // 보스 죽을 때 사용
+            BossActionAsync -= HandleBossActionAsync;
+        }
+
         #endregion
 
 
-
-        private void SetProgressBar(Slider progressBar, float value)
+        private async UniTask UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames slider, float duration)
         {
-            progressBar.value = value;
+            debug.SetTurnDebugProgressBar(slider, 1f);
+            var start = Time.time;
+            while (Time.time - start < duration)
+            {
+                var remain = duration - (Time.time - start);
+                debug.SetTurnDebugProgressBar(slider, remain / duration);
+                await UniTask.Yield();
+            }
+            debug.SetTurnDebugProgressBar(slider, 0f);
         }
 
-        public void SetGameState(GameState gameState)
+        public void SetGameState(GameManager.GameState gameState)
         {
-            this.gameState = gameState;
+            Managers.Game.currentState = gameState;
             OnGameStateChanged?.Invoke();
         }
     }
