@@ -14,18 +14,7 @@ namespace Cardevil.Pools
         [SerializeField] private int _initialSize = 3;
         [SerializeField] private int _maxSize = 100;
         
-        /// <summary>
-        /// Human Error 방지를 위한 enum
-        /// </summary>
-        /// <remarks>
-        /// OriginalGameObject이름과 같아야함
-        /// </remarks>
-        public enum Poolables
-        {
-            None,
-            TestPoolable,
-            SoundEmitter,
-        }
+
         
         [SerializeField] private SerializableDict<string, IFactory<Poolable>> _factories = new();
         [SerializeField] private SerializableDict<string, IObjectPool<Poolable>> _pools = new();

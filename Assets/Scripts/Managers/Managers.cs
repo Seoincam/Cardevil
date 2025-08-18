@@ -19,7 +19,7 @@ public class Managers : MonoBehaviour
     SceneManagerEx _scene = new SceneManagerEx();
     DataManager _data = new DataManager(); //DataManager가 겹쳐서 추가
     JsonManager _json = new JsonManager();
-    SoundManager _sound = new SoundManager();
+    [SerializeField] SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
     EventManager _event = new EventManager();
     TurnManager _turn = new TurnManager();
@@ -66,7 +66,7 @@ public class Managers : MonoBehaviour
             s_instance = go.GetComponent<Managers>();
             s_instance._pool.Init();
             s_instance._data.Init();
-            // s_instance._sound.Init();                !!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            s_instance._sound.Init();                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             s_instance._execution.Init();
             s_instance._card.Init();
             s_instance._turn.Init();

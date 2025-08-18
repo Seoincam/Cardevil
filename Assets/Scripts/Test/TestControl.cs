@@ -1,8 +1,10 @@
 ﻿using Cardevil.Manager;
 using Cardevil.Pools;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Serialization;
 
 namespace Cardevil.Test
@@ -12,6 +14,36 @@ namespace Cardevil.Test
     /// </summary>
     public class TestControl : MonoBehaviour
     {
+        #region Unity Events
+
+        private void Start()
+        {
+            
+        }
+
+        private void Update()
+        {
+            
+        }
+
+        private void LateUpdate()
+        {
+            
+        }
+
+        private void FixedUpdate()
+        {
+            
+        }
+
+        private void OnGUI()
+        {
+            PlayerGUI();
+        }
+
+        #endregion
+        
+        #region Player
         [Header("Player Test")] 
         public int setHp = 3;
         
@@ -30,10 +62,36 @@ namespace Cardevil.Test
             }
         }
         
+        
+        public void PlayerGUI()
+        {
+            if (Managers.Game.PlayerStatus != null)
+            {
+                GUILayout.Label($"Player HP: {Managers.Game.PlayerStatus.CurrentHp}");
+                if (GUILayout.Button("Increase Player HP"))
+                {
+                    Managers.Game.PlayerStatus.CurrentHp++;
+                    Debug.Log("플레이어의 HP를 증가시켰습니다.");
+                }
+                if (GUILayout.Button("Decrease Player HP"))
+                {
+                    Managers.Game.PlayerStatus.CurrentHp--;
+                    Debug.Log("플레이어의 HP를 감소시켰습니다.");
+                }
+            }
+            else
+            {
+                GUILayout.Label("플레이어가 초기화되지 않았습니다.");
+            }
+        }
+
+        #endregion
+
+        #region Pool
         [Header("Pool Test")]
         public List<Cardevil.Pools.Poolable> poolables = new List<Cardevil.Pools.Poolable>();
         [FormerlySerializedAs("poolableName")] public string resourcePoolableName = "TestPoolable";
-        public PoolManager.Poolables poolableType = PoolManager.Poolables.TestPoolable;
+        public Poolables poolableType = Poolables.TestPoolable;
         [ContextMenu("Get Test Poolable")]
         public void GetTestPoolableFromResource()
         {
@@ -82,5 +140,57 @@ namespace Cardevil.Test
                 Debug.LogError("반환할 Poolable 객체가 없습니다.");
             }
         }
+        
+
+        #endregion
+
+        #region Sound
+
+        [Header("Sound Test")]
+        [SerializeField] private AudioResource testAudioResource;
+        [SerializeField] private string testAudioResourcePath = "Sounds/Dev/music_jingle/Pizzicato jingles/jingles_PIZZI04";
+        
+
+        [ContextMenu("Play Test Sound by resource")]
+        public void PlayTestSound()
+        {
+            // SoundManager를 통해 사운드를 재생하는 테스트
+            if (testAudioResource != null)
+            {
+                Managers.Sound.Play(testAudioResource);
+                Debug.Log("테스트 사운드를 재생했습니다.");
+            }
+        }
+        [ContextMenu("Play Test Sound by name")]
+        public void PlayTestSoundByName()
+        {
+            // SoundManager를 통해 사운드를 재생하는 테스트
+            if (!string.IsNullOrEmpty(testAudioResourcePath))
+            {
+                Managers.Sound.Play(testAudioResourcePath);
+                Debug.Log("테스트 사운드를 재생했습니다.");
+            }
+            else
+            {
+                Debug.LogError("테스트 오디오 리소스 이름이 비어 있습니다.");
+            }
+        }
+        
+        [ContextMenu("Play Test Sound by hardcoded resource")]
+        public void PlayTestSoundByHardcodedResource()
+        {
+            AudioClip clip = Managers.Resource.Load<AudioClip>(testAudioResourcePath);
+            if (clip != null)
+            {
+                Managers.Sound.Play(clip);
+                Debug.Log("테스트 사운드를 재생했습니다.");
+            }
+            else
+            {
+                Debug.LogError("테스트 오디오 클립을 로드하는 데 실패했습니다.");
+            }
+        }
+        #endregion
+       
     }
 }

@@ -463,6 +463,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 907533169433264897, guid: 54cd319e68296884697a60275bff2ff2, type: 3}
+      propertyPath: testAudioResourcePath
+      value: Dev/music_jingle/Pizzicato jingles/jingles_PIZZI04
+      objectReference: {fileID: 0}
     - target: {fileID: 6879711159943004532, guid: 54cd319e68296884697a60275bff2ff2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.6601758
