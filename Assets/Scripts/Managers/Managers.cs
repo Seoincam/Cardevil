@@ -17,7 +17,7 @@ public class Managers : MonoBehaviour
     SceneManagerEx _scene = new SceneManagerEx();
     DataManager _data = new DataManager(); //DataManager가 겹쳐서 추가
     JsonManager _json = new JsonManager();
-    SoundManager _sound = new SoundManager();
+    [SerializeField] SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
     EventManager _event = new EventManager();
 
