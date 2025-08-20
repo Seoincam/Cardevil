@@ -46,11 +46,12 @@ namespace Cardevil.Cards
             {
                 for (int value = 2; value <= 10; value++)
                 {
-                    var card = new NumberCard(color, value);
+                    var card = new NumberCardData(color, value);
                     defaultCards.Add(card);
                 }
 
-                var cardData = new NumberCard(color, defaultValue: 0, canSelect: true);
+                var cardData = new NumberCardData(color, value: 0, canSelect: true);
+                cardData.AddSelect(new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
                 defaultCards.Add(cardData);
             }
 
@@ -61,14 +62,15 @@ namespace Cardevil.Cards
 
                 for (int i = 0; i < 2; i++)
                 {
-                    var card = new DirectionCard(direction, canSelect: false);
+                    var card = new DirectionCardData(direction, canSelect: false);
                     defaultCards.Add(card);
                 }
             }
 
             for (int i = 0; i < 2; i++)
             {
-                var card = new DirectionCard(Direction.None, canSelect: true);
+                var card = new DirectionCardData(Direction.None, canSelect: true);
+                card.AddSelect(new Direction[] { Direction.Up, Direction.Down, Direction.Left, Direction.Right });
                 defaultCards.Add(card);
             }
 

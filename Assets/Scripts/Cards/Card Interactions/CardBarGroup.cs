@@ -5,8 +5,6 @@ using DG.Tweening;
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
-using Cardevil.Test;
-using Cardevil.Utils.Directions;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -19,6 +17,8 @@ namespace Cardevil.Cards.CardInteractinos
 
         public HashSet<Card> selectedCards = new(4);
         public event Action onSelectedCardsCountChanged;
+
+        public SelectContainer selectContainer;
 
         [Header("Slots")]
         [SerializeField] GameObject cardSlotPrefab;
