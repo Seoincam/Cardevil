@@ -9,15 +9,15 @@ namespace Cardevil.Cards
         private static bool hasDamageRelics = false;
         private static bool hasColorRelics = false;
         
-        public static CardResult Evaluate(IEnumerable<Card> cardDatas)
+        public static CardResult Evaluate(IEnumerable<Card> cards)
         {
-            var moveCards = cardDatas.Select(c => c.cardData)
-                        .Where(c => c.type == CardType.Move)
-                        .Select(c => c.direction)
+            var moveCards = cards.Select(c => c.data)
+                        .OfType<DirectionCard>()
+                        .Select(d => d.DefaultValue)
                         .ToArray();
 
-            var numberCards = cardDatas.Select(c => c.cardData)
-                        .Where(c => c.type == CardType.Number)
+            var numberCards = cards.Select(c => c.data)
+                        .OfType<NumberCard>()
                         .ToList();
 
             // == 숫자 카드 판정 ==
@@ -43,24 +43,24 @@ namespace Cardevil.Cards
 
             if (combo == CardCombo.High)
             {
-                damage = numberCards.OrderBy(c => c.value).Last().value;
+                damage = numberCards.OrderBy(c => c.DefaultValue).Last().DefaultValue;
             }
             else
             {
                 if (combo == CardCombo.OnePair)
                 {
-                    damage = 2 * numberCards.GroupBy(c => c.value)
+                    damage = 2 * numberCards.GroupBy(c => c.DefaultValue)
                         .Where(g => g.Count() == 2)
                         .Sum(g => g.Key);
                 }
                 else if (combo == CardCombo.Triple)
                 {
-                    damage = 3 * numberCards.GroupBy(c => c.value)
+                    damage = 3 * numberCards.GroupBy(c => c.DefaultValue)
                         .Where(g => g.Count() == 3)
                         .Sum(g => g.Key);
                 }
                 else
-                    damage = numberCards.Sum(c => c.value);
+                    damage = numberCards.Sum(c => c.DefaultValue);
             }
 
             damage += (int)combo;
@@ -79,7 +79,7 @@ namespace Cardevil.Cards
 
         #region 카드 족보 판정
 
-        private static CardCombo CalculateCombo(List<CardData> cards)
+        private static CardCombo CalculateCombo(List<NumberCard> cards)
         {
             if (IsStraightFlush(cards))
                 return CardCombo.StraightFlush;
@@ -99,12 +99,12 @@ namespace Cardevil.Cards
             return CardCombo.High;
         }
 
-        private static bool IsStraight(List<CardData> cards)
+        private static bool IsStraight(List<NumberCard> cards)
         {
             if (cards.Count != 4)
                 return false;
 
-            var values = cards.Select(c => c.value)
+            var values = cards.Select(c => c.DefaultValue)
                     .OrderBy(v => v)
                     .ToList();
 
@@ -115,17 +115,17 @@ namespace Cardevil.Cards
             return true;
         }
 
-        private static bool IsFlush(List<CardData> cards)
+        private static bool IsFlush(List<NumberCard> cards)
         {
             if (cards.Count != 4)
                 return false;
 
-            return cards.Select(c => c.color)
+            return cards.Select(c => c.Color)
                     .Distinct()
                     .Count() == 1;
         }
 
-        private static bool IsStraightFlush(List<CardData> cards)
+        private static bool IsStraightFlush(List<NumberCard> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -133,31 +133,31 @@ namespace Cardevil.Cards
             return IsStraight(cards) && IsFlush(cards);
         }
 
-        static bool IsFourCard(List<CardData> cards)
+        static bool IsFourCard(List<NumberCard> cards)
         {
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.DefaultValue)
                         .Any(g => g.Count() == 4);
         }
 
-        static bool IsTriple(List<CardData> cards)
+        static bool IsTriple(List<NumberCard> cards)
         {
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.DefaultValue)
                         .Any(g => g.Count() == 3);
         }
 
-        static bool IsTwoPair(List<CardData> cards)
+        static bool IsTwoPair(List<NumberCard> cards)
         {
             if (cards.Count != 4)
                 return false;
 
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.DefaultValue)
                     .Where(g => g.Count() == 2)
                     .Count() == 2;
         }
 
-        static bool IsOnePair(List<CardData> cards)
+        static bool IsOnePair(List<NumberCard> cards)
         {
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.DefaultValue)
                         .Any(g => g.Count() == 2);
         }
 

@@ -1,13 +1,15 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Cardevil.Cards;
+using Cardevil.Utils.Directions;
 
 namespace Cardevil.Cards.CardInteractinos 
 {
     public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [Header("Card")]
-        public CardData cardData;
+        public CardData data;
         private bool isDiscarded = false;
 
         [Header("Visual")]
@@ -75,11 +77,15 @@ namespace Cardevil.Cards.CardInteractinos
         public void Init(CardBarGroup barGroup, CardData cardData)
         {
             this.barGroup = barGroup;
-            this.cardData = cardData;
+            data = cardData;
 
-            transform.name = cardData.type == CardType.Move
-                ? cardData.direction.ToString()
-                : $"{cardData.color} {cardData.value}";
+            // 이름 할당 (임시)
+            if (cardData is DirectionCard direction)
+                transform.name = direction.DefaultValue.ToString();
+            else if (cardData is NumberCard number)
+                transform.name = $"{number.Color} {number.DefaultValue}";
+            else
+                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
 
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
             if (visualHandler == null)

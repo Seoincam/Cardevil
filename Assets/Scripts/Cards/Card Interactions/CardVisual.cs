@@ -1,3 +1,4 @@
+using Cardevil.Utils.Directions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -36,13 +37,32 @@ namespace Cardevil.Cards.CardInteractinos
             shadowOriginPosition = shadowTransform.localPosition;
         }
 
-        public void Init(Card parentCard, CardData cardData)
+        public void Init(Card parentCard, Cards.CardData cardData)
         {
             this.parentCard = parentCard;
 
-            transform.name = cardData.type == CardType.Move
-                ? cardData.direction.ToString()
-                : $"{cardData.color} {cardData.value}";
+            // 이름 설정 (임시)
+            if (cardData is DirectionCard direction)
+            {
+                transform.name = direction.DefaultValue.ToString();
+                text.text = direction.DefaultValue != Direction.None ? direction.DefaultValue.ToString() : "All";
+                text.fontSize = 35;
+            }
+            else if (cardData is NumberCard number)
+            {
+                transform.name = $"{number.Color} {number.DefaultValue}";
+                text.text = number.canSelect ? "*" : number.DefaultValue.ToString();
+                switch (number.Color)
+                {
+                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
+                    case CardColor.Blue: text.color = Color.blue; break;
+                    case CardColor.Red: text.color = Color.red; break;
+                    default: break;
+                }
+            }
+
+            else
+                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
 
             // 이벤트 구독
             parentCard.OnPointerDownEvent += PointerDown;
@@ -53,24 +73,6 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnSpawn += OnSpawn;
             parentCard.OnDiscard += OnDiscard;
             parentCard.OnDestory += Destroy;
-
-            // 텍스트 설정 (임시)
-            if (cardData.type == CardType.Move)
-            {
-                text.text = cardData.direction.ToString();
-                text.fontSize = 35;
-            }
-            else
-            {
-                text.text = cardData.value == 11 ? "*" : cardData.value.ToString();
-                switch (cardData.color)
-                {
-                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
-                    case CardColor.Blue: text.color = Color.blue; break;
-                    case CardColor.Red: text.color = Color.red; break;
-                    default: break;
-                }
-            }
 
             isInitalized = true;
         }

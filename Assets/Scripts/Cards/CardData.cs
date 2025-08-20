@@ -1,44 +1,43 @@
 using Cardevil.Utils.Directions;
+using System.Linq;
 
 namespace Cardevil.Cards
 {
-    public enum CardType { Move, Number }
-    public enum CardColor { None, Red, Blue, Green, Black }
+    public enum CardColor { Red, Blue, Green, Black }
+
+    public class CardData
+    {
+        public int reinforcement = 0;
+        public bool canSelect;
+    }
 
     [System.Serializable]
-    public struct CardData
+    public class NumberCard : CardData
     {
-        public CardType type;
+        public CardColor Color { get; private set; }
+        public int DefaultValue { get; private set; }
+        public int[] Numbers { get; private set; }
 
-        public int reinforce;
-
-        // Move type
-        public Direction direction;
-
-        // Number type
-        public CardColor color;
-        public int value; // 2~10, *은 11으로 표기
-
-        // 생성자 (Number)
-        public CardData(CardColor color, int value, int reinforce)
+        public NumberCard(CardColor color, int defaultValue, bool canSelect = false)
         {
-            type = CardType.Number;
-            this.color = color;
-            this.value = value;
-            this.reinforce = reinforce;
-
-            direction = Direction.None;
+            Color = color;
+            DefaultValue = defaultValue;
+            Numbers = new int[] { defaultValue };
+            this.canSelect = canSelect;
         }
+    }
 
-        // 생성자 (Move)
-        public CardData(Direction direction, int reinforce)
+    [System.Serializable]
+    public class DirectionCard : CardData
+    {
+        public Direction DefaultValue { get; private set; }
+        public Direction[] Directions { get; private set; }
+
+        public DirectionCard(Direction defaultValue, bool canSelect = false)
         {
-            type = CardType.Move;
-            this.direction = direction;
-            this.reinforce = reinforce;
-
-            color = CardColor.None;
-            value = 0;
+            DefaultValue = defaultValue;
+            Directions = new Direction[] { defaultValue };
+            this.canSelect = canSelect;
         }
     }
 

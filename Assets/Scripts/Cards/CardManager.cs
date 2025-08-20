@@ -12,7 +12,8 @@ namespace Cardevil.Cards
     public class CardManager
     {
         [Header("Card Datas")]
-        public List<CardData> cardDatas;
+        public List<CardData> defaultCards;
+        public List<CardData> deckCards;
 
         [Header("References")]
         private CardBarGroup barGroup;
@@ -26,20 +27,31 @@ namespace Cardevil.Cards
         public void Init()
         {
             Managers.Turn.OnGameStateChanged += UpdateCanUseCard;
+            InitCards();
+            InitDeck();
+            UpdateDeckCardCount();
 
-            // Card data 생성
-            cardDatas = new(50);
+            barGroup = GameObject.Find("CardBarGroup").GetComponent<CardBarGroup>();
+            if (barGroup == null)
+                Debug.LogError("BarGroup이 씬 내 존재하지 않습니다.");
+            barGroup.Init(onSelectedCardsCountChanged: UpdateCanUseCard);
+        }
+
+        // 카드를 기본 상태로 초기화
+        private void InitCards()
+        {
+            defaultCards = new(50);
 
             foreach (var color in Enum.GetValues(typeof(CardColor)).Cast<CardColor>())
             {
-                if (color == CardColor.None)
-                    continue;
-
-                for (int i = 2; i <= 11; i++)
+                for (int value = 2; value <= 10; value++)
                 {
-                    var cardData = new CardData(color, value: i, reinforce: 0);
-                    cardDatas.Add(cardData);
+                    var card = new NumberCard(color, value);
+                    defaultCards.Add(card);
                 }
+
+                var cardData = new NumberCard(color, defaultValue: 0, canSelect: true);
+                defaultCards.Add(cardData);
             }
 
             foreach (var direction in Enum.GetValues(typeof(Direction)).Cast<Direction>())
@@ -49,24 +61,29 @@ namespace Cardevil.Cards
 
                 for (int i = 0; i < 2; i++)
                 {
-                    var cardData = new CardData(direction, reinforce: 0);
-                    cardDatas.Add(cardData);
+                    var card = new DirectionCard(direction, canSelect: false);
+                    defaultCards.Add(card);
                 }
             }
 
-            // Card Data 셔플
-            for (int i = 0; i < cardDatas.Count; i++)
+            for (int i = 0; i < 2; i++)
             {
-                var randomIndex = Random.Range(0, cardDatas.Count);
-                (cardDatas[i], cardDatas[randomIndex]) = (cardDatas[randomIndex], cardDatas[i]);
+                var card = new DirectionCard(Direction.None, canSelect: true);
+                defaultCards.Add(card);
             }
 
-            UpdateDeckCardCount();
+            Debug.Log(defaultCards.Count);
+        }
 
-            barGroup = GameObject.Find("CardBarGroup").GetComponent<CardBarGroup>();
-            if (barGroup == null)
-                Debug.LogError("BarGroup이 씬 내 존재하지 않습니다.");
-            barGroup.Init(onSelectedCardsCountChanged: UpdateCanUseCard);
+        // defaultCards를 바탕으로 덱을 초기화
+        private void InitDeck()
+        {
+            deckCards = defaultCards.ToList();
+            for (int i = 0; i < deckCards.Count; i++)
+            {
+                var randomIndex = Random.Range(0, deckCards.Count);
+                (deckCards[i], deckCards[randomIndex]) = (deckCards[randomIndex], deckCards[i]);
+            }
         }
 
         #region Using Card
@@ -75,21 +92,21 @@ namespace Cardevil.Cards
         {
             using (var args = RemainingCardChangeArgs.Get())
             {
-                args.Init(cardDatas.Count);
-                Managers.Event.RemainingCardChangeEvent?.Invoke(args);  
+                args.Init(deckCards.Count);
+                Managers.Event.RemainingCardChangeEvent?.Invoke(args);
             }
         }
 
-        public CardData? DrawCard()
+        public CardData DrawCard()
         {
-            if (cardDatas.Count == 0)
+            if (deckCards.Count == 0)
             {
                 Debug.LogError("Card Data가 없음.");
                 return null;
             }
 
-            var cardData = cardDatas.First();
-            cardDatas.RemoveAt(0);
+            var cardData = deckCards.First();
+            deckCards.RemoveAt(0);
             UpdateDeckCardCount();
 
             return cardData;

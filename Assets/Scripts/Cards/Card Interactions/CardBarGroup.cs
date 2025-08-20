@@ -5,6 +5,8 @@ using DG.Tweening;
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
+using Cardevil.Test;
+using Cardevil.Utils.Directions;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -47,7 +49,7 @@ namespace Cardevil.Cards.CardInteractinos
             useCardButton.onClick.AddListener(TryUseCard);
             discardCardButton.onClick.AddListener(DiscardCard);
 
-            Managers.Turn.PreGameAsync += InitCard;
+            Managers.Turn.PreGameAsync += InitBarGroup;
         }
 
         void Update()
@@ -136,7 +138,7 @@ namespace Cardevil.Cards.CardInteractinos
             isSwapping = false;
         }
 
-        public async UniTask InitCard()
+        public async UniTask InitBarGroup()
         {
             canInteraction = false;
 
@@ -158,7 +160,7 @@ namespace Cardevil.Cards.CardInteractinos
                 return null;
 
             var card = Instantiate(original: cardPrefab, parent: slots[slotIndex]).GetComponent<Card>();
-            card.Init(barGroup: this, (CardData)cardData);
+            card.Init(barGroup: this, cardData);
 
             cards.Add(card);
 

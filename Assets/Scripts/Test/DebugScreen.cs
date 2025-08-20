@@ -26,7 +26,7 @@ namespace Cardevil.Test
         public enum TurnDebugTextNames
         {
             InputText,
-            DamageText
+            DamageText,
         }
 
 
