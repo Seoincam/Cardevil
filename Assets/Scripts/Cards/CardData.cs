@@ -1,7 +1,6 @@
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.SearchService;
 
 namespace Cardevil.Cards
 {
@@ -14,14 +13,15 @@ namespace Cardevil.Cards
         public int canSelectCount;
     }
 
+
     [System.Serializable]
-    public class NumberCard : CardData
+    public class NumberCardData : CardData
     {
         public CardColor Color { get; private set; }
         public int Value { get; private set; }
         public HashSet<int> numbers;
 
-        public NumberCard(CardColor color, int value, bool canSelect = false)
+        public NumberCardData(CardColor color, int value, bool canSelect = false)
         {
             Color = color;
             Value = value;
@@ -37,25 +37,33 @@ namespace Cardevil.Cards
             canSelectCount = numbers.Count();
         }
 
-        public bool SelectValue(int select)
+        public bool SelectValue(int value)
         {
             if (!canSelect)
                 return false;
             if (numbers.Count() == 1)
                 return false;
-            if (!numbers.Contains(select))
+            if (!numbers.Contains(value))
                 return false;
 
-            Value = select;
+            Value = value;
             return true;
         }
     }
 
+
     [System.Serializable]
-    public class DirectionCard : CardData
+    public class DirectionCardData : CardData
     {
         public Direction Value { get; private set; }
         public HashSet<Direction> directinos;
+
+        public DirectionCardData(Direction value, bool canSelect = false)
+        {
+            Value = value;
+            directinos = new();
+            this.canSelect = canSelect;
+        }
 
         public void AddSelect(Direction[] values)
         {
@@ -65,11 +73,17 @@ namespace Cardevil.Cards
             canSelectCount = directinos.Count();
         }
 
-        public DirectionCard(Direction value, bool canSelect = false)
+        public bool SelectValue(Direction value)
         {
+            if (!canSelect)
+                return false;
+            if (directinos.Count() == 1)
+                return false;
+            if (!directinos.Contains(value))
+                return false;
+
             Value = value;
-            directinos = new();
-            this.canSelect = canSelect;
+            return true;
         }
     }
 

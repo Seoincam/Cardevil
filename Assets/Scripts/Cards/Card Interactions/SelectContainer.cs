@@ -1,49 +1,87 @@
+using Cardevil.Cards;
+using Cardevil.Cards.CardInteractinos;
 using Cardevil.Utils.Directions;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class SelectContainer : MonoBehaviour
 {
-    [SerializeField] private Button[] buttons;
+    [SerializeField] SelectButton buttonPrefab;
+    [SerializeField] Button backgroundButton;
+    private SelectButton[] buttons;
+    private Card card;
 
-    public void SetContainer(HashSet<int> numbers, Vector3 position)
+    void Awake()
     {
-        var myPosition = position + Vector3.up * 150f;
-        transform.position = myPosition;
+        buttons = new SelectButton[9];
+        for (int i = 0; i < 9; i++)
+        {
+            buttons[i] = Instantiate(buttonPrefab, parent: transform).GetComponent<SelectButton>();
+            buttons[i].Init(OnNumberSelected, OnDirectionSelected);
+            gameObject.SetActive(false);
+        }
+
+        backgroundButton.onClick.AddListener(OnBackgroundClicked);
+    }
+
+    public void SetContainer(Card card, HashSet<int> numbers, Vector3 position)
+    {
+        this.card = card;
+        transform.position = position + Vector3.up * 300f;
 
         var index = 0;
         foreach (var number in numbers)
-            SetButton(index++, number.ToString());
+            buttons[index++].SetValue(number);
 
         for (int i = index; i < buttons.Count(); i++)
             buttons[i].gameObject.SetActive(false);
 
-        gameObject.SetActive(true);
+        SetObjectActive(true);
     }
 
-    public void SetContainer(HashSet<Direction> directions, Vector3 position)
+    public void SetContainer(Card card, HashSet<Direction> directions, Vector3 position)
     {
-        var myPosition = position + Vector3.up * 150f;
-        transform.position = myPosition;
+        this.card = card;
+        transform.position = position + Vector3.up * 300f;
 
         var index = 0;
         foreach (var direction in directions)
-            SetButton(index++, direction.ToString());
+            buttons[index++].SetValue(direction);
 
         for (int i = index; i < buttons.Count(); i++)
             buttons[i].gameObject.SetActive(false);
 
-        gameObject.SetActive(true);
+        SetObjectActive(true);
     }
 
-    private void SetButton(int index, string value)
+    private void OnNumberSelected(int number)
     {
-        // TODO: 성능 상 문제로 getcomponent 변경
-        buttons[index].GetComponentInChildren<TextMeshProUGUI>().text = value;
-        buttons[index].gameObject.SetActive(true);
+        var numberCardData = card.data as NumberCardData;
+        numberCardData.SelectValue(number);
+        card.cardVisual.UpdateVisual();
+        SetObjectActive(false);
+    }
+
+    private void OnDirectionSelected(Direction direction)
+    {
+        var directionCardData = card.data as DirectionCardData;
+        directionCardData.SelectValue(direction);
+        card.cardVisual.UpdateVisual();
+        SetObjectActive(false);
+    }
+
+    private void OnBackgroundClicked()
+    {
+        SetObjectActive(false);
+    }
+
+    private void SetObjectActive(bool value)
+    {
+        backgroundButton.gameObject.SetActive(value);
+        gameObject.SetActive(value);
+        if (!value)
+            card.OnSelectEndEvent?.Invoke(card);
     }
 }

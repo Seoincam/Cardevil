@@ -47,6 +47,8 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnPointerUpEvent += OnPointerUp;
             parentCard.OnBeginDragEvent += OnBeginDrag;
             parentCard.OnEndDragEvent += OnEndDrag;
+            parentCard.OnSelectStartEvent += OnSelectStarted;
+            parentCard.OnSelectEndEvent += OnSelectEnded;
 
             parentCard.OnSpawn += OnSpawn;
             parentCard.OnDiscard += OnDiscard;
@@ -119,20 +121,37 @@ namespace Cardevil.Cards.CardInteractinos
             Destroy(gameObject);
         }
 
-        private void UpdateVisual()
+        private void OnSelectStarted(Card _)
+        {
+            canvas.overrideSorting = true;
+        }
+
+        private void OnSelectEnded(Card _)
+        {
+            canvas.overrideSorting = false;
+        }
+
+        public void UpdateVisual()
         {
             // 이름 설정 (임시)
-            if (parentCard.data is DirectionCard direction)
+            if (parentCard.data is DirectionCardData dirCard)
             {
-                transform.name = direction.Value.ToString();
-                text.text = direction.Value != Direction.None ? direction.Value.ToString() : "All";
+                transform.name = dirCard.Value.ToString();
+                var textString = dirCard.Value != Direction.None ? dirCard.Value.ToString() : "All";
+                if (dirCard.Value != Direction.None && dirCard.canSelect)
+                    textString += "*";
+                text.text = textString;
                 text.fontSize = 35;
             }
-            else if (parentCard.data is NumberCard number)
+
+            else if (parentCard.data is NumberCardData numCard)
             {
-                transform.name = $"{number.Color} {number.Value}";
-                text.text = number.Value == 0 ? "*" : number.Value.ToString();
-                switch (number.Color)
+                transform.name = $"{numCard.Color} {numCard.Value}";
+                var textString = numCard.Value == 0 ? "*" : numCard.Value.ToString();
+                if (numCard.Value != 0 && numCard.canSelect)
+                    textString += "*";
+                text.text = textString;
+                switch (numCard.Color)
                 {
                     case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
                     case CardColor.Blue: text.color = Color.blue; break;

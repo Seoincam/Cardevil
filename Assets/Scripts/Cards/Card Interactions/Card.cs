@@ -50,6 +50,8 @@ namespace Cardevil.Cards.CardInteractinos
         [HideInInspector] public Action<Card> OnPointerUpEvent;
         [HideInInspector] public Action<Card> OnBeginDragEvent;
         [HideInInspector] public Action<Card> OnEndDragEvent;
+        [HideInInspector] public Action<Card> OnSelectStartEvent;
+        [HideInInspector] public Action<Card> OnSelectEndEvent;
 
         [HideInInspector] public Action OnSpawn;
         [HideInInspector] public Action<float> OnDiscard;
@@ -80,9 +82,9 @@ namespace Cardevil.Cards.CardInteractinos
             data = cardData;
 
             // 이름 할당 (임시)
-            if (cardData is DirectionCard direction)
+            if (cardData is DirectionCardData direction)
                 transform.name = direction.Value.ToString();
-            else if (cardData is NumberCard number)
+            else if (cardData is NumberCardData number)
                 transform.name = $"{number.Color} {number.Value}";
             else
                 Debug.LogError("cardData가 어떤 타입도 아닙니다.");
@@ -138,10 +140,11 @@ namespace Cardevil.Cards.CardInteractinos
 
                 if (data.canSelect)
                 {
-                    if (data is NumberCard number)
-                        barGroup.selectContainer.SetContainer(number.numbers, transform.position);
-                    else if (data is DirectionCard direction)
-                        barGroup.selectContainer.SetContainer(direction.directinos, transform.position);
+                    OnSelectStartEvent?.Invoke(this);
+                    if (data is NumberCardData number)
+                        barGroup.selectContainer.SetContainer(this, number.numbers, transform.position);
+                    else if (data is DirectionCardData direction)
+                        barGroup.selectContainer.SetContainer(this, direction.directinos, transform.position);
                 }
                     
             }
