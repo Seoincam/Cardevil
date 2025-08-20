@@ -273,6 +273,37 @@ namespace Cardevil.Manager
             ExecuteActionsRoutine(_cts.Token).Forget(Debug.LogException);
             return true;
         }
+        
+        public async UniTask<bool> StartExecuteActionsRoutineAsync()
+        {
+            if (_isExecuting)
+            {
+                Debug.Log("ExecutionManager: Already executing actions.");
+                return false;
+            }
+
+            if (_actionQueue.Count == 0 && _finalActionQueue.Count == 0 && _postExecuteQueue.Count == 0)
+            {
+                Debug.Log("ExecutionManager: No actions to execute.");
+                return false;
+            }
+
+            await ExecuteActionsRoutine(_cts.Token);
+            return true;
+        }
+        
+        public async UniTask<bool> WaitForExecutionToFinish()
+        {
+            if (!_isExecuting)
+            {
+                Debug.Log("ExecutionManager: Not currently executing actions.");
+                return false;
+            }
+
+            await UniTask.WaitUntil(() => !_isExecuting);
+            Debug.Log("ExecutionManager: Finished waiting for execution to finish.");
+            return true;
+        }
 
         public void ClearAll()
         {
