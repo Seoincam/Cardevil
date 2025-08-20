@@ -45,18 +45,21 @@ namespace Cardevil.Ingame.Entities
         {
             if (_isDebugMode)
             {
-                int horizontal = (int)Input.GetAxisRaw("Horizontal");
-                int vertical = (int)Input.GetAxisRaw("Vertical");
-                // print($"Horizontal: {horizontal}, Vertical: {vertical}");
-                if (horizontal != 0 || vertical != 0)
+                if(Input.anyKeyDown)
                 {
-                    Direction direction = Direction.None;
-                    if (horizontal > 0) direction = Direction.Right;
-                    else if (horizontal < 0) direction = Direction.Left;
-                    else if (vertical > 0) direction = Direction.Up;
-                    else if (vertical < 0) direction = Direction.Down;
-                    Debug.Log($"Moving in direction: {direction}");
-                    Move(direction);
+                    int horizontal = (int)Input.GetAxisRaw("Horizontal");
+                    int vertical = (int)Input.GetAxisRaw("Vertical");
+                    // print($"Horizontal: {horizontal}, Vertical: {vertical}");
+                    if (horizontal != 0 || vertical != 0)
+                    {
+                        Direction direction = Direction.None;
+                        if (horizontal > 0) direction = Direction.Right;
+                        else if (horizontal < 0) direction = Direction.Left;
+                        else if (vertical > 0) direction = Direction.Up;
+                        else if (vertical < 0) direction = Direction.Down;
+                        Debug.Log($"Moving in direction: {direction}");
+                        Move(direction);
+                    }
                 }
             }
         }
