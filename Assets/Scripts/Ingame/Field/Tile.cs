@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Cardevil.Attributes;
 using Cardevil.Ingame.Entities;
+using Cardevil.Pools;
 using Cardevil.Utils;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -18,14 +19,16 @@ namespace Cardevil.Ingame.Field
         [VisibleOnly, SerializeField] private FieldConfigurationSO _fieldConfiguration;
         [VisibleOnly(EditableIn.EditMode), SerializeField] private TileVector _coordinate;
         
-        [Header("References")]
+        [Header("Internal References")]
         [VisibleOnly(EditableIn.EditMode), SerializeField] private SpriteRenderer _spriteRenderer;
         [VisibleOnly(EditableIn.EditMode), SerializeField] private MeshRenderer _meshRenderer;
-
         [VisibleOnly(EditableIn.EditMode), SerializeField] private Collider _collider;
 
         [Header("Entities")]
-        [VisibleOnly(EditableIn.EditMode),SerializeField] private List<Entity> entities = new List<Entity>();
+        [VisibleOnly,SerializeField] private List<Entity> entities = new List<Entity>();
+        
+        [Header("Objects")]
+        [VisibleOnly, SerializeField] private List<TileHighlight> _highlightObjects = new List<TileHighlight>();
 
         public Field Field => _field;
         
@@ -113,15 +116,58 @@ namespace Cardevil.Ingame.Field
         }
         
         [ContextMenu("Highlight Tile")]
+        [Obsolete("Use Highlight(Define.HighlightType) instead.")]
         public void HighLightAttackTile() // 공격받을 타일의 하이라이트 위치
         { 
-            SetColor(_fieldConfiguration.DefaultTileHighlightColor);
+            // SetColor(_fieldConfiguration.DefaultTileHighlightColor);
+            Highlight(Define.HighlightType.DefaultAttack);
         }
         
         [ContextMenu("UnHighlight Tile")]
+        [Obsolete("Use Unhightlight(Define.HighlightType, bool) instead.")]
         public void UnHighLightAttackTile() // 공격받을 타일의 하이라이트 제거
         {
-            SetColor(_fieldConfiguration.DefaultTileColor);
+            // SetColor(_fieldConfiguration.DefaultTileColor);
+            Unhightlight(Define.HighlightType.DefaultAttack);
+        }
+
+
+        public TileHighlight Highlight(Define.HighlightType highlightType)
+        {
+            TileHighlight highlightObject = Managers.Pool.Get<TileHighlight>(Poolables.TileHighlight);
+            if (highlightObject == null)
+            {
+                Debug.LogError("Failed to get TileHighlight from pool.");
+                return null;
+            }
+            highlightObject.Initialize(this, _fieldConfiguration);
+            highlightObject.SetHighlightColor(highlightType, _fieldConfiguration.DefaultTileHighlightColor);
+            highlightObject.transform.SetParent(transform, false);
+            highlightObject.transform.position = transform.position;
+            _highlightObjects.Add(highlightObject);
+            return highlightObject;
+        }
+        
+        public void Unhightlight(Define.HighlightType highlightType, bool removeAll = false)
+        {
+            if (_highlightObjects == null || _highlightObjects.Count == 0)
+            {
+                Debug.LogWarning("No highlight objects to remove.");
+                return;
+            }
+
+            for (int i = _highlightObjects.Count - 1; i >= 0; i--)
+            {
+                if (_highlightObjects[i] != null && _highlightObjects[i].HighlightType == highlightType)
+                {
+                    Managers.Pool.Release(_highlightObjects[i].Poolable);
+                    _highlightObjects.RemoveAt(i);
+                    if (removeAll == false)
+                    {
+                        break; // removeAll이 false인 경우 첫 번째 일치하는 하이라이트만 제거하고 종료
+                    }
+                }
+            }
         }
 
         public void SetColor(Color color)

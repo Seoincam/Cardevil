@@ -81,4 +81,10 @@ public class Define
         SFX,
         MaxCount
     }
+    
+    public enum HighlightType
+    {
+        None,
+        DefaultAttack
+    }
 }

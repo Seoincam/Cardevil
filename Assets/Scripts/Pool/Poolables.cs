@@ -11,5 +11,6 @@
         None,
         TestPoolable,
         SoundEmitter,
+        TileHighlight,
     }
 }

@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe134665c15477fb16aa6baefb6518a, type: 3}
-  m_Name: TileConfiguration
+  m_Script: {fileID: 11500000, guid: 24182fd5bb264e85856b64c8840f96f1, type: 3}
+  m_Name: TileHighlightFactory
   m_EditorClassIdentifier: 
-  tileSize: 0.95
-  defaultTileColor: {r: 1, g: 1, b: 1, a: 1}
-  defaultTileHighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.41960785}
+  _original: {fileID: 8956471083975710289, guid: 82732a4b9284aa34ba46e5e548429beb, type: 3}
