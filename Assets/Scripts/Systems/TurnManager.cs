@@ -6,6 +6,7 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using Cardevil.Cards.CardInteractinos;
 using Cardevil.Test;
+using Cardevil.Utils.Directions;
 
 namespace Cardevil.Systems
 {
@@ -110,10 +111,10 @@ namespace Cardevil.Systems
             var moveText = result.moves?.Length > 0
                 ? string.Join(", ", result.moves.Select(d => d switch
                 {
-                    CardDirection.Up => "상",
-                    CardDirection.Down => "하",
-                    CardDirection.Left => "좌",
-                    CardDirection.Right => "우",
+                    Direction.Up => "상",
+                    Direction.Down => "하",
+                    Direction.Left => "좌",
+                    Direction.Right => "우",
                     _ => "?"
                 }))
                 : "없음";

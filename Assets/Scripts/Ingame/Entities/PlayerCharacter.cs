@@ -69,6 +69,14 @@ namespace Cardevil.Ingame.Entities
          * TODO : Move 메서드 개선. 현재는 즉시이동 + wrapAround 활성화
          * 
          */
+        public void Move(Direction[] directions)
+        {
+            foreach (var direction in directions)
+            {
+                Move(direction, 1);
+            }
+        }
+
         public void Move(Direction direction)
         {
             Move(direction, 1);

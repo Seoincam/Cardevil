@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards.CardInteractinos;
 using Cardevil.Events;
+using Cardevil.Utils.Directions;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -41,9 +42,9 @@ namespace Cardevil.Cards
                 }
             }
 
-            foreach (var direction in Enum.GetValues(typeof(CardDirection)).Cast<CardDirection>())
+            foreach (var direction in Enum.GetValues(typeof(Direction)).Cast<Direction>())
             {
-                if (direction == CardDirection.None)
+                if (direction == Direction.None)
                     continue;
 
                 for (int i = 0; i < 2; i++)
@@ -97,7 +98,10 @@ namespace Cardevil.Cards
         public void UseCard(IEnumerable<Card> cards)
         {
             var cardResult = CardComboEvaluator.Evaluate(cards);
+
             OnCardUsed?.Invoke(cardResult);
+            // 임시로
+            Managers.Game.Player.Move(cardResult.moves);
         }
 
         private void UpdateCanUseCard()

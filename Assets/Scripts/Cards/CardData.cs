@@ -1,7 +1,8 @@
+using Cardevil.Utils.Directions;
+
 namespace Cardevil.Cards
 {
     public enum CardType { Move, Number }
-    public enum CardDirection { None, Up, Down, Left, Right, All }
     public enum CardColor { None, Red, Blue, Green, Black }
 
     [System.Serializable]
@@ -12,7 +13,7 @@ namespace Cardevil.Cards
         public int reinforce;
 
         // Move type
-        public CardDirection direction;
+        public Direction direction;
 
         // Number type
         public CardColor color;
@@ -26,11 +27,11 @@ namespace Cardevil.Cards
             this.value = value;
             this.reinforce = reinforce;
 
-            direction = CardDirection.None;
+            direction = Direction.None;
         }
 
         // 생성자 (Move)
-        public CardData(CardDirection direction, int reinforce)
+        public CardData(Direction direction, int reinforce)
         {
             type = CardType.Move;
             this.direction = direction;
@@ -60,17 +61,17 @@ namespace Cardevil.Cards
         public CardCombo combo;
         public int damage;
 
-        public CardDirection[] moves;
+        public Direction[] moves;
 
 
-        public CardResult(CardCombo combo, int damage, CardDirection[] moves)
+        public CardResult(CardCombo combo, int damage, Direction[] moves)
         {
             this.combo = combo;
             this.damage = damage;
             this.moves = moves;
         }
 
-        public CardResult(CardDirection[] moves)
+        public CardResult(Direction[] moves)
         {
             combo = CardCombo.None;
             damage = 0;
