@@ -18,6 +18,8 @@ namespace Cardevil.Ingame.Entities
         [Header("References")]
         [SerializeField] protected Entity _entity;
 
+        
+        public Entity Entity => _entity;
 
         private void Awake()
         {
