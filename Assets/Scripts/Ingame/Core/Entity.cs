@@ -58,7 +58,12 @@ namespace Cardevil.Ingame.Entities
             Tile targetTile = _currentTile.Field.GetTileByDirection(CurrentTile, direction, true);
             MoveTo(targetTile, moveTransform);
         }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tileVector"></param>
+        /// <param name="moveTransform"></param>
+        /// <param name="wrapAround"></param>
         public void MoveTo(TileVector tileVector, bool moveTransform = false, bool wrapAround = false)
         {
             Tile targetTile = _currentTile.Field.GetTile(tileVector);
