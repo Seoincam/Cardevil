@@ -1,4 +1,5 @@
 using Cardevil.Cards;
+using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;
 using Cardevil.Sound;
@@ -24,6 +25,7 @@ public class Managers : MonoBehaviour
     EventManager _event = new EventManager();
     TurnManager _turn = new TurnManager();
     CardManager _card = new CardManager();
+    DungeonManager _dungeon = new DungeonManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -37,6 +39,7 @@ public class Managers : MonoBehaviour
     public static EventManager Event { get { return Instance._event; } }
     public static TurnManager Turn { get { return Instance._turn; } }
     public static CardManager Card { get { return Instance._card; } }
+    public static DungeonManager Dungeon { get { return Instance._dungeon; } }
     
     void Start()
     {
@@ -70,6 +73,7 @@ public class Managers : MonoBehaviour
             s_instance._execution.Init();
             s_instance._card.Init();
             s_instance._turn.Init();
+            s_instance._dungeon.Init();
         }
     }
 
