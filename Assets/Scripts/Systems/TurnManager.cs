@@ -76,6 +76,10 @@ namespace Cardevil.Systems
                     continue;
                 }
 
+                // 턴이 시작될때 Enemy의 Turn 값 초기화
+                Managers.Game.Enemy.TurnClear(); 
+
+
                 // Boss Action
                 await BossActionAsync.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
@@ -167,8 +171,10 @@ namespace Cardevil.Systems
 
         public void ReceivePlayerDamage(int amount)
         {
+            if (amount == 0) return;
             var text = $"{amount} 데미지를 받았다!";
             debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.DamageText, text);
+            Managers.Game.Enemy.IsAttacked(amount);
         }
 
 

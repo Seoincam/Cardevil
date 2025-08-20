@@ -1,4 +1,4 @@
-﻿using Cardevil.Ingame.Field;
+using Cardevil.Ingame.Field;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -107,6 +107,16 @@ namespace Cardevil.Ingame.Entities
                 return;
             }
             _entity.MoveTo(tile, true);
+        }
+        /// <summary>  플레이어의 Horinzontal Line Number </summary>
+        public int GetPlayerLineNumberHorizontal() 
+        {
+            return Entity.Tile.i;
+        }
+        /// <summary>  플레이어의 Vertical Line Number </summary>
+        public int GetPlayerLineNumberVertical()
+        {
+            return Entity.Tile.j;
         }
     }
 }
