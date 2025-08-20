@@ -1,5 +1,7 @@
 using Cardevil.Utils.Directions;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.SearchService;
 
 namespace Cardevil.Cards
 {
@@ -9,34 +11,64 @@ namespace Cardevil.Cards
     {
         public int reinforcement = 0;
         public bool canSelect;
+        public int canSelectCount;
     }
 
     [System.Serializable]
     public class NumberCard : CardData
     {
         public CardColor Color { get; private set; }
-        public int DefaultValue { get; private set; }
-        public int[] Numbers { get; private set; }
+        public int Value { get; private set; }
+        public HashSet<int> numbers;
 
-        public NumberCard(CardColor color, int defaultValue, bool canSelect = false)
+        public NumberCard(CardColor color, int value, bool canSelect = false)
         {
             Color = color;
-            DefaultValue = defaultValue;
-            Numbers = new int[] { defaultValue };
+            Value = value;
+            numbers = new();
             this.canSelect = canSelect;
+        }
+
+        public void AddSelect(int[] values)
+        {
+            foreach (int value in values)
+                numbers.Add(value);
+
+            canSelectCount = numbers.Count();
+        }
+
+        public bool SelectValue(int select)
+        {
+            if (!canSelect)
+                return false;
+            if (numbers.Count() == 1)
+                return false;
+            if (!numbers.Contains(select))
+                return false;
+
+            Value = select;
+            return true;
         }
     }
 
     [System.Serializable]
     public class DirectionCard : CardData
     {
-        public Direction DefaultValue { get; private set; }
-        public Direction[] Directions { get; private set; }
+        public Direction Value { get; private set; }
+        public HashSet<Direction> directinos;
 
-        public DirectionCard(Direction defaultValue, bool canSelect = false)
+        public void AddSelect(Direction[] values)
         {
-            DefaultValue = defaultValue;
-            Directions = new Direction[] { defaultValue };
+            foreach (var value in values)
+                directinos.Add(value);
+
+            canSelectCount = directinos.Count();
+        }
+
+        public DirectionCard(Direction value, bool canSelect = false)
+        {
+            Value = value;
+            directinos = new();
             this.canSelect = canSelect;
         }
     }

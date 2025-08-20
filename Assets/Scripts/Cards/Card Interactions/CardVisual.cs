@@ -37,32 +37,10 @@ namespace Cardevil.Cards.CardInteractinos
             shadowOriginPosition = shadowTransform.localPosition;
         }
 
-        public void Init(Card parentCard, Cards.CardData cardData)
+        public void Init(Card parentCard)
         {
             this.parentCard = parentCard;
-
-            // 이름 설정 (임시)
-            if (cardData is DirectionCard direction)
-            {
-                transform.name = direction.DefaultValue.ToString();
-                text.text = direction.DefaultValue != Direction.None ? direction.DefaultValue.ToString() : "All";
-                text.fontSize = 35;
-            }
-            else if (cardData is NumberCard number)
-            {
-                transform.name = $"{number.Color} {number.DefaultValue}";
-                text.text = number.canSelect ? "*" : number.DefaultValue.ToString();
-                switch (number.Color)
-                {
-                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
-                    case CardColor.Blue: text.color = Color.blue; break;
-                    case CardColor.Red: text.color = Color.red; break;
-                    default: break;
-                }
-            }
-
-            else
-                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
+            UpdateVisual();
 
             // 이벤트 구독
             parentCard.OnPointerDownEvent += PointerDown;
@@ -139,6 +117,32 @@ namespace Cardevil.Cards.CardInteractinos
         {
             DOTween.Kill(transform);
             Destroy(gameObject);
+        }
+
+        private void UpdateVisual()
+        {
+            // 이름 설정 (임시)
+            if (parentCard.data is DirectionCard direction)
+            {
+                transform.name = direction.Value.ToString();
+                text.text = direction.Value != Direction.None ? direction.Value.ToString() : "All";
+                text.fontSize = 35;
+            }
+            else if (parentCard.data is NumberCard number)
+            {
+                transform.name = $"{number.Color} {number.Value}";
+                text.text = number.Value == 0 ? "*" : number.Value.ToString();
+                switch (number.Color)
+                {
+                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
+                    case CardColor.Blue: text.color = Color.blue; break;
+                    case CardColor.Red: text.color = Color.red; break;
+                    default: break;
+                }
+            }
+
+            else
+                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
         }
     }
 }

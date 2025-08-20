@@ -50,7 +50,8 @@ namespace Cardevil.Cards
                     defaultCards.Add(card);
                 }
 
-                var cardData = new NumberCard(color, defaultValue: 0, canSelect: true);
+                var cardData = new NumberCard(color, value: 0, canSelect: true);
+                cardData.AddSelect(new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
                 defaultCards.Add(cardData);
             }
 
@@ -69,6 +70,7 @@ namespace Cardevil.Cards
             for (int i = 0; i < 2; i++)
             {
                 var card = new DirectionCard(Direction.None, canSelect: true);
+                card.AddSelect(new Direction[] { Direction.Up, Direction.Down, Direction.Left, Direction.Right });
                 defaultCards.Add(card);
             }
 

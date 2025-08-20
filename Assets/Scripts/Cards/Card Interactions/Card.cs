@@ -81,9 +81,9 @@ namespace Cardevil.Cards.CardInteractinos
 
             // 이름 할당 (임시)
             if (cardData is DirectionCard direction)
-                transform.name = direction.DefaultValue.ToString();
+                transform.name = direction.Value.ToString();
             else if (cardData is NumberCard number)
-                transform.name = $"{number.Color} {number.DefaultValue}";
+                transform.name = $"{number.Color} {number.Value}";
             else
                 Debug.LogError("cardData가 어떤 타입도 아닙니다.");
 
@@ -92,7 +92,7 @@ namespace Cardevil.Cards.CardInteractinos
                 Debug.LogError("Visual Handler를 찾을 수 없음.");
 
             cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
-            cardVisual.Init(parentCard: this, cardData);
+            cardVisual.Init(this);
 
             OnSpawn?.Invoke();
         }
@@ -120,17 +120,31 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                if (!CanDrag)
+                    return;
 
-            if (!CanDrag)
-                return;
+                OnPointerDownEvent?.Invoke(this);
+                pointerDownTime = Time.time;
 
-            OnPointerDownEvent?.Invoke(this);
-            pointerDownTime = Time.time;
+                var mousePosition = Input.mousePosition;
+                var offset = mousePosition - transform.position;
+            }
 
-            var mousePosition = Input.mousePosition;
-            var offset = mousePosition - transform.position;
+            else if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                OnPointerDownEvent?.Invoke(this);
+
+                if (data.canSelect)
+                {
+                    if (data is NumberCard number)
+                        barGroup.selectContainer.SetContainer(number.numbers, transform.position);
+                    else if (data is DirectionCard direction)
+                        barGroup.selectContainer.SetContainer(direction.directinos, transform.position);
+                }
+                    
+            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -163,31 +177,36 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
-
-            if (!CanDrag)
-                return;
-                
-            OnPointerUpEvent?.Invoke(this);
-            pointerUpTime = Time.time;
-            if (pointerUpTime - pointerDownTime > 0.2f)
-                return;
-
-            isSelected = barGroup.selectedCards.Count >= 4 
-                ? false
-                : !isSelected;
-
-            if (isSelected)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
-                barGroup.AddSelectedCard(this);
+                if (!CanDrag)
+                    return;
+
+                OnPointerUpEvent?.Invoke(this);
+                pointerUpTime = Time.time;
+                if (pointerUpTime - pointerDownTime > 0.2f)
+                    return;
+
+                isSelected = barGroup.selectedCards.Count >= 4
+                    ? false
+                    : !isSelected;
+
+                if (isSelected)
+                {
+                    transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
+                    barGroup.AddSelectedCard(this);
+                }
+                else
+                {
+                    transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
+                    barGroup.RemoveSelectedCard(this);
+                }
             }
-            else
+            else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                barGroup.RemoveSelectedCard(this);
+                OnPointerUpEvent?.Invoke(this);
             }
+
         }
 
 
