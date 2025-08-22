@@ -715,7 +715,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 0, y: 75}
-  m_SizeDelta: {x: 900, y: 200}
+  m_SizeDelta: {x: 660, y: 200}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &8120841386423099128
 CanvasRenderer:
@@ -738,7 +738,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.29803923}
+  m_Color: {r: 0, g: 0, b: 0, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -793,12 +793,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb361c1be330438a85f227ffd005c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseDeckConfig: {fileID: 11400000, guid: 79aa57813c1ff4985b0ebb1c9b139874, type: 2}
+  baseRuntimeDeckConfig: {fileID: 11400000, guid: c37c538c0f8914571a94552f7defb880, type: 2}
   cardPrefab: {fileID: 78186141462634609, guid: f6140cd23d5414d4d96e15fc0a8b29ab, type: 3}
   selectContainer: {fileID: 5282958142974385909}
   cardSlotPrefab: {fileID: 1054305820576586383, guid: 3a89c663dae8a4edd82393ad2a6a7a9e, type: 3}
   useCardButton: {fileID: 908310980731814065}
   discardCardButton: {fileID: 6425291255583448941}
   selectOffset: 35
+  drawInterval: 0.2
+  discardInterval: 0.3
 --- !u!1 &3883734949611962757
 GameObject:
   m_ObjectHideFlags: 0

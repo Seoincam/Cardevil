@@ -19,11 +19,7 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
         public Card draggedCard { get; private set; }
-        // private List<Card> cards = new();
-
-        // public HashSet<Card> selectedCards = new(4);
         public event Action onSelectedCardsCountChanged;
-
         public SelectContainer selectContainer;
 
         [Header("Slots")]
@@ -129,17 +125,19 @@ namespace Cardevil.Cards.CardInteractinos
         private void Swap(int index)
         {
             isSwapping = true;
-
+            var swappedCard = Hand.GetCard(index);
             var selectedCardSlot = draggedCard.transform.parent;
-            var swappedSlot = Hand.GetCard(index).transform.parent;
+            var swappedSlot = swappedCard.transform.parent;
 
-            Hand.GetCard(index).transform.SetParent(selectedCardSlot);
-            Hand.GetCard(index).transform.localPosition = Hand.GetCard(index).isSelected
+            swappedCard.transform.SetParent(selectedCardSlot);
+            swappedCard.transform.localPosition = swappedCard.isSelected
                     ? new Vector3(0, selectOffset, 0)
                     : Vector3.zero;
 
             draggedCard.transform.SetParent(swappedSlot);
-
+            
+            draggedCard.cardVisual.UpdateIndex(draggedCard.GetSlotIndex());
+            swappedCard.cardVisual.UpdateIndex(swappedCard.GetSlotIndex());
             isSwapping = false;
         }
 
@@ -174,6 +172,13 @@ namespace Cardevil.Cards.CardInteractinos
             card.OnEndDragEvent += EndDrag;
 
             Managers.Card.UpdateDeckCardCount();
+
+            for (int i = 0; i < Hand.HandCount; i++)
+            {
+                var c = Hand.GetCard(i);
+                c.cardVisual.UpdateIndex(c.GetSlotIndex());
+            }
+                
             return card;
         }
 

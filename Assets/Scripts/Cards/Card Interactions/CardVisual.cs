@@ -15,6 +15,7 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Visual")]
         [SerializeField] Image cardImage;
         [SerializeField] TextMeshProUGUI text;
+        [SerializeField] Transform shakeObject;
         private Canvas canvas;
         private bool isInitalized = false;
 
@@ -30,6 +31,11 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] private float selectScale = 1.25f;
         [SerializeField] private float scaleTransition = .15f;
         [SerializeField] private Ease scaleEase = Ease.OutBack;
+
+        [Header("Curve")]
+        [SerializeField] private CurveParameters curve;
+        private float curveYOffset;
+        private float curveRotationOffset;
 
         void Awake()
         {
@@ -66,11 +72,32 @@ namespace Cardevil.Cards.CardInteractinos
                 return;
 
             FollowWithLerp();
+            CurvePosition();
+            TiltCard();
         }
 
         private void FollowWithLerp()
         {
-            transform.position = Vector3.Lerp(transform.position, parentCard.transform.position, t: followSpeed * Time.deltaTime);
+            var verticalOffset = Vector3.up * (parentCard.isDragging ? 0 : curveYOffset);
+            transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: followSpeed * Time.deltaTime);
+        }
+
+        private void CurvePosition()
+        {
+            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.Hand.HandCount - 1);
+            curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
+        }
+
+        private void TiltCard()
+        {
+            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.BarGroup.Hand.HandCount - 1)));
+            // float lerpZ = Mathf.LerpAngle(tiltZ, )
+            shakeObject.eulerAngles = new Vector3(0, 0, tiltZ);
+        }
+
+        public void UpdateIndex(int index)
+        {
+            transform.SetSiblingIndex(parentCard.transform.parent.GetSiblingIndex());
         }
 
         private void PointerDown(Card _)
