@@ -46,13 +46,13 @@ namespace Cardevil.Test
         {
             // 이벤트 리스너 등록
             Managers.Event.PlayerHealthChangeEvent.AddListener(OnPlayerHealthChanged);
-            Managers.Event.RemainingCardChangeEvent.AddListener(OnRemainingCardChanged, 10);
+            Managers.Event.RemainingCardChangeEvent.AddListener(OnRemainingCardChanged, 0);
         }
         private void OnDisable()
         {
             // 이벤트 리스너 제거
             Managers.Event.PlayerHealthChangeEvent.RemoveListener(OnPlayerHealthChanged);
-            Managers.Event.RemainingCardChangeEvent.RemoveListener(OnRemainingCardChanged, 10);
+            Managers.Event.RemainingCardChangeEvent.RemoveListener(OnRemainingCardChanged, 0);
         }
 
         public void Update()
@@ -79,7 +79,7 @@ namespace Cardevil.Test
             // 남은 카드 수가 변경됐을 때 디버그 화면에 표시
             var cardDeckCounter = Get<TextMeshProUGUI>(TextNames.CardDeckCount);
             if (cardDeckCounter != null)
-                cardDeckCounter.text = args.remainingCardCount.ToString();
+                cardDeckCounter.text = args.RemainingCardCount.ToString();
         }
 
         // event 사용 안하고 임시로 구현

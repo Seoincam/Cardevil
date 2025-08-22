@@ -16,15 +16,12 @@ namespace Cardevil.Cards
         [Header("References")]
         private CardBarGroup barGroup;
 
-        [Header("State")]
-        public bool CanUseCard { get; private set; }
-
         // [Header("Events")]
         public event Action<CardResult> OnCardUsed;
 
         public void Init()
         {
-            Managers.Turn.OnGameStateChanged += UpdateCanUseCard;
+            // Managers.Turn.OnGameStateChanged += UpdateCanUseCard;
 
             barGroup = GameObject.Find("CardBarGroup").GetComponent<CardBarGroup>();
             if (barGroup == null) Debug.LogError("BarGroup이 씬 내 존재하지 않습니다.");
@@ -33,7 +30,7 @@ namespace Cardevil.Cards
 
             DeckFactory.InitRuntimeDeckConfig(baseDeckConfig, baseRuntimeDeckConfig);
             Deck = new(baseRuntimeDeckConfig);
-            barGroup.Init(onSelectedCardsCountChanged: UpdateCanUseCard);
+            barGroup.Init();
 
             UpdateDeckCardCount();
         }
@@ -55,15 +52,6 @@ namespace Cardevil.Cards
             OnCardUsed?.Invoke(cardResult);
             // 임시로
             Managers.Game.Player.Move(cardResult.moves);
-        }
-
-        private void UpdateCanUseCard()
-        {
-            CanUseCard = Managers.Game.currentState == GameManager.GameState.PlayerInput
-                ? barGroup.Hand.SelectCount > 0
-                : false;
-
-            barGroup.SetUseCardButton(interactable: CanUseCard);
         }
         #endregion
     }

@@ -1,3 +1,4 @@
+using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,7 +16,7 @@ namespace Cardevil.Cards.CardInteractinos
         public CardVisual cardVisual;
 
         [Header("Reference")]
-        private CardBarGroup barGroup;
+        public CardBarGroup BarGroup { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
@@ -27,11 +28,11 @@ namespace Cardevil.Cards.CardInteractinos
                 if (isDiscarded)
                     return false;
 
-                if (barGroup.draggedCard != null
-                    && barGroup.draggedCard != this)
+                if (BarGroup.draggedCard != null
+                    && BarGroup.draggedCard != this)
                     return false;
 
-                if (!barGroup.CanInteraction)
+                if (!BarGroup.CanInteraction)
                     return false;
 
                 return true;
@@ -58,7 +59,7 @@ namespace Cardevil.Cards.CardInteractinos
         void Update()
         {
             if (isDiscarded)
-                return; 
+                return;
 
             // ClampPosition();
 
@@ -76,7 +77,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void Init(CardBarGroup barGroup, CardData cardData)
         {
-            this.barGroup = barGroup;
+            this.BarGroup = barGroup;
             data = cardData;
 
             // 이름 할당 (임시)
@@ -136,7 +137,7 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 OnPointerDownEvent?.Invoke(this);
 
-                if (data.OpenSelection(barGroup.selectContainer, this))
+                if (data.OpenSelection(BarGroup.selectContainer, this))
                     OnSelectStartEvent?.Invoke(this);
             }
         }
@@ -181,19 +182,19 @@ namespace Cardevil.Cards.CardInteractinos
                 if (pointerUpTime - pointerDownTime > 0.2f)
                     return;
 
-                isSelected = barGroup.Hand.SelectCount >= 4
+                isSelected = BarGroup.Hand.SelectCount >= 4
                     ? false
                     : !isSelected;
 
                 if (isSelected)
                 {
                     transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
-                    barGroup.AddSelectedCard(this);
+                    BarGroup.AddSelectedCard(this);
                 }
                 else
                 {
                     transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    barGroup.RemoveSelectedCard(this);
+                    BarGroup.RemoveSelectedCard(this);
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
@@ -223,5 +224,7 @@ namespace Cardevil.Cards.CardInteractinos
                 ? transform.parent.GetSiblingIndex()
                 : 0;
         }
+        
+        public float NormalizedPosition => Util.Remap(GetSlotIndex(), 0, transform.parent.parent.childCount - 1, 0, 1);
     }
 }

@@ -129,11 +129,13 @@ MonoBehaviour:
   parentCard: {fileID: 0}
   cardImage: {fileID: 850331243366006085}
   text: {fileID: 2541981827906521487}
+  shakeObject: {fileID: 8032909874445604869}
   shadowTransform: {fileID: 3781543390973892055}
   followSpeed: 10
   selectScale: 1.25
   scaleTransition: 0.15
   scaleEase: 27
+  curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
 --- !u!223 &2752623643086630161
 Canvas:
   m_ObjectHideFlags: 0
