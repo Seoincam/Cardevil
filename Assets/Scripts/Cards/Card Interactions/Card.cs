@@ -181,7 +181,7 @@ namespace Cardevil.Cards.CardInteractinos
                 if (pointerUpTime - pointerDownTime > 0.2f)
                     return;
 
-                isSelected = barGroup.selectedCards.Count >= 4
+                isSelected = barGroup.Hand.SelectCount >= 4
                     ? false
                     : !isSelected;
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Cardevil.Cards.CardInteractinos;
 
 namespace Cardevil.Cards
 {
@@ -10,15 +11,17 @@ namespace Cardevil.Cards
     public class InGameDeck
     {
         private readonly List<CardData> deck;
-        private readonly List<CardData> discardPile;
-        // TODO: 버려진 카드 관련 로직 추가
+        private readonly List<CardData> discard;
 
         public int Count => deck.Count();
+
+        // 오로지 덱의 상태만 전달 -> 플레이어 턴 여부 등은 고려x
+        public bool CanUseCard;
 
         public InGameDeck(BaseDeckConfiguration baseDeck)
         {
             deck = DeckFactory.InitInGameDeck(baseDeck);
-            discardPile = new();
+            discard = new();
         }
 
         public CardData DrawCard()

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
@@ -10,6 +9,8 @@ namespace Cardevil.Cards.CardInteractinos
 {
     public class CardBarGroup : MonoBehaviour
     {
+        public InGameHand Hand { get; private set; }
+
         // TODO: SO를 어디서 보관할지 조금 더 고민
         [Header("Card Data")]
         public BaseDeckConfiguration baseDeckConfig;
@@ -18,9 +19,9 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
         public Card draggedCard { get; private set; }
-        private List<Card> cards = new();
+        // private List<Card> cards = new();
 
-        public HashSet<Card> selectedCards = new(4);
+        // public HashSet<Card> selectedCards = new(4);
         public event Action onSelectedCardsCountChanged;
 
         public SelectContainer selectContainer;
@@ -33,8 +34,10 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] Button useCardButton;
         [SerializeField] Button discardCardButton;
 
-        [Header("Select Setting")]
+        [Header("Setting")]
         [SerializeField] float selectOffset = 35f;
+        [SerializeField] float drawInterval = .2f;
+        [SerializeField] float discardInterval = .3f;
 
         [Header("Etc")]
         public bool CanInteraction => canInteraction && !isSwapping;
@@ -43,6 +46,8 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void Init(Action onSelectedCardsCountChanged)
         {
+            Hand = new();
+
             for (int i = 0; i < 6; i++)
             {
                 var slot = Instantiate(original: cardSlotPrefab, parent: transform);
@@ -59,16 +64,14 @@ namespace Cardevil.Cards.CardInteractinos
 
         void Update()
         {
-            if (!canInteraction)
+            if (!CanInteraction)
                 return;
             if (draggedCard == null)
                 return;
-            if (isSwapping)
-                return;
-
             DetectSwap();
         }
 
+        #region Card Event
         private void BeginDrag(Card card)
         {
             draggedCard = card;
@@ -89,36 +92,33 @@ namespace Cardevil.Cards.CardInteractinos
 
             draggedCard = null;
         }
+        #endregion
 
         public void AddSelectedCard(Card card)
         {
-            selectedCards.Add(card);
-
-            var canUseCard = selectedCards.Count > 0;
+            Hand.Select(card);
             onSelectedCardsCountChanged?.Invoke();
         }
 
         public void RemoveSelectedCard(Card card)
         {
-            selectedCards.Remove(card);
-
-            var canUseCard = selectedCards.Count > 0;
+            Hand.Deselect(card);
             onSelectedCardsCountChanged?.Invoke();
         }
 
         private void DetectSwap()
         {
-            for (int i = 0; i < cards.Count; i++)
+            for (int i = 0; i < Hand.HandCount; i++)
             {
-                if (draggedCard.transform.position.x > cards[i].transform.position.x)
-                    if (draggedCard.GetSlotIndex() < cards[i].GetSlotIndex())
+                if (draggedCard.transform.position.x > Hand.GetCard(i).transform.position.x)
+                    if (draggedCard.GetSlotIndex() < Hand.GetCard(i).GetSlotIndex())
                     {
                         Swap(i);
                         break;
                     }
 
-                if (draggedCard.transform.position.x < cards[i].transform.position.x)
-                    if (draggedCard.GetSlotIndex() > cards[i].GetSlotIndex())
+                if (draggedCard.transform.position.x < Hand.GetCard(i).transform.position.x)
+                    if (draggedCard.GetSlotIndex() > Hand.GetCard(i).GetSlotIndex())
                     {
                         Swap(i);
                         break;
@@ -131,10 +131,10 @@ namespace Cardevil.Cards.CardInteractinos
             isSwapping = true;
 
             var selectedCardSlot = draggedCard.transform.parent;
-            var swappedSlot = cards[index].transform.parent;
+            var swappedSlot = Hand.GetCard(index).transform.parent;
 
-            cards[index].transform.SetParent(selectedCardSlot);
-            cards[index].transform.localPosition = cards[index].isSelected
+            Hand.GetCard(index).transform.SetParent(selectedCardSlot);
+            Hand.GetCard(index).transform.localPosition = Hand.GetCard(index).isSelected
                     ? new Vector3(0, selectOffset, 0)
                     : Vector3.zero;
 
@@ -167,7 +167,7 @@ namespace Cardevil.Cards.CardInteractinos
             var card = Instantiate(original: cardPrefab, parent: slots[slotIndex]).GetComponent<Card>();
             card.Init(barGroup: this, cardData);
 
-            cards.Add(card);
+            Hand.Draw(card);
 
             // 이벤트 구독
             card.OnBeginDragEvent += BeginDrag;
@@ -180,24 +180,8 @@ namespace Cardevil.Cards.CardInteractinos
         public async UniTaskVoid DiscardSequentially()
         {
             canInteraction = false;
-            var duration = .35f;
 
-            // 카드 버리기
-            // - - - - - -
-            var sortedSelect = selectedCards.OrderBy(c => c.GetSlotIndex())
-                .ToList();
-
-            foreach (var card in sortedSelect)
-            {
-                var slotIndex = card.GetSlotIndex();
-                cards.Remove(card);
-                card.Discard(duration);
-                slots[slotIndex].gameObject.SetActive(false);
-                await UniTask.Delay(TimeSpan.FromSeconds(duration));
-                card.Destroy();
-            }
-
-            selectedCards.Clear();
+            await Hand.Discard(discardInterval, slots);
 
             // slot 정렬
             // - - - - - -
@@ -222,7 +206,7 @@ namespace Cardevil.Cards.CardInteractinos
                 var slotIndex = slot.GetSiblingIndex();
                 slot.gameObject.SetActive(true);
                 SpawnCard(slotIndex);
-                await UniTask.Delay(TimeSpan.FromSeconds(duration - .1f));
+                await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
             }
 
             onSelectedCardsCountChanged?.Invoke();
@@ -234,7 +218,7 @@ namespace Cardevil.Cards.CardInteractinos
             if (!Managers.Card.CanUseCard)
                 return;
 
-            Managers.Card.UseCard(selectedCards);
+            Managers.Card.UseCard(Hand.Selects);
 
             _ = DiscardSequentially();
         }

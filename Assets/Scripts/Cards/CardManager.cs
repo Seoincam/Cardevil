@@ -60,7 +60,7 @@ namespace Cardevil.Cards
         private void UpdateCanUseCard()
         {
             CanUseCard = Managers.Game.currentState == GameManager.GameState.PlayerInput
-                ? barGroup.selectedCards.Count > 0
+                ? barGroup.Hand.SelectCount > 0
                 : false;
 
             barGroup.SetUseCardButton(interactable: CanUseCard);
