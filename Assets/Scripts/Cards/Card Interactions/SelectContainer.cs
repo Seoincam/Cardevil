@@ -26,10 +26,10 @@ public class SelectContainer : MonoBehaviour
         backgroundButton.onClick.AddListener(OnBackgroundClicked);
     }
 
-    public void SetContainer(Card card, HashSet<int> numbers, Vector3 position)
+    public void SetContainer(Card card, int[] numbers)
     {
         this.card = card;
-        transform.position = position + Vector3.up * 300f;
+        transform.position = card.transform.position + Vector3.up * 300f;
 
         var index = 0;
         foreach (var number in numbers)
@@ -41,10 +41,10 @@ public class SelectContainer : MonoBehaviour
         SetObjectActive(true);
     }
 
-    public void SetContainer(Card card, HashSet<Direction> directions, Vector3 position)
+    public void SetContainer(Card card, Direction[] directions)
     {
         this.card = card;
-        transform.position = position + Vector3.up * 300f;
+        transform.position = card.transform.position + Vector3.up * 300f;
 
         var index = 0;
         foreach (var direction in directions)
@@ -59,7 +59,7 @@ public class SelectContainer : MonoBehaviour
     private void OnNumberSelected(int number)
     {
         var numberCardData = card.data as NumberCardData;
-        numberCardData.SelectValue(number);
+        numberCardData.SetValue(number);
         card.cardVisual.UpdateVisual();
         SetObjectActive(false);
     }

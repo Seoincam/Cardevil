@@ -136,9 +136,9 @@ namespace Cardevil.Cards.CardInteractinos
             // 이름 설정 (임시)
             if (parentCard.data is DirectionCardData dirCard)
             {
-                transform.name = dirCard.Value.ToString();
-                var textString = dirCard.Value != Direction.None ? dirCard.Value.ToString() : "All";
-                if (dirCard.Value != Direction.None && dirCard.canSelect)
+                transform.name = dirCard.value.ToString();
+                var textString = dirCard.value != Direction.None ? dirCard.value.ToString() : "All";
+                if (dirCard.value != Direction.None && dirCard.CanSelect)
                     textString += "*";
                 text.text = textString;
                 text.fontSize = 35;
@@ -146,12 +146,12 @@ namespace Cardevil.Cards.CardInteractinos
 
             else if (parentCard.data is NumberCardData numCard)
             {
-                transform.name = $"{numCard.Color} {numCard.Value}";
-                var textString = numCard.Value == 0 ? "*" : numCard.Value.ToString();
-                if (numCard.Value != 0 && numCard.canSelect)
+                transform.name = $"{numCard.color} {numCard.value}";
+                var textString = numCard.value == 0 ? "*" : numCard.value.ToString();
+                if (numCard.value != 0 && numCard.CanSelect)
                     textString += "*";
                 text.text = textString;
-                switch (numCard.Color)
+                switch (numCard.color)
                 {
                     case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
                     case CardColor.Blue: text.color = Color.blue; break;

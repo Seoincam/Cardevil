@@ -10,6 +10,11 @@ namespace Cardevil.Cards.CardInteractinos
 {
     public class CardBarGroup : MonoBehaviour
     {
+        // TODO: SO를 어디서 보관할지 조금 더 고민
+        [Header("Card Data")]
+        public BaseDeckConfiguration baseDeckConfig;
+        public BaseDeckConfiguration baseRuntimeDeckConfig;
+
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
         public Card draggedCard { get; private set; }
@@ -155,7 +160,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public Card SpawnCard(int slotIndex)
         {
-            var cardData = Managers.Card.DrawCard();
+            var cardData = Managers.Card.Deck.DrawCard();
             if (cardData == null)
                 return null;
 
@@ -168,6 +173,7 @@ namespace Cardevil.Cards.CardInteractinos
             card.OnBeginDragEvent += BeginDrag;
             card.OnEndDragEvent += EndDrag;
 
+            Managers.Card.UpdateDeckCardCount();
             return card;
         }
 

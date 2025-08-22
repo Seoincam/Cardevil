@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Cardevil.Cards;
-using Cardevil.Utils.Directions;
 
 namespace Cardevil.Cards.CardInteractinos 
 {
@@ -83,9 +81,9 @@ namespace Cardevil.Cards.CardInteractinos
 
             // 이름 할당 (임시)
             if (cardData is DirectionCardData direction)
-                transform.name = direction.Value.ToString();
+                transform.name = direction.value.ToString();
             else if (cardData is NumberCardData number)
-                transform.name = $"{number.Color} {number.Value}";
+                transform.name = $"{number.color} {number.value}";
             else
                 Debug.LogError("cardData가 어떤 타입도 아닙니다.");
 
@@ -138,15 +136,8 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 OnPointerDownEvent?.Invoke(this);
 
-                if (data.canSelect)
-                {
+                if (data.OpenSelection(barGroup.selectContainer, this))
                     OnSelectStartEvent?.Invoke(this);
-                    if (data is NumberCardData number)
-                        barGroup.selectContainer.SetContainer(this, number.numbers, transform.position);
-                    else if (data is DirectionCardData direction)
-                        barGroup.selectContainer.SetContainer(this, direction.directinos, transform.position);
-                }
-                    
             }
         }
 

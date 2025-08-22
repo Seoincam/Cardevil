@@ -13,7 +13,7 @@ namespace Cardevil.Cards
         {
             var moveCards = cards.Select(c => c.data)
                         .OfType<DirectionCardData>()
-                        .Select(d => d.Value)
+                        .Select(d => d.value)
                         .ToArray();
 
             var numberCards = cards.Select(c => c.data)
@@ -43,24 +43,24 @@ namespace Cardevil.Cards
 
             if (combo == CardCombo.High)
             {
-                damage = numberCards.OrderBy(c => c.Value).Last().Value;
+                damage = numberCards.OrderBy(c => c.value).Last().value;
             }
             else
             {
                 if (combo == CardCombo.OnePair)
                 {
-                    damage = 2 * numberCards.GroupBy(c => c.Value)
+                    damage = 2 * numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 2)
                         .Sum(g => g.Key);
                 }
                 else if (combo == CardCombo.Triple)
                 {
-                    damage = 3 * numberCards.GroupBy(c => c.Value)
+                    damage = 3 * numberCards.GroupBy(c => c.value)
                         .Where(g => g.Count() == 3)
                         .Sum(g => g.Key);
                 }
                 else
-                    damage = numberCards.Sum(c => c.Value);
+                    damage = numberCards.Sum(c => c.value);
             }
 
             damage += (int)combo;
@@ -104,7 +104,7 @@ namespace Cardevil.Cards
             if (cards.Count != 4)
                 return false;
 
-            var values = cards.Select(c => c.Value)
+            var values = cards.Select(c => c.value)
                     .OrderBy(v => v)
                     .ToList();
 
@@ -120,7 +120,7 @@ namespace Cardevil.Cards
             if (cards.Count != 4)
                 return false;
 
-            return cards.Select(c => c.Color)
+            return cards.Select(c => c.color)
                     .Distinct()
                     .Count() == 1;
         }
@@ -135,13 +135,13 @@ namespace Cardevil.Cards
 
         static bool IsFourCard(List<NumberCardData> cards)
         {
-            return cards.GroupBy(c => c.Value)
+            return cards.GroupBy(c => c.value)
                         .Any(g => g.Count() == 4);
         }
 
         static bool IsTriple(List<NumberCardData> cards)
         {
-            return cards.GroupBy(c => c.Value)
+            return cards.GroupBy(c => c.value)
                         .Any(g => g.Count() == 3);
         }
 
@@ -150,14 +150,14 @@ namespace Cardevil.Cards
             if (cards.Count != 4)
                 return false;
 
-            return cards.GroupBy(c => c.Value)
+            return cards.GroupBy(c => c.value)
                     .Where(g => g.Count() == 2)
                     .Count() == 2;
         }
 
         static bool IsOnePair(List<NumberCardData> cards)
         {
-            return cards.GroupBy(c => c.Value)
+            return cards.GroupBy(c => c.value)
                         .Any(g => g.Count() == 2);
         }
 

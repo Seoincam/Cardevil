@@ -1,53 +1,62 @@
+using Cardevil.Cards.CardInteractinos;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Cardevil.Cards
 {
-    public enum CardColor { Red, Blue, Green, Black }
-
-    public class CardData
+    [System.Serializable]
+    public abstract class CardData
     {
         public int reinforcement = 0;
-        public bool canSelect;
-        public int canSelectCount;
+        public virtual bool CanSelect => false;
+
+        public abstract bool OpenSelection(SelectContainer selectContainer, Card card);
+        public abstract CardData CreateInGame();
     }
 
 
     [System.Serializable]
     public class NumberCardData : CardData
     {
-        public CardColor Color { get; private set; }
-        public int Value { get; private set; }
-        public HashSet<int> numbers;
+        public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
 
-        public NumberCardData(CardColor color, int value, bool canSelect = false)
+        [Space]
+        public CardColor color;
+        public int value;
+        public int[] selectableValues;
+
+        private NumberCardData(CardColor color, int value, int reinforcement, int[] selectableValues)
         {
-            Color = color;
-            Value = value;
-            numbers = new();
-            this.canSelect = canSelect;
+            this.color = color;
+            this.value = value;
+            this.reinforcement = reinforcement;
+            this.selectableValues = selectableValues;
         }
 
-        public void AddSelect(int[] values)
+        public bool SetValue(int value)
         {
-            foreach (int value in values)
-                numbers.Add(value);
-
-            canSelectCount = numbers.Count();
-        }
-
-        public bool SelectValue(int value)
-        {
-            if (!canSelect)
-                return false;
-            if (numbers.Count() == 1)
-                return false;
-            if (!numbers.Contains(value))
+            if (!selectableValues.Contains(value))
                 return false;
 
-            Value = value;
+            this.value = value;
             return true;
+        }
+
+        public override bool OpenSelection(SelectContainer selectContainer, Card card)
+        {
+            if (!CanSelect)
+                return false;
+            selectContainer.SetContainer(card, selectableValues);
+            return true;
+        }
+
+
+        public override CardData CreateInGame()
+        {
+            var data = new NumberCardData(color, value, reinforcement, selectableValues);
+            return data;
         }
     }
 
@@ -55,37 +64,45 @@ namespace Cardevil.Cards
     [System.Serializable]
     public class DirectionCardData : CardData
     {
-        public Direction Value { get; private set; }
-        public HashSet<Direction> directinos;
+        public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
 
-        public DirectionCardData(Direction value, bool canSelect = false)
+        [Space]
+        public Direction value;
+        public Direction[] selectableValues;
+
+        private DirectionCardData(Direction value, int reinforcement, Direction[] selectableValues)
         {
-            Value = value;
-            directinos = new();
-            this.canSelect = canSelect;
-        }
-
-        public void AddSelect(Direction[] values)
-        {
-            foreach (var value in values)
-                directinos.Add(value);
-
-            canSelectCount = directinos.Count();
+            this.value = value;
+            this.reinforcement = reinforcement;
+            this.selectableValues = selectableValues;
         }
 
         public bool SelectValue(Direction value)
         {
-            if (!canSelect)
-                return false;
-            if (directinos.Count() == 1)
-                return false;
-            if (!directinos.Contains(value))
+            if (!selectableValues.Contains(value))
                 return false;
 
-            Value = value;
+            this.value = value;
             return true;
         }
+
+        public override bool OpenSelection(SelectContainer selectContainer, Card card)
+        {
+            if (!CanSelect)
+                return false;
+            selectContainer.SetContainer(card, selectableValues);
+            return true;
+        }
+
+        public override CardData CreateInGame()
+        {
+            var data = new DirectionCardData(value, reinforcement, selectableValues);
+            return data;
+        }
     }
+
+
+    public enum CardColor { Red, Blue, Green, Black }
 
     public enum CardCombo
     {
@@ -105,7 +122,6 @@ namespace Cardevil.Cards
     {
         public CardCombo combo;
         public int damage;
-
         public Direction[] moves;
 
 
