@@ -1088,7 +1088,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2513949759068103829, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_Name
-      value: CardHandBar
+      value: CardBarGroup
       objectReference: {fileID: 0}
     - target: {fileID: 3793904579827459190, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_SizeDelta.x
