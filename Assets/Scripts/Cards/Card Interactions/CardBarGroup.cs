@@ -4,6 +4,7 @@ using DG.Tweening;
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
+using Cardevil.Events;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -19,7 +20,6 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
         public Card draggedCard { get; private set; }
-        public event Action onSelectedCardsCountChanged;
         public SelectContainer selectContainer;
 
         [Header("Slots")]
@@ -40,7 +40,7 @@ namespace Cardevil.Cards.CardInteractinos
         private bool canInteraction = true;
         private bool isSwapping = false;
 
-        public void Init(Action onSelectedCardsCountChanged)
+        public void Init()
         {
             Hand = new();
 
@@ -51,11 +51,27 @@ namespace Cardevil.Cards.CardInteractinos
                 slots[i] = slot.transform;
             }
 
-            this.onSelectedCardsCountChanged += onSelectedCardsCountChanged;
             useCardButton.onClick.AddListener(TryUseCard);
             discardCardButton.onClick.AddListener(DiscardCard);
 
             Managers.Turn.PreGameAsync += InitBarGroup;
+            Managers.Event.GameStateChangeEvent.AddListener(OnGameStateChanged);
+        }
+
+        public async UniTask InitBarGroup()
+        {
+            canInteraction = false;
+            UpdateCanUseCard();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                slots[i].gameObject.SetActive(true);
+                var card = SpawnCard(slotIndex: i);
+                await UniTask.Delay(TimeSpan.FromSeconds(.15f));
+            }
+
+            canInteraction = true;
+            UpdateCanUseCard();
         }
 
         void Update()
@@ -93,15 +109,16 @@ namespace Cardevil.Cards.CardInteractinos
         public void AddSelectedCard(Card card)
         {
             Hand.Select(card);
-            onSelectedCardsCountChanged?.Invoke();
+            UpdateCanUseCard();
         }
 
         public void RemoveSelectedCard(Card card)
         {
             Hand.Deselect(card);
-            onSelectedCardsCountChanged?.Invoke();
+            UpdateCanUseCard();
         }
 
+        #region Swap
         private void DetectSwap()
         {
             for (int i = 0; i < Hand.HandCount; i++)
@@ -140,20 +157,27 @@ namespace Cardevil.Cards.CardInteractinos
             swappedCard.cardVisual.UpdateIndex(swappedCard.GetSlotIndex());
             isSwapping = false;
         }
+        #endregion
 
-        public async UniTask InitBarGroup()
+        private void OnGameStateChanged(GameStateChangeArgs args)
         {
-            canInteraction = false;
+            // 이럴거면 args가 필요할까?
+            UpdateCanUseCard();
+        }
 
-            for (int i = 5; i >= 0; i--)
-            {
-                slots[i].gameObject.SetActive(true);
-                var card = SpawnCard(slotIndex: i);
-                await UniTask.Delay(TimeSpan.FromSeconds(.15f));
-            }
+        // 플레이어 턴이면서 카드 값 선택이 바뀔 때, -> Card.onselectEnded에서 호출
+        public void UpdateCanUseCard(Card _)
+        {
+            UpdateCanUseCard();
+        }
 
-            canInteraction = true;
-            onSelectedCardsCountChanged?.Invoke();
+        private void UpdateCanUseCard()
+        {
+            var canUseCard = Managers.Game.currentState != GameManager.GameState.PlayerInput
+                ? false
+                : CanInteraction && Hand.SelectCount > 0 && Hand.AllValueSelected;
+            useCardButton.interactable = canUseCard;
+
         }
 
         public Card SpawnCard(int slotIndex)
@@ -170,6 +194,7 @@ namespace Cardevil.Cards.CardInteractinos
             // 이벤트 구독
             card.OnBeginDragEvent += BeginDrag;
             card.OnEndDragEvent += EndDrag;
+            card.OnSelectEndEvent += UpdateCanUseCard;
 
             Managers.Card.UpdateDeckCardCount();
 
@@ -214,17 +239,13 @@ namespace Cardevil.Cards.CardInteractinos
                 await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
             }
 
-            onSelectedCardsCountChanged?.Invoke();
             canInteraction = true;
+            UpdateCanUseCard();
         }
 
         private void TryUseCard()
         {
-            if (!Managers.Card.CanUseCard)
-                return;
-
             Managers.Card.UseCard(Hand.Selects);
-
             _ = DiscardSequentially();
         }
 
@@ -233,11 +254,6 @@ namespace Cardevil.Cards.CardInteractinos
             // TODO: 카드 선택 0개일땐 불가능하게 수정
             useCardButton.interactable = false;
             _ = DiscardSequentially();
-        }
-
-        public void SetUseCardButton(bool interactable)
-        {
-            useCardButton.interactable = interactable;
         }
     }
 }

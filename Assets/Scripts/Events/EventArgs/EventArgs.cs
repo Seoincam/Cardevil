@@ -33,17 +33,31 @@
         /// <summary>
         /// 새로 카드를 뽑은 뒤 덱에 남은 카드 개수.
         /// </summary>
-        public int remainingCardCount { get; private set; }
+        public int RemainingCardCount { get; private set; }
 
         public void Init(int remainingCardCount)
         {
-            this.remainingCardCount = remainingCardCount;
+            RemainingCardCount = remainingCardCount;
         }
 
         public override void Clear()
         {
-            remainingCardCount = 0;
+            RemainingCardCount = 0;
         }
     }
-    
+
+    public class GameStateChangeArgs : EventArgs<GameStateChangeArgs>
+    {
+        public GameManager.GameState State { get; private set; }
+
+        public void Init(GameManager.GameState state)
+        {
+            State = state;
+        }
+
+        public override void Clear()
+        {
+            State = GameManager.GameState.NonCombat;
+        }
+    }
 }

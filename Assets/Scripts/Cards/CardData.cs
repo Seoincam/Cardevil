@@ -1,6 +1,5 @@
 using Cardevil.Cards.CardInteractinos;
 using Cardevil.Utils.Directions;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -11,6 +10,7 @@ namespace Cardevil.Cards
     {
         public int reinforcement = 0;
         public virtual bool CanSelect => false;
+        public virtual bool valueSelected => false;
 
         public abstract bool OpenSelection(SelectContainer selectContainer, Card card);
         public abstract CardData CreateInGame();
@@ -21,6 +21,8 @@ namespace Cardevil.Cards
     public class NumberCardData : CardData
     {
         public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
+        public override bool valueSelected => value != 0;
+
 
         [Space]
         public CardColor color;
@@ -65,6 +67,7 @@ namespace Cardevil.Cards
     public class DirectionCardData : CardData
     {
         public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
+        public override bool valueSelected => value != Direction.None;
 
         [Space]
         public Direction value;
