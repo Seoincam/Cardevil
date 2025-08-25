@@ -387,9 +387,9 @@ namespace Cardevil.Sound
                     {
                         _sfxEmitters.Remove(soundEmitter);
                     }
-                    soundEmitter.GetComponent<Poolable>().OnBeforeRelease -= OnRelease;
+                    soundEmitter.GetComponent<Poolable>().OnRelease -= OnRelease;
                 }
-                soundEmitter.GetComponent<Poolable>().OnBeforeRelease += OnRelease;
+                soundEmitter.GetComponent<Poolable>().OnRelease += OnRelease;
             }
 
             return soundEmitter;
