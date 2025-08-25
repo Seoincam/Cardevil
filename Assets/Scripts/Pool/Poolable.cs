@@ -10,16 +10,19 @@ namespace Cardevil.Pools
         
 
         public event Action OnGet;
-        public event Action OnBeforeRelease;
+        public event Action OnRelease;
+        public event Action OnReleaseOnce;
+       
         
         public void Release()
         {
             if (_pool == null)
             {
+                OnRelease?.Invoke();
+                OnReleaseOnce?.Invoke();
                 Destroy(gameObject);
                 return;
             }
-            OnBeforeRelease?.Invoke();   
             _pool.Release(this);
         }
         
@@ -31,7 +34,9 @@ namespace Cardevil.Pools
     
         internal void OnReturnToPool()
         {
-            OnBeforeRelease?.Invoke();
+            OnRelease?.Invoke();
+            OnReleaseOnce?.Invoke();
+            OnReleaseOnce = null;
             gameObject.SetActive(false);
         }
     }
