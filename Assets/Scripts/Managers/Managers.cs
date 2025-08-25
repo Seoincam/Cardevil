@@ -1,5 +1,9 @@
+using Cardevil.Cards;
+using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;
+using Cardevil.Sound;
+using Cardevil.Systems;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -16,9 +20,12 @@ public class Managers : MonoBehaviour
     SceneManagerEx _scene = new SceneManagerEx();
     DataManager _data = new DataManager(); //DataManager가 겹쳐서 추가
     JsonManager _json = new JsonManager();
-    SoundManager _sound = new SoundManager();
+    [SerializeField] SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
     EventManager _event = new EventManager();
+    TurnManager _turn = new TurnManager();
+    CardManager _card = new CardManager();
+    DungeonManager _dungeon = new DungeonManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -30,6 +37,9 @@ public class Managers : MonoBehaviour
     public static SoundManager Sound { get { return Instance._sound; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }
     public static EventManager Event { get { return Instance._event; } }
+    public static TurnManager Turn { get { return Instance._turn; } }
+    public static CardManager Card { get { return Instance._card; } }
+    public static DungeonManager Dungeon { get { return Instance._dungeon; } }
     
     void Start()
     {
@@ -59,16 +69,19 @@ public class Managers : MonoBehaviour
             s_instance = go.GetComponent<Managers>();
             s_instance._pool.Init();
             s_instance._data.Init();
-            // s_instance._sound.Init();                !!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
-		    s_instance._execution.Init();
+            s_instance._sound.Init();                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            s_instance._execution.Init();
+            s_instance._card.Init();
+            s_instance._turn.Init();
+            s_instance._dungeon.Init();
         }
     }
 
     public static void Clear()
     {
         UI.Clear();
-        Pool.Clear();
         Sound.Clear();
+        Pool.Clear();
         Game.Clear();
     }
 

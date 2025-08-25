@@ -20,13 +20,15 @@ public class ResourceManager
                 return original.gameObject as T;
             }
         }
-
-        if (Resources.Load<T>(path) == null)
+        
+        T resource = Resources.Load<T>(path);
+        if (resource == null)
         {
-            Debug.Log($"Failed to load Resource : {path}"); 
+            Debug.LogError($"Failed to load resource at path: {path}");
+            return null;
         }
 
-        return Resources.Load<T>(path);
+        return resource;
     }
 
     public GameObject Instantiate(string path, Transform parent = null)

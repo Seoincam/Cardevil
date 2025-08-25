@@ -23,7 +23,7 @@ namespace Cardevil.InGame.Enemy.Boss
                 return true; // 사망시 스킵
             }
 
-            SetAttackOrder(1); // 공격 턴을 1로 만들기
+            SetAllAttackOrder(1); // 공격 턴을 1로 만들기
 
             return false; // 아직 살아있다
         }

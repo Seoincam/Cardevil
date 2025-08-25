@@ -9,15 +9,15 @@ namespace Cardevil.Cards
         private static bool hasDamageRelics = false;
         private static bool hasColorRelics = false;
         
-        public static CardResult Evaluate(IEnumerable<Card> cardDatas)
+        public static CardResult Evaluate(IEnumerable<Card> cards)
         {
-            var moveCards = cardDatas.Select(c => c.cardData)
-                        .Where(c => c.type == CardType.Move)
-                        .Select(c => c.direction)
+            var moveCards = cards.Select(c => c.data)
+                        .OfType<DirectionCardData>()
+                        .Select(d => d.value)
                         .ToArray();
 
-            var numberCards = cardDatas.Select(c => c.cardData)
-                        .Where(c => c.type == CardType.Number)
+            var numberCards = cards.Select(c => c.data)
+                        .OfType<NumberCardData>()
                         .ToList();
 
             // == 숫자 카드 판정 ==
@@ -79,7 +79,7 @@ namespace Cardevil.Cards
 
         #region 카드 족보 판정
 
-        private static CardCombo CalculateCombo(List<CardData> cards)
+        private static CardCombo CalculateCombo(List<NumberCardData> cards)
         {
             if (IsStraightFlush(cards))
                 return CardCombo.StraightFlush;
@@ -99,7 +99,7 @@ namespace Cardevil.Cards
             return CardCombo.High;
         }
 
-        private static bool IsStraight(List<CardData> cards)
+        private static bool IsStraight(List<NumberCardData> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -115,7 +115,7 @@ namespace Cardevil.Cards
             return true;
         }
 
-        private static bool IsFlush(List<CardData> cards)
+        private static bool IsFlush(List<NumberCardData> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -125,7 +125,7 @@ namespace Cardevil.Cards
                     .Count() == 1;
         }
 
-        private static bool IsStraightFlush(List<CardData> cards)
+        private static bool IsStraightFlush(List<NumberCardData> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -133,19 +133,19 @@ namespace Cardevil.Cards
             return IsStraight(cards) && IsFlush(cards);
         }
 
-        static bool IsFourCard(List<CardData> cards)
+        static bool IsFourCard(List<NumberCardData> cards)
         {
             return cards.GroupBy(c => c.value)
                         .Any(g => g.Count() == 4);
         }
 
-        static bool IsTriple(List<CardData> cards)
+        static bool IsTriple(List<NumberCardData> cards)
         {
             return cards.GroupBy(c => c.value)
                         .Any(g => g.Count() == 3);
         }
 
-        static bool IsTwoPair(List<CardData> cards)
+        static bool IsTwoPair(List<NumberCardData> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -155,7 +155,7 @@ namespace Cardevil.Cards
                     .Count() == 2;
         }
 
-        static bool IsOnePair(List<CardData> cards)
+        static bool IsOnePair(List<NumberCardData> cards)
         {
             return cards.GroupBy(c => c.value)
                         .Any(g => g.Count() == 2);

@@ -1,45 +1,111 @@
+using Cardevil.Cards.CardInteractinos;
+using Cardevil.Utils.Directions;
+using System.Linq;
+using UnityEngine;
+
 namespace Cardevil.Cards
 {
-    public enum CardType { Move, Number }
-    public enum CardDirection { None, Up, Down, Left, Right, All }
-    public enum CardColor { None, Red, Blue, Green, Black }
+    [System.Serializable]
+    public abstract class CardData
+    {
+        public int reinforcement = 0;
+        public virtual bool CanSelect => false;
+        public virtual bool valueSelected => false;
+
+        public abstract bool OpenSelection(SelectContainer selectContainer, Card card);
+        public abstract CardData CreateInGame();
+    }
+
 
     [System.Serializable]
-    public struct CardData
+    public class NumberCardData : CardData
     {
-        public CardType type;
+        public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
+        public override bool valueSelected => value != 0;
 
-        public int reinforce;
 
-        // Move type
-        public CardDirection direction;
-
-        // Number type
+        [Space]
         public CardColor color;
-        public int value; // 2~10, *은 11으로 표기
+        public int value;
+        public int[] selectableValues;
 
-        // 생성자 (Number)
-        public CardData(CardColor color, int value, int reinforce)
+        private NumberCardData(CardColor color, int value, int reinforcement, int[] selectableValues)
         {
-            type = CardType.Number;
             this.color = color;
             this.value = value;
-            this.reinforce = reinforce;
-
-            direction = CardDirection.None;
+            this.reinforcement = reinforcement;
+            this.selectableValues = selectableValues;
         }
 
-        // 생성자 (Move)
-        public CardData(CardDirection direction, int reinforce)
+        public bool SetValue(int value)
         {
-            type = CardType.Move;
-            this.direction = direction;
-            this.reinforce = reinforce;
+            if (!selectableValues.Contains(value))
+                return false;
 
-            color = CardColor.None;
-            value = 0;
+            this.value = value;
+            return true;
+        }
+
+        public override bool OpenSelection(SelectContainer selectContainer, Card card)
+        {
+            if (!CanSelect)
+                return false;
+            selectContainer.SetContainer(card, selectableValues);
+            return true;
+        }
+
+
+        public override CardData CreateInGame()
+        {
+            var data = new NumberCardData(color, value, reinforcement, selectableValues);
+            return data;
         }
     }
+
+
+    [System.Serializable]
+    public class DirectionCardData : CardData
+    {
+        public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
+        public override bool valueSelected => value != Direction.None;
+
+        [Space]
+        public Direction value;
+        public Direction[] selectableValues;
+
+        private DirectionCardData(Direction value, int reinforcement, Direction[] selectableValues)
+        {
+            this.value = value;
+            this.reinforcement = reinforcement;
+            this.selectableValues = selectableValues;
+        }
+
+        public bool SelectValue(Direction value)
+        {
+            if (!selectableValues.Contains(value))
+                return false;
+
+            this.value = value;
+            return true;
+        }
+
+        public override bool OpenSelection(SelectContainer selectContainer, Card card)
+        {
+            if (!CanSelect)
+                return false;
+            selectContainer.SetContainer(card, selectableValues);
+            return true;
+        }
+
+        public override CardData CreateInGame()
+        {
+            var data = new DirectionCardData(value, reinforcement, selectableValues);
+            return data;
+        }
+    }
+
+
+    public enum CardColor { Red, Blue, Green, Black }
 
     public enum CardCombo
     {
@@ -59,18 +125,17 @@ namespace Cardevil.Cards
     {
         public CardCombo combo;
         public int damage;
+        public Direction[] moves;
 
-        public CardDirection[] moves;
 
-
-        public CardResult(CardCombo combo, int damage, CardDirection[] moves)
+        public CardResult(CardCombo combo, int damage, Direction[] moves)
         {
             this.combo = combo;
             this.damage = damage;
             this.moves = moves;
         }
 
-        public CardResult(CardDirection[] moves)
+        public CardResult(Direction[] moves)
         {
             combo = CardCombo.None;
             damage = 0;

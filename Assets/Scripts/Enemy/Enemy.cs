@@ -1,7 +1,7 @@
-using UnityEngine;
-using System;
 using Cardevil.Ingame.Field;
-
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -10,15 +10,20 @@ namespace Cardevil.InGame.Enemy
     {
         private Field field;
         private int damage = 1; // Enemy의 공격력
-        private float HP; // Enemy의 체력
-        private int attackTurnOrder;
-        public int attackCycle = 1; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
+        private float HP = 100; // Enemy의 체력
+        public int attackCreateTurnOrder;
+        public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
         private int attackLineNumber;
         private int attackPointNumber_x;
         private int attackPointNumber_y;
         private bool aWakeFirst = true;
+        private bool isAttakced = false;
+        
+        public bool isPlayerAttack = false;
 
-        enum AttackStyle
+        private List<Attack> attackLists = new List<Attack>();
+
+        public enum AttackStyle
         {
             UnKnown,
             AttackPoint,
@@ -26,9 +31,25 @@ namespace Cardevil.InGame.Enemy
             AttackHorizontal
         }
         private AttackStyle currentAttackStyle;
+
+        public class Attack
+        {
+            public AttackStyle currentAttackStyle;
+            public int attackLineNumber; // 어느곳에 공격하는지
+            public int attackCycle = 3; // 몇번뒤에 공격하는지
+            public int attackTurnOrder; // 현재 몇번뒤에 공격하는지
+            public int damage = 1;
+            public int attackPointNumber_x;
+            public int attackPointNumber_y;
+
+            public void SetAttackCycle()
+            {
+                attackTurnOrder = attackCycle; // 몇턴뒤에 공격
+            }
+            
+        }
         private void Start()
         {
-           
             field = Managers.Game.Field;
             currentAttackStyle = AttackStyle.UnKnown;
             Managers.Game.Enemy = this;
@@ -39,123 +60,195 @@ namespace Cardevil.InGame.Enemy
 
         #region Attack 관련
 
-        public void AttackEnemyAwake()
+        public virtual void AttackEnemyAwake() // 처음으로 호출되었을때
         {
             if (aWakeFirst == true) // 처음에선 랜덤지정
             {
-                SetAttackType();
-                SetAttackCycle();
-                setAttackSign();
-                attackTurnOrder++;
+                CreateAttack(true);
             }
+            aWakeFirst = false;
+        }
 
+        public void CreateAttack(bool firstCreate=false)
+        {
+            Attack tmpAttack = new Attack();
+            tmpAttack.currentAttackStyle = SetAttackType();
+            tmpAttack.SetAttackCycle();
+            if(firstCreate) { tmpAttack.attackTurnOrder++; }
+            SetAttack(tmpAttack,isPlayerAttack);
+            attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
         public void AttackEnemyTurnStart()
         {
-            AttackEnemyAwake(); // 처음으로 Awake된 상태일때
-            aWakeFirst = false;
-            // if 맵에 있는 모든 몹의 HP<=인가?
-            // -> 다음스테이지로
+            AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
 
-            // Enemy Turn Order 감소
-            attackTurnOrder--;
-            Debug.Log($"다음 공격까지 {attackTurnOrder}턴 남았습니다");
-            if (attackTurnOrder == 0) // 0 이라면 공격시행
-            {
-                AttackGo();
-                RemoveHighLight();
-            }
+            // 우선 시작할때 공격구역 설정하도록 해보기 Test
+
+
+            AttackPatternEnemyTurning(); // Enemy가 수행하는 공격들의 TurnOrder 감소 후 공격
 
             AttackEnemyTurnEnd(); // Enemy 공격의 마무리 단계
         }
 
-        void AttackGo()
+
+        private void AttackPatternEnemyTurning()
+        {
+            if (HP <= 0)// 만약 Enemy의 체력이 0 이라면 공격을 수행하지않음
+            {
+                return;
+            }
+            // 다른 Enemy들이 더 존재하는지 확인 후 다음 스테이지로 
+
+            foreach (Attack attack in attackLists) // 현재 Enemy가 가지고 있는 Attack 
+            {
+                attack.attackTurnOrder--; // 모든 Attack 들의 Turn Order 감소
+                Debug.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
+                if (attack.attackTurnOrder == 0) // 0 이라면 공격시행
+                {
+                    AttackGo(attack);
+                    RemoveHighLight(attack);
+                }
+            }
+
+
+
+        }
+
+
+        void AttackGo(Attack attack)
         {
             Debug.Log($"Enemy Attack! damage : {damage}");
-            if (currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
+            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
             {
                 AttackHorizontal(attackLineNumber);
             }
-            else if (currentAttackStyle == AttackStyle.AttackVertical)
+            else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
             {
                 AttackVerical(attackLineNumber);
             }
-            else if (currentAttackStyle == AttackStyle.AttackPoint)
+            else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
             {
                 AttackPoint(attackPointNumber_x, attackPointNumber_y);
             }
         }
         void AttackEnemyTurnEnd()
         {
-            if (attackTurnOrder == 0) // 이미 공격을 했다면
+            List<Attack> tmpAttacks = new List<Attack>();
+            int count = 0;
+            foreach(Attack attack in attackLists)
             {
-                // 새로운 공격 패턴 지정, 어택사이클 지정
-                SetAttackType();
-                SetAttackCycle();
-                setAttackSign();
+                if (attack.attackTurnOrder == 0) // 이미 공격을 했다면
+                {
+                    // 새로운 공격 패턴 지정, 어택사이클 지정
+                    RemoveHighLight(attack);
+                    count++;
+                }
+                else
+                {
+                    tmpAttacks.Add(attack); // 공격을 진행하지 않은 Attack만 저장
+                }
             }
+
+            attackLists = tmpAttacks; // 어택리스트 재조정
+
+            for (int i=0;i<count;i++) // 지워진 어택 갯수만큼 새로 생성
+            {
+                CreateAttack();
+            }
+           
+            
+   
+            
+
 
             // 어택의 방식이 단일 공격이라면  콤보라면, 이 지정이 아니라 특별하게 나오는 순서같은게 지정될 수 있다.
 
             // 플레이어 턴으로 넘기기
         }
 
-       
-        void setAttackSign()
+
+        void SetAttackLine() // 어느 라인에 공격할건지 정하기
         {
-            attackLineNumber = UnityEngine.Random.Range(0, 2); // 랜덤으로 위치 지정
-            if (currentAttackStyle == AttackStyle.AttackHorizontal) //가로 또는 세로 공격
+
+        }
+
+        /// <summary>
+        /// true 라면 Player 위치를 받아와서 공격
+        /// </summary>
+        /// <param name="setPlayerAttack"></param>
+        void SetAttack(Attack attack,bool setPlayerAttack = false)
+        {
+            if (setPlayerAttack) // 플레이어 위치로 공격할 것인가에 대해
             {
-                AttackNoticeSign_Horizontal(attackLineNumber);
+                // 현재 가로공격인지 세로공격인지 확인
+                if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
+                {
+                    //플레이어의 가로 위치
+                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+
+                }
+                else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
+                {
+                    //플레이어의 세로 위치
+                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                }
             }
-            else if(currentAttackStyle == AttackStyle.AttackVertical)
+            else
             {
-                AttackNoticeSign_Vertical(attackLineNumber);
+                attack.attackLineNumber = UnityEngine.Random.Range(0, 2); // 랜덤으로 위치 지정
             }
-            else if(currentAttackStyle==AttackStyle.AttackPoint)
+
+
+
+            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) //가로 또는 세로 공격
+            {
+                AttackNoticeSign_Horizontal(attack.attackLineNumber);
+            }
+            else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
+            {
+                AttackNoticeSign_Vertical(attack.attackLineNumber);
+            }
+            else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
             {
                 // 포인트 랜덤으로 지정
-                attackPointNumber_y = UnityEngine.Random.Range(0, 2);
-                attackPointNumber_x = attackLineNumber;
-                AttackNoticeSign_Point(attackPointNumber_x, attackPointNumber_y);
+                attack.attackPointNumber_y = UnityEngine.Random.Range(0, 2);
+                attack.attackPointNumber_x = attack.attackLineNumber;
+                AttackNoticeSign_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
             }
             else { Debug.Log("currentAttackStyle을 찾지 못한 오류"); }
-            Debug.Log($"Attack 예상 sign {currentAttackStyle}");
+            Debug.Log($"Attack 예상 sign {attack.currentAttackStyle}");
         }
-        void SetAttackType()
+        AttackStyle SetAttackType()
         {
             currentAttackStyle = GetRandomAttackStyle(); // 랜덤으로 어택스타일 받기;
-
+            return currentAttackStyle;
         }
-        void SetAttackCycle()
-        {
-            attackTurnOrder = attackCycle; // 몇턴뒤에 공격
-        }
-
+      
         AttackStyle GetRandomAttackStyle() // 랜덤으로 어택스타일 받기
         {
             Array values = Enum.GetValues(typeof(AttackStyle));
-            return (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
+            return (isPlayerAttack)?(AttackStyle)values.GetValue(UnityEngine.Random.Range(2, values.Length)): (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
+            // 랜덤값 다르게받기
         }
 
-
-        void RemoveHighLight()
+        #region HighLight관련
+        public void RemoveHighLight(Attack attack)
         {
-            if (currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
+            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
             {
-                RemoveHighLight_Horizontal(attackLineNumber);
+                RemoveHighLight_Horizontal(attack.attackLineNumber);
             }
-            else if (currentAttackStyle == AttackStyle.AttackVertical)
+            else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
             {
-                RemoveHighLight_Vertical(attackLineNumber);
+                RemoveHighLight_Vertical(attack.attackLineNumber);
             }
-            else if (currentAttackStyle == AttackStyle.AttackPoint)
+            else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
             {
-                RemoveHighLight_Point(attackPointNumber_x, attackPointNumber_y);
+                RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
             }
         }
 
-        void RemoveHighLight_Horizontal(int lineNumber)
+        public void RemoveHighLight_Horizontal(int lineNumber)
         {
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
@@ -163,34 +256,34 @@ namespace Cardevil.InGame.Enemy
             }
         }
 
-        void RemoveHighLight_Vertical(int lineNumber)
+        public void RemoveHighLight_Vertical(int lineNumber)
         {
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
                 field[lineNumber][x].UnHighLightAttackTile(); // 해당 타일을 하이라이트하기.
             }
         }
-        void RemoveHighLight_Point(int pointNumber_x,int pointNumber_y)
+        void RemoveHighLight_Point(int pointNumber_x, int pointNumber_y)
         {
             field[pointNumber_x][pointNumber_y].UnHighLightAttackTile(); // 해당 타일 하이라이트 off
         }
-        void AttackNoticeSign_Point(int pointNumber_x,int pointNumber_y)
+        public void AttackNoticeSign_Point(int pointNumber_x, int pointNumber_y)
         {
             field[pointNumber_x][pointNumber_y].HighLightAttackTile(); // 해당 타일을 하이라이트하기.
             currentAttackStyle = AttackStyle.AttackPoint; // 포인트 어택 형태로 저장
         }
 
-        void AttackNoticeSign_Vertical(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
+        public void AttackNoticeSign_Vertical(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
         {
-            
-            for(int x=0;x<3;x++) // 가로 0,1,2 에대해
+
+            for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
                 field[lineNumber][x].HighLightAttackTile(); // 해당 타일을 하이라이트하기.
             }
             currentAttackStyle = AttackStyle.AttackVertical; // 포인트 어택 형태로 저장
         }
 
-        void AttackNoticeSign_Horizontal(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
+        public void AttackNoticeSign_Horizontal(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
         {
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
@@ -200,11 +293,10 @@ namespace Cardevil.InGame.Enemy
         }
 
 
-
+        #endregion
 
         // 실질적인 공격 후 데미지 주기
-
-        void AttackPoint(int pointNumber_x,int poinNumber_y)
+        void AttackPoint(int pointNumber_x, int poinNumber_y)
         {
             field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
@@ -218,14 +310,14 @@ namespace Cardevil.InGame.Enemy
         void AttackVerical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
         {
             // 가로는 0,1,2 모두
-            for(int x=0;x<3;x++)
+            for (int x = 0; x < 3; x++)
             {
                 field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
                 //Entity중 Player가 있다면
 
                 //데미지 주기
-                
+
             }
         }
 
@@ -248,7 +340,8 @@ namespace Cardevil.InGame.Enemy
         public virtual bool GetDamage(float damage)
         {
             HP -= damage;
-            if(HP<=0)
+            Debug.Log($"{damage}만큼의 피해를 입러 HP가 {HP}로 감소하였다!");
+            if (HP <= 0)
             {
                 // 유닛 사망
                 Destroy(this.gameObject);
@@ -259,9 +352,65 @@ namespace Cardevil.InGame.Enemy
         }
 
 
-        public void SetAttackOrder(int i)
+        #region Tool 관련
+        public void SetAllAttackOrder(int i)
         {
-            attackTurnOrder = i;
+            foreach (Attack attack in attackLists)
+            {
+                if (i <= attack.attackTurnOrder)
+                {
+                    attack.attackTurnOrder = i;
+                    Debug.Log($"attackTurnOrder이 {i}로 조정되었습니다.");
+                }
+                else
+                {
+                    Debug.Log($"공격 턴오더 {i}가 현재 공격 턴 오더 {attack.attackTurnOrder} 보다 커서 조정되지않았습니다");
+                }
+            }
         }
+
+        public void AttackOrderDiscount()
+        {
+            foreach (Attack attack in attackLists)
+            {
+                if (attack.attackTurnOrder <= 0)
+                {
+                    attack.attackTurnOrder--;
+                    Debug.Log("공격턴 추가 감소!");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Player위치로 공격하게끔
+        /// </summary>
+        public void SetAttackOnPlayer()
+        {
+            isPlayerAttack = true;
+        }
+
+        /// <summary>
+        /// true or false 랜덤 설정
+        /// </summary>
+        public void SetAttackOnPlayerOrRandom()
+        {
+            isPlayerAttack = (UnityEngine.Random.value > 0.5f);
+        }
+
+        public void SetFirstAwake()
+        {
+            aWakeFirst = true;
+        }
+
+        public void TurnClear()
+        {
+            isAttakced = false;
+        }
+        public void IsAttacked(int amount)
+        {
+            isAttakced = true;
+            GetDamage(amount);
+        }
+        #endregion
     }
 }

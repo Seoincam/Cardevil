@@ -1,3 +1,4 @@
+using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,7 +8,7 @@ namespace Cardevil.Cards.CardInteractinos
     public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [Header("Card")]
-        public CardData cardData;
+        public CardData data;
         private bool isDiscarded = false;
 
         [Header("Visual")]
@@ -15,7 +16,7 @@ namespace Cardevil.Cards.CardInteractinos
         public CardVisual cardVisual;
 
         [Header("Reference")]
-        private CardBarGroup barGroup;
+        public CardBarGroup BarGroup { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
@@ -27,11 +28,11 @@ namespace Cardevil.Cards.CardInteractinos
                 if (isDiscarded)
                     return false;
 
-                if (barGroup.draggedCard != null
-                    && barGroup.draggedCard != this)
+                if (BarGroup.draggedCard != null
+                    && BarGroup.draggedCard != this)
                     return false;
 
-                if (!barGroup.CanInteraction)
+                if (!BarGroup.CanInteraction)
                     return false;
 
                 return true;
@@ -48,6 +49,8 @@ namespace Cardevil.Cards.CardInteractinos
         [HideInInspector] public Action<Card> OnPointerUpEvent;
         [HideInInspector] public Action<Card> OnBeginDragEvent;
         [HideInInspector] public Action<Card> OnEndDragEvent;
+        [HideInInspector] public Action<Card> OnSelectStartEvent;
+        [HideInInspector] public Action<Card> OnSelectEndEvent;
 
         [HideInInspector] public Action OnSpawn;
         [HideInInspector] public Action<float> OnDiscard;
@@ -56,7 +59,7 @@ namespace Cardevil.Cards.CardInteractinos
         void Update()
         {
             if (isDiscarded)
-                return; 
+                return;
 
             // ClampPosition();
 
@@ -74,19 +77,23 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void Init(CardBarGroup barGroup, CardData cardData)
         {
-            this.barGroup = barGroup;
-            this.cardData = cardData;
+            this.BarGroup = barGroup;
+            data = cardData;
 
-            transform.name = cardData.type == CardType.Move
-                ? cardData.direction.ToString()
-                : $"{cardData.color} {cardData.value}";
+            // 이름 할당 (임시)
+            if (cardData is DirectionCardData direction)
+                transform.name = direction.value.ToString();
+            else if (cardData is NumberCardData number)
+                transform.name = $"{number.color} {number.value}";
+            else
+                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
 
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
             if (visualHandler == null)
                 Debug.LogError("Visual Handler를 찾을 수 없음.");
 
             cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
-            cardVisual.Init(parentCard: this, cardData);
+            cardVisual.Init(this);
 
             OnSpawn?.Invoke();
         }
@@ -114,17 +121,25 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                if (!CanDrag)
+                    return;
 
-            if (!CanDrag)
-                return;
+                OnPointerDownEvent?.Invoke(this);
+                pointerDownTime = Time.time;
 
-            OnPointerDownEvent?.Invoke(this);
-            pointerDownTime = Time.time;
+                var mousePosition = Input.mousePosition;
+                var offset = mousePosition - transform.position;
+            }
 
-            var mousePosition = Input.mousePosition;
-            var offset = mousePosition - transform.position;
+            else if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                OnPointerDownEvent?.Invoke(this);
+
+                if (data.OpenSelection(BarGroup.selectContainer, this))
+                    OnSelectStartEvent?.Invoke(this);
+            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -157,31 +172,36 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left)
-                return;
-
-            if (!CanDrag)
-                return;
-                
-            OnPointerUpEvent?.Invoke(this);
-            pointerUpTime = Time.time;
-            if (pointerUpTime - pointerDownTime > 0.2f)
-                return;
-
-            isSelected = barGroup.selectedCards.Count >= 4 
-                ? false
-                : !isSelected;
-
-            if (isSelected)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
-                transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
-                barGroup.AddSelectedCard(this);
+                if (!CanDrag)
+                    return;
+
+                OnPointerUpEvent?.Invoke(this);
+                pointerUpTime = Time.time;
+                if (pointerUpTime - pointerDownTime > 0.2f)
+                    return;
+
+                isSelected = BarGroup.Hand.SelectCount >= 4
+                    ? false
+                    : !isSelected;
+
+                if (isSelected)
+                {
+                    transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
+                    BarGroup.AddSelectedCard(this);
+                }
+                else
+                {
+                    transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
+                    BarGroup.RemoveSelectedCard(this);
+                }
             }
-            else
+            else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                barGroup.RemoveSelectedCard(this);
+                OnPointerUpEvent?.Invoke(this);
             }
+
         }
 
 
@@ -204,5 +224,7 @@ namespace Cardevil.Cards.CardInteractinos
                 ? transform.parent.GetSiblingIndex()
                 : 0;
         }
+        
+        public float NormalizedPosition => Util.Remap(GetSlotIndex(), 0, transform.parent.parent.childCount - 1, 0, 1);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Cardevil.Ingame.Field;
+using Cardevil.Ingame.Field;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -18,6 +18,8 @@ namespace Cardevil.Ingame.Entities
         [Header("References")]
         [SerializeField] protected Entity _entity;
 
+        
+        public Entity Entity => _entity;
 
         private void Awake()
         {
@@ -37,6 +39,7 @@ namespace Cardevil.Ingame.Entities
                     return;
                 }
                 _entity.Init(_initialTile);
+                Managers.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
         }
 
@@ -44,18 +47,21 @@ namespace Cardevil.Ingame.Entities
         {
             if (_isDebugMode)
             {
-                int horizontal = (int)Input.GetAxisRaw("Horizontal");
-                int vertical = (int)Input.GetAxisRaw("Vertical");
-                // print($"Horizontal: {horizontal}, Vertical: {vertical}");
-                if (horizontal != 0 || vertical != 0)
+                if(Input.anyKeyDown)
                 {
-                    Direction direction = Direction.None;
-                    if (horizontal > 0) direction = Direction.Right;
-                    else if (horizontal < 0) direction = Direction.Left;
-                    else if (vertical > 0) direction = Direction.Up;
-                    else if (vertical < 0) direction = Direction.Down;
-                    Debug.Log($"Moving in direction: {direction}");
-                    Move(direction);
+                    int horizontal = (int)Input.GetAxisRaw("Horizontal");
+                    int vertical = (int)Input.GetAxisRaw("Vertical");
+                    // print($"Horizontal: {horizontal}, Vertical: {vertical}");
+                    if (horizontal != 0 || vertical != 0)
+                    {
+                        Direction direction = Direction.None;
+                        if (horizontal > 0) direction = Direction.Right;
+                        else if (horizontal < 0) direction = Direction.Left;
+                        else if (vertical > 0) direction = Direction.Up;
+                        else if (vertical < 0) direction = Direction.Down;
+                        Debug.Log($"Moving in direction: {direction}");
+                        Move(direction);
+                    }
                 }
             }
         }
@@ -65,6 +71,14 @@ namespace Cardevil.Ingame.Entities
          * TODO : Move 메서드 개선. 현재는 즉시이동 + wrapAround 활성화
          * 
          */
+        public void Move(Direction[] directions)
+        {
+            foreach (var direction in directions)
+            {
+                Move(direction, 1);
+            }
+        }
+
         public void Move(Direction direction)
         {
             Move(direction, 1);
@@ -93,6 +107,16 @@ namespace Cardevil.Ingame.Entities
                 return;
             }
             _entity.MoveTo(tile, true);
+        }
+        /// <summary>  플레이어의 Horinzontal Line Number </summary>
+        public int GetPlayerLineNumberHorizontal() 
+        {
+            return Entity.Tile.i;
+        }
+        /// <summary>  플레이어의 Vertical Line Number </summary>
+        public int GetPlayerLineNumberVertical()
+        {
+            return Entity.Tile.j;
         }
     }
 }
