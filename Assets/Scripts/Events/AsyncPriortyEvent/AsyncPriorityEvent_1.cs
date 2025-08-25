@@ -1,27 +1,23 @@
-﻿using System;
+﻿using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Events
+namespace Cardevil.Events.AsyncPriortyEvent
 {
-    public class PriorityEvent<T0,T1,T2> : PriorityEventBase
+    public class AsyncPriorityEvent<T0> : AsyncPriorityEventBase
     {
-        private SortedList<int,Action<T0,T1,T2>> _events = new SortedList<int, Action<T0,T1,T2>>();
+        private SortedList<int,AsyncEventHandler<T0>> _events = new ();
     
-        private List<(int,Action<T0,T1,T2>)> _eventsToAdd = new ();
-        private List<(int,Action<T0,T1,T2>)> _eventsToRemove = new ();
-        public void AddListener(Action<T0,T1,T2> listener, int priority= 0)
+        private List<(int,AsyncEventHandler<T0>)> _eventsToAdd = new ();
+        private List<(int,AsyncEventHandler<T0>)> _eventsToRemove = new ();
+    
+        public void AddListener(AsyncEventHandler<T0> listener, int priority = 0)
         {
-            if (priority == MAGIC_NUMBER)
-            {
-                throw new ArgumentException($"Priority cannot be {MAGIC_NUMBER}");
-            }
-            if(_isInvoking)
+            if (_isInvoking)
             {
                 _eventsToAdd.Add((priority, listener));
                 return;
             }
-        
-        
             if (_events.ContainsKey(priority))
             {
                 _events[priority] += listener;
@@ -32,7 +28,7 @@ namespace Cardevil.Events
             }
         }
     
-        public void RemoveListener(Action<T0,T1,T2> listener, int priority)
+        public void RemoveListener(AsyncEventHandler<T0> listener, int priority)
         {
             if (_isInvoking)
             {
@@ -49,11 +45,11 @@ namespace Cardevil.Events
             }
         }
     
-        public void RemoveListener(Action<T0,T1,T2> listener)
+        public void RemoveListener(AsyncEventHandler<T0> listener)
         {
             if (_isInvoking)
             {
-                _eventsToRemove.Add((MAGIC_NUMBER, listener));
+                _eventsToRemove.Add((0, listener));
                 return;
             }
             var keys = new List<int>(_events.Keys);
@@ -85,13 +81,33 @@ namespace Cardevil.Events
             }
             _events.Clear();
         }
+
+        public override void Clear()
+        {
+            ClearListeners();
+        }
+
+        public void Invoke(T0 arg)
+        {
+            InvokeAsync(arg).Forget();
+        }
     
-        public void Invoke(T0 arg,T1 arg1,T2 arg2)
+        public async UniTask InvokeAsync(T0 arg)
         {
             _isInvoking = true;
-            foreach (var e in _events.Values)
+            foreach (AsyncEventHandler<T0> e in _events.Values)
             {
-                e?.Invoke(arg,arg1,arg2);
+                foreach (var handler in e.GetInvocationList())
+                {
+                    try
+                    {
+                        await ((AsyncEventHandler<T0>)handler)(arg);
+                    }
+                    catch (Exception ex)
+                    {
+                        UnityEngine.Debug.LogError($"Exception during event invocation: {ex}");
+                    }
+                }
             }
             _isInvoking = false;
         
@@ -119,8 +135,8 @@ namespace Cardevil.Events
                 ClearListeners(key);
             }
             _keysToClear.Clear();
+        
+        
         }
-
-        public override void Clear() => ClearListeners();
     }
 }
