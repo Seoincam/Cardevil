@@ -5,6 +5,7 @@ namespace Cardevil.Events
 {
     public class PriorityEvent : PriorityEventBase
     {
+        
         private SortedList<int,Action> _events = new SortedList<int, Action>();
     
         private List<(int,Action)> _eventsToAdd = new List<(int, Action)>();
@@ -12,6 +13,10 @@ namespace Cardevil.Events
     
         public void AddListener(Action listener, int priority = 0)
         {
+            if (priority == MAGIC_NUMBER)
+            {
+                throw new ArgumentException($"Priority cannot be {MAGIC_NUMBER}");
+            }
             if (_isInvoking)
             {
                 _eventsToAdd.Add((priority, listener));
@@ -34,6 +39,11 @@ namespace Cardevil.Events
                 _eventsToRemove.Add((priority, listener));
                 return;
             }
+
+            if (priority == MAGIC_NUMBER)
+            {
+                RemoveListener(listener);
+            }
             if (_events.ContainsKey(priority))
             {
                 _events[priority] -= listener;
@@ -44,7 +54,7 @@ namespace Cardevil.Events
         {
             if (_isInvoking)
             {
-                _eventsToRemove.Add((0, listener));
+                _eventsToRemove.Add((MAGIC_NUMBER, listener));
                 return;
             }
             var keys = new List<int>(_events.Keys);
@@ -102,6 +112,7 @@ namespace Cardevil.Events
             if (_clearAll)
             {
                 _events.Clear();
+                _clearAll = false;
             }
 
             foreach (var key in _keysToClear)
