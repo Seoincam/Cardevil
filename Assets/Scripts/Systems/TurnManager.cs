@@ -122,7 +122,7 @@ namespace Cardevil.Systems
                 }))
                 : "없음";
 
-            var text = $@"콤보: {result.combo}
+            var text = $@"콤보: {result.Combo}
             데미지: {result.damage}
             이동: {moveText}
             ";

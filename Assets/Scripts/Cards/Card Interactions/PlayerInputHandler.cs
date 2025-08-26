@@ -7,9 +7,9 @@ namespace Cardevil.Cards.CardInteractinos
 {
     public class PlayerInputHandler : IPlayerInputHandler
     {
-        public event Action<CardResult> OnPlayerInputReceived;
+        public event Action<CardContext> OnPlayerInputReceived;
 
-        private UniTaskCompletionSource<CardResult> inputTcs;
+        private UniTaskCompletionSource<CardContext> inputTcs;
 
 
         public PlayerInputHandler()
@@ -35,7 +35,7 @@ namespace Cardevil.Cards.CardInteractinos
             Managers.Turn.PlayerInputAsync += HandlePlayerInputAsync;
         }
 
-        public void OnCardUsed(CardResult result)
+        public void OnCardUsed(CardContext result)
         {
             inputTcs?.TrySetResult(result);
         }

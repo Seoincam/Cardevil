@@ -16,7 +16,7 @@ namespace Cardevil.Cards.CardInteractinos
         public CardVisual cardVisual;
 
         [Header("Reference")]
-        public CardBarGroup BarGroup { get; private set; }
+        public CardHandBar BarGroup { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
@@ -75,7 +75,7 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
-        public void Init(CardBarGroup barGroup, CardData cardData)
+        public void Init(CardHandBar barGroup, CardData cardData)
         {
             this.BarGroup = barGroup;
             data = cardData;

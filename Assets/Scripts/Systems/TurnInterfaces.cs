@@ -7,11 +7,11 @@ namespace Cardevil.Systems
     #region Player Input
     public interface IPlayerInputHandler
     {
-        event Action<CardResult> OnPlayerInputReceived;
+        event Action<CardContext> OnPlayerInputReceived;
 
         void SubscribePlayerInput();
         UniTask HandlePlayerInputAsync();
-        void OnCardUsed(CardResult _);
+        void OnCardUsed(CardContext _);
     }
     #endregion
 
@@ -20,7 +20,7 @@ namespace Cardevil.Systems
     public interface IPlayerInputReceiver
     {
         void SubscribePlayerInput();
-        void ReceiveInput(CardResult result);
+        void ReceiveInput(CardContext result);
     }
 
     public interface IPlayerDamageReceiver

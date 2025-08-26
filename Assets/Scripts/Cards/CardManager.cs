@@ -14,23 +14,20 @@ namespace Cardevil.Cards
         public InGameDeck Deck { get; private set; }
 
         [Header("References")]
-        private CardBarGroup barGroup;
-
-        // [Header("Events")]
-        public event Action<CardResult> OnCardUsed;
+        private CardHandBar handBar;
 
         public void Init()
         {
             // Managers.Turn.OnGameStateChanged += UpdateCanUseCard;
 
-            barGroup = GameObject.Find("CardBarGroup").GetComponent<CardBarGroup>();
-            if (barGroup == null) Debug.LogError("BarGroup이 씬 내 존재하지 않습니다.");
-            baseDeckConfig = barGroup.baseDeckConfig;
-            baseRuntimeDeckConfig = barGroup.baseRuntimeDeckConfig;
+            handBar = GameObject.Find("CardHandBar").GetComponent<CardHandBar>();
+            if (handBar == null) Debug.LogError("CardHandBar이 씬 내 존재하지 않습니다.");
+            baseDeckConfig = handBar.baseDeckConfig;
+            baseRuntimeDeckConfig = handBar.baseRuntimeDeckConfig;
 
             DeckFactory.InitRuntimeDeckConfig(baseDeckConfig, baseRuntimeDeckConfig);
             Deck = new(baseRuntimeDeckConfig);
-            barGroup.Init();
+            handBar.Init();
 
             UpdateDeckCardCount();
         }
@@ -43,15 +40,6 @@ namespace Cardevil.Cards
                 args.Init(Deck.Count);
                 Managers.Event.RemainingCardChangeEvent?.Invoke(args);
             }
-        }
-
-        public void UseCard(IEnumerable<Card> cards)
-        {
-            var cardResult = CardComboEvaluator.Evaluate(cards);
-
-            OnCardUsed?.Invoke(cardResult);
-            // 임시로
-            Managers.Game.Player.Move(cardResult.moves);
         }
         #endregion
     }

@@ -107,7 +107,7 @@ namespace Cardevil.Cards
 
     public enum CardColor { Red, Blue, Green, Black }
 
-    public enum CardCombo
+    public enum HandRanking
     {
         None = -1,
 
@@ -119,27 +119,5 @@ namespace Cardevil.Cards
         Flush = 80,
         FourCard = 200,
         StraightFlush = 300  // 스티플
-    }
-
-    public struct CardResult
-    {
-        public CardCombo combo;
-        public int damage;
-        public Direction[] moves;
-
-
-        public CardResult(CardCombo combo, int damage, Direction[] moves)
-        {
-            this.combo = combo;
-            this.damage = damage;
-            this.moves = moves;
-        }
-
-        public CardResult(Direction[] moves)
-        {
-            combo = CardCombo.None;
-            damage = 0;
-            this.moves = moves;
-        }
     }
 }

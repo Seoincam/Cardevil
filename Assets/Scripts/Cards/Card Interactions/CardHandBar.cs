@@ -8,14 +8,16 @@ using Cardevil.Events;
 
 namespace Cardevil.Cards.CardInteractinos
 {
-    public class CardBarGroup : MonoBehaviour
+    public class CardHandBar : MonoBehaviour
     {
         public InGameHand Hand { get; private set; }
+        public CardContext Context { get; private set; }
 
         // TODO: SO를 어디서 보관할지 조금 더 고민
-        [Header("Card Data")]
+        [Header("SO")]
         public BaseDeckConfiguration baseDeckConfig;
         public BaseDeckConfiguration baseRuntimeDeckConfig;
+        [SerializeField] MultiplyValues multiplyValues;
 
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
@@ -43,6 +45,7 @@ namespace Cardevil.Cards.CardInteractinos
         public void Init()
         {
             Hand = new();
+            Context = new(multiplyValues);
 
             for (int i = 0; i < 6; i++)
             {
@@ -51,7 +54,7 @@ namespace Cardevil.Cards.CardInteractinos
                 slots[i] = slot.transform;
             }
 
-            useCardButton.onClick.AddListener(TryUseCard);
+            useCardButton.onClick.AddListener(UseCard);
             discardCardButton.onClick.AddListener(DiscardCard);
 
             Managers.Turn.PreGameAsync += InitBarGroup;
@@ -207,6 +210,26 @@ namespace Cardevil.Cards.CardInteractinos
             return card;
         }
 
+
+        private void UseCard()
+        {
+            CardResultEvaluator.Evaluate(Context, Hand.Selects);
+            _ = DiscardSequentially();
+
+        }
+
+        /*
+        카드 사용시 영향 갈 것:
+            [player Input]
+                턴 종료
+
+            [player action]
+                카드 사용 애니메이션
+                플레이어 이동 
+                플레이어 공격
+                boss한테 데미지
+        */
+
         public async UniTaskVoid DiscardSequentially()
         {
             canInteraction = false;
@@ -241,12 +264,6 @@ namespace Cardevil.Cards.CardInteractinos
 
             canInteraction = true;
             UpdateCanUseCard();
-        }
-
-        private void TryUseCard()
-        {
-            Managers.Card.UseCard(Hand.Selects);
-            _ = DiscardSequentially();
         }
 
         private void DiscardCard()
