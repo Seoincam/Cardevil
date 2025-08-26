@@ -5,13 +5,16 @@ using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
 using Cardevil.Events;
+using Cardevil.Systems;
 
 namespace Cardevil.Cards.CardInteractinos
 {
-    public class CardHandBar : MonoBehaviour
+    public class CardHandBar : MonoBehaviour, ICardHandBar, IUserInput
     {
         public InGameHand Hand { get; private set; }
-        public CardContext Context { get; private set; }
+        public CardContext Context => _context;
+
+        private CardContext _context;
 
         // TODO: SO를 어디서 보관할지 조금 더 고민
         [Header("SO")]
@@ -45,7 +48,7 @@ namespace Cardevil.Cards.CardInteractinos
         public void Init()
         {
             Hand = new();
-            Context = new(multiplyValues);
+            _context = new(multiplyValues);
 
             for (int i = 0; i < 6; i++)
             {
@@ -57,7 +60,6 @@ namespace Cardevil.Cards.CardInteractinos
             useCardButton.onClick.AddListener(UseCard);
             discardCardButton.onClick.AddListener(DiscardCard);
 
-            Managers.Turn.PreGameAsync += InitBarGroup;
             Managers.Event.GameStateChangeEvent.AddListener(OnGameStateChanged);
         }
 
@@ -155,7 +157,7 @@ namespace Cardevil.Cards.CardInteractinos
                     : Vector3.zero;
 
             draggedCard.transform.SetParent(swappedSlot);
-            
+
             draggedCard.cardVisual.UpdateIndex(draggedCard.GetSlotIndex());
             swappedCard.cardVisual.UpdateIndex(swappedCard.GetSlotIndex());
             isSwapping = false;
@@ -206,7 +208,7 @@ namespace Cardevil.Cards.CardInteractinos
                 var c = Hand.GetCard(i);
                 c.cardVisual.UpdateIndex(c.GetSlotIndex());
             }
-                
+
             return card;
         }
 
@@ -217,18 +219,6 @@ namespace Cardevil.Cards.CardInteractinos
             _ = DiscardSequentially();
 
         }
-
-        /*
-        카드 사용시 영향 갈 것:
-            [player Input]
-                턴 종료
-
-            [player action]
-                카드 사용 애니메이션
-                플레이어 이동 
-                플레이어 공격
-                boss한테 데미지
-        */
 
         public async UniTaskVoid DiscardSequentially()
         {
@@ -250,17 +240,6 @@ namespace Cardevil.Cards.CardInteractinos
                     .OrderBy(t => t.GetSiblingIndex())
                     .ToArray();
 
-            // 다시 뽑기
-            // - - - - - -
-            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
-
-            foreach (var slot in inactiveSlots)
-            {
-                var slotIndex = slot.GetSiblingIndex();
-                slot.gameObject.SetActive(true);
-                SpawnCard(slotIndex);
-                await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
-            }
 
             canInteraction = true;
             UpdateCanUseCard();
@@ -272,5 +251,39 @@ namespace Cardevil.Cards.CardInteractinos
             useCardButton.interactable = false;
             _ = DiscardSequentially();
         }
+
+
+        #region IUserInput
+        public bool IsNoCard => false;
+
+        public void ActivateInteraction()
+        {
+
+        }
+
+        public void InactivateInteraction()
+        {
+
+        }
+
+        public async UniTask DrawCard()
+        {
+            var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
+                        .ToArray();
+
+            foreach (var slot in inactiveSlots)
+            {
+                var slotIndex = slot.GetSiblingIndex();
+                slot.gameObject.SetActive(true);
+                SpawnCard(slotIndex);
+                await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
+            }
+        }
+
+        public async UniTask HandleUserInput()
+        {
+            // TODO: 기다림 로직
+        }
+        #endregion
     }
 }

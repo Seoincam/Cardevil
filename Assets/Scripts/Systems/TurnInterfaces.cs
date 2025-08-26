@@ -1,56 +1,34 @@
-using System;
-using Cardevil.Cards;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Systems
 {
-    #region Player Input
-    public interface IPlayerInputHandler
+    interface IUserInput
     {
-        event Action<CardContext> OnPlayerInputReceived;
+        bool IsNoCard { get; }
 
-        void SubscribePlayerInput();
-        UniTask HandlePlayerInputAsync();
-        void OnCardUsed(CardContext _);
-    }
-    #endregion
-
-
-    #region  Player
-    public interface IPlayerInputReceiver
-    {
-        void SubscribePlayerInput();
-        void ReceiveInput(CardContext result);
+        UniTask DrawCard();
+        void ActivateInteraction();
+        UniTask HandleUserInput();
+        void InactivateInteraction();
     }
 
-    public interface IPlayerDamageReceiver
+    interface IPlayerAction
     {
-        // 필드 상 플레이어 위치 기반으로 수정
+        bool IsDead { get; }
+        UniTask Attack();
+        void GetDamage();
     }
 
-    public interface IPlayerActionHandler
+    interface IPlayerMove
     {
-        event Action<int> OnPlayerDamageDealt;
-
-        void SubscribePlayerAction();
-        UniTask HandlePlayerActionAsync();
-    }
-    #endregion
-
-
-    #region Boss
-    public interface IBossDamageReceiver
-    {
-        void SubscribePlayerDamage();
-        void UnsubscribePlayerDamage();
-        void ReceivePlayerDamage(int amount);
+        UniTask Move();
     }
 
-    public interface IBossActionHandler
+    interface IEnemy
     {
-        void SubscribeBossAction();
-        void UnsubscribeBossAction();
-        UniTask HandleBossActionAsync();
+        bool IsDead { get; }
+        bool CheckAttack();
+        UniTask Attack();
+        void GetDamage();
     }
-    #endregion
 }

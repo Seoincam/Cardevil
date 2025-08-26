@@ -19,7 +19,6 @@ namespace Cardevil.Cards
         public void Init()
         {
             // Managers.Turn.OnGameStateChanged += UpdateCanUseCard;
-
             handBar = GameObject.Find("CardHandBar").GetComponent<CardHandBar>();
             if (handBar == null) Debug.LogError("CardHandBar이 씬 내 존재하지 않습니다.");
             baseDeckConfig = handBar.baseDeckConfig;
