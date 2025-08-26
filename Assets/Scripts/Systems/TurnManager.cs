@@ -1,50 +1,83 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Test;
-using Cardevil.Events;
+using System.Threading;
 
 namespace Cardevil.Systems
 {
     public class TurnManager
     {   
         private DebugScreen debug;
+        private CancellationTokenSource cts;
 
         [Header("Interfaces")]
-        private IUserInput userInput;
-        private IPlayerMove playerMove;
-        private IPlayerAction playerAction;
-        private IEnemy enemy;
+        private ITurnPlayerInput playerInput;
+        private ITurnPlayerMove playerMove;
+        private ITurnPlayerAction playerAction;
+        private ITurnEnemy enemy;
 
-        public void Init()
+
+        public void Init(ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
+        {
+            if (playerInput == null)
+            {
+                Debug.LogError("TurnManager.Init에서 userInput이 null입니다");
+                return;
+            }
+            if (playerMove == null)
+            {
+                Debug.LogError("TurnManager.Init에서 playerMove가 null입니다");
+                return;
+            }
+            if (playerAction == null)
+            {
+                Debug.LogError("TurnManager.Init에서 playerAction이 null입니다");
+                return;
+            }
+            if (enemy == null)
+            {
+                Debug.LogError("TurnManager.Init에서 enemy가 null입니다");
+                return;
+            }
+
+            this.playerInput = playerInput;
+            this.playerMove = playerMove;
+            this.playerAction = playerAction;
+            this.enemy = enemy;
+
+            Init();
+        }
+
+        private void Init()
         {
             debug = GameObject.Find("DebugCanvas").GetComponent<DebugScreen>();
             if (debug == null)
                 Debug.LogError("DebugScreen을 찾지 못했습니다.");
 
             // 시작
-            GameLoopAsync().Forget();
-            SetGameState(GameManager.GameState.Action);
+            cts = new();
+            GameLoopAsync(cts.Token).Forget();
         }
 
 
-        private async UniTaskVoid GameLoopAsync()
+        private async UniTask GameLoopAsync(CancellationToken cts)
         {
             // TODO: 적에 대한 설명
 
-            while (true)
+            while (!cts.IsCancellationRequested)
             {
                 // 턴이 시작될때 Enemy의 Turn 값 초기화
                 Managers.Game.Enemy.TurnClear();
 
-                await userInput.DrawCard();
-                if (userInput.IsNoCard)
+                await playerInput.DrawCard();
+                if (playerInput.IsNoCard)
                 {
                     // TODO: 게임 오버    
                 }
 
-                userInput.ActivateInteraction();
-                await userInput.HandleUserInput();
-                userInput.InactivateInteraction();
+                playerInput.ActivateInteraction();
+                await playerInput.WaitUserInput();
+                playerInput.InactivateInteraction();
 
                 await playerMove.Move();
                 await playerAction.Attack();
@@ -59,35 +92,9 @@ namespace Cardevil.Systems
                     await enemy.Attack();
                     if (playerAction.IsDead)
                     {
-                        // TODO: 게임 오버
+                        Managers.Game.PlayerDied();
                     }
                 }
-            }
-        }
-
-
-
-
-        private async UniTask UpdateProgressBarAsync(DebugScreen.TurnDebugSliderNames slider, float duration)
-        {
-            debug.SetTurnDebugProgressBar(slider, 1f);
-            var start = Time.time;
-            while (Time.time - start < duration)
-            {
-                var remain = duration - (Time.time - start);
-                debug.SetTurnDebugProgressBar(slider, remain / duration);
-                await UniTask.Yield();
-            }
-            debug.SetTurnDebugProgressBar(slider, 0f);
-        }
-
-        public void SetGameState(GameManager.GameState gameState)
-        {
-            Managers.Game.currentState = gameState;
-            using (var args = GameStateChangeArgs.Get())
-            {
-                args.Init(gameState);
-                Managers.Event.GameStateChangeEvent?.Invoke(args);
             }
         }
     }

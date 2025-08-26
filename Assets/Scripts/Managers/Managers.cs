@@ -72,7 +72,6 @@ public class Managers : MonoBehaviour
             s_instance._sound.Init();                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             s_instance._execution.Init();
             s_instance._card.Init();
-            s_instance._turn.Init();
             s_instance._dungeon.Init();
         }
     }

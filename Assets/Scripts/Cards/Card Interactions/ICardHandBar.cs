@@ -1,7 +1,8 @@
 namespace Cardevil.Cards
 {
-    interface ICardHandBar
+    public interface ICardHandBar
     {
-        public CardContext Context { get; }
+        void Init();
+        CardContext Context { get; }
     }
 }
