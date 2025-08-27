@@ -81,6 +81,7 @@ namespace Cardevil.InGame.Enemy
         }
         public async UniTask TurnAttack() //인터페이스
         {
+            await UniTask.Delay(1200);
             AttackEnemyTurnStart();
         }
         public virtual void AttackEnemyAwake() // 처음으로 호출되었을때
@@ -101,9 +102,8 @@ namespace Cardevil.InGame.Enemy
             SetAttack(tmpAttack,isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
-        IEnumerator AttackEnemyTurnStart()
+        public void AttackEnemyTurnStart()
         {
-            yield return new WaitForSeconds(1.2f);
             Debug.Log("Enemy Turn!!");
             AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
 
