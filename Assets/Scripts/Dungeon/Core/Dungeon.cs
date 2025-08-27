@@ -1,18 +1,29 @@
-﻿using Dungeon.UI;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Cardevil.Dungeon
 {
+    [Serializable]
     public class Dungeon
     {
-        internal int dungeonId;
-        internal DungeonConfigurationSO dungeonConfiguration;
-        private DungeonNode rootNode;
-        private List<DungeonNode> nodes;
+        [SerializeField] internal int dungeonId;
+        [SerializeField] internal DungeonConfigurationSO dungeonConfiguration;
+        [SerializeField] private DungeonNode rootNode;
+        [SerializeField] private List<DungeonNode> nodes;
         
         
+        public int DungeonId
+        {
+            get => dungeonId;
+        }
+        public DungeonConfigurationSO DungeonConfiguration
+        {
+            get => dungeonConfiguration;
+        }
         
         public DungeonNode RootNode
         {
@@ -23,6 +34,11 @@ namespace Cardevil.Dungeon
         {
             get => nodes;
             set => nodes = value;
+        }
+        
+        public DungeonNode GetNodeById(int nodeId)
+        {
+            return nodes[nodeId - 1];
         }
         
         

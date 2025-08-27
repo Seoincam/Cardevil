@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cardevil.Attributes;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,10 +8,37 @@ namespace Cardevil.Dungeon
     [Serializable]
     public class DungeonNode
     {
-        public int NodeId { get; set; }
-        public int Floor { get; set; }
-        public DungeonNodeTypes Type { get; private set; }
-        public DungeonNodePreset Preset { get; private set; }
+        [SerializeField, VisibleOnly] private Dungeon dungeon;
+        [SerializeField, VisibleOnly] private int nodeId;
+        [SerializeField, VisibleOnly] private int floor;
+        [SerializeField, VisibleOnly] private DungeonNodeTypes type;
+        [SerializeField, VisibleOnly] private DungeonNodePreset preset;
+        
+        public Dungeon Dungeon
+        {
+            get => dungeon;
+            set => dungeon = value;
+        }
+        public int NodeId
+        {
+            get => nodeId;
+            set => nodeId = value;
+        }
+        public int Floor 
+        {
+            get => floor;
+            set => floor = value;
+        }
+        public DungeonNodeTypes Type 
+        {
+            get => type;
+            set => type = value;
+        }
+        public DungeonNodePreset Preset 
+        {
+            get => preset;
+            set => preset = value;
+        }
         
         public bool IsBranchStart { get; set; } = false;
         public bool IsInBranch { get; set; } = false;
@@ -18,7 +46,7 @@ namespace Cardevil.Dungeon
         public List<DungeonNode> PreviousNodes { get; private set; } = new List<DungeonNode>();
         public List<DungeonNode> NextNodes { get; private set; } = new List<DungeonNode>();
 
-        public DungeonNode(int nodeId,int floor, DungeonNodeTypes type, DungeonNodePreset preset)
+        public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodePreset preset)
         {
             NodeId = nodeId;
             Floor = floor;
