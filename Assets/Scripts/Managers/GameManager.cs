@@ -95,7 +95,7 @@ public class GameManager
     public enum GameState
     {
         Pause,
-        PlayerInput, Action,
+        Combat,
         NonCombat
     }
     public GameState currentState;

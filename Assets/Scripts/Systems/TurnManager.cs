@@ -69,7 +69,6 @@ namespace Cardevil.Systems
                 // 턴이 시작될때 Enemy의 Turn 값 초기화
                 Managers.Game.Enemy.TurnClear();
 
-                Debug.Log("시작");
                 await playerInput.DrawCard();
                 if (playerInput.IsNoCard)
                 {
@@ -88,13 +87,12 @@ namespace Cardevil.Systems
                     // TODO: 게임 클리어
                 }
 
+                await enemy.TurnAttack();
                 
-                 await enemy.TurnAttack();
-                 if (playerAction.IsDead)
-                 {
-                     Managers.Game.PlayerDied();
-                 }
-                
+                if (playerAction.IsDead)
+                {
+                    Managers.Game.PlayerDied();
+                }
             }
         }
     }
