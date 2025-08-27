@@ -67,15 +67,15 @@ namespace Cardevil.Cards
     public class DirectionCardData : CardData
     {
         public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
-        public override bool valueSelected => value != Direction.None;
+        public override bool valueSelected => value.direction != Direction.None;
 
         [Space]
-        public Direction value;
+        public CardDirection value;
         public Direction[] selectableValues;
 
-        private DirectionCardData(Direction value, int reinforcement, Direction[] selectableValues)
+        private DirectionCardData(CardDirection value, int reinforcement, Direction[] selectableValues)
         {
-            this.value = value;
+            this.value = new CardDirection(value.direction, value.length);
             this.reinforcement = reinforcement;
             this.selectableValues = selectableValues;
         }
@@ -85,7 +85,7 @@ namespace Cardevil.Cards
             if (!selectableValues.Contains(value))
                 return false;
 
-            this.value = value;
+            this.value.direction = value;
             return true;
         }
 
@@ -99,13 +99,26 @@ namespace Cardevil.Cards
 
         public override CardData CreateInGame()
         {
-            var data = new DirectionCardData(value, reinforcement, selectableValues);
+            var cardDirection = new CardDirection(value.direction, value.length);
+            var data = new DirectionCardData(cardDirection, reinforcement, selectableValues);
             return data;
         }
     }
 
 
     public enum CardColor { Red, Blue, Green, Black }
+
+    public struct CardDirection
+    {
+        public Direction direction;
+        public int length;
+
+        public CardDirection(Direction direction, int length)
+        {
+            this.direction = direction;
+            this.length = length;
+        }
+    }
 
     public enum HandRanking
     {
