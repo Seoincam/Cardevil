@@ -45,19 +45,4 @@
             RemainingCardCount = 0;
         }
     }
-
-    public class GameStateChangeArgs : EventArgs<GameStateChangeArgs>
-    {
-        public GameManager.GameState State { get; private set; }
-
-        public void Init(GameManager.GameState state)
-        {
-            State = state;
-        }
-
-        public override void Clear()
-        {
-            State = GameManager.GameState.NonCombat;
-        }
-    }
 }
