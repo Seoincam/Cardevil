@@ -36,6 +36,7 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] Button discardCardButton;
 
         [Header("Setting")]
+        [SerializeField] int initialCardCount = 6;
         [SerializeField] float selectOffset = 35f;
         [SerializeField] float drawInterval = .2f;
         [SerializeField] float discardInterval = .3f;
@@ -65,7 +66,7 @@ namespace Cardevil.Cards.CardInteractinos
             Hand = new();
             _context = new(multiplyValues);
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < initialCardCount; i++)
             {
                 var slot = Instantiate(original: cardSlotPrefab, parent: transform);
                 slot.gameObject.SetActive(false);
@@ -292,6 +293,8 @@ namespace Cardevil.Cards.CardInteractinos
 
         public async UniTask DrawCard()
         {
+            isSwapping = true;
+
             var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
                         .ToArray();
 
@@ -302,6 +305,8 @@ namespace Cardevil.Cards.CardInteractinos
                 SpawnCard(slotIndex);
                 await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
             }
+
+            isSwapping = false;
         }
 
         public async UniTask WaitUserInput()
