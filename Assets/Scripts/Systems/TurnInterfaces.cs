@@ -23,7 +23,7 @@ namespace Cardevil.Systems
     public interface ITurnPlayerAction
     {
         bool IsDead { get; }
-        UniTask Attack();
+        UniTask TurnAttack();
         void GetDamage(int amount);
     }
 
@@ -44,10 +44,10 @@ namespace Cardevil.Systems
     {
         bool IsDead { get; }
         UniTask Attack();
-        void GetDamage(int amount);
+        bool GetDamage(int damage);
 
         /// <summary>
-        /// 공격까지 남은 턴이 0이 됐나 확인.
+        /// 공격들중에 공격까지 남은 턴이 0이 있는것이 있나 됐나 확인.
         /// </summary>
         bool CheckAttack();
     }
