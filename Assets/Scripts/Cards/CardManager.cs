@@ -18,11 +18,24 @@ namespace Cardevil.Cards
             handBar.Init();
         }
 
-        public CardResult GetCurrentCard()
+        public CardResult GetCurrentCardRank()
         {
+            
             return Managers.Card.handBar.Context.CurrentResult;
         }
 
+        public int GetCurrentCardRankScore()
+        {
+
+            CardResult card = GetCurrentCardRank();
+
+            HandRanking rank = card.Rankings[0];
+
+            // enum → int 변환
+            int score = (int)rank;
+
+            return score;
+        }
         
     }
 }

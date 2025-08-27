@@ -25,9 +25,11 @@ namespace Cardevil.InGame.Enemy.Boss
             // 살아 있다면
 
             // 스트레이트 이상 족보의 공격 받을 시 사용자의 턴 1회 점프
-           
-            // 스트레이트 이상 족보라면
-            AttackOrderDiscount(); // 공격 턴 1 추가 감소
+            if(Managers.Card.GetCurrentCardRankScore()>=50)
+            {
+                Debug.Log("Jack은 Straight이상의 공격을 받았습니다.");
+                AttackOrderDiscount(); // 공격 턴 1 추가 감소
+            }
            
 
 

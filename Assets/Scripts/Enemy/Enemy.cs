@@ -6,13 +6,15 @@ using Cardevil.Systems;
 using System.Collections;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using Cardevil.Ingame.Entities;
+
 namespace Cardevil.InGame.Enemy
 {
     //
     public class Enemy : MonoBehaviour, ITurnEnemy
     {
         private Field field;
-        private int damage = 1; // Enemy의 공격력
+        private float damage = 1; // Enemy의 공격력
         private float HP = 100; // Enemy의 체력
         public int attackCreateTurnOrder;
         public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
@@ -195,39 +197,20 @@ namespace Cardevil.InGame.Enemy
         /// true 라면 Player 위치를 받아와서 공격
         /// </summary>
         /// <param name="setPlayerAttack"></param>
-        void SetAttack(Attack attack,bool setPlayerAttack = false)
+        virtual public void SetAttack(Attack attack,bool setPlayerAttack = false)
         {
             if (setPlayerAttack) // 플레이어 위치로 공격할 것인가에 대해
             {
-                // 현재 가로공격인지 세로공격인지 확인
-                if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
-                {
-                    //플레이어의 가로 위치
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-
-                }
-                else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
-                {
-                    //플레이어의 세로 위치
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
-                }
+                SetPlayerAttack(attack);
             }
             else
             {
-                attack.attackLineNumber = UnityEngine.Random.Range(0, 2); // 랜덤으로 위치 지정
+                SetRandomAttack(attack);
             }
 
 
 
-            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) //가로 또는 세로 공격
-            {
-                AttackNoticeSign_Horizontal(attack.attackLineNumber);
-            }
-            else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
-            {
-                AttackNoticeSign_Vertical(attack.attackLineNumber);
-            }
-            else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
+           if (attack.currentAttackStyle == AttackStyle.AttackPoint) // 포인트 공격이 진행된다면.
             {
                 // 포인트 랜덤으로 지정
                 attack.attackPointNumber_y = UnityEngine.Random.Range(0, 2);
@@ -236,6 +219,38 @@ namespace Cardevil.InGame.Enemy
             }
             else { Debug.Log("currentAttackStyle을 찾지 못한 오류"); }
             Debug.Log($"Attack 예상 sign {attack.currentAttackStyle}");
+        }
+        /// <summary>
+        /// 플레이어위치로 공격설정
+        /// </summary>
+        /// <param name="attack"></param>
+        public void SetPlayerAttack(Attack attack)
+        {
+            // 현재 가로공격인지 세로공격인지 확인
+            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
+            {
+                //플레이어의 가로 위치
+                attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                //공격위치표시
+                AttackNoticeSign_Horizontal(attack.attackLineNumber);
+
+            }
+            else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
+            {
+                //플레이어의 세로 위치
+                attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                //공격위치표시
+                AttackNoticeSign_Vertical(attack.attackLineNumber);
+            }
+        }
+
+        /// <summary>
+        /// 랜덤위치로 공격 설정
+        /// </summary>
+        /// <returns></returns>
+        void SetRandomAttack(Attack attack)
+        {
+            attack.attackLineNumber = UnityEngine.Random.Range(0, 2); // 랜덤으로 위치 지정
         }
         AttackStyle SetAttackType()
         {
@@ -317,12 +332,21 @@ namespace Cardevil.InGame.Enemy
         // 실질적인 공격 후 데미지 주기
         void AttackPoint(int pointNumber_x, int poinNumber_y)
         {
+            List<Entity> entities =
             field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
-
             //Entity중 Player가 있다면
-
-            //데미지 주기
+            foreach (Entity entity in entities)
+            {
+                if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                {
+                    // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                    if (player is ITurnPlayerAction action)
+                    {
+                        action.PlayerGetDamage(damage);
+                    }
+                }
+            }
 
         }
 
@@ -331,11 +355,21 @@ namespace Cardevil.InGame.Enemy
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
             {
+                List<Entity> entities =
                 field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
                 //Entity중 Player가 있다면
-
-                //데미지 주기
+                foreach(Entity entity in entities)
+                {
+                    if(entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                    {
+                        // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                        if (player is ITurnPlayerAction action)
+                        {
+                            action.PlayerGetDamage(damage);
+                        }
+                    }
+                }
 
             }
         }
@@ -346,11 +380,21 @@ namespace Cardevil.InGame.Enemy
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
             {
-                field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+                List<Entity> entities =
+               field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
                 //Entity중 Player가 있다면
-
-                //데미지 주기
+                foreach (Entity entity in entities)
+                {
+                    if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                    {
+                        // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                        if (player is ITurnPlayerAction action)
+                        {
+                            action.PlayerGetDamage(damage);
+                        }
+                    }
+                }
 
             }
         }

@@ -24,7 +24,7 @@ namespace Cardevil.Systems
     {
         bool IsDead { get; }
         UniTask TurnAttack();
-        void GetDamage(int amount);
+        void PlayerGetDamage(float amount);
     }
 
     /// <summary>
