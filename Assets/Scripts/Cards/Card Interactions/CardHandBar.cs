@@ -4,8 +4,8 @@ using DG.Tweening;
 using System;
 using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
-using Cardevil.Events;
 using Cardevil.Systems;
+using Cardevil.Events;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -42,15 +42,37 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] float discardInterval = .3f;
 
         [Header("State")]
-        public bool CanInteraction => canInteraction && !isSwapping;
-        private bool canInteraction = true; // 카드가 사용 가능한가?
-        private bool isSwapping = false; // 카드가 정렬 등 움직이고 있나?
+        public bool CanInput => CanInteraction && !IsSwapping;
+
+        // 카드 관련 상호작용 가능한가?
+        private bool _canInteraction = false; 
+        private bool CanInteraction
+        {
+            get => _canInteraction;
+            set
+            {
+                _canInteraction = value;
+                UpdateButtons();
+            }
+        }
+
+        // 카드가 정렬, 소환 등 움직이고 있나?
+        private bool _isSwapping = false; 
+        private bool IsSwapping
+        {
+            get => _isSwapping;
+            set
+            {
+                _isSwapping = value;
+                UpdateButtons();
+            }
+        }
 
 
 
         void Update()
         {
-            if (!CanInteraction)
+            if (!CanInput)
                 return;
             if (draggedCard == null)
                 return;
@@ -61,6 +83,8 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void Init()
         {
+            CanInteraction = false;
+
             DeckFactory.InitRuntimeDeckConfig(baseDeckConfig, baseRuntimeDeckConfig);
             Deck = new(baseRuntimeDeckConfig);
             Hand = new();
@@ -76,21 +100,35 @@ namespace Cardevil.Cards.CardInteractinos
             useCardButton.onClick.AddListener(Use);
             discardCardButton.onClick.AddListener(Discard);
 
-            Managers.Event.GameStateChangeEvent.AddListener(OnGameStateChanged);
-
-
+            // FIXME: EventManager보다 CardManager가 먼저 Init돼서 실행이 안됨
+            UpdateDeckCardCount();
         }
 
         public void AddSelectedCard(Card card)
         {
             Hand.Select(card);
-            UpdateCanUseCard();
+            UpdateButtons();
         }
 
         public void RemoveSelectedCard(Card card)
         {
             Hand.Deselect(card);
-            UpdateCanUseCard();
+            UpdateButtons();
+        }
+
+        // 플레이어 턴이면서 카드 값 선택이 바뀔 때, -> Card.onselectEnded에서 호출
+        public void OnSelectValueEnd(Card _)
+        {
+            UpdateButtons();
+        }
+
+        private void UpdateButtons()
+        {
+            var canUse = CanInput && Hand.SelectCount > 0 && Hand.AllValueSelected;
+            useCardButton.interactable = canUse;
+
+            var canDiscard = CanInput && Hand.SelectCount > 0;
+            discardCardButton.interactable = canDiscard;
         }
 
         #region Card Event
@@ -143,7 +181,8 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void Swap(int index)
         {
-            isSwapping = true;
+            IsSwapping = true;
+
             var swappedCard = Hand.GetCard(index);
             var selectedCardSlot = draggedCard.transform.parent;
             var swappedSlot = swappedCard.transform.parent;
@@ -157,15 +196,28 @@ namespace Cardevil.Cards.CardInteractinos
 
             draggedCard.cardVisual.UpdateIndex(draggedCard.GetSlotIndex());
             swappedCard.cardVisual.UpdateIndex(swappedCard.GetSlotIndex());
-            isSwapping = false;
+            
+            IsSwapping = false;
         }
 
         #endregion
 
 
-        #region Spawn & Use card
+        #region Use & Discard & Spawn
         
-        private Card SpawnCard(int slotIndex)
+        private void Use()
+        {
+            CardResultEvaluator.Evaluate(Context, Hand.Selects);
+            _ = DiscardAsync();
+            cmp.TrySetResult();
+        }
+
+        private void Discard()
+        {
+            _ = DiscardAndDrawAsync();
+        }
+
+        private Card Spawn(int slotIndex)
         {
             var cardData = Deck.DrawCard();
             if (cardData == null)
@@ -174,15 +226,16 @@ namespace Cardevil.Cards.CardInteractinos
             var card = Instantiate(original: cardPrefab, parent: slots[slotIndex]).GetComponent<Card>();
             card.Init(barGroup: this, cardData);
 
-            Hand.Draw(card);
-
             // 이벤트 구독
             card.OnBeginDragEvent += BeginDrag;
             card.OnEndDragEvent += EndDrag;
-            card.OnSelectEndEvent += UpdateCanUseCard;
+            card.OnSelectValueEndEvent += OnSelectValueEnd;
 
+            Hand.Draw(card);
             UpdateDeckCardCount();
 
+            // FIXME: 애니메이션의 순서 제어를 위해
+            // 실행 위치 혹은 방식을 바꿔야할 듯!
             for (int i = 0; i < Hand.HandCount; i++)
             {
                 var c = Hand.GetCard(i);
@@ -192,35 +245,27 @@ namespace Cardevil.Cards.CardInteractinos
             return card;
         }
 
-        private void Use()
+        public async UniTask DrawAsync()
         {
-            CardResultEvaluator.Evaluate(Context, Hand.Selects);
-            _ = DiscardSequentially();
-            cmp.TrySetResult();
+            IsSwapping = true;
+
+            var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
+                        .ToArray();
+
+            foreach (var slot in inactiveSlots)
+            {
+                var slotIndex = slot.GetSiblingIndex();
+                slot.gameObject.SetActive(true);
+                Spawn(slotIndex);
+                await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
+            }
+
+            IsSwapping = false;
         }
 
-        private void Discard()
+        public async UniTask DiscardAsync()
         {
-            // TODO: 카드 선택 0개일땐 불가능하게 수정
-            _ = DiscardCard();
-        }
-
-        private async UniTask DiscardCard()
-        {
-            useCardButton.interactable = false;
-            UpdateCanUseCard();
-
-            await DiscardSequentially();
-            await DrawCard();
-
-            useCardButton.interactable = true;
-            UpdateCanUseCard();
-        }
-        
-
-        public async UniTask DiscardSequentially()
-        {
-            isSwapping = true;
+            IsSwapping = true;
 
             await Hand.Discard(discardInterval, slots);
 
@@ -238,42 +283,30 @@ namespace Cardevil.Cards.CardInteractinos
                     .OrderBy(t => t.GetSiblingIndex())
                     .ToArray();
 
-            await UniTask.Delay(1000);
-            await DrawCard();
+            IsSwapping = false;
+        }
 
-            isSwapping = false;
-            UpdateCanUseCard();
+        private async UniTask DiscardAndDrawAsync()
+        {
+            IsSwapping = true;
+
+            await DiscardAsync();
+            await DrawAsync();
+
+            IsSwapping = false;
         }
 
         #endregion
 
-        private void OnGameStateChanged(GameStateChangeArgs args)
+        private void UpdateDeckCardCount()
         {
-            // 이럴거면 args가 필요할까?
-            UpdateCanUseCard();
+            using (var args = RemainingCardChangeArgs.Get())
+            {
+                args.Init(Deck.Count);
+                Managers.Event.RemainingCardChangeEvent?.Invoke(args);
+            }
         }
 
-        // 플레이어 턴이면서 카드 값 선택이 바뀔 때, -> Card.onselectEnded에서 호출
-        public void UpdateCanUseCard(Card _)
-        {
-            UpdateCanUseCard();
-        }
-
-        private void UpdateCanUseCard()
-        {
-            var canUseCard = CanInteraction && Hand.SelectCount > 0 && Hand.AllValueSelected;
-            useCardButton.interactable = canUseCard;
-
-        }
-
-        public void UpdateDeckCardCount()
-        {
-            // using (var args = RemainingCardChangeArgs.Get())
-            // {
-            //     args.Init(Deck.Count);
-            //     Managers.Event.RemainingCardChangeEvent?.Invoke(args);
-            // }
-        }
 
 
         #region IUserInput
@@ -281,32 +314,18 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void ActivateInteraction()
         {
-            canInteraction = true;
             cmp = new();
-            UpdateCanUseCard();
+            CanInteraction = true;
         }
 
         public void InactivateInteraction()
         {
-            canInteraction = false;
+            CanInteraction = false;
         }
 
         public async UniTask DrawCard()
         {
-            isSwapping = true;
-
-            var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
-                        .ToArray();
-
-            foreach (var slot in inactiveSlots)
-            {
-                var slotIndex = slot.GetSiblingIndex();
-                slot.gameObject.SetActive(true);
-                SpawnCard(slotIndex);
-                await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
-            }
-
-            isSwapping = false;
+            await DrawAsync();
         }
 
         private UniTaskCompletionSource cmp;
