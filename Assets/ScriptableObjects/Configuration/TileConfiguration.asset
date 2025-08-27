@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileSize: 0.95
   defaultTileColor: {r: 1, g: 1, b: 1, a: 1}
-  defaultTileHighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  defaultTileHighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.41960785}

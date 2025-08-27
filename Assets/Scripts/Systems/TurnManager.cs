@@ -7,6 +7,7 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Cards.CardInteractinos;
 using Cardevil.Test;
 using Cardevil.Utils.Directions;
+using Cardevil.Events;
 
 namespace Cardevil.Systems
 {
@@ -27,8 +28,6 @@ namespace Cardevil.Systems
         // 카드 배분, 보스 설명 등 처리
         // 처리할 것 많아지면 추후 분리 예정
         public event TurnStepAsync PreGameAsync;
-
-        public event Action OnGameStateChanged;
 
         [Header("interfaces")]
         public IPlayerInputHandler playerInputHandler;
@@ -75,6 +74,10 @@ namespace Cardevil.Systems
                     await UniTask.Yield();
                     continue;
                 }
+
+                // 턴이 시작될때 Enemy의 Turn 값 초기화
+                Managers.Game.Enemy.TurnClear(); 
+
 
                 // Boss Action
                 await BossActionAsync.Invoke();
@@ -167,8 +170,10 @@ namespace Cardevil.Systems
 
         public void ReceivePlayerDamage(int amount)
         {
+            if (amount == 0) return;
             var text = $"{amount} 데미지를 받았다!";
             debug.SetTurnDebugTextBar(DebugScreen.TurnDebugTextNames.DamageText, text);
+            Managers.Game.Enemy.IsAttacked(amount);
         }
 
 
@@ -213,7 +218,11 @@ namespace Cardevil.Systems
         public void SetGameState(GameManager.GameState gameState)
         {
             Managers.Game.currentState = gameState;
-            OnGameStateChanged?.Invoke();
+            using (var args = GameStateChangeArgs.Get())
+            {
+                args.Init(gameState);
+                Managers.Event.GameStateChangeEvent?.Invoke(args);
+            }
         }
     }
 }

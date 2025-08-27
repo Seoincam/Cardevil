@@ -18,7 +18,7 @@ namespace Cardevil.Utils
         /// <param name="out">출력</param>
         /// <typeparam name="T">받아올 컴포넌트</typeparam>
         /// <returns>성공여부</returns>
-        public static bool ScreenRaycast<T>(Vector2 screenPos, LayerMask layerMask,out T @out) 
+        public static bool ScreenRaycast<T>(Vector2 screenPos, LayerMask layerMask, out T @out)
         where T : class
         {
             return ScreenRaycast<T>(screenPos, layerMask, Camera.main, out @out);
@@ -39,15 +39,15 @@ namespace Cardevil.Utils
         where T : class
         {
             var ray = camera.ScreenPointToRay(screenPos);
-        
+
             // Debug.DrawRay(ray.origin, ray.direction * 100, Color.red, 2f);
             var hits = new RaycastHit[maxHits];
             var num = Physics.RaycastNonAlloc(ray, hits, 100f, layerMask.value);
             // Debug.Log($"Raycast hit {num} objects");
-            for (int i = 0; i < num; i++) 
+            for (int i = 0; i < num; i++)
             {
                 var hit = hits[i];
-                if(hit.collider.TryGetComponent<T>(out T focusable))
+                if (hit.collider.TryGetComponent<T>(out T focusable))
                 {
                     @out = focusable;
                     return true;
@@ -108,6 +108,14 @@ namespace Cardevil.Utils
                 }
             }
             return null;
+        }
+        
+        /// <summary>
+        /// 카드가 Slot 안에서 몇 번째 위치인지 0~1 사이 값으로 정규화해 반환함
+        /// </summary>
+        public static float Remap(this float value, float from1, float to1, float from2, float to2)
+        {
+            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
         }
     }
 }

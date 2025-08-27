@@ -10,6 +10,8 @@ namespace Cardevil.Events
     /// <remarks> 0은 가장 기본적인 이벤트가 등록되어야함. ex : 입장이벤트의 경우, 입장 처리 부분</remarks>
     public abstract class PriorityEventBase : IClearable
     {
+        protected const int MAGIC_NUMBER = -321322;
+        
         protected bool _isInvoking = false;
         protected List<int> _keysToClear = new List<int>();
         protected bool _clearAll = false;

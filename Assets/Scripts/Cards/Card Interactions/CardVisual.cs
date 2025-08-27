@@ -15,6 +15,7 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Visual")]
         [SerializeField] Image cardImage;
         [SerializeField] TextMeshProUGUI text;
+        [SerializeField] Transform shakeObject;
         private Canvas canvas;
         private bool isInitalized = false;
 
@@ -31,44 +32,29 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] private float scaleTransition = .15f;
         [SerializeField] private Ease scaleEase = Ease.OutBack;
 
+        [Header("Curve")]
+        [SerializeField] private CurveParameters curve;
+        private float curveYOffset;
+        private float curveRotationOffset;
+
         void Awake()
         {
             canvas = GetComponent<Canvas>();
             shadowOriginPosition = shadowTransform.localPosition;
         }
 
-        public void Init(Card parentCard, Cards.CardData cardData)
+        public void Init(Card parentCard)
         {
             this.parentCard = parentCard;
-
-            // 이름 설정 (임시)
-            if (cardData is DirectionCard direction)
-            {
-                transform.name = direction.DefaultValue.ToString();
-                text.text = direction.DefaultValue != Direction.None ? direction.DefaultValue.ToString() : "All";
-                text.fontSize = 35;
-            }
-            else if (cardData is NumberCard number)
-            {
-                transform.name = $"{number.Color} {number.DefaultValue}";
-                text.text = number.canSelect ? "*" : number.DefaultValue.ToString();
-                switch (number.Color)
-                {
-                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
-                    case CardColor.Blue: text.color = Color.blue; break;
-                    case CardColor.Red: text.color = Color.red; break;
-                    default: break;
-                }
-            }
-
-            else
-                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
+            UpdateVisual();
 
             // 이벤트 구독
             parentCard.OnPointerDownEvent += PointerDown;
             parentCard.OnPointerUpEvent += OnPointerUp;
             parentCard.OnBeginDragEvent += OnBeginDrag;
             parentCard.OnEndDragEvent += OnEndDrag;
+            parentCard.OnSelectStartEvent += OnSelectStarted;
+            parentCard.OnSelectEndEvent += OnSelectEnded;
 
             parentCard.OnSpawn += OnSpawn;
             parentCard.OnDiscard += OnDiscard;
@@ -86,11 +72,32 @@ namespace Cardevil.Cards.CardInteractinos
                 return;
 
             FollowWithLerp();
+            CurvePosition();
+            TiltCard();
         }
 
         private void FollowWithLerp()
         {
-            transform.position = Vector3.Lerp(transform.position, parentCard.transform.position, t: followSpeed * Time.deltaTime);
+            var verticalOffset = Vector3.up * (parentCard.isDragging ? 0 : curveYOffset);
+            transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: followSpeed * Time.deltaTime);
+        }
+
+        private void CurvePosition()
+        {
+            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.Hand.HandCount - 1);
+            curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
+        }
+
+        private void TiltCard()
+        {
+            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.BarGroup.Hand.HandCount - 1)));
+            // float lerpZ = Mathf.LerpAngle(tiltZ, )
+            shakeObject.eulerAngles = new Vector3(0, 0, tiltZ);
+        }
+
+        public void UpdateIndex(int index)
+        {
+            transform.SetSiblingIndex(parentCard.transform.parent.GetSiblingIndex());
         }
 
         private void PointerDown(Card _)
@@ -139,6 +146,49 @@ namespace Cardevil.Cards.CardInteractinos
         {
             DOTween.Kill(transform);
             Destroy(gameObject);
+        }
+
+        private void OnSelectStarted(Card _)
+        {
+            canvas.overrideSorting = true;
+        }
+
+        private void OnSelectEnded(Card _)
+        {
+            canvas.overrideSorting = false;
+        }
+
+        public void UpdateVisual()
+        {
+            // 이름 설정 (임시)
+            if (parentCard.data is DirectionCardData dirCard)
+            {
+                transform.name = dirCard.value.ToString();
+                var textString = dirCard.value != Direction.None ? dirCard.value.ToString() : "All";
+                if (dirCard.value != Direction.None && dirCard.CanSelect)
+                    textString += "*";
+                text.text = textString;
+                text.fontSize = 35;
+            }
+
+            else if (parentCard.data is NumberCardData numCard)
+            {
+                transform.name = $"{numCard.color} {numCard.value}";
+                var textString = numCard.value == 0 ? "*" : numCard.value.ToString();
+                if (numCard.value != 0 && numCard.CanSelect)
+                    textString += "*";
+                text.text = textString;
+                switch (numCard.color)
+                {
+                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
+                    case CardColor.Blue: text.color = Color.blue; break;
+                    case CardColor.Red: text.color = Color.red; break;
+                    default: break;
+                }
+            }
+
+            else
+                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
         }
     }
 }

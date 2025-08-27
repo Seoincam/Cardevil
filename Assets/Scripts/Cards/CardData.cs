@@ -1,45 +1,111 @@
+using Cardevil.Cards.CardInteractinos;
 using Cardevil.Utils.Directions;
 using System.Linq;
+using UnityEngine;
 
 namespace Cardevil.Cards
 {
-    public enum CardColor { Red, Blue, Green, Black }
-
-    public class CardData
+    [System.Serializable]
+    public abstract class CardData
     {
         public int reinforcement = 0;
-        public bool canSelect;
+        public virtual bool CanSelect => false;
+        public virtual bool valueSelected => false;
+
+        public abstract bool OpenSelection(SelectContainer selectContainer, Card card);
+        public abstract CardData CreateInGame();
     }
 
-    [System.Serializable]
-    public class NumberCard : CardData
-    {
-        public CardColor Color { get; private set; }
-        public int DefaultValue { get; private set; }
-        public int[] Numbers { get; private set; }
 
-        public NumberCard(CardColor color, int defaultValue, bool canSelect = false)
+    [System.Serializable]
+    public class NumberCardData : CardData
+    {
+        public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
+        public override bool valueSelected => value != 0;
+
+
+        [Space]
+        public CardColor color;
+        public int value;
+        public int[] selectableValues;
+
+        private NumberCardData(CardColor color, int value, int reinforcement, int[] selectableValues)
         {
-            Color = color;
-            DefaultValue = defaultValue;
-            Numbers = new int[] { defaultValue };
-            this.canSelect = canSelect;
+            this.color = color;
+            this.value = value;
+            this.reinforcement = reinforcement;
+            this.selectableValues = selectableValues;
+        }
+
+        public bool SetValue(int value)
+        {
+            if (!selectableValues.Contains(value))
+                return false;
+
+            this.value = value;
+            return true;
+        }
+
+        public override bool OpenSelection(SelectContainer selectContainer, Card card)
+        {
+            if (!CanSelect)
+                return false;
+            selectContainer.SetContainer(card, selectableValues);
+            return true;
+        }
+
+
+        public override CardData CreateInGame()
+        {
+            var data = new NumberCardData(color, value, reinforcement, selectableValues);
+            return data;
         }
     }
 
-    [System.Serializable]
-    public class DirectionCard : CardData
-    {
-        public Direction DefaultValue { get; private set; }
-        public Direction[] Directions { get; private set; }
 
-        public DirectionCard(Direction defaultValue, bool canSelect = false)
+    [System.Serializable]
+    public class DirectionCardData : CardData
+    {
+        public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
+        public override bool valueSelected => value != Direction.None;
+
+        [Space]
+        public Direction value;
+        public Direction[] selectableValues;
+
+        private DirectionCardData(Direction value, int reinforcement, Direction[] selectableValues)
         {
-            DefaultValue = defaultValue;
-            Directions = new Direction[] { defaultValue };
-            this.canSelect = canSelect;
+            this.value = value;
+            this.reinforcement = reinforcement;
+            this.selectableValues = selectableValues;
+        }
+
+        public bool SelectValue(Direction value)
+        {
+            if (!selectableValues.Contains(value))
+                return false;
+
+            this.value = value;
+            return true;
+        }
+
+        public override bool OpenSelection(SelectContainer selectContainer, Card card)
+        {
+            if (!CanSelect)
+                return false;
+            selectContainer.SetContainer(card, selectableValues);
+            return true;
+        }
+
+        public override CardData CreateInGame()
+        {
+            var data = new DirectionCardData(value, reinforcement, selectableValues);
+            return data;
         }
     }
+
+
+    public enum CardColor { Red, Blue, Green, Black }
 
     public enum CardCombo
     {
@@ -59,7 +125,6 @@ namespace Cardevil.Cards
     {
         public CardCombo combo;
         public int damage;
-
         public Direction[] moves;
 
 
