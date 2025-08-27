@@ -14,9 +14,16 @@ namespace Cardevil.Cards
             if (handBarObj == null) Debug.LogError("CardHandBar이 씬 내 존재하지 않습니다.");
             handBar = handBarObj.GetComponent<ICardHandBar>();
             playerInput = handBarObj.GetComponent<ITurnPlayerInput>();
-
+ 
             handBar.Init();
         }
+
+        public CardResult GetCurrentCard()
+        {
+            return Managers.Card.handBar.Context.CurrentResult;
+        }
+
+        
     }
 }
 

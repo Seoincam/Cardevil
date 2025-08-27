@@ -9,10 +9,6 @@ namespace Cardevil.InGame.Enemy.Boss
     public class J : Enemy
     {
         // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
-        {
-
-        }
 
         // Update is called once per frame
         void Update()
@@ -29,6 +25,7 @@ namespace Cardevil.InGame.Enemy.Boss
             // 살아 있다면
 
             // 스트레이트 이상 족보의 공격 받을 시 사용자의 턴 1회 점프
+           
             // 스트레이트 이상 족보라면
             AttackOrderDiscount(); // 공격 턴 1 추가 감소
            

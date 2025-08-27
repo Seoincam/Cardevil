@@ -2,11 +2,14 @@ using Cardevil.Ingame.Field;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Cardevil.Systems;
+using System.Collections;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 namespace Cardevil.InGame.Enemy
 {
     //
-    public class Enemy : MonoBehaviour
+    public class Enemy : MonoBehaviour, ITurnEnemy
     {
         private Field field;
         private int damage = 1; // Enemy의 공격력
@@ -18,6 +21,7 @@ namespace Cardevil.InGame.Enemy
         private int attackPointNumber_y;
         private bool aWakeFirst = true;
         private bool isAttakced = false;
+        private bool isEnemyDead = false;
         
         public bool isPlayerAttack = false;
 
@@ -59,7 +63,22 @@ namespace Cardevil.InGame.Enemy
 
 
         #region Attack 관련
-
+        
+        public bool CheckAttack()
+        {
+            foreach (Attack attack in attackLists) // 현재 Enemy가 가지고 있는 Attack 
+            {
+                if (attack.attackTurnOrder == 0) // 0 이라면 공격을 시행하는것이 있다.
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public async UniTask TurnAttack() //인터페이스
+        {
+            AttackEnemyTurnStart();
+        }
         public virtual void AttackEnemyAwake() // 처음으로 호출되었을때
         {
             if (aWakeFirst == true) // 처음에선 랜덤지정
@@ -344,11 +363,16 @@ namespace Cardevil.InGame.Enemy
             if (HP <= 0)
             {
                 // 유닛 사망
-                Destroy(this.gameObject);
+                isEnemyDead = true;
                 return true; // 사망시 true 변환 
             }
 
             return false; // 아직 살아있다
+        }
+        
+        public bool IsDead
+        {
+            get { return isEnemyDead; }
         }
 
 
