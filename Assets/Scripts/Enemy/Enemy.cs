@@ -75,7 +75,7 @@ namespace Cardevil.InGame.Enemy
             }
             return false;
         }
-        public async UniTask TurnAttack(CancellationToken cts) //인터페이스
+        public async UniTask TurnAttack() //인터페이스
         {
             AttackEnemyTurnStart();
         }
@@ -370,9 +370,9 @@ namespace Cardevil.InGame.Enemy
             return false; // 아직 살아있다
         }
         
-        public bool IsDead()
+        public bool IsDead
         {
-            return isEnemyDead;
+            get { return isEnemyDead; }
         }
 
 

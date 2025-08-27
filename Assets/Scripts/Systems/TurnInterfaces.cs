@@ -43,8 +43,8 @@ namespace Cardevil.Systems
     public interface ITurnEnemy
     {
         bool IsDead { get; }
-        UniTask Attack();
-        bool GetDamage(int damage);
+        UniTask TurnAttack();
+        bool GetDamage(float damage);
 
         /// <summary>
         /// 공격들중에 공격까지 남은 턴이 0이 있는것이 있나 됐나 확인.
