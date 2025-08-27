@@ -53,8 +53,8 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnPointerUpEvent += OnPointerUp;
             parentCard.OnBeginDragEvent += OnBeginDrag;
             parentCard.OnEndDragEvent += OnEndDrag;
-            parentCard.OnSelectStartEvent += OnSelectStarted;
-            parentCard.OnSelectEndEvent += OnSelectEnded;
+            parentCard.OnSelectValueStartEvent += OnSelectStarted;
+            parentCard.OnSelectValueEndEvent += OnSelectEnded;
 
             parentCard.OnSpawn += OnSpawn;
             parentCard.OnDiscard += OnDiscard;
