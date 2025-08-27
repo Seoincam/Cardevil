@@ -124,7 +124,7 @@ namespace Cardevil.Ingame.Entities
 
         #region ITurnPlayerAction, ITurnPlayerMove 구현
         public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
-        public async UniTask Attack()
+        public async UniTask TurnAttack()
         {
             Debug.Log("Player Attacks!");
             CardContext ctx = Managers.Card.handBar.Context;
@@ -133,20 +133,25 @@ namespace Cardevil.Ingame.Entities
             // TODO : 적에 대한 공격 구현
             Debug.Log($"플레이어 공격 : {result.Damage} 피해. 구현 아직");
         }
-
+        
         public void GetDamage(int amount)
         {
             Debug.Log($"Player takes {amount} damage!");
             Managers.Game.PlayerStatus.CurrentHp -= amount;
         }
 
-        public async UniTask Move()
+        public async UniTask TurnMove()
         {
             Debug.Log("Player Moves!");
             CardContext ctx = Managers.Card.handBar.Context;
             CardResult result = ctx.CurrentResult;
             //TODO 이동 로직 구현
-            await UniTask.Delay(100);
+            foreach (var move in result.Moves)
+            {
+                Move(move.direction, move.length);
+                await UniTask.Delay(100);
+            }
+            Debug.Log("Player Move Completed!");
         }
         
 

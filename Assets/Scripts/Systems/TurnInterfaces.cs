@@ -33,7 +33,7 @@ namespace Cardevil.Systems
     /// </summary>
     public interface ITurnPlayerMove
     {
-        UniTask Move();
+        UniTask TurnMove();
     }
 
     /// <summary>
