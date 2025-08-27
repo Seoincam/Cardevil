@@ -49,6 +49,10 @@ namespace Cardevil.Cards
             selects.Clear();
         }
 
-        
+        public void UpdateVisualIndex()
+        {
+            foreach (var card in hands)
+                card.cardVisual.UpdateIndex(card.GetSlotIndex());
+        }
     }
 }

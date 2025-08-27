@@ -236,11 +236,7 @@ namespace Cardevil.Cards.CardInteractinos
 
             // FIXME: 애니메이션의 순서 제어를 위해
             // 실행 위치 혹은 방식을 바꿔야할 듯!
-            for (int i = 0; i < Hand.HandCount; i++)
-            {
-                var c = Hand.GetCard(i);
-                c.cardVisual.UpdateIndex(c.GetSlotIndex());
-            }
+            Hand.UpdateVisualIndex();
 
             return card;
         }
