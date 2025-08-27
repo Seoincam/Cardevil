@@ -7,6 +7,7 @@ using Cardevil.Ingame.Entities;
 using Cardevil.InGame.Enemy;
 using UnityEngine.Serialization;
 using Cardevil.Systems;
+using Unity.VisualScripting;
 
 [Serializable]
 public class GameManager
@@ -109,13 +110,17 @@ public class GameManager
     {
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
+        StageStart();
     }
 
     public void StageStart()
     {
         TurnOrder = 0;
-        // Managers.Turn.Init();
+        Managers.Turn.Init(
+            Managers.Card.playerInput,
+            Player.GetComponent<ITurnPlayerMove>(),
+            Player.GetComponent<ITurnPlayerAction>(),
+            Enemy.GetComponent<ITurnEnemy>()
+            );
     }
- 
-
-}
+ }

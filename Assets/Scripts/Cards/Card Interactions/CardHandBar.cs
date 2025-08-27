@@ -77,22 +77,8 @@ namespace Cardevil.Cards.CardInteractinos
             discardCardButton.onClick.AddListener(DiscardCard);
 
             Managers.Event.GameStateChangeEvent.AddListener(OnGameStateChanged);
-        }
 
-        public async UniTask InitBarGroup()
-        {
-            canInteraction = false;
-            UpdateCanUseCard();
 
-            for (int i = 5; i >= 0; i--)
-            {
-                slots[i].gameObject.SetActive(true);
-                var card = SpawnCard(slotIndex: i);
-                await UniTask.Delay(TimeSpan.FromSeconds(.15f));
-            }
-
-            canInteraction = true;
-            UpdateCanUseCard();
         }
 
         public void AddSelectedCard(Card card)
@@ -210,7 +196,7 @@ namespace Cardevil.Cards.CardInteractinos
         {
             CardResultEvaluator.Evaluate(Context, Hand.Selects);
             _ = DiscardSequentially();
-            // TODO: HandleUserInput await 끝내기
+            cmp.TrySetResult();
         }
 
         private void DiscardCard()
@@ -240,6 +226,8 @@ namespace Cardevil.Cards.CardInteractinos
                     .OrderBy(t => t.GetSiblingIndex())
                     .ToArray();
 
+            await UniTask.Delay(1000);
+            await DrawCard();
 
             isSwapping = false;
             UpdateCanUseCard();
@@ -261,9 +249,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void UpdateCanUseCard()
         {
-            var canUseCard = Managers.Game.currentState != GameManager.GameState.PlayerInput
-                ? false
-                : CanInteraction && Hand.SelectCount > 0 && Hand.AllValueSelected;
+            var canUseCard = CanInteraction && Hand.SelectCount > 0 && Hand.AllValueSelected;
             useCardButton.interactable = canUseCard;
 
         }
@@ -284,6 +270,8 @@ namespace Cardevil.Cards.CardInteractinos
         public void ActivateInteraction()
         {
             canInteraction = true;
+            cmp = new();
+            UpdateCanUseCard();
         }
 
         public void InactivateInteraction()
@@ -293,6 +281,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public async UniTask DrawCard()
         {
+            Debug.Log("draw card");
             isSwapping = true;
 
             var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
@@ -309,9 +298,11 @@ namespace Cardevil.Cards.CardInteractinos
             isSwapping = false;
         }
 
+        private UniTaskCompletionSource cmp;
+
         public async UniTask WaitUserInput()
         {
-            // TODO: 기다림 로직
+            await cmp.Task;
         }
         #endregion
     }

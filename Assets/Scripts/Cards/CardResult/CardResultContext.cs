@@ -46,9 +46,9 @@ namespace Cardevil.Cards
             isSet = true;
 
             Damage = damage;
-            Moves = new(moves);
+            Moves = moves != null ? new(moves) : new();
             
-            Rankings = new(rankings);
+            Rankings = rankings != null ? new(rankings) : new();
             IsRedCardOver3 = isRedCardOver3;
             IsBlackCardOver3 = isBlackCardOver3;
         }
