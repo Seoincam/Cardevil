@@ -4,6 +4,7 @@ using Cardevil.Dungeon.UI;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Cardevil.Dungeon.UI
@@ -16,7 +17,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private TextMeshProUGUI nodeText;
         [Header("UI")]
         [SerializeField] private DungeonUI dungeonUI;
-        [SerializeField] private DungeonStageUI dungeonStageUI;
+        [FormerlySerializedAs("dungeonStageUI")] [SerializeField] private DungeonChapterUI dungeonChapterUI;
         [Header("Dungeon Node Info")]
         [SerializeField,VisibleOnly] private DungeonNode dungeonNode;
         [Space]
@@ -24,12 +25,12 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private int nodeId = -1;
         
         
-        public int DungeonId => dungeonStageUI.DungeonId;
+        public int DungeonId => dungeonChapterUI.DungeonId;
         
-        public void InitRef(DungeonUI dungeonUI, DungeonStageUI stageUI)
+        public void InitRef(DungeonUI dungeonUI, DungeonChapterUI chapterUI)
         {
             this.dungeonUI = dungeonUI;
-            this.dungeonStageUI = stageUI;
+            this.dungeonChapterUI = chapterUI;
         }
 
         public void InitializeNode()
@@ -39,7 +40,7 @@ namespace Cardevil.Dungeon.UI
                 Debug.LogError($"Node ID{nodeId} is not set or invalid.");
                 return;
             }
-            dungeonNode = dungeonStageUI.Dungeon.Nodes[nodeId - 1];
+            dungeonNode = dungeonChapterUI.Dungeon.Nodes[nodeId - 1];
             name = $"Node_{dungeonNode.NodeId}_{dungeonNode.Type}";
             if(nodeText)
                 nodeText.text = dungeonNode.Type.ToString();
@@ -49,7 +50,7 @@ namespace Cardevil.Dungeon.UI
         {
             foreach (DungeonNode dungeonNodeNext in dungeonNode.NextNodes)
             {
-                DungeonNodeUI nextNodeUI = dungeonStageUI.GetNodeUI(dungeonNodeNext.NodeId);
+                DungeonNodeUI nextNodeUI = dungeonChapterUI.GetNodeUI(dungeonNodeNext.NodeId);
                 if (nextNodeUI == null)
                 {
                     Debug.LogError($"No DungeonNodeUI found for node ID {dungeonNodeNext.NodeId}");

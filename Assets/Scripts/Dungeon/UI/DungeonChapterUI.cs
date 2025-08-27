@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Cardevil.Dungeon.UI
 {
-    public class DungeonStageUI : MonoBehaviour
+    public class DungeonChapterUI : MonoBehaviour
     {
         [SerializeField] private int dungeonId = -1;
         [Header("References")]

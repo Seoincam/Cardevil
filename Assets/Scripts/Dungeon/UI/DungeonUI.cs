@@ -7,7 +7,7 @@ namespace Cardevil.Dungeon.UI
     public class DungeonUI : UI_Popup
     {
         [SerializeField, VisibleOnly] private int currentShowingDungeonId = -1;
-        [SerializeField] private List<DungeonStageUI> stageUis = new List<DungeonStageUI>();
+        [SerializeField] private List<DungeonChapterUI> stageUis = new List<DungeonChapterUI>();
         
         public override void Init()
         {
@@ -17,25 +17,25 @@ namespace Cardevil.Dungeon.UI
 
         public void UpdateShowingDungeon(int id)
         {
-            foreach (DungeonStageUI stage in stageUis)
+            foreach (DungeonChapterUI stage in stageUis)
             {
                 stage.gameObject.SetActive(false);
             }
-            DungeonStageUI stageUi = null;
-            foreach (DungeonStageUI stage in stageUis)
+            DungeonChapterUI chapterUI = null;
+            foreach (DungeonChapterUI stage in stageUis)
             {
                 if (stage.DungeonId == id)
                 {
-                    stageUi = stage;
+                    chapterUI = stage;
                     break;
                 }
             }
-            if (stageUi == null)
+            if (chapterUI == null)
             {
                 Debug.LogError($"No DungeonStageUI found for dungeon ID {id}");
                 return;
             }
-            stageUi.gameObject.SetActive(true);
+            chapterUI.gameObject.SetActive(true);
         }
         
         [ContextMenu("Test Inc Dungeon Id")]

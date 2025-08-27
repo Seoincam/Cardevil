@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 1936577624033385768}
   - component: {fileID: 2663704201058976783}
   m_Layer: 0
-  m_Name: DungeonStage
+  m_Name: DungeonChapter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
