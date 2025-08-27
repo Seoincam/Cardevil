@@ -39,6 +39,7 @@ namespace Cardevil.Test
         private void OnGUI()
         {
             PlayerGUI();
+            StageGUI();
         }
 
         #endregion
