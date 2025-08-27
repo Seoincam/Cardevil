@@ -15,8 +15,8 @@ namespace Cardevil.Dungeon.DungeonFactories
                 .AddNode(DungeonNodeTypes.Mob, null)
                 .AddNode(DungeonNodeTypes.Heal, null)
                 .AddNode(DungeonNodeTypes.Reinforce, null)
-                .AddNode(DungeonNodeTypes.Mob, null)
                 .AddNode(DungeonNodeTypes.Mob, null);
+            
 
             /*
              * 첫 분기
@@ -24,11 +24,10 @@ namespace Cardevil.Dungeon.DungeonFactories
             builder
                 .BranchStart()
                 .AddNode(DungeonNodeTypes.Heal, null)
-                .AddNode(DungeonNodeTypes.Random, null)
+                .AddNode(DungeonNodeTypes.Reinforce, null)
                 .BranchEnd();
             builder
                 .BranchStart()
-                .AddNode(DungeonNodeTypes.Mob, null)
                 .AddNode(DungeonNodeTypes.Devil, null)
                 .BranchEnd();
             builder
@@ -43,14 +42,31 @@ namespace Cardevil.Dungeon.DungeonFactories
                 .BranchEnd();
             builder
                 .BranchStart()
-                .AddNode(DungeonNodeTypes.Reinforce, null)
+                .AddNode(DungeonNodeTypes.Mob, null)
                 .BranchEnd();
             builder.AddNodeAndMergeBranch(DungeonNodeTypes.Mob, null);
+
+            builder.AddNode(DungeonNodeTypes.Mob, null);
+            
+            /*
+             * 세번째 분기
+             */
+            builder
+                .BranchStart()
+                .AddNode(DungeonNodeTypes.Reinforce, null)
+                .AddNode(DungeonNodeTypes.Random, null)
+                .BranchEnd();
+            
+            builder
+                .BranchStart()
+                .AddNode(DungeonNodeTypes.Devil, null)
+                .BranchEnd();
+            builder.AddNodeAndMergeBranch(DungeonNodeTypes.Mob, null);
+            
             /*
              * 마지막 보스까지
              */
             builder
-                .AddNode(DungeonNodeTypes.Mob, null)
                 .AddNode(DungeonNodeTypes.Heal, null)
                 .AddNode(DungeonNodeTypes.FinalBoss, null);
             Dungeon result = builder.Build();
