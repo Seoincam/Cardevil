@@ -132,6 +132,8 @@ namespace Cardevil.Ingame.Entities
             await UniTask.Delay(100);
             // TODO : 적에 대한 공격 구현
             Debug.Log($"플레이어 공격 : {result.Damage} 피해. 구현 아직");
+            Managers.Game.Enemy.GetDamage(result.Damage);
+            
         }
         
         public void PlayerGetDamage(float amount)

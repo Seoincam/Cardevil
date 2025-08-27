@@ -28,6 +28,21 @@ namespace Cardevil.InGame.Enemy.Boss
             }
 
         }
+
+        public override void AttackingCheck(Attack attack)
+        {
+            if(AttackGo(attack))
+            {
+                // 공격에 성공했음
+                Debug.Log("King이 공격에 성공했다!");
+                SetAllAttackOrder(1);
+            }
+            else
+            {
+                Debug.Log("King이 공격에 실패했다!");
+                //공격에 실패했음.
+            }
+        }
     }
 
 }

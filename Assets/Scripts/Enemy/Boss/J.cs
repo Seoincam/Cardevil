@@ -24,6 +24,8 @@ namespace Cardevil.InGame.Enemy.Boss
             }
             // 살아 있다면
 
+            Debug.Log($"Jack이 생존하여 {Managers.Card.GetCurrentCardRankScore()} 에 대한 반격을 진행한다");
+
             // 스트레이트 이상 족보의 공격 받을 시 사용자의 턴 1회 점프
             if(Managers.Card.GetCurrentCardRankScore()>=50)
             {

@@ -15,7 +15,7 @@ namespace Cardevil.InGame.Enemy
     {
         private Field field;
         private float damage = 1; // Enemy의 공격력
-        private float HP = 100; // Enemy의 체력
+        public float HP = 100; // Enemy의 체력
         public int attackCreateTurnOrder;
         public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
         private int attackLineNumber;
@@ -25,7 +25,7 @@ namespace Cardevil.InGame.Enemy
         private bool isAttakced = false;
         private bool isEnemyDead = false;
         
-        public bool isPlayerAttack = false;
+        public bool isPlayerAttack = true;
 
         private List<Attack> attackLists = new List<Attack>();
 
@@ -48,8 +48,10 @@ namespace Cardevil.InGame.Enemy
             public int attackPointNumber_x;
             public int attackPointNumber_y;
 
-            public void SetAttackCycle()
+            public void SetAttackCycle(int cycle)
             {
+                attackCycle = cycle;
+                Debug.Log($"어택 턴오더 {attackTurnOrder} = 어택 사이클{attackCycle}");
                 attackTurnOrder = attackCycle; // 몇턴뒤에 공격
             }
             
@@ -92,15 +94,18 @@ namespace Cardevil.InGame.Enemy
 
         public void CreateAttack(bool firstCreate=false)
         {
+            Debug.Log("CreateAttack");
+
             Attack tmpAttack = new Attack();
             tmpAttack.currentAttackStyle = SetAttackType();
-            tmpAttack.SetAttackCycle();
+            tmpAttack.SetAttackCycle(attackCreateCycle);
             if(firstCreate) { tmpAttack.attackTurnOrder++; }
             SetAttack(tmpAttack,isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
         public void AttackEnemyTurnStart()
         {
+            Debug.Log("Enemy Turn!!");
             AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
 
             // 우선 시작할때 공격구역 설정하도록 해보기 Test
@@ -112,7 +117,7 @@ namespace Cardevil.InGame.Enemy
         }
 
 
-        private void AttackPatternEnemyTurning()
+        public void AttackPatternEnemyTurning()
         {
             if (HP <= 0)// 만약 Enemy의 체력이 0 이라면 공격을 수행하지않음
             {
@@ -126,31 +131,39 @@ namespace Cardevil.InGame.Enemy
                 Debug.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
                 if (attack.attackTurnOrder == 0) // 0 이라면 공격시행
                 {
-                    AttackGo(attack);
+                    AttackingCheck(attack);
                     RemoveHighLight(attack);
                 }
             }
 
-
-
         }
 
+        virtual public void AttackingCheck(Attack attack) // K의 오버라이드를 위한 AttackingCheckㄴ
+        {
+            AttackGo(attack);
+        }
 
-        void AttackGo(Attack attack)
+        /// <summary>
+        /// 가로세로줄 공격에 성공하면  true
+        /// </summary>
+        /// <param name="attack"></param>
+        /// <returns></returns>
+        public bool AttackGo(Attack attack)
         {
             Debug.Log($"Enemy Attack! damage : {damage}");
             if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
             {
-                AttackHorizontal(attackLineNumber);
+                return(AttackHorizontal(attackLineNumber));
             }
             else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
             {
-                AttackVerical(attackLineNumber);
+                return(AttackVerical(attackLineNumber));
             }
             else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
             {
-                AttackPoint(attackPointNumber_x, attackPointNumber_y);
+                 AttackPoint(attackPointNumber_x, attackPointNumber_y);
             }
+            return false;
         }
         void AttackEnemyTurnEnd()
         {
@@ -198,14 +211,17 @@ namespace Cardevil.InGame.Enemy
         /// </summary>
         /// <param name="setPlayerAttack"></param>
         virtual public void SetAttack(Attack attack,bool setPlayerAttack = false)
-        {
+        {   
+            Debug.Log(setPlayerAttack);
             if (setPlayerAttack) // 플레이어 위치로 공격할 것인가에 대해
             {
                 SetPlayerAttack(attack);
+                return;
             }
             else
             {
                 SetRandomAttack(attack);
+                return;
             }
 
 
@@ -226,9 +242,11 @@ namespace Cardevil.InGame.Enemy
         /// <param name="attack"></param>
         public void SetPlayerAttack(Attack attack)
         {
+            Debug.Log("SetPlayerAttack 진입");
             // 현재 가로공격인지 세로공격인지 확인
             if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
             {
+                
                 //플레이어의 가로 위치
                 attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
                 //공격위치표시
@@ -286,7 +304,7 @@ namespace Cardevil.InGame.Enemy
         {
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
-                field[x][lineNumber].UnHighLightAttackTile(); // 해당 타일을 하이라이트하기.
+                field[lineNumber][x].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
             }
         }
 
@@ -294,16 +312,16 @@ namespace Cardevil.InGame.Enemy
         {
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
-                field[lineNumber][x].UnHighLightAttackTile(); // 해당 타일을 하이라이트하기.
+                field[x][lineNumber].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
             }
         }
         void RemoveHighLight_Point(int pointNumber_x, int pointNumber_y)
         {
-            field[pointNumber_x][pointNumber_y].UnHighLightAttackTile(); // 해당 타일 하이라이트 off
+            field[pointNumber_x][pointNumber_y].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일 하이라이트 off
         }
         public void AttackNoticeSign_Point(int pointNumber_x, int pointNumber_y)
         {
-            field[pointNumber_x][pointNumber_y].HighLightAttackTile(); // 해당 타일을 하이라이트하기.
+            field[pointNumber_x][pointNumber_y].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
             currentAttackStyle = AttackStyle.AttackPoint; // 포인트 어택 형태로 저장
         }
 
@@ -312,7 +330,7 @@ namespace Cardevil.InGame.Enemy
 
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
-                field[lineNumber][x].HighLightAttackTile(); // 해당 타일을 하이라이트하기.
+                field[x][lineNumber].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
             }
             currentAttackStyle = AttackStyle.AttackVertical; // 포인트 어택 형태로 저장
         }
@@ -321,7 +339,7 @@ namespace Cardevil.InGame.Enemy
         {
             for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
             {
-                field[x][lineNumber].HighLightAttackTile(); // 해당 타일을 하이라이트하기.
+                field[lineNumber][x].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
             }
             currentAttackStyle = AttackStyle.AttackHorizontal; // 포인트 어택 형태로 저장
         }
@@ -350,13 +368,14 @@ namespace Cardevil.InGame.Enemy
 
         }
 
-        void AttackVerical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
+        bool AttackVerical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
         {
+            bool successAttack = false;
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
             {
                 List<Entity> entities =
-                field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+                field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
 
                 //Entity중 Player가 있다면
                 foreach(Entity entity in entities)
@@ -367,16 +386,20 @@ namespace Cardevil.InGame.Enemy
                         if (player is ITurnPlayerAction action)
                         {
                             action.PlayerGetDamage(damage);
+                            return successAttack = true;
                         }
                     }
                 }
 
             }
+
+            return successAttack;
         }
 
 
-        void AttackHorizontal(int pointNumber) // 가로 공격 왼쪽부터 pointNumber 0,1,2
+        bool AttackHorizontal(int pointNumber) // 가로 공격 왼쪽부터 pointNumber 0,1,2
         {
+            bool successAttack = false;
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
             {
@@ -392,11 +415,13 @@ namespace Cardevil.InGame.Enemy
                         if (player is ITurnPlayerAction action)
                         {
                             action.PlayerGetDamage(damage);
+                            successAttack = true;
                         }
                     }
                 }
 
             }
+            return successAttack;
         }
         #endregion
 

@@ -88,14 +88,13 @@ namespace Cardevil.Systems
                     // TODO: 게임 클리어
                 }
 
-                if (enemy.CheckAttack())
-                {
-                    await enemy.TurnAttack();
-                    if (playerAction.IsDead)
-                    {
-                        Managers.Game.PlayerDied();
-                    }
-                }
+                
+                 await enemy.TurnAttack();
+                 if (playerAction.IsDead)
+                 {
+                     Managers.Game.PlayerDied();
+                 }
+                
             }
         }
     }

@@ -281,7 +281,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public async UniTask DrawCard()
         {
-            Debug.Log("draw card");
+            //Debug.Log("draw card");
             isSwapping = true;
 
             var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
