@@ -79,7 +79,7 @@ namespace Cardevil.Systems
                 await playerInput.WaitUserInput();
                 playerInput.InactivateInteraction();
 
-                await playerMove.Move();
+                await playerMove.TurnMove();
                 await playerAction.TurnAttack();
 
                 if (enemy.IsDead)

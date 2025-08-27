@@ -1,6 +1,9 @@
+using Cardevil.Cards;
 using Cardevil.Ingame.Field;
+using Cardevil.Systems;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
@@ -9,7 +12,7 @@ namespace Cardevil.Ingame.Entities
     /// <summary>
     /// 플레이어 캐릭터 클래스
     /// </summary>
-    public class PlayerCharacter : MonoBehaviour, IPlayerControl
+    public class PlayerCharacter : MonoBehaviour, IPlayerControl, ITurnPlayerAction, ITurnPlayerMove
     {
         [Header("Debug")]
         [SerializeField] protected bool _isDebugMode = false;
@@ -118,5 +121,41 @@ namespace Cardevil.Ingame.Entities
         {
             return Entity.Tile.j;
         }
+
+        #region ITurnPlayerAction, ITurnPlayerMove 구현
+        public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
+        public async UniTask TurnAttack()
+        {
+            Debug.Log("Player Attacks!");
+            CardContext ctx = Managers.Card.handBar.Context;
+            CardResult result = ctx.CurrentResult;
+            await UniTask.Delay(100);
+            // TODO : 적에 대한 공격 구현
+            Debug.Log($"플레이어 공격 : {result.Damage} 피해. 구현 아직");
+        }
+        
+        public void GetDamage(int amount)
+        {
+            Debug.Log($"Player takes {amount} damage!");
+            Managers.Game.PlayerStatus.CurrentHp -= amount;
+        }
+
+        public async UniTask TurnMove()
+        {
+            Debug.Log("Player Moves!");
+            CardContext ctx = Managers.Card.handBar.Context;
+            CardResult result = ctx.CurrentResult;
+            //TODO 이동 로직 구현
+            foreach (var move in result.Moves)
+            {
+                Move(move.direction, move.length);
+                await UniTask.Delay(100);
+            }
+            Debug.Log("Player Move Completed!");
+        }
+        
+
+        #endregion
+
     }
 }
