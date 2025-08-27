@@ -19,9 +19,14 @@ namespace Cardevil.Cards
             handBar.Init();
         }
 
+        public ILockable GetCard()
+        {
+            return handBar.Deck.GetRandomCard();
+        }
+
         public CardResult GetCurrentCardRank()
         {
-            
+
             return Managers.Card.handBar.Context.CurrentResult;
         }
 

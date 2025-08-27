@@ -28,6 +28,12 @@ namespace Cardevil.Cards
             discard = new();
         }
 
+        public CardData GetRandomCard()
+        {
+            int randomIndex = Random.Range(0, deck.Count());
+            return deck[randomIndex];
+        }
+
         public CardData DrawCard()
         {
             if (deck.Count == 0)

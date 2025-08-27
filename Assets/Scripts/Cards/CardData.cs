@@ -5,8 +5,13 @@ using UnityEngine;
 
 namespace Cardevil.Cards
 {
+    public interface ILockable
+    {
+        void Lock();
+    }
+
     [System.Serializable]
-    public abstract class CardData
+    public abstract class CardData : ILockable
     {
         public int reinforcement = 0;
         public virtual bool CanSelect => false;
@@ -14,6 +19,12 @@ namespace Cardevil.Cards
 
         public abstract bool OpenSelection(SelectContainer selectContainer, Card card);
         public abstract CardData CreateInGame();
+
+        public void Lock()
+        {
+            Debug.Log("잠금");
+        }
+
     }
 
 
