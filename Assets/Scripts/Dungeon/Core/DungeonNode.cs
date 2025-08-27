@@ -6,14 +6,14 @@ using UnityEngine;
 namespace Cardevil.Dungeon
 {
     [Serializable]
-    public class DungeonNode
+    public class DungeonNode : ISerializationCallbackReceiver
     {
         [SerializeField, VisibleOnly] private Dungeon dungeon;
         [SerializeField, VisibleOnly] private int nodeId;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodeTypes type;
         [SerializeField, VisibleOnly] private DungeonNodePreset preset;
-        
+
         public Dungeon Dungeon
         {
             get => dungeon;
@@ -40,9 +40,9 @@ namespace Cardevil.Dungeon
             set => preset = value;
         }
         
-        public bool IsBranchStart { get; set; } = false;
-        public bool IsInBranch { get; set; } = false;
-        public bool IsBranchEnd { get; set; } = false;
+        [field:SerializeField] public bool IsBranchStart { get; set; } = false;
+        [field:SerializeField] public bool IsInBranch { get; set; } = false;
+        [field:SerializeField] public bool IsBranchEnd { get; set; } = false;
         public List<DungeonNode> PreviousNodes { get; private set; } = new List<DungeonNode>();
         public List<DungeonNode> NextNodes { get; private set; } = new List<DungeonNode>();
 
@@ -86,6 +86,16 @@ namespace Cardevil.Dungeon
             {
                 return $"NodeId: {NodeId}, Floor: {Floor}, Type: {Type}, Preset: None";
             }
+        }
+
+        public void OnBeforeSerialize()
+        {
+            
+        }
+
+        public void OnAfterDeserialize()
+        {
+            
         }
     }
 }
