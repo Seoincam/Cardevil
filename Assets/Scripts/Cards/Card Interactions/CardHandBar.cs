@@ -73,8 +73,8 @@ namespace Cardevil.Cards.CardInteractinos
                 slots[i] = slot.transform;
             }
 
-            useCardButton.onClick.AddListener(UseCard);
-            discardCardButton.onClick.AddListener(DiscardCard);
+            useCardButton.onClick.AddListener(Use);
+            discardCardButton.onClick.AddListener(Discard);
 
             Managers.Event.GameStateChangeEvent.AddListener(OnGameStateChanged);
 
@@ -165,7 +165,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         #region Spawn & Use card
         
-        public Card SpawnCard(int slotIndex)
+        private Card SpawnCard(int slotIndex)
         {
             var cardData = Deck.DrawCard();
             if (cardData == null)
@@ -192,21 +192,33 @@ namespace Cardevil.Cards.CardInteractinos
             return card;
         }
 
-        private void UseCard()
+        private void Use()
         {
             CardResultEvaluator.Evaluate(Context, Hand.Selects);
             _ = DiscardSequentially();
             cmp.TrySetResult();
         }
 
-        private void DiscardCard()
+        private void Discard()
         {
             // TODO: 카드 선택 0개일땐 불가능하게 수정
-            useCardButton.interactable = false;
-            _ = DiscardSequentially();
+            _ = DiscardCard();
         }
 
-        public async UniTaskVoid DiscardSequentially()
+        private async UniTask DiscardCard()
+        {
+            useCardButton.interactable = false;
+            UpdateCanUseCard();
+
+            await DiscardSequentially();
+            await DrawCard();
+
+            useCardButton.interactable = true;
+            UpdateCanUseCard();
+        }
+        
+
+        public async UniTask DiscardSequentially()
         {
             isSwapping = true;
 
@@ -281,7 +293,6 @@ namespace Cardevil.Cards.CardInteractinos
 
         public async UniTask DrawCard()
         {
-            //Debug.Log("draw card");
             isSwapping = true;
 
             var inactiveSlots = slots.Where(s => !s.gameObject.activeSelf)
