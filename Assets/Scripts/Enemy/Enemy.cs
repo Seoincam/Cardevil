@@ -94,8 +94,6 @@ namespace Cardevil.InGame.Enemy
 
         public void CreateAttack(bool firstCreate=false)
         {
-            Debug.Log("CreateAttack");
-
             Attack tmpAttack = new Attack();
             tmpAttack.currentAttackStyle = SetAttackType();
             tmpAttack.SetAttackCycle(attackCreateCycle);
@@ -103,8 +101,9 @@ namespace Cardevil.InGame.Enemy
             SetAttack(tmpAttack,isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
-        public void AttackEnemyTurnStart()
+        IEnumerator AttackEnemyTurnStart()
         {
+            yield return new WaitForSeconds(1.2f);
             Debug.Log("Enemy Turn!!");
             AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
 

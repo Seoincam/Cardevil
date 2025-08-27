@@ -138,7 +138,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HP: 100
   attackCreateTurnOrder: 0
-  attackCreateCycle: 3
+  attackCreateCycle: 2
   isPlayerAttack: 1
 --- !u!1001 &401468740
 PrefabInstance:

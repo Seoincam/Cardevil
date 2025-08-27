@@ -14,8 +14,6 @@ namespace Cardevil.InGame.Enemy.Boss
                 return true; // 사망시 스킵
             }
 
-            SetAllAttackOrder(1); // 공격 턴을 1로 만들기
-
             return false; // 아직 살아있다
         }
 
@@ -31,6 +29,7 @@ namespace Cardevil.InGame.Enemy.Boss
 
         public override void AttackingCheck(Attack attack)
         {
+            Debug.Log("AttackingCheck}");
             if(AttackGo(attack))
             {
                 // 공격에 성공했음
