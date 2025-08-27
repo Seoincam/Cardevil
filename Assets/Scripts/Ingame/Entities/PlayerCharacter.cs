@@ -134,7 +134,7 @@ namespace Cardevil.Ingame.Entities
             Debug.Log($"플레이어 공격 : {result.Damage} 피해. 구현 아직");
         }
         
-        public void GetDamage(int amount)
+        public void PlayerGetDamage(float amount)
         {
             Debug.Log($"Player takes {amount} damage!");
             Managers.Game.PlayerStatus.CurrentHp -= amount;
