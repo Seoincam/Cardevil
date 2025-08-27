@@ -137,7 +137,7 @@ namespace Cardevil.Ingame.Entities
         public void PlayerGetDamage(float amount)
         {
             Debug.Log($"Player takes {amount} damage!");
-            Managers.Game.PlayerStatus.CurrentHp -= amount;
+            Managers.Game.PlayerStatus.CurrentHp -= (int)amount;
         }
 
         public async UniTask TurnMove()
