@@ -164,8 +164,8 @@ namespace Cardevil.Cards.CardInteractinos
             if (parentCard.data is DirectionCardData dirCard)
             {
                 transform.name = dirCard.value.ToString();
-                var textString = dirCard.value != Direction.None ? dirCard.value.ToString() : "All";
-                if (dirCard.value != Direction.None && dirCard.CanSelect)
+                var textString = dirCard.value.direction != Direction.None ? dirCard.value.ToString() : "All";
+                if (dirCard.value.direction != Direction.None && dirCard.CanSelect)
                     textString += "*";
                 text.text = textString;
                 text.fontSize = 35;
