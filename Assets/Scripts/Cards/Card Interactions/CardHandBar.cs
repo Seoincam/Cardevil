@@ -11,7 +11,7 @@ namespace Cardevil.Cards.CardInteractinos
 {
     public class CardHandBar : MonoBehaviour, ICardHandBar, ITurnPlayerInput
     {
-        public InGameDeck Deck { get; private set; }
+        public InStageDeck Deck { get; private set; }
         public InGameHand Hand { get; private set; }
         public CardContext Context => _context;
 
@@ -69,7 +69,10 @@ namespace Cardevil.Cards.CardInteractinos
         }
 
 
-
+        void Awake()
+        {
+             
+        }
         void Update()
         {
             if (!CanInput)
@@ -85,9 +88,14 @@ namespace Cardevil.Cards.CardInteractinos
         {
             CanInteraction = false;
 
-            DeckFactory.InitRuntimeDeckConfig(baseDeckConfig, baseRuntimeDeckConfig);
-            Deck = new(baseRuntimeDeckConfig);
-            Hand = new();
+            // TODO: CardManager에서 처리하게 하는게 더 옳을 듯
+            DeckFactory.CreateRuntimeDeck(baseDeckConfig, baseRuntimeDeckConfig);
+
+            Deck = new();
+            // TODO: Init 로직 추가
+            Hand = new();          
+            
+            Deck.Init(DeckFactory.CreateStageDeck(baseRuntimeDeckConfig));
             _context = new(multiplyValues);
 
             for (int i = 0; i < initialCardCount; i++)

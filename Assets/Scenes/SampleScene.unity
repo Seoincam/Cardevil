@@ -1188,6 +1188,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 600
       objectReference: {fileID: 0}
+    - target: {fileID: 5282958142974385909, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: buttonPrefab
+      value: 
+      objectReference: {fileID: 1109680882585889054, guid: 65054391ad5344742ab23653bd307de4, type: 3}
     - target: {fileID: 8194372924566699631, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_Name
       value: CardCanvas

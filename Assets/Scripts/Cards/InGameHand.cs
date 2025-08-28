@@ -31,7 +31,7 @@ namespace Cardevil.Cards
         }
 
         // 값 선택 가능한 카드들이 모두 선택됐나
-        public bool AllValueSelected => selects.All(c => c.data.valueSelected);
+        public bool AllValueSelected => selects.All(c => c.data.IsValueSelected);
         
 
         public async UniTask Discard(float interval, Transform[] slots)

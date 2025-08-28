@@ -9,7 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3ce5d1dc1c6242578ab72dd678b0f64, type: 3}
-  m_Name: BaseDeckConfiguration
+  m_Script: {fileID: 11500000, guid: b9bbabb6f8d524300a1b912d66370550, type: 3}
+  m_Name: DirectionSelectReinforceConfiguration
   m_EditorClassIdentifier: 
-  deck: []
+  maxLevel: 0
+  possiblilities:
+    defaultKey: 0
+    data: []

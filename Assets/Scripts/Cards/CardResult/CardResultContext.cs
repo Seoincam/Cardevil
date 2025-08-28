@@ -1,7 +1,4 @@
-using Cardevil.Cards.CardInteractinos;
-using Cardevil.Utils.Directions;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 namespace Cardevil.Cards
 {
@@ -35,13 +32,13 @@ namespace Cardevil.Cards
         public readonly bool isSet;
 
         public readonly float Damage;
-        public readonly List<CardDirection> Moves;
+        public readonly List<MoveData> Moves;
 
         public readonly List<HandRanking> Rankings;
         public readonly bool IsRedCardOver3;
         public readonly bool IsBlackCardOver3;
 
-        public CardResult(float damage, List<CardDirection> moves, List<HandRanking> rankings, bool isRedCardOver3, bool isBlackCardOver3)
+        public CardResult(float damage, List<MoveData> moves, List<HandRanking> rankings, bool isRedCardOver3, bool isBlackCardOver3)
         {
             isSet = true;
 

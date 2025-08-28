@@ -80,14 +80,6 @@ namespace Cardevil.Cards.CardInteractinos
             this.BarGroup = barGroup;
             data = cardData;
 
-            // 이름 할당 (임시)
-            if (cardData is DirectionCardData direction)
-                transform.name = direction.value.ToString();
-            else if (cardData is NumberCardData number)
-                transform.name = $"{number.color} {number.value}";
-            else
-                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
-
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
             if (visualHandler == null)
                 Debug.LogError("Visual Handler를 찾을 수 없음.");
@@ -137,7 +129,7 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 OnPointerDownEvent?.Invoke(this);
 
-                if (data.OpenSelection(BarGroup.selectContainer, this))
+                if (data.OpenSelection(this, BarGroup.selectContainer))
                     OnSelectValueStartEvent?.Invoke(this);
             }
         }
