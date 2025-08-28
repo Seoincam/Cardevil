@@ -119,6 +119,7 @@ namespace Cardevil.Cards
 
     public enum CardColor { Red, Blue, Green, Black }
 
+    [System.Serializable]
     public struct CardDirection
     {
         public Direction direction;

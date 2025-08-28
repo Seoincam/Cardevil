@@ -163,8 +163,8 @@ namespace Cardevil.Cards.CardInteractinos
             // 이름 설정 (임시)
             if (parentCard.data is DirectionCardData dirCard)
             {
-                transform.name = dirCard.value.ToString();
-                var textString = dirCard.value.direction != Direction.None ? dirCard.value.ToString() : "All";
+                transform.name = dirCard.value.direction.ToString();
+                var textString = dirCard.value.direction != Direction.None ? dirCard.value.direction.ToString() : "All";
                 if (dirCard.value.direction != Direction.None && dirCard.CanSelect)
                     textString += "*";
                 text.text = textString;
