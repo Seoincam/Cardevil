@@ -17,7 +17,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private TextMeshProUGUI nodeText;
         [Header("UI")]
         [SerializeField] private DungeonUI dungeonUI;
-        [FormerlySerializedAs("dungeonStageUI")] [SerializeField] private DungeonChapterUI dungeonChapterUI;
+        [SerializeField] private DungeonChapterUI dungeonChapterUI;
         [Header("Dungeon Node Info")]
         [SerializeField,VisibleOnly] private DungeonNode dungeonNode;
         [Space]

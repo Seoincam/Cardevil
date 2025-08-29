@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Cardevil.Dungeon
 {
@@ -7,7 +8,7 @@ namespace Cardevil.Dungeon
     /// 현재로썬 기능이 없음
     /// </summary>
     [Serializable]
-    public abstract class DungeonNodePreset
+    public abstract class DungeonNodePreset : ScriptableObject
     {
         public int count = 1;
 

@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Cardevil.Dungeon
 {
     [Serializable]
-    public class Dungeon
+    public class Dungeon : INodeContainer
     {
         [SerializeField] internal int dungeonId;
         [SerializeField] internal DungeonConfigurationSO dungeonConfiguration;
@@ -36,11 +36,18 @@ namespace Cardevil.Dungeon
             set => nodes = value;
         }
         
-        public DungeonNode GetNodeById(int nodeId)
+        public DungeonNode GetNode(int nodeId)
         {
-            return nodes[nodeId - 1];
+            foreach (var n in nodes)
+            {
+                if (n.NodeId == nodeId)
+                {
+                    return n;
+                }
+            }
+            Debug.LogError($"[Dungeon] Node with ID {nodeId} not found in Dungeon {dungeonId}");
+            return null;
         }
-        
         
         public void Initialize()
         {

@@ -46,6 +46,15 @@ namespace Cardevil.Dungeon
         public List<DungeonNode> PreviousNodes { get; private set; } = new List<DungeonNode>();
         public List<DungeonNode> NextNodes { get; private set; } = new List<DungeonNode>();
 
+        private DungeonNode()
+        {
+            
+        }
+
+        public static DungeonNode CreateVoid()
+        {
+            return new DungeonNode(-1, -1, DungeonNodeTypes.None, null);
+        }
         public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodePreset preset)
         {
             NodeId = nodeId;
