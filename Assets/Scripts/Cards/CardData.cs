@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Cardevil.Cards
 {
     [Serializable]
-    public sealed class CardData : ILockable
+    public sealed class CardData : ICopyable<CardData>, ILockable
     {
         [Header("Card")]
         public CardType type;
@@ -74,6 +74,7 @@ namespace Cardevil.Cards
 
 
         // 강화
+        // TODO: 강화 로직 구현하기
         /*
         public enum NumberReinforceMode { None, Damage, SelectCount }
         public NumberReinforceState NumberState = new() { Mode = NumberReinforceMode.None, level = 0 };
@@ -106,8 +107,8 @@ namespace Cardevil.Cards
             {
                 type = type,
                 isLocked = false,
-                Number = new() { color = Number.color, number = Number.number },
-                Move = new() { direction = Move.direction, length = Move.length },
+                Number = Number.Copy(),
+                Move = Move.Copy(),
                 numberOptions = new(numberOptions),
                 directionOptions = new(directionOptions),
                 reinforceEnabled = reinforceEnabled
@@ -118,23 +119,43 @@ namespace Cardevil.Cards
 
 
     [Serializable]
-    public class NumberData
+    public class NumberData : ICopyable<NumberData>
     {
         public enum CardColor { Red, Blue, Green, Black }
         public CardColor color;
         public int number;
+
+        public NumberData Copy()
+        {
+            return new NumberData() { color = color, number = number };
+        }
+
     }
 
     [Serializable]
-    public class MoveData
+    public class MoveData : ICopyable<MoveData>
     {
         public Direction direction;
         public int length;
+
+        public MoveData Copy()
+        {
+            return new MoveData() { direction = direction, length = length };
+        }
+
     }
 
     public interface ILockable
     {
         void Lock();
+    }
+
+    /// <summary>
+    /// DeepCopy를 하고 반환하는 클래스가 구현함.
+    /// </summary>
+    public interface ICopyable<T>
+    {
+        T Copy();
     }
 
     public enum HandRanking
