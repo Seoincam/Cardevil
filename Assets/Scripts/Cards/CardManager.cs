@@ -27,7 +27,7 @@ namespace Cardevil.Cards
         public CardResult GetCurrentCardRank()
         {
 
-            return Managers.Card.handBar.Context.CurrentResult;
+            return handBar.Context.CurrentResult;
         }
 
         public int GetCurrentCardRankScore()
