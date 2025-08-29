@@ -53,8 +53,8 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnPointerUpEvent += OnPointerUp;
             parentCard.OnBeginDragEvent += OnBeginDrag;
             parentCard.OnEndDragEvent += OnEndDrag;
-            parentCard.OnSelectStartEvent += OnSelectStarted;
-            parentCard.OnSelectEndEvent += OnSelectEnded;
+            parentCard.OnSelectValueStartEvent += OnSelectStarted;
+            parentCard.OnSelectValueEndEvent += OnSelectEnded;
 
             parentCard.OnSpawn += OnSpawn;
             parentCard.OnDiscard += OnDiscard;
@@ -163,9 +163,9 @@ namespace Cardevil.Cards.CardInteractinos
             // 이름 설정 (임시)
             if (parentCard.data is DirectionCardData dirCard)
             {
-                transform.name = dirCard.value.ToString();
-                var textString = dirCard.value != Direction.None ? dirCard.value.ToString() : "All";
-                if (dirCard.value != Direction.None && dirCard.CanSelect)
+                transform.name = dirCard.value.direction.ToString();
+                var textString = dirCard.value.direction != Direction.None ? dirCard.value.direction.ToString() : "All";
+                if (dirCard.value.direction != Direction.None && dirCard.CanSelect)
                     textString += "*";
                 text.text = textString;
                 text.fontSize = 35;

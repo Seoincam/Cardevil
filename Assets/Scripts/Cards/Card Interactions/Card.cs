@@ -16,7 +16,7 @@ namespace Cardevil.Cards.CardInteractinos
         public CardVisual cardVisual;
 
         [Header("Reference")]
-        public CardBarGroup BarGroup { get; private set; }
+        public CardHandBar BarGroup { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
@@ -32,7 +32,7 @@ namespace Cardevil.Cards.CardInteractinos
                     && BarGroup.draggedCard != this)
                     return false;
 
-                if (!BarGroup.CanInteraction)
+                if (!BarGroup.CanInput)
                     return false;
 
                 return true;
@@ -49,8 +49,8 @@ namespace Cardevil.Cards.CardInteractinos
         [HideInInspector] public Action<Card> OnPointerUpEvent;
         [HideInInspector] public Action<Card> OnBeginDragEvent;
         [HideInInspector] public Action<Card> OnEndDragEvent;
-        [HideInInspector] public Action<Card> OnSelectStartEvent;
-        [HideInInspector] public Action<Card> OnSelectEndEvent;
+        [HideInInspector] public Action<Card> OnSelectValueStartEvent;
+        [HideInInspector] public Action<Card> OnSelectValueEndEvent;
 
         [HideInInspector] public Action OnSpawn;
         [HideInInspector] public Action<float> OnDiscard;
@@ -75,7 +75,7 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
-        public void Init(CardBarGroup barGroup, CardData cardData)
+        public void Init(CardHandBar barGroup, CardData cardData)
         {
             this.BarGroup = barGroup;
             data = cardData;
@@ -138,7 +138,7 @@ namespace Cardevil.Cards.CardInteractinos
                 OnPointerDownEvent?.Invoke(this);
 
                 if (data.OpenSelection(BarGroup.selectContainer, this))
-                    OnSelectStartEvent?.Invoke(this);
+                    OnSelectValueStartEvent?.Invoke(this);
             }
         }
 

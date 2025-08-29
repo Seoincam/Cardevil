@@ -1,56 +1,54 @@
-using System;
-using Cardevil.Cards;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Systems
 {
-    #region Player Input
-    public interface IPlayerInputHandler
+    /// <summary>
+    /// 유저의 Input을 정의하는 정의하는 인터페이스.
+    /// TurnManager가 관리.
+    /// </summary>
+    public interface ITurnPlayerInput
     {
-        event Action<CardResult> OnPlayerInputReceived;
+        bool IsNoCard { get; }
 
-        void SubscribePlayerInput();
-        UniTask HandlePlayerInputAsync();
-        void OnCardUsed(CardResult _);
-    }
-    #endregion
-
-
-    #region  Player
-    public interface IPlayerInputReceiver
-    {
-        void SubscribePlayerInput();
-        void ReceiveInput(CardResult result);
+        UniTask DrawCard();
+        void ActivateInteraction();
+        UniTask WaitUserInput();
+        void InactivateInteraction();
     }
 
-    public interface IPlayerDamageReceiver
+    /// <summary>
+    /// 플레이어의 행동을 정의하는 인터페이스.
+    /// TurnManager가 관리.
+    /// </summary>
+    public interface ITurnPlayerAction
     {
-        // 필드 상 플레이어 위치 기반으로 수정
+        bool IsDead { get; }
+        UniTask TurnAttack();
+        void PlayerGetDamage(float amount);
     }
 
-    public interface IPlayerActionHandler
+    /// <summary>
+    /// 플레이어의 움직임을 정의하는 인터페이스.
+    /// TurnManager가 관리.
+    /// </summary>
+    public interface ITurnPlayerMove
     {
-        event Action<int> OnPlayerDamageDealt;
-
-        void SubscribePlayerAction();
-        UniTask HandlePlayerActionAsync();
-    }
-    #endregion
-
-
-    #region Boss
-    public interface IBossDamageReceiver
-    {
-        void SubscribePlayerDamage();
-        void UnsubscribePlayerDamage();
-        void ReceivePlayerDamage(int amount);
+        UniTask TurnMove();
     }
 
-    public interface IBossActionHandler
+    /// <summary>
+    /// 적의 행동을 정의하는 인터페이스.
+    /// TurnManager가 관리.
+    /// </summary>
+    public interface ITurnEnemy
     {
-        void SubscribeBossAction();
-        void UnsubscribeBossAction();
-        UniTask HandleBossActionAsync();
+        bool IsDead { get; }
+        UniTask TurnAttack();
+        bool GetDamage(float damage);
+
+        /// <summary>
+        /// 공격들중에 공격까지 남은 턴이 0이 있는것이 있나 됐나 확인.
+        /// </summary>
+        bool CheckAttack();
     }
-    #endregion
 }

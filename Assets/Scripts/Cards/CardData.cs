@@ -5,8 +5,13 @@ using UnityEngine;
 
 namespace Cardevil.Cards
 {
+    public interface ILockable
+    {
+        void Lock();
+    }
+
     [System.Serializable]
-    public abstract class CardData
+    public abstract class CardData : ILockable
     {
         public int reinforcement = 0;
         public virtual bool CanSelect => false;
@@ -14,6 +19,12 @@ namespace Cardevil.Cards
 
         public abstract bool OpenSelection(SelectContainer selectContainer, Card card);
         public abstract CardData CreateInGame();
+
+        public void Lock()
+        {
+            Debug.Log("잠금");
+        }
+
     }
 
 
@@ -67,15 +78,15 @@ namespace Cardevil.Cards
     public class DirectionCardData : CardData
     {
         public override bool CanSelect => selectableValues != null && selectableValues.Length > 0;
-        public override bool valueSelected => value != Direction.None;
+        public override bool valueSelected => value.direction != Direction.None;
 
         [Space]
-        public Direction value;
+        public CardDirection value;
         public Direction[] selectableValues;
 
-        private DirectionCardData(Direction value, int reinforcement, Direction[] selectableValues)
+        private DirectionCardData(CardDirection value, int reinforcement, Direction[] selectableValues)
         {
-            this.value = value;
+            this.value = new CardDirection(value.direction, value.length);
             this.reinforcement = reinforcement;
             this.selectableValues = selectableValues;
         }
@@ -85,7 +96,7 @@ namespace Cardevil.Cards
             if (!selectableValues.Contains(value))
                 return false;
 
-            this.value = value;
+            this.value.direction = value;
             return true;
         }
 
@@ -99,7 +110,8 @@ namespace Cardevil.Cards
 
         public override CardData CreateInGame()
         {
-            var data = new DirectionCardData(value, reinforcement, selectableValues);
+            var cardDirection = new CardDirection(value.direction, value.length);
+            var data = new DirectionCardData(cardDirection, reinforcement, selectableValues);
             return data;
         }
     }
@@ -107,7 +119,20 @@ namespace Cardevil.Cards
 
     public enum CardColor { Red, Blue, Green, Black }
 
-    public enum CardCombo
+    [System.Serializable]
+    public struct CardDirection
+    {
+        public Direction direction;
+        public int length;
+
+        public CardDirection(Direction direction, int length)
+        {
+            this.direction = direction;
+            this.length = length;
+        }
+    }
+
+    public enum HandRanking
     {
         None = -1,
 
@@ -119,27 +144,5 @@ namespace Cardevil.Cards
         Flush = 80,
         FourCard = 200,
         StraightFlush = 300  // 스티플
-    }
-
-    public struct CardResult
-    {
-        public CardCombo combo;
-        public int damage;
-        public Direction[] moves;
-
-
-        public CardResult(CardCombo combo, int damage, Direction[] moves)
-        {
-            this.combo = combo;
-            this.damage = damage;
-            this.moves = moves;
-        }
-
-        public CardResult(Direction[] moves)
-        {
-            combo = CardCombo.None;
-            damage = 0;
-            this.moves = moves;
-        }
     }
 }

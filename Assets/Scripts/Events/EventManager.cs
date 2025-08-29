@@ -11,7 +11,6 @@ namespace Cardevil.Manager
     {
         private readonly PriorityEvent<PlayerHealthChangeArgs> _playerHealthChangeEvent = new ();
         private readonly PriorityEvent<RemainingCardChangeArgs> _remainingCardChangeEvent = new ();
-        private readonly PriorityEvent<GameStateChangeArgs> _gameStateChangEvent = new();
         
         /// <summary>
         /// 플레이어의 체력 변화 이벤트
@@ -33,20 +32,10 @@ namespace Cardevil.Manager
         /// </code>
         public PriorityEvent<RemainingCardChangeArgs> RemainingCardChangeEvent => _remainingCardChangeEvent;
 
-        /// <summary>
-        /// 게임 상태 변화 이벤트
-        /// </summary>
-        /// <code>
-        /// 우선순위
-        /// 0 : 기본 이벤트
-        /// </code>
-        public PriorityEvent<GameStateChangeArgs> GameStateChangeEvent => _gameStateChangEvent;
-
         public void Clear()
         {
             _playerHealthChangeEvent.Clear();
             _remainingCardChangeEvent.Clear();
-            _gameStateChangEvent.Clear();
         }
     }
 }

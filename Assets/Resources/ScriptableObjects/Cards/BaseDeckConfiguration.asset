@@ -175,32 +175,52 @@ MonoBehaviour:
     selectableValues: 02000000030000000400000005000000060000000700000008000000090000000a000000
   directionCardDatas:
   - reinforcement: 0
-    value: 0
+    value:
+      direction: 0
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 0
+    value:
+      direction: 0
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 2
+    value:
+      direction: 2
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 2
+    value:
+      direction: 2
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 3
+    value:
+      direction: 3
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 3
+    value:
+      direction: 3
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 1
+    value:
+      direction: 1
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: 1
+    value:
+      direction: 1
+      length: 1
     selectableValues: 
   - reinforcement: 0
-    value: -1
+    value:
+      direction: -1
+      length: 0
     selectableValues: 00000000020000000300000001000000
   - reinforcement: 0
-    value: -1
+    value:
+      direction: -1
+      length: 0
     selectableValues: 00000000020000000300000001000000

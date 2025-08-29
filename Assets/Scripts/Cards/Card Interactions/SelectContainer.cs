@@ -82,6 +82,6 @@ public class SelectContainer : MonoBehaviour
         backgroundButton.gameObject.SetActive(value);
         gameObject.SetActive(value);
         if (!value)
-            card.OnSelectEndEvent?.Invoke(card);
+            card.OnSelectValueEndEvent?.Invoke(card);
     }
 }

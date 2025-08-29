@@ -39,6 +39,7 @@ namespace Cardevil.Test
         private void OnGUI()
         {
             PlayerGUI();
+            StageGUI();
         }
 
         #endregion
@@ -46,7 +47,7 @@ namespace Cardevil.Test
         #region Player
         [Header("Player Test")] 
         public int setHp = 3;
-        
+
         [ContextMenu("Set Player HP")]
         public void SetPlayerHp()
         {
@@ -59,6 +60,15 @@ namespace Cardevil.Test
             else
             {
                 Debug.LogError("플레이어가 초기화되지 않았습니다.");
+            }
+        }
+
+        public void StageGUI()
+        {
+            GUILayout.Label("Stage Menu");
+            if (GUILayout.Button("Start Stage"))
+            {
+                Managers.Game.StageStart();
             }
         }
         

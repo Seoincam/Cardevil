@@ -6,6 +6,8 @@ using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Entities;
 using Cardevil.InGame.Enemy;
 using UnityEngine.Serialization;
+using Cardevil.Systems;
+using Unity.VisualScripting;
 
 [Serializable]
 public class GameManager
@@ -16,9 +18,6 @@ public class GameManager
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus; // 플레이어 상태 
-    
-
- 
     
     public Field Field
     {
@@ -96,7 +95,7 @@ public class GameManager
     public enum GameState
     {
         Pause,
-        PlayerInput, Action,
+        Combat,
         NonCombat
     }
     public GameState currentState;
@@ -116,7 +115,11 @@ public class GameManager
     public void StageStart()
     {
         TurnOrder = 0;
+        Managers.Turn.Init(
+            Managers.Card.playerInput,
+            Player.GetComponent<ITurnPlayerMove>(),
+            Player.GetComponent<ITurnPlayerAction>(),
+            Enemy.GetComponent<ITurnEnemy>()
+            );
     }
- 
-
-}
+ }
