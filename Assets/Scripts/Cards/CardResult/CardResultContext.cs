@@ -29,22 +29,23 @@ namespace Cardevil.Cards
     /// </summary>
     public readonly struct CardResult
     {
-        public readonly bool isSet;
-
         public readonly float Damage;
         public readonly List<MoveData> Moves;
 
         public readonly List<HandRanking> Rankings;
         public readonly bool IsRedCardOver3;
         public readonly bool IsBlackCardOver3;
+        
+        public string Description
+        {
+            get => Rankings.Count > 0 ? $"{Rankings[0]}, Damage: {Damage}" : "";
+        }
 
         public CardResult(float damage, List<MoveData> moves, List<HandRanking> rankings, bool isRedCardOver3, bool isBlackCardOver3)
         {
-            isSet = true;
-
             Damage = damage;
             Moves = moves != null ? new(moves) : new();
-            
+
             Rankings = rankings != null ? new(rankings) : new();
             IsRedCardOver3 = isRedCardOver3;
             IsBlackCardOver3 = isBlackCardOver3;

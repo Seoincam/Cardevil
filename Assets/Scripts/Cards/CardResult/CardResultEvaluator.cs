@@ -5,11 +5,12 @@ using Cardevil.Cards.CardInteractinos;
 namespace Cardevil.Cards
 {
     public static class CardResultEvaluator
-    {       
+    {
+        /// <summary>
+        /// 선택된 카드를 바탕으로 계산 후, 결과를 context에 저장.
+        /// </summary>
         public static void Evaluate(CardContext context, IEnumerable<Card> cards)
         {
-            context.GetSet();
-
             var moves = cards.Where(c => c.data.type == CardData.CardType.Move)
                         .Select(m => m.data.Move)
                         .ToList();
@@ -30,7 +31,7 @@ namespace Cardevil.Cards
             {
                 context.SetResult(new CardResult(0, moves, null, false, false));
                 return;
-            } 
+            }
 
             // == damage 합 연산 유물 ==
             // if (hasDamageRelics)
@@ -47,32 +48,29 @@ namespace Cardevil.Cards
             var rankings = CalculateRanking(numbers);
             float damage = 0;
 
-            if (rankings.First() == HandRanking.High)
+            if (rankings[0] == HandRanking.High)
                 damage = numbers.OrderBy(n => n.number).Last().number;
 
-            else if (rankings.First() == HandRanking.OnePair)
+            else if (rankings[0] == HandRanking.OnePair)
                 damage = numbers.GroupBy(n => n.number)
                             .Where(g => g.Count() == 2)
                             .Sum(g => g.Key * 2);
 
-            else if (rankings.First() == HandRanking.Triple)
+            else if (rankings[0] == HandRanking.Triple)
                 damage = numbers.GroupBy(n => n.number)
                             .Where(g => g.Count() == 3)
                             .Sum(g => g.Key * 3);
 
             else damage = numbers.Sum(n => n.number);
 
-            damage += (int)rankings.First();
+            damage += (int)rankings[0];
 
             // == 데미지 곱 연산 ==
-            if (context.PreviousResult.isSet)
-            {
-                if (context.PreviousResult.IsRedCardOver3)
-                    damage *= context.Multiply.red3multiply;
+            if (context.PreviousResult.IsRedCardOver3)
+                damage *= context.Multiply.red3multiply;
 
-                if (context.PreviousResult.IsBlackCardOver3)
-                    damage *= context.Multiply.black3multiply;
-            }
+            if (context.PreviousResult.IsBlackCardOver3)
+                damage *= context.Multiply.black3multiply;
 
             // == 데미지 강화 카드의 존재 여부 ==
 
@@ -80,6 +78,77 @@ namespace Cardevil.Cards
 
             var result = new CardResult(damage, moves, rankings, isRedCardOver3, isBlackCardOver3);
             context.SetResult(result);
+        }
+
+
+        /// <summary>
+        /// 선택된 카드를 바탕으로 계산 후, 저장 없이 반환만.
+        /// </summary>
+        public static CardResult CheckResult(CardContext context, IEnumerable<Card> cards)
+        {
+            var moves = cards.Where(c => c.data.type == CardData.CardType.Move)
+                        .Select(m => m.data.Move)
+                        .ToList();
+
+            var numbers = cards.Where(c => c.data.type == CardData.CardType.Number)
+                        .Select(n => n.data.Number)
+                        .ToList();
+
+            var isRedCardOver3 = numbers.Select(n => n.color == NumberData.CardColor.Red)
+                        .Count() >= 3;
+
+            var isBlackCardOver3 = numbers.Select(n => n.color == NumberData.CardColor.Black)
+                        .Count() >= 3;
+
+
+            // == 숫자 카드 판정 ==
+            if (numbers.Count == 0)
+                return new CardResult(0, moves, null, false, false);
+
+            // == damage 합 연산 유물 ==
+            // if (hasDamageRelics)
+            // {
+            //     damage = damage + 기본 공격 데미지 * 사용된 카드 수
+            // }
+
+            // == 족보 판정 ==
+            // if (hasColorRelics)
+            // {
+            //     해당 유물의 [같은색취급 세트]에서, 색의 개수가 같거나 더 적은 색을 나머지 색으로 변환시킨다.
+            // }
+
+            var rankings = CalculateRanking(numbers);
+            float damage = 0;
+
+            if (rankings[0] == HandRanking.High)
+                damage = numbers.OrderBy(n => n.number).Last().number;
+
+            else if (rankings[0] == HandRanking.OnePair)
+                damage = numbers.GroupBy(n => n.number)
+                            .Where(g => g.Count() == 2)
+                            .Sum(g => g.Key * 2);
+
+            else if (rankings[0] == HandRanking.Triple)
+                damage = numbers.GroupBy(n => n.number)
+                            .Where(g => g.Count() == 3)
+                            .Sum(g => g.Key * 3);
+
+            else damage = numbers.Sum(n => n.number);
+
+            damage += (int)rankings[0];
+
+            // == 데미지 곱 연산 ==
+            if (context.PreviousResult.IsRedCardOver3)
+                damage *= context.Multiply.red3multiply;
+
+            if (context.PreviousResult.IsBlackCardOver3)
+                damage *= context.Multiply.black3multiply;
+
+            // == 데미지 강화 카드의 존재 여부 ==
+
+            // == 유물 데미지 판정 ==
+
+            return new CardResult(damage, moves, rankings, isRedCardOver3, isBlackCardOver3);
         }
 
 

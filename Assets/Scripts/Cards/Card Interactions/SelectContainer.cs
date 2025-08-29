@@ -32,6 +32,7 @@ namespace Cardevil.Cards.CardInteractinos
         {
             index = 0;
             this.card = card;
+            transform.position = new Vector3(card.transform.position.x, card.transform.position.y + 300f);
             if (options == null) options = new();
             else options.Clear();
         }

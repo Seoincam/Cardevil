@@ -181,12 +181,12 @@ namespace Cardevil.Cards.CardInteractinos
                 if (isSelected)
                 {
                     transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
-                    BarGroup.AddSelectedCard(this);
+                    BarGroup.Select(this);
                 }
                 else
                 {
                     transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    BarGroup.RemoveSelectedCard(this);
+                    BarGroup.Deselect(this);
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
