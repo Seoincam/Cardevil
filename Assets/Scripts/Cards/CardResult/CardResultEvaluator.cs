@@ -11,11 +11,11 @@ namespace Cardevil.Cards
         /// </summary>
         public static void Evaluate(CardContext context, IEnumerable<Card> cards)
         {
-            var moves = cards.Where(c => c.data.type == CardData.CardType.Move)
+            var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move)
                         .Select(m => m.data.Move)
                         .ToList();
 
-            var numbers = cards.Where(c => c.data.type == CardData.CardType.Number)
+            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
                         .Select(n => n.data.Number)
                         .ToList();
 
@@ -86,11 +86,11 @@ namespace Cardevil.Cards
         /// </summary>
         public static CardResult CheckResult(CardContext context, IEnumerable<Card> cards)
         {
-            var moves = cards.Where(c => c.data.type == CardData.CardType.Move)
+            var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move)
                         .Select(m => m.data.Move)
                         .ToList();
 
-            var numbers = cards.Where(c => c.data.type == CardData.CardType.Number)
+            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
                         .Select(n => n.data.Number)
                         .ToList();
 

@@ -38,7 +38,7 @@ namespace Cardevil.Cards
                 return null;
             }
 
-            var cardData = Deck.First();
+            var cardData = Deck[0];
             Deck.RemoveAt(0);
             // UpdateDeckCardCount();
 

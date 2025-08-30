@@ -2,6 +2,20 @@ using System.Collections.Generic;
 
 namespace Cardevil.Cards
 {
+    public enum HandRanking
+    {
+        None = -1,
+
+        High = 0,
+        OnePair = 5,
+        TwoPair = 20,
+        Triple = 30,
+        Straight = 50,
+        Flush = 80,
+        FourCard = 200,
+        StraightFlush = 300  // 스티플
+    }
+
     public class CardContext
     {
         public readonly MultiplyValues Multiply;

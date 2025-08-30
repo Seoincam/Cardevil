@@ -23,7 +23,7 @@ namespace Cardevil.Cards
         /// </summary>
         public static List<CardData> CreateStageDeck(BaseDeckConfiguration runtimeDeck)
         {
-            var deck = new List<CardData>();
+            var deck = new List<CardData>(50);
             foreach (var cardData in runtimeDeck.Deck)
                 deck.Add(cardData.Copy());
 

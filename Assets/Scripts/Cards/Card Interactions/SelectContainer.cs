@@ -1,4 +1,5 @@
 using Cardevil.Utils.Directions;
+using Mono.Cecil.Cil;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,9 @@ namespace Cardevil.Cards.CardInteractinos
 {
     public class SelectContainer : MonoBehaviour
     {
+        private static readonly int[] AllNumberValues = new int[] { 2, 3, 4, 5, 6, 7, 8, 9 };
+        private static readonly Direction[] AllDirectionValues = new Direction[] { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
+
         [SerializeField] Button buttonPrefab;
         [SerializeField] Button backgroundButton;
         private readonly List<Button> buttons = new();

@@ -162,17 +162,17 @@ namespace Cardevil.Cards.CardInteractinos
         private void UpdateVisual()
         {
             // 이름 설정 (임시)
-            if (parentCard.data.type == CardData.CardType.Move)
+            if (parentCard.data.valueType == CardData.ValueType.Move)
             {
-                var move = parentCard.data.Move;
-                transform.name = move.direction.ToString();
-                var textString = move.direction != Direction.None ? move.direction.ToString() : "All";
-                if (move.direction != Direction.None && parentCard.data.directionOptions.Count > 0) textString += "*";
-                text.text = textString;
-                text.fontSize = 35;
+                // var move = parentCard.data.Move;
+                // transform.name = move.direction.ToString();
+                // var textString = move.direction != Direction.None ? move.direction.ToString() : "All";
+                // if (move.direction != Direction.None && parentCard.data.directionOptions.Count > 0) textString += "*";
+                // text.text = textString;
+                // text.fontSize = 35;
             }
 
-            else if (parentCard.data.type == CardData.CardType.Number)
+            else if (parentCard.data.valueType == CardData.ValueType.Number)
             {
                 var number = parentCard.data.Number;
                 transform.name = $"{number.color} {number.number}";

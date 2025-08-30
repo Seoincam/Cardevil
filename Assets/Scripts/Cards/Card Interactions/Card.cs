@@ -129,8 +129,11 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 OnPointerDownEvent?.Invoke(this);
 
-                if (data.OpenSelection(this, BarGroup.selectContainer))
-                    OnSelectValueStartEvent?.Invoke(this);
+                if (!data.CanOpenSelection)
+                    return;
+
+                // TODO: OpenSelection();
+                OnSelectValueStartEvent?.Invoke(this);
             }
         }
 

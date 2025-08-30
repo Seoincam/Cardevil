@@ -19,31 +19,27 @@ namespace Cardevil.Cards
         {
             Deck.Clear();
             CardData card;
+            NumberData number;
+            MoveData move;
 
             // 숫자 카드
             foreach (NumberData.CardColor color in Enum.GetValues(typeof(NumberData.CardColor)))
             {
+                if (color == NumberData.CardColor.None)
+                    continue;
+                    
                 for (int num = 2; num <= 10; num++)
                 {
-                    card = new()
-                    {
-                        type = CardData.CardType.Number,
-                        Number = new NumberData() { color = color, number = num },
-                        Move = new MoveData() { direction = Direction.None, length = 0 },
-                        isLocked = false
-                    };
+                    number = new NumberData() { number = num, color = color };
+                    move = null;
+
+                    card = new(number, move, CardData.ValueType.Number);
                     Deck.Add(card);
                 }
 
-                var selectable = new List<int> { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-                card = new()
-                {
-                    type = CardData.CardType.Number,
-                    Number = new NumberData() { color = color },
-                    numberOptions = new(selectable),
-                    Move = new MoveData() { direction = Direction.None, length = 0 },
-                    isLocked = false
-                };
+                number = new NumberData() { number = 0, color = color };
+                move = null;
+                card = new(number, move, CardData.ValueType.Number, CardData.SelectType.All);
                 Deck.Add(card);
             }
 
@@ -54,27 +50,16 @@ namespace Cardevil.Cards
                 {
                     if (direction == Direction.None)
                     {
-
-                        var selectable = new List<Direction>() { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
-                        card = new()
-                        {
-                            type = CardData.CardType.Move,
-                            Move = new MoveData() { direction = Direction.None, length = 1 },
-                            directionOptions = new(selectable),
-                            Number = new NumberData() { number = 0 },
-                            isLocked = false
-                        };
+                        number = null;
+                        move = null;
+                        card = new(number, move, CardData.ValueType.Move, CardData.SelectType.All);
                         Deck.Add(card);
                     }
                     else
                     {
-                        card = new()
-                        {
-                            type = CardData.CardType.Move,
-                            Move = new MoveData() { direction = direction, length = 1 },
-                            Number = new NumberData() { number = 0 },
-                            isLocked = false
-                        };
+                        number = null;
+                        move = new() { direction = direction, length = 1 };
+                        card = new(number, move, CardData.ValueType.Move);
                         Deck.Add(card);
                     }
                 }
