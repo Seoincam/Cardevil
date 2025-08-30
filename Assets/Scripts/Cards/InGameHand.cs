@@ -30,8 +30,10 @@ namespace Cardevil.Cards
             card.Discard(interval);
         }
 
-        // 값 선택 가능한 카드들이 모두 선택됐나
-        public bool AllValueSelected => selects.All(c => c.data.valueSelected);
+        /// <summary>
+        /// 선택한 카드들로 사용 가능 여부를 반환.
+        /// </summary>
+        public bool AllValueSelected => selects.All(c => c.data.CanUse);
         
 
         public async UniTask Discard(float interval, Transform[] slots)

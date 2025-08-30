@@ -1,4 +1,3 @@
-using Cardevil.Utils.Directions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -156,33 +155,46 @@ namespace Cardevil.Cards.CardInteractinos
         private void OnSelectEnded(Card _)
         {
             canvas.overrideSorting = false;
+            UpdateVisual();
         }
 
-        public void UpdateVisual()
+        private void UpdateVisual()
         {
             // 이름 설정 (임시)
-            if (parentCard.data is DirectionCardData dirCard)
+            if (parentCard.data.valueType == CardData.ValueType.Move)
             {
-                transform.name = dirCard.value.direction.ToString();
-                var textString = dirCard.value.direction != Direction.None ? dirCard.value.direction.ToString() : "All";
-                if (dirCard.value.direction != Direction.None && dirCard.CanSelect)
-                    textString += "*";
+                var move = parentCard.data.Move;
+                transform.name = move.direction.ToString();
+
+                string textString;
+                if (parentCard.data.selectType == CardData.SelectType.All)
+                {
+                    if (!move.isSet)
+                        textString = "All";
+                    else
+                        textString = move.direction.ToString() + "*";
+                }
+                else
+                {
+                    textString = move.direction.ToString();
+                }
                 text.text = textString;
                 text.fontSize = 35;
             }
 
-            else if (parentCard.data is NumberCardData numCard)
+            else if (parentCard.data.valueType == CardData.ValueType.Number)
             {
-                transform.name = $"{numCard.color} {numCard.value}";
-                var textString = numCard.value == 0 ? "*" : numCard.value.ToString();
-                if (numCard.value != 0 && numCard.CanSelect)
+                var number = parentCard.data.Number;
+                transform.name = $"{number.color} {number.number}";
+                var textString = number.number == 0 ? "*" : number.number.ToString();
+                if (number.number != 0 && parentCard.data.CanOpenSelection)
                     textString += "*";
                 text.text = textString;
-                switch (numCard.color)
+                switch (number.color)
                 {
-                    case CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
-                    case CardColor.Blue: text.color = Color.blue; break;
-                    case CardColor.Red: text.color = Color.red; break;
+                    case NumberData.CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
+                    case NumberData.CardColor.Blue: text.color = Color.blue; break;
+                    case NumberData.CardColor.Red: text.color = Color.red; break;
                     default: break;
                 }
             }

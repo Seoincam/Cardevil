@@ -6,12 +6,13 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
 using Cardevil.Systems;
 using Cardevil.Events;
+using TMPro;
 
 namespace Cardevil.Cards.CardInteractinos
 {
     public class CardHandBar : MonoBehaviour, ICardHandBar, ITurnPlayerInput
     {
-        public InGameDeck Deck { get; private set; }
+        public InStageDeck Deck { get; private set; }
         public InGameHand Hand { get; private set; }
         public CardContext Context => _context;
 
@@ -34,6 +35,7 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("References")]
         [SerializeField] Button useCardButton;
         [SerializeField] Button discardCardButton;
+        [SerializeField] TextMeshProUGUI selectResultText;
 
         [Header("Setting")]
         [SerializeField] int initialCardCount = 6;
@@ -69,7 +71,10 @@ namespace Cardevil.Cards.CardInteractinos
         }
 
 
-
+        void Awake()
+        {
+             
+        }
         void Update()
         {
             if (!CanInput)
@@ -85,9 +90,14 @@ namespace Cardevil.Cards.CardInteractinos
         {
             CanInteraction = false;
 
-            DeckFactory.InitRuntimeDeckConfig(baseDeckConfig, baseRuntimeDeckConfig);
-            Deck = new(baseRuntimeDeckConfig);
-            Hand = new();
+            // TODO: CardManager에서 처리하게 하는게 더 옳을 듯
+            DeckFactory.CreateRuntimeDeck(baseDeckConfig, baseRuntimeDeckConfig);
+
+            Deck = new();
+            // TODO: Init 로직 추가
+            Hand = new();          
+            
+            Deck.Init(DeckFactory.CreateStageDeck(baseRuntimeDeckConfig));
             _context = new(multiplyValues);
 
             for (int i = 0; i < initialCardCount; i++)
@@ -104,13 +114,13 @@ namespace Cardevil.Cards.CardInteractinos
             UpdateDeckCardCount();
         }
 
-        public void AddSelectedCard(Card card)
+        public void Select(Card card)
         {
             Hand.Select(card);
             UpdateButtons();
         }
 
-        public void RemoveSelectedCard(Card card)
+        public void Deselect(Card card)
         {
             Hand.Deselect(card);
             UpdateButtons();
@@ -124,6 +134,11 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void UpdateButtons()
         {
+            if (CanInput && Hand.SelectCount > 0 && Hand.AllValueSelected)
+                selectResultText.text = CardResultEvaluator.CheckResult(Context, Hand.Selects).Description;
+            else
+                selectResultText.text = "";
+
             var canUse = CanInput && Hand.SelectCount > 0 && Hand.AllValueSelected;
             useCardButton.interactable = canUse;
 
@@ -207,6 +222,7 @@ namespace Cardevil.Cards.CardInteractinos
         
         private void Use()
         {
+            Context.GetSet();
             CardResultEvaluator.Evaluate(Context, Hand.Selects);
             _ = DiscardAsync();
             cmp.TrySetResult();

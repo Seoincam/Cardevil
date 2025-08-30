@@ -12,215 +12,557 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3ce5d1dc1c6242578ab72dd678b0f64, type: 3}
   m_Name: BaseDeckConfiguration
   m_EditorClassIdentifier: 
-  numberCardDatas:
-  - reinforcement: 0
-    color: 0
-    value: 2
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 3
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 4
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 5
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 6
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 7
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 8
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 9
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 10
-    selectableValues: 
-  - reinforcement: 0
-    color: 0
-    value: 0
-    selectableValues: 02000000030000000400000005000000060000000700000008000000090000000a000000
-  - reinforcement: 0
-    color: 1
-    value: 2
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 3
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 4
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 5
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 6
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 7
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 8
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 9
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 10
-    selectableValues: 
-  - reinforcement: 0
-    color: 1
-    value: 0
-    selectableValues: 02000000030000000400000005000000060000000700000008000000090000000a000000
-  - reinforcement: 0
-    color: 2
-    value: 2
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 3
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 4
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 5
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 6
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 7
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 8
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 9
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 10
-    selectableValues: 
-  - reinforcement: 0
-    color: 2
-    value: 0
-    selectableValues: 02000000030000000400000005000000060000000700000008000000090000000a000000
-  - reinforcement: 0
-    color: 3
-    value: 2
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 3
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 4
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 5
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 6
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 7
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 8
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 9
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 10
-    selectableValues: 
-  - reinforcement: 0
-    color: 3
-    value: 0
-    selectableValues: 02000000030000000400000005000000060000000700000008000000090000000a000000
-  directionCardDatas:
-  - reinforcement: 0
-    value:
-      direction: 0
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 0
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 2
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 2
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 3
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 3
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 1
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
-      direction: 1
-      length: 1
-    selectableValues: 
-  - reinforcement: 0
-    value:
+  numberDamageReinforceConfig: {fileID: 11400000, guid: 244cd3edacd0545e09a2d5c7e17c63eb, type: 2}
+  numberSelectReinforceConfig: {fileID: 11400000, guid: fc3b06712b92f47c7bf1a0ca5a078c19, type: 2}
+  directionSelectReinforceConfig: {fileID: 11400000, guid: 6ffbf0a7143064f09864ee0818a75bbf, type: 2}
+  Deck:
+  - type: 0
+    Number:
+      color: 0
+      number: 2
+    Move:
       direction: -1
       length: 0
-    selectableValues: 00000000020000000300000001000000
-  - reinforcement: 0
-    value:
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 3
+    Move:
       direction: -1
       length: 0
-    selectableValues: 00000000020000000300000001000000
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 4
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 5
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 6
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 7
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 8
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 9
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 10
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 02000000030000000400000005000000060000000700000008000000090000000a000000
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 2
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 3
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 4
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 5
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 6
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 7
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 8
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 9
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 10
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 1
+      number: 0
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 02000000030000000400000005000000060000000700000008000000090000000a000000
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 2
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 3
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 4
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 5
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 6
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 7
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 8
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 9
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 10
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 2
+      number: 0
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 02000000030000000400000005000000060000000700000008000000090000000a000000
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 2
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 3
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 4
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 5
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 6
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 7
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 8
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 9
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 10
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 0
+    Number:
+      color: 3
+      number: 0
+    Move:
+      direction: -1
+      length: 0
+    isLocked: 0
+    numberOptions: 02000000030000000400000005000000060000000700000008000000090000000a000000
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 0
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 0
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 1
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 1
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 2
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 2
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 3
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: 3
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: -1
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 00000000020000000300000001000000
+    reinforceEnabled: 1
+  - type: 1
+    Number:
+      color: 0
+      number: 0
+    Move:
+      direction: -1
+      length: 1
+    isLocked: 0
+    numberOptions: 
+    directionOptions: 00000000020000000300000001000000
+    reinforceEnabled: 1
