@@ -12,6 +12,7 @@ namespace Cardevil.Cards
         /// <param name="runtimeDeck">기본 카드 구성으로부터 복사해 런타임에 사용할 카드 구성</param>
         public static void CreateRuntimeDeck(BaseDeckConfiguration originDeck, BaseDeckConfiguration runtimeDeck)
         {
+            originDeck.InitBaseDeckConfig();
             runtimeDeck.Deck.Clear();
 
             foreach (var cardData in originDeck.Deck)

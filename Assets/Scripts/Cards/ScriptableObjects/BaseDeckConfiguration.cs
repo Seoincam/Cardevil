@@ -15,7 +15,7 @@ namespace Cardevil.Cards
         public List<CardData> Deck;
 
         [ContextMenu("Initialize Deck")]
-        private void InitBaseDeckConfig()
+        public void InitBaseDeckConfig()
         {
             Deck.Clear();
             CardData card;
