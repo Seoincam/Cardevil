@@ -31,14 +31,14 @@ namespace Cardevil.Cards
                 for (int num = 2; num <= 10; num++)
                 {
                     number = new(color, num);
-                    move = null;
+                    move = new();
 
                     card = new(number, move, CardData.ValueType.Number);
                     Deck.Add(card);
                 }
 
                 number = new(color, 0);
-                move = null;
+                move = new();
                 card = new(number, move, CardData.ValueType.Number, CardData.SelectType.All);
                 Deck.Add(card);
             }
@@ -50,14 +50,14 @@ namespace Cardevil.Cards
                 {
                     if (direction == Direction.None)
                     {
-                        number = null;
-                        move = null;
+                        number = new();
+                        move = new();
                         card = new(number, move, CardData.ValueType.Move, CardData.SelectType.All);
                         Deck.Add(card);
                     }
                     else
                     {
-                        number = null;
+                        number = new();
                         move = new(direction, 1);
                         card = new(number, move, CardData.ValueType.Move);
                         Deck.Add(card);
