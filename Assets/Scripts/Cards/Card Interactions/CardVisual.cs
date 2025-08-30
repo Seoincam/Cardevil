@@ -1,4 +1,3 @@
-using Cardevil.Utils.Directions;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -164,12 +163,23 @@ namespace Cardevil.Cards.CardInteractinos
             // 이름 설정 (임시)
             if (parentCard.data.valueType == CardData.ValueType.Move)
             {
-                // var move = parentCard.data.Move;
-                // transform.name = move.direction.ToString();
-                // var textString = move.direction != Direction.None ? move.direction.ToString() : "All";
-                // if (move.direction != Direction.None && parentCard.data.directionOptions.Count > 0) textString += "*";
-                // text.text = textString;
-                // text.fontSize = 35;
+                var move = parentCard.data.Move;
+                transform.name = move.direction.ToString();
+
+                string textString;
+                if (parentCard.data.selectType == CardData.SelectType.All)
+                {
+                    if (!move.isSet)
+                        textString = "All";
+                    else
+                        textString = move.direction.ToString() + "*";
+                }
+                else
+                {
+                    textString = move.direction.ToString();
+                }
+                text.text = textString;
+                text.fontSize = 35;
             }
 
             else if (parentCard.data.valueType == CardData.ValueType.Number)

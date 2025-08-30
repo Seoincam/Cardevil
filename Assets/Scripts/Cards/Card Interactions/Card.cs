@@ -132,7 +132,7 @@ namespace Cardevil.Cards.CardInteractinos
                 if (!data.CanOpenSelection)
                     return;
 
-                // TODO: OpenSelection();
+                BarGroup.selectContainer.OpenSelection(this);
                 OnSelectValueStartEvent?.Invoke(this);
             }
         }

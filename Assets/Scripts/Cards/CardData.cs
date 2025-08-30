@@ -14,60 +14,80 @@ namespace Cardevil.Cards
         [SerializeField] NumberData _defaultNumber;
         [SerializeField] MoveData _defaultMove;
 
+        public NumberData DefaultNumber => _defaultNumber;
+        public MoveData DefaultMove => _defaultMove;
+
         [Header("Selections")]
         public SelectType selectType;
-        [SerializeField] NumberData _selectedNumber = null;
-        [SerializeField] MoveData _selectedMove = null;
+        [SerializeField] NumberData _selectedNumber;
+        [SerializeField] MoveData _selectedMove;
 
-        // 기본값 외에 선택 가능한 Number 옵션의 개수
-        [Space, SerializeField] int numberOptionCount = 0;
-        private HashSet<int> numberOptions;
+        /// <summary>기본값 외에 선택 가능한 Number 옵션의 개수</summary>
+        [Space, SerializeField] int _numberOptionCount = 0;
+        public int NumberOptionCount => _numberOptionCount;
+
+        private HashSet<int> _numberOptions;
+        public HashSet<int> NumberOptions => _numberOptions;
 
         [Header("States")]
         public bool isLocked = false;
 
-        // 카드의 최종 Number 값
-        public NumberData Number => _selectedNumber ?? _defaultNumber;
-        // 카드의 최종 Move 값
-        public MoveData Move => _selectedMove ?? _defaultMove;
+        /// <summary>카드의 Number 최종값</summary>
+        public NumberData Number => _selectedNumber.isSet ? _selectedNumber : _defaultNumber;
+        /// <summary>카드의 Move 최종값</summary>
+        public MoveData Move => _selectedMove.isSet ? _selectedMove : _defaultMove;
 
-        // 사용 가능한가?
+        /// <summary>사용 가능 여부를 반환</summary>
         public bool CanUse => IsValueSelected && !isLocked;
 
-        // 값 선택 가능 여부를 반환
+        /// <summary>값 선택 가능 여부를 반환</summary>
         public bool CanOpenSelection
         {
             get => !isLocked && selectType > 0;
         }
 
-        // 값 선택 완료 여부를 반환
+        /// <summary>값 선택 완료 여부를 반환</summary>
         private bool IsValueSelected
         {
             get
             {
                 if (selectType == SelectType.None)
                     return true;
-                return (valueType == ValueType.Number && _selectedNumber != null) ||
-                    (valueType == ValueType.Move && _selectedMove != null);
+                return (valueType == ValueType.Number && _selectedNumber.isSet) ||
+                    (valueType == ValueType.Move && _selectedMove.isSet);
             }
         }
 
-        // 스테이지에서 카드를 뽑을 때 실행.
+        /// <summary>스테이지에서 카드를 뽑을 때 실행</summary>
         public void OnDraw()
         {
             if (valueType == ValueType.Number && selectType == SelectType.Multiple)
             {
-                if (numberOptionCount == 0)
+                if (_numberOptionCount == 0)
                     return;
 
-                numberOptions = new(numberOptionCount);
-                while (numberOptions.Count < numberOptionCount)
+                _numberOptions = new(_numberOptionCount);
+                while (_numberOptions.Count < _numberOptionCount)
                 {
                     int random = Random.Range(2, 11);
                     if (random != _defaultNumber.number)
-                        numberOptions.Add(random);
+                        _numberOptions.Add(random);
                 }
             }
+        }
+
+        /// <summary>선택된 카드의 값을 할당</summary>
+        public void SelectValue(int selectNumber)
+        {
+            var number = new NumberData(DefaultNumber.color, selectNumber);
+            _selectedNumber = number;
+        }
+
+        /// <summary>선택된 카드의 값을 할당</summary>
+        public void SelectValue(Direction selectDirection)
+        {
+            var move = new MoveData(selectDirection, 1);
+            _selectedMove = move;
         }
 
         public void Lock()
@@ -83,8 +103,10 @@ namespace Cardevil.Cards
                 selectType = selectType,
                 _defaultNumber = _defaultNumber,
                 _defaultMove = _defaultMove,
+                _selectedNumber = new(),
+                _selectedMove = new(),
                 isLocked = false,
-                numberOptionCount = numberOptionCount,
+                _numberOptionCount = _numberOptionCount,
                 reinforceEnabled = reinforceEnabled
             };
         }
@@ -133,7 +155,7 @@ namespace Cardevil.Cards
         /// </summary>
         public enum SelectType
         {
-            // 옵션 추가될 수 있으므로 값을 이렇게 잡음.
+            /// <remarks>옵션 추가될 수 있으므로 값을 이렇게 잡음.</remarks>
             None = -1,
             Multiple = 1,
             All = 10
@@ -144,6 +166,8 @@ namespace Cardevil.Cards
         {
             _defaultNumber = defaultNubmer;
             _defaultMove = defaultMove;
+            _selectedNumber = new();
+            _selectedMove = new();
             this.valueType = valueType;
             this.selectType = selectType;
         }
@@ -153,13 +177,28 @@ namespace Cardevil.Cards
     [Serializable]
     public class NumberData : ICopyable<NumberData>
     {
+        public bool isSet;
         public enum CardColor { None, Red, Blue, Green, Black }
-        public CardColor color = CardColor.None;
-        public int number = 0;
+        public CardColor color;
+        public int number;
+
+        public NumberData()
+        {
+            isSet = false;
+            color = CardColor.None;
+            number = 0;
+        }
+
+        public NumberData(CardColor color, int number)
+        {
+            isSet = true;
+            this.color = color;
+            this.number = number;
+        }
 
         public NumberData Copy()
         {
-            return new NumberData() { color = color, number = number };
+            return new NumberData(color, number);
         }
 
     }
@@ -167,12 +206,27 @@ namespace Cardevil.Cards
     [Serializable]
     public class MoveData : ICopyable<MoveData>
     {
-        public Direction direction = Direction.None;
-        public int length = 0;
+        public bool isSet;
+        public Direction direction;
+        public int length;
+
+        public MoveData()
+        {
+            isSet = false;
+            direction = Direction.None;
+            length = 0;
+        }
+
+        public MoveData(Direction direction, int length)
+        {
+            isSet = true;
+            this.direction = direction;
+            this.length = length;
+        }
 
         public MoveData Copy()
         {
-            return new MoveData() { direction = direction, length = length };
+            return new MoveData(direction, length);
         }
 
     }
