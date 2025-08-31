@@ -21,7 +21,7 @@ namespace Cardevil.Cards
 
         public ILockable GetCard()
         {
-            return handBar.Deck.GetRandomCard();
+            return handBar.StageCards.GetRandomCard();
         }
 
         public CardResult GetCurrentCardRank()

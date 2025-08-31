@@ -46,7 +46,7 @@ namespace Cardevil.Cards
             get => !isLocked && selectType > 0;
         }
 
-        /// <summary>값 선택 완료 여부를 반환</summary>
+        // 값 선택 완료 여부를 반환
         private bool IsValueSelected
         {
             get
@@ -155,7 +155,7 @@ namespace Cardevil.Cards
         /// </summary>
         public enum SelectType
         {
-            /// <remarks>옵션 추가될 수 있으므로 값을 이렇게 잡음.</remarks>
+            // 옵션 추가될 수 있으므로 값을 이렇게 잡음
             None = -1,
             Multiple = 1,
             All = 10
