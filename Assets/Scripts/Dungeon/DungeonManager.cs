@@ -23,11 +23,8 @@ namespace Cardevil.Dungeon
             currentDungeonIndex = 1;
             // TODO : DungeonConfig 로드
             
+            // UI 기반으로 던전 생성
             
-            // dungeons.Add(new DungeonFactoryChapter1().Create(0,null));// 더미 던전
-            // dungeons.Add(new DungeonFactoryChapter1().Create(1,null));
-            // dungeons.Add(new DungeonFactoryChapter2().Create(2,null));
-            // dungeons.Add(new DungeonFactoryChapter3().Create(3,null));
             
         }
 

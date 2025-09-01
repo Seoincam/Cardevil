@@ -21,9 +21,10 @@ namespace Cardevil.Dungeon.UI
         [Header("Dungeon Node Info")]
         [SerializeField,VisibleOnly] private DungeonNode dungeonNode;
         [Space]
-        [Header("Setting")]
+        [Header("Variables")]
         [SerializeField] private int nodeId = -1;
-        
+
+        private LineRenderer lineRenderer;
         
         public int DungeonId => dungeonChapterUI.DungeonId;
         
@@ -32,19 +33,7 @@ namespace Cardevil.Dungeon.UI
             this.dungeonUI = dungeonUI;
             this.dungeonChapterUI = chapterUI;
         }
-
-        public void InitializeNode()
-        {
-            if (nodeId <= 0)
-            {
-                Debug.LogError($"Node ID{nodeId} is not set or invalid.");
-                return;
-            }
-            dungeonNode = dungeonChapterUI.Dungeon.Nodes[nodeId - 1];
-            name = $"Node_{dungeonNode.NodeId}_{dungeonNode.Type}";
-            if(nodeText)
-                nodeText.text = dungeonNode.Type.ToString();
-        }
+        
 
         public void InitializeLine()
         {
@@ -60,6 +49,12 @@ namespace Cardevil.Dungeon.UI
                 Debug.Log($"Init Node lies : {name} -> {nextNodeUI.name}");
                 
             }
+        }
+
+
+        private void OnValidate()
+        {
+
         }
     }
 }

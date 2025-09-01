@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1195578962112090487
+--- !u!1 &4751236999838128814
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,9 +8,160 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7370539147101232708}
-  - component: {fileID: 2218848451724001518}
-  - component: {fileID: 169267942803883069}
+  - component: {fileID: 5763596952092352730}
+  - component: {fileID: 2515897340565234580}
+  - component: {fileID: 1430868705547371020}
+  - component: {fileID: 7932035073756896530}
+  m_Layer: 0
+  m_Name: NodeUI_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5763596952092352730
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751236999838128814}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3433147330086736329}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2515897340565234580
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751236999838128814}
+  m_CullTransparentMesh: 1
+--- !u!114 &1430868705547371020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751236999838128814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c7d237336d54a279675a3341e46be34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeAnimator: {fileID: 0}
+  nodeImage: {fileID: 0}
+  nodeText: {fileID: 0}
+  dungeonUI: {fileID: 0}
+  dungeonChapterUI: {fileID: 0}
+  dungeonNode:
+    dungeon:
+      dungeonId: 0
+      dungeonConfiguration: {fileID: 0}
+      rootNode:
+        dungeon:
+          dungeonId: 0
+          dungeonConfiguration: {fileID: 0}
+          rootNode:
+            dungeon:
+              dungeonId: 0
+              dungeonConfiguration: {fileID: 0}
+              rootNode:
+                dungeon:
+                  dungeonId: 0
+                  dungeonConfiguration: {fileID: 0}
+                  rootNode:
+                    dungeon:
+                      dungeonId: 0
+                      dungeonConfiguration: {fileID: 0}
+                      rootNode:
+                        nodeId: 0
+                        floor: 0
+                        <IsBranchStart>k__BackingField: 0
+                        <IsInBranch>k__BackingField: 0
+                        <IsBranchEnd>k__BackingField: 0
+                      nodes: []
+                    nodeId: 0
+                    floor: 0
+                    type: 0
+                    preset: {fileID: 0}
+                    <IsBranchStart>k__BackingField: 0
+                    <IsInBranch>k__BackingField: 0
+                    <IsBranchEnd>k__BackingField: 0
+                  nodes: []
+                nodeId: 0
+                floor: 0
+                type: 0
+                preset: {fileID: 0}
+                <IsBranchStart>k__BackingField: 0
+                <IsInBranch>k__BackingField: 0
+                <IsBranchEnd>k__BackingField: 0
+              nodes: []
+            nodeId: 0
+            floor: 0
+            type: 0
+            preset: {fileID: 0}
+            <IsBranchStart>k__BackingField: 0
+            <IsInBranch>k__BackingField: 0
+            <IsBranchEnd>k__BackingField: 0
+          nodes: []
+        nodeId: 0
+        floor: 0
+        type: 0
+        preset: {fileID: 0}
+        <IsBranchStart>k__BackingField: 0
+        <IsInBranch>k__BackingField: 0
+        <IsBranchEnd>k__BackingField: 0
+      nodes: []
+    nodeId: 0
+    floor: 0
+    type: 0
+    preset: {fileID: 0}
+    <IsBranchStart>k__BackingField: 0
+    <IsInBranch>k__BackingField: 0
+    <IsBranchEnd>k__BackingField: 0
+  nodeId: -1
+--- !u!114 &7932035073756896530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4751236999838128814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20be359a924d4648ac303d8ad6f2f4f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nodeId: 0
+  nodeFloor: 0
+  nodeType: 0
+  nodePreset: {fileID: 0}
+  nextNodes: []
+  prevNodes: []
+  showDebugLines: 1
+  prevNodeType: 0
+--- !u!1 &7196351500468433209
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8467078075652373849}
+  - component: {fileID: 3392427839140754183}
+  - component: {fileID: 3100736379799477314}
   m_Layer: 0
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -18,40 +169,40 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &7370539147101232708
+--- !u!224 &8467078075652373849
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195578962112090487}
+  m_GameObject: {fileID: 7196351500468433209}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5763596952092352730}
+  m_Father: {fileID: 3433147330086736329}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2218848451724001518
+--- !u!222 &3392427839140754183
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195578962112090487}
+  m_GameObject: {fileID: 7196351500468433209}
   m_CullTransparentMesh: 1
---- !u!114 &169267942803883069
+--- !u!114 &3100736379799477314
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195578962112090487}
+  m_GameObject: {fileID: 7196351500468433209}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
@@ -65,7 +216,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: None
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -136,7 +287,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &4751236999838128814
+--- !u!1 &8449139638330096367
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -144,53 +295,52 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5763596952092352730}
-  - component: {fileID: 2515897340565234580}
-  - component: {fileID: 516318909157432960}
-  - component: {fileID: 226758342209583473}
-  - component: {fileID: -962937817614840562}
+  - component: {fileID: 3433147330086736329}
+  - component: {fileID: 6964114399070461663}
+  - component: {fileID: 793158431501647124}
+  - component: {fileID: 7792041594565701174}
   m_Layer: 0
-  m_Name: DungeonNodeUI
+  m_Name: Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &5763596952092352730
+--- !u!224 &3433147330086736329
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4751236999838128814}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_GameObject: {fileID: 8449139638330096367}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 7370539147101232708}
-  m_Father: {fileID: 0}
+  - {fileID: 8467078075652373849}
+  m_Father: {fileID: 5763596952092352730}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 160, y: 30}
+  m_SizeDelta: {x: 160, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2515897340565234580
+--- !u!222 &6964114399070461663
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4751236999838128814}
+  m_GameObject: {fileID: 8449139638330096367}
   m_CullTransparentMesh: 1
---- !u!114 &516318909157432960
+--- !u!114 &793158431501647124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4751236999838128814}
+  m_GameObject: {fileID: 8449139638330096367}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
@@ -214,13 +364,13 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &226758342209583473
+--- !u!114 &7792041594565701174
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4751236999838128814}
+  m_GameObject: {fileID: 8449139638330096367}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -254,68 +404,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 516318909157432960}
+  m_TargetGraphic: {fileID: 793158431501647124}
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &-962937817614840562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4751236999838128814}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c7d237336d54a279675a3341e46be34, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodeAnimator: {fileID: 0}
-  nodeImage: {fileID: 516318909157432960}
-  nodeText: {fileID: 169267942803883069}
-  dungeonUI: {fileID: 0}
-  dungeonStageUI: {fileID: 0}
-  dungeonNode:
-    dungeon:
-      dungeonId: 0
-      dungeonConfiguration: {fileID: 0}
-      rootNode:
-        dungeon:
-          dungeonId: 0
-          dungeonConfiguration: {fileID: 0}
-          rootNode:
-            dungeon:
-              dungeonId: 0
-              dungeonConfiguration: {fileID: 0}
-              rootNode:
-                dungeon:
-                  dungeonId: 0
-                  dungeonConfiguration: {fileID: 0}
-                  rootNode:
-                    dungeon:
-                      dungeonId: 0
-                      dungeonConfiguration: {fileID: 0}
-                      rootNode:
-                        nodeId: 0
-                        floor: 0
-                      nodes: []
-                    nodeId: 0
-                    floor: 0
-                    type: 0
-                  nodes: []
-                nodeId: 0
-                floor: 0
-                type: 0
-              nodes: []
-            nodeId: 0
-            floor: 0
-            type: 0
-          nodes: []
-        nodeId: 0
-        floor: 0
-        type: 0
-      nodes: []
-    nodeId: 0
-    floor: 0
-    type: 0
-  nodeId: -1
