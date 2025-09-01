@@ -9,6 +9,8 @@ namespace Cardevil.Cards
     [Serializable]
     public sealed class CardData : ICopyable<CardData>, ILockable
     {
+        [HideInInspector] public int id;
+
         [Header("Values")]
         public ValueType valueType;
         [SerializeField] NumberData _defaultNumber;
@@ -46,7 +48,7 @@ namespace Cardevil.Cards
             get => !isLocked && selectType > 0;
         }
 
-        /// <summary>값 선택 완료 여부를 반환</summary>
+        // 값 선택 완료 여부를 반환
         private bool IsValueSelected
         {
             get
@@ -99,6 +101,7 @@ namespace Cardevil.Cards
         {
             return new CardData()
             {
+                id = id,
                 valueType = valueType,
                 selectType = selectType,
                 _defaultNumber = _defaultNumber,
@@ -155,15 +158,16 @@ namespace Cardevil.Cards
         /// </summary>
         public enum SelectType
         {
-            /// <remarks>옵션 추가될 수 있으므로 값을 이렇게 잡음.</remarks>
+            // 옵션 추가될 수 있으므로 값을 이렇게 잡음
             None = -1,
             Multiple = 1,
             All = 10
         }
         
         public CardData() {}
-        public CardData(NumberData defaultNubmer, MoveData defaultMove, ValueType valueType, SelectType selectType = SelectType.None)
+        public CardData(int id, NumberData defaultNubmer, MoveData defaultMove, ValueType valueType, SelectType selectType = SelectType.None)
         {
+            this.id = id;
             _defaultNumber = defaultNubmer;
             _defaultMove = defaultMove;
             _selectedNumber = new();

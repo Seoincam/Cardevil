@@ -4,7 +4,6 @@ namespace Cardevil.Cards
     {
         void Init();
         CardContext Context { get; }
-        InStageDeck Deck { get; }
-        InGameHand Hand { get; }
+        InStageCards StageCards { get; }
     }
 }
