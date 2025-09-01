@@ -20,8 +20,6 @@ namespace Cardevil.Cards.CardInteractinos
         public CardContext Context => _context;
 
         [Header("SO")]
-        public BaseDeckConfiguration baseDeckConfig;
-        public BaseDeckConfiguration baseRuntimeDeckConfig;
         [SerializeField] MultiplyValues multiplyValues;
 
         [Header("Card")]
@@ -78,9 +76,7 @@ namespace Cardevil.Cards.CardInteractinos
             CanInteraction = false;
 
             // TODO: CardManager에서 처리하게 하는게 더 옳을 듯
-            DeckFactory.CreateRuntimeDeck(baseDeckConfig, baseRuntimeDeckConfig);
-
-            _stageCards = new(DeckFactory.CreateStageDeck(baseRuntimeDeckConfig));
+            _stageCards = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
             _context = new(multiplyValues);
 
             for (int i = 0; i < initialCardCount; i++)

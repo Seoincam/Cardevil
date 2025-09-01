@@ -9,6 +9,8 @@ namespace Cardevil.Cards
     [Serializable]
     public sealed class CardData : ICopyable<CardData>, ILockable
     {
+        [HideInInspector] public int id;
+
         [Header("Values")]
         public ValueType valueType;
         [SerializeField] NumberData _defaultNumber;
@@ -99,6 +101,7 @@ namespace Cardevil.Cards
         {
             return new CardData()
             {
+                id = id,
                 valueType = valueType,
                 selectType = selectType,
                 _defaultNumber = _defaultNumber,
@@ -162,8 +165,9 @@ namespace Cardevil.Cards
         }
         
         public CardData() {}
-        public CardData(NumberData defaultNubmer, MoveData defaultMove, ValueType valueType, SelectType selectType = SelectType.None)
+        public CardData(int id, NumberData defaultNubmer, MoveData defaultMove, ValueType valueType, SelectType selectType = SelectType.None)
         {
+            this.id = id;
             _defaultNumber = defaultNubmer;
             _defaultMove = defaultMove;
             _selectedNumber = new();
