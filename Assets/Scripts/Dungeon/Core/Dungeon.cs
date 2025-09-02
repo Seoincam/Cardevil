@@ -76,7 +76,17 @@ namespace Cardevil.Dungeon
                     sb.Append(new string(' ', indent));
                     sb.AppendLine("-- Branch Start --");
                 }
-                sb.AppendLine($"{new string(' ', indent)}Node ID: {current.NodeId}, Type: {current.Type}, Floor: {current.Floor}");
+                sb.Append($"{new string(' ', indent)}Node ID: {current.NodeId}, Type: {current.Type}, Floor: {current.Floor}");
+                if(current.NextNodes.Count > 1)
+                {
+                    sb.Append(" Next Nodes: ");
+                    foreach (var next in current.NextNodes)
+                    {
+                        sb.Append($"{next.NodeId}, ");
+                    }
+                    sb.Remove(sb.Length - 2, 2); // 마지막 쉼표와 공백 제거
+                }
+                sb.AppendLine();
 
                 if (current.IsBranchStart)
                 {

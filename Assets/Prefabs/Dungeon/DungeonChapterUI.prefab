@@ -293,7 +293,7 @@ GameObject:
   - component: {fileID: 2663704201058976783}
   - component: {fileID: 8237447366689845343}
   m_Layer: 0
-  m_Name: DungeonChapter
+  m_Name: DungeonChapterUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

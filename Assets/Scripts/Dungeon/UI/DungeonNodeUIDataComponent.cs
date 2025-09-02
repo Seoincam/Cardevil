@@ -34,16 +34,16 @@ namespace Cardevil.Dungeon.UI
         {
             if (enabled)
             {
-                name = $"NodeUI_{nodeId}";
-                if(prevNodeType != nodeType)
-                {
-                    TextMeshProUGUI text = GetComponentInChildren<TextMeshProUGUI>();
-                    prevNodeType = nodeType;
-                    if (text != null)
-                    {
-                        text.text = $"{nodeType}";
-                    }
-                }
+                // name = $"NodeUI_{nodeId}";
+                // if(prevNodeType != nodeType)
+                // {
+                //     TextMeshProUGUI text = GetComponentInChildren<TextMeshProUGUI>();
+                //     prevNodeType = nodeType;
+                //     if (text != null)
+                //     {
+                //         text.text = $"{nodeType}";
+                //     }
+                // }
 
                 foreach (DungeonNodeUIDataComponent nxt in nextNodes)
                 {
