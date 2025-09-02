@@ -1,87 +1,124 @@
-using Cardevil.Cards;
-using Cardevil.Cards.CardInteractinos;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
-using System.Linq;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectContainer : MonoBehaviour
+namespace Cardevil.Cards.CardInteractinos
 {
-    [SerializeField] SelectButton buttonPrefab;
-    [SerializeField] Button backgroundButton;
-    private SelectButton[] buttons;
-    private Card card;
-
-    void Awake()
+    public class SelectContainer : MonoBehaviour
     {
-        buttons = new SelectButton[9];
-        for (int i = 0; i < 9; i++)
+        private static readonly int[] AllNumberValues = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        private static readonly Direction[] AllDirectionValues = new Direction[] { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
+
+        [SerializeField] Button buttonPrefab;
+        [SerializeField] Button backgroundButton;
+        private readonly List<Button> buttons = new();
+
+        private int index;
+        private Card card;
+        private List<(int, Direction)> options;
+
+        void Awake()
         {
-            buttons[i] = Instantiate(buttonPrefab, parent: transform).GetComponent<SelectButton>();
-            buttons[i].Init(OnNumberSelected, OnDirectionSelected);
-            gameObject.SetActive(false);
+            for (int i = 0; i < 9; i++)
+            {
+                buttons.Add(Instantiate(buttonPrefab, parent: transform));
+                gameObject.SetActive(false);
+            }
+
+            backgroundButton.onClick.AddListener(OnBackgroundClicked);
         }
 
-        backgroundButton.onClick.AddListener(OnBackgroundClicked);
-    }
+        private void AddOption(int number)
+        {
+            (int, Direction) option = new(number, Direction.None);
+            options.Add(option);
+            var currentIndex = index;
+            buttons[index].onClick.AddListener(() => OnButtonSelected(currentIndex));
+            buttons[index].GetComponentInChildren<TextMeshProUGUI>().text = number.ToString();
+            index++;
+        }
 
-    public void SetContainer(Card card, int[] numbers)
-    {
-        this.card = card;
-        transform.position = card.transform.position + Vector3.up * 300f;
+        private void AddOption(Direction direction)
+        {
+            (int, Direction) option = new(0, direction);
+            options.Add(option);
+            var currentIndex = index;
+            buttons[index].onClick.AddListener(() => OnButtonSelected(currentIndex));
+            buttons[index].GetComponentInChildren<TextMeshProUGUI>().text = direction.ToString();
+            index++;
+        }
 
-        var index = 0;
-        foreach (var number in numbers)
-            buttons[index++].SetValue(number);
+        public void OpenSelection(Card card)
+        {
+            this.card = card;
+            transform.position = new Vector3(card.transform.position.x, card.transform.position.y + 300f);
+            options = new();
+            index = 0;
 
-        for (int i = index; i < buttons.Count(); i++)
-            buttons[i].gameObject.SetActive(false);
+            if (card.data.valueType == CardData.ValueType.Number)
+            {
+                switch (card.data.selectType)
+                {
+                    case CardData.SelectType.Multiple:
+                        AddOption(card.data.DefaultNumber.number);
+                        foreach (var number in card.data.NumberOptions)
+                            AddOption(number);
+                        break;
 
-        SetObjectActive(true);
-    }
+                    case CardData.SelectType.All:
+                        foreach (var number in AllNumberValues)
+                            AddOption(number);
+                        break;
+                }
+            }
+            else if (card.data.valueType == CardData.ValueType.Move)
+            {
+                switch (card.data.selectType)
+                {
+                    case CardData.SelectType.Multiple:
+                        AddOption(card.data.DefaultMove.direction);
+                        AddOption(card.data.DefaultMove.direction.Opposite());
+                        break;
 
-    public void SetContainer(Card card, Direction[] directions)
-    {
-        this.card = card;
-        transform.position = card.transform.position + Vector3.up * 300f;
+                    case CardData.SelectType.All:
+                        foreach (var direction in AllDirectionValues)
+                            AddOption(direction);
+                        break; 
+                }
+            }
 
-        var index = 0;
-        foreach (var direction in directions)
-            buttons[index++].SetValue(direction);
+            for (int i = 0; i < 9; i++)
+                buttons[i].gameObject.SetActive(i < index);
 
-        for (int i = index; i < buttons.Count(); i++)
-            buttons[i].gameObject.SetActive(false);
+            SetObjectActive(true);
+        }
 
-        SetObjectActive(true);
-    }
+        private void OnButtonSelected(int index)
+        {
+            if (options[index].Item1 != 0)
+                card.data.SelectValue(options[index].Item1);
+            else
+                card.data.SelectValue(options[index].Item2);
 
-    private void OnNumberSelected(int number)
-    {
-        var numberCardData = card.data as NumberCardData;
-        numberCardData.SetValue(number);
-        card.cardVisual.UpdateVisual();
-        SetObjectActive(false);
-    }
-
-    private void OnDirectionSelected(Direction direction)
-    {
-        var directionCardData = card.data as DirectionCardData;
-        directionCardData.SelectValue(direction);
-        card.cardVisual.UpdateVisual();
-        SetObjectActive(false);
-    }
-
-    private void OnBackgroundClicked()
-    {
-        SetObjectActive(false);
-    }
-
-    private void SetObjectActive(bool value)
-    {
-        backgroundButton.gameObject.SetActive(value);
-        gameObject.SetActive(value);
-        if (!value)
             card.OnSelectValueEndEvent?.Invoke(card);
+            SetObjectActive(false);
+        }
+
+
+        private void OnBackgroundClicked()
+        {
+            SetObjectActive(false);
+        }
+
+        private void SetObjectActive(bool value)
+        {
+            backgroundButton.gameObject.SetActive(value);
+            gameObject.SetActive(value);
+            if (!value)
+                card.OnSelectValueEndEvent?.Invoke(card);
+        }
     }
 }

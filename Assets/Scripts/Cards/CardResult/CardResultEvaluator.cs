@@ -5,33 +5,33 @@ using Cardevil.Cards.CardInteractinos;
 namespace Cardevil.Cards
 {
     public static class CardResultEvaluator
-    {       
+    {
+        /// <summary>
+        /// 선택된 카드를 바탕으로 계산 후, 결과를 context에 저장.
+        /// </summary>
         public static void Evaluate(CardContext context, IEnumerable<Card> cards)
         {
-            context.GetSet();
-
-            var directions = cards.Select(c => c.data)
-                        .OfType<DirectionCardData>()
-                        .Select(d => d.value)
+            var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move)
+                        .Select(m => m.data.Move)
                         .ToList();
 
-            var numberCards = cards.Select(c => c.data)
-                        .OfType<NumberCardData>()
+            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
+                        .Select(n => n.data.Number)
                         .ToList();
 
-            var isRedCardOver3 = numberCards.Select(c => c.color == CardColor.Red)
+            var isRedCardOver3 = numbers.Select(n => n.color == NumberData.CardColor.Red)
                         .Count() >= 3;
 
-            var isBlackCardOver3 = numberCards.Select(c => c.color == CardColor.Black)
+            var isBlackCardOver3 = numbers.Select(n => n.color == NumberData.CardColor.Black)
                         .Count() >= 3;
 
 
             // == 숫자 카드 판정 ==
-            if (numberCards.Count == 0)
+            if (numbers.Count == 0)
             {
-                context.SetResult(new CardResult(0, directions, null, false, false));
+                context.SetResult(new CardResult(0, moves, null, false, false));
                 return;
-            } 
+            }
 
             // == damage 합 연산 유물 ==
             // if (hasDamageRelics)
@@ -45,65 +45,133 @@ namespace Cardevil.Cards
             //     해당 유물의 [같은색취급 세트]에서, 색의 개수가 같거나 더 적은 색을 나머지 색으로 변환시킨다.
             // }
 
-            var rankings = CalculateRanking(numberCards);
+            var rankings = CalculateRanking(numbers);
             float damage = 0;
 
-            if (rankings.First() == HandRanking.High)
-                damage = numberCards.OrderBy(c => c.value).Last().value;
+            if (rankings[0] == HandRanking.High)
+                damage = numbers.OrderBy(n => n.number).Last().number;
 
-            else if (rankings.First() == HandRanking.OnePair)
-                damage = numberCards.GroupBy(c => c.value)
+            else if (rankings[0] == HandRanking.OnePair)
+                damage = numbers.GroupBy(n => n.number)
                             .Where(g => g.Count() == 2)
                             .Sum(g => g.Key * 2);
 
-            else if (rankings.First() == HandRanking.Triple)
-                damage = numberCards.GroupBy(c => c.value)
+            else if (rankings[0] == HandRanking.Triple)
+                damage = numbers.GroupBy(n => n.number)
                             .Where(g => g.Count() == 3)
                             .Sum(g => g.Key * 3);
 
-            else damage = numberCards.Sum(c => c.value);
+            else damage = numbers.Sum(n => n.number);
 
-            damage += (int)rankings.First();
+            damage += (int)rankings[0];
 
             // == 데미지 곱 연산 ==
-            if (context.PreviousResult.isSet)
-            {
-                if (context.PreviousResult.IsRedCardOver3)
-                    damage *= context.Multiply.red3multiply;
+            if (context.PreviousResult.IsRedCardOver3)
+                damage *= context.Multiply.red3multiply;
 
-                if (context.PreviousResult.IsBlackCardOver3)
-                    damage *= context.Multiply.black3multiply;
-            }
+            if (context.PreviousResult.IsBlackCardOver3)
+                damage *= context.Multiply.black3multiply;
 
             // == 데미지 강화 카드의 존재 여부 ==
 
             // == 유물 데미지 판정 ==
 
-            var result = new CardResult(damage, directions, rankings, isRedCardOver3, isBlackCardOver3);
+            var result = new CardResult(damage, moves, rankings, isRedCardOver3, isBlackCardOver3);
             context.SetResult(result);
+        }
+
+
+        /// <summary>
+        /// 선택된 카드를 바탕으로 계산 후, 저장 없이 반환만.
+        /// </summary>
+        public static CardResult CheckResult(CardContext context, IEnumerable<Card> cards)
+        {
+            var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move)
+                        .Select(m => m.data.Move)
+                        .ToList();
+
+            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
+                        .Select(n => n.data.Number)
+                        .ToList();
+
+            var isRedCardOver3 = numbers.Select(n => n.color == NumberData.CardColor.Red)
+                        .Count() >= 3;
+
+            var isBlackCardOver3 = numbers.Select(n => n.color == NumberData.CardColor.Black)
+                        .Count() >= 3;
+
+
+            // == 숫자 카드 판정 ==
+            if (numbers.Count == 0)
+                return new CardResult(0, moves, null, false, false);
+
+            // == damage 합 연산 유물 ==
+            // if (hasDamageRelics)
+            // {
+            //     damage = damage + 기본 공격 데미지 * 사용된 카드 수
+            // }
+
+            // == 족보 판정 ==
+            // if (hasColorRelics)
+            // {
+            //     해당 유물의 [같은색취급 세트]에서, 색의 개수가 같거나 더 적은 색을 나머지 색으로 변환시킨다.
+            // }
+
+            var rankings = CalculateRanking(numbers);
+            float damage = 0;
+
+            if (rankings[0] == HandRanking.High)
+                damage = numbers.OrderBy(n => n.number).Last().number;
+
+            else if (rankings[0] == HandRanking.OnePair)
+                damage = numbers.GroupBy(n => n.number)
+                            .Where(g => g.Count() == 2)
+                            .Sum(g => g.Key * 2);
+
+            else if (rankings[0] == HandRanking.Triple)
+                damage = numbers.GroupBy(n => n.number)
+                            .Where(g => g.Count() == 3)
+                            .Sum(g => g.Key * 3);
+
+            else damage = numbers.Sum(n => n.number);
+
+            damage += (int)rankings[0];
+
+            // == 데미지 곱 연산 ==
+            if (context.PreviousResult.IsRedCardOver3)
+                damage *= context.Multiply.red3multiply;
+
+            if (context.PreviousResult.IsBlackCardOver3)
+                damage *= context.Multiply.black3multiply;
+
+            // == 데미지 강화 카드의 존재 여부 ==
+
+            // == 유물 데미지 판정 ==
+
+            return new CardResult(damage, moves, rankings, isRedCardOver3, isBlackCardOver3);
         }
 
 
 
         #region 카드 족보 판정
 
-        private static List<HandRanking> CalculateRanking(List<NumberCardData> cards)
+        private static List<HandRanking> CalculateRanking(List<NumberData> numbers)
         {
             var rankings = new List<HandRanking>();
 
-            if (IsStraightFlush(cards))
+            if (IsStraightFlush(numbers))
                 rankings.Add(HandRanking.StraightFlush);
-            if (IsFourCard(cards))
+            if (IsFourCard(numbers))
                 rankings.Add(HandRanking.FourCard);
-            if (IsStraight(cards))
+            if (IsStraight(numbers))
                 rankings.Add(HandRanking.Straight);
-            if (IsFlush(cards))
+            if (IsFlush(numbers))
                 rankings.Add(HandRanking.Flush);
-            if (IsTriple(cards))
+            if (IsTriple(numbers))
                 rankings.Add(HandRanking.Triple);
-            if (IsTwoPair(cards))
+            if (IsTwoPair(numbers))
                 rankings.Add(HandRanking.TwoPair);
-            if (IsOnePair(cards))
+            if (IsOnePair(numbers))
                 rankings.Add(HandRanking.OnePair);
             if (rankings.Count() == 0)
                 rankings.Add(HandRanking.High);
@@ -111,12 +179,12 @@ namespace Cardevil.Cards
             return rankings;
         }
 
-        private static bool IsStraight(List<NumberCardData> cards)
+        private static bool IsStraight(List<NumberData> cards)
         {
             if (cards.Count != 4)
                 return false;
 
-            var values = cards.Select(c => c.value)
+            var values = cards.Select(c => c.number)
                     .OrderBy(v => v)
                     .ToList();
 
@@ -127,7 +195,7 @@ namespace Cardevil.Cards
             return true;
         }
 
-        private static bool IsFlush(List<NumberCardData> cards)
+        private static bool IsFlush(List<NumberData> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -137,7 +205,7 @@ namespace Cardevil.Cards
                     .Count() == 1;
         }
 
-        private static bool IsStraightFlush(List<NumberCardData> cards)
+        private static bool IsStraightFlush(List<NumberData> cards)
         {
             if (cards.Count != 4)
                 return false;
@@ -145,31 +213,31 @@ namespace Cardevil.Cards
             return IsStraight(cards) && IsFlush(cards);
         }
 
-        static bool IsFourCard(List<NumberCardData> cards)
+        static bool IsFourCard(List<NumberData> cards)
         {
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.number)
                         .Any(g => g.Count() == 4);
         }
 
-        static bool IsTriple(List<NumberCardData> cards)
+        static bool IsTriple(List<NumberData> cards)
         {
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.number)
                         .Any(g => g.Count() == 3);
         }
 
-        static bool IsTwoPair(List<NumberCardData> cards)
+        static bool IsTwoPair(List<NumberData> cards)
         {
             if (cards.Count != 4)
                 return false;
 
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.number)
                     .Where(g => g.Count() == 2)
                     .Count() == 2;
         }
 
-        static bool IsOnePair(List<NumberCardData> cards)
+        static bool IsOnePair(List<NumberData> cards)
         {
-            return cards.GroupBy(c => c.value)
+            return cards.GroupBy(c => c.number)
                         .Any(g => g.Count() == 2);
         }
 

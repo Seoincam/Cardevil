@@ -6,20 +6,20 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
 using Cardevil.Systems;
 using Cardevil.Events;
+using TMPro;
 
 namespace Cardevil.Cards.CardInteractinos
 {
     public class CardHandBar : MonoBehaviour, ICardHandBar, ITurnPlayerInput
     {
-        public InGameDeck Deck { get; private set; }
-        public InGameHand Hand { get; private set; }
+        [Header("InStage Data")]
+        [SerializeField] InStageCards _stageCards;
+        [SerializeField] CardContext _context;
+
+        public InStageCards StageCards => _stageCards;
         public CardContext Context => _context;
 
-        private CardContext _context;
-
         [Header("SO")]
-        public BaseDeckConfiguration baseDeckConfig;
-        public BaseDeckConfiguration baseRuntimeDeckConfig;
         [SerializeField] MultiplyValues multiplyValues;
 
         [Header("Card")]
@@ -34,6 +34,7 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("References")]
         [SerializeField] Button useCardButton;
         [SerializeField] Button discardCardButton;
+        [SerializeField] TextMeshProUGUI selectResultText;
 
         [Header("Setting")]
         [SerializeField] int initialCardCount = 6;
@@ -70,6 +71,27 @@ namespace Cardevil.Cards.CardInteractinos
 
 
 
+        public void Init()
+        {
+            CanInteraction = false;
+
+            // TODO: CardManager에서 처리하게 하는게 더 옳을 듯
+            _stageCards = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
+            _context = new(multiplyValues);
+
+            for (int i = 0; i < initialCardCount; i++)
+            {
+                slots[i] = Instantiate(original: cardSlotPrefab, parent: transform).transform;
+                slots[i].gameObject.SetActive(false);
+            }
+
+            useCardButton.onClick.AddListener(Use);
+            discardCardButton.onClick.AddListener(Discard);
+
+            // FIXME: EventManager보다 CardManager가 먼저 Init돼서 실행이 안됨
+            UpdateDeckCardCount();
+        }
+
         void Update()
         {
             if (!CanInput)
@@ -81,58 +103,27 @@ namespace Cardevil.Cards.CardInteractinos
 
 
 
-        public void Init()
+        public void Select(Card card)
         {
-            CanInteraction = false;
-
-            DeckFactory.InitRuntimeDeckConfig(baseDeckConfig, baseRuntimeDeckConfig);
-            Deck = new(baseRuntimeDeckConfig);
-            Hand = new();
-            _context = new(multiplyValues);
-
-            for (int i = 0; i < initialCardCount; i++)
-            {
-                var slot = Instantiate(original: cardSlotPrefab, parent: transform);
-                slot.gameObject.SetActive(false);
-                slots[i] = slot.transform;
-            }
-
-            useCardButton.onClick.AddListener(Use);
-            discardCardButton.onClick.AddListener(Discard);
-
-            // FIXME: EventManager보다 CardManager가 먼저 Init돼서 실행이 안됨
-            UpdateDeckCardCount();
-        }
-
-        public void AddSelectedCard(Card card)
-        {
-            Hand.Select(card);
+            StageCards.Select(card);
             UpdateButtons();
         }
 
-        public void RemoveSelectedCard(Card card)
+        public void Deselect(Card card)
         {
-            Hand.Deselect(card);
+            StageCards.Deselect(card);
             UpdateButtons();
         }
 
-        // 플레이어 턴이면서 카드 값 선택이 바뀔 때, -> Card.onselectEnded에서 호출
+        // 플레이어 턴이면서 카드 값 선택이 바뀔 때.
+        // Card.onselectEnded에서 호출
         public void OnSelectValueEnd(Card _)
         {
             UpdateButtons();
         }
 
-        private void UpdateButtons()
-        {
-            var canUse = CanInput && Hand.SelectCount > 0 && Hand.AllValueSelected;
-            useCardButton.interactable = canUse;
-
-            var canDiscard = CanInput && Hand.SelectCount > 0;
-            discardCardButton.interactable = canDiscard;
-        }
 
         #region Card Event
-
         private void BeginDrag(Card card)
         {
             draggedCard = card;
@@ -153,25 +144,23 @@ namespace Cardevil.Cards.CardInteractinos
 
             draggedCard = null;
         }
-
         #endregion
 
 
         #region Swap
-
         private void DetectSwap()
         {
-            for (int i = 0; i < Hand.HandCount; i++)
+            for (int i = 0; i < StageCards.HandCount; i++)
             {
-                if (draggedCard.transform.position.x > Hand.GetCard(i).transform.position.x)
-                    if (draggedCard.GetSlotIndex() < Hand.GetCard(i).GetSlotIndex())
+                if (draggedCard.transform.position.x > StageCards.GetCard(i).transform.position.x)
+                    if (draggedCard.GetSlotIndex() < StageCards.GetCard(i).GetSlotIndex())
                     {
                         Swap(i);
                         break;
                     }
 
-                if (draggedCard.transform.position.x < Hand.GetCard(i).transform.position.x)
-                    if (draggedCard.GetSlotIndex() > Hand.GetCard(i).GetSlotIndex())
+                if (draggedCard.transform.position.x < StageCards.GetCard(i).transform.position.x)
+                    if (draggedCard.GetSlotIndex() > StageCards.GetCard(i).GetSlotIndex())
                     {
                         Swap(i);
                         break;
@@ -183,7 +172,7 @@ namespace Cardevil.Cards.CardInteractinos
         {
             IsSwapping = true;
 
-            var swappedCard = Hand.GetCard(index);
+            var swappedCard = StageCards.GetCard(index);
             var selectedCardSlot = draggedCard.transform.parent;
             var swappedSlot = swappedCard.transform.parent;
 
@@ -194,12 +183,10 @@ namespace Cardevil.Cards.CardInteractinos
 
             draggedCard.transform.SetParent(swappedSlot);
 
-            draggedCard.cardVisual.UpdateIndex(draggedCard.GetSlotIndex());
-            swappedCard.cardVisual.UpdateIndex(swappedCard.GetSlotIndex());
+            StageCards.UpdateVisualIndex();
             
             IsSwapping = false;
         }
-
         #endregion
 
 
@@ -207,7 +194,8 @@ namespace Cardevil.Cards.CardInteractinos
         
         private void Use()
         {
-            CardResultEvaluator.Evaluate(Context, Hand.Selects);
+            Context.GetSet();
+            CardResultEvaluator.Evaluate(Context, StageCards.Selects);
             _ = DiscardAsync();
             cmp.TrySetResult();
         }
@@ -219,7 +207,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         private Card Spawn(int slotIndex)
         {
-            var cardData = Deck.DrawCard();
+            var cardData = StageCards.DrawCard();
             if (cardData == null)
                 return null;
 
@@ -231,12 +219,12 @@ namespace Cardevil.Cards.CardInteractinos
             card.OnEndDragEvent += EndDrag;
             card.OnSelectValueEndEvent += OnSelectValueEnd;
 
-            Hand.Draw(card);
+            StageCards.Draw(card);
             UpdateDeckCardCount();
 
             // FIXME: 애니메이션의 순서 제어를 위해
             // 실행 위치 혹은 방식을 바꿔야할 듯!
-            Hand.UpdateVisualIndex();
+            StageCards.UpdateVisualIndex();
 
             return card;
         }
@@ -263,7 +251,7 @@ namespace Cardevil.Cards.CardInteractinos
         {
             IsSwapping = true;
 
-            await Hand.Discard(discardInterval, slots);
+            await StageCards.Discard(discardInterval, slots);
 
             // slot 정렬
             // - - - - - -
@@ -298,9 +286,23 @@ namespace Cardevil.Cards.CardInteractinos
         {
             using (var args = RemainingCardChangeArgs.Get())
             {
-                args.Init(Deck.Count);
+                args.Init(StageCards.DeckCount);
                 Managers.Event.RemainingCardChangeEvent?.Invoke(args);
             }
+        }
+
+        private void UpdateButtons()
+        {
+            if (CanInput && StageCards.SelectCount > 0 && StageCards.AllValueSelected)
+                selectResultText.text = CardResultEvaluator.CheckResult(Context, StageCards.Selects).Description;
+            else
+                selectResultText.text = "";
+
+            var canUse = CanInput && StageCards.CanUseCard;
+            useCardButton.interactable = canUse;
+
+            var canDiscard = CanInput && StageCards.SelectCount > 0;
+            discardCardButton.interactable = canDiscard;
         }
 
 

@@ -1,10 +1,21 @@
-using Cardevil.Cards.CardInteractinos;
-using Cardevil.Utils.Directions;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 namespace Cardevil.Cards
 {
+    public enum HandRanking
+    {
+        None = -1,
+
+        High = 0,
+        OnePair = 5,
+        TwoPair = 20,
+        Triple = 30,
+        Straight = 50,
+        Flush = 80,
+        FourCard = 200,
+        StraightFlush = 300  // 스티플
+    }
+
     public class CardContext
     {
         public readonly MultiplyValues Multiply;
@@ -32,22 +43,23 @@ namespace Cardevil.Cards
     /// </summary>
     public readonly struct CardResult
     {
-        public readonly bool isSet;
-
         public readonly float Damage;
-        public readonly List<CardDirection> Moves;
+        public readonly List<MoveData> Moves;
 
         public readonly List<HandRanking> Rankings;
         public readonly bool IsRedCardOver3;
         public readonly bool IsBlackCardOver3;
-
-        public CardResult(float damage, List<CardDirection> moves, List<HandRanking> rankings, bool isRedCardOver3, bool isBlackCardOver3)
+        
+        public string Description
         {
-            isSet = true;
+            get => Rankings.Count > 0 ? $"{Rankings[0]}, Damage: {Damage}" : "";
+        }
 
+        public CardResult(float damage, List<MoveData> moves, List<HandRanking> rankings, bool isRedCardOver3, bool isBlackCardOver3)
+        {
             Damage = damage;
             Moves = moves != null ? new(moves) : new();
-            
+
             Rankings = rankings != null ? new(rankings) : new();
             IsRedCardOver3 = isRedCardOver3;
             IsBlackCardOver3 = isBlackCardOver3;

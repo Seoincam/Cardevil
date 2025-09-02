@@ -80,14 +80,6 @@ namespace Cardevil.Cards.CardInteractinos
             this.BarGroup = barGroup;
             data = cardData;
 
-            // 이름 할당 (임시)
-            if (cardData is DirectionCardData direction)
-                transform.name = direction.value.ToString();
-            else if (cardData is NumberCardData number)
-                transform.name = $"{number.color} {number.value}";
-            else
-                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
-
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
             if (visualHandler == null)
                 Debug.LogError("Visual Handler를 찾을 수 없음.");
@@ -137,8 +129,11 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 OnPointerDownEvent?.Invoke(this);
 
-                if (data.OpenSelection(BarGroup.selectContainer, this))
-                    OnSelectValueStartEvent?.Invoke(this);
+                if (!data.CanOpenSelection)
+                    return;
+
+                BarGroup.selectContainer.OpenSelection(this);
+                OnSelectValueStartEvent?.Invoke(this);
             }
         }
 
@@ -182,19 +177,19 @@ namespace Cardevil.Cards.CardInteractinos
                 if (pointerUpTime - pointerDownTime > 0.2f)
                     return;
 
-                isSelected = BarGroup.Hand.SelectCount >= 4
+                isSelected = BarGroup.StageCards.SelectCount >= 4
                     ? false
                     : !isSelected;
 
                 if (isSelected)
                 {
                     transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
-                    BarGroup.AddSelectedCard(this);
+                    BarGroup.Select(this);
                 }
                 else
                 {
                     transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    BarGroup.RemoveSelectedCard(this);
+                    BarGroup.Deselect(this);
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
