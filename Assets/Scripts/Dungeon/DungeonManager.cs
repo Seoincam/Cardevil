@@ -24,7 +24,7 @@ namespace Cardevil.Dungeon
             {
                 if (dungeonUI == null)
                 {
-                    dungeonUI = Object.FindAnyObjectByType<DungeonUI>();
+                    dungeonUI = Object.FindAnyObjectByType<DungeonUI>(FindObjectsInactive.Include);
                     if (dungeonUI == null)
                     {
                         Debug.LogError("No DungeonUI found in the scene.");
