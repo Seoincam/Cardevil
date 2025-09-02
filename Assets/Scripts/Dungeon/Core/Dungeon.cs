@@ -7,6 +7,11 @@ using UnityEngine;
 
 namespace Cardevil.Dungeon
 {
+    
+    /// <summary>
+    /// 던전 데이터 클래스.
+    /// 일종의 Node 유향 그래프.
+    /// </summary>
     [Serializable]
     public class Dungeon : INodeContainer
     {
