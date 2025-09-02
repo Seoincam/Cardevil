@@ -119,7 +119,7 @@ namespace Cardevil.Dungeon.UI
                         Debug.LogError($"No DungeonNode found for next node ID {nextDataNode.nodeId}");
                         continue;
                     }
-
+                    nextDungeonNode.Floor = Math.Max(currentDungeonNode.Floor + 1, nextDungeonNode.Floor);
                     currentDungeonNode.NextNodes.Add(nextDungeonNode);
                 }
 
