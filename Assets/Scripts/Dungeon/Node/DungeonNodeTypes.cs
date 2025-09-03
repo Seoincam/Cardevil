@@ -3,6 +3,7 @@
     public enum DungeonNodeTypes
     {
         None,
+        Start,
         Mob,
         Heal,
         Reinforce,
@@ -10,5 +11,7 @@
         Random,
         MiniBoss,
         FinalBoss,
+        
+        
     }
 }

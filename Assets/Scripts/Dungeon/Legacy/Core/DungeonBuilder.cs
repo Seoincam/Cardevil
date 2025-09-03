@@ -24,7 +24,7 @@ namespace Cardevil.Dungeon
         
         public DungeonBuilder(int dungeonId, DungeonConfigurationSO dungeonConfiguration)
         {
-            rootNode = new DungeonNode(0, 0, DungeonNodeTypes.None, null);
+            rootNode = new DungeonNode(1, 0, DungeonNodeTypes.Start, null);
             nodes = new List<DungeonNode>();
             currentNode = rootNode;
             this.dungeonId = dungeonId;
@@ -217,6 +217,7 @@ namespace Cardevil.Dungeon
             };
             foreach (var node in nodes)
             {
+                node.Dungeon = result;
                 node.Initialize();
             }
             return result;

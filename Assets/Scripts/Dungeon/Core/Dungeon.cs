@@ -1,18 +1,34 @@
-﻿using Dungeon.UI;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Cardevil.Dungeon
 {
-    public class Dungeon
+    
+    /// <summary>
+    /// 던전 데이터 클래스.
+    /// 일종의 Node 유향 그래프.
+    /// </summary>
+    [Serializable]
+    public class Dungeon : INodeContainer
     {
-        internal int dungeonId;
-        internal DungeonConfigurationSO dungeonConfiguration;
-        private DungeonNode rootNode;
-        private List<DungeonNode> nodes;
+        [SerializeField] internal int dungeonId;
+        [SerializeField] internal DungeonConfigurationSO dungeonConfiguration;
+        [SerializeField] private DungeonNode rootNode;
+        [SerializeField] private List<DungeonNode> nodes;
         
         
+        public int DungeonId
+        {
+            get => dungeonId;
+        }
+        public DungeonConfigurationSO DungeonConfiguration
+        {
+            get => dungeonConfiguration;
+        }
         
         public DungeonNode RootNode
         {
@@ -25,6 +41,18 @@ namespace Cardevil.Dungeon
             set => nodes = value;
         }
         
+        public DungeonNode GetNode(int nodeId)
+        {
+            foreach (var n in nodes)
+            {
+                if (n.NodeId == nodeId)
+                {
+                    return n;
+                }
+            }
+            Debug.LogError($"[Dungeon] Node with ID {nodeId} not found in Dungeon {dungeonId}");
+            return null;
+        }
         
         public void Initialize()
         {
@@ -53,7 +81,17 @@ namespace Cardevil.Dungeon
                     sb.Append(new string(' ', indent));
                     sb.AppendLine("-- Branch Start --");
                 }
-                sb.AppendLine($"{new string(' ', indent)}Node ID: {current.NodeId}, Type: {current.Type}, Floor: {current.Floor}");
+                sb.Append($"{new string(' ', indent)}Node ID: {current.NodeId}, Type: {current.Type}, Floor: {current.Floor}");
+                if(current.NextNodes.Count > 1)
+                {
+                    sb.Append(" Next Nodes: ");
+                    foreach (var next in current.NextNodes)
+                    {
+                        sb.Append($"{next.NodeId}, ");
+                    }
+                    sb.Remove(sb.Length - 2, 2); // 마지막 쉼표와 공백 제거
+                }
+                sb.AppendLine();
 
                 if (current.IsBranchStart)
                 {

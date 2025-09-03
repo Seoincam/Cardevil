@@ -2,7 +2,7 @@
 
 namespace Cardevil.Dungeon.DungeonFactories
 {
-    public class DungeonFactoryChapter1 : DungeonFactory 
+    public class DungeonFactoryChapter3 : DungeonFactory 
     {
         public override Dungeon Create(int dungeonId, DungeonConfigurationSO dungeonConfiguration)
         {
