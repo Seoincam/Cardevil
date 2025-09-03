@@ -23,9 +23,21 @@ namespace Cardevil.Cards
         public int HandCount => Hands.Count();
         public int SelectCount => Selects.Count();
 
-        public List<Card> SortedSelect => Selects.OrderBy(c => c.GetSlotIndex()).ToList();
+        public List<Card> SortedSelect => Selects.OrderBy(c => Hands.IndexOf(c)).ToList();
 
-        public void Draw(Card card) => Hands.Add(card);
+        public void Swap(int indexA, int indexB)
+        {
+            (Hands[indexA], Hands[indexB]) = (Hands[indexB], Hands[indexA]);
+        }
+
+        public void Draw(Card card)
+        {
+            if (HandCount >= 6)
+                Hands.Insert(HandCount / 2, card);
+            else
+                Hands.Add(card);
+        }
+
         public void Select(Card card) => Selects.Add(card);
         public void Deselect(Card card) => Selects.Remove(card);
         public void Discard(Card card, float interval)
@@ -85,9 +97,6 @@ namespace Cardevil.Cards
         {
             foreach (var card in SortedSelect)
             {
-                var slotIndex = card.GetSlotIndex();
-                slots[slotIndex].gameObject.SetActive(false);
-
                 Discard(card, interval);
                 await UniTask.Delay(TimeSpan.FromSeconds(interval));
                 card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
@@ -99,7 +108,7 @@ namespace Cardevil.Cards
         public void UpdateVisualIndex()
         {
             foreach (var card in Hands)
-                card.cardVisual.UpdateIndex(card.GetSlotIndex());
+                card.cardVisual.UpdateIndex();
         }
 
     }

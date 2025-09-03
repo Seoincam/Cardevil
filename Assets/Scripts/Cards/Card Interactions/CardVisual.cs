@@ -94,9 +94,9 @@ namespace Cardevil.Cards.CardInteractinos
             shakeObject.eulerAngles = new Vector3(0, 0, tiltZ);
         }
 
-        public void UpdateIndex(int index)
+        public void UpdateIndex()
         {
-            transform.SetSiblingIndex(index);
+            transform.SetSiblingIndex(parentCard.HandIndex);
         }
 
         private void PointerDown(Card _)
