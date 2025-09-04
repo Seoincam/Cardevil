@@ -34,10 +34,12 @@ namespace Cardevil.InGame.Enemy.Boss
             {
                 // 공격에 성공했음
                 Debug.Log("King이 공격에 성공했다!");
+                isAttackSuccess = true;
                 SetAllAttackOrder(1);
             }
             else
             {
+                isAttackSuccess = false;
                 Debug.Log("King이 공격에 실패했다!");
                 //공격에 실패했음.
             }

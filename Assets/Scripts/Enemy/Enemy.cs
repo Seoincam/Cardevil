@@ -26,10 +26,12 @@ namespace Cardevil.InGame.Enemy
         public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
         private bool aWakeFirst = true;
         private bool isAttakced = false;
+        public bool isAttackSuccess = false;
         private bool isEnemyDead = false;
         
         public bool isPlayerAttack = true;
-       
+        private bool orderSettingGo = false;
+        private int settingOrder = 3;
 
         private List<Attack> attackLists = new List<Attack>();
 
@@ -113,6 +115,7 @@ namespace Cardevil.InGame.Enemy
         }
         public void AttackEnemyTurnStart()
         {
+            EnemyTurnClear();
             Debug.Log("Enemy Turn!!");
             AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
 
@@ -146,10 +149,24 @@ namespace Cardevil.InGame.Enemy
 
         }
 
-        virtual public void AttackingCheck(Attack attack) // K의 오버라이드를 위한 AttackingCheckㄴ
+        virtual public void AttackingCheck(Attack attack) // 공격이 성공했는지 체크
         {
-            AttackGo(attack);
+            if (AttackGo(attack))
+            {
+                // 공격에 성공했음
+                Debug.Log("Enemy가 공격에 성공했다!");
+                isAttackSuccess = true;
+            }
+            else
+            {
+                isAttackSuccess = false;
+                Debug.Log("Enemy가 공격에 실패했다!");
+                //공격에 실패했음.
+            }
         }
+
+        
+
 
         /// <summary>
         /// 가로세로줄 공격에 성공하면  true
@@ -197,6 +214,12 @@ namespace Cardevil.InGame.Enemy
                 Debug.Log("지워진 Attack 만큼 새로 생성");
                 CreateAttack();
             }
+
+            if(orderSettingGo==true)
+            {
+                SetAllAttackOrderGo();
+            }
+            
            
             
    
@@ -459,6 +482,12 @@ namespace Cardevil.InGame.Enemy
 
         #region Tool 관련
 
+        private void EnemyTurnClear()
+        {
+            isAttackSuccess = false;
+            orderSettingGo = false;
+            settingOrder = attackCreateCycle;
+        }
         private void UpdateHPBar()
         {
             if (hpBar != null)
@@ -470,6 +499,13 @@ namespace Cardevil.InGame.Enemy
 
         public void SetAllAttackOrder(int i)
         {
+            orderSettingGo = true;
+            settingOrder = i;
+        }
+
+        public void SetAllAttackOrderGo()
+        {
+            int i = settingOrder;
             foreach (Attack attack in attackLists)
             {
                 if (i <= attack.attackTurnOrder)
