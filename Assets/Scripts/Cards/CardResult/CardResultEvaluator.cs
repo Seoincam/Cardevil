@@ -29,7 +29,8 @@ namespace Cardevil.Cards
             // == 숫자 카드 판정 ==
             if (numbers.Count == 0)
             {
-                context.SetResult(new CardResult(0, moves, null, false, false));
+                var ranking = new List<HandRanking>() { HandRanking.None };
+                context.SetResult(new CardResult(0, moves, ranking, false, false));
                 return;
             }
 

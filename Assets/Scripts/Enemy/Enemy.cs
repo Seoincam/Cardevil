@@ -7,25 +7,29 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using Cardevil.Ingame.Entities;
+using UnityEngine.UI;
 
 namespace Cardevil.InGame.Enemy
 {
     //
     public class Enemy : MonoBehaviour, ITurnEnemy
     {
+
+        //-----HP UI-----///
+        [SerializeField] private Slider hpBar; // Inspector에서 UI Slider를 드래그하여 연결합니다.
+        private float maxHP=100;
+
         private Field field;
         private float damage = 1; // Enemy의 공격력
         public float HP = 100; // Enemy의 체력
         public int attackCreateTurnOrder;
         public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
-        private int attackLineNumber;
-        private int attackPointNumber_x;
-        private int attackPointNumber_y;
         private bool aWakeFirst = true;
         private bool isAttakced = false;
         private bool isEnemyDead = false;
         
         public bool isPlayerAttack = true;
+       
 
         private List<Attack> attackLists = new List<Attack>();
 
@@ -34,8 +38,9 @@ namespace Cardevil.InGame.Enemy
             UnKnown,
             AttackPoint,
             AttackVertical,
-            AttackHorizontal
+            AttackHorizontal,
         }
+        
         private AttackStyle currentAttackStyle;
 
         public class Attack
@@ -61,6 +66,8 @@ namespace Cardevil.InGame.Enemy
             field = Managers.Game.Field;
             currentAttackStyle = AttackStyle.UnKnown;
             Managers.Game.Enemy = this;
+            maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
+            UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
 
         }
 
@@ -82,6 +89,8 @@ namespace Cardevil.InGame.Enemy
         public async UniTask TurnAttack() //인터페이스
         {
             await UniTask.Delay(1200);
+            
+            
             AttackEnemyTurnStart();
         }
         public virtual void AttackEnemyAwake() // 처음으로 호출되었을때
@@ -149,18 +158,17 @@ namespace Cardevil.InGame.Enemy
         /// <returns></returns>
         public bool AttackGo(Attack attack)
         {
-            Debug.Log($"Enemy Attack! damage : {damage}");
             if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
             {
-                return(AttackHorizontal(attackLineNumber));
+                return(AttackHorizontal(attack.attackLineNumber));
             }
             else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
             {
-                return(AttackVerical(attackLineNumber));
+                return(AttackVerical(attack.attackLineNumber));
             }
             else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
             {
-                 AttackPoint(attackPointNumber_x, attackPointNumber_y);
+                 AttackPoint(attack.attackPointNumber_x, attack.attackPointNumber_y);
             }
             return false;
         }
@@ -186,6 +194,7 @@ namespace Cardevil.InGame.Enemy
 
             for (int i=0;i<count;i++) // 지워진 어택 갯수만큼 새로 생성
             {
+                Debug.Log("지워진 Attack 만큼 새로 생성");
                 CreateAttack();
             }
            
@@ -241,7 +250,7 @@ namespace Cardevil.InGame.Enemy
         /// <param name="attack"></param>
         public void SetPlayerAttack(Attack attack)
         {
-            Debug.Log("SetPlayerAttack 진입");
+            Debug.Log("SetPlayerAttack!");
             // 현재 가로공격인지 세로공격인지 확인
             if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
             {
@@ -259,6 +268,7 @@ namespace Cardevil.InGame.Enemy
                 //공격위치표시
                 AttackNoticeSign_Vertical(attack.attackLineNumber);
             }
+            
         }
 
         /// <summary>
@@ -267,6 +277,7 @@ namespace Cardevil.InGame.Enemy
         /// <returns></returns>
         void SetRandomAttack(Attack attack)
         {
+            Debug.Log("SetRandomAttack!");
             attack.attackLineNumber = UnityEngine.Random.Range(0, 2); // 랜덤으로 위치 지정
         }
         AttackStyle SetAttackType()
@@ -365,10 +376,11 @@ namespace Cardevil.InGame.Enemy
                 }
             }
 
-        }
+        } 
 
         bool AttackVerical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
         {
+             // pointNuber가 이상하다.
             bool successAttack = false;
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
@@ -385,7 +397,7 @@ namespace Cardevil.InGame.Enemy
                         if (player is ITurnPlayerAction action)
                         {
                             action.PlayerGetDamage(damage);
-                            return successAttack = true;
+                            successAttack = true;
                         }
                     }
                 }
@@ -428,6 +440,7 @@ namespace Cardevil.InGame.Enemy
         {
             HP -= damage;
             Debug.Log($"{damage}만큼의 피해를 입러 HP가 {HP}로 감소하였다!");
+            UpdateHPBar();
             if (HP <= 0)
             {
                 // 유닛 사망
@@ -445,6 +458,16 @@ namespace Cardevil.InGame.Enemy
 
 
         #region Tool 관련
+
+        private void UpdateHPBar()
+        {
+            if (hpBar != null)
+            {
+                // 현재 HP 값을 0과 1 사이의 값으로 정규화하여 Slider에 반영합니다.
+                hpBar.value = HP / maxHP;
+            }
+        }
+
         public void SetAllAttackOrder(int i)
         {
             foreach (Attack attack in attackLists)

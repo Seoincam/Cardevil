@@ -29,7 +29,7 @@ namespace Cardevil.InGame.Enemy.Boss
 
         public override void AttackingCheck(Attack attack)
         {
-            Debug.Log("AttackingCheck}");
+            Debug.Log("AttackingCheck");
             if(AttackGo(attack))
             {
                 // 공격에 성공했음
