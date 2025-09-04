@@ -18,17 +18,6 @@ namespace Cardevil.Test
             CardDeckCount
         }
 
-        public enum TurnDebugSliderNames
-        {
-            PlayerActionProgressBar,
-            BossActionProgressBar
-        }
-        public enum TurnDebugTextNames
-        {
-            InputText,
-            DamageText,
-        }
-
 
         private void Start()
         {
@@ -38,8 +27,6 @@ namespace Cardevil.Test
         public override void Init()
         {
             Bind<TextMeshProUGUI>(typeof(TextNames));
-            Bind<Slider>(typeof(TurnDebugSliderNames));
-            Bind<Text>(typeof(TurnDebugTextNames));
         }
 
         private void OnEnable()
@@ -80,21 +67,6 @@ namespace Cardevil.Test
             var cardDeckCounter = Get<TextMeshProUGUI>(TextNames.CardDeckCount);
             if (cardDeckCounter != null)
                 cardDeckCounter.text = args.RemainingCardCount.ToString();
-        }
-
-        // event 사용 안하고 임시로 구현
-        public void SetTurnDebugProgressBar(TurnDebugSliderNames sliderNames, float value)
-        {
-            var bar = Get<Slider>(sliderNames);
-            if (bar != null)
-                bar.value = value;
-        }
-
-        public void SetTurnDebugTextBar(TurnDebugTextNames textNames, string value)
-        {
-            var text = Get<Text>(textNames);
-            if (text != null)
-                text.text = value;
         }
     }
 }

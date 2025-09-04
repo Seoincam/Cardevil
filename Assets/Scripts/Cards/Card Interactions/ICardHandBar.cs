@@ -4,5 +4,6 @@ namespace Cardevil.Cards
     {
         void Init();
         CardContext Context { get; }
+        InStageCards StageCards { get; }
     }
 }

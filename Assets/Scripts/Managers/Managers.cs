@@ -25,7 +25,7 @@ public class Managers : MonoBehaviour
     EventManager _event = new EventManager();
     TurnManager _turn = new TurnManager();
     CardManager _card = new CardManager();
-    DungeonManager _dungeon = new DungeonManager();
+    [SerializeField] DungeonManager _dungeon = new DungeonManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -83,5 +83,8 @@ public class Managers : MonoBehaviour
         Pool.Clear();
         Game.Clear();
     }
+    
+    
+
 
 }

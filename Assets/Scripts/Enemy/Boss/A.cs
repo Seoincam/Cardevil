@@ -6,18 +6,21 @@ namespace Cardevil.InGame.Enemy.Boss
 {
     public class A : Enemy
     {
-
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        public override void SetAttack(Attack attack, bool setPlayerAttack = false)
         {
-
+            if (setPlayerAttack) // 플레이어 위치로 공격할 것인가에 대해
+            {
+                SetPlayerAttack(attack);
+                Debug.Log($"KingAttack 예상 sign {attack.currentAttackStyle}");
+            }
         }
 
-        // Update is called once per frame
-        void Update()
+        public override void AttackingCheck(Attack attack)
         {
-
+            AttackGo(attack);
+            Managers.Card.GetCard().Lock(); // 카드 잠구기
         }
+
     }
 
 }
