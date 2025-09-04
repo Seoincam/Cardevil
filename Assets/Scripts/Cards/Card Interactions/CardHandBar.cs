@@ -33,7 +33,6 @@ namespace Cardevil.Cards.CardInteractinos
             private set
             {
                 _draggedCard = value;
-                StageCards.SetSortNone();
                 UpdateUI();
             }
         }
@@ -281,14 +280,14 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void SortByNumber()
         {
-            StageCards.SetSortByNumber();
+            StageCards.SortByNumber();
             UpdateUI();
             SetSlots();
         }
 
         private void SortByIcon()
         {
-            StageCards.SetSortByIcon();
+            StageCards.SortByIcon();
             UpdateUI();
             SetSlots();
         }
@@ -305,27 +304,6 @@ namespace Cardevil.Cards.CardInteractinos
 
             var canDiscard = CanInput && StageCards.SelectCount > 0 && !DraggedCard;
             discardCardButton.interactable = canDiscard;
-
-            var numColors = sortByNumberButton.colors;
-            var iconColors = sortByIconButton.colors;
-            if (StageCards.sortType == InStageCards.SortType.None)
-            {
-                numColors.normalColor = Color.gray;
-                iconColors.normalColor = Color.gray;
-            }
-            else if (StageCards.sortType == InStageCards.SortType.Number)
-            {
-                numColors.normalColor = Color.white;
-                iconColors.normalColor = Color.gray;
-            }
-            else if (StageCards.sortType == InStageCards.SortType.Icon)
-            {
-                numColors.normalColor = Color.gray;
-                iconColors.normalColor = Color.white;
-            }
-            sortByNumberButton.colors = numColors;
-            sortByIconButton.colors = iconColors;
-
         }
 
 

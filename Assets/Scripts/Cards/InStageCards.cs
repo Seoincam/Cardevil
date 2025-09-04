@@ -18,9 +18,6 @@ namespace Cardevil.Cards
         public List<Card> Hands;
         public List<Card> Selects;
 
-        public enum SortType { None, Number, Icon }
-        public SortType sortType = SortType.None;
-
         private static readonly IComparer<Card> NumberComparer = Comparer<Card>.Create((a, b) =>
         {
             return a.data.Number.number.CompareTo(b.data.Number.number);
@@ -39,20 +36,11 @@ namespace Cardevil.Cards
         public int DeckCount => Deck.Count();
         public int HandCount => Hands.Count();
         public int SelectCount => Selects.Count();
-        private bool AllValueSelected => Selects.All(c => c.data.CanUse);        
+        private bool AllValueSelected => Selects.All(c => c.data.CanUse);
 
         public List<Card> SortedSelect => Selects.OrderBy(c => Hands.IndexOf(c)).ToList();
 
         public Card GetHandCard(int index) => Hands[index];
-
-
-        public void Sort()
-        {
-            if (sortType == SortType.None)
-                return;
-            var comparer = sortType == SortType.Number ? NumberComparer : IconComparer;
-            Hands.Sort(comparer);
-        }
 
         public void Select(Card card)
         {
@@ -72,7 +60,6 @@ namespace Cardevil.Cards
         public void Draw(Card card)
         {
             Hands.Add(card);
-            Sort();
         }
 
         public void Discard(Card card, float interval)
@@ -126,21 +113,14 @@ namespace Cardevil.Cards
                 card.cardVisual.UpdateIndex();
         }
 
-        public void SetSortNone()
+        public void SortByNumber()
         {
-            sortType = SortType.None;
+            Hands.Sort(NumberComparer);
         }
 
-        public void SetSortByNumber()
+        public void SortByIcon()
         {
-            sortType = SortType.Number;
-            Sort();
-        }
-
-        public void SetSortByIcon()
-        {
-            sortType = SortType.Icon;
-            Sort();
+            Hands.Sort(IconComparer);
         }
     }
 }
