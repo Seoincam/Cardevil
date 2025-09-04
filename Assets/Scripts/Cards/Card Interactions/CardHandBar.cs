@@ -33,6 +33,7 @@ namespace Cardevil.Cards.CardInteractinos
             private set
             {
                 _draggedCard = value;
+                StageCards.SetSortNone();
                 UpdateUI();
             }
         }
@@ -41,10 +42,12 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] GameObject cardSlotPrefab;
         private Transform[] slots = new Transform[6];
 
-        [Header("References")]
+        [Header("UI")]
         [SerializeField] Button useCardButton;
         [SerializeField] Button discardCardButton;
         [SerializeField] TextMeshProUGUI selectResultText;
+        [SerializeField] Button sortByNumberButton;
+        [SerializeField] Button sortByIconButton;
 
         [Header("Setting")]
         [SerializeField] int initialCardCount = 6;
@@ -94,6 +97,8 @@ namespace Cardevil.Cards.CardInteractinos
 
             useCardButton.onClick.AddListener(Use);
             discardCardButton.onClick.AddListener(Discard);
+            sortByNumberButton.onClick.AddListener(SortByNumber);
+            sortByIconButton.onClick.AddListener(SortByIcon);
 
             // FIXME: EventManager보다 CardManager가 먼저 Init돼서 실행이 안됨
             UpdateDeckCardCount();
@@ -159,15 +164,15 @@ namespace Cardevil.Cards.CardInteractinos
         {
             for (int i = 0; i < StageCards.HandCount; i++)
             {
-                if (DraggedCard.transform.position.x > StageCards.GetCard(i).transform.position.x)
-                    if (DraggedCard.HandIndex < StageCards.GetCard(i).HandIndex)
+                if (DraggedCard.transform.position.x > StageCards.GetHandCard(i).transform.position.x)
+                    if (DraggedCard.HandIndex < StageCards.GetHandCard(i).HandIndex)
                     {
                         Swap(i);
                         break;
                     }
 
-                if (DraggedCard.transform.position.x < StageCards.GetCard(i).transform.position.x)
-                    if (DraggedCard.HandIndex > StageCards.GetCard(i).HandIndex)
+                if (DraggedCard.transform.position.x < StageCards.GetHandCard(i).transform.position.x)
+                    if (DraggedCard.HandIndex > StageCards.GetHandCard(i).HandIndex)
                     {
                         Swap(i);
                         break;
@@ -244,10 +249,15 @@ namespace Cardevil.Cards.CardInteractinos
 
         public async UniTask DiscardAsync()
         {
-            IsSwapping = true;
-            SetSlots();
-            await StageCards.Discard(discardInterval, slots);
-            IsSwapping = false;
+            foreach (var card in StageCards.SortedSelect)
+            {
+                StageCards.Discard(card, discardInterval);
+                await UniTask.Delay(TimeSpan.FromSeconds(discardInterval));
+                card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
+                SetSlots();
+            }
+
+            StageCards.Selects.Clear();
         }
 
         private async UniTask DiscardAndDrawAsync()
@@ -269,9 +279,23 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
+        private void SortByNumber()
+        {
+            StageCards.SetSortByNumber();
+            UpdateUI();
+            SetSlots();
+        }
+
+        private void SortByIcon()
+        {
+            StageCards.SetSortByIcon();
+            UpdateUI();
+            SetSlots();
+        }
+
         private void UpdateUI()
         {
-            if (CanInput && StageCards.SelectCount > 0 && StageCards.AllValueSelected)
+            if (CanInput && StageCards.CanUseCard)
                 selectResultText.text = CardResultEvaluator.CheckResult(Context, StageCards.Selects).Description;
             else
                 selectResultText.text = "";
@@ -281,6 +305,27 @@ namespace Cardevil.Cards.CardInteractinos
 
             var canDiscard = CanInput && StageCards.SelectCount > 0 && !DraggedCard;
             discardCardButton.interactable = canDiscard;
+
+            var numColors = sortByNumberButton.colors;
+            var iconColors = sortByIconButton.colors;
+            if (StageCards.sortType == InStageCards.SortType.None)
+            {
+                numColors.normalColor = Color.gray;
+                iconColors.normalColor = Color.gray;
+            }
+            else if (StageCards.sortType == InStageCards.SortType.Number)
+            {
+                numColors.normalColor = Color.white;
+                iconColors.normalColor = Color.gray;
+            }
+            else if (StageCards.sortType == InStageCards.SortType.Icon)
+            {
+                numColors.normalColor = Color.gray;
+                iconColors.normalColor = Color.white;
+            }
+            sortByNumberButton.colors = numColors;
+            sortByIconButton.colors = iconColors;
+
         }
 
 
