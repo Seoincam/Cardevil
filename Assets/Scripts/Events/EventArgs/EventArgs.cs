@@ -27,6 +27,34 @@
             ModifiedHealth = 0;
         }
     }
+    
+    /// <summary>
+    /// 플레이어의 방어막 변화 이벤트 인자.
+    /// </summary>
+    public class PlayerShieldChangeArgs : EventArgs<PlayerShieldChangeArgs>
+    {
+        public int OldShield { get; private set; }
+        public int NewShield { get; private set; }
+
+        /// <summary>
+        /// 이벤트 진행으로 인해 수정된 방어막 값. 최종적으로 해당 값으로 플레이어의 방어막이 설정됨.
+        /// </summary>
+        public int ModifiedShield { get; set; }
+
+        public void Init(int currentShield, int newShield)
+        {
+            OldShield = currentShield;
+            NewShield = newShield;
+            ModifiedShield = newShield;
+        }
+
+        public override void Clear()
+        {
+            OldShield = 0;
+            NewShield = 0;
+            ModifiedShield = 0;
+        }
+    }
 
     public class RemainingCardChangeArgs : EventArgs<RemainingCardChangeArgs>
     {

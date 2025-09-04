@@ -23,7 +23,7 @@ namespace Cardevil.Ingame.Entities
 
         
         public Entity Entity => _entity;
-
+        public PlayerStatus PlayerStatus => Managers.Game.PlayerStatus;
         private void Awake()
         {
             if(_entity == null)
@@ -139,7 +139,7 @@ namespace Cardevil.Ingame.Entities
         public void PlayerGetDamage(float amount)
         {
             Debug.Log($"Player takes {amount} damage!");
-            Managers.Game.PlayerStatus.CurrentHp -= (int)amount;
+            PlayerStatus.TakeDamage((int)amount);
         }
 
         public async UniTask TurnMove()

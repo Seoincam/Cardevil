@@ -1,5 +1,7 @@
-﻿using Cardevil.Events;
+﻿using Cardevil.DataStructure;
+using Cardevil.Events;
 using System;
+using UnityEngine;
 
 namespace Cardevil.Ingame
 {
@@ -9,8 +11,10 @@ namespace Cardevil.Ingame
     [Serializable]
     public class PlayerStatus
     {
-        private int _currentHP = 3;
-        private int _maxHP = 3;
+        [SerializeField] private int _currentHP = 3;
+        [SerializeField] private int _maxHP = 3;
+        [SerializeField] private int _shield = 0;
+        [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
         
         /// <summary>
         /// 플레이어의 현재 체력
@@ -37,6 +41,48 @@ namespace Cardevil.Ingame
             get => _maxHP;
             set => _maxHP = value;
         }
+        
+        public int Shield
+        {
+            get => _shield;
+            set 
+            {
+                using(PlayerShieldChangeArgs args = PlayerShieldChangeArgs.Get())
+                {
+                    args.Init(_shield, value);
+                    Managers.Event.PlayerShieldChangeEvent.Invoke(args);
+                    _shield = args.ModifiedShield;
+                }
+            }
+        }
+        
+        public VariableContainer VariableContainer => _variableContainer;
+        
+        
+        public int TakeDamage(int damage)
+        {
+            if (damage < 0)
+            {
+                Debug.LogWarning("Damage cannot be negative.");
+                return 0;
+            }
+            int oldHp = CurrentHp;
+            
+            if (Shield >= damage)
+            {
+                Shield -= damage;
+                damage = 0;
+            }
+            else
+            {
+                damage -= Shield;
+                Shield = 0;
+            }
+            CurrentHp -= damage;
+            return oldHp - _currentHP; // 실제로 감소한 체력 반환
+        }
+        
+        
         
         /// <summary>
         /// 플레이어의 현재 체력을 강제로 설정합니다.
