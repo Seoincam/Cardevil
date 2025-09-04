@@ -182,7 +182,7 @@ namespace Cardevil.Cards
     public class NumberData : ICopyable<NumberData>
     {
         public bool isSet;
-        public enum CardColor { None, Red, Blue, Green, Black }
+        public enum CardColor { None = -1, Red = 0 , Green = 1, Blue = 2, Black = 3 }
         public CardColor color;
         public int number;
 

@@ -17,6 +17,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         [Header("Reference")]
         public CardHandBar BarGroup { get; private set; }
+        public InStageCards Cards { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
@@ -28,8 +29,8 @@ namespace Cardevil.Cards.CardInteractinos
                 if (isDiscarded)
                     return false;
 
-                if (BarGroup.draggedCard != null
-                    && BarGroup.draggedCard != this)
+                if (BarGroup.DraggedCard != null
+                    && BarGroup.DraggedCard != this)
                     return false;
 
                 if (!BarGroup.CanInput)
@@ -75,9 +76,10 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
-        public void Init(CardHandBar barGroup, CardData cardData)
+        public void Init(InStageCards cards, CardHandBar barGroup, CardData cardData)
         {
-            this.BarGroup = barGroup;
+            Cards = cards;
+            BarGroup = barGroup;
             data = cardData;
 
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
@@ -199,7 +201,20 @@ namespace Cardevil.Cards.CardInteractinos
 
         }
 
+        public void SetSlot(Transform slot, bool isDragging)
+        {
+            // TODO: 하드코딩 제거
+            var selectOffset = 35f;
 
+            transform.SetParent(slot);
+
+            if (!isDragging)
+                transform.localPosition = isSelected
+                    ? new Vector3(0, selectOffset, 0)
+                    : Vector3.zero;
+
+            cardVisual.UpdateIndex();
+        }
 
         public void Discard(float discardDuration)
         {
@@ -213,13 +228,11 @@ namespace Cardevil.Cards.CardInteractinos
             Destroy(gameObject);
         }
 
-        public int GetSlotIndex()
+        public int HandIndex
         {
-            return transform.parent.CompareTag("Slot")
-                ? transform.parent.GetSiblingIndex()
-                : 0;
+            get => Cards.Hands.IndexOf(this);
         }
         
-        public float NormalizedPosition => Util.Remap(GetSlotIndex(), 0, transform.parent.parent.childCount - 1, 0, 1);
+        public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);
     }
 }
