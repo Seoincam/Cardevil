@@ -83,13 +83,13 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void CurvePosition()
         {
-            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.StageCards.HandCount - 1);
+            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1);
             curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
         }
 
         private void TiltCard()
         {
-            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.BarGroup.StageCards.HandCount - 1)));
+            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1)));
             // float lerpZ = Mathf.LerpAngle(tiltZ, )
             shakeObject.eulerAngles = new Vector3(0, 0, tiltZ);
         }

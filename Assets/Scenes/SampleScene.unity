@@ -2352,6 +2352,7 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 1557382202997278365, guid: 5f36c31d7b7e58a49920a6203c0176e1, type: 3}
     - {fileID: 8749642345369031188, guid: 5f36c31d7b7e58a49920a6203c0176e1, type: 3}
+    - {fileID: 8896935787803918383, guid: 5f36c31d7b7e58a49920a6203c0176e1, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f36c31d7b7e58a49920a6203c0176e1, type: 3}
@@ -2437,10 +2438,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1026361699470471583, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 400
-      objectReference: {fileID: 0}
     - target: {fileID: 2489317077210643816, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2521,53 +2518,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3642254241030056041, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_Padding.m_Top
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 3642254241030056041, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_ConstraintCount
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 3873174456299977305, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -175
-      objectReference: {fileID: 0}
-    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8194372924566699631, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_Name
       value: CardCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

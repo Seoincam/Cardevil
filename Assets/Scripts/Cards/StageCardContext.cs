@@ -11,34 +11,48 @@ namespace Cardevil.Cards
     /// 매 스테이지마다 초기화되는 덱 
     /// </summary>
     [Serializable]
-    public class InStageCards
+    public class StageCardsContext
     {
         public List<CardData> Deck;
         public List<CardData> Discards;
         public List<Card> Hands;
         public List<Card> Selects;
 
-        private static readonly IComparer<Card> NumberComparer = Comparer<Card>.Create((a, b) =>
-        {
-            return a.data.Number.number.CompareTo(b.data.Number.number);
-        });
-
-        private static readonly IComparer<Card> IconComparer = Comparer<Card>.Create((a, b) =>
-        {
-            return a.data.id.CompareTo(b.data.id);
-        });
+        [SerializeField] int _discardRemainCount = 3;
 
         /// <summary>
         /// 오로지 덱의 상태만 전달함. 플레이어 턴 여부 등은 고려 안 함.
         /// </summary>
         public bool CanUseCard => SelectCount > 0 && AllValueSelected;
 
-        public int DeckCount => Deck.Count();
-        public int HandCount => Hands.Count();
-        public int SelectCount => Selects.Count();
-        private bool AllValueSelected => Selects.All(c => c.data.CanUse);
+        /// <summary>
+        /// 버리기 남은 횟수.
+        /// </summary>
+        public int DiscardRemainCount => _discardRemainCount;
+
+        public int DeckCount => Deck.Count;
+
+        public int HandCount => Hands.Count;
+
+        public int SelectCount => Selects.Count;
+
+        public int DiscardCount => Discards.Count;
 
         public List<Card> SortedSelect => Selects.OrderBy(c => Hands.IndexOf(c)).ToList();
+
+        private bool AllValueSelected => Selects.All(c => c.data.CanUse);
+
+
+
+        public StageCardsContext(List<CardData> deck)
+        {
+            Deck = deck;
+            Discards = new();
+            Hands = new();
+            Selects = new();
+        }
+
+
 
         public Card GetHandCard(int index) => Hands[index];
 
@@ -70,14 +84,39 @@ namespace Cardevil.Cards
             card.Discard(interval);
         }
 
-
-
-        public InStageCards(List<CardData> deck)
+        public void IncreaseDiscardCount(int amount)
         {
-            Deck = deck;
-            Discards = new();
-            Hands = new();
-            Selects = new();
+            _discardRemainCount += amount;
+        }
+
+        public bool ReduceDiscardCount(int amount = 1)
+        {
+            _discardRemainCount -= amount;
+            return DiscardRemainCount > 0;
+        }
+
+        public void SortByNumber()
+        {
+            Hands.Sort(NumberComparer);
+        }
+
+        public void SortByIcon()
+        {
+            Hands.Sort(IconComparer);
+        }
+
+        /// <summary>
+        /// 사용된 카드를 다시 덱에 넣음.
+        /// </summary>
+        public void Revive()
+        {
+            var randomDiscardIndex = Random.Range(0, maxExclusive: DiscardCount);
+            var randomDeckIndex = Random.Range(0, DeckCount);
+
+            var card = Discards[randomDiscardIndex];
+            Deck.Insert(randomDeckIndex, card);
+
+            Discards.Remove(card);
         }
 
         /// <summary>
@@ -113,14 +152,16 @@ namespace Cardevil.Cards
                 card.cardVisual.UpdateIndex();
         }
 
-        public void SortByNumber()
-        {
-            Hands.Sort(NumberComparer);
-        }
 
-        public void SortByIcon()
+
+        private static readonly IComparer<Card> NumberComparer = Comparer<Card>.Create((a, b) =>
         {
-            Hands.Sort(IconComparer);
-        }
+            return a.data.Number.number.CompareTo(b.data.Number.number);
+        });
+
+        private static readonly IComparer<Card> IconComparer = Comparer<Card>.Create((a, b) =>
+        {
+            return a.data.id.CompareTo(b.data.id);
+        });
     }
 }

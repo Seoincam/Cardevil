@@ -17,7 +17,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         [Header("Reference")]
         public CardHandBar BarGroup { get; private set; }
-        public InStageCards Cards { get; private set; }
+        public StageCardsContext Cards { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
@@ -76,7 +76,7 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
-        public void Init(InStageCards cards, CardHandBar barGroup, CardData cardData)
+        public void Init(StageCardsContext cards, CardHandBar barGroup, CardData cardData)
         {
             Cards = cards;
             BarGroup = barGroup;
@@ -179,7 +179,7 @@ namespace Cardevil.Cards.CardInteractinos
                 if (pointerUpTime - pointerDownTime > 0.2f)
                     return;
 
-                isSelected = BarGroup.StageCards.SelectCount >= 4
+                isSelected = BarGroup.StageCardsCtx.SelectCount >= 4
                     ? false
                     : !isSelected;
 
