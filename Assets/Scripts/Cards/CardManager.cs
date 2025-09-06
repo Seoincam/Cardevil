@@ -28,18 +28,9 @@ namespace Cardevil.Cards
             return handBar.StageCardsCtx.GetRandomCard();
         }
 
-        public CardResult GetCurrentCardRank()
-        {
-
-            return handBar.Context.CurrentResult;
-        }
-
         public int GetCurrentCardRankScore()
         {
-
-            CardResult card = GetCurrentCardRank();
-
-            HandRanking rank = card.Rankings[0];
+            HandRanking rank = handBar.Context.CurrentResult.Rangking;
 
             // enum → int 변환
             int score = (int)rank;

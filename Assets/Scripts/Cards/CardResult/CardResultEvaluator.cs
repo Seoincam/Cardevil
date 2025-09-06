@@ -18,7 +18,7 @@ namespace Cardevil.Cards
         /// <summary>
         /// 선택된 카드를 바탕으로 계산 후 반환
         /// </summary>
-        public static CardResult Evaluate(CardContext context, IEnumerable<Card> cards)
+        public static CardResult Evaluate(CardContext ctx, IEnumerable<Card> cards)
         {
             var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move)
                         .Select(m => m.data.Move)
@@ -33,7 +33,7 @@ namespace Cardevil.Cards
             if (numbers.Count == 0)
             {
                 var ranking = new List<HandRanking>() { HandRanking.None };
-                return new CardResult(0, moves, ranking, numbers);
+                return new CardResult(ctx, damage: 0, moves, ranking, numbers);
             }
 
             // == damage 합 연산 유물 ==
@@ -69,15 +69,18 @@ namespace Cardevil.Cards
             damage += (int)rankings[0];
 
             // == 데미지 곱 연산 ==
-                //TODO: 수치들 하드코딩 제거
-            if (context.PreviousResult.IsRedFlush)
+            //TODO: 수치들 하드코딩 제거
+            if (ctx.IsBlackFlushUsed)
+                damage *= 2;
+                
+            if (ctx.PreviousResult.IsRedFlush)
                 damage *= 3;
 
             // == 데미지 강화 카드의 존재 여부 ==
 
             // == 유물 데미지 판정 ==
 
-            var result = new CardResult(damage, moves, rankings, numbers);
+            var result = new CardResult(ctx, damage, moves, rankings, numbers);
 
             return result;
         }

@@ -265,7 +265,6 @@ namespace Cardevil.Cards.CardInteractinos
             }
 
             cmp.TrySetResult();
-            Context.GetSet();
         }
 
         private async UniTask DrawAsync()
@@ -364,6 +363,7 @@ namespace Cardevil.Cards.CardInteractinos
         {
             cmp = new();
             CanInteraction = true;
+            Context.GetSet();
         }
 
         public void InactivateInteraction()

@@ -58,20 +58,44 @@ namespace Cardevil.Cards
     {
         public readonly float Damage;
         public readonly List<MoveData> Moves;
-        public readonly List<HandRanking> Rankings;
 
         public readonly bool IsRedFlush;
         public readonly bool IsBlueFlush;
         public readonly bool IsGreenFlush;
         public readonly bool IsBlackFlush;
-        
+
+        private readonly CardContext ctx;
+        private readonly List<HandRanking> Rankings;
+
+        public readonly HandRanking Rangking => Rankings[0];        
+
         public string Description
         {
-            get => Rankings.Count > 0 ? $"{Rankings[0]}, Damage: {Damage}" : "";
+            get
+            {
+                var text = "";
+
+                if (Rankings[0] != HandRanking.None)
+                {
+                    if (ctx.IsBlackFlushUsed)
+                        text += "[ Black Flush: damage 200% ]\n";
+
+                    if (ctx.PreviousResult.IsRedFlush)
+                        text += "[ Red Flush: damage 300% ]\n";
+
+                    text += $"Ranking: {Rankings[0]}\nDamage: {Damage}\n";
+                }
+
+                return text;
+            }
         }
 
-        public CardResult(float damage, List<MoveData> moves, List<HandRanking> rankings, List<NumberData> numbers)
+
+
+        public CardResult(CardContext ctx, float damage, List<MoveData> moves, List<HandRanking> rankings, List<NumberData> numbers)
         {
+            this.ctx = ctx;
+
             Damage = damage;
             Moves = moves;
             Rankings = rankings;
