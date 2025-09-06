@@ -1,8 +1,6 @@
 ﻿using Cardevil.Events;
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Cardevil.Test
 {
@@ -15,7 +13,6 @@ namespace Cardevil.Test
         public enum TextNames
         {
             PlayerHealth,
-            CardDeckCount
         }
 
 
@@ -33,13 +30,11 @@ namespace Cardevil.Test
         {
             // 이벤트 리스너 등록
             Managers.Event.PlayerHealthChangeEvent.AddListener(OnPlayerHealthChanged);
-            Managers.Event.RemainingCardChangeEvent.AddListener(OnRemainingCardChanged, 0);
         }
         private void OnDisable()
         {
             // 이벤트 리스너 제거
             Managers.Event.PlayerHealthChangeEvent.RemoveListener(OnPlayerHealthChanged);
-            Managers.Event.RemainingCardChangeEvent.RemoveListener(OnRemainingCardChanged, 0);
         }
 
         public void Update()
@@ -59,14 +54,6 @@ namespace Cardevil.Test
             {
                 playerHealthText.text = $"hp: {args.NewHealth}";
             }
-        }
-
-        private void OnRemainingCardChanged(RemainingCardChangeArgs args)
-        {
-            // 남은 카드 수가 변경됐을 때 디버그 화면에 표시
-            var cardDeckCounter = Get<TextMeshProUGUI>(TextNames.CardDeckCount);
-            if (cardDeckCounter != null)
-                cardDeckCounter.text = args.RemainingCardCount.ToString();
         }
     }
 }
