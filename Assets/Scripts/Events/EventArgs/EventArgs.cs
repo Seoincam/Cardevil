@@ -55,22 +55,4 @@
             ModifiedShield = 0;
         }
     }
-
-    public class RemainingCardChangeArgs : EventArgs<RemainingCardChangeArgs>
-    {
-        /// <summary>
-        /// 새로 카드를 뽑은 뒤 덱에 남은 카드 개수.
-        /// </summary>
-        public int RemainingCardCount { get; private set; }
-
-        public void Init(int remainingCardCount)
-        {
-            RemainingCardCount = remainingCardCount;
-        }
-
-        public override void Clear()
-        {
-            RemainingCardCount = 0;
-        }
-    }
 }
