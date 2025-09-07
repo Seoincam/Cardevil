@@ -4,6 +4,7 @@ using Cardevil.Manager;
 using Cardevil.Pools;
 using Cardevil.Sound;
 using Cardevil.Systems;
+using Database;
 using UnityEngine;
 
 public class Managers : MonoBehaviour
@@ -26,6 +27,7 @@ public class Managers : MonoBehaviour
     TurnManager _turn = new TurnManager();
     CardManager _card = new CardManager();
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
+    [SerializeField] DatabaseManager _database = new DatabaseManager();
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
@@ -40,6 +42,7 @@ public class Managers : MonoBehaviour
     public static TurnManager Turn { get { return Instance._turn; } }
     public static CardManager Card { get { return Instance._card; } }
     public static DungeonManager Dungeon { get { return Instance._dungeon; } }
+    public static DatabaseManager Database { get { return Instance._database; } }
     
     void Start()
     {
@@ -73,6 +76,18 @@ public class Managers : MonoBehaviour
             s_instance._execution.Init();
             s_instance._card.Init();
             s_instance._dungeon.Init();
+
+            if (s_instance._database == null)
+            {
+                s_instance._database = FindAnyObjectByType<DatabaseManager>();
+                if (s_instance._database == null)
+                {
+                    GameObject obj = new GameObject("@DatabaseManager");
+                    s_instance._database = obj.AddComponent<DatabaseManager>();
+                }
+            }
+            
+            s_instance._database.Initialize();
         }
     }
 
