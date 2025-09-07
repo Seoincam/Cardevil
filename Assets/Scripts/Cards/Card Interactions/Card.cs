@@ -230,7 +230,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public int HandIndex
         {
-            get => Cards.Hands.IndexOf(this);
+            get => Cards.Hand.IndexOf(this);
         }
         
         public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);

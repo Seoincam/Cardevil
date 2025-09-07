@@ -16,40 +16,67 @@ namespace Cardevil.Cards
         [SerializeField] NumberData _defaultNumber;
         [SerializeField] MoveData _defaultMove;
 
-        public NumberData DefaultNumber => _defaultNumber;
-        public MoveData DefaultMove => _defaultMove;
-
         [Header("Selections")]
         public SelectType selectType;
         [SerializeField] NumberData _selectedNumber;
         [SerializeField] MoveData _selectedMove;
 
-        /// <summary>기본값 외에 선택 가능한 Number 옵션의 개수</summary>
         [Space, SerializeField] int _numberOptionCount = 0;
-        public int NumberOptionCount => _numberOptionCount;
-
         private HashSet<int> _numberOptions;
-        public HashSet<int> NumberOptions => _numberOptions;
 
         [Header("States")]
         public bool isLocked = false;
 
-        /// <summary>카드의 Number 최종값</summary>
-        public NumberData Number => _selectedNumber.isSet ? _selectedNumber : _defaultNumber;
-        /// <summary>카드의 Move 최종값</summary>
-        public MoveData Move => _selectedMove.isSet ? _selectedMove : _defaultMove;
 
-        /// <summary>사용 가능 여부를 반환</summary>
-        public bool CanUse => IsValueSelected && !isLocked;
 
-        /// <summary>값 선택 가능 여부를 반환</summary>
+        public NumberData DefaultNumber => _defaultNumber;
+
+        public MoveData DefaultMove => _defaultMove;
+
+        /// <summary>
+        /// 카드의 최종 Number 값
+        /// </summary>
+        public NumberData Number
+        {
+            get => _selectedNumber.isSet ? _selectedNumber : _defaultNumber;
+        }
+
+        /// <summary>
+        /// 카드의 최종 Move 값
+        /// </summary>
+        public MoveData Move
+        {
+            get => _selectedMove.isSet ? _selectedMove : _defaultMove;
+        }
+
+        /// <summary>
+        /// 기본값 외에 선택 가능한 Number 옵션의 개수
+        /// </summary>
+        public int NumberOptionCount => _numberOptionCount;
+
+        /// <summary>
+        /// 기본값 외에 선택 가능한 Number 옵션
+        /// </summary>
+        public HashSet<int> NumberOptions => _numberOptions;
+
+        /// <summary>
+        /// 사용 가능 여부를 반환
+        /// </summary>
+        public bool CanUse
+        {
+            get => IsValueSelected && !isLocked;
+        }
+
+        /// <summary>
+        /// 값 선택 가능 여부를 반환
+        /// </summary>
         public bool CanOpenSelection
         {
             get => !isLocked && selectType > 0;
         }
 
         // 값 선택 완료 여부를 반환
-        private bool IsValueSelected
+        public bool IsValueSelected
         {
             get
             {
@@ -60,9 +87,14 @@ namespace Cardevil.Cards
             }
         }
 
-        /// <summary>스테이지에서 카드를 뽑을 때 실행</summary>
+
+
+        /// <summary>
+        /// 스테이지에서 카드를 뽑을 때 실행
+        /// </summary>
         public void OnDraw()
         {
+            // TODO: 카드를 다시 뽑을 때 선택 가능 값도 초기화되나 확인
             if (valueType == ValueType.Number && selectType == SelectType.Multiple)
             {
                 if (_numberOptionCount == 0)
@@ -78,40 +110,30 @@ namespace Cardevil.Cards
             }
         }
 
-        /// <summary>선택된 카드의 값을 할당</summary>
+        /// <summary>
+        /// 선택된 카드의 Number 값을 할당
+        /// </summary>
         public void SelectValue(int selectNumber)
         {
             var number = new NumberData(DefaultNumber.color, selectNumber);
             _selectedNumber = number;
         }
 
-        /// <summary>선택된 카드의 값을 할당</summary>
+        /// <summary>
+        /// 선택된 카드의 Direction 값을 할당
+        /// </summary>
         public void SelectValue(Direction selectDirection)
         {
             var move = new MoveData(selectDirection, 1);
             _selectedMove = move;
         }
 
+        /// <summary>
+        /// 카드를 사용 불가하게 잠금. 뽑기는 가능.
+        /// </summary>
         public void Lock()
         {
             isLocked = true;
-        }
-
-        public CardData Copy()
-        {
-            return new CardData()
-            {
-                id = id,
-                valueType = valueType,
-                selectType = selectType,
-                _defaultNumber = _defaultNumber,
-                _defaultMove = _defaultMove,
-                _selectedNumber = new(),
-                _selectedMove = new(),
-                isLocked = false,
-                _numberOptionCount = _numberOptionCount,
-                reinforceEnabled = reinforceEnabled
-            };
         }
 
         [Header("Reinforce")]
@@ -163,8 +185,9 @@ namespace Cardevil.Cards
             Multiple = 1,
             All = 10
         }
-        
+
         public CardData() {}
+
         public CardData(int id, NumberData defaultNubmer, MoveData defaultMove, ValueType valueType, SelectType selectType = SelectType.None)
         {
             this.id = id;
@@ -174,6 +197,23 @@ namespace Cardevil.Cards
             _selectedMove = new();
             this.valueType = valueType;
             this.selectType = selectType;
+        }
+        
+        public CardData Copy()
+        {
+            return new CardData()
+            {
+                id = id,
+                valueType = valueType,
+                selectType = selectType,
+                _defaultNumber = _defaultNumber,
+                _defaultMove = _defaultMove,
+                _selectedNumber = new(),
+                _selectedMove = new(),
+                isLocked = false,
+                _numberOptionCount = _numberOptionCount,
+                reinforceEnabled = reinforceEnabled
+            };
         }
     }
 

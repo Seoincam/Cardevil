@@ -203,7 +203,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void SetSlots()
         {
-            foreach (var card in StageCardsCtx.Hands)
+            foreach (var card in StageCardsCtx.Hand)
                 card.SetSlot(slots[card.HandIndex], isDragging: card == DraggedCard);
         }
 

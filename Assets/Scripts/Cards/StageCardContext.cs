@@ -4,6 +4,7 @@ using System.Linq;
 using Cardevil.Cards.CardInteractinos;
 using System;
 using Random = UnityEngine.Random;
+using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 
 namespace Cardevil.Cards
 {
@@ -15,7 +16,7 @@ namespace Cardevil.Cards
     {
         public List<CardData> Deck;
         public List<CardData> Discards;
-        public List<Card> Hands;
+        public List<Card> Hand;
         public List<Card> Selects;
 
         [SerializeField] int _discardRemainCount = 3;
@@ -32,13 +33,13 @@ namespace Cardevil.Cards
 
         public int DeckCount => Deck.Count;
 
-        public int HandCount => Hands.Count;
+        public int HandCount => Hand.Count;
 
         public int SelectCount => Selects.Count;
 
         public int DiscardCount => Discards.Count;
 
-        public List<Card> SortedSelect => Selects.OrderBy(c => Hands.IndexOf(c)).ToList();
+        public List<Card> SortedSelect => Selects.OrderBy(c => Hand.IndexOf(c)).ToList();
 
         private bool AllValueSelected => Selects.All(c => c.data.CanUse);
 
@@ -48,13 +49,13 @@ namespace Cardevil.Cards
         {
             Deck = deck;
             Discards = new();
-            Hands = new();
+            Hand = new();
             Selects = new();
         }
 
 
 
-        public Card GetHandCard(int index) => Hands[index];
+        public Card GetHandCard(int index) => Hand[index];
 
         public void Select(Card card)
         {
@@ -68,17 +69,17 @@ namespace Cardevil.Cards
 
         public void Swap(int indexA, int indexB)
         {
-            (Hands[indexA], Hands[indexB]) = (Hands[indexB], Hands[indexA]);
+            (Hand[indexA], Hand[indexB]) = (Hand[indexB], Hand[indexA]);
         }
 
         public void Draw(Card card)
         {
-            Hands.Add(card);
+            Hand.Add(card);
         }
 
         public void Discard(Card card, float interval)
         {
-            Hands.Remove(card);
+            Hand.Remove(card);
             Selects.Remove(card);
             Discards.Add(card.data);
             card.Discard(interval);
@@ -97,12 +98,37 @@ namespace Cardevil.Cards
 
         public void SortByNumber()
         {
-            Hands.Sort(NumberComparer);
+            Hand = Hand
+                .OrderBy(c => ValueTypeRank(c))
+
+                // 이동카드 정렬
+                .ThenBy(c => MoveSelectTypeRank(c))
+                .ThenBy(c => DirectionRank(c))
+
+                // 숫자카드 정렬
+                .ThenBy(c => NumberSelectTypeRank(c))
+                .ThenBy(c => c.data.Number.number)
+                .ThenBy(c => c.data.Number.color)
+
+                .ToList();
         }
 
         public void SortByIcon()
         {
-            Hands.Sort(IconComparer);
+            // Hand.Sort(IconComparer);
+            Hand = Hand
+                .OrderBy(c => ValueTypeRank(c))
+
+                // 이동카드 정렬
+                .ThenBy(c => MoveSelectTypeRank(c))
+                .ThenBy(c => DirectionRank(c))
+
+                // 숫자카드 정렬
+                .ThenBy(c => c.data.Number.color)
+                .ThenBy(c => NumberSelectTypeRank(c))
+                .ThenBy(c => c.data.Number.number)
+                
+                .ToList();
         }
 
         /// <summary>
@@ -148,20 +174,51 @@ namespace Cardevil.Cards
 
         public void UpdateVisualIndex()
         {
-            foreach (var card in Hands)
+            foreach (var card in Hand)
                 card.cardVisual.UpdateIndex();
         }
 
+        #region Sorting Helper
 
-
-        private static readonly IComparer<Card> NumberComparer = Comparer<Card>.Create((a, b) =>
+        private static int ValueTypeRank(Card c)
         {
-            return a.data.Number.number.CompareTo(b.data.Number.number);
-        });
+            return c.data.valueType == CardData.ValueType.Move ? 0 : 1;
+        }
 
-        private static readonly IComparer<Card> IconComparer = Comparer<Card>.Create((a, b) =>
+        private static int MoveSelectTypeRank(Card c)
         {
-            return a.data.id.CompareTo(b.data.id);
-        });
+            if (c.data.selectType == CardData.SelectType.None || c.data.IsValueSelected)
+                return 0;
+            else
+                return (int)c.data.selectType;
+        }
+
+        private static int NumberSelectTypeRank(Card c)
+        {
+            if (c.data.selectType == CardData.SelectType.None
+                || (c.data.IsValueSelected && c.data.selectType == CardData.SelectType.Multiple))
+                return -1;
+            else if (c.data.selectType == CardData.SelectType.All && c.data.IsValueSelected)
+                return 0;
+            else if (c.data.selectType == CardData.SelectType.Multiple)
+                return c.data.NumberOptionCount;
+            else if (c.data.selectType == CardData.SelectType.All)
+                return (int)CardData.SelectType.All;
+            return 100;
+        }
+
+        private static int DirectionRank(Card c)
+        {
+            return c.data.Move.direction switch
+            {
+                Utils.Directions.Direction.Up => 0,
+                Utils.Directions.Direction.Down => 1,
+                Utils.Directions.Direction.Left => 2,
+                Utils.Directions.Direction.Right => 3,
+                _ => 4,
+            };
+        }
+        
+        #endregion
     }
 }
