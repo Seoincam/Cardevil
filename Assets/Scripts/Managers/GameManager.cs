@@ -7,6 +7,7 @@ using Cardevil.Ingame.Entities;
 using Cardevil.InGame.Enemy;
 using UnityEngine.Serialization;
 using Cardevil.Systems;
+using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 
 [Serializable]
@@ -105,11 +106,24 @@ public class GameManager
     {
 
     }
-    //인게임 데이터 초기화 
+    
     public void GameStart()
     {
+        if (Managers.Database.IsInitialized == false)
+        {
+            Debug.LogWarning("[GameManager] Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
+            Debug.LogWarning("[GameManager] Database 초기화를 기다립니다...");
+            LoadPlayerData().Forget();
+            return;
+        }
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
+    }
+    
+    private async UniTask LoadPlayerData()
+    {
+        await UniTask.WaitUntil(() => Managers.Database.IsInitialized);
+        GameStart();
     }
 
     public void StageStart()
