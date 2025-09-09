@@ -234,10 +234,10 @@ namespace Cardevil.Cards
     [Serializable]
     public class NumberData : ICopyable<NumberData>
     {
-        private bool _isSet;
-        private CardColor _color;
-        private int _number;
-        private int _damageReinforceLevel;
+        [SerializeField] bool _isSet;
+        [SerializeField] CardColor _color;
+        [SerializeField] int _number;
+        [SerializeField] int _damageReinforceLevel;
 
 
         public bool IsSet => _isSet;
@@ -289,9 +289,9 @@ namespace Cardevil.Cards
     [Serializable]
     public class MoveData : ICopyable<MoveData>
     {
-        private bool _isSet;
-        private Direction _direction;
-        private int _length;
+        [SerializeField] bool _isSet;
+        [SerializeField] Direction _direction;
+        [SerializeField] int _length;
 
 
         public bool IsSet => _isSet;
