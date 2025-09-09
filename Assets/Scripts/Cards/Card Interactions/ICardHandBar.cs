@@ -3,7 +3,7 @@ namespace Cardevil.Cards
     public interface ICardHandBar
     {
         void Init();
-        CardContext Context { get; }
+        CardResultContext Context { get; }
         StageCardsContext StageCardsCtx { get; }
     }
 }

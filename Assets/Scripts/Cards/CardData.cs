@@ -9,6 +9,9 @@ namespace Cardevil.Cards
     [Serializable]
     public sealed class CardData : ICopyable<CardData>, ILockable
     {
+        // TODO: 수치 SO 등으로 분리
+        private int maxNumberOptionCount = 2;
+
         [HideInInspector] public int id;
 
         [Header("Values")]
@@ -24,6 +27,9 @@ namespace Cardevil.Cards
         [Space, SerializeField] int _numberOptionCount = 0;
         private HashSet<int> _numberOptions;
 
+        [Header("Reinforcement")]
+        public bool reinforceEnabled = false;
+
         [Header("States")]
         public bool isLocked = false;
 
@@ -38,7 +44,7 @@ namespace Cardevil.Cards
         /// </summary>
         public NumberData Number
         {
-            get => _selectedNumber.isSet ? _selectedNumber : _defaultNumber;
+            get => _selectedNumber.IsSet ? _selectedNumber : _defaultNumber;
         }
 
         /// <summary>
@@ -46,7 +52,7 @@ namespace Cardevil.Cards
         /// </summary>
         public MoveData Move
         {
-            get => _selectedMove.isSet ? _selectedMove : _defaultMove;
+            get => _selectedMove.IsSet ? _selectedMove : _defaultMove;
         }
 
         /// <summary>
@@ -82,8 +88,8 @@ namespace Cardevil.Cards
             {
                 if (selectType == SelectType.None)
                     return true;
-                return (valueType == ValueType.Number && _selectedNumber.isSet) ||
-                    (valueType == ValueType.Move && _selectedMove.isSet);
+                return (valueType == ValueType.Number && _selectedNumber.IsSet) ||
+                    (valueType == ValueType.Move && _selectedMove.IsSet);
             }
         }
 
@@ -104,7 +110,7 @@ namespace Cardevil.Cards
                 while (_numberOptions.Count < _numberOptionCount)
                 {
                     int random = Random.Range(2, 11);
-                    if (random != _defaultNumber.number)
+                    if (random != _defaultNumber.Number)
                         _numberOptions.Add(random);
                 }
             }
@@ -115,7 +121,7 @@ namespace Cardevil.Cards
         /// </summary>
         public void SelectValue(int selectNumber)
         {
-            var number = new NumberData(DefaultNumber.color, selectNumber);
+            var number = new NumberData(DefaultNumber.Color, selectNumber);
             _selectedNumber = number;
         }
 
@@ -136,33 +142,40 @@ namespace Cardevil.Cards
             isLocked = true;
         }
 
-        [Header("Reinforce")]
-        [Tooltip("카드가 강화 가능한가?")]
-        public bool reinforceEnabled = false;
-
-
-        // 강화
-        // TODO: 강화 로직 구현하기
-        /*
-        public enum NumberReinforceMode { None, Damage, SelectCount }
-        public NumberReinforceState NumberState = new() { Mode = NumberReinforceMode.None, level = 0 };
-        public MoveReinforceState DirectionState = new() { level = 0 };
-
-        [Serializable]
-        public struct NumberReinforceState
+        /// <summary>
+        /// 숫자 카드의 데미지를 강화.
+        /// </summary>
+        public void ReinforceNumberDamage()
         {
-            public NumberReinforceMode Mode;
-            [Min(0), Tooltip("강화 단계 (기본 0)")]
-            public int level;
+            DefaultNumber.ReinforceDamage();
         }
 
-        [Serializable]
-        public struct MoveReinforceState
+        /// <summary>
+        /// 숫자 카드의 선택 옵션을 강화.
+        /// </summary>
+        public void ReinforceNumberSelect()
         {
-            [Min(0), Tooltip("강화 단계 (기본 0)")]
-            public int level;
+            _numberOptionCount++;
+
+            if (_numberOptionCount > maxNumberOptionCount)
+            {
+                _numberOptionCount = 0;
+                selectType = SelectType.All;
+            }
         }
-        */
+        
+        /// <summary>
+        /// 이동 카드의 선택 옵션을 강화.
+        /// </summary>
+        public void ReinforceDirectionSelect()
+        {
+            selectType = selectType switch
+            {
+                SelectType.None => SelectType.Multiple,
+                SelectType.Multiple => SelectType.All,
+                _ => SelectType.All
+            };
+        }
 
 
 
@@ -221,58 +234,91 @@ namespace Cardevil.Cards
     [Serializable]
     public class NumberData : ICopyable<NumberData>
     {
-        public bool isSet;
-        public enum CardColor { None = -1, Red = 0 , Green = 1, Blue = 2, Black = 3 }
-        public CardColor color;
-        public int number;
+        private bool _isSet;
+        private CardColor _color;
+        private int _number;
+        private int _damageReinforceLevel;
+
+
+        public bool IsSet => _isSet;
+
+        public CardColor Color => _color;
+
+        public int Number => _number;
+
+        public int DamageReinforceLevel => _damageReinforceLevel;
+
+
+        public void ReinforceDamage()
+        {
+            _damageReinforceLevel++;
+        }
+
 
         public NumberData()
         {
-            isSet = false;
-            color = CardColor.None;
-            number = 0;
+            _isSet = false;
+            _color = CardColor.None;
+            _number = 0;
         }
 
         public NumberData(CardColor color, int number)
         {
-            isSet = true;
-            this.color = color;
-            this.number = number;
+            _isSet = true;
+            _color = color;
+            _number = number;
         }
+
 
         public NumberData Copy()
         {
-            return new NumberData(color, number);
+            return new NumberData(_color, _number);
         }
 
+
+        public enum CardColor
+        {
+            None = -1,
+            Red = 0,
+            Green = 1,
+            Blue = 2,
+            Black = 3
+        }
     }
 
     [Serializable]
     public class MoveData : ICopyable<MoveData>
     {
-        public bool isSet;
-        public Direction direction;
-        public int length;
+        private bool _isSet;
+        private Direction _direction;
+        private int _length;
+
+
+        public bool IsSet => _isSet;
+
+        public Direction Direction => _direction;
+
+        public int Length => _length;
+
 
         public MoveData()
         {
-            isSet = false;
-            direction = Direction.None;
-            length = 0;
+            _isSet = false;
+            _direction = Direction.None;
+            _length = 0;
         }
 
         public MoveData(Direction direction, int length)
         {
-            isSet = true;
-            this.direction = direction;
-            this.length = length;
+            _isSet = true;
+            _direction = direction;
+            _length = length;
         }
 
         public MoveData Copy()
         {
-            return new MoveData(direction, length);
+            return new MoveData(_direction, _length);
         }
-
     }
 
     public interface ILockable

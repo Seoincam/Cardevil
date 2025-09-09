@@ -12,7 +12,7 @@ namespace Cardevil.Cards.CardInteractinos
     {
         [Header("InStage Data")]
         [SerializeField] StageCardsContext stageCardsCtx;
-        [SerializeField] CardContext _context;
+        [SerializeField] CardResultContext resultCtx;
         [SerializeField] int _maxCardCount = 6;
 
         [Header("SO")]
@@ -54,7 +54,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         public StageCardsContext StageCardsCtx => stageCardsCtx;
 
-        public CardContext Context => _context;
+        public CardResultContext Context => resultCtx;
         
         public int MaxCardCount => _maxCardCount;
 
@@ -97,7 +97,7 @@ namespace Cardevil.Cards.CardInteractinos
 
             // TODO: CardManager에서 처리하게 하는게 더 옳을 듯
             stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
-            _context = new(multiplyValues);
+            resultCtx = new(multiplyValues);
 
             for (int i = 0; i < initialCardCount; i++)
                 slots[i] = Instantiate(original: cardSlotPrefab, parent: transform).transform;
@@ -168,6 +168,22 @@ namespace Cardevil.Cards.CardInteractinos
             DraggedCard = null;
         }
         #endregion
+
+        private void Reroll()
+        {
+            _ = RerollAsync();
+        }
+
+        private async UniTask RerollAsync()
+        {
+            foreach (var card in StageCardsCtx.Hand)
+            {
+                StageCardsCtx.Discard(card, discardInterval);
+                await UniTask.Delay(TimeSpan.FromSeconds(discardInterval));
+                card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
+                SetSlots();
+            }
+        }
 
 
         #region Swap

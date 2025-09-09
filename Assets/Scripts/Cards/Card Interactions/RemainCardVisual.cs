@@ -32,19 +32,19 @@ public class RemainCardVisual : MonoBehaviour
         if (data.valueType == CardData.ValueType.Move)
         {
             var move = data.Move;
-            transform.name = move.direction.ToString();
+            transform.name = move.Direction.ToString();
 
             string textString;
             if (data.selectType == CardData.SelectType.All)
             {
-                if (!move.isSet)
+                if (!move.IsSet)
                     textString = "All";
                 else
-                    textString = move.direction.ToString() + "*";
+                    textString = move.Direction.ToString() + "*";
             }
             else
             {
-                textString = move.direction.ToString();
+                textString = move.Direction.ToString();
             }
             text.text = textString;
             text.fontSize = 25;
@@ -53,12 +53,12 @@ public class RemainCardVisual : MonoBehaviour
         else if (data.valueType == CardData.ValueType.Number)
         {
             var number = data.Number;
-            transform.name = $"{number.color} {number.number}";
-            var textString = number.number == 0 ? "*" : number.number.ToString();
-            if (number.number != 0 && data.CanOpenSelection)
+            transform.name = $"{number.Color} {number.Number}";
+            var textString = number.Number == 0 ? "*" : number.Number.ToString();
+            if (number.Number != 0 && data.CanOpenSelection)
                 textString += "*";
             text.text = textString;
-            switch (number.color)
+            switch (number.Color)
             {
                 case NumberData.CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
                 case NumberData.CardColor.Blue: text.color = Color.blue; break;

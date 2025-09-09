@@ -4,7 +4,6 @@ using System.Linq;
 using Cardevil.Cards.CardInteractinos;
 using System;
 using Random = UnityEngine.Random;
-using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 
 namespace Cardevil.Cards
 {
@@ -107,8 +106,8 @@ namespace Cardevil.Cards
 
                 // 숫자카드 정렬
                 .ThenBy(c => NumberSelectTypeRank(c))
-                .ThenBy(c => c.data.Number.number)
-                .ThenBy(c => c.data.Number.color)
+                .ThenBy(c => c.data.Number.Number)
+                .ThenBy(c => c.data.Number.Color)
 
                 .ToList();
         }
@@ -124,9 +123,9 @@ namespace Cardevil.Cards
                 .ThenBy(c => DirectionRank(c))
 
                 // 숫자카드 정렬
-                .ThenBy(c => c.data.Number.color)
+                .ThenBy(c => c.data.Number.Color)
                 .ThenBy(c => NumberSelectTypeRank(c))
-                .ThenBy(c => c.data.Number.number)
+                .ThenBy(c => c.data.Number.Number)
                 
                 .ToList();
         }
@@ -209,7 +208,7 @@ namespace Cardevil.Cards
 
         private static int DirectionRank(Card c)
         {
-            return c.data.Move.direction switch
+            return c.data.Move.Direction switch
             {
                 Utils.Directions.Direction.Up => 0,
                 Utils.Directions.Direction.Down => 1,

@@ -19,7 +19,7 @@ namespace Cardevil.Cards
 
 
     [Serializable]
-    public class CardContext
+    public class CardResultContext
     {
         public readonly MultiplyValues Multiply;
 
@@ -28,7 +28,7 @@ namespace Cardevil.Cards
 
         public bool IsBlackFlushUsed { get; private set; }
 
-        public CardContext(MultiplyValues multiplyValues)
+        public CardResultContext(MultiplyValues multiplyValues)
         {
             Multiply = multiplyValues;
         }
@@ -64,7 +64,7 @@ namespace Cardevil.Cards
         public readonly bool IsGreenFlush;
         public readonly bool IsBlackFlush;
 
-        private readonly CardContext ctx;
+        private readonly CardResultContext ctx;
         private readonly List<HandRanking> Rankings;
 
         public readonly HandRanking Rangking => Rankings[0];        
@@ -92,7 +92,7 @@ namespace Cardevil.Cards
 
 
 
-        public CardResult(CardContext ctx, float damage, List<MoveData> moves, List<HandRanking> rankings, List<NumberData> numbers)
+        public CardResult(CardResultContext ctx, float damage, List<MoveData> moves, List<HandRanking> rankings, List<NumberData> numbers)
         {
             this.ctx = ctx;
 
@@ -103,7 +103,7 @@ namespace Cardevil.Cards
             IsRedFlush = IsBlueFlush = IsGreenFlush = IsBlackFlush = false;
 
             if (rankings.Contains(HandRanking.Flush))
-                switch (numbers[0].color)
+                switch (numbers[0].Color)
                 {
                     case NumberData.CardColor.Red: IsRedFlush = true; break;
                     case NumberData.CardColor.Blue: IsBlueFlush = true; break;

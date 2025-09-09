@@ -9,7 +9,7 @@ namespace Cardevil.Cards
         /// <summary>
         /// 카드를 사용했을 때, 계산 후 context에 저장
         /// </summary>
-        public static void SetResult(CardContext context, IEnumerable<Card> cards)
+        public static void SetResult(CardResultContext context, IEnumerable<Card> cards)
         {
             var result = Evaluate(context, cards);
             context.SetResult(result);
@@ -18,7 +18,7 @@ namespace Cardevil.Cards
         /// <summary>
         /// 선택된 카드를 바탕으로 계산 후 반환
         /// </summary>
-        public static CardResult Evaluate(CardContext ctx, IEnumerable<Card> cards)
+        public static CardResult Evaluate(CardResultContext ctx, IEnumerable<Card> cards)
         {
             var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move)
                         .Select(m => m.data.Move)
@@ -52,19 +52,19 @@ namespace Cardevil.Cards
             float damage = 0;
 
             if (rankings[0] == HandRanking.High)
-                damage = numbers.OrderBy(n => n.number).Last().number;
+                damage = numbers.OrderBy(n => n.Number).Last().Number;
 
             else if (rankings[0] == HandRanking.OnePair)
-                damage = numbers.GroupBy(n => n.number)
+                damage = numbers.GroupBy(n => n.Number)
                             .Where(g => g.Count() == 2)
                             .Sum(g => g.Key * 2);
 
             else if (rankings[0] == HandRanking.Triple)
-                damage = numbers.GroupBy(n => n.number)
+                damage = numbers.GroupBy(n => n.Number)
                             .Where(g => g.Count() == 3)
                             .Sum(g => g.Key * 3);
 
-            else damage = numbers.Sum(n => n.number);
+            else damage = numbers.Sum(n => n.Number);
 
             damage += (int)rankings[0];
 
@@ -118,7 +118,7 @@ namespace Cardevil.Cards
             if (cards.Count != 4)
                 return false;
 
-            var values = cards.Select(c => c.number)
+            var values = cards.Select(c => c.Number)
                     .OrderBy(v => v)
                     .ToList();
 
@@ -134,7 +134,7 @@ namespace Cardevil.Cards
             if (cards.Count != 4)
                 return false;
 
-            return cards.Select(c => c.color)
+            return cards.Select(c => c.Color)
                     .Distinct()
                     .Count() == 1;
         }
@@ -149,13 +149,13 @@ namespace Cardevil.Cards
 
         static bool IsFourCard(List<NumberData> cards)
         {
-            return cards.GroupBy(c => c.number)
+            return cards.GroupBy(c => c.Number)
                         .Any(g => g.Count() == 4);
         }
 
         static bool IsTriple(List<NumberData> cards)
         {
-            return cards.GroupBy(c => c.number)
+            return cards.GroupBy(c => c.Number)
                         .Any(g => g.Count() == 3);
         }
 
@@ -164,14 +164,14 @@ namespace Cardevil.Cards
             if (cards.Count != 4)
                 return false;
 
-            return cards.GroupBy(c => c.number)
+            return cards.GroupBy(c => c.Number)
                     .Where(g => g.Count() == 2)
                     .Count() == 2;
         }
 
         static bool IsOnePair(List<NumberData> cards)
         {
-            return cards.GroupBy(c => c.number)
+            return cards.GroupBy(c => c.Number)
                         .Any(g => g.Count() == 2);
         }
 

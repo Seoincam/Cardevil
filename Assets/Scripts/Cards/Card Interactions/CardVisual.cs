@@ -12,9 +12,12 @@ namespace Cardevil.Cards.CardInteractinos
         private bool isDiscarded = false;
 
         [Header("Visual")]
-        [SerializeField] Image cardImage;
-        [SerializeField] TextMeshProUGUI text;
-        [SerializeField] Transform shakeObject;
+        [SerializeField] CardSpriteManager spriteManger;
+
+        [Space, SerializeField] Transform shakeObject;
+        [SerializeField] Image backgroundImage;
+        [SerializeField] Image[] numberImages;
+        
         private Canvas canvas;
         private bool isInitalized = false;
 
@@ -136,7 +139,7 @@ namespace Cardevil.Cards.CardInteractinos
             isDiscarded = true;
             canvas.overrideSorting = true;
 
-            cardImage.transform.DORotate(endValue: new Vector3(0, 60, 0), discardDuration)
+            backgroundImage.transform.DORotate(endValue: new Vector3(0, 60, 0), discardDuration)
                 .SetEase(Ease.OutBack);
             transform.DOLocalJump(endValue: new Vector3(1050, -30, 0), jumpPower: 15f, numJumps: 1, discardDuration);
         }
@@ -164,39 +167,52 @@ namespace Cardevil.Cards.CardInteractinos
             if (parentCard.data.valueType == CardData.ValueType.Move)
             {
                 var move = parentCard.data.Move;
-                transform.name = move.direction.ToString();
+                transform.name = move.Direction.ToString();
 
+                backgroundImage.sprite = spriteManger.GetMoveBackground(move.Direction, parentCard.data.selectType);
+                /*
                 string textString;
                 if (parentCard.data.selectType == CardData.SelectType.All)
                 {
-                    if (!move.isSet)
+                    if (!move.IsSet)
                         textString = "All";
                     else
-                        textString = move.direction.ToString() + "*";
+                        textString = move.Direction.ToString() + "*";
                 }
                 else
                 {
-                    textString = move.direction.ToString();
+                    textString = move.Direction.ToString();
                 }
                 text.text = textString;
                 text.fontSize = 35;
+                */
             }
 
             else if (parentCard.data.valueType == CardData.ValueType.Number)
             {
                 var number = parentCard.data.Number;
-                transform.name = $"{number.color} {number.number}";
-                var textString = number.number == 0 ? "*" : number.number.ToString();
-                if (number.number != 0 && parentCard.data.CanOpenSelection)
+                transform.name = $"{number.Color} {number.Number}";
+
+                backgroundImage.sprite = spriteManger.GetNumberBackground(number.Color);
+
+                // 일단 숫자 하나만 처리
+                numberImages[0].sprite = spriteManger.GetNumber(number.Color, number.Number, parentCard.data.selectType);
+                numberImages[0].gameObject.SetActive(true);
+                numberImages[1].gameObject.SetActive(false);
+                numberImages[2].gameObject.SetActive(false);
+
+                /*
+                var textString = number.Number == 0 ? "*" : number.Number.ToString();
+                if (number.Number != 0 && parentCard.data.CanOpenSelection)
                     textString += "*";
-                text.text = textString;
-                switch (number.color)
+                switch (number.Color)
                 {
                     case NumberData.CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
                     case NumberData.CardColor.Blue: text.color = Color.blue; break;
                     case NumberData.CardColor.Red: text.color = Color.red; break;
                     default: break;
                 }
+                */
             }
 
             else

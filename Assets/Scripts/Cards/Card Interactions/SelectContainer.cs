@@ -63,7 +63,7 @@ namespace Cardevil.Cards.CardInteractinos
                 switch (card.data.selectType)
                 {
                     case CardData.SelectType.Multiple:
-                        AddOption(card.data.DefaultNumber.number);
+                        AddOption(card.data.DefaultNumber.Number);
                         foreach (var number in card.data.NumberOptions)
                             AddOption(number);
                         break;
@@ -79,8 +79,8 @@ namespace Cardevil.Cards.CardInteractinos
                 switch (card.data.selectType)
                 {
                     case CardData.SelectType.Multiple:
-                        AddOption(card.data.DefaultMove.direction);
-                        AddOption(card.data.DefaultMove.direction.Opposite());
+                        AddOption(card.data.DefaultMove.Direction);
+                        AddOption(card.data.DefaultMove.Direction.Opposite());
                         break;
 
                     case CardData.SelectType.All:

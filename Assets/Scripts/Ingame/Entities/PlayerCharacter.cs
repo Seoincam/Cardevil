@@ -127,7 +127,7 @@ namespace Cardevil.Ingame.Entities
         public async UniTask TurnAttack()
         {
             Debug.Log("Player Attacks!");
-            CardContext ctx = Managers.Card.handBar.Context;
+            CardResultContext ctx = Managers.Card.handBar.Context;
             CardResult result = ctx.CurrentResult;
             await UniTask.Delay(100);
             // TODO : 적에 대한 공격 구현
@@ -145,12 +145,12 @@ namespace Cardevil.Ingame.Entities
         public async UniTask TurnMove()
         {
             Debug.Log("Player Moves!");
-            CardContext ctx = Managers.Card.handBar.Context;
+            CardResultContext ctx = Managers.Card.handBar.Context;
             CardResult result = ctx.CurrentResult;
             //TODO 이동 로직 구현
             foreach (var move in result.Moves)
             {
-                Move(move.direction, move.length);
+                Move(move.Direction, move.Length);
                 await UniTask.Delay(100);
             }
             Debug.Log("Player Move Completed!");
