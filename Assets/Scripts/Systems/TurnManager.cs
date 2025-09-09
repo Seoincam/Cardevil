@@ -62,6 +62,8 @@ namespace Cardevil.Systems
 
         private async UniTask GameLoopAsync(CancellationToken cts)
         {
+            await playerInput.RerollCard();
+            
             // TODO: 적에 대한 설명
             await playerInput.DrawCard();
             await enemy.TurnAttack();
