@@ -1,5 +1,4 @@
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +11,7 @@ namespace Cardevil.Cards.CardInteractinos
         private bool isDiscarded = false;
 
         [Header("Visual")]
+        [SerializeField] CardVisualSetting visualSetting;
         [SerializeField] CardSpriteManager spriteManger;
 
         [Space, SerializeField] Transform shakeObject;
@@ -24,15 +24,6 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Shadow Visual")]
         [SerializeField] Transform shadowTransform;
         private Vector2 shadowOriginPosition;
-        private float shadowOffset = 20;
-
-        [Header("Follow Setting")]
-        [SerializeField] private float followSpeed = 10;
-
-        [Header("Scale Settings")]
-        [SerializeField] private float selectScale = 1.25f;
-        [SerializeField] private float scaleTransition = .15f;
-        [SerializeField] private Ease scaleEase = Ease.OutBack;
 
         [Header("Curve")]
         [SerializeField] private CurveParameters curve;
@@ -81,7 +72,7 @@ namespace Cardevil.Cards.CardInteractinos
         private void FollowWithLerp()
         {
             var verticalOffset = Vector3.up * (parentCard.isDragging ? 0 : curveYOffset);
-            transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: followSpeed * Time.deltaTime);
+            transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: visualSetting.FollowSpeed * Time.deltaTime);
         }
 
         private void CurvePosition()
@@ -107,16 +98,16 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void PointerDown(Card _)
         {
-            transform.DOScale(endValue: selectScale, duration: scaleTransition)
-                .SetEase(scaleEase);
+            transform.DOScale(endValue: visualSetting.SelectScale, duration: visualSetting.SelectScaleTweenDuration)
+                .SetEase(visualSetting.SelectScaleEase);
 
-            shadowTransform.localPosition += -Vector3.up * shadowOffset;
+            shadowTransform.localPosition += -Vector3.up * visualSetting.ShadowOffset;
         }
 
         private void OnPointerUp(Card _)
         {
-            transform.DOScale(endValue: 1f, duration: scaleTransition)
-                .SetEase(scaleEase);
+            transform.DOScale(endValue: 1f, duration: visualSetting.SelectScaleTweenDuration)
+                .SetEase(visualSetting.SelectScaleEase);
 
             shadowTransform.localPosition = shadowOriginPosition;
         }
@@ -166,7 +157,6 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void UpdateVisual()
         {
-            // 이름 설정 (임시)
             if (parentCard.data.valueType == CardData.ValueType.Move)
             {
                 var move = parentCard.data.Move;

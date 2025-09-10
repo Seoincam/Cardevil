@@ -13,13 +13,13 @@ namespace Cardevil.Cards.CardInteractinos
 
         [Header("Visual")]
         [SerializeField] private GameObject cardVisualPrefab;
+        [SerializeField] private CardVisualSetting visualSetting;
         public CardVisual cardVisual;
         private bool _isReroll;
 
         private Vector3 pointerOffset;
         private float pointerDownTime;
         private float pointerUpTime;
-        private float moveSpeedLimit = 4000;
 
         [Header("Reference")]
         public CardHandBar BarGroup { get; private set; }
@@ -92,7 +92,7 @@ namespace Cardevil.Cards.CardInteractinos
                 var direction = (targetPosition - transform.position).normalized;
 
                 var neededVelocity = Vector2.Distance(transform.position, targetPosition) / Time.deltaTime;
-                var velocity = direction * Mathf.Min(moveSpeedLimit, neededVelocity);
+                var velocity = direction * Mathf.Min(visualSetting.MoveSpeedLimit, neededVelocity);
 
                 transform.Translate(velocity * Time.deltaTime);
             }
@@ -184,7 +184,7 @@ namespace Cardevil.Cards.CardInteractinos
 
                 OnPointerUpEvent?.Invoke(this);
                 pointerUpTime = Time.time;
-                if (pointerUpTime - pointerDownTime > 0.2f)
+                if (pointerUpTime - pointerDownTime > visualSetting.ClickDetectThreshold)
                     return;
 
                 isSelected = BarGroup.StageCardsCtx.SelectCount >= 4
@@ -193,7 +193,7 @@ namespace Cardevil.Cards.CardInteractinos
 
                 if (isSelected)
                 {
-                    transform.localPosition = new Vector3(0, 50, transform.localPosition.z);
+                    transform.localPosition = new Vector3(0, visualSetting.SelectOffset, transform.localPosition.z);
                     BarGroup.Select(this);
                 }
                 else
@@ -211,14 +211,11 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void SetSlot(Transform slot, bool isDragging)
         {
-            // TODO: 하드코딩 제거
-            var selectOffset = 35f;
-
             transform.SetParent(slot);
 
             if (!isDragging)
                 transform.localPosition = isSelected
-                    ? new Vector3(0, selectOffset, 0)
+                    ? new Vector3(0, visualSetting.SelectOffset, 0)
                     : Vector3.zero;
 
             cardVisual.UpdateIndex();

@@ -16,7 +16,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         [Header("SO")]
         [SerializeField] MultiplyValues multiplyValues;
-        [SerializeField] HandBarVisualSetting visualSetting;
+        [SerializeField] CardVisualSetting visualSetting;
 
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
@@ -162,7 +162,7 @@ namespace Cardevil.Cards.CardInteractinos
             for (int i = 0; i < Managers.Card.MaxCardCount; i++)
             {
                 Spawn(isReroll: true);
-                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.drawInterval));
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DrawInterval));
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
@@ -252,10 +252,9 @@ namespace Cardevil.Cards.CardInteractinos
 
             DraggedCard.transform.DOLocalMove(
                 endValue: DraggedCard.isSelected
-                    ? new Vector3(0, visualSetting.selectOffset, 0)
+                    ? new Vector3(0, visualSetting.SelectOffset, 0)
                     : Vector3.zero,
-                duration: .2f
-            )
+                duration: visualSetting.EndDragTweenDuration)
             .SetEase(Ease.OutBack);
 
             DraggedCard = null;
@@ -355,8 +354,8 @@ namespace Cardevil.Cards.CardInteractinos
         {
             foreach (var card in StageCardsCtx.SortedSelect)
             {
-                StageCardsCtx.Discard(card, visualSetting.discardInterval);
-                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.discardInterval));
+                StageCardsCtx.Discard(card, visualSetting.DiscardInterval);
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DiscardInterval));
                 card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
                 UpdateSlot();
             }
@@ -371,7 +370,7 @@ namespace Cardevil.Cards.CardInteractinos
             for (int i = 0; i < count; i++)
             {
                 Spawn();
-                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.drawInterval));
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DrawInterval));
             }
 
             IsSwapping = false;
@@ -457,7 +456,7 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 var dummyCard = Instantiate(dummyCardVisual, parent: deckRect.transform);
                 dummyCard.transform.SetSiblingIndex(1);
-                var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.reviveInterval)
+                var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
                                             .SetEase(Ease.OutCubic);
                 await tween.AsyncWaitForCompletion();
                 Destroy(dummyCard);
