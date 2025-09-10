@@ -1,13 +1,11 @@
 using UnityEngine;
 using Cysharp.Threading.Tasks;
-using Cardevil.Test;
 using System.Threading;
 
 namespace Cardevil.Systems
 {
     public class TurnManager
     {   
-        private DebugScreen debug;
         private CancellationTokenSource cts;
 
         [Header("Interfaces")]
@@ -50,10 +48,6 @@ namespace Cardevil.Systems
 
         private void Init()
         {
-            debug = GameObject.Find("DebugCanvas").GetComponent<DebugScreen>();
-            if (debug == null)
-                Debug.LogError("DebugScreen을 찾지 못했습니다.");
-
             // 시작
             cts = new();
             GameLoopAsync(cts.Token).Forget();
@@ -62,11 +56,11 @@ namespace Cardevil.Systems
 
         private async UniTask GameLoopAsync(CancellationToken cts)
         {
+            await enemy.TurnAttack();
             await playerInput.RerollCard();
             
             // TODO: 적에 대한 설명
             await playerInput.DrawCard();
-            await enemy.TurnAttack();
 
             while (!cts.IsCancellationRequested)
             {

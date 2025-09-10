@@ -13,10 +13,10 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("InStage Data")]
         [SerializeField] StageCardsContext stageCardsCtx;
         [SerializeField] CardResultContext resultCtx;
-        [SerializeField] int _maxCardCount = 6;
 
         [Header("SO")]
         [SerializeField] MultiplyValues multiplyValues;
+        [SerializeField] HandBarVisualSetting visualSetting;
 
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
@@ -27,11 +27,14 @@ namespace Cardevil.Cards.CardInteractinos
         private Transform[] slots;
 
         [Header("Reroll")]
-        [SerializeField] GameObject rerollPanel;
+        [SerializeField] Image rerollPanel;
         [SerializeField] Transform rerollBar;
         [SerializeField] Button rerollSelectButton;
         [SerializeField] Button rerollButton;
+        [SerializeField] Button toggleInGamePreviewButton;
+        [SerializeField] GameObject cardVisualHandler;
         private Transform[] rerollSlots;
+        private bool isPreviewInGame;
 
         [Header("UI")]
         public SelectContainer selectContainer;
@@ -45,13 +48,7 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] RectTransform deckRect;
 
         [Space, SerializeField] BlueFlushChoice blueFlushChoice;
-
-        [Header("Setting")]
-        [SerializeField] int initialCardCount = 6;
-        [SerializeField] float selectOffset = 35f;
-        [SerializeField] float drawInterval = .2f;
-        [SerializeField] float discardInterval = .3f;
-        [SerializeField] float reviveInterval = .4f;
+        
 
         // 카드 관련 상호작용 가능한가?
         private bool _canInteraction = false;
@@ -63,9 +60,12 @@ namespace Cardevil.Cards.CardInteractinos
 
         public CardResultContext Context => resultCtx;
 
-        public int MaxCardCount => _maxCardCount;
+        
 
-        public bool CanInput => CanInteraction && !IsSwapping;
+        public bool CanInput
+        {
+            get => CanInteraction && !IsSwapping;
+        }
 
         public Card DraggedCard
         {
@@ -102,35 +102,32 @@ namespace Cardevil.Cards.CardInteractinos
         {
             CanInteraction = false;
 
+            // Init Contexts
             stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
             resultCtx = new(multiplyValues);
 
-            slots = new Transform[initialCardCount];
-            for (int i = 0; i < initialCardCount; i++)
-                slots[i] = Instantiate(original: cardSlotPrefab, parent: transform).transform;
+            // Init Slots
+            slots = new Transform[Managers.Card.MaxCardCount];
+            rerollSlots = new Transform[Managers.Card.MaxCardCount];
+            for (int i = 0; i < Managers.Card.MaxCardCount; i++)
+            {
+                if (slots[i] == null)
+                    slots[i] = Instantiate(original: cardSlotPrefab, parent: transform).transform;
+                if (rerollSlots[i] == null)
+                    rerollSlots[i] = Instantiate(original: cardSlotPrefab, parent: rerollBar).transform;
+            }                
 
-            rerollCmp = new();
-            rerollSlots = new Transform[initialCardCount];
-            for (int i = 0; i < initialCardCount; i++)
-                rerollSlots[i] = Instantiate(original: cardSlotPrefab, parent: rerollBar).transform;
-
+            // Init Buttons
             useCardButton.onClick.AddListener(Use);
             discardCardButton.onClick.AddListener(Discard);
             sortByNumberButton.onClick.AddListener(SortByNumber);
             sortByIconButton.onClick.AddListener(SortByIcon);
 
             UpdateDeckCardCount();
-
-            StartReroll();
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.T))
-            {
-                _ = Revive(3);
-            }
-
             if (!CanInput)
                 return;
             if (DraggedCard == null)
@@ -139,7 +136,87 @@ namespace Cardevil.Cards.CardInteractinos
         }
 
 
+        // Reroll
+        // - - - - - - - - - - -
+        private void StartReroll()
+        {   
+            rerollSelectButton.onClick.AddListener(SelectReroll);
+            rerollButton.onClick.AddListener(Reroll);
+            toggleInGamePreviewButton.onClick.AddListener(ToggleInGamePreview);
 
+            rerollPanel.gameObject.SetActive(true);
+            toggleInGamePreviewButton.gameObject.SetActive(true);
+
+            _ = RerollAsync();
+        }
+
+        private async UniTask RerollAsync()
+        {
+            rerollButton.interactable = false;
+            rerollSelectButton.interactable = false;
+            toggleInGamePreviewButton.interactable = false;
+
+            // 페이드인
+            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+
+            for (int i = 0; i < Managers.Card.MaxCardCount; i++)
+            {
+                Spawn(isReroll: true);
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.drawInterval));
+            }
+
+            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+            rerollButton.interactable = true;
+            rerollSelectButton.interactable = true;
+            toggleInGamePreviewButton.interactable = true;
+        }
+
+        private void Reroll()
+        {
+            foreach (var card in stageCardsCtx.Hand)
+            {
+                // TODO: 다시 덱으로 돌아가는 tween
+                card.Destroy();
+            }
+            
+            // TODO: Reroll권 감소
+            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
+            _ = RerollAsync();
+        }
+
+        private void SelectReroll()
+        {
+            UpdateSlot();
+
+            rerollPanel.gameObject.SetActive(false);
+            toggleInGamePreviewButton.gameObject.SetActive(false);
+
+            rerollCmp.TrySetResult();
+        }
+
+        private void ToggleInGamePreview()
+        {
+            isPreviewInGame = !isPreviewInGame;
+
+            if (isPreviewInGame)
+            {
+                toggleInGamePreviewButton.GetComponentInChildren<Text>().text = "카드 선택하기";
+                rerollPanel.color = new Color(1, 1, 1, 0);
+            }
+            else
+            {
+                toggleInGamePreviewButton.GetComponentInChildren<Text>().text = "인게임 미리 보기";
+                rerollPanel.color = new Color(0, 0, 0, .85f);
+            }
+
+            rerollButton.gameObject.SetActive(!isPreviewInGame);
+            rerollSelectButton.gameObject.SetActive(!isPreviewInGame);
+            cardVisualHandler.SetActive(!isPreviewInGame);
+        }
+
+
+        // Select
+        // - - - - - - - - - - -
         public void Select(Card card)
         {
             StageCardsCtx.Select(card);
@@ -160,7 +237,9 @@ namespace Cardevil.Cards.CardInteractinos
         }
 
 
-        #region Card Event
+
+        // Card Event
+        // - - - - - - - - - - -
         private void BeginDrag(Card card)
         {
             DraggedCard = card;
@@ -173,7 +252,7 @@ namespace Cardevil.Cards.CardInteractinos
 
             DraggedCard.transform.DOLocalMove(
                 endValue: DraggedCard.isSelected
-                    ? new Vector3(0, selectOffset, 0)
+                    ? new Vector3(0, visualSetting.selectOffset, 0)
                     : Vector3.zero,
                 duration: .2f
             )
@@ -181,21 +260,11 @@ namespace Cardevil.Cards.CardInteractinos
 
             DraggedCard = null;
         }
-        #endregion
-
-        private async UniTask RerollAsync()
-        {
-            foreach (var card in StageCardsCtx.Hand)
-            {
-                StageCardsCtx.Discard(card, discardInterval);
-                await UniTask.Delay(TimeSpan.FromSeconds(discardInterval));
-                card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
-                UpdateSlot();
-            }
-        }
 
 
-        #region Swap
+
+        // Swap
+        // - - - - - - - - - - -
         private void DetectSwap()
         {
             for (int i = 0; i < StageCardsCtx.HandCount; i++)
@@ -229,22 +298,24 @@ namespace Cardevil.Cards.CardInteractinos
         public void UpdateSlot(bool isReroll = false)
         {
             if (isReroll)
-            {
                 foreach (var card in stageCardsCtx.Hand)
+                {
                     card.SetSlot(rerollSlots[card.HandIndex], isDragging: false);
-            }
+                    card.SetReroll(true);
+                }
+                    
             else
-            {
                 foreach (var card in StageCardsCtx.Hand)
+                {
                     card.SetSlot(slots[card.HandIndex], isDragging: card == DraggedCard);
-            }
+                    card.SetReroll(false);
+                }
+                    
         }
 
-        #endregion
 
-
-        #region Use & Discard & Spawn
-
+        // Use & Discard
+        // - - - - - - - - - - -
         private void Use()
         {
             CardResultEvaluator.SetResult(Context, StageCardsCtx.Selects);
@@ -256,26 +327,6 @@ namespace Cardevil.Cards.CardInteractinos
             // TODO: 버리기 횟수 0되면 못 버리게
             StageCardsCtx.ReduceDiscardCount();
             _ = DiscardAndDrawAsync();
-        }
-
-        private Card Spawn(bool isReroll = false)
-        {
-            var cardData = StageCardsCtx.DrawCard();
-            if (cardData == null)
-                return null;
-
-            Card card = Instantiate(original: cardPrefab).GetComponent<Card>();
-            card.Init(StageCardsCtx, barGroup: this, cardData);
-
-            // 이벤트 구독
-            card.OnBeginDragEvent += BeginDrag;
-            card.OnEndDragEvent += EndDrag;
-            card.OnSelectValueEndEvent += OnSelectValueEnd;
-
-            StageCardsCtx.Draw(card);
-            UpdateDeckCardCount();
-            UpdateSlot(isReroll);
-            return card;
         }
 
         private async UniTask UseAsync()
@@ -300,30 +351,30 @@ namespace Cardevil.Cards.CardInteractinos
             cmp.TrySetResult();
         }
 
-        private async UniTask DrawAsync(bool isReroll = false)
-        {
-            IsSwapping = true;
-            var count = MaxCardCount - StageCardsCtx.HandCount;
-            for (int i = 0; i < count; i++)
-            {
-                Spawn(isReroll);
-                await UniTask.Delay(TimeSpan.FromSeconds(drawInterval));
-            }
-
-            IsSwapping = false;
-        }
-
         private async UniTask DiscardAsync()
         {
             foreach (var card in StageCardsCtx.SortedSelect)
             {
-                StageCardsCtx.Discard(card, discardInterval);
-                await UniTask.Delay(TimeSpan.FromSeconds(discardInterval));
+                StageCardsCtx.Discard(card, visualSetting.discardInterval);
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.discardInterval));
                 card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
                 UpdateSlot();
             }
 
             StageCardsCtx.Selects.Clear();
+        }
+
+        private async UniTask DrawAsync()
+        {
+            IsSwapping = true;
+            var count = Managers.Card.MaxCardCount - StageCardsCtx.HandCount;
+            for (int i = 0; i < count; i++)
+            {
+                Spawn();
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.drawInterval));
+            }
+
+            IsSwapping = false;
         }
 
         private async UniTask DiscardAndDrawAsync()
@@ -334,13 +385,32 @@ namespace Cardevil.Cards.CardInteractinos
             IsSwapping = false;
         }
 
-        #endregion
 
-        private void UpdateDeckCardCount()
+        // Spawn
+        // - - - - - - - - - - -
+        private Card Spawn(bool isReroll = false)
         {
-            deckCountText.text = StageCardsCtx.DeckCount.ToString();
+            var cardData = StageCardsCtx.DrawCard();
+            if (cardData == null)
+                return null;
+
+            Card card = Instantiate(original: cardPrefab).GetComponent<Card>();
+            card.Init(StageCardsCtx, barGroup: this, cardData);
+
+            // 이벤트 구독
+            card.OnBeginDragEvent += BeginDrag;
+            card.OnEndDragEvent += EndDrag;
+            card.OnSelectValueEndEvent += OnSelectValueEnd;
+
+            StageCardsCtx.Draw(card);
+            UpdateDeckCardCount();
+            UpdateSlot(isReroll);
+            return card;
         }
 
+
+        // Sort
+        // - - - - - - - - - - -
         private void SortByNumber()
         {
             StageCardsCtx.SortByNumber();
@@ -355,6 +425,9 @@ namespace Cardevil.Cards.CardInteractinos
             UpdateSlot();
         }
 
+
+        // UI
+        // - - - - - - - - - - -
         private void UpdateUI()
         {
             if (CanInput && StageCardsCtx.CanUseCard)
@@ -371,6 +444,12 @@ namespace Cardevil.Cards.CardInteractinos
             discardCardButton.GetComponentInChildren<Text>().text = $"버리기 ({StageCardsCtx.DiscardRemainCount})";
         }
 
+        private void UpdateDeckCardCount()
+        {
+            deckCountText.text = StageCardsCtx.DeckCount.ToString();
+        }
+
+
         public async UniTask Revive(int amount)
         {
             amount = Mathf.Min(amount, StageCardsCtx.DiscardCount);
@@ -378,7 +457,7 @@ namespace Cardevil.Cards.CardInteractinos
             {
                 var dummyCard = Instantiate(dummyCardVisual, parent: deckRect.transform);
                 dummyCard.transform.SetSiblingIndex(1);
-                var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), reviveInterval)
+                var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.reviveInterval)
                                             .SetEase(Ease.OutCubic);
                 await tween.AsyncWaitForCompletion();
                 Destroy(dummyCard);
@@ -389,7 +468,8 @@ namespace Cardevil.Cards.CardInteractinos
 
 
 
-        #region IUserInput
+        // Turn Interface UserInput
+        // - - - - - - - - - - -
         public bool IsNoCard => false;
 
         public void ActivateInteraction()
@@ -419,36 +499,12 @@ namespace Cardevil.Cards.CardInteractinos
         private UniTaskCompletionSource rerollCmp;
         public async UniTask RerollCard()
         {
+            rerollCmp = new();
+
+            // 보스 공격 범위 보여주고 대기
+            await UniTask.Delay(TimeSpan.FromSeconds(.75f));
+            StartReroll();
             await rerollCmp.Task;
-        }
-        #endregion
-
-        // reroll
-        private void StartReroll()
-        {   
-            rerollSelectButton.onClick.AddListener(SelectReroll);
-            rerollButton.onClick.AddListener(Reroll);
-            _ = DrawAsync(isReroll: true);
-        }
-
-        private void Reroll()
-        {
-            foreach (var card in stageCardsCtx.Hand)
-            {
-                // TODO: 다시 덱으로 돌아가는 tween
-                card.Destroy();
-            }
-            
-            // TODO: Reroll권 감소
-            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
-            _ = DrawAsync(isReroll: true);
-        }
-
-        private void SelectReroll()
-        {
-            UpdateSlot();
-            rerollPanel.SetActive(false);
-            rerollCmp.TrySetResult();
         }
     }
 }

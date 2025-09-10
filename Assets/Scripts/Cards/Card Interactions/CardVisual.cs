@@ -86,6 +86,9 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void CurvePosition()
         {
+            if (parentCard.IsReroll)
+                return;
+                
             curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1);
             curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
         }
@@ -170,22 +173,6 @@ namespace Cardevil.Cards.CardInteractinos
                 transform.name = move.Direction.ToString();
 
                 backgroundImage.sprite = spriteManger.GetMoveBackground(move.Direction, parentCard.data.selectType);
-                /*
-                string textString;
-                if (parentCard.data.selectType == CardData.SelectType.All)
-                {
-                    if (!move.IsSet)
-                        textString = "All";
-                    else
-                        textString = move.Direction.ToString() + "*";
-                }
-                else
-                {
-                    textString = move.Direction.ToString();
-                }
-                text.text = textString;
-                text.fontSize = 35;
-                */
             }
 
             else if (parentCard.data.valueType == CardData.ValueType.Number)
@@ -200,19 +187,6 @@ namespace Cardevil.Cards.CardInteractinos
                 numberImages[0].gameObject.SetActive(true);
                 numberImages[1].gameObject.SetActive(false);
                 numberImages[2].gameObject.SetActive(false);
-
-                /*
-                var textString = number.Number == 0 ? "*" : number.Number.ToString();
-                if (number.Number != 0 && parentCard.data.CanOpenSelection)
-                    textString += "*";
-                switch (number.Color)
-                {
-                    case NumberData.CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
-                    case NumberData.CardColor.Blue: text.color = Color.blue; break;
-                    case NumberData.CardColor.Red: text.color = Color.red; break;
-                    default: break;
-                }
-                */
             }
 
             else

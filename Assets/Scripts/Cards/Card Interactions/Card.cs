@@ -14,6 +14,12 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Visual")]
         [SerializeField] private GameObject cardVisualPrefab;
         public CardVisual cardVisual;
+        private bool _isReroll;
+
+        private Vector3 pointerOffset;
+        private float pointerDownTime;
+        private float pointerUpTime;
+        private float moveSpeedLimit = 4000;
 
         [Header("Reference")]
         public CardHandBar BarGroup { get; private set; }
@@ -40,10 +46,8 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
-        private Vector3 pointerOffset;
-        private float pointerDownTime;
-        private float pointerUpTime;
-        private float moveSpeedLimit = 4000;
+        public bool IsReroll => _isReroll;
+
 
         [Header("Events")]
         [HideInInspector] public Action<Card> OnPointerDownEvent;
@@ -56,6 +60,24 @@ namespace Cardevil.Cards.CardInteractinos
         [HideInInspector] public Action OnSpawn;
         [HideInInspector] public Action<float> OnDiscard;
         [HideInInspector] public Action OnDestory;
+
+
+
+        public void Init(StageCardsContext cards, CardHandBar barGroup, CardData cardData)
+        {
+            Cards = cards;
+            BarGroup = barGroup;
+            data = cardData;
+
+            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
+            if (visualHandler == null)
+                Debug.LogError("Visual Handler를 찾을 수 없음.");
+
+            cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
+            cardVisual.Init(this);
+
+            OnSpawn?.Invoke();
+        }
 
         void Update()
         {
@@ -76,21 +98,7 @@ namespace Cardevil.Cards.CardInteractinos
             }
         }
 
-        public void Init(StageCardsContext cards, CardHandBar barGroup, CardData cardData)
-        {
-            Cards = cards;
-            BarGroup = barGroup;
-            data = cardData;
 
-            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
-            if (visualHandler == null)
-                Debug.LogError("Visual Handler를 찾을 수 없음.");
-
-            cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
-            cardVisual.Init(this);
-
-            OnSpawn?.Invoke();
-        }
 
         private void ClampPosition()
         {
@@ -185,7 +193,7 @@ namespace Cardevil.Cards.CardInteractinos
 
                 if (isSelected)
                 {
-                    transform.localPosition = new Vector3(0, 35, transform.localPosition.z);
+                    transform.localPosition = new Vector3(0, 50, transform.localPosition.z);
                     BarGroup.Select(this);
                 }
                 else
@@ -231,6 +239,11 @@ namespace Cardevil.Cards.CardInteractinos
         public int HandIndex
         {
             get => Cards.Hand.IndexOf(this);
+        }
+
+        public void SetReroll(bool isReroll)
+        {
+            _isReroll = isReroll;
         }
         
         public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);
