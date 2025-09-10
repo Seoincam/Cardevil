@@ -202,6 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentCard: {fileID: 0}
+  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   spriteManger: {fileID: 11400000, guid: 9b3a98705a1a145759601d30ac022742, type: 2}
   shakeObject: {fileID: 8032909874445604869}
   backgroundImage: {fileID: 850331243366006085}
@@ -209,12 +210,7 @@ MonoBehaviour:
   - {fileID: 1344568183733929863}
   - {fileID: 7173096316257510740}
   - {fileID: 1533622901236190433}
-  text: {fileID: 0}
   shadowTransform: {fileID: 3781543390973892055}
-  followSpeed: 10
-  selectScale: 1.25
-  scaleTransition: 0.15
-  scaleEase: 27
   curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
 --- !u!223 &2752623643086630161
 Canvas:

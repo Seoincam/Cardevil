@@ -1026,7 +1026,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6696131084290842414
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1070,7 +1070,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.8627451}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8509804}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1209,11 +1209,11 @@ MonoBehaviour:
     Selects: []
     _discardRemainCount: 0
   multiplyValues: {fileID: 11400000, guid: 3551fefd8cd584c66a9ea1f262b7a27c, type: 2}
-  visualSetting: {fileID: 11400000, guid: 6b6579975711143d2894a55504042c40, type: 2}
+  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   cardPrefab: {fileID: 78186141462634609, guid: f6140cd23d5414d4d96e15fc0a8b29ab, type: 3}
   _draggedCard: {fileID: 0}
   cardSlotPrefab: {fileID: 1054305820576586383, guid: 3a89c663dae8a4edd82393ad2a6a7a9e, type: 3}
-  rerollPanel: {fileID: 2081297975127681896}
+  rerollPanel: {fileID: 241996105506349895}
   rerollBar: {fileID: 4855628604753461578}
   rerollSelectButton: {fileID: 5992393911233614445}
   rerollButton: {fileID: 8771437262576792653}
@@ -2053,7 +2053,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2571062229677145997
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2095,7 +2095,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.4}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3871,7 +3871,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
-  m_EffectDistance: {x: -1, y: -2}
+  m_EffectDistance: {x: 11.1, y: -9.93}
   m_UseGraphicAlpha: 1
 --- !u!1 &8194372924566699631
 GameObject:

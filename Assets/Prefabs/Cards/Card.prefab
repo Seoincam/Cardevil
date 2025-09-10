@@ -91,11 +91,30 @@ MonoBehaviour:
   data:
     id: 0
     valueType: 0
+    _defaultNumber:
+      _isSet: 0
+      _color: -1
+      _number: 0
+      _damageReinforceLevel: 0
+    _defaultMove:
+      _isSet: 0
+      _direction: -1
+      _length: 0
     selectType: 0
+    _selectedNumber:
+      _isSet: 0
+      _color: -1
+      _number: 0
+      _damageReinforceLevel: 0
+    _selectedMove:
+      _isSet: 0
+      _direction: -1
+      _length: 0
     _numberOptionCount: 0
     reinforceEnabled: 0
     isLocked: 0
   cardVisualPrefab: {fileID: 3734383039003881858, guid: d6553053a711840798f23ff1436fc86f, type: 3}
+  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   cardVisual: {fileID: 0}
   isSelected: 0
   isDragging: 0
