@@ -109,6 +109,8 @@ namespace Cardevil.Cards.CardInteractinos
             // transform.position = new Vector3(clampedPosition.x, clampedPosition.y, 0);
         }
 
+
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!CanDrag)
@@ -208,6 +210,8 @@ namespace Cardevil.Cards.CardInteractinos
             }
 
         }
+
+
 
         public void SetSlot(Transform slot, bool isDragging)
         {

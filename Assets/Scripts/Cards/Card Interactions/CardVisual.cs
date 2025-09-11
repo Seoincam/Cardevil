@@ -15,7 +15,8 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] CardSpriteManager spriteManger;
 
         [Space, SerializeField] Transform shakeObject;
-        [SerializeField] Image backgroundImage;
+        [SerializeField] Image frontImage;
+        [SerializeField] Image backImage;
         [SerializeField] Image[] numberImages;
         
         private Canvas canvas;
@@ -29,6 +30,9 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] private CurveParameters curve;
         private float curveYOffset;
         private float curveRotationOffset;
+
+        private Vector3 movementDelta;
+        private Vector3 rotationDelta;
 
         void Awake()
         {
@@ -53,6 +57,8 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnDiscard += OnDiscard;
             parentCard.OnDestory += Destroy;
 
+            transform.position = visualSetting.deck.FrontCardTransform.position;
+
             isInitalized = true;
         }
 
@@ -65,6 +71,7 @@ namespace Cardevil.Cards.CardInteractinos
                 return;
 
             FollowWithLerp();
+            FollowRotation();
             CurvePosition();
             TiltCard();
         }
@@ -75,11 +82,21 @@ namespace Cardevil.Cards.CardInteractinos
             transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: visualSetting.FollowSpeed * Time.deltaTime);
         }
 
+        private void FollowRotation()
+        {
+            Vector3 movement = transform.position - parentCard.transform.position;
+            movementDelta = Vector3.Lerp(movementDelta, movement, 25 * Time.deltaTime);
+            Vector3 movementRotation = (parentCard.isDragging ? movementDelta : movement) * visualSetting.RotationAmount;
+            rotationDelta = Vector3.Lerp(rotationDelta, movementRotation, visualSetting.RotationSpeed * Time.deltaTime);
+
+            transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, Mathf.Clamp(rotationDelta.x, -50f, 50f));
+        }
+
         private void CurvePosition()
         {
             if (parentCard.IsReroll)
                 return;
-                
+
             curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1);
             curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
         }
@@ -87,8 +104,8 @@ namespace Cardevil.Cards.CardInteractinos
         private void TiltCard()
         {
             float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1)));
-            // float lerpZ = Mathf.LerpAngle(tiltZ, )
-            shakeObject.eulerAngles = new Vector3(0, 0, tiltZ);
+            float lerpZ = Mathf.LerpAngle(tiltZ, shakeObject.localEulerAngles.z, visualSetting.TiltSpeed / 2 * Time.deltaTime);
+            shakeObject.localEulerAngles = new Vector3(0, 0, lerpZ);
         }
 
         public void UpdateIndex()
@@ -124,8 +141,11 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void OnSpawn()
         {
-            // var duration = 1f;
-            // cardImage.transform.DORotate(endValue: new Vector3(0, 0, 0), duration);
+            var sequence = DOTween.Sequence();
+            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.spawnFlipDuration * .5f)
+                        .SetEase(visualSetting.spawnFlipEase));
+            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.spawnFlipDuration * .5f)
+                        .SetEase(visualSetting.spawnFlipEase));
         }
 
         private void OnDiscard(float discardDuration)
@@ -133,7 +153,7 @@ namespace Cardevil.Cards.CardInteractinos
             isDiscarded = true;
             canvas.overrideSorting = true;
 
-            backgroundImage.transform.DORotate(endValue: new Vector3(0, 60, 0), discardDuration)
+            frontImage.transform.DORotate(endValue: new Vector3(0, 60, 0), discardDuration)
                 .SetEase(Ease.OutBack);
             transform.DOLocalJump(endValue: new Vector3(1050, -30, 0), jumpPower: 15f, numJumps: 1, discardDuration);
         }
@@ -162,7 +182,7 @@ namespace Cardevil.Cards.CardInteractinos
                 var move = parentCard.data.Move;
                 transform.name = move.Direction.ToString();
 
-                backgroundImage.sprite = spriteManger.GetMoveBackground(move.Direction, parentCard.data.selectType);
+                frontImage.sprite = spriteManger.GetMoveBackground(move.Direction, parentCard.data.selectType);
             }
 
             else if (parentCard.data.valueType == CardData.ValueType.Number)
@@ -170,7 +190,7 @@ namespace Cardevil.Cards.CardInteractinos
                 var number = parentCard.data.Number;
                 transform.name = $"{number.Color} {number.Number}";
 
-                backgroundImage.sprite = spriteManger.GetNumberBackground(number.Color);
+                frontImage.sprite = spriteManger.GetNumberBackground(number.Color);
 
                 // 일단 숫자 하나만 처리
                 numberImages[0].sprite = spriteManger.GetNumber(number.Color, number.Number, parentCard.data.selectType);

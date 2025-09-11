@@ -6,11 +6,11 @@ public class DeckRemain : MonoBehaviour
 {
     [SerializeField] RemainCardVisual remainCardVisualPrefab;
     [SerializeField] Transform cardsPanel;
-    [SerializeField] Button closeButton;
     [SerializeField] TextMeshProUGUI remainText;
 
     private RemainCardVisual[] cardVisuals;
     private bool isInitialized = false;
+    private bool isOpened = false;
 
     private int DeckSize => Managers.Card.runtimeBaseDeck.Count;
 
@@ -25,15 +25,22 @@ public class DeckRemain : MonoBehaviour
             cardVisuals[i].Init(Managers.Card.runtimeBaseDeck[i]);
         }
 
-        closeButton.onClick.AddListener(Close);
         isInitialized = true;
     }
 
-    public void Open()
+    public void Toggle()
+    {
+        isOpened = !isOpened;
+
+        if (isOpened) Open();
+        else Close();
+    }
+
+    private void Open()
     {
         if (!isInitialized)
             Init();
-        
+
         // TODO: 추후 event로 바뀐 카드만 Update하게 수정!
         foreach (var cardVisual in cardVisuals)
             cardVisual.UpdateVisual();
@@ -43,7 +50,7 @@ public class DeckRemain : MonoBehaviour
         gameObject.SetActive(true);
     }
 
-    public void Close()
+    private void Close()
     {
         gameObject.SetActive(false);
     }

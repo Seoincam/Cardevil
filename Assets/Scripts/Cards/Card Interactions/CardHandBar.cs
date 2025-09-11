@@ -45,9 +45,9 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] TextMeshProUGUI selectResultText;
         [SerializeField] TextMeshProUGUI deckCountText;
         [SerializeField] GameObject dummyCardVisual;
-        [SerializeField] RectTransform deckRect;
 
         [Space, SerializeField] BlueFlushChoice blueFlushChoice;
+        [SerializeField] CardDeckVisual deck;
         
 
         // 카드 관련 상호작용 가능한가?
@@ -122,6 +122,8 @@ namespace Cardevil.Cards.CardInteractinos
             discardCardButton.onClick.AddListener(Discard);
             sortByNumberButton.onClick.AddListener(SortByNumber);
             sortByIconButton.onClick.AddListener(SortByIcon);
+
+            visualSetting.SetDeckVisual(deck);
 
             UpdateDeckCardCount();
         }
@@ -445,7 +447,7 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void UpdateDeckCardCount()
         {
-            deckCountText.text = StageCardsCtx.DeckCount.ToString();
+            deckCountText.text = $"{StageCardsCtx.DeckCount} / 50";
         }
 
 
@@ -454,7 +456,7 @@ namespace Cardevil.Cards.CardInteractinos
             amount = Mathf.Min(amount, StageCardsCtx.DiscardCount);
             for (int i = 0; i < amount; i++)
             {
-                var dummyCard = Instantiate(dummyCardVisual, parent: deckRect.transform);
+                var dummyCard = Instantiate(dummyCardVisual, parent: visualSetting.deck.FrontCardTransform.transform);
                 dummyCard.transform.SetSiblingIndex(1);
                 var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
                                             .SetEase(Ease.OutCubic);

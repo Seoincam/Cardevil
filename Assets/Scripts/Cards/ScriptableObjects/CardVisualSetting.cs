@@ -1,42 +1,58 @@
 using UnityEngine;
 using DG.Tweening;
 
-[CreateAssetMenu(fileName = "CardVisualSetting", menuName = "Cards/Card Visual Setting")]
-public class CardVisualSetting : ScriptableObject
+namespace Cardevil.Cards.CardInteractinos
 {
-    [Header("[ Common ]")]
-    public float SelectOffset = 50f;
+    [CreateAssetMenu(fileName = "CardVisualSetting", menuName = "Cards/Card Visual Setting")]
+    public class CardVisualSetting : ScriptableObject
+    {
+        [Header("[ Common ]")]
+        public float SelectOffset = 50f;
 
 
-    [Header("[ HandBar ]")]
-    public float EndDragTweenDuration = .2f;
+        [Header("[ HandBar ]")]
+        public float EndDragTweenDuration = .2f;
 
-    public float DrawInterval = .2f;
-    public float DiscardInterval = .3f;
-    public float ReviveInterval = .4f;
-
-
-    [Header("[ Card ]")]
-    public float MoveSpeedLimit = 4000;
-    public float ClickDetectThreshold = .2f;
+        public float DrawInterval = .2f;
+        public float DiscardInterval = .3f;
+        public float ReviveInterval = .4f;
 
 
-    [Header("[ Card Visual ]")]
+        [Header("[ Card ]")]
+        public float MoveSpeedLimit = 4000;
+        public float ClickDetectThreshold = .2f;
 
-    [Header("Follow")]
-    public float FollowSpeed = 10;
 
-    [Header("Select")]
-    public float SelectScale = 1.25f;
-    public float SelectScaleTweenDuration = .15f;
-    public Ease SelectScaleEase = Ease.OutBack;
+        [Header("[ Card Visual ]")]
 
-    [Header("Shadow")]
-    public float ShadowOffset = 20;
+        [Header("Spawn")]
+        public CardDeckVisual deck;
+        public float spawnFlipDuration = .4f;
+        public Ease spawnFlipEase = Ease.InElastic;
 
-    [Header("Curve")]
-    public CurveParameters Curve;
+        [Header("Follow")]
+        public float FollowSpeed = 10;
+        public float RotationAmount = 20;
+        public float RotationSpeed = 20;
+        public float TiltSpeed = 20;
 
-    [Header("Discard")]
-    public Transform DiscardPoint;
+        [Header("Select")]
+        public float SelectScale = 1.25f;
+        public float SelectScaleTweenDuration = .15f;
+        public Ease SelectScaleEase = Ease.OutBack;
+
+        [Header("Shadow")]
+        public float ShadowOffset = 20;
+
+        [Header("Curve")]
+        public CurveParameters Curve;
+
+        [Header("Discard")]
+        public Transform DiscardPoint;
+
+        public void SetDeckVisual(CardDeckVisual deck)
+        {
+            this.deck = deck;
+        }
+    }
 }

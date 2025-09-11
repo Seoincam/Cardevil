@@ -19,7 +19,13 @@ MonoBehaviour:
   ReviveInterval: 0.4
   MoveSpeedLimit: 4000
   ClickDetectThreshold: 0.2
-  FollowSpeed: 10
+  deck: {fileID: 0}
+  spawnFlipDuration: 0.5
+  spawnFlipEase: 2
+  FollowSpeed: 9
+  RotationAmount: 0.5
+  RotationSpeed: 7.5
+  TiltSpeed: 20
   SelectScale: 1.25
   SelectScaleTweenDuration: 0.15
   SelectScaleEase: 27
