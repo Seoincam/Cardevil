@@ -14,17 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SelectOffset: 50
   RerollDrawDiscardInterval: 1
-  RerollDrawInterval: 0.125
+  RerollDrawInterval: 0.15
   RerollDiscardInterval: 0.125
+  RerollCountScale: 1.4
+  RerollCountScaleDuration: 0.3
+  RerollCountEase: 27
+  EndRerollInterval: 1
   DrawInterval: 0.225
   DiscardInterval: 0.3
+  DiscardDrawInterval: 0.75
   ReviveInterval: 0.4
   EndDragTweenDuration: 0.2
   MoveSpeedLimit: 4000
   ClickDetectThreshold: 0.2
   deck: {fileID: 0}
   FlipEase: 4
-  spawnFlipDuration: 0.6
+  DrawFlipDuration: 0.4
+  DrawDuration: 0.5
+  DrawEase: 17
+  DiscardDuration: 0.25
+  DiscardPoint: {fileID: 0}
+  DiscardEase: 22
   RerollFlipDuration: 0.3
   RerollFlipBackImageRatio: 0.8
   RerollDrawDuration: 0.8
@@ -40,7 +50,6 @@ MonoBehaviour:
   SelectScaleEase: 27
   ShadowOffset: 20
   Curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
-  DiscardPoint: {fileID: 0}
-  DeckInteractionScale: 1.1
-  DeckInteractionDuration: 0.06
+  DeckInteractionScale: 1.125
+  DeckInteractionDuration: 0.09
   DeckInteractionEase: 31

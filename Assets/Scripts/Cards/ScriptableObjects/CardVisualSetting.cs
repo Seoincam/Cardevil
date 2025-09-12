@@ -18,6 +18,12 @@ namespace Cardevil.Cards.CardInteractinos
         public float RerollDrawInterval = .15f;
         public float RerollDiscardInterval = .15f;
 
+        [Space] public float RerollCountScale = 1.3f;
+        public float RerollCountScaleDuration = .2f;
+        public Ease RerollCountEase = Ease.OutBack;
+
+        [Space] public float EndRerollInterval = .5f;
+
         [Header("- In Game")]
         public float DrawInterval = .2f;
         public float DiscardInterval = .3f;

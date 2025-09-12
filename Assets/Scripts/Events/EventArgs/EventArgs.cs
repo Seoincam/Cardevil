@@ -27,7 +27,7 @@
             ModifiedHealth = 0;
         }
     }
-    
+
     /// <summary>
     /// 플레이어의 방어막 변화 이벤트 인자.
     /// </summary>
@@ -53,6 +53,34 @@
             OldShield = 0;
             NewShield = 0;
             ModifiedShield = 0;
+        }
+    }
+
+    /// <summary>
+    /// 시작 카드 뽑기권 개수 변화 이벤트 인자.
+    /// </summary>
+    public class RerollTicketChangeArgs : EventArgs<RerollTicketChangeArgs>
+    {
+        public int OldTicket { get; private set; }
+        public int NewTicket { get; private set; }
+
+        /// <summary>
+        /// 이벤트 진행으로 인해 수정된 시작 카드 뽑기권 개수. 최종적으로 해당 개수로 시작 카드 뽑기권이 설정됨.
+        /// </summary>
+        public int ModifiedTicket { get; set; }
+
+        public void Init(int currentTicket, int newTicket)
+        {
+            OldTicket = currentTicket;
+            NewTicket = newTicket;
+            ModifiedTicket = newTicket;
+        }
+
+        public override void Clear()
+        {
+            OldTicket = 0;
+            NewTicket = 0;
+            ModifiedTicket = 0;
         }
     }
 }

@@ -5,11 +5,15 @@ using Cysharp.Threading.Tasks;
 using UnityEngine.UI;
 using Cardevil.Systems;
 using TMPro;
+using Cardevil.Events;
 
 namespace Cardevil.Cards.CardInteractinos
 {
     public class CardHandBar : MonoBehaviour, ICardHandBar, ITurnPlayerInput
     {
+        [Header("Test")]
+        [SerializeField] int initialRerollTicketCount = 5;
+
         [Header("InStage Data")]
         [SerializeField] StageCardsContext stageCardsCtx;
         [SerializeField] CardResultContext resultCtx;
@@ -29,12 +33,15 @@ namespace Cardevil.Cards.CardInteractinos
         [Header("Reroll")]
         [SerializeField] Image rerollPanel;
         [SerializeField] Transform rerollBar;
-        [SerializeField] Button rerollSelectButton;
+        [SerializeField] TextMeshProUGUI rerollTicketCountText;
+
+        [SerializeField] Button endRerollButton;
         [SerializeField] Button rerollButton;
         [SerializeField] Button toggleInGamePreviewButton;
-        [SerializeField] GameObject cardVisualHandler;
+        
         private Transform[] rerollSlots;
         private bool isPreviewInGame;
+        private int rerollTicketCount;
 
         [Header("UI")]
         public SelectContainer selectContainer;
@@ -47,6 +54,8 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] GameObject dummyCardVisual;
 
         [Space, SerializeField] BlueFlushChoice blueFlushChoice;
+        [SerializeField] GameObject cardVisualHandler;
+
         public CardDeckVisual deck;
         
 
@@ -98,6 +107,11 @@ namespace Cardevil.Cards.CardInteractinos
         }
 
 
+        void OnDisable()
+        {
+            Managers.Event.RerollTicketChangeEvent.RemoveListener(OnRerollTicketCountChanged, 5);
+        }
+
         public void Init()
         {
             CanInteraction = false;
@@ -115,7 +129,7 @@ namespace Cardevil.Cards.CardInteractinos
                     slots[i] = Instantiate(original: cardSlotPrefab, parent: transform).transform;
                 if (rerollSlots[i] == null)
                     rerollSlots[i] = Instantiate(original: cardSlotPrefab, parent: rerollBar).transform;
-            }                
+            }
 
             // Init Buttons
             useCardButton.onClick.AddListener(Use);
@@ -124,6 +138,7 @@ namespace Cardevil.Cards.CardInteractinos
             sortByIconButton.onClick.AddListener(SortByIcon);
 
             visualSetting.SetDeckVisual(deck);
+            Managers.Event.RerollTicketChangeEvent.AddListener(OnRerollTicketCountChanged, 1);
 
             UpdateDeckCardCount();
         }
@@ -141,8 +156,8 @@ namespace Cardevil.Cards.CardInteractinos
         // Reroll
         // - - - - - - - - - - -
         private void InitRerollPanel()
-        {   
-            rerollSelectButton.onClick.AddListener(EndReroll);
+        {
+            endRerollButton.onClick.AddListener(EndReroll);
             rerollButton.onClick.AddListener(Reroll);
             toggleInGamePreviewButton.onClick.AddListener(ToggleStagePreview);
 
@@ -150,13 +165,22 @@ namespace Cardevil.Cards.CardInteractinos
             toggleInGamePreviewButton.gameObject.SetActive(true);
             deckCountText.gameObject.SetActive(false);
 
+            Managers.Game.PlayerStatus.RerollTicket = initialRerollTicketCount; // 임시
             _ = RerollAsync();
+        }
+
+        private void OnRerollTicketCountChanged(RerollTicketChangeArgs args)
+        {
+            rerollTicketCountText.text = args.ModifiedTicket.ToString();
+            var sequence = DOTween.Sequence();
+            sequence.Append(rerollTicketCountText.transform.DOScale(visualSetting.RerollCountScale, visualSetting.RerollCountScaleDuration * .5f));
+            sequence.Append(rerollTicketCountText.transform.DOScale(1f, visualSetting.RerollCountScaleDuration * .5f));
         }
 
         private async UniTask RerollAsync()
         {
             rerollButton.interactable = false;
-            rerollSelectButton.interactable = false;
+            endRerollButton.interactable = false;
             toggleInGamePreviewButton.interactable = false;
 
             foreach (var card in stageCardsCtx.Hand)
@@ -175,16 +199,25 @@ namespace Cardevil.Cards.CardInteractinos
                 await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDrawInterval));
             }
 
-            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
-            rerollButton.interactable = true;
-            rerollSelectButton.interactable = true;
-            toggleInGamePreviewButton.interactable = true;
+            if (Managers.Game.PlayerStatus.RerollTicket > 0)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+
+                rerollButton.interactable = true;
+                endRerollButton.interactable = true;
+                toggleInGamePreviewButton.interactable = true;
+            }
+            else
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.EndRerollInterval));
+                EndReroll();
+            } 
         }
 
         // 카드를 버리고 다시 뽑음.
         private void Reroll()
         {
-            // TODO: Reroll권 감소
+            Managers.Game.PlayerStatus.RerollTicket--;
             _ = RerollAsync();
         }
 
@@ -216,7 +249,7 @@ namespace Cardevil.Cards.CardInteractinos
             }
 
             rerollButton.gameObject.SetActive(!isPreviewInGame);
-            rerollSelectButton.gameObject.SetActive(!isPreviewInGame);
+            endRerollButton.gameObject.SetActive(!isPreviewInGame);
             cardVisualHandler.SetActive(!isPreviewInGame);
         }
 
