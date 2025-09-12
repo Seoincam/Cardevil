@@ -12,44 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ec11462675145a98c70c4eb8e3b279, type: 3}
   m_Name: CardVisualSetting
   m_EditorClassIdentifier: 
-  SelectOffset: 50
-  RerollDrawDiscardInterval: 1
-  RerollDrawInterval: 0.15
-  RerollDiscardInterval: 0.125
-  RerollCountScale: 1.4
-  RerollCountScaleDuration: 0.3
-  RerollCountEase: 27
-  EndRerollInterval: 1
-  DrawInterval: 0.225
-  DiscardInterval: 0.3
-  DiscardDrawInterval: 0.75
-  ReviveInterval: 0.4
-  EndDragTweenDuration: 0.2
-  MoveSpeedLimit: 4000
-  ClickDetectThreshold: 0.2
-  deck: {fileID: 0}
-  FlipEase: 4
-  DrawFlipDuration: 0.4
-  DrawDuration: 0.5
-  DrawEase: 17
-  DiscardDuration: 0.25
-  DiscardPoint: {fileID: 0}
-  DiscardEase: 22
-  RerollFlipDuration: 0.3
-  RerollFlipBackImageRatio: 0.8
-  RerollDrawDuration: 0.8
-  RerollDrawEase: 27
-  RerollDiscardDuration: 0.7
-  RerollDiscardEase: 26
-  FollowSpeed: 9
-  RotationAmount: 0.2
-  RotationSpeed: 5
-  TiltSpeed: 20
-  SelectScale: 1.25
-  SelectScaleTweenDuration: 0.15
-  SelectScaleEase: 27
-  ShadowOffset: 20
-  Curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
-  DeckInteractionScale: 1.125
-  DeckInteractionDuration: 0.09
-  DeckInteractionEase: 31
+  _isFastTestMode: 0
+  _selectOffset: 50
+  _rerollDrawDiscardInterval: 1
+  _rerollDrawInterval: 0.15
+  _rerollDiscardInterval: 0.125
+  _rerollCountScale: 1.4
+  _rerollCountScaleDuration: 0.4
+  _rerollCountEase: 31
+  _endRerollInterval: 1
+  _drawInterval: 0.225
+  _discardInterval: 0.3
+  _discardDrawInterval: 0.75
+  _reviveInterval: 0.4
+  _endDragTweenDuration: 0.2
+  _moveSpeedLimit: 4000
+  _clickDetectThreshold: 0.2
+  _deck: {fileID: 0}
+  _flipEase: 4
+  _drawFlipDuration: 0.4
+  _drawDuration: 0.5
+  _drawEase: 17
+  _discardDuration: 0.25
+  _discardPoint: {fileID: 0}
+  _discardEase: 22
+  _rerollFlipDuration: 0.3
+  _rerollFlipBackImageRatio: 0.8
+  _rerollDrawDuration: 0.8
+  _rerollDrawEase: 27
+  _rerollDiscardDuration: 0.7
+  _rerollDiscardEase: 26
+  _followSpeed: 9
+  _rotationAmount: 0.2
+  _rotationSpeed: 5
+  _tiltSpeed: 20
+  _selectScale: 1.25
+  _selectScaleTweenDuration: 0.15
+  _selectScaleEase: 27
+  _shadowOffset: 20
+  _curve: {fileID: 0}
+  _deckInteractionScale: 1.125
+  _deckInteractionDuration: 0.09
+  _deckInteractionEase: 31

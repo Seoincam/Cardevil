@@ -2410,7 +2410,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2445068190733357014, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: initialRerollTicketCount
-      value: 3
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2489317077210643816, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_Pivot.x

@@ -494,7 +494,7 @@ namespace Cardevil.Cards.CardInteractinos
             amount = Mathf.Min(amount, StageCardsCtx.DiscardCount);
             for (int i = 0; i < amount; i++)
             {
-                var dummyCard = Instantiate(dummyCardVisual, parent: visualSetting.deck.Front.transform);
+                var dummyCard = Instantiate(dummyCardVisual, parent: deck.Front.transform);
                 dummyCard.transform.SetSiblingIndex(1);
                 var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
                                             .SetEase(Ease.OutCubic);

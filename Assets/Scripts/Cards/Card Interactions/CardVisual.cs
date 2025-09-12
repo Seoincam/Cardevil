@@ -63,7 +63,7 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnRerollDiscard += OnRerollDiscard;
             parentCard.OnDestory += Destroy;
 
-            transform.position = visualSetting.deck.Front.position;
+            transform.position = parentCard.HandBar.deck.Front.position;
 
             isInitalized = true;
         }
