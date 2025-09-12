@@ -4,23 +4,30 @@ using UnityEngine.UI;
 
 namespace Cardevil.Cards.CardInteractinos
 {
+    [RequireComponent(typeof(Canvas))]
+    
     public class CardVisual : MonoBehaviour
     {
+        private Canvas canvas;
+        private bool isInitalized = false;
+
+        private Vector3 movementDelta;
+        private Vector3 rotationDelta;
+
         [Header("Card")]
         public Card parentCard;
         private bool isDiscarded = false;
+        private bool isDrawing = true;
 
-        [Header("Visual")]
+        [Header("SO")]
         [SerializeField] CardVisualSetting visualSetting;
         [SerializeField] CardSpriteManager spriteManger;
 
-        [Space, SerializeField] Transform shakeObject;
+        [Header("Card Visual")]
+        [SerializeField] Transform shakeObject;
         [SerializeField] Image frontImage;
         [SerializeField] Image backImage;
         [SerializeField] Image[] numberImages;
-        
-        private Canvas canvas;
-        private bool isInitalized = false;
 
         [Header("Shadow Visual")]
         [SerializeField] Transform shadowTransform;
@@ -30,9 +37,6 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] private CurveParameters curve;
         private float curveYOffset;
         private float curveRotationOffset;
-
-        private Vector3 movementDelta;
-        private Vector3 rotationDelta;
 
         void Awake()
         {
@@ -53,11 +57,13 @@ namespace Cardevil.Cards.CardInteractinos
             parentCard.OnSelectValueStartEvent += OnSelectStarted;
             parentCard.OnSelectValueEndEvent += OnSelectEnded;
 
-            parentCard.OnSpawn += OnSpawn;
+            parentCard.OnDraw += OnDraw;
             parentCard.OnDiscard += OnDiscard;
+            parentCard.OnRerollDraw += OnRerollDraw;
+            parentCard.OnRerollDiscard += OnRerollDiscard;
             parentCard.OnDestory += Destroy;
 
-            transform.position = visualSetting.deck.FrontCardTransform.position;
+            transform.position = visualSetting.deck.Front.position;
 
             isInitalized = true;
         }
@@ -65,9 +71,6 @@ namespace Cardevil.Cards.CardInteractinos
         void Update()
         {
             if (!isInitalized || parentCard == null)
-                return;
-
-            if (isDiscarded)
                 return;
 
             FollowWithLerp();
@@ -78,14 +81,24 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void FollowWithLerp()
         {
+            if (isDiscarded)
+                return;
+            if (parentCard.IsReroll)
+                return;
+            if (isDrawing)
+                return;
+
             var verticalOffset = Vector3.up * (parentCard.isDragging ? 0 : curveYOffset);
             transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: visualSetting.FollowSpeed * Time.deltaTime);
         }
 
         private void FollowRotation()
         {
+            if (isDiscarded)
+                return;
+
             Vector3 movement = transform.position - parentCard.transform.position;
-            movementDelta = Vector3.Lerp(movementDelta, movement, 25 * Time.deltaTime);
+            movementDelta = Vector3.Lerp(movementDelta, movement, 20 * Time.deltaTime);
             Vector3 movementRotation = (parentCard.isDragging ? movementDelta : movement) * visualSetting.RotationAmount;
             rotationDelta = Vector3.Lerp(rotationDelta, movementRotation, visualSetting.RotationSpeed * Time.deltaTime);
 
@@ -94,19 +107,26 @@ namespace Cardevil.Cards.CardInteractinos
 
         private void CurvePosition()
         {
+            if (isDiscarded)
+                return;
             if (parentCard.IsReroll)
                 return;
 
-            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1);
+            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.HandBar.StageCardsCtx.HandCount - 1);
             curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
         }
 
         private void TiltCard()
         {
-            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.BarGroup.StageCardsCtx.HandCount - 1)));
+            if (isDiscarded)
+                return;
+
+            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.HandBar.StageCardsCtx.HandCount - 1)));
             float lerpZ = Mathf.LerpAngle(tiltZ, shakeObject.localEulerAngles.z, visualSetting.TiltSpeed / 2 * Time.deltaTime);
             shakeObject.localEulerAngles = new Vector3(0, 0, lerpZ);
         }
+
+
 
         public void UpdateIndex()
         {
@@ -139,24 +159,69 @@ namespace Cardevil.Cards.CardInteractinos
             canvas.overrideSorting = false;
         }
 
-        private void OnSpawn()
+
+        private void OnDraw()
         {
+            parentCard.HandBar.deck.OnInteraction();
+            var tween = transform.DOMove(endValue: parentCard.transform.position, visualSetting.DrawDuration)
+                        .SetEase(visualSetting.RerollDrawEase);
+
             var sequence = DOTween.Sequence();
-            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.spawnFlipDuration * .5f)
-                        .SetEase(visualSetting.spawnFlipEase));
-            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.spawnFlipDuration * .5f)
-                        .SetEase(visualSetting.spawnFlipEase));
+            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.DrawFlipDuration * .5f)
+                        .SetEase(visualSetting.FlipEase));
+            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.DrawFlipDuration * .5f)
+                        .SetEase(visualSetting.FlipEase));
+
+            tween.OnComplete(() => isDrawing = false);
         }
 
-        private void OnDiscard(float discardDuration)
+        private void OnDiscard()
         {
             isDiscarded = true;
             canvas.overrideSorting = true;
 
-            frontImage.transform.DORotate(endValue: new Vector3(0, 60, 0), discardDuration)
-                .SetEase(Ease.OutBack);
-            transform.DOLocalJump(endValue: new Vector3(1050, -30, 0), jumpPower: 15f, numJumps: 1, discardDuration);
+            var tween = transform.DOLocalMove(endValue: new Vector3(1050, 0, 0), visualSetting.DiscardDuration)
+                        .SetEase(visualSetting.DiscardEase);
+            tween.OnComplete(() => parentCard.Destroy());
         }
+
+
+        private void OnRerollDraw()
+        {
+            parentCard.HandBar.deck.OnInteraction();
+            transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
+                        .SetEase(visualSetting.RerollDrawEase);
+
+            var sequence = DOTween.Sequence();
+            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipBackImageRatio)
+                        .SetEase(visualSetting.FlipEase));
+            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipFrontImageRation)
+                        .SetEase(visualSetting.FlipEase));
+
+            isDrawing = false;
+        }
+
+        private void OnRerollDiscard(Transform discardPoint)
+        {
+            isDiscarded = true;
+
+            var tween = transform.DOMove(endValue: discardPoint.position, visualSetting.RerollDiscardDuration)
+                        .SetEase(visualSetting.RerollDiscardEase);
+
+            var sequence = DOTween.Sequence();
+            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.RerollFlipDuration * .5f)
+                        .SetEase(visualSetting.FlipEase));
+            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * .5f)
+                        .SetEase(visualSetting.FlipEase));
+
+            tween.OnComplete(() =>
+            {
+                parentCard.HandBar.deck.OnInteraction();
+                parentCard.Destroy();
+            });
+        }
+
+
 
         private void Destroy()
         {

@@ -11,9 +11,10 @@ namespace Cardevil.Cards.CardInteractinos
         public CardData data;
         private bool isDiscarded = false;
 
+
         [Header("Visual")]
-        [SerializeField] private GameObject cardVisualPrefab;
-        [SerializeField] private CardVisualSetting visualSetting;
+        [SerializeField] GameObject cardVisualPrefab;
+        [SerializeField] CardVisualSetting visualSetting;
         public CardVisual cardVisual;
         private bool _isReroll;
 
@@ -21,13 +22,33 @@ namespace Cardevil.Cards.CardInteractinos
         private float pointerDownTime;
         private float pointerUpTime;
 
-        [Header("Reference")]
-        public CardHandBar BarGroup { get; private set; }
-        public StageCardsContext Cards { get; private set; }
 
         [Header("Drag")]
         public bool isSelected;
         public bool isDragging;
+
+
+        [Header("Events")]
+        public Action<Card> OnPointerDownEvent;
+        public Action<Card> OnPointerUpEvent;
+        public Action<Card> OnBeginDragEvent;
+        public Action<Card> OnEndDragEvent;
+        public Action<Card> OnSelectValueStartEvent;
+        public Action<Card> OnSelectValueEndEvent;
+
+        public Action OnDraw;
+        public Action OnDiscard;
+        public Action OnRerollDraw;
+        public Action<Transform> OnRerollDiscard;
+        public Action OnDestory;
+
+
+        public CardHandBar HandBar { get; private set; }
+
+        public StageCardsContext Cards { get; private set; }
+
+        public bool IsReroll => _isReroll;
+
         private bool CanDrag
         {
             get
@@ -35,38 +56,23 @@ namespace Cardevil.Cards.CardInteractinos
                 if (isDiscarded)
                     return false;
 
-                if (BarGroup.DraggedCard != null
-                    && BarGroup.DraggedCard != this)
+                if (HandBar.DraggedCard != null
+                    && HandBar.DraggedCard != this)
                     return false;
 
-                if (!BarGroup.CanInput)
+                if (!HandBar.CanInput)
                     return false;
 
                 return true;
             }
         }
 
-        public bool IsReroll => _isReroll;
-
-
-        [Header("Events")]
-        [HideInInspector] public Action<Card> OnPointerDownEvent;
-        [HideInInspector] public Action<Card> OnPointerUpEvent;
-        [HideInInspector] public Action<Card> OnBeginDragEvent;
-        [HideInInspector] public Action<Card> OnEndDragEvent;
-        [HideInInspector] public Action<Card> OnSelectValueStartEvent;
-        [HideInInspector] public Action<Card> OnSelectValueEndEvent;
-
-        [HideInInspector] public Action OnSpawn;
-        [HideInInspector] public Action<float> OnDiscard;
-        [HideInInspector] public Action OnDestory;
-
 
 
         public void Init(StageCardsContext cards, CardHandBar barGroup, CardData cardData)
         {
             Cards = cards;
-            BarGroup = barGroup;
+            HandBar = barGroup;
             data = cardData;
 
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
@@ -76,7 +82,7 @@ namespace Cardevil.Cards.CardInteractinos
             cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
             cardVisual.Init(this);
 
-            OnSpawn?.Invoke();
+            // OnSpawn?.Invoke();
         }
 
         void Update()
@@ -144,7 +150,7 @@ namespace Cardevil.Cards.CardInteractinos
                 if (!data.CanOpenSelection)
                     return;
 
-                BarGroup.selectContainer.OpenSelection(this);
+                HandBar.selectContainer.OpenSelection(this);
                 OnSelectValueStartEvent?.Invoke(this);
             }
         }
@@ -189,19 +195,19 @@ namespace Cardevil.Cards.CardInteractinos
                 if (pointerUpTime - pointerDownTime > visualSetting.ClickDetectThreshold)
                     return;
 
-                isSelected = BarGroup.StageCardsCtx.SelectCount >= 4
+                isSelected = HandBar.StageCardsCtx.SelectCount >= 4
                     ? false
                     : !isSelected;
 
                 if (isSelected)
                 {
                     transform.localPosition = new Vector3(0, visualSetting.SelectOffset, transform.localPosition.z);
-                    BarGroup.Select(this);
+                    HandBar.Select(this);
                 }
                 else
                 {
                     transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    BarGroup.Deselect(this);
+                    HandBar.Deselect(this);
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
@@ -225,10 +231,10 @@ namespace Cardevil.Cards.CardInteractinos
             cardVisual.UpdateIndex();
         }
 
-        public void Discard(float discardDuration)
+        public void Discard()
         {
             isDiscarded = true;
-            OnDiscard?.Invoke(discardDuration);
+            OnDiscard?.Invoke();
         }
 
         public void Destroy()

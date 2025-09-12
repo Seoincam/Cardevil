@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using DG.Tweening;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -20,6 +22,19 @@ namespace Cardevil.Cards.CardInteractinos
 
         [SerializeField] List<Transform> cards;
 
-        public Transform FrontCardTransform => cards[0];
+        [SerializeField] CardVisualSetting visualSetting;
+
+        public Transform Front => cards[0];
+
+        /// <summary>
+        /// Draw, Discard 등의 상호작용이 있을 때 scale tween.
+        /// </summary>
+        public void OnInteraction()
+        {
+            transform.DOScale(visualSetting.DeckInteractionScale, visualSetting.DeckInteractionDuration)
+                .SetEase(visualSetting.DeckInteractionEase)
+                .OnComplete(() => transform.DOScale(1f, visualSetting.DeckInteractionDuration)
+                .SetEase(visualSetting.DeckInteractionEase));
+        }
     }
 }

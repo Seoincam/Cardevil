@@ -47,7 +47,7 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] GameObject dummyCardVisual;
 
         [Space, SerializeField] BlueFlushChoice blueFlushChoice;
-        [SerializeField] CardDeckVisual deck;
+        public CardDeckVisual deck;
         
 
         // 카드 관련 상호작용 가능한가?
@@ -140,14 +140,15 @@ namespace Cardevil.Cards.CardInteractinos
 
         // Reroll
         // - - - - - - - - - - -
-        private void StartReroll()
+        private void InitRerollPanel()
         {   
-            rerollSelectButton.onClick.AddListener(SelectReroll);
+            rerollSelectButton.onClick.AddListener(EndReroll);
             rerollButton.onClick.AddListener(Reroll);
-            toggleInGamePreviewButton.onClick.AddListener(ToggleInGamePreview);
+            toggleInGamePreviewButton.onClick.AddListener(ToggleStagePreview);
 
             rerollPanel.gameObject.SetActive(true);
             toggleInGamePreviewButton.gameObject.SetActive(true);
+            deckCountText.gameObject.SetActive(false);
 
             _ = RerollAsync();
         }
@@ -158,13 +159,20 @@ namespace Cardevil.Cards.CardInteractinos
             rerollSelectButton.interactable = false;
             toggleInGamePreviewButton.interactable = false;
 
-            // 페이드인
-            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+            foreach (var card in stageCardsCtx.Hand)
+            {
+                card.OnRerollDiscard?.Invoke(deck.Front);
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDiscardInterval));
+            }
+
+            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
+
+            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDrawDiscardInterval));
 
             for (int i = 0; i < Managers.Card.MaxCardCount; i++)
             {
-                Spawn(isReroll: true);
-                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DrawInterval));
+                Spawn(isReroll: true).OnRerollDraw?.Invoke();
+                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDrawInterval));
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
@@ -173,30 +181,26 @@ namespace Cardevil.Cards.CardInteractinos
             toggleInGamePreviewButton.interactable = true;
         }
 
+        // 카드를 버리고 다시 뽑음.
         private void Reroll()
         {
-            foreach (var card in stageCardsCtx.Hand)
-            {
-                // TODO: 다시 덱으로 돌아가는 tween
-                card.Destroy();
-            }
-            
             // TODO: Reroll권 감소
-            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
             _ = RerollAsync();
         }
 
-        private void SelectReroll()
+        // 카드 선택을 끝냄.
+        private void EndReroll()
         {
             UpdateSlot();
 
             rerollPanel.gameObject.SetActive(false);
             toggleInGamePreviewButton.gameObject.SetActive(false);
+            deckCountText.gameObject.SetActive(true);
 
             rerollCmp.TrySetResult();
         }
 
-        private void ToggleInGamePreview()
+        private void ToggleStagePreview()
         {
             isPreviewInGame = !isPreviewInGame;
 
@@ -356,9 +360,8 @@ namespace Cardevil.Cards.CardInteractinos
         {
             foreach (var card in StageCardsCtx.SortedSelect)
             {
-                StageCardsCtx.Discard(card, visualSetting.DiscardInterval);
+                StageCardsCtx.Discard(card);
                 await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DiscardInterval));
-                card.Destroy(); // TODO: 이벤트 구독 해지 로직/오브젝트 풀 관련 로직 추가
                 UpdateSlot();
             }
 
@@ -371,7 +374,7 @@ namespace Cardevil.Cards.CardInteractinos
             var count = Managers.Card.MaxCardCount - StageCardsCtx.HandCount;
             for (int i = 0; i < count; i++)
             {
-                Spawn();
+                Spawn().OnDraw?.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DrawInterval));
             }
 
@@ -382,6 +385,7 @@ namespace Cardevil.Cards.CardInteractinos
         {
             IsSwapping = true;
             await DiscardAsync();
+            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DiscardDrawInterval));
             await DrawAsync();
             IsSwapping = false;
         }
@@ -406,6 +410,7 @@ namespace Cardevil.Cards.CardInteractinos
             StageCardsCtx.Draw(card);
             UpdateDeckCardCount();
             UpdateSlot(isReroll);
+
             return card;
         }
 
@@ -456,7 +461,7 @@ namespace Cardevil.Cards.CardInteractinos
             amount = Mathf.Min(amount, StageCardsCtx.DiscardCount);
             for (int i = 0; i < amount; i++)
             {
-                var dummyCard = Instantiate(dummyCardVisual, parent: visualSetting.deck.FrontCardTransform.transform);
+                var dummyCard = Instantiate(dummyCardVisual, parent: visualSetting.deck.Front.transform);
                 dummyCard.transform.SetSiblingIndex(1);
                 var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
                                             .SetEase(Ease.OutCubic);
@@ -504,7 +509,7 @@ namespace Cardevil.Cards.CardInteractinos
 
             // 보스 공격 범위 보여주고 대기
             await UniTask.Delay(TimeSpan.FromSeconds(.75f));
-            StartReroll();
+            InitRerollPanel();
             await rerollCmp.Task;
         }
     }

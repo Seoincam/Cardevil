@@ -13,18 +13,27 @@ MonoBehaviour:
   m_Name: CardVisualSetting
   m_EditorClassIdentifier: 
   SelectOffset: 50
-  EndDragTweenDuration: 0.2
-  DrawInterval: 0.2
+  RerollDrawDiscardInterval: 1
+  RerollDrawInterval: 0.125
+  RerollDiscardInterval: 0.125
+  DrawInterval: 0.225
   DiscardInterval: 0.3
   ReviveInterval: 0.4
+  EndDragTweenDuration: 0.2
   MoveSpeedLimit: 4000
   ClickDetectThreshold: 0.2
   deck: {fileID: 0}
-  spawnFlipDuration: 0.5
-  spawnFlipEase: 2
+  FlipEase: 4
+  spawnFlipDuration: 0.6
+  RerollFlipDuration: 0.3
+  RerollFlipBackImageRatio: 0.8
+  RerollDrawDuration: 0.8
+  RerollDrawEase: 27
+  RerollDiscardDuration: 0.7
+  RerollDiscardEase: 26
   FollowSpeed: 9
-  RotationAmount: 0.5
-  RotationSpeed: 7.5
+  RotationAmount: 0.2
+  RotationSpeed: 5
   TiltSpeed: 20
   SelectScale: 1.25
   SelectScaleTweenDuration: 0.15
@@ -32,3 +41,6 @@ MonoBehaviour:
   ShadowOffset: 20
   Curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
   DiscardPoint: {fileID: 0}
+  DeckInteractionScale: 1.1
+  DeckInteractionDuration: 0.06
+  DeckInteractionEase: 31

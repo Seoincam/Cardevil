@@ -2476,9 +2476,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7802420495557378452, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8194372924566699631, guid: 831979184612e471a98de74f7929647b, type: 3}
       propertyPath: m_Name
       value: CardCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528026355070500814, guid: 831979184612e471a98de74f7929647b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
