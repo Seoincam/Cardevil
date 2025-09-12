@@ -10,6 +10,7 @@ namespace Cardevil.Systems
     {
         bool IsNoCard { get; }
 
+        UniTask RerollCard();
         UniTask DrawCard();
         void ActivateInteraction();
         UniTask WaitUserInput();

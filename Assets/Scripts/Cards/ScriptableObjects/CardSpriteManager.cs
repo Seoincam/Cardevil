@@ -78,17 +78,7 @@ namespace Cardevil.Cards
         {
             Sprite sprite = null;
 
-            if (selectType == CardData.SelectType.None)
-                sprite = direction switch
-                {
-                    Direction.Up => Up,
-                    Direction.Down => Down,
-                    Direction.Left => Left,
-                    Direction.Right => Right,
-                    _ => null
-                };
-
-            else if (selectType == CardData.SelectType.Multiple)
+            if (selectType == CardData.SelectType.Multiple && direction == Direction.None)
                 sprite = direction switch
                 {
                     Direction.Up => UpDown,
@@ -98,8 +88,20 @@ namespace Cardevil.Cards
                     _ => null
                 };
 
-            else if (selectType == CardData.SelectType.All)
+            else if (selectType == CardData.SelectType.All && direction == Direction.None)
                 sprite = AllDirection;
+
+            else
+            {
+                sprite = direction switch
+                {
+                    Direction.Up => Up,
+                    Direction.Down => Down,
+                    Direction.Left => Left,
+                    Direction.Right => Right,
+                    _ => null
+                };
+            }
 
             return sprite;
         }

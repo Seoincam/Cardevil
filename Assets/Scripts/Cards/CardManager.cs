@@ -11,6 +11,10 @@ namespace Cardevil.Cards
 
         public List<CardData> runtimeBaseDeck;
 
+        private int _maxCardCount = 6;
+
+        public int MaxCardCount => _maxCardCount;
+
         public void Init()
         {
             var handBarObj = GameObject.Find("CardHandBar");
@@ -40,4 +44,5 @@ namespace Cardevil.Cards
         
     }
 }
+
 

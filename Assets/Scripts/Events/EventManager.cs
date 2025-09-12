@@ -11,6 +11,7 @@ namespace Cardevil.Manager
     {
         private readonly PriorityEvent<PlayerHealthChangeArgs> _playerHealthChangeEvent = new ();
         private readonly PriorityEvent<PlayerShieldChangeArgs> _playerShieldChangeEvent = new ();
+        private readonly PriorityEvent<RerollTicketChangeArgs> _rerollTicketChangeEvent = new();
         
         /// <summary>
         /// 플레이어의 체력 변화 이벤트
@@ -32,10 +33,21 @@ namespace Cardevil.Manager
         /// </code>
         public PriorityEvent<PlayerShieldChangeArgs> PlayerShieldChangeEvent => _playerShieldChangeEvent;
 
+        /// <summary>
+        /// 시작 카드 뽑기권 변화 이벤트
+        /// </summary>
+        /// <code>
+        /// 우선순위
+        /// 0 : 기본 이벤트
+        /// 1 : UI 업데이트 이벤트  
+        /// </code>
+        public PriorityEvent<RerollTicketChangeArgs> RerollTicketChangeEvent => _rerollTicketChangeEvent;
+
         public void Clear()
         {
             _playerHealthChangeEvent.Clear();
             _playerShieldChangeEvent.Clear();
+            _rerollTicketChangeEvent.Clear();
         }
     }
 }

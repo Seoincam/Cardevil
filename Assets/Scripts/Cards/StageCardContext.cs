@@ -76,12 +76,12 @@ namespace Cardevil.Cards
             Hand.Add(card);
         }
 
-        public void Discard(Card card, float interval)
+        public void Discard(Card card)
         {
             Hand.Remove(card);
             Selects.Remove(card);
             Discards.Add(card.data);
-            card.Discard(interval);
+            card.Discard();
         }
 
         public void IncreaseDiscardCount(int amount)

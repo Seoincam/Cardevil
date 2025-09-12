@@ -14,6 +14,7 @@ namespace Cardevil.Ingame
         [SerializeField] private int _currentHP = 3;
         [SerializeField] private int _maxHP = 3;
         [SerializeField] private int _shield = 0;
+        [SerializeField] private int _rerollTicket = 0;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
         
         /// <summary>
@@ -52,6 +53,27 @@ namespace Cardevil.Ingame
                     args.Init(_shield, value);
                     Managers.Event.PlayerShieldChangeEvent.Invoke(args);
                     _shield = args.ModifiedShield;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 시작 카드 뽑기권의 남은 개수
+        /// </summary>
+        /// <remarks>
+        /// 개수 변경 시 이벤트를 발생시켜 변경을 알리며,
+        /// 수정된 개수를 값을 최종적으로 적용
+        /// </remarks>
+        public int RerollTicket
+        {
+            get => _rerollTicket;
+            set
+            {
+                using (RerollTicketChangeArgs args = RerollTicketChangeArgs.Get())
+                {
+                    args.Init(_rerollTicket, value);
+                    Managers.Event.RerollTicketChangeEvent.Invoke(args);
+                    _rerollTicket = args.ModifiedTicket;
                 }
             }
         }
