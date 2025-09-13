@@ -106,8 +106,8 @@ namespace Cardevil.Cards
 
                 // 숫자카드 정렬
                 .ThenBy(c => NumberSelectTypeRank(c))
-                .ThenBy(c => c.data.Number.Number)
-                .ThenBy(c => c.data.Number.Color)
+                .ThenBy(c => c.data.Number.NumberValue)
+                .ThenBy(c => c.data.Number.ColorValue)
 
                 .ToList();
         }
@@ -123,9 +123,9 @@ namespace Cardevil.Cards
                 .ThenBy(c => DirectionRank(c))
 
                 // 숫자카드 정렬
-                .ThenBy(c => c.data.Number.Color)
+                .ThenBy(c => c.data.Number.ColorValue)
                 .ThenBy(c => NumberSelectTypeRank(c))
-                .ThenBy(c => c.data.Number.Number)
+                .ThenBy(c => c.data.Number.NumberValue)
                 
                 .ToList();
         }
@@ -208,7 +208,7 @@ namespace Cardevil.Cards
 
         private static int DirectionRank(Card c)
         {
-            return c.data.Move.Direction switch
+            return c.data.Move.DirectionValue switch
             {
                 Utils.Directions.Direction.Up => 0,
                 Utils.Directions.Direction.Down => 1,

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cardevil.Cards
 {
@@ -57,17 +58,20 @@ namespace Cardevil.Cards
     public readonly struct CardResult
     {
         public readonly float Damage;
+
+        public readonly List<NumberData> Numbers;
         public readonly List<MoveData> Moves;
+        public readonly HandRanking Rangking => Rankings[0]; 
 
         public readonly bool IsRedFlush;
         public readonly bool IsBlueFlush;
         public readonly bool IsGreenFlush;
         public readonly bool IsBlackFlush;
 
-        private readonly CardResultContext ctx;
+        private readonly CardResultContext Ctx;
         private readonly List<HandRanking> Rankings;
-
-        public readonly HandRanking Rangking => Rankings[0];        
+        private readonly List<CardData> CardDatas;
+       
 
         public string Description
         {
@@ -77,10 +81,10 @@ namespace Cardevil.Cards
 
                 if (Rankings[0] != HandRanking.None)
                 {
-                    if (ctx.IsBlackFlushUsed)
+                    if (Ctx.IsBlackFlushUsed)
                         text += "[ Black Flush: damage 200% ]\n";
 
-                    if (ctx.PreviousResult.IsRedFlush)
+                    if (Ctx.PreviousResult.IsRedFlush)
                         text += "[ Red Flush: damage 300% ]\n";
 
                     text += $"Ranking: {Rankings[0]}\nDamage: {Damage}\n";
@@ -92,18 +96,22 @@ namespace Cardevil.Cards
 
 
 
-        public CardResult(CardResultContext ctx, float damage, List<MoveData> moves, List<HandRanking> rankings, List<NumberData> numbers)
+        public CardResult(CardResultContext ctx, float damage, List<HandRanking> rankings, List<CardData> cardDatas, List<CardData> numberDatas, List<CardData> moveDatas)
         {
-            this.ctx = ctx;
+            Ctx = ctx;
 
             Damage = damage;
-            Moves = moves;
             Rankings = rankings;
+            CardDatas = cardDatas;
+
+            Numbers = numberDatas.Select(n => n.Number)
+                    .ToList();
+            Moves = moveDatas.Select(m => m.Move)
+                    .ToList();;
 
             IsRedFlush = IsBlueFlush = IsGreenFlush = IsBlackFlush = false;
-
             if (rankings.Contains(HandRanking.Flush))
-                switch (numbers[0].Color)
+                switch (Numbers[0].ColorValue)
                 {
                     case NumberData.CardColor.Red: IsRedFlush = true; break;
                     case NumberData.CardColor.Blue: IsBlueFlush = true; break;

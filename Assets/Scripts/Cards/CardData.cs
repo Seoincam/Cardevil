@@ -27,6 +27,9 @@ namespace Cardevil.Cards
         [Space, SerializeField] int _numberOptionCount = 0;
         private HashSet<int> _numberOptions;
 
+        [Header("Damage")]
+        [SerializeField] int _additionalDamage = 0;
+
         [Header("Reinforcement")]
         public bool reinforceEnabled = false;
 
@@ -38,6 +41,8 @@ namespace Cardevil.Cards
         public NumberData DefaultNumber => _defaultNumber;
 
         public MoveData DefaultMove => _defaultMove;
+
+        public int AdditionalDamage => _additionalDamage;
 
         /// <summary>
         /// 카드의 최종 Number 값
@@ -81,7 +86,9 @@ namespace Cardevil.Cards
             get => !isLocked && selectType > 0;
         }
 
-        // 값 선택 완료 여부를 반환
+        /// <summary>
+        /// 값 선택 완료 여부를 반환
+        /// </summary>
         public bool IsValueSelected
         {
             get
@@ -110,7 +117,7 @@ namespace Cardevil.Cards
                 while (_numberOptions.Count < _numberOptionCount)
                 {
                     int random = Random.Range(2, 11);
-                    if (random != _defaultNumber.Number)
+                    if (random != _defaultNumber.NumberValue)
                         _numberOptions.Add(random);
                 }
             }
@@ -121,7 +128,7 @@ namespace Cardevil.Cards
         /// </summary>
         public void SelectValue(int selectNumber)
         {
-            var number = new NumberData(DefaultNumber.Color, selectNumber);
+            var number = new NumberData(DefaultNumber.ColorValue, selectNumber);
             _selectedNumber = number;
         }
 
@@ -235,18 +242,27 @@ namespace Cardevil.Cards
     public class NumberData : ICopyable<NumberData>
     {
         [SerializeField] bool _isSet;
-        [SerializeField] CardColor _color;
-        [SerializeField] int _number;
+        [SerializeField] CardColor _colorValue;
+        [SerializeField] int _numberValue;
         [SerializeField] int _damageReinforceLevel;
+
+        // 계산 시점에서 데미지를 저장 용도.
+        private float _damage;
 
 
         public bool IsSet => _isSet;
 
-        public CardColor Color => _color;
+        public CardColor ColorValue => _colorValue;
 
-        public int Number => _number;
+        public int NumberValue => _numberValue;
 
         public int DamageReinforceLevel => _damageReinforceLevel;
+
+        public float Damage
+        {
+            get => _damage;
+            set => _damage = value;
+        }
 
 
         public void ReinforceDamage()
@@ -258,21 +274,21 @@ namespace Cardevil.Cards
         public NumberData()
         {
             _isSet = false;
-            _color = CardColor.None;
-            _number = 0;
+            _colorValue = CardColor.None;
+            _numberValue = 0;
         }
 
         public NumberData(CardColor color, int number)
         {
             _isSet = true;
-            _color = color;
-            _number = number;
+            _colorValue = color;
+            _numberValue = number;
         }
 
 
         public NumberData Copy()
         {
-            return new NumberData(_color, _number);
+            return new NumberData(_colorValue, _numberValue);
         }
 
 
@@ -290,34 +306,33 @@ namespace Cardevil.Cards
     public class MoveData : ICopyable<MoveData>
     {
         [SerializeField] bool _isSet;
-        [SerializeField] Direction _direction;
-        [SerializeField] int _length;
-
+        [SerializeField] Direction _directionValue;
+        [SerializeField] int _lengthValue;
 
         public bool IsSet => _isSet;
 
-        public Direction Direction => _direction;
+        public Direction DirectionValue => _directionValue;
 
-        public int Length => _length;
+        public int LengthValue => _lengthValue;
 
 
         public MoveData()
         {
             _isSet = false;
-            _direction = Direction.None;
-            _length = 0;
+            _directionValue = Direction.None;
+            _lengthValue = 0;
         }
 
         public MoveData(Direction direction, int length)
         {
             _isSet = true;
-            _direction = direction;
-            _length = length;
+            _directionValue = direction;
+            _lengthValue = length;
         }
 
         public MoveData Copy()
         {
-            return new MoveData(_direction, _length);
+            return new MoveData(_directionValue, _lengthValue);
         }
     }
 

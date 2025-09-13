@@ -245,20 +245,20 @@ namespace Cardevil.Cards.CardInteractinos
             if (parentCard.data.valueType == CardData.ValueType.Move)
             {
                 var move = parentCard.data.Move;
-                transform.name = move.Direction.ToString();
+                transform.name = move.DirectionValue.ToString();
 
-                frontImage.sprite = spriteManger.GetMoveBackground(move.Direction, parentCard.data.selectType);
+                frontImage.sprite = spriteManger.GetMoveBackground(move.DirectionValue, parentCard.data.selectType);
             }
 
             else if (parentCard.data.valueType == CardData.ValueType.Number)
             {
                 var number = parentCard.data.Number;
-                transform.name = $"{number.Color} {number.Number}";
+                transform.name = $"{number.ColorValue} {number.NumberValue}";
 
-                frontImage.sprite = spriteManger.GetNumberBackground(number.Color);
+                frontImage.sprite = spriteManger.GetNumberBackground(number.ColorValue);
 
                 // 일단 숫자 하나만 처리
-                numberImages[0].sprite = spriteManger.GetNumber(number.Color, number.Number, parentCard.data.selectType);
+                numberImages[0].sprite = spriteManger.GetNumber(number.ColorValue, number.NumberValue, parentCard.data.selectType);
                 numberImages[0].gameObject.SetActive(true);
                 numberImages[1].gameObject.SetActive(false);
                 numberImages[2].gameObject.SetActive(false);
