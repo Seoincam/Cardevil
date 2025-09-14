@@ -1,3 +1,4 @@
+using Cardevil.Cards.CardInteractinos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,36 +24,108 @@ namespace Cardevil.Cards
     public class CardResultContext
     {
         public readonly MultiplyValues Multiply;
+        public IReadOnlyList<CardResult?> History => _history;
 
-        public CardResult PreviousResult { get; private set; }
-        public CardResult CurrentResult { get; private set; }
+        private readonly List<CardResult?> _history = new();
+
+        // 현재 가르키는 인덱스
+        private int cursor = -1;
+
+
+
+        public CardResult? CurrentResult
+        {
+            get => cursor >= 0 ? _history[cursor] : null;
+        }
+
+        public CardResult? PreviousResult
+        {
+            get => cursor > 0 ? _history[cursor - 1] : null;
+        }
+
 
         public bool IsBlackFlushUsed { get; private set; }
 
-        public CardResultContext(MultiplyValues multiplyValues)
+
+        /// <summary>
+        /// History에 null을 넣어 기존 current를 previous로.
+        /// </summary>
+        public void StepToNext()
         {
-            Multiply = multiplyValues;
+            _history.Add(null);
         }
 
-        public void GetSet()
+        public void Push(CardResult result)
         {
-            PreviousResult = CurrentResult;
-        }
+            if (_history[^1] == null) _history[^1] = result;
+            else _history.Add(result);
 
-        public void SetResult(CardResult result)
-        {
-            CurrentResult = result;
+            cursor = _history.Count - 1;
         }
 
         public void SetBlackFlushUsed()
         {
             IsBlackFlushUsed = true;
         }
+        
+        public CardResultContext(MultiplyValues multiplyValues)
+        {
+            Multiply = multiplyValues;
+        }
     }
 
 
+
     /// <summary>
-    /// 사용한 카드를 바탕으로 해석된 결과만을 가지는 구조체
+    /// 결과 계산시 여러 효과들이 적용되는 클래스. 이를 바탕으로 CardResult를 생성.
+    /// </summary>
+    public class CardEvaluationContext
+    {
+        public CardResultContext ctx;
+        public float defaultDamage;
+        public float relicDamage;
+        public List<HandRanking> rankings;
+
+        public HandRanking Ranking => rankings[0];
+
+        public List<CardData> datas;
+        public List<CardData> numbers;
+        public List<CardData> moves;
+
+        public CardEvaluationContext(CardResultContext ctx, IEnumerable<Card> cards)
+        {
+            this.ctx = ctx;
+            rankings = null;
+
+            datas = cards.Select(c => c.data)
+                    .ToList();
+            numbers = datas.Where(c => c.valueType == CardData.ValueType.Number)
+                    .ToList();
+            moves = datas.Where(c => c.valueType == CardData.ValueType.Move)
+                    .ToList();
+
+            // 기본 데미지 계산
+            foreach (var numberData in numbers)
+            {
+                var baseDamage = numberData.Number.NumberValue + numberData.AdditionalDamage;
+                numberData.Number.Damage = baseDamage;
+            }
+
+            defaultDamage = numbers.Sum(n => n.Number.Damage);
+            relicDamage = 0;
+        }
+
+        public CardResult MakeResult()
+        {
+            rankings ??= new List<HandRanking>() { HandRanking.None };
+            return new CardResult(ctx, defaultDamage + relicDamage, rankings, datas, numbers, moves);
+        }
+    }
+
+
+
+    /// <summary>
+    /// 사용한 카드를 바탕으로 해석된 결과만을 가짐.
     /// </summary>
     [Serializable]
     public readonly struct CardResult
@@ -84,7 +157,7 @@ namespace Cardevil.Cards
                     if (Ctx.IsBlackFlushUsed)
                         text += "[ Black Flush: damage 200% ]\n";
 
-                    if (Ctx.PreviousResult.IsRedFlush)
+                    if (Ctx.PreviousResult?.IsRedFlush == true)
                         text += "[ Red Flush: damage 300% ]\n";
 
                     text += $"Ranking: {Rankings[0]}\nDamage: {Damage}\n";

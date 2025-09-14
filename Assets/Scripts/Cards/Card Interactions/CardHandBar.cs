@@ -371,19 +371,19 @@ namespace Cardevil.Cards.CardInteractinos
         {
             await DiscardAsync();
 
-            if (Context.CurrentResult.IsBlueFlush)
+            if (Context.CurrentResult?.IsBlueFlush == true)
             {
                 blueFlushChoice.GetSet(this);
                 await blueFlushChoice.BlueFlushCmp.Task;
             }
-            else if (Context.CurrentResult.IsGreenFlush)
+            else if (Context.CurrentResult?.IsGreenFlush == true)
             {
                 Managers.Game.PlayerStatus.Shield += 1;
             }
-            else if (Context.CurrentResult.IsBlackFlush)
+            else if (Context.CurrentResult?.IsBlackFlush == true)
             {
                 Context.SetBlackFlushUsed();
-                // 최대 HP 1로 고정
+                Managers.Game.PlayerStatus.CurrentHp = 1;
             }
 
             cmp.TrySetResult();
@@ -513,9 +513,9 @@ namespace Cardevil.Cards.CardInteractinos
 
         public void ActivateInteraction()
         {
+            resultCtx.StepToNext();
             cmp = new();
             CanInteraction = true;
-            Context.GetSet();
         }
 
         public void InactivateInteraction()
