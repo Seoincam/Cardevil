@@ -149,6 +149,7 @@ namespace Cardevil.Ingame
         public void Load(GameSave currentSave)
         {
             currentSave.PlayerStatus.CopyTo(this);
+            BroadcastInitialStatus();
         }
 
         public void CopyFrom(PlayerStatus other)

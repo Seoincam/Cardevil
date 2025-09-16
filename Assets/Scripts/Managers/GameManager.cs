@@ -157,7 +157,7 @@ public class GameManager : ISaveLoad
 
     public void Load(GameSave currentSave)
     {
-        _playerStatus = currentSave.PlayerStatus;
-        _playerStatus.BroadcastInitialStatus();
+        _playerStatus.Load(currentSave);
+        
     }
 }
