@@ -18,6 +18,7 @@ namespace Cardevil.Ingame
         [SerializeField] private int _shield = 0;
         [SerializeField] private int _rerollTicket = 0;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
+        [SerializeField] public int gold;
         
         /// <summary>
         /// 플레이어의 현재 체력

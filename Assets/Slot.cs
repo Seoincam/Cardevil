@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 using Cardevil.Item;
+using Cardevil.Item.gold;
 
 public class Slot : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class Slot : MonoBehaviour
     public float dropDuration = 0.8f;    // 떨어지기 시작하는 시간
     public float floatStrength = 10f;    // 얼마나 세게 떨어지는지
     public float floatDuration = 1.5f;   // 떨어지는 시간
-    public void SettingSlot()
+    public void SettingSlot(int[] probList)
     {
         // 슬롯 아이템이 활성화 상태인지 확인
         slotItem.SetActive(true);
@@ -27,7 +28,16 @@ public class Slot : MonoBehaviour
         // 2. 낙하 및 바운스 애니메이션 실행
         rt.DOAnchorPosY(0, dropDuration)
           .SetEase(Ease.OutBounce);
+
+
+        // 아이템을 설정
+        SettingItem(probList);
     }
 
+
+    public void SettingItem(int[] probList)
+    {
+        item = Managers.Item.GetRandomItem(probList);
+    }
  
 }
