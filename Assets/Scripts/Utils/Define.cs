@@ -87,4 +87,25 @@ public class Define
         None,
         DefaultAttack
     }
+
+    public enum ShopRewardType
+    {
+        Heal,
+        FixedGold,
+        RandomGold,
+        DarkUpgrade,
+        StartReroll,
+        ExactUpgrade,
+        Relic
+
+
+    }
+
+    public enum RareType
+    {
+        Nomal,
+        Rare,
+        Epic,
+        Legend
+    }
 }

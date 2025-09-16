@@ -1,16 +1,6 @@
 using UnityEngine;
-
-public class Heal : MonoBehaviour
+using Cardevil.Item;
+public class Heal : Item
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
 }

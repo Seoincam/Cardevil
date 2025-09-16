@@ -7,7 +7,7 @@ namespace Cardevil.Item.gold
     {
         private int goldRangeMin;
         private int goldRangeMax;
-        private int getgold;
+        public int getGold;
 
 
         /// <summary>
@@ -16,8 +16,13 @@ namespace Cardevil.Item.gold
         override public void IsClicked()
         {
             // 골드 획득하는 UI 띄우기
+            Debug.Log("gold 획득{getGold}");
         }
 
+        private void SettingGold()
+        {
+            getGold = Random.Range(goldRangeMin, goldRangeMax);
+        }
 
         /// <summary>
         /// 골드 획득 관련 코드
@@ -25,7 +30,7 @@ namespace Cardevil.Item.gold
         /// <param name="income"></param>
         public void GetGold(int income)
         {
-
+            Managers.Game.PlayerStatus.gold += income;
         }
     }
 

@@ -18,6 +18,9 @@ public class SlotMachine : UI_Popup
     [Header("크기를 조절할 UI 이미지들")]
     public List<Image> boxImages;
 
+    [Header("아이템이 나올 확률")]
+    public int[] probalityList = new int[] { 30, 20, 10, 5 };
+
     public List<Slot> slots;
 
     private bool isSetting = false;
@@ -47,6 +50,8 @@ public class SlotMachine : UI_Popup
         GetButton((int)ItemButtons.Item_1).gameObject.AddUIEvent(OnItem1Clicked);
         GetButton((int)ItemButtons.Item_2).gameObject.AddUIEvent(OnItem2Clicked);
         GetButton((int)ItemButtons.Item_3).gameObject.AddUIEvent(OnItem3Clicked);
+        GetButton((int)ItemButtons.Reroll).gameObject.AddUIEvent(OnRerollClicked);
+        Managers.UI.SetCanvasMost(this.gameObject);
     }
 
 
@@ -58,7 +63,7 @@ public class SlotMachine : UI_Popup
         isSetting = true;
         foreach (var slot in slots)
         {
-            slot.SettingSlot();
+            slot.SettingSlot(probalityList);
             yield return new WaitForSecondsRealtime(dropTiming);
         }
         isSetting = false;
@@ -129,12 +134,20 @@ public class SlotMachine : UI_Popup
     {
 
     }
-
+    
     enum ItemButtons
     {
         Item_1,
         Item_2,
-        Item_3
+        Item_3,
+
+        Reroll,
+
+    }
+
+    private void OnRerollClicked(PointerEventData eventData)
+    {
+        StartCoroutine(SettingSlots());
     }
     private void OnItem1Clicked(PointerEventData eventData)
     {

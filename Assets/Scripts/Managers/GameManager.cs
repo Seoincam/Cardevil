@@ -13,13 +13,13 @@ using Unity.VisualScripting;
 [Serializable]
 public class GameManager
 {
-    //
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
     [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus; // 플레이어 상태 
     
+
     public Field Field
     {
         get
