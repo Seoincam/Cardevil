@@ -9,7 +9,6 @@ using System.Collections.Generic;
 
 public class ItemManager
 {
-
     public List<List<Item>> typeLists = new List<List<Item>>();
     public List<Item> normalList = new List<Item>();
     public List<Item> rareList = new List<Item>();
@@ -66,10 +65,10 @@ public class ItemManager
     {
         // 추후 Data와 연결하여 설정할 수 있도록 유도
 
-        normalList.AddRange(new List<Item> { new Gold(), new Heal() } );
-        rareList.AddRange(new List<Item> { new Gold(), new Heal() });
-        epicList.AddRange(new List<Item> { new Gold(), new Heal() });
-        legendList.AddRange(new List<Item> { new Gold(), new Heal() });
+        normalList.AddRange(new List<Item> { new Gold(3), new Heal(1),new RandomGold(2,4),new StartReroll(2) } );
+        rareList.AddRange(new List<Item> { new Gold(4), new Heal(2), new RandomGold(3,6), new StartReroll(3) });
+        epicList.AddRange(new List<Item> { new Gold(7), new RandomGold(6,10), new StartReroll(5),new ExactUpgrade(1) });
+        legendList.AddRange(new List<Item> { new Gold(9999999) });
 
 
 
@@ -83,6 +82,16 @@ public class ItemManager
         typeLists.Add(legendList);
         Debug.Log($"tpyeLists의 크기 {typeLists.Count}");
 
+    }
+
+    /// <summary>
+    /// 암시장을 조우한뒤 반드시 호출해주세요.
+    /// </summary>
+    public void SettingDarkUpgradeListAdd()
+    {
+        normalList.Add(new DarkUprade());
+        rareList.Add(new DarkUprade());
+        epicList.Add(new DarkUprade());
     }
 
 
