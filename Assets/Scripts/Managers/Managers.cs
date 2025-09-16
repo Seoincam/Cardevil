@@ -2,6 +2,7 @@ using Cardevil.Cards;
 using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;
+using Cardevil.Save;
 using Cardevil.Sound;
 using Cardevil.Systems;
 using Database;
@@ -19,7 +20,7 @@ public class Managers : MonoBehaviour
     GameManager _game = new GameManager();
     [SerializeField] PoolManager _pool = new PoolManager();
     SceneManagerEx _scene = new SceneManagerEx();
-    DataManager _data = new DataManager(); //DataManager가 겹쳐서 추가
+    [SerializeField]SaveLoadManager _saveload = new SaveLoadManager();
     JsonManager _json = new JsonManager();
     [SerializeField] SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
@@ -34,7 +35,7 @@ public class Managers : MonoBehaviour
     public static UI_Manager UI { get { return Instance._ui; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static PoolManager Pool { get { return Instance._pool; } }
-    public static DataManager Data { get { return Instance._data; } } 
+    public static SaveLoadManager SaveLoad { get { return Instance._saveload; } } 
     public static JsonManager Json {  get { return Instance._json; } }
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
@@ -73,13 +74,14 @@ public class Managers : MonoBehaviour
 
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
+            s_instance._saveload.Init();
             s_instance._pool.Init();
-            s_instance._data.Init();
             s_instance._sound.Init();                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             s_instance._execution.Init();
             s_instance._card.Init();
             s_instance._dungeon.Init();
             s_instance._item.Init();
+            s_instance._game.Init();
 
             if (s_instance._database == null)
             {
