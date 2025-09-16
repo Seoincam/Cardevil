@@ -45,6 +45,16 @@ namespace Cardevil.DataStructure
                 this[pair.key] = pair.value;
             }
         }
+        
+        public static SerializableDict<TKey, TValue> FromDictionary(Dictionary<TKey, TValue> dict)
+        {
+            var serializableDict = new SerializableDict<TKey, TValue>();
+            foreach (var kvp in dict)
+            {
+                serializableDict[kvp.Key] = kvp.Value;
+            }
+            return serializableDict;
+        }
     
     }
 }

@@ -5,6 +5,10 @@
     /// </summary>
     public class PlayerHealthChangeArgs : EventArgs<PlayerHealthChangeArgs>
     {
+        /// <summary>
+        /// 단순히 체력 변화 이벤트를 방송만 할 때 true로 설정.
+        /// </summary>
+        public bool IsJustBroadcast {get; set;} = false;
         public int OldHealth { get; private set; }
         public int NewHealth { get; private set; }
 
