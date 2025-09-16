@@ -1,4 +1,5 @@
 ﻿    
+using Cardevil.Core;
 using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
@@ -15,7 +16,7 @@ namespace Cardevil.DataStructure
 /// 
 /// </summary>
 [Serializable]
-public class VariableContainer 
+public class VariableContainer : ICopy<VariableContainer>
 {
     [FormerlySerializedAs("arguments")] [SerializeField]private List<KeyVariablePair> variables = new List<KeyVariablePair>();
     public List<KeyVariablePair> Variables => variables;
@@ -262,6 +263,11 @@ public class VariableContainer
         {
             variables.Add((KeyVariablePair)argument.Clone());
         }
+    }
+    
+    public void CopyTo(VariableContainer target)
+    {
+        target.CopyFrom(this);
     }
     
     public VariableContainer Clone()

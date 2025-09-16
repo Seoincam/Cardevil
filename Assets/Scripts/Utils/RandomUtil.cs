@@ -10,7 +10,7 @@ namespace Cardevil.Utils
     {
         public enum RandomType
         {
-            Defualt = 0,
+            Default = 0,
             CardShuffle, 
             
             MAX
@@ -25,7 +25,7 @@ namespace Cardevil.Utils
         public static void Init()
         {
             _isInitialized = true;
-            for (RandomType randomType = RandomType.Defualt; randomType < RandomType.MAX; randomType++)
+            for (RandomType randomType = RandomType.Default; randomType < RandomType.MAX; randomType++)
             {
                 InitSeed(randomType);
             }
@@ -41,7 +41,7 @@ namespace Cardevil.Utils
             randomSeeds[type] = setSeed;
         }
         
-        public static int GetRandomInt(int min, int max, RandomType type = RandomType.Defualt)
+        public static int GetRandomInt(int min, int max, RandomType type = RandomType.Default)
         {
             if (!randoms.TryGetValue(type, out var r))
             {
