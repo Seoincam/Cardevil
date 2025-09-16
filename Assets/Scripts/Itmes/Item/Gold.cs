@@ -38,6 +38,7 @@ namespace Cardevil.Item.gold
             Managers.Game.PlayerStatus.gold += income;
             Debug.Log($"income :{income} 획득");
         }
+        // 설명을위한 push;
     }
 
 }
