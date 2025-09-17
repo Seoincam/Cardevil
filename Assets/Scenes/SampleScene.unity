@@ -1514,7 +1514,13 @@ MonoBehaviour:
         _shield: 0
         _rerollTicket: 0
         _variableContainer:
-          variables: []
+          variables:
+          - key: 
+            stringValue: 
+            intValue: 0
+            floatValue: 0
+            objectValue:
+              rid: -2
         gold: 0
   _sound:
     root: {fileID: 0}
@@ -1593,7 +1599,9 @@ MonoBehaviour:
   _database: {fileID: 0}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &799136585
 Transform:
   m_ObjectHideFlags: 0

@@ -13,7 +13,7 @@ namespace Cardevil.Save
         public string Name;
         public long RawSaveTime;
         public PlayerStatus PlayerStatus;
-        
+        //필요한데이터 GameSave
         public GameSave(string name)
         {
             Name = name;
@@ -60,6 +60,7 @@ namespace Cardevil.Save
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
+
         public bool Register(ISaveLoad saveLoadObj)
         {
             if (_saveLoadObjects.Contains(saveLoadObj))
@@ -67,6 +68,7 @@ namespace Cardevil.Save
             _saveLoadObjects.Add(saveLoadObj);
             return true;
         }
+
         public bool Unregister(ISaveLoad saveLoadObj)
         {
             return _saveLoadObjects.Remove(saveLoadObj);
