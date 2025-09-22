@@ -91,6 +91,8 @@ namespace Database
             {
                 if (string.IsNullOrEmpty(value))
                     return targetType.GetEnumValues().GetValue(0)!;
+                if (int.TryParse(value, out int enumInt))
+                    return Enum.ToObject(targetType, enumInt);
                 return Enum.Parse(targetType, value, ignoreCase: true);
             }
 
