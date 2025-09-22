@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Cardevil.Utils.Directions
 {
+    
     public enum Direction
     {
         None = -1,
