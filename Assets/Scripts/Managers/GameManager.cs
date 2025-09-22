@@ -129,6 +129,7 @@ public class GameManager : ISaveLoad
             LoadPlayerData().Forget();
             return;
         }
+        Debug.Log("[GameManager] Database가 초기화 되었습니다. GameStart 실행.");
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
     }

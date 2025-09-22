@@ -9,19 +9,19 @@ namespace Database.Generated
     [Serializable]
     public class mob    {
 
-        /// <summary> 대충 한국어 변수 </summary>
+        /// <summary> 한국어변수 </summary>
         public string roomID;
-        /// <summary> 대충 영어 변수 </summary>
-        public string mobName;
-        /// <summary> 대충 숫자 변수 </summary>
+        /// <summary> 영어변수 </summary>
+        public List<string> mobName;
+        /// <summary> 숫자 </summary>
         public int number;
-        /// <summary> 대충 리스트 변수 </summary>
-        public int HP;
-        /// <summary> 대충 불리안 변수 </summary>
-        public int attackCycle;
+        /// <summary> 리스트 </summary>
+        public List<int> HP;
+        /// <summary> 불리안 </summary>
+        public List<int> attackCycle;
         /// <summary> Enum은 미리 코드에서 선언해야함 </summary>
-        public int attackDamage;
+        public List<int> attackDamage;
         /// <summary> (족보를 어떻게 뽑는 지)  </summary>
-        public int attackType;
+        public List<int> attackType;
     }
 }

@@ -109,7 +109,8 @@ namespace Database
 
             // 숫자: 빈 문자열이면 0
             if (string.IsNullOrEmpty(value)) value = "0";
-
+            else if (value == "null") value = "0";
+            
             var ci = CultureInfo.InvariantCulture;
 
             // Debug.Log($"[ClassInstanceFactory] Converting '{value}' to {targetType.Name}");

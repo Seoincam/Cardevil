@@ -19,9 +19,8 @@ namespace Database.Generated
         public List<int> integerList;
         /// <summary> 대충 불리안 변수 </summary>
         public bool booleanVar;
-        /// <summary> (Reference:List<Enum<Cardevil.Utils.Direction>>) 
-         /// Enum은 미리 코드에서 선언해야함 </summary>
-        public string enumList;
+        /// <summary> Enum은 미리 코드에서 선언해야함 </summary>
+        public List<Cardevil.Utils.Directions.Direction> enumList;
         /// <summary> (Reference:CardType) 
          /// 기타 클래스는 자동으로 string으로 변환됨 </summary>
         public string otherVar;

@@ -93,8 +93,9 @@ namespace Database
             mcDatabase.ClearAll();
             yield return LoadDatabase();
             // yield return new WaitForSeconds(1f); // 테스트용 딜레이
-            isInitialized = true;
+            
             Debug.Log("[DatabaseManager] 초기화 완료");
+            isInitialized = true;
         }
         
         private IEnumerator LoadDatabase()
