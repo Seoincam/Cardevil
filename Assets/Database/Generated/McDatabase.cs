@@ -9,15 +9,18 @@ namespace Database
     [Serializable]
     public class McDatabase
     {
-        public List<TEST> TESTList = new List<TEST>();
+        public List<Example> ExampleList = new List<Example>();
+        public List<mob> mobList = new List<mob>();
         public readonly List<string> ClassNames = new List<string> {
-            "TEST"
+            "Example",
+            "mob"
         };
 
 
         public void ClearAll()
         {
-            TESTList.Clear();
+            ExampleList.Clear();
+            mobList.Clear();
         }
 
 
@@ -42,8 +45,11 @@ namespace Database
             {
                 switch (df.name)
                 {
-                    case "TEST":
-                        TESTList = CreateInstance<TEST>(df);
+                    case "Example":
+                        ExampleList = CreateInstance<Example>(df);
+                        break;
+                    case "mob":
+                        mobList = CreateInstance<mob>(df);
                         break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
@@ -57,9 +63,13 @@ namespace Database
         {
             switch (className)
             {
-                case "TEST":
-                    var newTESTItems = JsonUtilExtend.FromJsonList<TEST>(jsonList);
-                    TESTList.AddRange(newTESTItems);
+                case "Example":
+                    var newExampleItems = JsonUtilExtend.FromJsonList<Example>(jsonList);
+                    ExampleList.AddRange(newExampleItems);
+                    break;
+                case "mob":
+                    var newmobItems = JsonUtilExtend.FromJsonList<mob>(jsonList);
+                    mobList.AddRange(newmobItems);
                     break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
@@ -72,8 +82,10 @@ namespace Database
         {
             switch (className)
             {
-                case "TEST":
-                    return typeof(TEST);
+                case "Example":
+                    return typeof(Example);
+                case "mob":
+                    return typeof(mob);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

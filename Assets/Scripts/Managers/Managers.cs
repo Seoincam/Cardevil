@@ -29,7 +29,7 @@ public class Managers : MonoBehaviour
     CardManager _card = new CardManager();
     ItemManager _item = new ItemManager();
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
-    [SerializeField] DatabaseManager _database = new DatabaseManager();
+    [SerializeField] DatabaseManager _database;
 
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
