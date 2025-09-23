@@ -112,7 +112,7 @@ namespace Database
                 {
                     if (!validChars.Contains(c)) return false;
                 }
-                return false;
+                return true;
             }
             
             foreach (var varName in findTargetVariables)
