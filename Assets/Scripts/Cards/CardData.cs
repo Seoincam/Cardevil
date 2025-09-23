@@ -42,7 +42,14 @@ namespace Cardevil.Cards
 
         public MoveData DefaultMove => _defaultMove;
 
-        public int AdditionalDamage => _additionalDamage;
+        /// <summary>
+        /// 카드의 추가 데미지 값.
+        /// </summary>
+        public int AdditionalDamage
+        {
+            get => _additionalDamage;
+            set => _additionalDamage = value;
+        }
 
         /// <summary>
         /// 카드의 최종 Number 값
@@ -230,6 +237,7 @@ namespace Cardevil.Cards
                 _defaultMove = _defaultMove,
                 _selectedNumber = new(),
                 _selectedMove = new(),
+                _additionalDamage = _additionalDamage,
                 isLocked = false,
                 _numberOptionCount = _numberOptionCount,
                 reinforceEnabled = reinforceEnabled

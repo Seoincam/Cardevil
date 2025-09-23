@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class DeckRemain : MonoBehaviour
 {
@@ -12,7 +11,7 @@ public class DeckRemain : MonoBehaviour
     private bool isInitialized = false;
     private bool isOpened = false;
 
-    private int DeckSize => Managers.Card.runtimeBaseDeck.Count;
+    private int DeckSize => Managers.Card.RuntimeBaseDeck.Count;
 
     private void Init()
     {
@@ -22,7 +21,7 @@ public class DeckRemain : MonoBehaviour
         for (int i = 0; i < 50; i++)
         {
             cardVisuals[i] = Instantiate(remainCardVisualPrefab, parent: cardsPanel);
-            cardVisuals[i].Init(Managers.Card.runtimeBaseDeck[i]);
+            cardVisuals[i].Init(Managers.Card.RuntimeBaseDeck[i]);
         }
 
         isInitialized = true;

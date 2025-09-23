@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards.CardInteractinos;
+using Cardevil.Relic;
 
 namespace Cardevil.Cards
 {
@@ -11,90 +12,74 @@ namespace Cardevil.Cards
         /// </summary>
         public enum EffectType
         {
-            Damage, // 데미지 계산 시점에 적용
-            Ranking, // 유물 계산 시점에 적용
-            Final // 최종 계산 시점에 적용
+            None,
+            Plus = 1,
+            Multiply = 2
         }
 
 
         /// <summary>
-        /// 카드를 사용했을 때, 계산 후 context에 저장
+        /// 카드를 사용했을 때, 계산 후 context에 Push.
         /// </summary>
-        public static void SetResult(CardResultContext ctx, IEnumerable<Card> cards)
+        public static void PushResult(CardResultContext ctx, IEnumerable<Card> cards)
         {
-            var result = Evaluate(ctx, cards);
-            ctx.SetResult(result);
+            var result = Evaluate(ctx, cards, true);
+            ctx.Push(result);
         }
 
 
         /// <summary>
         /// 선택된 카드를 바탕으로 계산 후 결과를 반환
         /// </summary>
-        public static CardResult Evaluate(CardResultContext ctx, IEnumerable<Card> cards)
+        public static CardResult Evaluate(CardResultContext ctx, IEnumerable<Card> cards, bool pushToHistory = false)
         {
-            var datas = cards.Select(c => c.data)
-                    .ToList();
-
-            var numbers = datas.Where(c => c.valueType == CardData.ValueType.Number)
-                    .ToList();
-
-            var moves = datas.Where(c => c.valueType == CardData.ValueType.Move)
-                    .ToList();
-
-
+            var evaluationCtx = new CardEvaluationContext(ctx, cards, pushToHistory);
 
             // 숫자 카드 판정 
-            if (numbers.Count == 0)
+            if (evaluationCtx.numbers.Count == 0)
+                return evaluationCtx.MakeResult();
+
+
+            evaluationCtx.rankings = CalculateRanking(evaluationCtx.numbers);
+            evaluationCtx.defaultDamage = evaluationCtx.Ranking switch
             {
-                var ranking = new List<HandRanking>() { HandRanking.None };
-                return new CardResult(ctx, damage: 0, ranking, datas, numbers, moves);
-            }
+                HandRanking.High => evaluationCtx.numbers.OrderBy(n => n.Number.NumberValue).Last().Number.Damage,
 
-            // 데미지 계산
-            foreach (var numberData in numbers)
-            {
-                var baseDamage = numberData.Number.NumberValue + numberData.AdditionalDamage;
-                numberData.Number.Damage = baseDamage;
-            }
-                
-
-            // -> 유물 효과 적용
-
-
-
-            var rankings = CalculateRanking(numbers);
-            float finalDamage = rankings[0] switch
-            {
-                HandRanking.High => numbers.OrderBy(n => n.Number.NumberValue).Last().Number.Damage,
-
-                HandRanking.OnePair => numbers.GroupBy(n => n.Number.NumberValue)
+                HandRanking.OnePair => evaluationCtx.numbers.GroupBy(n => n.Number.NumberValue)
                             .Where(g => g.Count() == 2)
                             .Sum(g => g.Sum(n => n.Number.Damage)),                           
 
-                HandRanking.Triple => numbers.GroupBy(n => n.Number.NumberValue)
+                HandRanking.Triple => evaluationCtx.numbers.GroupBy(n => n.Number.NumberValue)
                             .Where(g => g.Count() == 3)
                             .Sum(g => g.Sum(n => n.Number.Damage)),
 
-                _ => numbers.Sum(n => n.Number.Damage)
+                _ => evaluationCtx.numbers.Sum(n => n.Number.Damage)
             };
 
-            finalDamage += (int)rankings[0];
+            evaluationCtx.rankingDamage += (int)evaluationCtx.Ranking;
+
+            // 족보 유물 효과 적용
+            // foreach (var relic in RelicTest.instance.GetRelics(RelicSO.TriggerTiming.OnResultEvaluate))
+            // {
+            //     relic.Apply(EffectType.Plus, ctx, evaluationCtx);
+            // }
 
             // == 데미지 곱 연산 ==
             //TODO: 수치들 하드코딩 제거
             if (ctx.IsBlackFlushUsed)
-                finalDamage *= 2;
+                evaluationCtx.defaultDamage *= 2;
 
-            if (ctx.PreviousResult.IsRedFlush)
-                finalDamage *= 3;
+            if (ctx.PreviousResult?.IsRedFlush == true)
+                evaluationCtx.defaultDamage *= 3;
 
-            // == 데미지 강화 카드의 존재 여부 ==
 
-            // == 유물 데미지 판정 ==
+            // 최종 유물 효과 적용
+            // foreach (var relic in RelicTest.instance.GetRelics(RelicSO.TriggerTiming.OnResultEvaluate))
+            // {
+            //     relic.Apply(EffectType.Multiply, ctx, evaluationCtx);
+            // }
 
-            var result = new CardResult(ctx, finalDamage, rankings, datas, numbers, moves);
-
-            return result;
+            return evaluationCtx.MakeResult();
         }
 
 

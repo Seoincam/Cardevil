@@ -12,15 +12,14 @@ namespace Cardevil.Cards.CardInteractinos
     public class CardHandBar : MonoBehaviour, ICardHandBar, ITurnPlayerInput
     {
         [Header("Test")]
-        [SerializeField] int initialRerollTicketCount = 5;
+        [SerializeField] int initialRerollTicketCount;
+
+        [Header("SO")]
+        [SerializeField] CardVisualSetting visualSetting;
 
         [Header("InStage Data")]
         [SerializeField] StageCardsContext stageCardsCtx;
         [SerializeField] CardResultContext resultCtx;
-
-        [Header("SO")]
-        [SerializeField] MultiplyValues multiplyValues;
-        [SerializeField] CardVisualSetting visualSetting;
 
         [Header("Card")]
         [SerializeField] GameObject cardPrefab;
@@ -117,13 +116,13 @@ namespace Cardevil.Cards.CardInteractinos
             CanInteraction = false;
 
             // Init Contexts
-            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
-            resultCtx = new(multiplyValues);
+            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.RuntimeBaseDeck));
+            resultCtx = new();
 
             // Init Slots
-            slots = new Transform[Managers.Card.MaxCardCount];
-            rerollSlots = new Transform[Managers.Card.MaxCardCount];
-            for (int i = 0; i < Managers.Card.MaxCardCount; i++)
+            slots = new Transform[Managers.Card.MaxHandCount];
+            rerollSlots = new Transform[Managers.Card.MaxHandCount];
+            for (int i = 0; i < Managers.Card.MaxHandCount; i++)
             {
                 if (slots[i] == null)
                     slots[i] = Instantiate(original: cardSlotPrefab, parent: transform).transform;
@@ -189,11 +188,11 @@ namespace Cardevil.Cards.CardInteractinos
                 await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDiscardInterval));
             }
 
-            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.runtimeBaseDeck));
+            stageCardsCtx = new(DeckFactory.CreateStageDeck(Managers.Card.RuntimeBaseDeck));
 
             await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDrawDiscardInterval));
 
-            for (int i = 0; i < Managers.Card.MaxCardCount; i++)
+            for (int i = 0; i < Managers.Card.MaxHandCount; i++)
             {
                 Spawn(isReroll: true).OnRerollDraw?.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.RerollDrawInterval));
@@ -356,7 +355,7 @@ namespace Cardevil.Cards.CardInteractinos
         // - - - - - - - - - - -
         private void Use()
         {
-            CardResultEvaluator.SetResult(Context, StageCardsCtx.Selects);
+            CardResultEvaluator.PushResult(Context, StageCardsCtx.Selects);
             _ = UseAsync();
         }
 
@@ -404,7 +403,7 @@ namespace Cardevil.Cards.CardInteractinos
         private async UniTask DrawAsync()
         {
             IsSwapping = true;
-            var count = Managers.Card.MaxCardCount - StageCardsCtx.HandCount;
+            var count = Managers.Card.MaxHandCount - StageCardsCtx.HandCount;
             for (int i = 0; i < count; i++)
             {
                 Spawn().OnDraw?.Invoke();

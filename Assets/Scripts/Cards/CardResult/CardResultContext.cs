@@ -23,13 +23,12 @@ namespace Cardevil.Cards
     [Serializable]
     public class CardResultContext
     {
-        public readonly MultiplyValues Multiply;
-        public IReadOnlyList<CardResult?> History => _history;
-
         private readonly List<CardResult?> _history = new();
 
         // 현재 가르키는 인덱스
         private int cursor = -1;
+
+        public IReadOnlyList<CardResult?> History => _history;
 
 
 
@@ -67,11 +66,6 @@ namespace Cardevil.Cards
         {
             IsBlackFlushUsed = true;
         }
-        
-        public CardResultContext(MultiplyValues multiplyValues)
-        {
-            Multiply = multiplyValues;
-        }
     }
 
 
@@ -81,9 +75,14 @@ namespace Cardevil.Cards
     /// </summary>
     public class CardEvaluationContext
     {
+        /// <summary>
+        /// 실제로 History에 Push될 것인가?
+        /// </summary>
+        public bool pushToHistory;
+
         public CardResultContext ctx;
         public float defaultDamage;
-        public float relicDamage;
+        public float rankingDamage;
         public List<HandRanking> rankings;
 
         public HandRanking Ranking => rankings[0];
@@ -92,8 +91,9 @@ namespace Cardevil.Cards
         public List<CardData> numbers;
         public List<CardData> moves;
 
-        public CardEvaluationContext(CardResultContext ctx, IEnumerable<Card> cards)
+        public CardEvaluationContext(CardResultContext ctx, IEnumerable<Card> cards, bool pushToHistory)
         {
+            this.pushToHistory = pushToHistory;
             this.ctx = ctx;
             rankings = null;
 
@@ -112,13 +112,13 @@ namespace Cardevil.Cards
             }
 
             defaultDamage = numbers.Sum(n => n.Number.Damage);
-            relicDamage = 0;
+            rankingDamage = 0;
         }
 
         public CardResult MakeResult()
         {
             rankings ??= new List<HandRanking>() { HandRanking.None };
-            return new CardResult(ctx, defaultDamage + relicDamage, rankings, datas, numbers, moves);
+            return new CardResult(ctx, defaultDamage + rankingDamage, rankings, datas, numbers, moves);
         }
     }
 
@@ -134,7 +134,7 @@ namespace Cardevil.Cards
 
         public readonly List<NumberData> Numbers;
         public readonly List<MoveData> Moves;
-        public readonly HandRanking Rangking => Rankings[0]; 
+        public readonly HandRanking Ranking => Rankings[0]; 
 
         public readonly bool IsRedFlush;
         public readonly bool IsBlueFlush;
