@@ -12,12 +12,10 @@ namespace Database
         public List<Example> ExampleList = new List<Example>();
         public List<mob> mobList = new List<mob>();
         public List<shop> shopList = new List<shop>();
-        public List<RelicOnEvaluation> RelicOnEvaluationList = new List<RelicOnEvaluation>();
         public readonly List<string> ClassNames = new List<string> {
             "Example",
             "mob",
-            "shop",
-            "RelicOnEvaluation"
+            "shop"
         };
 
 
@@ -57,7 +55,6 @@ namespace Database
             ExampleList.Clear();
             mobList.Clear();
             shopList.Clear();
-            RelicOnEvaluationList.Clear();
         }
 
 
@@ -91,9 +88,6 @@ namespace Database
                     case "shop":
                         shopList = CreateInstance<shop>(df);
                         break;
-                    case "RelicOnEvaluation":
-                        RelicOnEvaluationList = CreateInstance<RelicOnEvaluation>(df);
-                        break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
                         break;
@@ -102,25 +96,21 @@ namespace Database
         }
 
 
-        public void AddInstancesFromJsonList(string className, string jsonList)
+        public void AddInstancesFromJsonList(string className, string json)
         {
             switch (className)
             {
                 case "Example":
-                    var newExampleItems = JsonUtilExtend.FromJsonList<Example>(jsonList);
+                    var newExampleItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Example>>(json);
                     ExampleList.AddRange(newExampleItems);
                     break;
                 case "mob":
-                    var newmobItems = JsonUtilExtend.FromJsonList<mob>(jsonList);
+                    var newmobItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<mob>>(json);
                     mobList.AddRange(newmobItems);
                     break;
                 case "shop":
-                    var newshopItems = JsonUtilExtend.FromJsonList<shop>(jsonList);
+                    var newshopItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<shop>>(json);
                     shopList.AddRange(newshopItems);
-                    break;
-                case "RelicOnEvaluation":
-                    var newRelicOnEvaluationItems = JsonUtilExtend.FromJsonList<RelicOnEvaluation>(jsonList);
-                    RelicOnEvaluationList.AddRange(newRelicOnEvaluationItems);
                     break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
@@ -139,8 +129,6 @@ namespace Database
                     return typeof(mob);
                 case "shop":
                     return typeof(shop);
-                case "RelicOnEvaluation":
-                    return typeof(RelicOnEvaluation);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

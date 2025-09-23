@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -35,7 +35,7 @@ namespace Database.DataReader
                 }
                 else
                 {
-                    Debug.LogError("[GoogleSheetReader] 데이터프레임 로드 실패");
+                    Debug.LogError($"[GoogleSheetReader] 데이터프레임 로드 실패 {url}");
                     onComplete?.Invoke(false);
                 }
             }, timeoutDuration);

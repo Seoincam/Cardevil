@@ -5,6 +5,7 @@ using Cardevil.Item.gold;
 using UnityEngine.UI;
 using Database;
 using Database.Generated;
+using System.Linq;
 
 public class Slot : MonoBehaviour
 {
@@ -36,74 +37,42 @@ public class Slot : MonoBehaviour
 
 
         // 아이템을 설정
-        SettingItem(probList);
-        DatabaseManager dbManager = FindObjectOfType<DatabaseManager>();
-
-        shop target= dbManager.Database.shopList[0];
-        SetData(target);
+        Item item = SettingItem(probList);
+        SetData(item);
     }
 
 
-    public void SettingItem(int[] probList)
+    public Item SettingItem(int[] probList)
     {
         item = Managers.Item.GetRandomItem(probList);
+        return item;
     }
 
     #region tool
-    // Slot.cs 파일의 SetData 함수를 아래 내용으로 교체해주세요.
 
-    public void SetData(shop itemData)
+    public void SetData(Item findItem)
     {
-        // 1. DatabaseManager 인스턴스 찾기
-        DatabaseManager dbManager = FindObjectOfType<DatabaseManager>();
-        if (dbManager == null)
+        DatabaseManager database = Managers.Game._database;
+
+
+        itemNameText.text = database.Database.shopList[0].itemName;
+
+        Debug.Log("이미지 로딩중입니다");
+        // 이미지 로딩
+        if (database.TryGetSprite(database.Database.shopList[0].URL, out Sprite loadedSprite))
         {
-            Debug.LogError("⛔️ 씬에서 DatabaseManager를 찾을 수 없습니다!");
-            return;
-        }
-
-        // 2. 아이템 이름 등 텍스트 정보 설정
-        if (itemNameText != null)
-        {
-            itemNameText.text = itemData.itemName;
-        }
-
-        // 3. 아이템의 URL이 비어있지 않은지 확인
-        string keyURL = itemData.URL?.Trim();
-        if (!string.IsNullOrEmpty(keyURL))
-        {
-            // 4. SpriteCache에서 URL을 키로 사용해 Sprite를 '조회'
-            if (dbManager.SpriteCache.TryGetValue(keyURL, out Sprite iconSprite))
-            {
-                Debug.Log($"✅ 스프라이트 조회 성공! URL: {keyURL}");
-
-                if (itemIconImage == null)
-                {
-                    Debug.LogError("⛔️ itemIconImage 변수가 Inspector에 할당되지 않았습니다! 슬롯 프리팹을 확인하세요.");
-                    return;
-                }
-
-                itemIconImage.sprite = iconSprite;
-                itemIconImage.enabled = true;
-                itemIconImage.color = Color.white; // 색상을 흰색(불투명)으로 강제 설정
-            }
-            else
-            {
-                // 여기가 실행되는 경우
-                Debug.LogError($"⛔️ 스프라이트 로드 실패! SpriteCache에 해당 URL이 없습니다. URL: {keyURL}");
-
-                // 현재 캐시에 어떤 URL들이 들어있는지 모두 출력해서 비교해봅니다.
-                Debug.Log($"현재 캐시된 아이템 수: {dbManager.SpriteCache.Count}");
-                foreach (var key in dbManager.SpriteCache.Keys)
-                {
-                    Debug.Log($"-> 캐시에 저장된 URL: {key}");
-                }
-            }
+            // 성공! 찾은 스프라이트를 Image 컴포넌트에 적용
+            itemIconImage.sprite = loadedSprite;
+            itemIconImage.color = Color.white; // 이미지가 보이도록 색상 조절
+            Debug.Log("이미지 로딩 성공");
         }
         else
         {
-            Debug.LogWarning("⚠️ 이 아이템 데이터에는 URL 정보가 없습니다.");
-            if (itemIconImage != null) itemIconImage.enabled = false;
+            // 실패. URL이 없거나, 로딩에 실패한 경우
+            // 여기에 '이미지 없음' 기본 아이콘을 설정하는 등의 예외 처리를 할 수 있습니다.
+            itemIconImage.sprite = null; // 또는 defaultIconSprite;
+            itemIconImage.color = Color.clear; // 이미지가 없으면 투명하게
+            Debug.LogWarning($"아이템 '{database.Database.shopList[0]}'의 이미지를 캐시에서 찾을 수 없습니다. URL: {database.Database.shopList[0].URL}");
         }
     }
     #endregion
