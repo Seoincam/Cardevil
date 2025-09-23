@@ -165,8 +165,8 @@ namespace Cardevil.Cards.CardInteractinos
             toggleInGamePreviewButton.gameObject.SetActive(true);
             deckCountText.gameObject.SetActive(false);
 
-            Managers.Game.PlayerStatus.RerollTicket = initialRerollTicketCount; // 임시
-            _ = RerollAsync();
+            //Managers.Game.PlayerStatus.RerollTicket = initialRerollTicketCount; // 임시
+            //_ = RerollAsync();
         }
 
         private void OnRerollTicketCountChanged(RerollTicketChangeArgs args)

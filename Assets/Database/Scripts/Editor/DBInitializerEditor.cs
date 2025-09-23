@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using System.IO;
 
 namespace Database
 {
@@ -227,70 +228,95 @@ function compactOrNullPad(arr) {
 
 
 ";
-        
+
 
         #endregion
-        
+
         public override void OnInspectorGUI()
         {
-            serializedObject.Update(); // 최신 데이터 반영
-            DBInitializerSO target = (DBInitializerSO) this.target; // 대상 객체 가져오기
-            Type targetType = target.GetType(); // 대상 객체 타입 가져오기
-            FieldInfo[] fields = targetType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            // 기본 인스펙터 필드를 그립니다.
+            DrawDefaultInspector();
 
-            foreach (FieldInfo field in fields)
+            DBInitializerSO target = (DBInitializerSO)this.target;
+
+            EditorGUILayout.Space(10); // 보기 좋게 간격 추가
+
+            // 인스펙터에 Google Sheet 관련 버튼들을 그립니다.
+            if (GUILayout.Button("Download Google Sheet JSON"))
             {
-                // 필드가 SerializedProperty인지 확인 후 Inspector에 추가
-                SerializedProperty property = serializedObject.FindProperty(field.Name);
-                if (property != null)
+                if (string.IsNullOrEmpty(target.googleSheetUrl))
                 {
-                    EditorGUILayout.PropertyField(property);
+                    EditorUtility.DisplayDialog("Error", "Google Sheet URL is not set.", "OK");
                 }
-
-                // "Load" 버튼 추가 (특정 필드에 대해)
-                if (field.Name == "autoLoadXlsx" && property != null)
+                else
                 {
-                    if (GUILayout.Button("Load Xlsx"))
+                    try
                     {
-                        target.LoadAll(target.xlsxExtension);
+                        // DBInitializerSO에 DownloadGoogleSheet 메소드가 public 이어야 합니다.
+                        // 만약 public이 아니라면 아래 target.GetType() 코드를 사용하세요.
+                        var method = target.GetType().GetMethod("DownloadGoogleSheet", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+                        method?.Invoke(target, null);
                     }
-                }
-                else if (field.Name == "autoLoadJson" && property != null)
-                {
-                    if (GUILayout.Button("Load JSON"))
+                    catch (Exception ex)
                     {
-                        target.LoadAll(target.jsonExtension);
-                    }
-                }
-                else if (field.Name == "googleSheetUrl" && property != null)
-                {
-                    if (GUILayout.Button("Download Google Sheet JSON"))
-                    {
-                        if (string.IsNullOrEmpty(target.googleSheetUrl))
-                        {
-                            EditorUtility.DisplayDialog("Error", "Google Sheet URL is not set.", "OK");
-                        }
-                        else
-                        {
-                            try
-                            {
-                                target.DownloadGoogleSheet();
-                            }
-                            catch (Exception ex)
-                            {
-                                EditorUtility.DisplayDialog("Error", $"Failed to download Google Sheet JSON: {ex.Message}", "OK");
-                            }
-                        }
-                    }
-                    if (GUILayout.Button("Get .gs code"))
-                    {
-                        EditorGUIUtility.systemCopyBuffer = gsCode;
-                        EditorUtility.DisplayDialog("Copy to Clipboard", "Google Apps Script code copied to clipboard", "OK");
+                        EditorUtility.DisplayDialog("Error", $"Failed to download Google Sheet JSON: {ex.Message}", "OK");
                     }
                 }
             }
 
-            serializedObject.ApplyModifiedProperties(); // 변경 사항 저장
+            if (GUILayout.Button("Get .gs code"))
+            {
+                EditorGUIUtility.systemCopyBuffer = gsCode;
+                EditorUtility.DisplayDialog("Copy to Clipboard", "Google Apps Script code copied to clipboard", "OK");
+            }
+
+            // --- 추가된 부분: 캐시 관리 버튼 ---
+            EditorGUILayout.Space(20);
+            GUILayout.Label("Image Cache Management", EditorStyles.boldLabel);
+
+            if (GUILayout.Button("Open Cache Folder"))
+            {
+                // 아래에 추가할 정적 메소드 호출
+                OpenPersistentDataPath();
+            }
+
+            if (GUILayout.Button("Clear Image Cache"))
+            {
+                // 사용자에게 정말 삭제할지 한번 더 물어봅니다.
+                if (EditorUtility.DisplayDialog("Clear Image Cache",
+                    "Are you sure you want to delete all cached images? This action cannot be undone.",
+                    "Yes, clear cache", "Cancel"))
+                {
+                    // 아래에 추가할 정적 메소드 호출
+                    ClearImageCache();
+                }
+            }
         }
+        // --- 수정된 부분 끝 ---
+
+
+        // --- 추가된 부분 시작: 상단 메뉴 및 캐시 관리 정적 메소드들 ---
+
+        [MenuItem("Tools/Database/Open Cache Folder")]
+        private static void OpenPersistentDataPath()
+        {
+            EditorUtility.RevealInFinder(Application.persistentDataPath);
+        }
+
+        [MenuItem("Tools/Database/Clear Image Cache")]
+        private static void ClearImageCache()
+        {
+            string cachePath = Path.Combine(Application.persistentDataPath, "ImageCache");
+            if (Directory.Exists(cachePath))
+            {
+                Directory.Delete(cachePath, true);
+                Debug.Log($"Image cache cleared: {cachePath}");
+            }
+            else
+            {
+                Debug.Log("Image cache folder does not exist.");
+            }
+        }
+        // --- 추가된 부분 끝 ---
     }
 }

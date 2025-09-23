@@ -11,16 +11,53 @@ namespace Database
     {
         public List<Example> ExampleList = new List<Example>();
         public List<mob> mobList = new List<mob>();
+        public List<shop> shopList = new List<shop>();
+        public List<RelicOnEvaluation> RelicOnEvaluationList = new List<RelicOnEvaluation>();
         public readonly List<string> ClassNames = new List<string> {
             "Example",
-            "mob"
+            "mob",
+            "shop",
+            "RelicOnEvaluation"
         };
 
+
+        public T FindByName<T>(string name) where T : class
+        {
+            if (typeof(T) == null) return null;
+            switch (typeof(T).Name)
+            {
+                case "Example":
+                    foreach (var instance in ExampleList)
+                    {
+                        if (instance.name == name)
+                            return instance as T;
+                    }
+                    break;
+                default:
+                    Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 타입: {typeof(T).Name}");
+                    return null;
+            }
+            return null;
+        }
+
+        public T FindByIdentifier<T>(string identifier) where T : class
+        {
+            if (typeof(T) == null) return null;
+            switch (typeof(T).Name)
+            {
+                default:
+                    Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 타입: {typeof(T).Name}");
+                    return null;
+            }
+            return null;
+        }
 
         public void ClearAll()
         {
             ExampleList.Clear();
             mobList.Clear();
+            shopList.Clear();
+            RelicOnEvaluationList.Clear();
         }
 
 
@@ -51,6 +88,12 @@ namespace Database
                     case "mob":
                         mobList = CreateInstance<mob>(df);
                         break;
+                    case "shop":
+                        shopList = CreateInstance<shop>(df);
+                        break;
+                    case "RelicOnEvaluation":
+                        RelicOnEvaluationList = CreateInstance<RelicOnEvaluation>(df);
+                        break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
                         break;
@@ -71,6 +114,14 @@ namespace Database
                     var newmobItems = JsonUtilExtend.FromJsonList<mob>(jsonList);
                     mobList.AddRange(newmobItems);
                     break;
+                case "shop":
+                    var newshopItems = JsonUtilExtend.FromJsonList<shop>(jsonList);
+                    shopList.AddRange(newshopItems);
+                    break;
+                case "RelicOnEvaluation":
+                    var newRelicOnEvaluationItems = JsonUtilExtend.FromJsonList<RelicOnEvaluation>(jsonList);
+                    RelicOnEvaluationList.AddRange(newRelicOnEvaluationItems);
+                    break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     break;
@@ -86,6 +137,10 @@ namespace Database
                     return typeof(Example);
                 case "mob":
                     return typeof(mob);
+                case "shop":
+                    return typeof(shop);
+                case "RelicOnEvaluation":
+                    return typeof(RelicOnEvaluation);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

@@ -6,6 +6,10 @@ using UnityEngine;
 using Database.DataReader;
 using Database.Generated;
 using UnityEngine.Networking;
+using Newtonsoft.Json; // Json.Net
+using UnityEngine.UI;
+using System.Security.Cryptography;
+using System.Text;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
@@ -25,10 +29,16 @@ namespace Database
         [SerializeField] private string localJsonPath = "Database/";
         [SerializeField] private string streamingAssetPath = "Json/";
         [Header("Settings")]
-        [SerializeField,Tooltip("인터넷/로컬 유무와 상관없이 streaming으로 작동")] private bool forceUseStreamingAsset = false;
+        [SerializeField, Tooltip("인터넷/로컬 유무와 상관없이 streaming으로 작동")] private bool forceUseStreamingAsset = false;
         [SerializeField] private int timeoutSeconds = 10;
-        
-        
+
+        // 스프라이트 캐시를 위한 Dictionary //
+        /// <summary>
+        /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
+        /// </summary>
+        public Dictionary<string, Sprite> SpriteCache { get; private set; } = new Dictionary<string, Sprite>();
+
+
         public string FinalLocalPath => Path.Combine(Application.persistentDataPath, localJsonPath);
         public string FinalStreamingAssetPath => Path.Combine(Application.streamingAssetsPath, streamingAssetPath);
 
@@ -57,7 +67,7 @@ namespace Database
             }
             StartCoroutine(InitializeRoutine());
         }
-        
+
         [ContextMenu("Force Initialize In Play Mode")]
         public void ForceInitialize()
         {
@@ -71,8 +81,8 @@ namespace Database
         }
 
 
-        
-        #if UNITY_EDITOR
+
+#if UNITY_EDITOR
         [ContextMenu("Initialize In Edit Mode")]
         public void InitializeInEditMode()
         {
@@ -84,20 +94,27 @@ namespace Database
             isInitialized = false;
             EditorCoroutineUtility.StartCoroutine(InitializeRoutine(), this);
         }
-        #endif
-        
+#endif
+
         private IEnumerator InitializeRoutine()
         {
             Debug.Log("[DatabaseManager] 초기화 시작");
             Debug.Log("[DatabaseManager] DB 데이터 삭제");
             mcDatabase.ClearAll();
+            SpriteCache.Clear();
+
+
+
             yield return LoadDatabase();
             // yield return new WaitForSeconds(1f); // 테스트용 딜레이
-            
+            yield return LoadAllSpriteResources();
+
+
+
             Debug.Log("[DatabaseManager] 초기화 완료");
             isInitialized = true;
         }
-        
+
         private IEnumerator LoadDatabase()
         {
             if (forceUseStreamingAsset)
@@ -148,7 +165,7 @@ namespace Database
                     Debug.Log($"[DatabaseManager] 강제 스트리밍 에셋 모드. 스트리밍 에셋 로드 시도: {streamingPath}");
                     yield return LoadStreamingAsset(streamingPath, result => json = result);
                 }
-                else 
+                else
                 {
                     Debug.Log($"[DatabaseManager] 로컬 파일 로드 시도: {localPath}");
                     yield return LoadSavedFile(localPath, result => json = result);
@@ -175,7 +192,7 @@ namespace Database
                 }
             }
             Debug.Log($"[DatabaseManager] 로컬 JSON 길이: {json?.Length ?? 0}");
-            yield break;    
+            yield break;
         }
         private IEnumerator LoadSavedFile(string path, Action<string> onComplete)
         {
@@ -190,7 +207,7 @@ namespace Database
             }
             yield break;
         }
-        
+
         private IEnumerator LoadStreamingAsset(string path, Action<string> onComplete)
         {
             if (Application.platform == RuntimePlatform.Android ||
@@ -221,15 +238,15 @@ namespace Database
                     onComplete?.Invoke(null);
                 }
             }
-            
+
         }
-        
-        
+
+
         private bool IsInternetAvailable()
         {
             return Application.internetReachability != NetworkReachability.NotReachable;
         }
-        
+
         private IEnumerator Timer(float time, Action onTimeout)
         {
             float elapsed = 0f;
@@ -240,7 +257,125 @@ namespace Database
             }
             onTimeout?.Invoke();
         }
-        
-        
+
+
+        #region Srpite 관련 코드
+        private IEnumerator LoadAllSpriteResources()
+        {
+            // 시작된 모든 이미지 로딩 코루틴을 담을 리스트
+            List<Coroutine> loadingCoroutines = new List<Coroutine>();
+
+            if (mcDatabase.shopList != null)
+            {
+                foreach (var shopItem in mcDatabase.shopList)
+                {
+                    string cleanedURL = shopItem.URL?.Trim();
+                    if (!string.IsNullOrEmpty(shopItem.URL))
+                    {
+                        Debug.Log("진입성공");
+                        if (!SpriteCache.ContainsKey(shopItem.URL))
+                        {
+                            // 코루틴을 리스트에 추가하기만 하고, 여기서 기다리지 않음
+                            loadingCoroutines.Add(StartCoroutine(LoadImageCoroutine(cleanedURL, sprite =>
+                            {
+                                if (sprite != null)
+                                {
+                                    SpriteCache[shopItem.URL] = sprite;
+                                }
+                            })));
+                        }
+                    }
+                }
+            }
+
+            // 시작된 모든 코루틴들이 끝날 때까지 여기서 기다림
+            foreach (var coroutine in loadingCoroutines)
+            {
+                yield return coroutine;
+            }
+
+            Debug.Log($"[DatabaseManager] 모든 스프라이트 리소스 로딩 완료. 캐시된 스프라이트 수: {SpriteCache.Count}");
+        }
+        // <summary>
+        /// URL을 기반으로 이미지를 로드하고, 완료 시 콜백으로 Sprite를 반환하는 코루틴
+        /// </summary>
+        /// <param name="url">이미지 URL</param>
+        /// <param name="onComplete">로드 완료 시 실행될 콜백 (결과 Sprite 전달)</param>
+        private IEnumerator LoadImageCoroutine(string url, Action<Sprite> onComplete)
+        {
+            Debug.Log($"입력받은 url :{url} 과 cachePath :{GetCachePathForUrl(url)}");
+            string cachePath = GetCachePathForUrl(url);
+            Sprite resultSprite = null;
+            if (File.Exists(cachePath))
+            {
+                // 캐시 파일이 존재하면 로컬에서 로드
+                byte[] fileData = File.ReadAllBytes(cachePath);
+                Texture2D texture = new Texture2D(2, 2);
+                if (texture.LoadImage(fileData)) // 이 함수가 이미지 데이터를 텍스처로 변환
+                {
+                    // 성공
+                    resultSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                }
+                else
+                {
+                    // 실패
+                    Debug.LogError($"[DatabaseManager] Texture.LoadImage FAILED for URL: {url}. The image file might be in an unsupported format.");
+                }
+            }
+            else
+            {
+                // 캐시 파일이 없으면 웹에서 다운로드
+                using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
+                {
+                    yield return www.SendWebRequest();
+
+                    if (www.result == UnityWebRequest.Result.Success)
+                    {
+                        Texture2D texture = DownloadHandlerTexture.GetContent(www);
+                        resultSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                        File.WriteAllBytes(cachePath, www.downloadHandler.data);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"스프라이트 다운로드 실패: {url} | Error: {www.error}");
+                    }
+                }
+            }
+
+            // 결과 Sprite를 콜백으로 전달
+            onComplete?.Invoke(resultSprite);
+        }
+
+        /// <summary>
+        /// 이미지를 저장할 캐시 디렉토리 경로를 반환. 폴더가 없으면 생성
+        /// </summary>
+        private string GetCacheDirectory()
+        {
+            string path = Path.Combine(Application.persistentDataPath, "ImageCache");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// URL을 기반으로 고유하고 안전한 로컬 파일 경로를 생성
+        /// </summary>
+        private string GetCachePathForUrl(string url)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(url);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return Path.Combine(GetCacheDirectory(), sb.ToString());
+            }
+        }
+        #endregion
     }
 }

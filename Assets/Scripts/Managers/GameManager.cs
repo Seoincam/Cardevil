@@ -153,12 +153,12 @@ public class GameManager : ISaveLoad
 
     public void Save(GameSave currentSave)
     {
-        _playerStatus.Save(currentSave);
+        //_playerStatus.Save(currentSave);
     }
 
     public void Load(GameSave currentSave)
     {
-        _playerStatus.Load(currentSave);
+        //_playerStatus.Load(currentSave);
         
     }
 }
