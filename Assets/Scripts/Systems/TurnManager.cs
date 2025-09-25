@@ -17,6 +17,7 @@ namespace Cardevil.Systems
 
         public void Init(ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
         {
+            Managers.UI.ShowPopUpUI<SlotMachine>();
             if (playerInput == null)
             {
                 Debug.LogError("TurnManager.Init에서 userInput이 null입니다");

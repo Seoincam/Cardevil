@@ -91,6 +91,8 @@ namespace Database
             {
                 if (string.IsNullOrEmpty(value))
                     return targetType.GetEnumValues().GetValue(0)!;
+                if (int.TryParse(value, out int enumInt))
+                    return Enum.ToObject(targetType, enumInt);
                 return Enum.Parse(targetType, value, ignoreCase: true);
             }
 
@@ -109,7 +111,8 @@ namespace Database
 
             // 숫자: 빈 문자열이면 0
             if (string.IsNullOrEmpty(value)) value = "0";
-
+            else if (value == "null") value = "0";
+            
             var ci = CultureInfo.InvariantCulture;
 
             // Debug.Log($"[ClassInstanceFactory] Converting '{value}' to {targetType.Name}");

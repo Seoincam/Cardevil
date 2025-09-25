@@ -5,21 +5,22 @@ using UnityEngine;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Entities;
 using Cardevil.InGame.Enemy;
+using Cardevil.Save;
 using UnityEngine.Serialization;
 using Cardevil.Systems;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 
 [Serializable]
-public class GameManager
+public class GameManager : ISaveLoad
 {
-    //
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
     [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus; // 플레이어 상태 
     
+
     public Field Field
     {
         get
@@ -100,6 +101,18 @@ public class GameManager
         NonCombat
     }
     public GameState currentState;
+
+
+    public void Init()
+    {
+        
+        // 세이브에 등록
+        // 각 요소를 직접 등록할 수 있지만,
+        // 혹시 모르는 Reference 문제를 방지하기 위해 this로 등록 후 Save, Load에서 처리
+        SaveLoadManager saveLoadManager = Managers.SaveLoad;
+        saveLoadManager.Register(this);
+        
+    }
     
     //플레이어 죽을 때 실행시킬 함수
     public void PlayerDied()
@@ -116,6 +129,7 @@ public class GameManager
             LoadPlayerData().Forget();
             return;
         }
+        Debug.Log("[GameManager] Database가 초기화 되었습니다. GameStart 실행.");
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
     }
@@ -136,4 +150,15 @@ public class GameManager
             Enemy.GetComponent<ITurnEnemy>()
             );
     }
- }
+
+    public void Save(GameSave currentSave)
+    {
+        _playerStatus.Save(currentSave);
+    }
+
+    public void Load(GameSave currentSave)
+    {
+        _playerStatus.Load(currentSave);
+        
+    }
+}

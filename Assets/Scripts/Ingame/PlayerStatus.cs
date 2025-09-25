@@ -1,5 +1,7 @@
-﻿using Cardevil.DataStructure;
+﻿using Cardevil.Core;
+using Cardevil.DataStructure;
 using Cardevil.Events;
+using Cardevil.Save;
 using System;
 using UnityEngine;
 
@@ -9,13 +11,14 @@ namespace Cardevil.Ingame
     /// 플레이어의 상태를 나타내는 클래스
     /// </summary>
     [Serializable]
-    public class PlayerStatus
+    public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>
     {
         [SerializeField] private int _currentHP = 3;
         [SerializeField] private int _maxHP = 3;
         [SerializeField] private int _shield = 0;
         [SerializeField] private int _rerollTicket = 0;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
+        [SerializeField] public int gold;
         
         /// <summary>
         /// 플레이어의 현재 체력
@@ -133,8 +136,34 @@ namespace Cardevil.Ingame
             using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
             {
                 args.Init(_currentHP, _currentHP);
+                args.IsJustBroadcast = true;
                 Managers.Event.PlayerHealthChangeEvent.Invoke(args);
             }
+        }
+
+        public void Save(GameSave currentSave)
+        {
+            currentSave.PlayerStatus.CopyFrom(this);
+        }
+
+        public void Load(GameSave currentSave)
+        {
+            currentSave.PlayerStatus.CopyTo(this);
+            BroadcastInitialStatus();
+        }
+
+        public void CopyFrom(PlayerStatus other)
+        {
+            _currentHP = other._currentHP;
+            _maxHP = other._maxHP;
+            _shield = other._shield;
+            _rerollTicket = other._rerollTicket;
+            _variableContainer.CopyFrom(other._variableContainer);
+        }
+
+        public void CopyTo(PlayerStatus other)
+        {
+            other.CopyFrom(this);
         }
     }
 }
