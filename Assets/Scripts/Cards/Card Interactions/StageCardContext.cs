@@ -26,8 +26,31 @@ namespace Cardevil.Cards
         public bool CanUseCard => SelectCount > 0 && AllValueSelected;
 
         /// <summary>
-        /// 버리기 남은 횟수.
+        /// 족보와 보너스 점수만을 반환.
         /// </summary>
+        public string Description
+        {
+            get
+            {
+                var ranking = CardResultEvaluator.GetRanking(Selects);
+                if (ranking == HandRanking.None || ranking == HandRanking.High)
+                    return "";
+                else
+                {
+                    var datas = Managers.Database.Database;
+                    var rankingData = datas.HandRankingDataList
+                        .FirstOrDefault(d => d.Ranking == ranking);
+
+                    if (rankingData == null)
+                        Debug.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
+
+                    return $"{rankingData.DisplayName}\n{rankingData.Value}";
+                }
+
+            }
+        }
+
+        /// <summary> 버리기 남은 횟수. </summary>
         public int DiscardRemainCount => _discardRemainCount;
 
         public int DeckCount => Deck.Count;
@@ -41,6 +64,9 @@ namespace Cardevil.Cards
         public List<Card> SortedSelect => Selects.OrderBy(c => Hand.IndexOf(c)).ToList();
 
         private bool AllValueSelected => Selects.All(c => c.data.CanUse);
+
+    
+
 
 
 
@@ -114,7 +140,6 @@ namespace Cardevil.Cards
 
         public void SortByIcon()
         {
-            // Hand.Sort(IconComparer);
             Hand = Hand
                 .OrderBy(c => ValueTypeRank(c))
 

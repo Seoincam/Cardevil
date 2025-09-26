@@ -17,12 +17,13 @@ namespace Cardevil.Relics
 
     public enum EffectDamageType
     {
-        Plus, MultiplyAll, MultiplyRanking
+        None, Plus, MultiplyAll, MultiplyRanking
     }
 
     [Serializable]
     public class RelicEffect
     {
+        [SerializeField] Relic relic;
         [SerializeField] EffectType _effectType;
         [SerializeField] RelicEffectOnEvaluationData _onEvaluationData;
 
@@ -32,11 +33,17 @@ namespace Cardevil.Relics
             EffectType.OnEvaluation => _onEvaluationData.EffectId,
             _ => ""
         };
+        public RelicEffectOnEvaluationData OnEvaluationData => _onEvaluationData;
 
         public RelicEffect(RelicEffectOnEvaluationData data)
         {
             _effectType = EffectType.OnEvaluation;
             _onEvaluationData = data;
+        }
+
+        public void Init(Relic relic)
+        {
+            this.relic = relic;
         }
     }
 }

@@ -7,16 +7,10 @@ namespace Cardevil.Cards
 {
     public enum HandRanking
     {
-        None = -1,
-
-        High = 0,
-        OnePair = 5,
-        TwoPair = 20,
-        Triple = 30,
-        Straight = 50,
-        Flush = 80,
-        FourCard = 200,
-        StraightFlush = 300  // 스티플
+        None, High,
+        OnePair, TwoPair, Triple, Straight,
+        RedFlush, GreenFlush, BlueFlush, BlackFlush,
+        FourCard, StraightFlush
     }
 
 
@@ -136,11 +130,6 @@ namespace Cardevil.Cards
         public readonly List<MoveData> Moves;
         public readonly HandRanking Ranking => Rankings[0]; 
 
-        public readonly bool IsRedFlush;
-        public readonly bool IsBlueFlush;
-        public readonly bool IsGreenFlush;
-        public readonly bool IsBlackFlush;
-
         private readonly CardResultContext Ctx;
         private readonly List<HandRanking> Rankings;
         private readonly List<CardData> CardDatas;
@@ -152,16 +141,16 @@ namespace Cardevil.Cards
             {
                 var text = "";
 
-                if (Rankings[0] != HandRanking.None)
-                {
-                    if (Ctx.IsBlackFlushUsed)
-                        text += "[ Black Flush: damage 200% ]\n";
+                // if (Rankings[0] != HandRanking.None)
+                // {
+                //     if (Ctx.IsBlackFlushUsed)
+                //         text += "[ Black Flush: damage 200% ]\n";
 
-                    if (Ctx.PreviousResult?.IsRedFlush == true)
-                        text += "[ Red Flush: damage 300% ]\n";
+                //     if (Ctx.PreviousResult?.IsRedFlush == true)
+                //         text += "[ Red Flush: damage 300% ]\n";
 
-                    text += $"Ranking: {Rankings[0]}\nDamage: {Damage}\n";
-                }
+                //     text += $"Ranking: {Rankings[0]}\nDamage: {Damage}\n";
+                // }
 
                 return text;
             }
@@ -182,15 +171,15 @@ namespace Cardevil.Cards
             Moves = moveDatas.Select(m => m.Move)
                     .ToList();;
 
-            IsRedFlush = IsBlueFlush = IsGreenFlush = IsBlackFlush = false;
-            if (rankings.Contains(HandRanking.Flush))
-                switch (Numbers[0].ColorValue)
-                {
-                    case NumberData.CardColor.Red: IsRedFlush = true; break;
-                    case NumberData.CardColor.Blue: IsBlueFlush = true; break;
-                    case NumberData.CardColor.Green: IsGreenFlush = true; break;
-                    case NumberData.CardColor.Black: IsBlackFlush = true; break;
-                }
+            // IsRedFlush = IsBlueFlush = IsGreenFlush = IsBlackFlush = false;
+            // if (rankings.Contains(HandRanking.Flush))
+            //     switch (Numbers[0].ColorValue)
+            //     {
+            //         case NumberData.CardColor.Red: IsRedFlush = true; break;
+            //         case NumberData.CardColor.Blue: IsBlueFlush = true; break;
+            //         case NumberData.CardColor.Green: IsGreenFlush = true; break;
+            //         case NumberData.CardColor.Black: IsBlackFlush = true; break;
+            //     }
         }
     }
 }

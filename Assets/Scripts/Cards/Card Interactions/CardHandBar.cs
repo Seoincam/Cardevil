@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using Cardevil.Systems;
 using TMPro;
 using Cardevil.Events;
+using System.Collections.Generic;
+using static Cardevil.Cards.CardResultEvaluator;
 
 namespace Cardevil.Cards.CardInteractinos
 {
@@ -48,7 +50,7 @@ namespace Cardevil.Cards.CardInteractinos
         [SerializeField] Button discardCardButton;
         [SerializeField] Button sortByNumberButton;
         [SerializeField] Button sortByIconButton;
-        [SerializeField] TextMeshProUGUI selectResultText;
+        [SerializeField] Text selectResultText;
         [SerializeField] TextMeshProUGUI deckCountText;
         [SerializeField] GameObject dummyCardVisual;
 
@@ -136,7 +138,7 @@ namespace Cardevil.Cards.CardInteractinos
             sortByNumberButton.onClick.AddListener(SortByNumber);
             sortByIconButton.onClick.AddListener(SortByIcon);
 
-            visualSetting.SetDeckVisual(deck);
+            // visualSetting.SetDeckVisual(deck);
             Managers.Event.RerollTicketChangeEvent.AddListener(OnRerollTicketCountChanged, 1);
 
             UpdateDeckCardCount();
@@ -355,8 +357,32 @@ namespace Cardevil.Cards.CardInteractinos
         // - - - - - - - - - - -
         private void Use()
         {
-            CardResultEvaluator.PushResult(Context, StageCardsCtx.Selects);
-            _ = UseAsync();
+            // CardResultEvaluator.PushResult(Context, StageCardsCtx.Selects);
+            var evaluationSets = CardResultEvaluator.GetEvaluationSets(resultCtx, stageCardsCtx.Selects);
+            _ = EvaluateAsync(evaluationSets);
+
+            // _ = UseAsync();
+        }
+
+        private async UniTask EvaluateAsync(List<EvaluationSet> evaluationSets)
+        {
+            var damage = 0f;
+            selectResultText.text = damage.ToString();
+
+            await UniTask.Delay(TimeSpan.FromSeconds(.75f));
+            foreach (var set in evaluationSets)
+            {
+                switch (set.Type)
+                {
+                    case Relics.EffectDamageType.Plus: damage += set.Value; break;
+                    case Relics.EffectDamageType.MultiplyAll:
+                    case Relics.EffectDamageType.MultiplyRanking: damage *= set.Value; break;
+                    default: continue;
+                }
+
+                selectResultText.text = damage.ToString();
+                await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+            }
         }
 
         private void Discard()
@@ -370,20 +396,20 @@ namespace Cardevil.Cards.CardInteractinos
         {
             await DiscardAsync();
 
-            if (Context.CurrentResult?.IsBlueFlush == true)
-            {
-                blueFlushChoice.GetSet(this);
-                await blueFlushChoice.BlueFlushCmp.Task;
-            }
-            else if (Context.CurrentResult?.IsGreenFlush == true)
-            {
-                Managers.Game.PlayerStatus.Shield += 1;
-            }
-            else if (Context.CurrentResult?.IsBlackFlush == true)
-            {
-                Context.SetBlackFlushUsed();
-                Managers.Game.PlayerStatus.CurrentHp = 1;
-            }
+            // if (Context.CurrentResult?.IsBlueFlush == true)
+            // {
+            //     blueFlushChoice.GetSet(this);
+            //     await blueFlushChoice.BlueFlushCmp.Task;
+            // }
+            // else if (Context.CurrentResult?.IsGreenFlush == true)
+            // {
+            //     Managers.Game.PlayerStatus.Shield += 1;
+            // }
+            // else if (Context.CurrentResult?.IsBlackFlush == true)
+            // {
+            //     Context.SetBlackFlushUsed();
+            //     Managers.Game.PlayerStatus.CurrentHp = 1;
+            // }
 
             cmp.TrySetResult();
         }
@@ -468,10 +494,7 @@ namespace Cardevil.Cards.CardInteractinos
         // - - - - - - - - - - -
         private void UpdateUI()
         {
-            if (CanInput && StageCardsCtx.CanUseCard)
-                selectResultText.text = CardResultEvaluator.Evaluate(Context, StageCardsCtx.Selects).Description;
-            else
-                selectResultText.text = "";
+            selectResultText.text = stageCardsCtx.Description;
 
             var canUse = CanInput && StageCardsCtx.CanUseCard && !DraggedCard;
             useCardButton.interactable = canUse;

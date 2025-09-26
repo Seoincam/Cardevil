@@ -19,9 +19,11 @@ namespace Cardevil.Relics
 
         [Header("Player")]
         [SerializeField] List<Relic> _playerRelics = new();
+        [SerializeField] List<RelicEffect> _playerEffects = new();
 
         private Text text;
 
+        public IReadOnlyList<Relic> PlayerRelics => _playerRelics;
 
         void Awake()
         {
@@ -50,33 +52,46 @@ namespace Cardevil.Relics
                 _allRelics.Add(relic);
             }
 
+            #region Debug 
             var sb = new StringBuilder();
             sb.AppendLine("[ 유물 ]");
             foreach (var relicId in test.playerRelics)
             {
-                var relic = GetRelic(relicId);
+                var relic = GetRelicById(relicId);
                 _playerRelics.Add(relic);
+                foreach (var effect in relic.Effects)
+                {
+                    _playerEffects.Add(effect);
+                }
+                
                 sb.AppendLine($"<{relic.Name}>");
                 sb.AppendLine(relic.Description);
                 sb.AppendLine();
             }
 
             text.text = sb.ToString();
+            #endregion
         }
 
 
-        public Relic GetRelic(string relicId)
+        public Relic GetRelicById(string relicId)
         {
             if (!string.IsNullOrEmpty(relicId))
                 relicId = relicId.Trim('"');
             return _allRelics.FirstOrDefault(r => r.RelicId == relicId);
         }
 
-        public RelicEffect GetEffect(string effectId)
+        public RelicEffect GetEffectById(string effectId)
         {
             if (!string.IsNullOrEmpty(effectId))
                 effectId = effectId.Trim('"');
             return _allEffects.FirstOrDefault(e => e.EffectId == effectId);
+        }
+
+        public List<RelicEffect> GetPlayerEffect(EffectType type)
+        {
+            return _playerEffects.Where(e => e.EffectType == type)
+                .ToList();
         }
     }
 }

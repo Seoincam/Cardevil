@@ -30,7 +30,12 @@ namespace Cardevil.Relics
             if (_data.EffectIds != null)
             {
                 foreach (var effectId in _data.EffectIds)
-                    _effects.Add(manager.GetEffect(effectId));
+                {
+                    var effect = manager.GetEffectById(effectId);
+                    effect.Init(this);
+                    _effects.Add(effect);
+                }
+
             }
             else
             {
