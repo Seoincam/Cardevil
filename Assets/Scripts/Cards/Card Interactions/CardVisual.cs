@@ -1,12 +1,13 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using static Cardevil.Cards.CardResultEvaluator;
 
 namespace Cardevil.Cards.CardInteractinos
 {
     [RequireComponent(typeof(Canvas))]
     
-    public class CardVisual : MonoBehaviour
+    public class CardVisual : MonoBehaviour, IEvaluateAction
     {
         private Canvas canvas;
         private bool isInitalized = false;
@@ -266,6 +267,12 @@ namespace Cardevil.Cards.CardInteractinos
 
             else
                 Debug.LogError("cardData가 어떤 타입도 아닙니다.");
+        }
+
+        public void ExecuteEvaluationAction()
+        {
+            transform.DOScale(1.2f, .2f)
+                .SetLoops(2, LoopType.Yoyo);
         }
     }
 }

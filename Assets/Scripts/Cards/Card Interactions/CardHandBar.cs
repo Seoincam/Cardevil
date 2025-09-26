@@ -357,14 +357,11 @@ namespace Cardevil.Cards.CardInteractinos
         // - - - - - - - - - - -
         private void Use()
         {
-            // CardResultEvaluator.PushResult(Context, StageCardsCtx.Selects);
-            var evaluationSets = CardResultEvaluator.GetEvaluationSets(resultCtx, stageCardsCtx.Selects);
-            _ = EvaluateAsync(evaluationSets);
-
-            // _ = UseAsync();
+            var evaluationSets = GetEvaluationSets(resultCtx, stageCardsCtx.Selects, out CardResult result);
+            _ = EvaluateAsync(evaluationSets, result);
         }
 
-        private async UniTask EvaluateAsync(List<EvaluationSet> evaluationSets)
+        private async UniTask EvaluateAsync(List<EvaluationSet> evaluationSets, CardResult result)
         {
             var damage = 0f;
             selectResultText.text = damage.ToString();
@@ -381,8 +378,13 @@ namespace Cardevil.Cards.CardInteractinos
                 }
 
                 selectResultText.text = damage.ToString();
+                set.Action?.ExecuteEvaluationAction();
                 await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             }
+
+            result.UpdateDamage(damage);
+            resultCtx.Push(result);
+            _ = UseAsync();
         }
 
         private void Discard()

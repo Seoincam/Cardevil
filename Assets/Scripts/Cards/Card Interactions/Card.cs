@@ -2,10 +2,11 @@ using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static Cardevil.Cards.CardResultEvaluator;
 
 namespace Cardevil.Cards.CardInteractinos 
 {
-    public class Card : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+    public class Card : MonoBehaviour, IEvaluateAction, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [Header("Card")]
         public CardData data;
@@ -252,7 +253,13 @@ namespace Cardevil.Cards.CardInteractinos
         {
             _isReroll = isReroll;
         }
-        
+
+        public void ExecuteEvaluationAction()
+        {
+            cardVisual.ExecuteEvaluationAction();
+        }
+
+
         public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);
     }
 }

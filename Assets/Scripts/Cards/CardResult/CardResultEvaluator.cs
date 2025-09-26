@@ -10,94 +10,31 @@ namespace Cardevil.Cards
     public static class CardResultEvaluator
     {
         /// <summary>
-        /// 카드를 바탕으로 족보를 계산해서 반환.
-        /// 숫자 카드가 없을 시 None 반환.
+        /// 카드 사용시 사용하는 EvaluationSet List를 계산 후 반환.
         /// </summary>
-        public static HandRanking GetRanking(List<Card> cards)
+        public static List<EvaluationSet> GetEvaluationSets(CardResultContext resultCtx, List<Card> cards, out CardResult result)
         {
-            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
-                    .Select(c => c.data)
-                    .ToList();
-
-            if (numbers.Count == 0)
-                return HandRanking.None;
-
-            var rankings = CalculateRanking(numbers);
-            return rankings[0];
-        }
-
-        /// <summary>
-        /// 카드를 사용했을 때, 계산 후 context에 Push.
-        /// </summary>
-        public static void PushResult(CardResultContext ctx, IEnumerable<Card> cards)
-        {
-            var result = Evaluate(ctx, cards, true);
-            ctx.Push(result);
-        }
-
-
-        /// <summary>
-        /// 선택된 카드를 바탕으로 계산 후 결과를 반환
-        /// </summary>
-        public static CardResult Evaluate(CardResultContext ctx, IEnumerable<Card> cards, bool pushToHistory = false)
-        {
-            var evaluationCtx = new CardEvaluationContext(ctx, cards, pushToHistory);
-
-            // 숫자 카드 판정 
-            if (evaluationCtx.numbers.Count == 0)
-                return evaluationCtx.MakeResult();
-
-
-            evaluationCtx.rankings = CalculateRanking(evaluationCtx.numbers);
-            evaluationCtx.defaultDamage = evaluationCtx.Ranking switch
-            {
-                HandRanking.High => evaluationCtx.numbers.OrderBy(n => n.Number.NumberValue).Last().Number.Damage,
-
-                HandRanking.OnePair => evaluationCtx.numbers.GroupBy(n => n.Number.NumberValue)
-                            .Where(g => g.Count() == 2)
-                            .Sum(g => g.Sum(n => n.Number.Damage)),                           
-
-                HandRanking.Triple => evaluationCtx.numbers.GroupBy(n => n.Number.NumberValue)
-                            .Where(g => g.Count() == 3)
-                            .Sum(g => g.Sum(n => n.Number.Damage)),
-
-                _ => evaluationCtx.numbers.Sum(n => n.Number.Damage)
-            };
-
-            evaluationCtx.rankingDamage += (int)evaluationCtx.Ranking;
-
-            foreach (var relic in RelicDataManager.Instance.PlayerRelics)
-            {
-            }
-
-            return evaluationCtx.MakeResult();
-        }
-
-
-
-
-
-
-
-
-
-        public static List<EvaluationSet> GetEvaluationSets(CardResultContext resultCtx, List<Card> cards)
-        {
+            resultCtx.StepToNext();
+            
             var sets = new List<EvaluationSet>();
 
             // move only 체크
             var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number).ToList();
+            var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move).ToList();
             if (numbers.Count == 0)
             {
                 sets.Add(new EvaluationSet(null, EffectDamageType.None, 0));
+                result = new(resultCtx, new() { HandRanking.None }, numbers, moves);
                 return sets;
             }
+
 
             // 족보
             var ranking = GetRanking(cards);
             var rankingData = Managers.Database.Database.HandRankingDataList
                 .FirstOrDefault(d => d.Ranking == ranking);
-                
+            result = new(resultCtx, CalculateRanking(numbers), numbers, moves);
+
             // 기본 족보 보너스
             sets.Add(new EvaluationSet(null, EffectDamageType.Plus, rankingData?.Value ?? 0));
 
@@ -107,7 +44,7 @@ namespace Cardevil.Cards
                 case HandRanking.High:
                     var top = numbers.OrderBy(n => n.data.Number.NumberValue).Last();
                     var damage = top.data.Number.NumberValue;
-                    sets.Add(new EvaluationSet(null, EffectDamageType.Plus, damage));
+                    sets.Add(new EvaluationSet(top, EffectDamageType.Plus, damage));
                     break;
 
                 case HandRanking.OnePair:
@@ -116,7 +53,7 @@ namespace Cardevil.Cards
                             .SelectMany(g => g)
                             .ToList();
                     foreach (var card in pairCards)
-                        sets.Add(new EvaluationSet(null, EffectDamageType.Plus, card.data.Number.NumberValue));
+                        sets.Add(new EvaluationSet(card, EffectDamageType.Plus, card.data.Number.NumberValue));
                     break;
 
                 case HandRanking.Triple:
@@ -125,12 +62,12 @@ namespace Cardevil.Cards
                             .SelectMany(g => g)
                             .ToList();
                     foreach (var card in tripleCards)
-                        sets.Add(new EvaluationSet(null, EffectDamageType.Plus, card.data.Number.NumberValue));
+                        sets.Add(new EvaluationSet(card, EffectDamageType.Plus, card.data.Number.NumberValue));
                     break;
 
                 default:
                     foreach (var card in numbers)
-                        sets.Add(new EvaluationSet(null, EffectDamageType.Plus, card.data.Number.NumberValue));
+                        sets.Add(new EvaluationSet(card, EffectDamageType.Plus, card.data.Number.NumberValue));
                     break;
             }
 
@@ -148,13 +85,13 @@ namespace Cardevil.Cards
                 .Select(e => e.OnEvaluationData)
                 .Where(e => e != null)
                 .ToList();
-            
+
             int Priority(EffectDamageType type) => type switch
             {
                 EffectDamageType.MultiplyRanking => 0,
-                EffectDamageType.Plus            => 1,
-                EffectDamageType.MultiplyAll     => 2,
-                _                                => 99
+                EffectDamageType.Plus => 1,
+                EffectDamageType.MultiplyAll => 2,
+                _ => 99
             };
 
             foreach (var e in effects.OrderBy(e => Priority(e.EffectType)))
@@ -231,15 +168,17 @@ namespace Cardevil.Cards
         }
 
 
+
+
         public struct EvaluationSet
         {
-            public readonly List<IEvaluateAction> Actions;
+            public readonly IEvaluateAction Action;
             public readonly EffectDamageType Type;
             public readonly float Value;
 
-            public EvaluationSet(List<IEvaluateAction> actions, EffectDamageType type, float value)
+            public EvaluationSet(IEvaluateAction actions, EffectDamageType type, float value)
             {
-                Actions = actions;
+                Action = actions;
                 Type = type;
                 Value = value;
             }
@@ -250,7 +189,10 @@ namespace Cardevil.Cards
         /// </summary>
         public interface IEvaluateAction
         {
-            public void Execute();
+            /// <summary>
+            /// Evaluation 시 반응.
+            /// </summary>
+            public void ExecuteEvaluationAction();
         }
 
 
@@ -259,9 +201,32 @@ namespace Cardevil.Cards
 
         #region 카드 족보 판정
 
-        private static List<HandRanking> CalculateRanking(List<CardData> numberDatas)
+        /// <summary>
+        /// 카드를 바탕으로 '가장 상위' 족보를 계산해서 반환.
+        /// 숫자 카드가 없을 시 None 반환.
+        /// </summary>
+        public static HandRanking GetRanking(List<Card> cards)
+        {
+            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
+                    .ToList();
+
+            if (numbers.Count == 0)
+                return HandRanking.None;
+
+            var rankings = CalculateRanking(numbers);
+            return rankings[0];
+        }
+
+        /// <summary>
+        /// 숫자 카드를 바탕으로 '모든' 족보를 반환. 
+        /// </summary>
+        private static List<HandRanking> CalculateRanking(List<Card> numberCards)
         {
             var rankings = new List<HandRanking>();
+
+            var numberDatas = numberCards.Where(c => c.data.valueType == CardData.ValueType.Number)
+                .Select(c => c.data)
+                .ToList();
 
             if (IsStraightFlush(numberDatas))
                 rankings.Add(HandRanking.StraightFlush);
