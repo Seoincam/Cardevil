@@ -9,17 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d96329f139cb4f349ecb141a84c0dd8, type: 3}
-  m_Name: Eva
+  m_Script: {fileID: 11500000, guid: 8f9bdda3c36e84f0ca866acbe98427aa, type: 3}
+  m_Name: RelicTestSO
   m_EditorClassIdentifier: 
-  triggerType: 0
-  triggerRanking: -1
-  triggerInt: 0
-  effectType: 0
-  effectPlus: 0
-  effectMultiply: 0
-  executeType: 0
-  possibility: 1
-  onlyOnPushToHistory: 0
-  executionCount: 0
-  targetRankings: 
+  playerRelics:
+  - Relic01

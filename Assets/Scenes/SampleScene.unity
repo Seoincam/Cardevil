@@ -1501,6 +1501,9 @@ MonoBehaviour:
   mcDatabase:
     ExampleList: []
     mobList: []
+    shopList: []
+    RelicDataList: []
+    RelicEffectOnEvaluationDataList: []
   isInitialized: 1
   googleSheetUrl: https://script.google.com/macros/s/AKfycbw9s6zpBPgh7E2ZwxNKnenvGCJsWQQvn-mdf2VCH6PHtRnsVsDJIBa_WUt_9gVk-oFG/exec
   localJsonPath: Database/
@@ -2071,7 +2074,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "[ \uC720\uBB3C ]\n. . ."
+  m_Text: "[ \uC720\uBB3C ]\n(\uCD08\uAE30\uD654 \uC548\uB428)"
 --- !u!222 &1735268851
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2089,11 +2092,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1735268848}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5972bf7de5dfa4c3f8a6c432ccdc7507, type: 3}
+  m_Script: {fileID: 11500000, guid: f3c88688bbc7f4fd9afce0e534bc3b33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _relics:
-  - {fileID: 11400000, guid: 8853879e9a5694033a7859b89610c754, type: 2}
+  test: {fileID: 11400000, guid: c926fb32c8fcf456ba9ec1f19315df09, type: 2}
+  _allRelics: []
+  _allEffects: []
+  _playerRelics: []
 --- !u!1 &1736170421
 GameObject:
   m_ObjectHideFlags: 0

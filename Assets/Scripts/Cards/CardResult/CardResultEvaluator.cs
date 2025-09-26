@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Cards.CardInteractinos;
-using Cardevil.Relic;
+// using Cardevil.Relic;
 
 namespace Cardevil.Cards
 {
