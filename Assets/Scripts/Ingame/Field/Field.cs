@@ -88,7 +88,7 @@ namespace Cardevil.Ingame.Field
             Managers.Game.Field = this; // 시작될때 매니저에 등록
             if (fieldConfiguration == null)
             {
-                Debug.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");
+                LogEx.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");
                 return;
             }
 
@@ -192,7 +192,7 @@ namespace Cardevil.Ingame.Field
         {
             if (i < 0 || i >= height || j < 0 || j >= width)
             {
-                Debug.LogError($"GetTile: Index out of range. ({i}, {j}) is not a valid tile coordinate.");
+                LogEx.LogError($"GetTile: Index out of range. ({i}, {j}) is not a valid tile coordinate.");
                 return null;
             }
             return _tileContainer[i][j];
@@ -245,7 +245,7 @@ namespace Cardevil.Ingame.Field
         {
             if (i < 0 || i >= height || j < 0 || j >= width)
             {
-                Debug.LogError($"GetTilePosition: Index out of range. ({i}, {j}) is not a valid tile coordinate.");
+                LogEx.LogError($"GetTilePosition: Index out of range. ({i}, {j}) is not a valid tile coordinate.");
                 return Vector3.zero;
             }
             return _tileContainer[i][j].transform.position;
