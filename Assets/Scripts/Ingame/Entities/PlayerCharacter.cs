@@ -1,4 +1,4 @@
-using Cardevil.Cards;
+using Cardevil.Cards.Evaluations;
 using Cardevil.Ingame.Field;
 using Cardevil.Systems;
 using Cardevil.Utils;
@@ -127,15 +127,13 @@ namespace Cardevil.Ingame.Entities
         public async UniTask TurnAttack()
         {
             Debug.Log("Player Attacks!");
-            CardResultContext ctx = Managers.Card.handBar.Context;
-            CardResult? result = ctx.CurrentResult;
+
             await UniTask.Delay(100);
             // TODO : 적에 대한 공격 구현
-            if (result is { } r)
-            {
-                Debug.Log($"플레이어 공격 : {r.Damage} 피해. 구현 아직");
-                Managers.Game.Enemy.GetDamage(r.Damage);
-            }            
+            var result = Managers.Card.ResultCtx.CurrentResult;
+            Debug.Log($"플레이어 공격 : {result?.Damage ?? 0} 피해. 구현 아직");
+            Managers.Game.Enemy.GetDamage(result?.Damage ?? 0);
+      
         }
         
         public void PlayerGetDamage(float amount)
@@ -147,8 +145,7 @@ namespace Cardevil.Ingame.Entities
         public async UniTask TurnMove()
         {
             Debug.Log("Player Moves!");
-            CardResultContext ctx = Managers.Card.handBar.Context;
-            CardResult? result = ctx.CurrentResult;
+            var result = Managers.Card.ResultCtx.CurrentResult;
             //TODO 이동 로직 구현
             foreach (var move in result?.Moves)
             {

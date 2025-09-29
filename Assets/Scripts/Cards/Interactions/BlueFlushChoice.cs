@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
-using Cardevil.Cards.CardInteractinos;
+using Cardevil.Cards.Interactions;
 using System.Threading.Tasks;
 
 public class BlueFlushChoice : MonoBehaviour

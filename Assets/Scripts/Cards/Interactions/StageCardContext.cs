@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Cardevil.Cards.CardInteractinos;
+using Cardevil.Cards.Interactions;
 using System;
 using Random = UnityEngine.Random;
+using Cardevil.Cards.Evaluations;
 
 namespace Cardevil.Cards
 {

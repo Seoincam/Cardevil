@@ -1,13 +1,13 @@
+using Cardevil.Cards.Evaluations;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using static Cardevil.Cards.CardResultEvaluator;
 
-namespace Cardevil.Cards.CardInteractinos
+namespace Cardevil.Cards.Interactions
 {
     [RequireComponent(typeof(Canvas))]
     
-    public class CardVisual : MonoBehaviour, IEvaluateAction
+    public class CardVisual : MonoBehaviour, IEvaluateVisual
     {
         private Canvas canvas;
         private bool isInitalized = false;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using DG.Tweening;
 
-namespace Cardevil.Cards.CardInteractinos
+namespace Cardevil.Cards.Interactions
 {
     public class CardDeckVisual : MonoBehaviour
     {

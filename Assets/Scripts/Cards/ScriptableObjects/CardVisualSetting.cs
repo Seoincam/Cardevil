@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-namespace Cardevil.Cards.CardInteractinos
+namespace Cardevil.Cards.Interactions
 {
     [CreateAssetMenu(fileName = "CardVisualSetting", menuName = "Cards/Card Visual Setting")]
     public class CardVisualSetting : ScriptableObject

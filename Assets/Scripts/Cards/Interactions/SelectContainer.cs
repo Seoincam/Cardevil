@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.CardInteractinos
+namespace Cardevil.Cards.Interactions
 {
     public class SelectContainer : MonoBehaviour
     {

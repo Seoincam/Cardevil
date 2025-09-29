@@ -1,12 +1,13 @@
+using Cardevil.Cards.Evaluations;
 using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static Cardevil.Cards.CardResultEvaluator;
+using static Cardevil.Cards.Evaluations.CardResultEvaluator;
 
-namespace Cardevil.Cards.CardInteractinos 
+namespace Cardevil.Cards.Interactions 
 {
-    public class Card : MonoBehaviour, IEvaluateAction, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+    public class Card : MonoBehaviour, IEvaluateVisual, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [Header("Card")]
         public CardData data;

@@ -1,9 +1,11 @@
+using Cardevil.Cards.Evaluations;
+using Cardevil.Core;
+
 namespace Cardevil.Cards
 {
-    public interface ICardHandBar
+    public interface ICardHandBar: IClearable
     {
         void Init();
-        CardResultContext Context { get; }
         StageCardsContext StageCardsCtx { get; }
     }
 }
