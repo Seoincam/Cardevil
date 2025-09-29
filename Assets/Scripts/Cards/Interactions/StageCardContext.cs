@@ -5,21 +5,52 @@ using Cardevil.Cards.Interactions;
 using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core;
 
 namespace Cardevil.Cards
 {
     /// <summary>
-    /// 매 스테이지마다 초기화되는 덱 
+    /// 매 스테이지에서 사용되는 덱 정보를 담음.
+    /// 손패, 버려진패 등의 정보도 포함. 
     /// </summary>
     [Serializable]
-    public class StageCardsContext
+    public class StageCardsContext : IClearable
     {
-        public List<CardData> Deck;
-        public List<CardData> Discards;
-        public List<Card> Hand;
-        public List<Card> Selects;
+        public List<CardData> Deck = new();
+        public List<CardData> Discards = new();
+        public List<Card> Hand = new();
+        public List<Card> Selects = new();
 
-        [SerializeField] int _discardRemainCount = 3;
+        private int _discardRemainCount = 3;
+
+        /// <summary>
+        /// 모든 카드를 덱으로 돌려넣고 섞음.
+        /// </summary>
+        public void Shuffle()
+        {
+            Deck.AddRange(Discards);
+            Deck.AddRange(Hand.Select(c => c.data));
+
+            Discards.Clear();
+            Hand.Clear();
+
+            if (Deck.Count != 50)
+            {
+                Debug.LogError("덱의 초기화에 실패했습니다.");
+                Clear();
+                return;
+            }
+
+            DeckFactory.Shuffle(Deck);
+        }
+
+        public void Clear()
+        {
+            Deck = DeckFactory.CreateStageDeck(Managers.Card.RuntimeBaseDeck);
+            _discardRemainCount = 3;
+        }
+
+
 
         /// <summary>
         /// 오로지 덱의 상태만 전달함. 플레이어 턴 여부 등은 고려 안 함.
@@ -67,18 +98,6 @@ namespace Cardevil.Cards
 
         private bool AllValueSelected => Selects.All(c => c.data.CanUse);
 
-    
-
-
-
-
-        public StageCardsContext(List<CardData> deck)
-        {
-            Deck = deck;
-            Discards = new();
-            Hand = new();
-            Selects = new();
-        }
 
 
 
@@ -153,7 +172,7 @@ namespace Cardevil.Cards
                 .ThenBy(c => c.data.Number.ColorValue)
                 .ThenBy(c => NumberSelectTypeRank(c))
                 .ThenBy(c => c.data.Number.NumberValue)
-                
+
                 .ToList();
         }
 
@@ -183,7 +202,7 @@ namespace Cardevil.Cards
         /// <summary>
         /// 덱의 첫 카드를 반환하고 덱에서 삭제함.
         /// </summary>
-        public CardData DrawCard()
+        public CardData PopCard()
         {
             if (Deck.Count == 0)
             {
@@ -201,7 +220,7 @@ namespace Cardevil.Cards
         public void UpdateVisualIndex()
         {
             foreach (var card in Hand)
-                card.cardVisual.UpdateIndex();
+                card.CardVisual.UpdateIndex();
         }
 
         #region Sorting Helper

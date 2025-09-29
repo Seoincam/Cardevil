@@ -64,7 +64,7 @@ namespace Cardevil.Cards.Interactions
             parentCard.OnRerollDiscard += OnRerollDiscard;
             parentCard.OnDestory += Destroy;
 
-            transform.position = parentCard.HandBar.deck.Front.position;
+            transform.position = GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().Front.position;
 
             isInitalized = true;
         }
@@ -113,7 +113,7 @@ namespace Cardevil.Cards.Interactions
             if (parentCard.IsReroll)
                 return;
 
-            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (parentCard.HandBar.StageCardsCtx.HandCount - 1);
+            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (Managers.Card.StageCardsCtx.HandCount - 1);
             curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
         }
 
@@ -122,7 +122,7 @@ namespace Cardevil.Cards.Interactions
             if (isDiscarded)
                 return;
 
-            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (parentCard.HandBar.StageCardsCtx.HandCount - 1)));
+            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (Managers.Card.StageCardsCtx.HandCount - 1)));
             float lerpZ = Mathf.LerpAngle(tiltZ, shakeObject.localEulerAngles.z, visualSetting.TiltSpeed / 2 * Time.deltaTime);
             shakeObject.localEulerAngles = new Vector3(0, 0, lerpZ);
         }
@@ -163,7 +163,7 @@ namespace Cardevil.Cards.Interactions
 
         private void OnDraw()
         {
-            parentCard.HandBar.deck.OnInteraction();
+            GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
             var tween = transform.DOMove(endValue: parentCard.transform.position, visualSetting.DrawDuration)
                         .SetEase(visualSetting.RerollDrawEase);
 
@@ -189,7 +189,7 @@ namespace Cardevil.Cards.Interactions
 
         private void OnRerollDraw()
         {
-            parentCard.HandBar.deck.OnInteraction();
+            GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                         .SetEase(visualSetting.RerollDrawEase);
 
@@ -217,7 +217,7 @@ namespace Cardevil.Cards.Interactions
 
             tween.OnComplete(() =>
             {
-                parentCard.HandBar.deck.OnInteraction();
+                GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
                 parentCard.Destroy();
             });
         }

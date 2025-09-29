@@ -4,56 +4,159 @@ using UnityEngine;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using System.Linq;
+using Cardevil.Cards.Interactions;
 
 namespace Cardevil.Cards
 {
-    public class CardManager: IClearable
+    public class CardManager : IClearable
     {
-        public ICardHandBar handBar;
-        public ITurnPlayerInput playerInput;
+        private ITurnPlayerInput _playerInput;
 
+        private ITurnRerollInput _rerollInput;
+        private GameObject _rerollGO;
+
+        private CardHandBar _handBar;
+        private List<CardData> _runtimeBaseDeck;
+        private StageCardsContext _stageCardsCtx = new();
         private CardResultContext _resultCtx = new();
         private AsyncEvaluationEvent _evaluations = new();
-        private List<CardData> _runtimeBaseDeck;
         private int _maxHandCount = 6;
 
 
 
-        public CardResultContext ResultCtx => _resultCtx;
+        public ITurnPlayerInput PlayerInput
+        {
+            get
+            {
+                _playerInput ??= GetPlayerInput();
+                if (_playerInput == null)
+                {
+                    Debug.LogError("PlayerInput을 찾을 수 없습니다.");
+                    return null;
+                }
+                return _playerInput;
+            }
+        }
 
-        public AsyncEvaluationEvent Evaluations => _evaluations;
+        public ITurnRerollInput RerollInput
+        {
+            get => _rerollInput ??= CreateRerollInput();
+        }
 
-        public IReadOnlyList<CardData> RuntimeBaseDeck => _runtimeBaseDeck;
+        public IReadOnlyList<CardData> RuntimeBaseDeck
+        {
+            get => _runtimeBaseDeck;
+        }
 
-        public int MaxHandCount => _maxHandCount;
+
+        public CardHandBar HandBar
+        {
+            get
+            {
+                if (_handBar == null)
+                    _handBar = FindHandBar();
+
+                return _handBar;
+            }
+        }
+
+        public StageCardsContext StageCardsCtx
+        {
+            get => _stageCardsCtx;
+        }
+
+        public CardResultContext ResultCtx
+        {
+            get => _resultCtx;
+        }
+
+        public AsyncEvaluationEvent Evaluations
+        {
+            get => _evaluations;
+        }
+
+        public int MaxHandCount
+        {
+            get => _maxHandCount;
+        }
+
 
 
         public void Init()
         {
-            var handBarObj = GameObject.Find("CardHandBar");
-            if (handBarObj == null) Debug.LogError("CardHandBar이 씬 내 존재하지 않습니다.");
-            handBar = handBarObj.GetComponent<ICardHandBar>();
-            handBar.Init();
-            playerInput = handBarObj.GetComponent<ITurnPlayerInput>();
-            if (playerInput == null) Debug.LogError("playerinput이 없습니다.");
-
+            HandBar.Init(this, _stageCardsCtx);          
             _runtimeBaseDeck = DeckFactory.CreateRuntimeBaseDeck();
-        }
-
-        public void OnEnterStage()
-        {
-            handBar.Clear();
         }
 
         public void Clear()
         {
+            _handBar.Clear();
             _resultCtx.Clear();
+            _stageCardsCtx.Clear();
+        }
+
+        public void OnEnterStage()
+        {
+            Clear();
+        }
+
+        private ITurnRerollInput CreateRerollInput()
+        {
+            var prefab = Resources.Load<GameObject>("Prefabs/UI/PopUp/RerollHandler");
+            if (prefab == null)
+            {
+                Debug.LogError("Resources에서 RerollHandler 프리팹을 찾을 수 없습니다.");
+                return null;
+            }
+
+            var parent = GameObject.Find("CardCanvas")?.transform;
+            if (parent == null)
+            {
+                Debug.LogError("CardCanvas를 찾을 수 없습니다.");
+                return null;
+            }
+
+            _rerollGO = GameObject.Instantiate(prefab, parent);
+            if (!_rerollGO.TryGetComponent<RerollHandler>(out var handler))
+            {
+                Debug.LogError("RerollHandler 컴포넌트를 찾을 수 없습니다.");
+                GameObject.Destroy(_rerollGO);
+                _rerollGO = null;
+                return null;
+            }
+
+            handler.Init();
+
+            _rerollInput = handler;
+            if (_rerollInput == null)
+            {
+                Debug.LogError("RerollHandler가 ITurnRerollInput을 구현하지 않습니다.");
+                GameObject.Destroy(_rerollGO);
+                _rerollGO = null;
+                return null;
+            }
+
+            return _rerollInput;
+        }
+
+        private CardHandBar FindHandBar()
+        {
+            var handBarObj = GameObject.Find("CardHandBar");
+            if (handBarObj == null) Debug.LogError("CardHandBar이 씬 내 존재하지 않습니다.");
+            _handBar = handBarObj.GetComponent<CardHandBar>();
+
+            return _handBar;
+        }
+
+        private ITurnPlayerInput GetPlayerInput()
+        {
+            return HandBar.GetComponent<ITurnPlayerInput>();
         }
 
 
         public ILockable GetCard()
         {
-            return handBar.StageCardsCtx.GetRandomCard();
+            return StageCardsCtx.GetRandomCard();
         }
 
         public int GetCurrentCardRankScore()
@@ -66,12 +169,11 @@ namespace Cardevil.Cards
             }
             HandRanking rank = result.Ranking;
 
-            // var data = Managers.Database.Database.HandRankingDataList
-            //     .FirstOrDefault(r => r.Ranking == rank);
+            var data = Managers.Database.Database.HandRankingDataList
+                .FirstOrDefault(r => r.Ranking == rank);
 
-            // int score = data?.Value ?? 0;
-            // return score;
-            return 0;
+            int score = data?.Value ?? 0;
+            return score;
         }
     }
 }

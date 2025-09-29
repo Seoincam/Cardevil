@@ -3,7 +3,6 @@ using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static Cardevil.Cards.Evaluations.CardResultEvaluator;
 
 namespace Cardevil.Cards.Interactions 
 {
@@ -12,12 +11,13 @@ namespace Cardevil.Cards.Interactions
         [Header("Card")]
         public CardData data;
         private bool isDiscarded = false;
+        private StageCardsContext ctx;
 
 
         [Header("Visual")]
         [SerializeField] GameObject cardVisualPrefab;
         [SerializeField] CardVisualSetting visualSetting;
-        public CardVisual cardVisual;
+        [SerializeField] CardVisual _cardVisual;
         private bool _isReroll;
 
         private Vector3 pointerOffset;
@@ -45,11 +45,18 @@ namespace Cardevil.Cards.Interactions
         public Action OnDestory;
 
 
-        public CardHandBar HandBar { get; private set; }
+        private CardHandBar handBar;
 
-        public StageCardsContext Cards { get; private set; }
+        public CardVisual CardVisual
+        {
+            get => _cardVisual ??= CreateCardVisual();
+        }
 
         public bool IsReroll => _isReroll;
+
+        public int HandIndex => ctx.Hand.IndexOf(this);
+
+        public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);
 
         private bool CanDrag
         {
@@ -58,11 +65,14 @@ namespace Cardevil.Cards.Interactions
                 if (isDiscarded)
                     return false;
 
-                if (HandBar.DraggedCard != null
-                    && HandBar.DraggedCard != this)
+                if (_isReroll)
                     return false;
 
-                if (!HandBar.CanInput)
+                if (handBar.DraggedCard != null
+                    && handBar.DraggedCard != this)
+                    return false;
+
+                if (!handBar.CanInput)
                     return false;
 
                 return true;
@@ -70,22 +80,31 @@ namespace Cardevil.Cards.Interactions
         }
 
 
-
-        public void Init(StageCardsContext cards, CardHandBar barGroup, CardData cardData)
+        public void Init(CardData data, StageCardsContext ctx)
         {
-            Cards = cards;
-            HandBar = barGroup;
-            data = cardData;
-
-            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
-            if (visualHandler == null)
-                Debug.LogError("Visual Handler를 찾을 수 없음.");
-
-            cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
-            cardVisual.Init(this);
-
-            // OnSpawn?.Invoke();
+            this.ctx = ctx;
+            this.data = data;
+            _isReroll = true;
+            CardVisual.Init(this);
         }
+
+        public void Init(StageCardsContext ctx, CardHandBar handBar, CardData data)
+        {
+            this.ctx = ctx;
+            this.data = data;
+            this.handBar = handBar;
+            _isReroll = false;
+            CardVisual.Init(this);
+        }
+
+        public void SetHandBar(CardHandBar handBar)
+        {
+            this.handBar = handBar;
+            _isReroll = false;
+        }
+
+
+
 
         void Update()
         {
@@ -152,7 +171,8 @@ namespace Cardevil.Cards.Interactions
                 if (!data.CanOpenSelection)
                     return;
 
-                HandBar.selectContainer.OpenSelection(this);
+                // TODO: 실행자 수정
+                handBar.selectContainer.OpenSelection(this);
                 OnSelectValueStartEvent?.Invoke(this);
             }
         }
@@ -197,19 +217,17 @@ namespace Cardevil.Cards.Interactions
                 if (pointerUpTime - pointerDownTime > visualSetting.ClickDetectThreshold)
                     return;
 
-                isSelected = HandBar.StageCardsCtx.SelectCount >= 4
-                    ? false
-                    : !isSelected;
+                isSelected = Managers.Card.StageCardsCtx.SelectCount < 4 && !isSelected;
 
                 if (isSelected)
                 {
                     transform.localPosition = new Vector3(0, visualSetting.SelectOffset, transform.localPosition.z);
-                    HandBar.Select(this);
+                    handBar.Select(this);
                 }
                 else
                 {
                     transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    HandBar.Deselect(this);
+                    handBar.Deselect(this);
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
@@ -221,7 +239,7 @@ namespace Cardevil.Cards.Interactions
 
 
 
-        public void SetSlot(Transform slot, bool isDragging)
+        public void SetSlot(Transform slot, bool isDragging = false)
         {
             transform.SetParent(slot);
 
@@ -230,7 +248,7 @@ namespace Cardevil.Cards.Interactions
                     ? new Vector3(0, visualSetting.SelectOffset, 0)
                     : Vector3.zero;
 
-            cardVisual.UpdateIndex();
+            _cardVisual.UpdateIndex();
         }
 
         public void Discard()
@@ -245,11 +263,6 @@ namespace Cardevil.Cards.Interactions
             Destroy(gameObject);
         }
 
-        public int HandIndex
-        {
-            get => Cards.Hand.IndexOf(this);
-        }
-
         public void SetReroll(bool isReroll)
         {
             _isReroll = isReroll;
@@ -257,10 +270,17 @@ namespace Cardevil.Cards.Interactions
 
         public void ExecuteEvaluationAction()
         {
-            cardVisual.ExecuteEvaluationAction();
+            _cardVisual.ExecuteEvaluationAction();
         }
 
+        private CardVisual CreateCardVisual()
+        {
+            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
+            if (visualHandler == null)
+                Debug.LogError("Visual Handler를 찾을 수 없음.");
 
-        public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);
+            _cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
+            return _cardVisual;
+        }
     }
 }

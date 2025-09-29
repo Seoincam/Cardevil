@@ -4,16 +4,10 @@ using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine.UI;
 
 namespace Cardevil.Cards.Evaluations
-{
-    public enum EvaluationEffect
-    {
-        None, Move, Plus, Multiply    
-    }
-    
+{    
     /// <summary>
     /// 카드를 사용했을 때 반응해야 할 개체가 구현. 
     /// </summary>
@@ -25,7 +19,6 @@ namespace Cardevil.Cards.Evaluations
         public void ExecuteEvaluationAction();
     }
 
-    // IDispos
     public class EvaluationAction : IClearable, IDisposable
     {
         #region Pooling
@@ -61,6 +54,11 @@ namespace Cardevil.Cards.Evaluations
         }
 
         #endregion
+        
+        public enum EvaluationEffect
+        {
+            None, Move, Plus, Multiply
+        }
 
         private EvaluationEffect _effectType;
         private float _value;

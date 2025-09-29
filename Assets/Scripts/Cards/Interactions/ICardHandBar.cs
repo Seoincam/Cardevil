@@ -3,9 +3,8 @@ using Cardevil.Core;
 
 namespace Cardevil.Cards
 {
-    public interface ICardHandBar: IClearable
+    public interface ICardHandBar
     {
-        void Init();
-        StageCardsContext StageCardsCtx { get; }
+        void Init(CardManager manager, StageCardsContext ctx);
     }
 }

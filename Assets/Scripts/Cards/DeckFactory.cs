@@ -73,12 +73,17 @@ namespace Cardevil.Cards
             foreach (var cardData in runtimeDeck)
                 deck.Add(cardData.Copy());
 
+            Shuffle(deck);
+            return deck;
+        }
+        
+        public static void Shuffle(List<CardData> deck)
+        {
             for (int i = 0; i < deck.Count; i++)
             {
                 var randomIndex = Random.Range(0, deck.Count);
                 (deck[i], deck[randomIndex]) = (deck[randomIndex], deck[i]);
             }
-            return deck;
         }
     }
 }

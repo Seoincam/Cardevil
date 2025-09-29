@@ -35,7 +35,7 @@ public class BlueFlushChoice : MonoBehaviour
         addDiscardRemainCountButton.interactable = false;
         reviveCardButton.interactable = false;
 
-        handBar.StageCardsCtx.IncreaseDiscardCount(3);
+        Managers.Card.StageCardsCtx.IncreaseDiscardCount(3);
         BlueFlushCmp.TrySetResult();
         gameObject.SetActive(false);
     }
