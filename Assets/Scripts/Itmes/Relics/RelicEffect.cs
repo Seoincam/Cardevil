@@ -12,14 +12,14 @@ namespace Cardevil.Relics
         OnDeath, OnStageEnd, OnEvaluation
     }
 
-    public enum EffectExcuteType
+    public enum EffectExcute
     {
         None, immediate, Next, Permanent
     }
 
-    public enum EffectDamageType
+    public enum EffectEvaluation
     {
-        None, Plus, MultiplyAll, MultiplyRanking
+        None, Plus, CardDamagePlus, MultiplyAll, MultiplyRanking
     }
 
     [Serializable]
@@ -71,14 +71,14 @@ namespace Cardevil.Relics
             var resultCtx = Managers.Card.ResultCtx;
             switch (data.ExecuteType)
             {
-                case EffectExcuteType.immediate:
+                case EffectExcute.immediate:
                     // TriggerRanking == None이면 모든 랭킹 허용
                     if (data.TriggerRanking != HandRanking.None &&
                         data.TriggerRanking != ranking)
                         return false;
                     return true;
 
-                case EffectExcuteType.Next:
+                case EffectExcute.Next:
                     // 현재 랭킹이 타겟에 포함되어야 함
                     if (data.TargetRankings.Count == 0 || !data.TargetRankings.Contains(ranking))
                         return false;
@@ -102,14 +102,14 @@ namespace Cardevil.Relics
                     }
                     return false;
 
-                case EffectExcuteType.Permanent:
+                case EffectExcute.Permanent:
                     // 현재 랭킹이 타겟에 포함
                     if (data.TargetRankings.Count == 0 || !data.TargetRankings.Contains(ranking))
                         return false;
 
                     return resultCtx.History.Any(r => r?.Ranking == data.TriggerRanking);
 
-                case EffectExcuteType.None:
+                case EffectExcute.None:
                 default:
                     return false;
             }

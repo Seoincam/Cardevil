@@ -66,13 +66,13 @@ namespace Cardevil.Cards.Evaluations
         private float _value;
         private List<IEvaluateVisual> _visuals = new();
 
-        public void SetValue(EffectDamageType damageType, float value = 0)
+        public void SetValue(EffectEvaluation damageType, float value = 0)
         {
             _effectType = damageType switch
             {
-                EffectDamageType.MultiplyRanking => EvaluationEffect.Multiply,
-                EffectDamageType.MultiplyAll => EvaluationEffect.Multiply,
-                EffectDamageType.Plus => EvaluationEffect.Plus,
+                EffectEvaluation.MultiplyRanking => EvaluationEffect.Multiply,
+                EffectEvaluation.MultiplyAll => EvaluationEffect.Multiply,
+                EffectEvaluation.Plus => EvaluationEffect.Plus,
                 _ => EvaluationEffect.Move
             };
 

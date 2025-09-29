@@ -271,8 +271,7 @@ namespace Cardevil.Cards.Interactions
 
         public void ExecuteEvaluationAction()
         {
-            transform.DOScale(1.2f, .2f)
-                .SetLoops(2, LoopType.Yoyo);
+            transform.DOShakePosition(.6f, 50);
         }
     }
 }

@@ -66,11 +66,12 @@ namespace Cardevil.Cards
             }
             HandRanking rank = result.Ranking;
 
-            var data = Managers.Database.Database.HandRankingDataList
-                .FirstOrDefault(r => r.Ranking == rank);
+            // var data = Managers.Database.Database.HandRankingDataList
+            //     .FirstOrDefault(r => r.Ranking == rank);
 
-            int score = data?.Value ?? 0;
-            return score;
+            // int score = data?.Value ?? 0;
+            // return score;
+            return 0;
         }
     }
 }

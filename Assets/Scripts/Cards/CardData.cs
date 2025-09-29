@@ -254,9 +254,6 @@ namespace Cardevil.Cards
         [SerializeField] int _numberValue;
         [SerializeField] int _damageReinforceLevel;
 
-        // 계산 시점에서 데미지를 저장 용도.
-        private float _damage;
-
 
         public bool IsSet => _isSet;
 
@@ -265,12 +262,6 @@ namespace Cardevil.Cards
         public int NumberValue => _numberValue;
 
         public int DamageReinforceLevel => _damageReinforceLevel;
-
-        public float Damage
-        {
-            get => _damage;
-            set => _damage = value;
-        }
 
 
         public void ReinforceDamage()

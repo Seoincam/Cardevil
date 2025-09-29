@@ -23,7 +23,7 @@ namespace Cardevil.Cards.Evaluations
             {
                 using (var move = EvaluationAction.Get())
                 {
-                    move.SetValue(EffectDamageType.None);
+                    move.SetValue(EffectEvaluation.None);
                     move.SetVisual(moves);
                 }
 
@@ -44,7 +44,7 @@ namespace Cardevil.Cards.Evaluations
                 {
                     var rankingData = Managers.Database.Database.HandRankingDataList
                         .FirstOrDefault(d => d.Ranking == ranking);
-                    r.SetValue(EffectDamageType.Plus, rankingData?.Value ?? 0);
+                    r.SetValue(EffectEvaluation.Plus, rankingData?.Value ?? 0);
                     r.SetVisual(numbers);
                 }
             }
@@ -59,7 +59,7 @@ namespace Cardevil.Cards.Evaluations
                         cur.data.Number.NumberValue > best.data.Number.NumberValue ? cur : best);
                     using (var high = EvaluationAction.Get())
                     {
-                        high.SetValue(EffectDamageType.Plus, top.data.Number.NumberValue);
+                        high.SetValue(EffectEvaluation.Plus, top.data.Number.NumberValue);
                         high.SetVisual(top);
                     }
                     break;
@@ -77,7 +77,7 @@ namespace Cardevil.Cards.Evaluations
                     {
                         using (var c = EvaluationAction.Get())
                         {
-                            c.SetValue(EffectDamageType.Plus, card.data.Number.NumberValue);
+                            c.SetValue(EffectEvaluation.Plus, card.data.Number.NumberValue);
                             c.SetVisual(card);
                         }
                     }
@@ -95,7 +95,7 @@ namespace Cardevil.Cards.Evaluations
                     var val = card.data.Number.NumberValue;
                     using (var act = EvaluationAction.Get())
                     {
-                        act.SetValue(EffectDamageType.Plus, val);
+                        act.SetValue(EffectEvaluation.Plus, val);
                         act.SetVisual(card);
                     }
                 }
@@ -117,21 +117,21 @@ namespace Cardevil.Cards.Evaluations
                 .Where(e => e.EffectType == EffectType.OnEvaluation)
                 .ToList();
 
-            int Priority(EffectDamageType type) => type switch
+            int Priority(EffectEvaluation type) => type switch
             {
-                EffectDamageType.MultiplyRanking => 0,
-                EffectDamageType.Plus => 1,
-                EffectDamageType.MultiplyAll => 2,
+                EffectEvaluation.MultiplyRanking => 0,
+                EffectEvaluation.Plus => 1,
+                EffectEvaluation.MultiplyAll => 2,
                 _ => 99
             };
 
-            foreach (var e in effects.OrderBy(e => Priority(e.OnEvaluationData.EffectType)))
+            foreach (var e in effects.OrderBy(e => Priority(e.OnEvaluationData.EvaluationType)))
             {
                 if (e.CanTriggerOnEvaluation(ranking))
                 {
                     using (var r = EvaluationAction.Get())
                     {
-                        r.SetValue(e.OnEvaluationData.EffectType, e.OnEvaluationData.EffectValue);
+                        r.SetValue(e.OnEvaluationData.EvaluationType, e.OnEvaluationData.EffectValue);
                         // r.SetVisual();
                     }
                 }
