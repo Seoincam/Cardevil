@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RelicTestSO
   m_EditorClassIdentifier: 
   playerRelics:
-  - Relic01
-  - Relic02
+  - Relic_005
+  - Relic_101

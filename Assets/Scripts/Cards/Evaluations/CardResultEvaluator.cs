@@ -1,75 +1,107 @@
 using System.Collections.Generic;
 using System.Linq;
-using Cardevil.Cards.CardInteractinos;
+using Cardevil.Cards.Interactions;
 using Cardevil.Relics;
-using Database.Generated;
 using UnityEngine;
 
-namespace Cardevil.Cards
+namespace Cardevil.Cards.Evaluations
 {
     public static class CardResultEvaluator
     {
         /// <summary>
-        /// 카드 사용시 사용하는 EvaluationSet List를 계산 후 반환.
+        /// 미리 카드 결과를 계산 후, AsncEvaluationEvent에 등록.
         /// </summary>
-        public static List<EvaluationSet> GetEvaluationSets(CardResultContext resultCtx, List<Card> cards, out CardResult result)
+        public static void PreEvaluate(List<Card> cards)
         {
-            resultCtx.StepToNext();
-            
-            var sets = new List<EvaluationSet>();
-
-            // move only 체크
+            CardResult result;
+        
+            // move only
             var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number).ToList();
             var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move).ToList();
+
             if (numbers.Count == 0)
             {
-                sets.Add(new EvaluationSet(null, EffectDamageType.None, 0));
-                result = new(resultCtx, new() { HandRanking.None }, numbers, moves);
-                return sets;
-            }
+                using (var move = EvaluationAction.Get())
+                {
+                    move.SetValue(EffectDamageType.None);
+                    move.SetVisual(moves);
+                }
 
+                result = new(numbers, moves);
+                Managers.Card.ResultCtx.Push(result);
+                return;
+            }
 
             // 족보
             var ranking = GetRanking(cards);
-            var rankingData = Managers.Database.Database.HandRankingDataList
-                .FirstOrDefault(d => d.Ranking == ranking);
-            result = new(resultCtx, CalculateRanking(numbers), numbers, moves);
+            result = new(CalculateRanking(numbers), numbers, moves);
+            Managers.Card.ResultCtx.Push(result);
 
             // 기본 족보 보너스
-            sets.Add(new EvaluationSet(null, EffectDamageType.Plus, rankingData?.Value ?? 0));
+            if (ranking > HandRanking.High)
+            {
+                using (var r = EvaluationAction.Get())
+                {
+                    var rankingData = Managers.Database.Database.HandRankingDataList
+                        .FirstOrDefault(d => d.Ranking == ranking);
+                    r.SetValue(EffectDamageType.Plus, rankingData?.Value ?? 0);
+                    r.SetVisual(numbers);
+                }
+            }
+
 
             // 기본 데미지
+            // 4장의 카드를 쓰지 않는 경우를 계산
             switch (ranking)
             {
                 case HandRanking.High:
-                    var top = numbers.OrderBy(n => n.data.Number.NumberValue).Last();
-                    var damage = top.data.Number.NumberValue;
-                    sets.Add(new EvaluationSet(top, EffectDamageType.Plus, damage));
+                    var top = numbers.Aggregate((best, cur) =>
+                        cur.data.Number.NumberValue > best.data.Number.NumberValue ? cur : best);
+                    using (var high = EvaluationAction.Get())
+                    {
+                        high.SetValue(EffectDamageType.Plus, top.data.Number.NumberValue);
+                        high.SetVisual(top);
+                    }
                     break;
 
                 case HandRanking.OnePair:
-                    var pairCards = numbers.GroupBy(n => n.data.Number.NumberValue)
-                            .Where(g => g.Count() == 2)
-                            .SelectMany(g => g)
-                            .ToList();
-                    foreach (var card in pairCards)
-                        sets.Add(new EvaluationSet(card, EffectDamageType.Plus, card.data.Number.NumberValue));
+                    AddEventByCount(numbers, count: 2);
                     break;
 
                 case HandRanking.Triple:
-                    var tripleCards = numbers.GroupBy(n => n.data.Number.NumberValue)
-                            .Where(g => g.Count() == 3)
-                            .SelectMany(g => g)
-                            .ToList();
-                    foreach (var card in tripleCards)
-                        sets.Add(new EvaluationSet(card, EffectDamageType.Plus, card.data.Number.NumberValue));
+                    AddEventByCount(numbers, count: 3);
                     break;
 
                 default:
                     foreach (var card in numbers)
-                        sets.Add(new EvaluationSet(card, EffectDamageType.Plus, card.data.Number.NumberValue));
+                    {
+                        using (var c = EvaluationAction.Get())
+                        {
+                            c.SetValue(EffectDamageType.Plus, card.data.Number.NumberValue);
+                            c.SetVisual(card);
+                        }
+                    }
                     break;
             }
+
+            // 원페어, 트리플 등록 메서드.
+            void AddEventByCount(List<Card> cards, int count)
+            {
+                foreach (var card in cards
+                    .GroupBy(n => n.data.Number.NumberValue)
+                    .Where(g => g.Count() == count)
+                    .SelectMany(g => g))
+                {
+                    var val = card.data.Number.NumberValue;
+                    using (var act = EvaluationAction.Get())
+                    {
+                        act.SetValue(EffectDamageType.Plus, val);
+                        act.SetVisual(card);
+                    }
+                }
+            }
+
+
 
             // TODO: 추가 데미지
 
@@ -78,12 +110,11 @@ namespace Cardevil.Cards
             if (relics == null)
             {
                 Debug.LogWarning("[EvaluateResult] RelicDataManager.Instance is null");
-                return sets;
+                return;
             }
 
             var effects = relics.GetPlayerEffect(EffectType.OnEvaluation)
-                .Select(e => e.OnEvaluationData)
-                .Where(e => e != null)
+                .Where(e => e.EffectType == EffectType.OnEvaluation)
                 .ToList();
 
             int Priority(EffectDamageType type) => type switch
@@ -94,105 +125,19 @@ namespace Cardevil.Cards
                 _ => 99
             };
 
-            foreach (var e in effects.OrderBy(e => Priority(e.EffectType)))
+            foreach (var e in effects.OrderBy(e => Priority(e.OnEvaluationData.EffectType)))
             {
-                if (CanTrigger(e, ranking, resultCtx))
-                    sets.Add(new EvaluationSet(null, e.EffectType, e.EffectValue));
-            }
-
-            return sets;
-        }
-
-
-        /// <summary>
-        /// data의 조건들을 바탕으로 실행 가능한지 체크.
-        /// </summary>
-        public static bool CanTrigger(RelicEffectOnEvaluationData data, HandRanking ranking, CardResultContext resultCtx)
-        {
-            // 기본 방어
-            if (data == null) return false;
-
-            // 확률
-            if (data.Possibility < Random.value)
-                return false;
-
-            // HP (0이면 무시)
-            if (data.TriggerHp != 0 &&
-                Managers.Game?.PlayerStatus?.CurrentHp != data.TriggerHp)
-                return false;
-
-            switch (data.ExecuteType)
-            {
-                case EffectExcuteType.immediate:
-                    // TriggerRanking == None이면 모든 랭킹 허용
-                    if (data.TriggerRanking != HandRanking.None &&
-                        data.TriggerRanking != ranking)
-                        return false;
-                    return true;
-
-                case EffectExcuteType.Next:
-                    // 현재 랭킹이 타겟에 포함되어야 함
-                    if (data.TargetRankings.Count == 0 || !data.TargetRankings.Contains(ranking))
-                        return false;
-
-                    int remaining = data.ExecutionCount;
-
-                    // 최근부터 과거로 스캔하는 방식으로 체크
-                    for (int i = resultCtx.History.Count - 1; i >= 0; i--)
+                if (e.CanTriggerOnEvaluation(ranking))
+                {
+                    using (var r = EvaluationAction.Get())
                     {
-                        var result = resultCtx.History[i];
-                        if (result is not { } r) continue;
-
-                        if (r.Ranking == data.TriggerRanking)
-                            return remaining > 0;
-
-                        if (data.TargetRankings.Contains(r.Ranking))
-                        {
-                            remaining--;
-                            if (remaining <= 0) return false;
-                        }
+                        r.SetValue(e.OnEvaluationData.EffectType, e.OnEvaluationData.EffectValue);
+                        // r.SetVisual();
                     }
-                    return false;
-
-                case EffectExcuteType.Permanent:
-                    // 현재 랭킹이 타겟에 포함
-                    if (data.TargetRankings.Count == 0 || !data.TargetRankings.Contains(ranking))
-                        return false;
-
-                    return resultCtx.History.Any(r => r?.Ranking == data.TriggerRanking);
-
-                case EffectExcuteType.None:
-                default:
-                    return false;
+                }
             }
-        }
 
-
-
-
-        public struct EvaluationSet
-        {
-            public readonly IEvaluateAction Action;
-            public readonly EffectDamageType Type;
-            public readonly float Value;
-
-            public EvaluationSet(IEvaluateAction actions, EffectDamageType type, float value)
-            {
-                Action = actions;
-                Type = type;
-                Value = value;
-            }
-        }
-
-        /// <summary>
-        /// 카드를 사용했을 때 반응해야 할 개체가 구현. 
-        /// </summary>
-        public interface IEvaluateAction
-        {
-            /// <summary>
-            /// Evaluation 시 반응.
-            /// </summary>
-            public void ExecuteEvaluationAction();
+            return;
         }
 
 

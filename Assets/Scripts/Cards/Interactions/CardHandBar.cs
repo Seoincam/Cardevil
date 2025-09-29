@@ -365,6 +365,7 @@ namespace Cardevil.Cards.Interactions
         // - - - - - - - - - - -
         private void Use()
         {
+            CanInteraction = false;
             CardResultEvaluator.PreEvaluate(stageCardsCtx.Selects);
             _ = UseAsync();
         }

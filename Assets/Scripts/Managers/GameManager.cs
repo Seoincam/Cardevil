@@ -143,6 +143,7 @@ public class GameManager : ISaveLoad
     public void StageStart()
     {
         TurnOrder = 0;
+        Managers.Card.OnEnterStage();
         Managers.Turn.Init(
             Managers.Card.playerInput,
             Player.GetComponent<ITurnPlayerMove>(),
