@@ -8,7 +8,7 @@ public class StartReroll : Item
     {
         rerollAmount = amount;
     }
-    public override void IsClicked()
+    public override void OnClicked()
     {
        
     }

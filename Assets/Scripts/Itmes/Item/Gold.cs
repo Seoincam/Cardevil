@@ -18,7 +18,7 @@ namespace Cardevil.Item.gold
         /// <summary>
         /// 선택되었을때 발동하는 함수
         /// </summary>
-        override public void IsClicked()
+        override public void OnClicked()
         {
             // 골드 획득하는 UI 띄우기
             GetGold(getGold);

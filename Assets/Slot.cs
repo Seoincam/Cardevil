@@ -38,12 +38,20 @@ public class Slot : MonoBehaviour
 
         // 아이템을 설정
         Item item = SettingItem(probList);
+
+
         SetData(item);
     }
 
 
     public Item SettingItem(int[] probList)
     {
+        // 전체 아이템 list중에 
+
+
+
+
+
         item = Managers.Item.GetRandomItem(probList);
         return item;
     }

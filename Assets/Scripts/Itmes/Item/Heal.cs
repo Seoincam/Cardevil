@@ -7,7 +7,7 @@ public class Heal : Item
     {
         healAmount = amount;
     }
-    public override void IsClicked()
+    public override void OnClicked()
     {
         
     }

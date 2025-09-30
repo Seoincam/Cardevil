@@ -3,7 +3,7 @@ using Cardevil.Item;
 
 public class Relics : Item
 {
-   public override void IsClicked()
+   public override void OnClicked()
    {
        
    }
