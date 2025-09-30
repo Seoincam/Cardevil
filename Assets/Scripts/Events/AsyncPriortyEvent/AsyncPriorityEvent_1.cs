@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Events.AsyncPriortyEvent
+namespace Cardevil.Events.AsyncPriorityEvent
 {
     public class AsyncPriorityEvent<T0> : AsyncPriorityEventBase
     {

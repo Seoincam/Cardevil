@@ -36,5 +36,8 @@ public class RandomGold : Item
         Managers.Game.PlayerStatus.gold += income;
         Debug.Log($"income :{income} 획득");
     }
-
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
+    }
 }

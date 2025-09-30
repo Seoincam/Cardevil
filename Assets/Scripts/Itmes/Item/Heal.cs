@@ -17,5 +17,8 @@ public class Heal : Item
     {
         
     }
-
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
+    }
 }

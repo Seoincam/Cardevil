@@ -9,18 +9,6 @@ using UnityEngine.Serialization;
 
 namespace Cardevil.DataStructure
 {
-
-
-/// <summary>
-/// 변수 컨테이너.
-/// 
-/// </summary>
-[Serializable]
-public class VariableContainer : ICopy<VariableContainer>
-{
-    [FormerlySerializedAs("arguments")] [SerializeField]private List<KeyVariablePair> variables = new List<KeyVariablePair>();
-    public List<KeyVariablePair> Variables => variables;
-    public void Clear() => variables.Clear();
     
     /// <summary>
     /// string 키값은 불안정 하므로, enum 타입을 사용하여 변수 타입을 정의
@@ -32,10 +20,26 @@ public class VariableContainer : ICopy<VariableContainer>
         // 필요한 변수 타입을 여기에 추가.
         
     }
+    [Serializable]
+    public class VariableContainer : VariableContainer<CardVariableKey>
+    {
+    }
+/// <summary>
+/// 변수 컨테이너.
+/// 
+/// </summary>
+[Serializable]
+public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TEnum : Enum
+{
+    [SerializeField]private List<KeyVariablePair<TEnum>> variables = new ();
+    public List<KeyVariablePair<TEnum>> Variables => variables;
+    public void Clear() => variables.Clear();
+    
+
 
     
     [Serializable]
-    public class KeyVariablePair : ICloneable
+    public class KeyVariablePair<TEnum> : ICloneable where TEnum : Enum
     {
         [CanBeNull] public string key; 
         [CanBeNull] public string stringValue;
@@ -46,7 +50,7 @@ public class VariableContainer : ICopy<VariableContainer>
         [CanBeNull,SerializeReference] public object objectValue;
         public object Clone()
         {
-            return new KeyVariablePair
+            return new KeyVariablePair<TEnum>
             {
                 key = key,
                 stringValue = stringValue,
@@ -69,11 +73,11 @@ public class VariableContainer : ICopy<VariableContainer>
         return false;
     }
     
-    public KeyVariablePair GetVariable(CardVariableKey cardVariableKey)
+    public KeyVariablePair<TEnum> GetVariable(CardVariableKey cardVariableKey)
     {
         return GetVariable(cardVariableKey.ToString());
     }
-    public KeyVariablePair GetVariable(string key)
+    public KeyVariablePair<TEnum> GetVariable(string key)
     {
         foreach (var agument in variables)
         {
@@ -85,11 +89,11 @@ public class VariableContainer : ICopy<VariableContainer>
         return null;
     }
     
-    public bool TryGetVariable(CardVariableKey cardVariableKey, out KeyVariablePair variablePair)
+    public bool TryGetVariable(CardVariableKey cardVariableKey, out KeyVariablePair<TEnum> variablePair)
     {
         return TryGetVariable(cardVariableKey.ToString(), out variablePair);
     }
-    public bool TryGetVariable(string key, out KeyVariablePair variablePair)
+    public bool TryGetVariable(string key, out KeyVariablePair<TEnum> variablePair)
     {
         variablePair = GetVariable(key);
         return variablePair != null;
@@ -174,7 +178,7 @@ public class VariableContainer : ICopy<VariableContainer>
         var variable = GetVariable(key);
         if (variable == null)
         {
-            variable = new KeyVariablePair();
+            variable = new KeyVariablePair<TEnum>();
             variable.key = key;
             variables.Add(variable);
         }
@@ -189,7 +193,7 @@ public class VariableContainer : ICopy<VariableContainer>
         var variable = GetVariable(key);
         if (variable == null)
         {
-            variable = new KeyVariablePair();
+            variable = new KeyVariablePair<TEnum>();
             variable.key = key;
             variables.Add(variable);
         }
@@ -205,7 +209,7 @@ public class VariableContainer : ICopy<VariableContainer>
         var variable = GetVariable(key);
         if (variable == null)
         {
-            variable = new KeyVariablePair();
+            variable = new KeyVariablePair<TEnum>();
             variable.key = key;
             variables.Add(variable);
         }
@@ -221,7 +225,7 @@ public class VariableContainer : ICopy<VariableContainer>
         var variable = GetVariable(key);
         if (variable == null)
         {
-            variable = new KeyVariablePair();
+            variable = new KeyVariablePair<TEnum>();
             variable.key = key;
             variables.Add(variable);
         }
@@ -248,7 +252,7 @@ public class VariableContainer : ICopy<VariableContainer>
         var variable = GetVariable(key);
         if (variable == null)
         {
-            variable = new KeyVariablePair();
+            variable = new KeyVariablePair<TEnum>();
             variable.key = key;
             variables.Add(variable);
         }
@@ -256,23 +260,23 @@ public class VariableContainer : ICopy<VariableContainer>
     }
     
     
-    public void CopyFrom(VariableContainer target)
+    public void CopyFrom(VariableContainer<TEnum> target)
     {
         Clear();
         foreach (var argument in target.variables)
         {
-            variables.Add((KeyVariablePair)argument.Clone());
+            variables.Add((KeyVariablePair<TEnum>)argument.Clone());
         }
     }
     
-    public void CopyTo(VariableContainer target)
+    public void CopyTo(VariableContainer<TEnum> target)
     {
         target.CopyFrom(this);
     }
     
-    public VariableContainer Clone()
+    public VariableContainer<TEnum> Clone()
     {
-        var clone = new VariableContainer();
+        var clone = new VariableContainer<TEnum>();
         clone.CopyFrom(this);
         return clone;
     }

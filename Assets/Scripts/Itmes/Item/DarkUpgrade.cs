@@ -7,4 +7,9 @@ public class DarkUprade : Item
     {
        
     }
+    
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
+    }
 }

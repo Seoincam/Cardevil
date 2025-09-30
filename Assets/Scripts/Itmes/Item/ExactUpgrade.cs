@@ -4,6 +4,7 @@ using Cardevil.Item;
 public class ExactUpgrade : Item
 {
     int exactUpgradeAmount;
+    
     public ExactUpgrade(int amount)
     {
         exactUpgradeAmount = amount;
@@ -18,4 +19,8 @@ public class ExactUpgrade : Item
        
     }
 
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
+    }
 }

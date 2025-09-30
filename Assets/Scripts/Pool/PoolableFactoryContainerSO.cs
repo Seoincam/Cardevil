@@ -16,9 +16,9 @@ namespace Cardevil.Pools
     [CreateAssetMenu(fileName = "PoolableFactoryContainer", menuName = "Pool/PoolableFactoryContainer")]
     public class PoolableFactoryContainerSO : ScriptableObject
     {
-        [SerializeField] private SerializableDict<Poolables, PoolableFactorySO> _factories = new ();
+        [SerializeField] private SerializableDict<Poolables, PoolableFactorySo> _factories = new ();
         
-        public SerializableDict<Poolables, PoolableFactorySO> Factories
+        public SerializableDict<Poolables, PoolableFactorySo> Factories
         {
             get => _factories;
         }
@@ -26,7 +26,7 @@ namespace Cardevil.Pools
         [ContextMenu("Register All")]
         public void RegisterAll()
         {
-            PoolableFactorySO[] allFactories = Resources.FindObjectsOfTypeAll<PoolableFactorySO>();
+            PoolableFactorySo[] allFactories = Resources.FindObjectsOfTypeAll<PoolableFactorySo>();
             foreach (var factory in allFactories)
             {
                 if (factory == null || factory.Original == null)
