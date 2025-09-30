@@ -7,9 +7,19 @@ public class Heal : Item
     {
         healAmount = amount;
     }
-    public override void IsClicked()
+
+    public Heal()
     {
-        
+
     }
 
+    public override void OnClicked()
+    {
+        Debug.Log(this.itemName);
+        Managers.UI.ClosePopUpUI();
+    }
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
+    }
 }

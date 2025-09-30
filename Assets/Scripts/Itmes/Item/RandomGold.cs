@@ -12,8 +12,15 @@ public class RandomGold : Item
         goldRangeMin = min;
         goldRangeMax = max;
     }
-    public override void IsClicked()
+
+    public RandomGold()
     {
+
+    }
+    public override void OnClicked()
+    {
+        Debug.Log(this.itemName);
+        Managers.UI.ClosePopUpUI();
         GetGold(SettingGold());
     }
 
@@ -31,5 +38,8 @@ public class RandomGold : Item
         Managers.Game.PlayerStatus.gold += income;
         Debug.Log($"income :{income} 획득");
     }
-
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
+    }
 }

@@ -16,7 +16,7 @@ namespace Cardevil.Pools
         
 
         
-        [SerializeField] private SerializableDict<string, IFactory<Poolable>> _factories = new();
+        [SerializeField] private SerializableDict<string, ICloneFactory<Poolable>> _factories = new();
         [SerializeField] private SerializableDict<string, IObjectPool<Poolable>> _pools = new();
         
         /// <summary>
@@ -104,33 +104,33 @@ namespace Cardevil.Pools
                 Debug.LogWarning($"Factory for {type} already exists. Overwriting.");
             }
             
-            IFactory<Poolable> factory = ScriptableObject.CreateInstance<PoolableFactorySO>();
-            factory.Original = poolable;
-            RegisterFactory(factory, type);
+            ICloneFactory<Poolable> cloneFactory = ScriptableObject.CreateInstance<PoolableFactorySo>();
+            cloneFactory.Original = poolable;
+            RegisterFactory(cloneFactory, type);
         }
         
         /// <summary>
         /// 팩토리를 등록합니다.
         /// </summary>
-        /// <param name="factory"></param>
+        /// <param name="cloneFactory"></param>
         /// <param name="type"></param>
-        public void RegisterFactory(IFactory<Poolable> factory, string type)
+        public void RegisterFactory(ICloneFactory<Poolable> cloneFactory, string type)
         {
-            if (factory == null)
+            if (cloneFactory == null)
             {
                 Debug.LogError("Factory cannot be null.");
                 return;
             }
             
-            if (_factories.ContainsKey(factory.Original.name))
+            if (_factories.ContainsKey(cloneFactory.Original.name))
             {
-                Debug.LogWarning($"Factory for {factory.Original.name} already exists. Overwriting.");
+                Debug.LogWarning($"Factory for {cloneFactory.Original.name} already exists. Overwriting.");
             }
             
-            _factories[type] = factory;
+            _factories[type] = cloneFactory;
             _pools[type] =
                 new ObjectPool<Poolable>(
-                    factory.Create,
+                    cloneFactory.Create,
                     ActionOnGet,
                     ActionOnRelease,
                     null,
@@ -280,7 +280,7 @@ namespace Cardevil.Pools
         /// <returns></returns>
         public Poolable GetOriginal(string type)
         {
-            if (_factories.TryGetValue(type, out IFactory<Poolable> factory))
+            if (_factories.TryGetValue(type, out ICloneFactory<Poolable> factory))
             {
                 Poolable original = factory.Original;
                 return original;
@@ -299,7 +299,7 @@ namespace Cardevil.Pools
         /// <returns></returns>
         public bool TryGetOriginal(string type, out Poolable original)
         {
-            if (_factories.TryGetValue(type, out IFactory<Poolable> factory))
+            if (_factories.TryGetValue(type, out ICloneFactory<Poolable> factory))
             {
                 original = factory.Original;
                 return true;

@@ -3,7 +3,7 @@
 namespace Cardevil.Pools
 {
     [CreateAssetMenu(fileName = "PoolableFactory", menuName = "Pool/PoolableFactory")]
-    public class PoolableFactorySO : ScriptableObject, IFactory<Poolable>
+    public class PoolableFactorySo : ScriptableObject, ICloneFactory<Poolable>
     {
         [SerializeField] private Poolable _original;
         public virtual Poolable Create()

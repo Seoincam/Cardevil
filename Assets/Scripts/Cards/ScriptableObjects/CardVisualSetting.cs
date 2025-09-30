@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-namespace Cardevil.Cards.CardInteractinos
+namespace Cardevil.Cards.Interactions
 {
     [CreateAssetMenu(fileName = "CardVisualSetting", menuName = "Cards/Card Visual Setting")]
     public class CardVisualSetting : ScriptableObject
@@ -17,8 +17,6 @@ namespace Cardevil.Cards.CardInteractinos
 
 
         [Space(25)]
-        [Header("[ HandBar ]")]
-
         [Header("- Reroll")]
         [SerializeField] private float _rerollDrawDiscardInterval = .75f;
         [SerializeField] private float _rerollDrawInterval = .15f;
@@ -39,7 +37,13 @@ namespace Cardevil.Cards.CardInteractinos
 
         [Space]
         [SerializeField] private float _endRerollInterval = .5f;
+        [SerializeField] private float _endRerollUpdateSlotInterval = .15f;
         public float EndRerollInterval => _isFastTestMode ? _endRerollInterval * 0.5f : _endRerollInterval;
+        public float EndRerollUpdateSlotInterval => _isFastTestMode ? _endRerollInterval * .5f : _endRerollUpdateSlotInterval;
+
+
+        [Space(25)]
+        [Header("[ HandBar ]")]
 
         [Header("- In Game")]
         [SerializeField] private float _drawInterval = .2f;

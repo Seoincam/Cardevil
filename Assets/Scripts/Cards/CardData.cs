@@ -1,3 +1,4 @@
+using Cardevil.Core;
 using Cardevil.Utils.Directions;
 using UnityEngine;
 using System;
@@ -7,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace Cardevil.Cards
 {
     [Serializable]
-    public sealed class CardData : ICopyable<CardData>, ILockable
+    public sealed class CardData : IDeepClonable<CardData>, ILockable
     {
         // TODO: 수치 SO 등으로 분리
         private int maxNumberOptionCount = 2;
@@ -27,6 +28,9 @@ namespace Cardevil.Cards
         [Space, SerializeField] int _numberOptionCount = 0;
         private HashSet<int> _numberOptions;
 
+        [Header("Damage")]
+        [SerializeField] int _additionalDamage = 0;
+
         [Header("Reinforcement")]
         public bool reinforceEnabled = false;
 
@@ -38,6 +42,15 @@ namespace Cardevil.Cards
         public NumberData DefaultNumber => _defaultNumber;
 
         public MoveData DefaultMove => _defaultMove;
+
+        /// <summary>
+        /// 카드의 추가 데미지 값.
+        /// </summary>
+        public int AdditionalDamage
+        {
+            get => _additionalDamage;
+            set => _additionalDamage = value;
+        }
 
         /// <summary>
         /// 카드의 최종 Number 값
@@ -81,7 +94,9 @@ namespace Cardevil.Cards
             get => !isLocked && selectType > 0;
         }
 
-        // 값 선택 완료 여부를 반환
+        /// <summary>
+        /// 값 선택 완료 여부를 반환
+        /// </summary>
         public bool IsValueSelected
         {
             get
@@ -110,7 +125,7 @@ namespace Cardevil.Cards
                 while (_numberOptions.Count < _numberOptionCount)
                 {
                     int random = Random.Range(2, 11);
-                    if (random != _defaultNumber.Number)
+                    if (random != _defaultNumber.NumberValue)
                         _numberOptions.Add(random);
                 }
             }
@@ -121,7 +136,7 @@ namespace Cardevil.Cards
         /// </summary>
         public void SelectValue(int selectNumber)
         {
-            var number = new NumberData(DefaultNumber.Color, selectNumber);
+            var number = new NumberData(DefaultNumber.ColorValue, selectNumber);
             _selectedNumber = number;
         }
 
@@ -212,7 +227,7 @@ namespace Cardevil.Cards
             this.selectType = selectType;
         }
         
-        public CardData Copy()
+        public CardData DeepClone()
         {
             return new CardData()
             {
@@ -223,6 +238,7 @@ namespace Cardevil.Cards
                 _defaultMove = _defaultMove,
                 _selectedNumber = new(),
                 _selectedMove = new(),
+                _additionalDamage = _additionalDamage,
                 isLocked = false,
                 _numberOptionCount = _numberOptionCount,
                 reinforceEnabled = reinforceEnabled
@@ -232,19 +248,19 @@ namespace Cardevil.Cards
 
 
     [Serializable]
-    public class NumberData : ICopyable<NumberData>
+    public class NumberData : IDeepClonable<NumberData>
     {
         [SerializeField] bool _isSet;
-        [SerializeField] CardColor _color;
-        [SerializeField] int _number;
+        [SerializeField] CardColor _colorValue;
+        [SerializeField] int _numberValue;
         [SerializeField] int _damageReinforceLevel;
 
 
         public bool IsSet => _isSet;
 
-        public CardColor Color => _color;
+        public CardColor ColorValue => _colorValue;
 
-        public int Number => _number;
+        public int NumberValue => _numberValue;
 
         public int DamageReinforceLevel => _damageReinforceLevel;
 
@@ -258,21 +274,21 @@ namespace Cardevil.Cards
         public NumberData()
         {
             _isSet = false;
-            _color = CardColor.None;
-            _number = 0;
+            _colorValue = CardColor.None;
+            _numberValue = 0;
         }
 
         public NumberData(CardColor color, int number)
         {
             _isSet = true;
-            _color = color;
-            _number = number;
+            _colorValue = color;
+            _numberValue = number;
         }
 
 
-        public NumberData Copy()
+        public NumberData DeepClone()
         {
-            return new NumberData(_color, _number);
+            return new NumberData(_colorValue, _numberValue);
         }
 
 
@@ -287,50 +303,41 @@ namespace Cardevil.Cards
     }
 
     [Serializable]
-    public class MoveData : ICopyable<MoveData>
+    public class MoveData : IDeepClonable<MoveData>
     {
         [SerializeField] bool _isSet;
-        [SerializeField] Direction _direction;
-        [SerializeField] int _length;
-
+        [SerializeField] Direction _directionValue;
+        [SerializeField] int _lengthValue;
 
         public bool IsSet => _isSet;
 
-        public Direction Direction => _direction;
+        public Direction DirectionValue => _directionValue;
 
-        public int Length => _length;
+        public int LengthValue => _lengthValue;
 
 
         public MoveData()
         {
             _isSet = false;
-            _direction = Direction.None;
-            _length = 0;
+            _directionValue = Direction.None;
+            _lengthValue = 0;
         }
 
         public MoveData(Direction direction, int length)
         {
             _isSet = true;
-            _direction = direction;
-            _length = length;
+            _directionValue = direction;
+            _lengthValue = length;
         }
 
-        public MoveData Copy()
+        public MoveData DeepClone()
         {
-            return new MoveData(_direction, _length);
+            return new MoveData(_directionValue, _lengthValue);
         }
     }
 
     public interface ILockable
     {
         void Lock();
-    }
-
-    /// <summary>
-    /// DeepCopy를 하고 반환하는 클래스가 구현함.
-    /// </summary>
-    public interface ICopyable<T>
-    {
-        T Copy();
     }
 }

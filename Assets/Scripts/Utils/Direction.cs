@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 namespace Cardevil.Utils.Directions
@@ -11,6 +11,14 @@ namespace Cardevil.Utils.Directions
         Right,
         Down,
         Left,
+    }
+
+    public enum RareType
+    {
+        Noraml,
+        Rare,
+        Epic,
+        Legend
     }
 
     [Flags]

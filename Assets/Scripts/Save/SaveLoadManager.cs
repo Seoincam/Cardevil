@@ -96,6 +96,12 @@ namespace Cardevil.Save
         
         public void SaveGame()
         {
+
+            if (_dataService == null)
+            {
+                _dataService = new FileDataService(new JsonSerializer());
+            }
+            
             if (_currentSave == null)
             {
                 throw new InvalidOperationException("No current save to save.");

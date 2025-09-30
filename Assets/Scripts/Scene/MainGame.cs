@@ -32,4 +32,11 @@ public class MainGame : BaseScene   // MainGame Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BaseScene Å
     {
 
     }
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            Managers.UI.ShowPopUpUI<SlotMachine>();
+        }
+    }
 }

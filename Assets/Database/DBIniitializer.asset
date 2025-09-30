@@ -15,9 +15,9 @@ MonoBehaviour:
   dataDirPath: ./Raw
   targetClassPath: ./Generated
   targetPath: ./Json
-  thisDirPath: Assets\Database
-  dataDirFullPath: Assets\Database\Raw
-  targetClassFullPath: Assets\Database\Generated
+  thisDirPath: Assets/Database
+  dataDirFullPath: Assets/Database/Raw
+  targetClassFullPath: Assets/Database/Generated
   targetFullPath: Assets\Database\Binary
   doSaveCsharp: 1
   dbFindTarget:
