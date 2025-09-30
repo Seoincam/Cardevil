@@ -335,6 +335,7 @@ namespace Database
         /// <param name="onComplete">로드 완료 시 실행될 콜백 (결과 Sprite 전달)</param>
         private IEnumerator LoadImageCoroutine(string url, Action<Sprite> onComplete)
         {
+            url = ConvertToGoogleDriveDownloadUrl(url);
             Debug.Log($"입력받은 url :{url} 과 cachePath :{GetCachePathForUrl(url)}");
             string cachePath = GetCachePathForUrl(url);
             Sprite resultSprite = null;
