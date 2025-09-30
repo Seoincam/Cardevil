@@ -10,18 +10,16 @@ namespace Database
     public class McDatabase
     {
         public List<Example> ExampleList = new List<Example>();
-        public List<mob> mobList = new List<mob>();
-        public List<machineReward> machineRewardList = new List<machineReward>();
-        public List<machinePossibillity> machinePossibillityList = new List<machinePossibillity>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
+        public List<MachineReward> MachineRewardList = new List<MachineReward>();
+        public List<MachineProbabillity> MachineProbabillityList = new List<MachineProbabillity>();
         public List<RelicData> RelicDataList = new List<RelicData>();
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
         public readonly List<string> ClassNames = new List<string> {
             "Example",
-            "mob",
-            "machineReward",
-            "machinePossibillity",
             "HandRankingData",
+            "MachineReward",
+            "MachineProbabillity",
             "RelicData",
             "RelicEffectOnEvaluationData"
         };
@@ -61,10 +59,9 @@ namespace Database
         public void ClearAll()
         {
             ExampleList.Clear();
-            mobList.Clear();
-            machineRewardList.Clear();
-            machinePossibillityList.Clear();
             HandRankingDataList.Clear();
+            MachineRewardList.Clear();
+            MachineProbabillityList.Clear();
             RelicDataList.Clear();
             RelicEffectOnEvaluationDataList.Clear();
         }
@@ -94,17 +91,14 @@ namespace Database
                     case "Example":
                         ExampleList = CreateInstance<Example>(df);
                         break;
-                    case "mob":
-                        mobList = CreateInstance<mob>(df);
-                        break;
-                    case "machineReward":
-                        machineRewardList = CreateInstance<machineReward>(df);
-                        break;
-                    case "machinePossibillity":
-                        machinePossibillityList = CreateInstance<machinePossibillity>(df);
-                        break;
                     case "HandRankingData":
                         HandRankingDataList = CreateInstance<HandRankingData>(df);
+                        break;
+                    case "MachineReward":
+                        MachineRewardList = CreateInstance<MachineReward>(df);
+                        break;
+                    case "MachineProbabillity":
+                        MachineProbabillityList = CreateInstance<MachineProbabillity>(df);
                         break;
                     case "RelicData":
                         RelicDataList = CreateInstance<RelicData>(df);
@@ -128,21 +122,17 @@ namespace Database
                     var newExampleItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Example>>(json);
                     ExampleList.AddRange(newExampleItems);
                     break;
-                case "mob":
-                    var newmobItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<mob>>(json);
-                    mobList.AddRange(newmobItems);
-                    break;
-                case "machineReward":
-                    var newmachineRewardItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<machineReward>>(json);
-                    machineRewardList.AddRange(newmachineRewardItems);
-                    break;
-                case "machinePossibillity":
-                    var newmachinePossibillityItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<machinePossibillity>>(json);
-                    machinePossibillityList.AddRange(newmachinePossibillityItems);
-                    break;
                 case "HandRankingData":
                     var newHandRankingDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<HandRankingData>>(json);
                     HandRankingDataList.AddRange(newHandRankingDataItems);
+                    break;
+                case "MachineReward":
+                    var newMachineRewardItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MachineReward>>(json);
+                    MachineRewardList.AddRange(newMachineRewardItems);
+                    break;
+                case "MachineProbabillity":
+                    var newMachineProbabillityItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MachineProbabillity>>(json);
+                    MachineProbabillityList.AddRange(newMachineProbabillityItems);
                     break;
                 case "RelicData":
                     var newRelicDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicData>>(json);
@@ -165,14 +155,12 @@ namespace Database
             {
                 case "Example":
                     return typeof(Example);
-                case "mob":
-                    return typeof(mob);
-                case "machineReward":
-                    return typeof(machineReward);
-                case "machinePossibillity":
-                    return typeof(machinePossibillity);
                 case "HandRankingData":
                     return typeof(HandRankingData);
+                case "MachineReward":
+                    return typeof(MachineReward);
+                case "MachineProbabillity":
+                    return typeof(MachineProbabillity);
                 case "RelicData":
                     return typeof(RelicData);
                 case "RelicEffectOnEvaluationData":

@@ -7,11 +7,10 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class machineReward    {
+    public class MachineReward    {
 
-        /// <summary> (Reference:Enum<Define.SlotRewardType>) 
-         /// 이름 </summary>
-        public string ItemName;
+        /// <summary> 이름 </summary>
+        public Define.SlotRewardType ItemName;
         /// <summary> 희귀도 </summary>
         public Define.RareType Rank;
         /// <summary> 가치 </summary>

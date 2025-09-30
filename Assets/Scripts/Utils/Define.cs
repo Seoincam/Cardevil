@@ -96,7 +96,8 @@ public class Define
         DarkUpgrade,
         StartReroll,
         ExactUpgrade,
-        Relic
+        Relic,
+        Unknown
 
     }
 

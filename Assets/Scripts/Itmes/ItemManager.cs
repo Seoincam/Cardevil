@@ -62,7 +62,7 @@ public class ItemManager
         DatabaseManager database = Managers.Game._database;
 
         // 이것들을 json에서 가져오기.
-        List<machineReward> filteredList = database.Database.machineRewardList
+        List<MachineReward> filteredList = database.Database.MachineRewardList
                                 .Where(item => item.Rank == thisRare)
                                 .ToList();
 
@@ -75,7 +75,7 @@ public class ItemManager
         int randomValue = UnityEngine.Random.Range(0, totalWeight);
 
         // 리스트를 순회하면서 랜덤 숫자를 줄여나가다 0보다 작아지는 순간의 아이템을 선택
-        machineReward selectedItem = null;
+        MachineReward selectedItem = null;
         foreach (var item in filteredList)
         {
             randomValue -= item.ItemProbability;
@@ -89,10 +89,10 @@ public class ItemManager
         // 이제 selectedItem 변수에 가중치에 따라 랜덤하게 뽑힌 아이템이 들어있습니다.
 
 
-        Item item = CreateItemByItemType(selectedItem.ItemName);
+        Item itemReturn = CreateItemByItemType(selectedItem.ItemName);
 
 
-        return item;
+        return itemReturn;
     }
 
 
@@ -101,10 +101,10 @@ public class ItemManager
     {
         // 추후 Data와 연결하여 설정할 수 있도록 유도
 
-        normalList.AddRange(new List<Item> { new Gold(3), new Heal(1),new RandomGold(2,4),new StartReroll(2) } );
-        rareList.AddRange(new List<Item> { new Gold(4), new Heal(2), new RandomGold(3,6), new StartReroll(3) });
-        epicList.AddRange(new List<Item> { new Gold(7), new RandomGold(6,10), new StartReroll(5),new ExactUpgrade(1) });
-        legendList.AddRange(new List<Item> { new Gold(9999999) });
+        normalList.AddRange(new List<Item> { new FixedGold(3), new Heal(1),new RandomGold(2,4),new StartReroll(2) } );
+        rareList.AddRange(new List<Item> { new FixedGold(4), new Heal(2), new RandomGold(3,6), new StartReroll(3) });
+        epicList.AddRange(new List<Item> { new FixedGold(7), new RandomGold(6,10), new StartReroll(5),new ExactUpgrade(1) });
+        legendList.AddRange(new List<Item> { new FixedGold(9999999) });
 
 
 
@@ -138,7 +138,17 @@ public class ItemManager
                 break;
             case Define.SlotRewardType.RandomGold: return new RandomGold();
                 break;
-            case Define.SlotRewardType.FixedGold: return new 
+            case Define.SlotRewardType.FixedGold: return new FixedGold();
+                break;
+            case Define.SlotRewardType.ExactUpgrade: return new ExactUpgrade();
+                break;
+            case Define.SlotRewardType.StartReroll: return new StartReroll();
+                break;
+            case Define.SlotRewardType.DarkUpgrade: return new DarkUprade();
+                break;
+            case Define.SlotRewardType.Relic: return new Relics();
+                break;
+            default: return null;
         }
     }
 

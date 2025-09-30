@@ -278,9 +278,9 @@ namespace Database
             if (!Application.isPlaying)
             {
                 Debug.Log("[DatabaseManager] 에디터 모드: DB에서 직접 URL을 수집합니다.");
-                if (mcDatabase.machineRewardList != null)
+                if (mcDatabase.MachineRewardList != null)
                 {
-                    foreach (var item in mcDatabase.machineRewardList)
+                    foreach (var item in mcDatabase.MachineRewardList)
                     {
                         if (!string.IsNullOrEmpty(item.URL))
                             urlsToLoad.Add(item.URL.Trim()); // URL의 앞뒤 공백 제거
