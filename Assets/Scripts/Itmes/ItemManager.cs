@@ -66,6 +66,7 @@ public class ItemManager
                                 .Where(item => item.Rank == thisRare)
                                 .ToList();
 
+       
         // 가중치 랜덤 추첨 로직
         
         // 필터링된 아이템들의 모든 확률값(가중치)의 총합을 계산
@@ -78,6 +79,7 @@ public class ItemManager
         MachineReward selectedItem = null;
         foreach (var item in filteredList)
         {
+            Debug.Log($"foreach문 도는중 현재 item : {item.ItemName.ToString()}");
             randomValue -= item.ItemProbability;
             if (randomValue < 0)
             {
@@ -88,8 +90,13 @@ public class ItemManager
 
         // 이제 selectedItem 변수에 가중치에 따라 랜덤하게 뽑힌 아이템이 들어있습니다.
 
+        if(selectedItem==null)
+        {
+            Debug.Log("SelectedItem이 null입니다");
+            return null;
+        }
 
-        Item itemReturn = CreateItemByItemType(selectedItem.ItemName);
+        Item itemReturn = CreateItemByItemType(selectedItem);
 
 
         return itemReturn;
@@ -130,26 +137,40 @@ public class ItemManager
         epicList.Add(new DarkUprade());
     }
 
-    private Item CreateItemByItemType(Define.SlotRewardType type)
+    private Item CreateItemByItemType(MachineReward machineReward)
     {
+        Item item;
+        Define.SlotRewardType type = machineReward.ItemName;
         switch(type)
         {
-            case Define.SlotRewardType.Heal: return new Heal();
+            case Define.SlotRewardType.Heal: item = new Heal();
                 break;
-            case Define.SlotRewardType.RandomGold: return new RandomGold();
+            case Define.SlotRewardType.RandomGold:
+                item = new RandomGold();
                 break;
-            case Define.SlotRewardType.FixedGold: return new FixedGold();
+            case Define.SlotRewardType.FixedGold:
+                item = new FixedGold();
                 break;
-            case Define.SlotRewardType.ExactUpgrade: return new ExactUpgrade();
+            case Define.SlotRewardType.ExactUpgrade:
+                item = new ExactUpgrade();
                 break;
-            case Define.SlotRewardType.StartReroll: return new StartReroll();
+            case Define.SlotRewardType.StartReroll:
+                item = new StartReroll();
                 break;
-            case Define.SlotRewardType.DarkUpgrade: return new DarkUprade();
+            case Define.SlotRewardType.DarkUpgrade:
+                item = new DarkUprade();
                 break;
-            case Define.SlotRewardType.Relic: return new Relics();
+            case Define.SlotRewardType.Relic:
+                item = new Relics();
                 break;
             default: return null;
         }
+
+        item.itemName = machineReward.ItemName.ToString();
+        item.rareType = machineReward.Rank;
+        item.macinRewardData = machineReward;
+
+        return item;
     }
 
 }

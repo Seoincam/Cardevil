@@ -449,5 +449,37 @@ namespace Database
         }
 
         #endregion
+
+        /// <summary>
+        /// 일반 Google Drive 공유 링크를 직접 다운로드 가능한 URL로 변환합니다.
+        /// </summary>
+        /// <param name="anyUrl">검사 및 변환할 URL</param>
+        /// <returns>변환된 URL. 변환이 필요 없거나 실패 시 원본 URL 반환.</returns>
+        private string ConvertToGoogleDriveDownloadUrl(string anyUrl)
+        {
+            // URL이 유효한지, 그리고 우리가 변환하려는 공유 링크 형태인지 확인합니다.
+            if (string.IsNullOrEmpty(anyUrl) || !anyUrl.Contains("/file/d/"))
+            {
+                return anyUrl; // 변환할 필요가 없는 URL(이미 uc?id 형식이거나 다른 URL)은 그대로 반환
+            }
+
+            try
+            {
+                // URL을 "/d/" 기준으로 잘라 파일 ID를 포함한 뒷부분을 얻습니다.
+                string[] parts = anyUrl.Split(new string[] { "/d/" }, StringSplitOptions.None);
+                // 뒷부분에서 다시 "/" 기준으로 잘라 순수한 파일 ID만 추출합니다.
+                string fileId = parts[1].Split('/')[0];
+
+                // 추출된 파일 ID를 직접 다운로드 URL 형식에 맞춰 조합합니다.
+                return $"https://drive.google.com/uc?id={fileId}";
+            }
+            catch (Exception ex)
+            {
+                // URL 형식이 예상과 달라 오류가 발생할 경우를 대비합니다.
+                Debug.LogWarning($"Google Drive URL 변환 실패: {anyUrl} | Error: {ex.Message}. 원본 URL을 사용합니다.");
+                return anyUrl; // 실패 시 원본 URL 반환
+            }
+        }
     }
+    
 }

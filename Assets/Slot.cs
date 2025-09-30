@@ -37,22 +37,16 @@ public class Slot : MonoBehaviour
 
 
         // 아이템을 설정
-        Item item = SettingItem(probList);
+        Item itemtmp = SettingItem(probList);
+        item = itemtmp;
+        itemNameText.text = itemtmp.itemName;
 
-
-        SetData(item);
+        SetData(itemtmp);
     }
 
 
     public Item SettingItem(int[] probList)
     {
-        // 전체 아이템 list중에 
-
-
-
-
-
-
         item = Managers.Item.GetRandomItem(probList);
         return item;
     }
@@ -64,11 +58,9 @@ public class Slot : MonoBehaviour
         DatabaseManager database = Managers.Game._database;
 
 
-        itemNameText.text = database.Database.MachineRewardList[0].ItemName.ToString();
-
         Debug.Log("이미지 로딩중입니다");
         // 이미지 로딩
-        if (database.TryGetSprite(database.Database.MachineRewardList[0].URL, out Sprite loadedSprite))
+        if (database.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
         {
             // 성공! 찾은 스프라이트를 Image 컴포넌트에 적용
             itemIconImage.sprite = loadedSprite;
@@ -81,7 +73,7 @@ public class Slot : MonoBehaviour
             // 여기에 '이미지 없음' 기본 아이콘을 설정하는 등의 예외 처리를 할 수 있습니다.
             itemIconImage.sprite = null; // 또는 defaultIconSprite;
             itemIconImage.color = Color.clear; // 이미지가 없으면 투명하게
-            Debug.LogWarning($"아이템 '{database.Database.MachineRewardList[0]}'의 이미지를 캐시에서 찾을 수 없습니다. URL: {database.Database.MachineRewardList[0].URL}");
+            Debug.LogWarning($"아이템 '{findItem.macinRewardData.URL}'의 이미지를 캐시에서 찾을 수 없습니다. URL: {findItem.macinRewardData.URL}");
         }
     }
     #endregion
