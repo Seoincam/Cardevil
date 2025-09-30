@@ -157,13 +157,13 @@ public class SlotMachine : UI_Popup
 
     private void OnItem2Clicked(PointerEventData eventData)
     {
-        int index = 0;
+        int index =1;
         slots[index].item.IsClicked();
     }
 
     private void OnItem3Clicked(PointerEventData eventData)
     {
-        int index = 0;
+        int index = 2;
         slots[index].item.IsClicked();
     }
     #endregion

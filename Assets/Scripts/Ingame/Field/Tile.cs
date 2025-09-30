@@ -51,7 +51,7 @@ namespace Cardevil.Ingame.Field
         public bool AddEntity(Entity entity){
             if (entity == null)
             {
-                Debug.LogError("Cannot add a null entity to the tile.");
+                LogEx.LogError("Cannot add a null entity to the tile.");
                 return false;
             }
             
@@ -67,7 +67,7 @@ namespace Cardevil.Ingame.Field
         {
             if (entity == null)
             {
-                Debug.LogError("Cannot remove a null entity from the tile.");
+                LogEx.LogError("Cannot remove a null entity from the tile.");
                 return false;
             }
             

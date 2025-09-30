@@ -112,7 +112,7 @@ namespace Database
                 {
                     if (!validChars.Contains(c)) return false;
                 }
-                return false;
+                return true;
             }
             
             foreach (var varName in findTargetVariables)
@@ -160,14 +160,20 @@ namespace Database
         private static StringBuilder GetAddInstancesFromJsonListMethod(List<string> classNames)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("        public void AddInstancesFromJsonList(string className, string jsonList)");
+            // 메소드 파라미터 이름을 jsonList -> json으로 변경하여 명확하게 함
+            sb.AppendLine("        public void AddInstancesFromJsonList(string className, string json)");
             sb.AppendLine("        {");
             sb.AppendLine("            switch (className)");
             sb.AppendLine("            {");
             foreach (var name in classNames)
             {
                 sb.AppendLine($"                case \"{name}\":");
-                sb.AppendLine($"                    var new{name}Items = JsonUtilExtend.FromJsonList<{name}>(jsonList);");
+
+                // --- 수정된 부분 ---
+                // 기존의 비표준 JsonUtilExtend 대신 표준 Newtonsoft.Json을 사용하도록 변경
+                sb.AppendLine($"                    var new{name}Items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<{name}>>(json);");
+                // ---
+
                 sb.AppendLine($"                    {name}List.AddRange(new{name}Items);");
                 sb.AppendLine("                    break;");
             }

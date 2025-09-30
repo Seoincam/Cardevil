@@ -5,6 +5,7 @@ namespace Cardevil.Item
 {
     public abstract class Item
     {
+        public string itemName;
         public Sprite sprite;
         public Define.RareType type;
 

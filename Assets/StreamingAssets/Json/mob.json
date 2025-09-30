@@ -1,0 +1,186 @@
+[
+  {
+    "roomID": "1.1",
+    "mobName": [
+      "\"test1\""
+    ],
+    "number": 0,
+    "HP": [
+      300
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      1
+    ]
+  },
+  {
+    "roomID": "1.2",
+    "mobName": [
+      "\"테스트2\"",
+      "\"테스트3\""
+    ],
+    "number": 0,
+    "HP": [
+      350,
+      400
+    ],
+    "attackCycle": [
+      0
+    ],
+    "attackDamage": [
+      0
+    ],
+    "attackType": [
+      0
+    ]
+  },
+  {
+    "roomID": "1.3",
+    "mobName": [
+      "\"테스트3\""
+    ],
+    "number": 0,
+    "HP": [
+      400
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      1
+    ]
+  },
+  {
+    "roomID": "1.4",
+    "mobName": [
+      "\"테스트4\""
+    ],
+    "number": 0,
+    "HP": [
+      450
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      2
+    ]
+  },
+  {
+    "roomID": "1.5",
+    "mobName": [
+      "\"테스트5\""
+    ],
+    "number": 0,
+    "HP": [
+      500
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      2
+    ]
+  },
+  {
+    "roomID": "1.6",
+    "mobName": [
+      "\"테스트6\""
+    ],
+    "number": 0,
+    "HP": [
+      550
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      2
+    ]
+  },
+  {
+    "roomID": "1.7",
+    "mobName": [
+      "\"테스트7\""
+    ],
+    "number": 0,
+    "HP": [
+      600
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      3
+    ]
+  },
+  {
+    "roomID": "1.8",
+    "mobName": [
+      "\"테스트8\""
+    ],
+    "number": 0,
+    "HP": [
+      650
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      3
+    ]
+  },
+  {
+    "roomID": "1.9",
+    "mobName": [
+      "\"테스트9\""
+    ],
+    "number": 0,
+    "HP": [
+      700
+    ],
+    "attackCycle": [
+      3
+    ],
+    "attackDamage": [
+      1
+    ],
+    "attackType": [
+      3
+    ]
+  },
+  {
+    "roomID": "2.1",
+    "mobName": [
+      "\"테스트2.1\""
+    ],
+    "number": 0,
+    "HP": [],
+    "attackCycle": [],
+    "attackDamage": [],
+    "attackType": []
+  }
+]

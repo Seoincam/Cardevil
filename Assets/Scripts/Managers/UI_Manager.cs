@@ -52,7 +52,7 @@ public class UI_Manager
         canvas.overrideSorting = true;
 
  
-        canvas.sortingOrder = 199;
+        canvas.sortingOrder = 30000;
     }
 
     public T ShowAnyUI<T>(string name = null) where T : UI_Base

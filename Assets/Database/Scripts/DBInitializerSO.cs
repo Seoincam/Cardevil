@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -204,8 +204,8 @@ namespace Database
             string fileName = Path.Combine(TargetDirPath, df.name + ".json");
             object[] obj = ClassInstanceFactory.CreateInstance(df) ?? throw new Exception($"Failed to create instance for {df.name}");
 
-            var json = JsonUtilExtend.ToJsonList(obj);
-            
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
+
             File.WriteAllText(fileName, json);
             Debug.Log($"Json : {json}");
             Debug.Log($"Json Generated: {fileName}");

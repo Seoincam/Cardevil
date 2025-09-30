@@ -27,4 +27,4 @@ MonoBehaviour:
   autoLoadXlsx: 0
   jsonExtension: .json
   autoLoadJson: 0
-  googleSheetUrl: 
+  googleSheetUrl: https://script.google.com/macros/s/AKfycbw9s6zpBPgh7E2ZwxNKnenvGCJsWQQvn-mdf2VCH6PHtRnsVsDJIBa_WUt_9gVk-oFG/exec

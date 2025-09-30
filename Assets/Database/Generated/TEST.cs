@@ -20,6 +20,6 @@ namespace Database.Generated
         /// <summary> testFloat </summary>
         public float hp2;
         /// <summary> arrtest </summary>
-        public List<int> arr_Arrrr;
+        public List<int> arr_aaa;
     }
 }

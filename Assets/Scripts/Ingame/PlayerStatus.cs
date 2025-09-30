@@ -2,6 +2,7 @@
 using Cardevil.DataStructure;
 using Cardevil.Events;
 using Cardevil.Save;
+using Cardevil.Utils;
 using System;
 using UnityEngine;
 
@@ -89,6 +90,7 @@ namespace Cardevil.Ingame
             if (damage < 0)
             {
                 Debug.LogWarning("Damage cannot be negative.");
+                LogEx.LogWarning("Damage cannot be negative.");
                 return 0;
             }
             int oldHp = CurrentHp;
