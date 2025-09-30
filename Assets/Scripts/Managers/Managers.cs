@@ -7,6 +7,7 @@ using Cardevil.Sound;
 using Cardevil.Systems;
 using Database;
 using UnityEngine;
+using Cardevil.DataStructure;
 
 public class Managers : MonoBehaviour
 {
@@ -30,7 +31,6 @@ public class Managers : MonoBehaviour
     ItemManager _item = new ItemManager();
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
     [SerializeField] DatabaseManager _database;
-
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
