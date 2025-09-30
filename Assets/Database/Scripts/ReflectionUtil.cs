@@ -37,5 +37,10 @@ namespace Database
                 .Where(t => t != baseType && baseType.IsAssignableFrom(t) && !t.IsAbstract)
                 .ToList();
         }
+
+        public static bool IsValidEnumType(string enumName)
+        {
+            return FindTypeByFullName(enumName) is Type t && t.IsEnum;
+        }
     }
 }

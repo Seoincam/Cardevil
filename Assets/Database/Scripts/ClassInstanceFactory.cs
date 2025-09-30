@@ -139,7 +139,37 @@ namespace Database
             if (targetType == typeof(decimal))
                 return decimal.Parse(value, ci);
 
+            try
+            {
+                Type jsonUtilType = typeof(IJsonUtilitySupport);
+                if(jsonUtilType.IsAssignableFrom(targetType))
+                {
+                    var instance = JsonUtility.FromJson(value, targetType);
+                    return instance;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[ClassInstanceFactory] IJsonUtilitySupport 변환 실패: {targetType.Name}, {e}");
+            }
+
+            try
+            {
+                Type loadableType = typeof(ILoadFromDatabaseString);
+                if(loadableType.IsAssignableFrom(targetType))
+                {
+                    var instance = Activator.CreateInstance(targetType) as ILoadFromDatabaseString;
+                    instance!.LoadFromDatabaseString(value);
+                    return instance;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[ClassInstanceFactory] ILoadFromDatabaseString 변환 실패: {targetType.Name}, {e}");
+            }
+            
             // 기타 타입은 ChangeType 시도
+            Debug.LogWarning($"[ClassInstanceFactory] 알 수 없는 타입 변환 시도: {targetType.Name}, 값: '{value}'");
             return Convert.ChangeType(value, targetType, ci);
         }
 

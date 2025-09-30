@@ -1509,94 +1509,11 @@ MonoBehaviour:
       booleanVar: 0
       enumList: 00000000030000000000000000000000
       otherVar: Help
-    mobList:
-    - roomID: 1.1
-      mobName:
-      - '"test1"'
-      number: 0
-      HP: 2c010000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 01000000
-    - roomID: 1.2
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B82\""
-      - "\"\uD14C\uC2A4\uD2B83\""
-      number: 0
-      HP: 5e01000090010000
-      attackCycle: 00000000
-      attackDamage: 00000000
-      attackType: 00000000
-    - roomID: 1.3
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B83\""
-      number: 0
-      HP: 90010000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 01000000
-    - roomID: 1.4
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B84\""
-      number: 0
-      HP: c2010000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 02000000
-    - roomID: 1.5
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B85\""
-      number: 0
-      HP: f4010000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 02000000
-    - roomID: 1.6
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B86\""
-      number: 0
-      HP: 26020000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 02000000
-    - roomID: 1.7
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B87\""
-      number: 0
-      HP: 58020000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 03000000
-    - roomID: 1.8
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B88\""
-      number: 0
-      HP: 8a020000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 03000000
-    - roomID: 1.9
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B89\""
-      number: 0
-      HP: bc020000
-      attackCycle: 03000000
-      attackDamage: 01000000
-      attackType: 03000000
-    - roomID: 2.1
-      mobName:
-      - "\"\uD14C\uC2A4\uD2B82.1\""
-      number: 0
-      HP: 
-      attackCycle: 
-      attackDamage: 
-      attackType: 
-    shopList:
-    - itemName: gold
-      rare: 0
-      value: 1
-      coment: "value\uB9CC\uD07C\uC758 \uB3C8\uC744 \uD68D\uB4DD\uD569\uB2C8\uB2E4"
-      URL: https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr
+    HandRankingDataList: []
+    MachineRewardList: []
+    MachineProbabillityList: []
+    RelicDataList: []
+    RelicEffectOnEvaluationDataList: []
   isInitialized: 1
   googleSheetUrl: ts
   localJsonPath: Database/
@@ -1604,6 +1521,9 @@ MonoBehaviour:
   forceUseStreamingAsset: 0
   timeoutSeconds: 10
   spriteCacheIndex: {fileID: 11400000, guid: f43e8631bd79851428dddb985afa3ad6, type: 2}
+  <SpriteCache>k__BackingField:
+    defaultKey: 
+    data: []
 --- !u!4 &683164374
 Transform:
   m_ObjectHideFlags: 0
