@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ReinforceValues", menuName = "Scriptable Objects/ReinforceValues")]
+[CreateAssetMenu(fileName = "ReinforceValues", menuName = "Cards/ReinforceValues")]
 public class ReinforceValues : ScriptableObject
 {
     [Header("Number Damage Reinforcement")]

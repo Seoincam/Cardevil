@@ -10,13 +10,20 @@ namespace Cardevil.Systems
 
         [Header("Interfaces")]
         private ITurnPlayerInput playerInput;
+        private ITurnRerollInput rerollInput;
         private ITurnPlayerMove playerMove;
         private ITurnPlayerAction playerAction;
         private ITurnEnemy enemy;
 
 
-        public void Init(ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
+        public void Init(ITurnRerollInput rerollInput, ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
         {
+            Managers.UI.ShowPopUpUI<SlotMachine>();
+            if (rerollInput == null)
+            {
+                Debug.LogError("TurnManger.Init에서 rerollInput이 null입니다.");
+                return;
+            }
             if (playerInput == null)
             {
                 Debug.LogError("TurnManager.Init에서 userInput이 null입니다");
@@ -38,6 +45,7 @@ namespace Cardevil.Systems
                 return;
             }
 
+            this.rerollInput = rerollInput;
             this.playerInput = playerInput;
             this.playerMove = playerMove;
             this.playerAction = playerAction;
@@ -57,7 +65,7 @@ namespace Cardevil.Systems
         private async UniTask GameLoopAsync(CancellationToken cts)
         {
             await enemy.TurnAttack();
-            await playerInput.RerollCard();
+            await rerollInput.RerollCard();
             
             // TODO: 적에 대한 설명
             await playerInput.DrawCard();

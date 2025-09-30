@@ -149,8 +149,11 @@ public class GameManager : ISaveLoad
     public void StageStart()
     {
         TurnOrder = 0;
+        Managers.Relic.Init();
+        Managers.Card.OnEnterStage();
         Managers.Turn.Init(
-            Managers.Card.playerInput,
+            Managers.Card.RerollInput,
+            Managers.Card.PlayerInput,
             Player.GetComponent<ITurnPlayerMove>(),
             Player.GetComponent<ITurnPlayerAction>(),
             Enemy.GetComponent<ITurnEnemy>()

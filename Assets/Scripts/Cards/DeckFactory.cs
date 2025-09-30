@@ -67,18 +67,23 @@ namespace Cardevil.Cards
         /// <summary>
         /// 스테이지에 진입할 때, 스테이지에서만 사용될 Deck 생성 및 셔플
         /// </summary>
-        public static List<CardData> CreateStageDeck(List<CardData> runtimeDeck)
+        public static List<CardData> CreateStageDeck(IReadOnlyList<CardData> runtimeDeck)
         {
             var deck = new List<CardData>(50);
             foreach (var cardData in runtimeDeck)
                 deck.Add(cardData.DeepClone());
 
+            Shuffle(deck);
+            return deck;
+        }
+        
+        public static void Shuffle(List<CardData> deck)
+        {
             for (int i = 0; i < deck.Count; i++)
             {
                 var randomIndex = Random.Range(0, deck.Count);
                 (deck[i], deck[randomIndex]) = (deck[randomIndex], deck[i]);
             }
-            return deck;
         }
     }
 }

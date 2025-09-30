@@ -8,6 +8,7 @@ using Cardevil.Systems;
 using Database;
 using UnityEngine;
 using Cardevil.DataStructure;
+using Cardevil.Relics;
 
 public class Managers : MonoBehaviour
 {
@@ -29,6 +30,7 @@ public class Managers : MonoBehaviour
     TurnManager _turn = new TurnManager();
     CardManager _card = new CardManager();
     ItemManager _item = new ItemManager();
+    [SerializeField] RelicManager _relic = new RelicManager();
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
     [SerializeField] DatabaseManager _database;
     public static GameManager Game { get { return Instance._game; } }
@@ -43,10 +45,11 @@ public class Managers : MonoBehaviour
     public static EventManager Event { get { return Instance._event; } }
     public static TurnManager Turn { get { return Instance._turn; } }
     public static CardManager Card { get { return Instance._card; } }
+    public static ItemManager Item { get { return Instance._item; } }
+    public static RelicManager Relic {get { return Instance._relic; }}
     public static DungeonManager Dungeon { get { return Instance._dungeon; } }
     public static DatabaseManager Database { get { return Instance._database; } }
-    
-    public static ItemManager Item { get { return Instance._item; } }
+
     
     void Start()
     {
@@ -81,6 +84,7 @@ public class Managers : MonoBehaviour
             s_instance._card.Init();
             s_instance._dungeon.Init();
             s_instance._item.Init();
+            // s_instance._relic.Init();
             s_instance._game.Init();
 
             if (s_instance._database == null)
