@@ -10,10 +10,10 @@ using Newtonsoft.Json; // Json.Net
 using UnityEngine.UI;
 using System.Security.Cryptography;
 using System.Text;
+using Cardevil.Scriptable.Cache;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
-using Cardevil.Scriptable.Cache;
 #endif
 
 namespace Database
