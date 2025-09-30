@@ -1,0 +1,47 @@
+[
+  {
+    "MachineLevel": 1,
+    "RankProbabillity": [
+      85,
+      10,
+      4,
+      1
+    ]
+  },
+  {
+    "MachineLevel": 2,
+    "RankProbabillity": [
+      77,
+      15,
+      6,
+      2
+    ]
+  },
+  {
+    "MachineLevel": 3,
+    "RankProbabillity": [
+      63,
+      25,
+      9,
+      3
+    ]
+  },
+  {
+    "MachineLevel": 4,
+    "RankProbabillity": [
+      41,
+      40,
+      14,
+      5
+    ]
+  },
+  {
+    "MachineLevel": 5,
+    "RankProbabillity": [
+      37,
+      35,
+      20,
+      8
+    ]
+  }
+]

@@ -1,3 +1,4 @@
+using Cardevil.Core;
 using Cardevil.Utils.Directions;
 using UnityEngine;
 using System;
@@ -7,7 +8,7 @@ using Random = UnityEngine.Random;
 namespace Cardevil.Cards
 {
     [Serializable]
-    public sealed class CardData : ICopyable<CardData>, ILockable
+    public sealed class CardData : IDeepClonable<CardData>, ILockable
     {
         // TODO: 수치 SO 등으로 분리
         private int maxNumberOptionCount = 2;
@@ -226,7 +227,7 @@ namespace Cardevil.Cards
             this.selectType = selectType;
         }
         
-        public CardData Copy()
+        public CardData DeepClone()
         {
             return new CardData()
             {
@@ -247,7 +248,7 @@ namespace Cardevil.Cards
 
 
     [Serializable]
-    public class NumberData : ICopyable<NumberData>
+    public class NumberData : IDeepClonable<NumberData>
     {
         [SerializeField] bool _isSet;
         [SerializeField] CardColor _colorValue;
@@ -285,7 +286,7 @@ namespace Cardevil.Cards
         }
 
 
-        public NumberData Copy()
+        public NumberData DeepClone()
         {
             return new NumberData(_colorValue, _numberValue);
         }
@@ -302,7 +303,7 @@ namespace Cardevil.Cards
     }
 
     [Serializable]
-    public class MoveData : ICopyable<MoveData>
+    public class MoveData : IDeepClonable<MoveData>
     {
         [SerializeField] bool _isSet;
         [SerializeField] Direction _directionValue;
@@ -329,7 +330,7 @@ namespace Cardevil.Cards
             _lengthValue = length;
         }
 
-        public MoveData Copy()
+        public MoveData DeepClone()
         {
             return new MoveData(_directionValue, _lengthValue);
         }
@@ -338,13 +339,5 @@ namespace Cardevil.Cards
     public interface ILockable
     {
         void Lock();
-    }
-
-    /// <summary>
-    /// DeepCopy를 하고 반환하는 클래스가 구현함.
-    /// </summary>
-    public interface ICopyable<T>
-    {
-        T Copy();
     }
 }

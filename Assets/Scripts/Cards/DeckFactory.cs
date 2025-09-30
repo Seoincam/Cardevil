@@ -71,7 +71,7 @@ namespace Cardevil.Cards
         {
             var deck = new List<CardData>(50);
             foreach (var cardData in runtimeDeck)
-                deck.Add(cardData.Copy());
+                deck.Add(cardData.DeepClone());
 
             Shuffle(deck);
             return deck;

@@ -1,54 +1,37 @@
 [
   {
-    "ItemName": 1,
-    "Rank": 0,
-    "Value": 3,
+    "ItemName": 3,
+    "Rank": 2,
+    "Value": 5,
     "Comment": "",
     "ItemProbability": 20,
-    "RandomProbablility": [
-      100
-    ],
-    "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   },
   {
-    "ItemName": 1,
-    "Rank": 1,
-    "Value": 4,
-    "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [
-      100
-    ],
-    "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
+    "ItemName": 5,
+    "Rank": 2,
     "Value": 1,
     "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [
-      100
-    ],
-    "URL": ""
+    "ItemProbability": 10,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   },
   {
-    "ItemName": 0,
-    "Rank": 1,
-    "Value": 2,
+    "ItemName": 1,
+    "Rank": 2,
+    "Value": 7,
     "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [
-      100
-    ],
-    "URL": ""
+    "ItemProbability": 25,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   },
   {
     "ItemName": 2,
     "Rank": 2,
     "Value": 10,
     "Comment": "6",
-    "ItemProbability": 20,
+    "ItemProbability": 25,
     "RandomProbablility": [
       25,
       30,
@@ -56,45 +39,7 @@
       15,
       10
     ],
-    "URL": ""
-  },
-  {
-    "ItemName": 2,
-    "Rank": 0,
-    "Value": 4,
-    "Comment": "2",
-    "ItemProbability": 20,
-    "RandomProbablility": [
-      30,
-      40,
-      30
-    ],
-    "URL": ""
-  },
-  {
-    "ItemName": 2,
-    "Rank": 1,
-    "Value": 6,
-    "Comment": "3",
-    "ItemProbability": 20,
-    "RandomProbablility": [
-      25,
-      25,
-      25,
-      25
-    ],
-    "URL": ""
-  },
-  {
-    "ItemName": 6,
-    "Rank": 3,
-    "Value": 1,
-    "Comment": "",
-    "ItemProbability": 100,
-    "RandomProbablility": [
-      100
-    ],
-    "URL": ""
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   },
   {
     "ItemName": 4,
@@ -102,78 +47,115 @@
     "Value": 7,
     "Comment": "",
     "ItemProbability": 20,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 6,
+    "Rank": 3,
+    "Value": 1,
+    "Comment": "",
+    "ItemProbability": 0,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 3,
+    "Rank": 0,
+    "Value": 2,
+    "Comment": "",
+    "ItemProbability": 15,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 1,
+    "Rank": 0,
+    "Value": 3,
+    "Comment": "",
+    "ItemProbability": 25,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
+  },
+  {
+    "ItemName": 0,
+    "Rank": 0,
+    "Value": 1,
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 2,
+    "Rank": 0,
+    "Value": 4,
+    "Comment": "2",
+    "ItemProbability": 25,
     "RandomProbablility": [
-      100
+      25,
+      50,
+      25
     ],
-    "URL": ""
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   },
   {
     "ItemName": 4,
     "Rank": 0,
     "Value": 3,
     "Comment": "",
+    "ItemProbability": 15,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 3,
+    "Rank": 1,
+    "Value": 3,
+    "Comment": "",
+    "ItemProbability": 15,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 1,
+    "Rank": 1,
+    "Value": 4,
+    "Comment": "",
+    "ItemProbability": 25,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
+  },
+  {
+    "ItemName": 0,
+    "Rank": 1,
+    "Value": 2,
+    "Comment": "",
     "ItemProbability": 20,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+  },
+  {
+    "ItemName": 2,
+    "Rank": 1,
+    "Value": 6,
+    "Comment": "3",
+    "ItemProbability": 25,
     "RandomProbablility": [
-      100
+      25,
+      40,
+      20,
+      15
     ],
-    "URL": ""
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   },
   {
     "ItemName": 4,
     "Rank": 1,
     "Value": 4,
     "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [
-      100
-    ],
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 0,
-    "Comment": "",
-    "ItemProbability": 0,
+    "ItemProbability": 15,
     "RandomProbablility": [],
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 0,
-    "Comment": "",
-    "ItemProbability": 0,
-    "RandomProbablility": [],
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 0,
-    "Comment": "",
-    "ItemProbability": 0,
-    "RandomProbablility": [],
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 0,
-    "Comment": "",
-    "ItemProbability": 0,
-    "RandomProbablility": [],
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 0,
-    "Comment": "",
-    "ItemProbability": 0,
-    "RandomProbablility": [
-      0
-    ],
-    "URL": ""
+    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
   }
 ]

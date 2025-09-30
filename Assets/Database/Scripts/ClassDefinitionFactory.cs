@@ -110,15 +110,25 @@ namespace Database
             if (tl.StartsWith("enum<") && tl.EndsWith(">"))
             {
                 string enumName = t.Substring(5, t.Length - 6).Trim();
-                if (KnownEnumTypes.Contains(enumName))
+                if (KnownEnumTypes.Contains(enumName) || ReflectionUtil.IsValidEnumType(enumName))
                 {
                     isKnown = true;
                     return enumName;
                 }
                 return "string";
             }
+            
+            if(tl.StartsWith("class<") && tl.EndsWith(">"))
+            {
+                string className = t.Substring(6, t.Length - 7).Trim();
+                if (ReflectionUtil.FindTypeByFullName(className) is { } type)
+                {
+                    isKnown = true;
+                    return className;
+                }
+            }
 
-            // List<Enum<T>>
+            // List<T>
             if (tl.StartsWith("list<") && tl.EndsWith(">"))
             {
                 string inner = t.Substring(5, t.Length - 6).Trim(); 

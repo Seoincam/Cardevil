@@ -8,8 +8,17 @@ public class StartReroll : Item
     {
         rerollAmount = amount;
     }
-    public override void IsClicked()
+    public StartReroll()
+    {
+
+    }
+    public override void OnClicked()
     {
        
+    }
+    
+    public override Item DeepClone()
+    {
+        return MemberwiseClone() as Item;
     }
 }

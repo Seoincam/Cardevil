@@ -3,22 +3,27 @@ using Cardevil.Item;
 
 namespace Cardevil.Item.gold
 {
-    public class Gold : Item
+    public class FixedGold : Item
     {
         private int goldRangeMin;
         private int goldRangeMax;
         public int getGold;
 
 
-        public Gold(int goldAmount)
+        public FixedGold(int goldAmount)
         {
             getGold = goldAmount;
+        }
+        
+        public FixedGold()
+        {
+
         }
 
         /// <summary>
         /// 선택되었을때 발동하는 함수
         /// </summary>
-        override public void IsClicked()
+        override public void OnClicked()
         {
             // 골드 획득하는 UI 띄우기
             GetGold(getGold);
@@ -37,6 +42,11 @@ namespace Cardevil.Item.gold
         {
             Managers.Game.PlayerStatus.gold += income;
             Debug.Log($"income :{income} 획득");
+        }
+        
+        public override Item DeepClone()
+        {
+            return MemberwiseClone() as Item;
         }
     }
 
