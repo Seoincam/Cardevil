@@ -18,7 +18,6 @@ namespace Cardevil.Systems
 
         public void Init(ITurnRerollInput rerollInput, ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
         {
-            Managers.UI.ShowPopUpUI<SlotMachine>();
             if (rerollInput == null)
             {
                 Debug.LogError("TurnManger.Init에서 rerollInput이 null입니다.");
