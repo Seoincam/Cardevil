@@ -8,8 +8,10 @@ using Cardevil.InGame.Enemy;
 using Cardevil.Save;
 using UnityEngine.Serialization;
 using Cardevil.Systems;
+using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
+using Database;
 
 [Serializable]
 public class GameManager : ISaveLoad
@@ -18,7 +20,8 @@ public class GameManager : ISaveLoad
     [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
-    [SerializeField] private PlayerStatus _playerStatus; // 플레이어 상태 
+    [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
+    [SerializeField] public DatabaseManager _database;
     
 
     public Field Field
@@ -124,12 +127,15 @@ public class GameManager : ISaveLoad
     {
         if (Managers.Database.IsInitialized == false)
         {
-            Debug.LogWarning("[GameManager] Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
-            Debug.LogWarning("[GameManager] Database 초기화를 기다립니다...");
+            // Debug.LogWarning("[GameManager] Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
+            // Debug.LogWarning("[GameManager] Database 초기화를 기다립니다...");
+            LogEx.LogWarning("Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
+            LogEx.LogWarning("Database 초기화를 기다립니다...");
             LoadPlayerData().Forget();
             return;
         }
-        Debug.Log("[GameManager] Database가 초기화 되었습니다. GameStart 실행.");
+        // Debug.Log("[GameManager] Database가 초기화 되었습니다. GameStart 실행.");
+        LogEx.Log("Database가 초기화 되었습니다. GameStart 실행.");
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
     }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -15,8 +15,7 @@ namespace Database
             "long", "ulong", "float", "double", "decimal"
         };
 
-        private static HashSet<string> KnownEnumTypes = new HashSet<string>() {"Cardevil.Utils.Directions.Direction" };
-        
+        private static HashSet<string> KnownEnumTypes = new HashSet<string>() {"Cardevil.Utils.Directions.Direction", "Define.RareType" };
         public static string GenerateClassDefinition(DataFrame df)
         {
             StringBuilder sb = new StringBuilder();

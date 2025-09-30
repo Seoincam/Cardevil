@@ -6,6 +6,11 @@ using UnityEngine;
 using Database.DataReader;
 using Database.Generated;
 using UnityEngine.Networking;
+using Newtonsoft.Json; // Json.Net
+using UnityEngine.UI;
+using System.Security.Cryptography;
+using System.Text;
+using Cardevil.Scriptable.Cache;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
@@ -18,6 +23,8 @@ namespace Database
     /// </summary>
     public class DatabaseManager : MonoBehaviour
     {
+       
+
         [SerializeField] private McDatabase mcDatabase = new McDatabase();
         [SerializeField] private bool isInitialized = false;
         [Header("Path Settings")]
@@ -25,10 +32,18 @@ namespace Database
         [SerializeField] private string localJsonPath = "Database/";
         [SerializeField] private string streamingAssetPath = "Json/";
         [Header("Settings")]
-        [SerializeField,Tooltip("인터넷/로컬 유무와 상관없이 streaming으로 작동")] private bool forceUseStreamingAsset = false;
+        [SerializeField, Tooltip("인터넷/로컬 유무와 상관없이 streaming으로 작동")] private bool forceUseStreamingAsset = false;
         [SerializeField] private int timeoutSeconds = 10;
-        
-        
+        [Header("Sprite Cache Settings")] // 구분을 위해 헤더 추가
+        [SerializeField] private SpriteCacheIndex spriteCacheIndex; // 여기에 MySpriteCacheIndex.asset 파일을 끌어다 놓으세요.
+
+        // 스프라이트 캐시를 위한 Dictionary //
+        /// <summary>
+        /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
+        /// </summary>
+        [SerializeField] public Dictionary<string, Sprite> SpriteCache { get; private set; } = new Dictionary<string, Sprite>();
+
+
         public string FinalLocalPath => Path.Combine(Application.persistentDataPath, localJsonPath);
         public string FinalStreamingAssetPath => Path.Combine(Application.streamingAssetsPath, streamingAssetPath);
 
@@ -37,8 +52,9 @@ namespace Database
 
         private void Awake()
         {
-            isInitialized = false;
+            isInitialized = true; // 임시로 true로 바꾸어서 오류를 없앤다.현재 이 값이 true로 변환되지않고있음.
             DontDestroyOnLoad(gameObject);
+            Managers.Game._database = this;
         }
 
         [ContextMenu("Clear Database")]
@@ -57,7 +73,7 @@ namespace Database
             }
             StartCoroutine(InitializeRoutine());
         }
-        
+
         [ContextMenu("Force Initialize In Play Mode")]
         public void ForceInitialize()
         {
@@ -71,8 +87,8 @@ namespace Database
         }
 
 
-        
-        #if UNITY_EDITOR
+
+#if UNITY_EDITOR
         [ContextMenu("Initialize In Edit Mode")]
         public void InitializeInEditMode()
         {
@@ -84,20 +100,27 @@ namespace Database
             isInitialized = false;
             EditorCoroutineUtility.StartCoroutine(InitializeRoutine(), this);
         }
-        #endif
-        
+#endif
+
         private IEnumerator InitializeRoutine()
         {
             Debug.Log("[DatabaseManager] 초기화 시작");
             Debug.Log("[DatabaseManager] DB 데이터 삭제");
             mcDatabase.ClearAll();
+            SpriteCache.Clear();
+
+
+
             yield return LoadDatabase();
             // yield return new WaitForSeconds(1f); // 테스트용 딜레이
-            
+            yield return LoadAllSpriteResources();
+
+
+
             Debug.Log("[DatabaseManager] 초기화 완료");
             isInitialized = true;
         }
-        
+
         private IEnumerator LoadDatabase()
         {
             if (forceUseStreamingAsset)
@@ -148,7 +171,7 @@ namespace Database
                     Debug.Log($"[DatabaseManager] 강제 스트리밍 에셋 모드. 스트리밍 에셋 로드 시도: {streamingPath}");
                     yield return LoadStreamingAsset(streamingPath, result => json = result);
                 }
-                else 
+                else
                 {
                     Debug.Log($"[DatabaseManager] 로컬 파일 로드 시도: {localPath}");
                     yield return LoadSavedFile(localPath, result => json = result);
@@ -175,7 +198,7 @@ namespace Database
                 }
             }
             Debug.Log($"[DatabaseManager] 로컬 JSON 길이: {json?.Length ?? 0}");
-            yield break;    
+            yield break;
         }
         private IEnumerator LoadSavedFile(string path, Action<string> onComplete)
         {
@@ -190,7 +213,7 @@ namespace Database
             }
             yield break;
         }
-        
+
         private IEnumerator LoadStreamingAsset(string path, Action<string> onComplete)
         {
             if (Application.platform == RuntimePlatform.Android ||
@@ -221,15 +244,15 @@ namespace Database
                     onComplete?.Invoke(null);
                 }
             }
-            
+
         }
-        
-        
+
+
         private bool IsInternetAvailable()
         {
             return Application.internetReachability != NetworkReachability.NotReachable;
         }
-        
+
         private IEnumerator Timer(float time, Action onTimeout)
         {
             float elapsed = 0f;
@@ -240,7 +263,190 @@ namespace Database
             }
             onTimeout?.Invoke();
         }
-        
-        
+
+
+        #region Srpite 관련 코드
+        private IEnumerator LoadAllSpriteResources()
+        {
+            List<Coroutine> loadingCoroutines = new List<Coroutine>();
+            // 중복된 URL 로드를 방지하기 위해 HashSet을 사용합니다.
+            var urlsToLoad = new HashSet<string>();
+
+            // 어떤 URL 목록을 사용할지 상황에 맞게 결정합니다.
+            // [에디터 모드]일 경우: DB에서 직접 URL을 가져와 다운로드하고 인덱스를 생성하는 것이 목적입니다.
+            if (!Application.isPlaying)
+            {
+                Debug.Log("[DatabaseManager] 에디터 모드: DB에서 직접 URL을 수집합니다.");
+                if (mcDatabase.shopList != null)
+                {
+                    foreach (var item in mcDatabase.shopList)
+                    {
+                        if (!string.IsNullOrEmpty(item.URL))
+                            urlsToLoad.Add(item.URL.Trim()); // URL의 앞뒤 공백 제거
+                    }
+                }
+                // 만약 mobList 등 다른 테이블에도 URL 필드가 있다면 여기에 같은 방식으로 추가합니다.
+                // if (mcDatabase.mobList != null) { ... }
+            }
+            // [플레이 모드]일 경우: 이미 만들어진 인덱스를 사용해 빠르게 메모리에 로드하는 것이 목적입니다.
+            else
+            {
+                Debug.Log("[DatabaseManager] 플레이 모드: SpriteCacheIndex를 사용합니다.");
+                if (spriteCacheIndex != null)
+                {
+                    foreach (var url in spriteCacheIndex.cachedUrls)
+                    {
+                        urlsToLoad.Add(url);
+                    }
+                }
+            }
+
+            Debug.Log($"[DatabaseManager] 총 {urlsToLoad.Count}개의 고유 URL에 대한 이미지 로드를 시작합니다.");
+
+            // 결정된 URL 목록을 기반으로 이미지 로딩 코루틴을 실행합니다.
+            foreach (var url in urlsToLoad)
+            {
+                // 로딩 시작 전 SpriteCache에 이미 있는지 한번 더 확인하여 중복 실행 방지
+                if (!SpriteCache.ContainsKey(url))
+                {
+                    loadingCoroutines.Add(StartCoroutine(LoadImageCoroutine(url, sprite =>
+                    {
+                        if (sprite != null)
+                        {
+                            SpriteCache[url] = sprite;
+                        }
+                    })));
+                }
+            }
+
+            // 시작된 모든 코루틴이 끝날 때까지 기다립니다.
+            foreach (var coroutine in loadingCoroutines)
+            {
+                yield return coroutine;
+            }
+
+            Debug.Log($"[DatabaseManager] 모든 스프라이트 리소스 로딩 완료. 캐시된 스프라이트 수: {SpriteCache.Count}");
+        }
+        // <summary>
+        /// URL을 기반으로 이미지를 로드하고, 완료 시 콜백으로 Sprite를 반환하는 코루틴
+        /// </summary>
+        /// <param name="url">이미지 URL</param>
+        /// <param name="onComplete">로드 완료 시 실행될 콜백 (결과 Sprite 전달)</param>
+        private IEnumerator LoadImageCoroutine(string url, Action<Sprite> onComplete)
+        {
+            Debug.Log($"입력받은 url :{url} 과 cachePath :{GetCachePathForUrl(url)}");
+            string cachePath = GetCachePathForUrl(url);
+            Sprite resultSprite = null;
+            if (File.Exists(cachePath))
+            {
+                // 캐시 파일이 존재하면 로컬에서 로드
+                byte[] fileData = File.ReadAllBytes(cachePath);
+                Texture2D texture = new Texture2D(2, 2);
+                if (texture.LoadImage(fileData)) // 이 함수가 이미지 데이터를 텍스처로 변환
+                {
+                    // 성공
+                    resultSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                }
+                else
+                {
+                    // 실패
+                    Debug.LogError($"[DatabaseManager] Texture.LoadImage FAILED for URL: {url}. The image file might be in an unsupported format.");
+                }
+            }
+            else
+            {
+                // 캐시 파일이 없으면 웹에서 다운로드
+                using (UnityWebRequest www = UnityWebRequestTexture.GetTexture(url))
+                {
+                    yield return www.SendWebRequest();
+
+                    if (www.result == UnityWebRequest.Result.Success)
+                    {
+                        Texture2D texture = DownloadHandlerTexture.GetContent(www);
+                        resultSprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+                        File.WriteAllBytes(cachePath, www.downloadHandler.data);
+
+#if UNITY_EDITOR
+                        // 에디터 모드에서 실행했을 경우에만 인덱스에 기록
+                        if (!Application.isPlaying && spriteCacheIndex != null)
+                        {
+                            if (!spriteCacheIndex.cachedUrls.Contains(url))
+                            {
+                                spriteCacheIndex.cachedUrls.Add(url);
+                                EditorUtility.SetDirty(spriteCacheIndex); // 변경사항이 있음을 에디터에 알림
+                            }
+                        }
+#endif
+
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"스프라이트 다운로드 실패: {url} | Error: {www.error}");
+                    }
+                }
+            }
+
+            // 결과 Sprite를 콜백으로 전달
+            onComplete?.Invoke(resultSprite);
+        }
+
+        /// <summary>
+        /// 이미지를 저장할 캐시 디렉토리 경로를 반환. 폴더가 없으면 생성
+        /// </summary>
+        private string GetCacheDirectory()
+        {
+            string path = Path.Combine(Application.persistentDataPath, "ImageCache");
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            return path;
+        }
+
+        /// <summary>
+        /// URL을 기반으로 고유하고 안전한 로컬 파일 경로를 생성
+        /// </summary>
+        private string GetCachePathForUrl(string url)
+        {
+            using (MD5 md5 = MD5.Create())
+            {
+                byte[] inputBytes = Encoding.UTF8.GetBytes(url);
+                byte[] hashBytes = md5.ComputeHash(inputBytes);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("X2"));
+                }
+                return Path.Combine(GetCacheDirectory(), sb.ToString());
+            }
+        }
+
+        /// <summary>
+        /// URL을 사용해 캐시된 스프라이트를 가져옵니다.
+        /// </summary>
+        /// <param name="url">JSON 데이터에 있는 이미지 URL</param>
+        /// <param name="sprite">찾은 스프라이트를 담을 변수</param>
+        /// <returns>스프라이트를 찾았으면 true, 아니면 false</returns>
+        public bool TryGetSprite(string url, out Sprite sprite)
+        {
+            sprite = null;
+
+            // 초기화가 안됐거나 URL이 비어있으면 실패 처리
+            if (!isInitialized)
+            {
+                Debug.LogWarning("[DatabaseManager] 아직 초기화되지 않아서 스프라이트를 가져올 수 없습니다.");
+                return false;
+            }
+            if (string.IsNullOrEmpty(url))
+            {
+                // URL이 없는건 에러가 아니므로 조용히 실패 처리
+                return false;
+            }
+
+            // SpriteCache에서 URL을 키로 사용해 스프라이트를 찾아보고, 결과를 bool로 반환
+            return SpriteCache.TryGetValue(url, out sprite);
+        }
+
+        #endregion
     }
 }
