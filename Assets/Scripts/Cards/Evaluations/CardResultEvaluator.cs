@@ -14,8 +14,9 @@ namespace Cardevil.Cards.Evaluations
         public static void PreEvaluate(List<Card> cards)
         {
             CardResult result;
-        
+
             // move only
+            cards.Sort((a, b) => a.HandIndex.CompareTo(b.HandIndex));
             var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number).ToList();
             var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move).ToList();
 
@@ -23,7 +24,7 @@ namespace Cardevil.Cards.Evaluations
             {
                 using (var move = EvaluationAction.Get())
                 {
-                    move.SetValue(EffectEvaluation.None);
+                    move.SetValue(priority: -100, EffectEvaluation.None);
                     move.SetVisual(moves);
                 }
 
@@ -33,18 +34,20 @@ namespace Cardevil.Cards.Evaluations
             }
 
             // 족보
-            var ranking = GetRanking(cards);
-            result = new(CalculateRanking(numbers), numbers, moves);
+            var rankings = CalculateRanking(numbers);
+            var primaryRanking = rankings[0];
+            result = new(rankings, numbers, moves);
             Managers.Card.ResultCtx.Commmit(result);
 
-            // 기본 족보 보너스
-            if (ranking > HandRanking.High)
+            // 기본 족보 보너스 
+            // priority 100번대
+            if (primaryRanking > HandRanking.High)
             {
                 using (var r = EvaluationAction.Get())
                 {
                     var rankingData = Managers.Database.Database.HandRankingDataList
-                        .FirstOrDefault(d => d.Ranking == ranking);
-                    r.SetValue(EffectEvaluation.Plus, rankingData?.Value ?? 0);
+                        .FirstOrDefault(d => d.Ranking == primaryRanking);
+                    r.SetValue(priority: 100, EffectEvaluation.Plus, rankingData?.Value ?? 0);
                     r.SetVisual(numbers);
                 }
             }
@@ -52,14 +55,16 @@ namespace Cardevil.Cards.Evaluations
 
             // 기본 데미지
             // 4장의 카드를 쓰지 않는 경우를 계산
-            switch (ranking)
+            // priority 200번대
+            var p = 200;
+            switch (primaryRanking)
             {
                 case HandRanking.High:
                     var top = numbers.Aggregate((best, cur) =>
                         cur.data.Number.NumberValue > best.data.Number.NumberValue ? cur : best);
                     using (var high = EvaluationAction.Get())
                     {
-                        high.SetValue(EffectEvaluation.Plus, top.data.Number.NumberValue);
+                        high.SetValue(priority: p++, EffectEvaluation.Plus, top.data.Number.NumberValue);
                         high.SetVisual(top);
                     }
                     break;
@@ -77,7 +82,7 @@ namespace Cardevil.Cards.Evaluations
                     {
                         using (var c = EvaluationAction.Get())
                         {
-                            c.SetValue(EffectEvaluation.Plus, card.data.Number.NumberValue);
+                            c.SetValue(priority: p++, EffectEvaluation.Plus, card.data.Number.NumberValue);
                             c.SetVisual(card);
                         }
                     }
@@ -95,7 +100,7 @@ namespace Cardevil.Cards.Evaluations
                     var val = card.data.Number.NumberValue;
                     using (var act = EvaluationAction.Get())
                     {
-                        act.SetValue(EffectEvaluation.Plus, val);
+                        act.SetValue(priority: p++, EffectEvaluation.Plus, val);
                         act.SetVisual(card);
                     }
                 }
@@ -125,13 +130,15 @@ namespace Cardevil.Cards.Evaluations
                 _ => 99
             };
 
+            // TODO: 순서 더 정확히
+            var pr = 300;
             foreach (var e in effects.OrderBy(e => Priority(e.OnEvaluationData.EvaluationType)))
             {
-                if (e.CanTriggerOnEvaluation(ranking))
+                if (e.CanTriggerOnEvaluation(primaryRanking))
                 {
                     using (var r = EvaluationAction.Get())
                     {
-                        r.SetValue(e.OnEvaluationData.EvaluationType, e.OnEvaluationData.EffectValue);
+                        r.SetValue(priority: pr++, e.OnEvaluationData.EvaluationType, e.OnEvaluationData.EffectValue);
                         // r.SetVisual();
                     }
                 }

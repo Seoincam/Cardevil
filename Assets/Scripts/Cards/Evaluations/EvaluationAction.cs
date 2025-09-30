@@ -43,7 +43,7 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         public void Dispose()
         {
-            Managers.Card.Evaluations.AddAction(this);
+            Managers.Card.Evaluations.AddAction(this, _priority);
         }
 
         public void Clear()
@@ -63,9 +63,12 @@ namespace Cardevil.Cards.Evaluations
         private EvaluationEffect _effectType;
         private float _value;
         private List<IEvaluateVisual> _visuals = new();
+        private int _priority;
 
-        public void SetValue(EffectEvaluation damageType, float value = 0)
+        public void SetValue(int priority, EffectEvaluation damageType, float value = 0)
         {
+            _priority = priority;
+
             _effectType = damageType switch
             {
                 EffectEvaluation.MultiplyRanking => EvaluationEffect.Multiply,
