@@ -6,6 +6,8 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Database;
+using Database.Generated;
 
 public class ItemManager
 {
@@ -14,6 +16,8 @@ public class ItemManager
     public List<Item> rareList = new List<Item>();
     public List<Item> epicList = new List<Item>();
     public List<Item> legendList = new List<Item>();
+
+
 
     public void Init()
     {
@@ -52,11 +56,43 @@ public class ItemManager
     {
         Define.RareType thisRare = (Define.RareType)index;
         List<Item> getitems = typeLists[index]; // 우선은 index 0~4까지에 따라서 설정하기
-        Item item = getitems[UnityEngine.Random.Range(0, getitems.Count)]; // 목록에서 랜덤으로 아이템 뽑아오기
-        item.type = thisRare;
+
+        //  getitems = { new Gold(3), new Heal(1),new RandomGold(2,4),new StartReroll(2) } 
+
+        DatabaseManager database = Managers.Game._database;
+
+        // 이것들을 json에서 가져오기.
+        List<machineReward> filteredList = database.Database.machineRewardList
+                                .Where(item => item.Rank == thisRare)
+                                .ToList();
+
+        // 가중치 랜덤 추첨 로직
+        
+        // 필터링된 아이템들의 모든 확률값(가중치)의 총합을 계산
+        int totalWeight = filteredList.Sum(item => item.ItemProbability);
+
+        // 0부터 totalWeight 전까지의 랜덤 숫자를 하나 뽑rl
+        int randomValue = UnityEngine.Random.Range(0, totalWeight);
+
+        // 리스트를 순회하면서 랜덤 숫자를 줄여나가다 0보다 작아지는 순간의 아이템을 선택
+        machineReward selectedItem = null;
+        foreach (var item in filteredList)
+        {
+            randomValue -= item.ItemProbability;
+            if (randomValue < 0)
+            {
+                selectedItem = item;
+                break; // 아이템을 찾았으니 반복 종료
+            }
+        }
+
+        // 이제 selectedItem 변수에 가중치에 따라 랜덤하게 뽑힌 아이템이 들어있습니다.
+
+
+        Item item = CreateItemByItemType(selectedItem.ItemName);
+
 
         return item;
-        
     }
 
 
@@ -94,6 +130,16 @@ public class ItemManager
         epicList.Add(new DarkUprade());
     }
 
-
+    private Item CreateItemByItemType(Define.SlotRewardType type)
+    {
+        switch(type)
+        {
+            case Define.SlotRewardType.Heal: return new Heal();
+                break;
+            case Define.SlotRewardType.RandomGold: return new RandomGold();
+                break;
+            case Define.SlotRewardType.FixedGold: return new 
+        }
+    }
 
 }

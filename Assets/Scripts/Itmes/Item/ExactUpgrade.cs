@@ -9,6 +9,10 @@ public class ExactUpgrade : Item
         exactUpgradeAmount = amount;
     }
     
+    public ExactUpgrade()
+    {
+
+    }
     public override void OnClicked()
     {
        

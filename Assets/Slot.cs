@@ -52,6 +52,7 @@ public class Slot : MonoBehaviour
 
 
 
+
         item = Managers.Item.GetRandomItem(probList);
         return item;
     }

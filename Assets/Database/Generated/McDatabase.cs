@@ -12,6 +12,7 @@ namespace Database
         public List<Example> ExampleList = new List<Example>();
         public List<mob> mobList = new List<mob>();
         public List<machineReward> machineRewardList = new List<machineReward>();
+        public List<machinePossibillity> machinePossibillityList = new List<machinePossibillity>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<RelicData> RelicDataList = new List<RelicData>();
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
@@ -19,6 +20,7 @@ namespace Database
             "Example",
             "mob",
             "machineReward",
+            "machinePossibillity",
             "HandRankingData",
             "RelicData",
             "RelicEffectOnEvaluationData"
@@ -61,6 +63,7 @@ namespace Database
             ExampleList.Clear();
             mobList.Clear();
             machineRewardList.Clear();
+            machinePossibillityList.Clear();
             HandRankingDataList.Clear();
             RelicDataList.Clear();
             RelicEffectOnEvaluationDataList.Clear();
@@ -97,6 +100,9 @@ namespace Database
                     case "machineReward":
                         machineRewardList = CreateInstance<machineReward>(df);
                         break;
+                    case "machinePossibillity":
+                        machinePossibillityList = CreateInstance<machinePossibillity>(df);
+                        break;
                     case "HandRankingData":
                         HandRankingDataList = CreateInstance<HandRankingData>(df);
                         break;
@@ -130,6 +136,10 @@ namespace Database
                     var newmachineRewardItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<machineReward>>(json);
                     machineRewardList.AddRange(newmachineRewardItems);
                     break;
+                case "machinePossibillity":
+                    var newmachinePossibillityItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<machinePossibillity>>(json);
+                    machinePossibillityList.AddRange(newmachinePossibillityItems);
+                    break;
                 case "HandRankingData":
                     var newHandRankingDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<HandRankingData>>(json);
                     HandRankingDataList.AddRange(newHandRankingDataItems);
@@ -159,6 +169,8 @@ namespace Database
                     return typeof(mob);
                 case "machineReward":
                     return typeof(machineReward);
+                case "machinePossibillity":
+                    return typeof(machinePossibillity);
                 case "HandRankingData":
                     return typeof(HandRankingData);
                 case "RelicData":

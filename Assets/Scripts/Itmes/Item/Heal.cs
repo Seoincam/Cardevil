@@ -7,6 +7,12 @@ public class Heal : Item
     {
         healAmount = amount;
     }
+
+    public Heal()
+    {
+
+    }
+
     public override void OnClicked()
     {
         

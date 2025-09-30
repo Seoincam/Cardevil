@@ -3,16 +3,21 @@ using Cardevil.Item;
 
 namespace Cardevil.Item.gold
 {
-    public class Gold : Item
+    public class FixedGold : Item
     {
         private int goldRangeMin;
         private int goldRangeMax;
         public int getGold;
 
 
-        public Gold(int goldAmount)
+        public FixedGold(int goldAmount)
         {
             getGold = goldAmount;
+        }
+        
+        public FixedGold()
+        {
+
         }
 
         /// <summary>

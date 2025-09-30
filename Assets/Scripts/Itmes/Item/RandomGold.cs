@@ -12,6 +12,11 @@ public class RandomGold : Item
         goldRangeMin = min;
         goldRangeMax = max;
     }
+
+    public RandomGold()
+    {
+
+    }
     public override void OnClicked()
     {
         GetGold(SettingGold());
