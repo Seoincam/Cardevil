@@ -38,6 +38,10 @@ public class Slot : MonoBehaviour
 
         // 아이템을 설정
         Item itemtmp = SettingItem(probList);
+        if(itemtmp==null)
+        {
+            Debug.Log("itemtmp 가 null 입니다.");
+        }
         item = itemtmp;
         itemNameText.text = itemtmp.itemName;
 

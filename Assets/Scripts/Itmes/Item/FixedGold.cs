@@ -26,6 +26,8 @@ namespace Cardevil.Item.gold
         override public void OnClicked()
         {
             // 골드 획득하는 UI 띄우기
+            Debug.Log(this.itemName);
+            Managers.UI.ClosePopUpUI();
             GetGold(getGold);
         }
 

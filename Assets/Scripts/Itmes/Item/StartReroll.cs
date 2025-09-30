@@ -14,7 +14,8 @@ public class StartReroll : Item
     }
     public override void OnClicked()
     {
-       
+        Debug.Log(this.itemName);
+        Managers.UI.ClosePopUpUI();
     }
     
     public override Item DeepClone()

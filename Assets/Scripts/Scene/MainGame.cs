@@ -27,10 +27,16 @@ public class MainGame : BaseScene   // MainGame Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BaseScene Å
         // Managers.UI.ShowPopUpUI<S1_PopUp>();
         Managers.Sound.Play("Sounds/BGM/Main_Bgm",Define.Sound.BGM);
         Managers.Game.GameStart();
-        Managers.UI.ShowPopUpUI<SlotMachine>();
     }
     public void Option()
     {
 
+    }
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            Managers.UI.ShowPopUpUI<SlotMachine>();
+        }
     }
 }

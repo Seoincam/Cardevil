@@ -55,9 +55,7 @@ public class ItemManager
     public Item GetRandomTypeItem(int index)
     {
         Define.RareType thisRare = (Define.RareType)index;
-        List<Item> getitems = typeLists[index]; // 우선은 index 0~4까지에 따라서 설정하기
-
-        //  getitems = { new Gold(3), new Heal(1),new RandomGold(2,4),new StartReroll(2) } 
+  
 
         DatabaseManager database = Managers.Game._database;
 
@@ -81,7 +79,7 @@ public class ItemManager
         {
             Debug.Log($"foreach문 도는중 현재 item : {item.ItemName.ToString()}");
             randomValue -= item.ItemProbability;
-            if (randomValue < 0)
+            if (randomValue <= 0)
             {
                 selectedItem = item;
                 break; // 아이템을 찾았으니 반복 종료
@@ -146,19 +144,20 @@ public class ItemManager
             case Define.SlotRewardType.Heal: item = new Heal();
                 break;
             case Define.SlotRewardType.RandomGold:
-                item = new RandomGold();
+                item = new RandomGold(int.Parse(machineReward.Comment),machineReward.Value);
+                
                 break;
             case Define.SlotRewardType.FixedGold:
-                item = new FixedGold();
+                item = new FixedGold(machineReward.Value);
                 break;
             case Define.SlotRewardType.ExactUpgrade:
-                item = new ExactUpgrade();
+                item = new ExactUpgrade(machineReward.Value);
                 break;
             case Define.SlotRewardType.StartReroll:
-                item = new StartReroll();
+                item = new StartReroll(machineReward.Value);
                 break;
             case Define.SlotRewardType.DarkUpgrade:
-                item = new DarkUprade();
+                item = new DarkUprade(machineReward.Value);
                 break;
             case Define.SlotRewardType.Relic:
                 item = new Relics();

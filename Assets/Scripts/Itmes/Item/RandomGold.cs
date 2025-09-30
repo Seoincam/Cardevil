@@ -19,6 +19,8 @@ public class RandomGold : Item
     }
     public override void OnClicked()
     {
+        Debug.Log(this.itemName);
+        Managers.UI.ClosePopUpUI();
         GetGold(SettingGold());
     }
 
