@@ -1,0 +1,136 @@
+[
+  {
+    "DisplayName": "(기본 red 플러시)",
+    "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
+    "RelicId": "Relic_001",
+    "Level": 0,
+    "EffectIds": [
+      "\"OnEvaluation_001\""
+    ]
+  },
+  {
+    "DisplayName": "대체 red 플러시",
+    "DisplayDescription": "<color=red>레드 플러시</color>의 효과 증폭: 다음 <color=yellow>2회 공격</color>의 <color=#FF0000>피해량이 300%</color>로 증폭됩니다.",
+    "RelicId": "Relic_001",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_002\""
+    ]
+  },
+  {
+    "DisplayName": "(기본 green 플러시)",
+    "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
+    "RelicId": "Relic_002",
+    "Level": 0,
+    "EffectIds": []
+  },
+  {
+    "DisplayName": "대체 green 플러시",
+    "DisplayDescription": "그린 플러시의 효과 증폭: 보호막 양이 2로 증가합니다.",
+    "RelicId": "Relic_002",
+    "Level": 1,
+    "EffectIds": []
+  },
+  {
+    "DisplayName": "(기본 blue 플러시)",
+    "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
+    "RelicId": "Relic_003",
+    "Level": 0,
+    "EffectIds": []
+  },
+  {
+    "DisplayName": "대체 blue 플러시",
+    "DisplayDescription": "블루 플러시의 효과 증폭: 버리기 횟수 5회 추가 또는 묘지 -> 덱으로 불러오는 카드가 5장으로",
+    "RelicId": "Relic_003",
+    "Level": 1,
+    "EffectIds": []
+  },
+  {
+    "DisplayName": "(기본 black 플러시)",
+    "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
+    "RelicId": "Relic_004",
+    "Level": 0,
+    "EffectIds": [
+      "\"OnEvaluation_003\""
+    ]
+  },
+  {
+    "DisplayName": "대체 black 플러시",
+    "DisplayDescription": "검정 플러시의 효과 증폭: 영구적 데미지 증가가 250%로 늘어납니다.",
+    "RelicId": "Relic_004",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_004\""
+    ]
+  },
+  {
+    "DisplayName": "분노",
+    "DisplayDescription": "<color=yellow>원페어</color>일 시 <color=#FF0000>피해량이 50</color>, <color=yellow>투페어</color>일 시 <color=#FF0000>피해량이 80</color> 증가합니다.",
+    "RelicId": "Relic_005",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_005\"",
+      "\"OnEvaluation_006\""
+    ]
+  },
+  {
+    "DisplayName": "유물6",
+    "DisplayDescription": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가. (스티플이라면 +180!)",
+    "RelicId": "Relic_006",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_007\"",
+      "\"OnEvaluation_008\"",
+      "\"OnEvaluation_009\"",
+      "\"OnEvaluation_010\"",
+      "\"OnEvaluation_011\"",
+      "\"OnEvaluation_012\""
+    ]
+  },
+  {
+    "DisplayName": "유물7",
+    "DisplayDescription": "트리플(+60), 포카드 (+300) 증가시킵니다.",
+    "RelicId": "Relic_007",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_013\"",
+      "\"OnEvaluation_014\""
+    ]
+  },
+  {
+    "DisplayName": "유물8",
+    "DisplayDescription": "하이카드 공격이 다음 족보 데미지를 125%로 증가시킵니다.",
+    "RelicId": "Relic_008",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_015\""
+    ]
+  },
+  {
+    "DisplayName": "유물9",
+    "DisplayDescription": "33.33% 확률로, 매 공격의 데미지가 120%로 증가합니다.",
+    "RelicId": "Relic_009",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_016\""
+    ]
+  },
+  {
+    "DisplayName": "유물10",
+    "DisplayDescription": "체력이 1이라면, 모든 데미지를 150%로 증가시킵니다.",
+    "RelicId": "Relic_010",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_017\""
+    ]
+  },
+  {
+    "DisplayName": "유물11",
+    "DisplayDescription": "각 카드의 기본 데미지를 +10 증가시킵니다.",
+    "RelicId": "Relic_011",
+    "Level": 1,
+    "EffectIds": [
+      "\"OnEvaluation_018\""
+    ]
+  }
+]

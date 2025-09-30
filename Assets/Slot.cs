@@ -55,11 +55,11 @@ public class Slot : MonoBehaviour
         DatabaseManager database = Managers.Game._database;
 
 
-        itemNameText.text = database.Database.shopList[0].itemName;
+        itemNameText.text = database.Database.machineRewardList[0].ItemName.ToString();
 
         Debug.Log("이미지 로딩중입니다");
         // 이미지 로딩
-        if (database.TryGetSprite(database.Database.shopList[0].URL, out Sprite loadedSprite))
+        if (database.TryGetSprite(database.Database.machineRewardList[0].URL, out Sprite loadedSprite))
         {
             // 성공! 찾은 스프라이트를 Image 컴포넌트에 적용
             itemIconImage.sprite = loadedSprite;
@@ -72,7 +72,7 @@ public class Slot : MonoBehaviour
             // 여기에 '이미지 없음' 기본 아이콘을 설정하는 등의 예외 처리를 할 수 있습니다.
             itemIconImage.sprite = null; // 또는 defaultIconSprite;
             itemIconImage.color = Color.clear; // 이미지가 없으면 투명하게
-            Debug.LogWarning($"아이템 '{database.Database.shopList[0]}'의 이미지를 캐시에서 찾을 수 없습니다. URL: {database.Database.shopList[0].URL}");
+            Debug.LogWarning($"아이템 '{database.Database.machineRewardList[0]}'의 이미지를 캐시에서 찾을 수 없습니다. URL: {database.Database.machineRewardList[0].URL}");
         }
     }
     #endregion

@@ -7,16 +7,16 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class shop    {
+    public class machineReward    {
 
         /// <summary> 이름 </summary>
-        public string itemName;
+        public Define.SlotRewardType ItemName;
         /// <summary> 희귀도 </summary>
-        public Define.RareType rare;
+        public Define.RareType Rank;
         /// <summary> 가치 </summary>
-        public int value;
-        /// <summary> 설명 </summary>
-        public string coment;
+        public int Value;
+        /// <summary> 특수 값 ( RandomGold에서는 최소값을 넣어주세요 ) </summary>
+        public string Comment;
         /// <summary> 아이템이미지 </summary>
         public string URL;
     }

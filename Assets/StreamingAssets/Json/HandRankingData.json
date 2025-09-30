@@ -1,0 +1,65 @@
+[
+  {
+    "Ranking": "OnePair",
+    "Value": 5,
+    "DisplayName": "원페어",
+    "DisplayCondition": ".",
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": "TwoPair",
+    "Value": 20,
+    "DisplayName": "투페어",
+    "DisplayCondition": ".",
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": "Triple",
+    "Value": 30,
+    "DisplayName": "트리플",
+    "DisplayCondition": ".",
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": "Straight",
+    "Value": 50,
+    "DisplayName": "스트레이트",
+    "DisplayCondition": "4장의 카드가 색깔에 상관없이 숫자가 연속",
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": "RedFlush",
+    "Value": 80,
+    "DisplayName": "빨강 플러시",
+    "DisplayCondition": ".",
+    "DisplayEffect": "다음 한 공격의 데미지가 300%가 됩니다."
+  },
+  {
+    "Ranking": "GreenFlush",
+    "Value": 80,
+    "DisplayName": "초록 플러시",
+    "DisplayCondition": ".",
+    "DisplayEffect": "보호막을 1만큼 채웁니다."
+  },
+  {
+    "Ranking": "BlueFlush",
+    "Value": 80,
+    "DisplayName": "파랑 플러시",
+    "DisplayCondition": ".",
+    "DisplayEffect": "버리기 횟수를 3회 늘리거나, 사용한 카드 3장을 덱으로 불러옵니다."
+  },
+  {
+    "Ranking": "BlackFlush",
+    "Value": 80,
+    "DisplayName": "검정 플러시",
+    "DisplayCondition": ".",
+    "DisplayEffect": "현재 게임에서 현재 HP가 1이 되는 대신, 영구적으로 모든 공격 데미지가 200%가 됩니다."
+  },
+  {
+    "Ranking": "StraightFlush",
+    "Value": 200,
+    "DisplayName": "스트레이트 플러시",
+    "DisplayCondition": ".",
+    "DisplayEffect": ""
+  }
+]

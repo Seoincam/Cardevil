@@ -88,7 +88,7 @@ public class Define
         DefaultAttack
     }
 
-    public enum ShopRewardType
+    public enum SlotRewardType
     {
         Heal,
         FixedGold,
@@ -98,12 +98,11 @@ public class Define
         ExactUpgrade,
         Relic
 
-
     }
 
     public enum RareType
     {
-        Nomal,
+        Normal,
         Rare,
         Epic,
         Legend

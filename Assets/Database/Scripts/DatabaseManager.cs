@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using System.Security.Cryptography;
 using System.Text;
 using Cardevil.Scriptable.Cache;
+using Cardevil.DataStructure;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
@@ -41,7 +42,7 @@ namespace Database
         /// <summary>
         /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
         /// </summary>
-        [SerializeField] public Dictionary<string, Sprite> SpriteCache { get; private set; } = new Dictionary<string, Sprite>();
+        [field: SerializeField] public SerializableDict<string, Sprite> SpriteCache { get; private set; } = new();
 
 
         public string FinalLocalPath => Path.Combine(Application.persistentDataPath, localJsonPath);
@@ -277,9 +278,9 @@ namespace Database
             if (!Application.isPlaying)
             {
                 Debug.Log("[DatabaseManager] 에디터 모드: DB에서 직접 URL을 수집합니다.");
-                if (mcDatabase.shopList != null)
+                if (mcDatabase.machineRewardList != null)
                 {
-                    foreach (var item in mcDatabase.shopList)
+                    foreach (var item in mcDatabase.machineRewardList)
                     {
                         if (!string.IsNullOrEmpty(item.URL))
                             urlsToLoad.Add(item.URL.Trim()); // URL의 앞뒤 공백 제거

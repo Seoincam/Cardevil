@@ -15,7 +15,7 @@ namespace Database
             "long", "ulong", "float", "double", "decimal"
         };
 
-        private static HashSet<string> KnownEnumTypes = new HashSet<string>() {"Cardevil.Utils.Directions.Direction", "Define.RareType" };
+        private static HashSet<string> KnownEnumTypes = new HashSet<string>() {"Cardevil.Utils.Directions.Direction", "Define.RareType", "Define.SlotRewardType" };
         public static string GenerateClassDefinition(DataFrame df)
         {
             StringBuilder sb = new StringBuilder();
