@@ -89,6 +89,7 @@ namespace Cardevil.Ingame
         {
             if (damage < 0)
             {
+                Debug.LogWarning("Damage cannot be negative.");
                 LogEx.LogWarning("Damage cannot be negative.");
                 return 0;
             }
