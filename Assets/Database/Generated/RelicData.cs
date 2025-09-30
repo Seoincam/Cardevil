@@ -11,11 +11,13 @@ namespace Database.Generated
 
         /// <summary> 게임상 이름 </summary>
         public string DisplayName;
-        /// <summary> ID </summary>
-        public string RelicId;
-        /// <summary> 효과 ID </summary>
-        public List<string> EffectIds;
         /// <summary> 게임상 설명 </summary>
         public string DisplayDescription;
+        /// <summary> ID </summary>
+        public string RelicId;
+        /// <summary> 레벨. 같은 ID 유물을 대체. </summary>
+        public int Level;
+        /// <summary> 효과 ID </summary>
+        public List<string> EffectIds;
     }
 }

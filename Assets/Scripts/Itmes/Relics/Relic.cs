@@ -2,44 +2,48 @@ using Database.Generated;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using TMPro;
+using Cardevil.Attributes;
 
 namespace Cardevil.Relics
 {
     [Serializable]
     public class Relic
     {
-        [SerializeField] RelicData _data;
-        [SerializeField] List<RelicEffect> _effects = new();
+        [SerializeField, VisibleOnly] string _id;
+        [SerializeField, VisibleOnly] int _level;
+        [SerializeField, VisibleOnly] string _displayName;
+        [SerializeField, VisibleOnly] string _displayDescription;
+        List<RelicEffect> _effects = new();
 
 
-
-        public string Id => _data.RelicId;
-        public int Level => _data.Level;
-
-        public string Name => _data.DisplayName;
-        public string Description => _data.DisplayDescription;
-
+        public string Id => _id;
+        public int Level => _level;
+        public string DisplayName => _displayName;
+        public string DisplayDescription => _displayDescription;
         public IReadOnlyList<RelicEffect> Effects => _effects;
 
 
 
-        public Relic(RelicDataManager manager, RelicData data)
+        public Relic(RelicManager manager, RelicData data)
         {
-            _data = data;
+            _id = data.RelicId;
+            _displayName = data.DisplayName;
+            _displayDescription = data.DisplayDescription;
+            _level = data.Level;
 
-            if (_data.EffectIds != null)
+            if (data.EffectIds != null)
             {
-                foreach (var effectId in _data.EffectIds)
+                foreach (var effectId in data.EffectIds)
                 {
                     var effect = manager.GetEffectById(effectId);
                     effect.Init(this);
                     _effects.Add(effect);
                 }
-
             }
             else
             {
-                Debug.LogWarning($"Relic '{_data?.RelicId}' has null EffectIds.");
+                Debug.LogWarning($"Relic '{data?.RelicId}' has null EffectIds.");
             }
         }
     }

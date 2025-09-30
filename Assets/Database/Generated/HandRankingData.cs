@@ -9,9 +9,8 @@ namespace Database.Generated
     [Serializable]
     public class HandRankingData    {
 
-        /// <summary> (Reference:Enum<Cardevil.Cards.Evaluations.HandRanking>) 
-         /// 족보 </summary>
-        public string Ranking;
+        /// <summary> 족보 </summary>
+        public Cardevil.Cards.Evaluations.HandRanking Ranking;
         /// <summary> 보너스 점수 </summary>
         public int Value;
         /// <summary> 게임상 이름 </summary>

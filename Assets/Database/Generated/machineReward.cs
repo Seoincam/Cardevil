@@ -17,6 +17,10 @@ namespace Database.Generated
         public int Value;
         /// <summary> 특수 값 ( RandomGold에서는 최소값을 넣어주세요 ) </summary>
         public string Comment;
+        /// <summary> 아이템 가중치 </summary>
+        public int ItemProbability;
+        /// <summary> 숫자 가중치 </summary>
+        public List<int> RandomProbablility;
         /// <summary> 아이템이미지 </summary>
         public string URL;
     }

@@ -1496,16 +1496,20 @@ MonoBehaviour:
   mcDatabase:
     ExampleList: []
     mobList: []
-    shopList: []
+    machineRewardList: []
     HandRankingDataList: []
     RelicDataList: []
     RelicEffectOnEvaluationDataList: []
-  isInitialized: 1
+  isInitialized: 0
   googleSheetUrl: https://script.google.com/macros/s/AKfycbw9s6zpBPgh7E2ZwxNKnenvGCJsWQQvn-mdf2VCH6PHtRnsVsDJIBa_WUt_9gVk-oFG/exec
   localJsonPath: Database/
   streamingAssetPath: Json/
   forceUseStreamingAsset: 0
   timeoutSeconds: 10
+  spriteCacheIndex: {fileID: 0}
+  <SpriteCache>k__BackingField:
+    defaultKey: 
+    data: []
 --- !u!4 &683164374
 Transform:
   m_ObjectHideFlags: 0
@@ -1585,6 +1589,11 @@ MonoBehaviour:
       defaultKey: 
       data: []
     _currentPlayingBackgroundMusicName: 
+  _relic:
+    _allRelics: []
+    _allEffects: []
+    _playerRelics: []
+    _playerEffects: []
   _dungeon:
     dungeonConfigurations: []
     dungeons: []

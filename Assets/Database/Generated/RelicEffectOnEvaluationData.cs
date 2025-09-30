@@ -17,21 +17,17 @@ namespace Database.Generated
         public float Possibility;
         /// <summary> 발동 Hp </summary>
         public int TriggerHp;
-        /// <summary> (Reference:Enum<Cardevil.Relics.EffectExcute>) 
-         /// 실행 타입 </summary>
-        public string ExecuteType;
-        /// <summary> (Reference:Enum<Cardevil.Cards.Evaluations.HandRanking>) 
-         /// 발동 족보 (None은 모두) </summary>
-        public string TriggerRanking;
-        /// <summary> (Reference:Enum<Cardevil.Relics.EffectEvaluation>) 
-         /// 효과 종류 </summary>
-        public string EvaluationType;
+        /// <summary> 실행 타입 </summary>
+        public Cardevil.Relics.EffectExcute ExecuteType;
+        /// <summary> 발동 족보 (None은 모두) </summary>
+        public Cardevil.Cards.Evaluations.HandRanking TriggerRanking;
+        /// <summary> 효과 종류 </summary>
+        public Cardevil.Relics.EffectEvaluation EvaluationType;
         /// <summary> 효과 값 </summary>
         public float EffectValue;
         /// <summary> (Next) 실행 횟수 </summary>
         public int ExecutionCount;
-        /// <summary> (Reference:List<Enum<Cardevil.Cards.Evaluations.HandRanking>>) 
-         /// (Next/Permanent) 타겟 족보 리스트 </summary>
-        public string TargetRankings;
+        /// <summary> (Next/Permanent) 타겟 족보 리스트 </summary>
+        public List<Cardevil.Cards.Evaluations.HandRanking> TargetRankings;
     }
 }

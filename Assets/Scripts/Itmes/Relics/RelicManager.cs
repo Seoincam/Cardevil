@@ -1,3 +1,5 @@
+using Cardevil.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +8,9 @@ using UnityEngine.UI;
 
 namespace Cardevil.Relics
 {
-    public class RelicDataManager : MonoBehaviour
+    [Serializable]
+    public class RelicManager
     {
-        public static RelicDataManager Instance { get; private set; }
-
-        [Header("Test")]
-        [SerializeField] RelicTestSO test;
-
         [Header("All")]
         [SerializeField] List<Relic> _allRelics = new();
         [SerializeField] List<RelicEffect> _allEffects = new();
@@ -29,12 +27,6 @@ namespace Cardevil.Relics
 
         public IReadOnlyList<Relic> PlayerRelics => _playerRelics;
 
-        void Awake()
-        {
-            Instance = this;
-            text = GetComponent<Text>();
-        }
-
 
         /// <summary>
         /// Data를 기반으로 실제 Relic 및 RelicEffect를 생성.
@@ -43,6 +35,11 @@ namespace Cardevil.Relics
         public void Init()
         {
             var datas = Managers.Database.Database;
+            if (datas.RelicDataList == null || datas.RelicDataList.Count == 0)
+            {
+                LogEx.LogError("Database 초기화 전에 접근.");
+            }
+
 
             _allRelics.Clear();
             _allEffects.Clear();
@@ -91,8 +88,7 @@ namespace Cardevil.Relics
                 _relicById[(relic.Id, data.Level)] = relic;
             }
 
-            #region Debug 
-
+            /*
             if (test != null && test.playerRelics != null)
             {
                 var sb = new StringBuilder();
@@ -123,8 +119,7 @@ namespace Cardevil.Relics
 
                 if (text != null) text.text = sb.ToString();
             }
-
-            #endregion
+            */
         }
 
 

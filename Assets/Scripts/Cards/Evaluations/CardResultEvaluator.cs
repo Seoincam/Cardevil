@@ -111,7 +111,7 @@ namespace Cardevil.Cards.Evaluations
             // TODO: 추가 데미지
 
             // 유물
-            var relics = RelicDataManager.Instance;
+            var relics = Managers.Relic;
             if (relics == null)
             {
                 Debug.LogWarning("[EvaluateResult] RelicDataManager.Instance is null");
@@ -132,13 +132,14 @@ namespace Cardevil.Cards.Evaluations
 
             // TODO: 순서 더 정확히
             var pr = 300;
-            foreach (var e in effects.OrderBy(e => Priority(e.OnEvaluationData.EvaluationType)))
+            foreach (var e in effects.OrderBy(e => Priority(e.OnEvaluationValues.EvaluationType)))
             {
                 if (e.CanTriggerOnEvaluation(primaryRanking))
                 {
+                    var data = e.OnEvaluationValues;
                     using (var r = EvaluationAction.Get())
                     {
-                        r.SetValue(priority: pr++, e.OnEvaluationData.EvaluationType, e.OnEvaluationData.EffectValue);
+                        r.SetValue(priority: pr++, data.EvaluationType, data.EffectValue);
                         // r.SetVisual();
                     }
                 }

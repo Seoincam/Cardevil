@@ -3,6 +3,8 @@ using Database.Generated;
 using System;
 using System.Linq;
 using UnityEngine;
+using Cardevil.Attributes;
+using System.Collections.Generic;
 
 namespace Cardevil.Relics
 {   
@@ -25,22 +27,33 @@ namespace Cardevil.Relics
     [Serializable]
     public class RelicEffect
     {
-        [SerializeField] Relic relic;
-        [SerializeField] EffectType _effectType;
-        [SerializeField] RelicEffectOnEvaluationData _onEvaluationData;
+        [SerializeField, VisibleOnly] Relic relic;
+        [SerializeField, VisibleOnly] EffectType _effectType;
+
+        [Header("Common")]
+        [SerializeField, VisibleOnly] string _inspectorDescription;
+        [SerializeField, VisibleOnly] string _effectId;
+
+        [Header("OnEvaluation")]
+        [SerializeField, VisibleOnly] OnEvaluationDataValues _onEvaluationValues;
+
+ 
 
         public EffectType EffectType => _effectType;
-        public string EffectId => _effectType switch
-        {
-            EffectType.OnEvaluation => _onEvaluationData.EffectId,
-            _ => ""
-        };
-        public RelicEffectOnEvaluationData OnEvaluationData => _onEvaluationData;
+        public string EffectId => _effectId;
+
+        public OnEvaluationDataValues OnEvaluationValues => _onEvaluationValues;
 
         public RelicEffect(RelicEffectOnEvaluationData data)
         {
             _effectType = EffectType.OnEvaluation;
-            _onEvaluationData = data;
+            _effectId = data.EffectId;
+
+            _onEvaluationValues = new(
+                true, data.Possibility, data.TriggerHp,
+                data.ExecuteType, data.TriggerRanking, data.EvaluationType,
+                data.EffectValue, data.ExecutionCount, data.TargetRankings
+                );
         }
 
         public void Init(Relic relic)
@@ -48,16 +61,46 @@ namespace Cardevil.Relics
             this.relic = relic;
         }
 
+        [Serializable]
+        public readonly struct OnEvaluationDataValues
+        {
+            public readonly bool IsSet;
+            public readonly float Possibility;
+            public readonly int TriggerHp;
+            public readonly EffectExcute ExecuteType;
+            public readonly HandRanking TriggerRanking;
+            public readonly EffectEvaluation EvaluationType;
+            public readonly float EffectValue;
+            public readonly int ExecutionCount;
+            public readonly List<HandRanking> TargetRankings;
+
+            public OnEvaluationDataValues(
+                bool isSet, float possibility, int triggerHp,
+                EffectExcute executeType, HandRanking triggerRanking,
+                EffectEvaluation evaluationType, float effectValue,
+                int executionCount, List<HandRanking> targetRankings)
+            {
+                IsSet = isSet;
+                Possibility = possibility;
+                TriggerHp = triggerHp;
+                ExecuteType = executeType;
+                TriggerRanking = triggerRanking;
+                EvaluationType = evaluationType;
+                EffectValue = effectValue;
+                ExecutionCount = executionCount;
+                TargetRankings = targetRankings;
+            }
+        }
+
         /// <summary>
         /// data의 조건들을 바탕으로 Evaluation시 체크.
         /// </summary>
         public bool CanTriggerOnEvaluation(HandRanking ranking)
         {
-            if (_effectType != EffectType.OnEvaluation
-                || _onEvaluationData == null)
+            if (_effectType != EffectType.OnEvaluation)
                 return false;
 
-            var data = _onEvaluationData;
+            var data = _onEvaluationValues;
 
             // 확률
             if (data.Possibility < UnityEngine.Random.value)

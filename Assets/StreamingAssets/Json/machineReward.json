@@ -1,114 +1,179 @@
 [
   {
-    "ItemName": 2,
+    "ItemName": 1,
     "Rank": 0,
-    "Value": 4,
-    "Comment": "2",
+    "Value": 3,
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
     "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
   },
   {
     "ItemName": 1,
-    "Rank": 2,
+    "Rank": 1,
     "Value": 4,
-    "Comment": "0",
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
     "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
   },
   {
     "ItemName": 0,
     "Rank": 0,
-    "Value": 0,
+    "Value": 1,
     "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
     "URL": ""
   },
   {
     "ItemName": 0,
+    "Rank": 1,
+    "Value": 2,
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
+    "URL": ""
+  },
+  {
+    "ItemName": 2,
+    "Rank": 2,
+    "Value": 10,
+    "Comment": "6",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      25,
+      30,
+      20,
+      15,
+      10
+    ],
+    "URL": ""
+  },
+  {
+    "ItemName": 2,
     "Rank": 0,
-    "Value": 0,
-    "Comment": "",
+    "Value": 4,
+    "Comment": "2",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      30,
+      40,
+      30
+    ],
     "URL": ""
   },
   {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
+    "ItemName": 2,
     "Rank": 1,
-    "Value": 0,
-    "Comment": "",
+    "Value": 6,
+    "Comment": "3",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      25,
+      25,
+      25,
+      25
+    ],
     "URL": ""
   },
   {
-    "ItemName": 0,
-    "Rank": 1,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 1,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 1,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 1,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 2,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 2,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 2,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 2,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
-    "Rank": 2,
-    "Value": 0,
-    "Comment": "",
-    "URL": ""
-  },
-  {
-    "ItemName": 0,
+    "ItemName": 6,
     "Rank": 3,
+    "Value": 1,
+    "Comment": "",
+    "ItemProbability": 100,
+    "RandomProbablility": [
+      100
+    ],
+    "URL": ""
+  },
+  {
+    "ItemName": 4,
+    "Rank": 2,
+    "Value": 7,
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
+    "URL": ""
+  },
+  {
+    "ItemName": 4,
+    "Rank": 0,
+    "Value": 3,
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
+    "URL": ""
+  },
+  {
+    "ItemName": 4,
+    "Rank": 1,
+    "Value": 4,
+    "Comment": "",
+    "ItemProbability": 20,
+    "RandomProbablility": [
+      100
+    ],
+    "URL": ""
+  },
+  {
+    "ItemName": 0,
+    "Rank": 0,
     "Value": 0,
     "Comment": "",
+    "ItemProbability": 0,
+    "RandomProbablility": [],
+    "URL": ""
+  },
+  {
+    "ItemName": 0,
+    "Rank": 0,
+    "Value": 0,
+    "Comment": "",
+    "ItemProbability": 0,
+    "RandomProbablility": [],
+    "URL": ""
+  },
+  {
+    "ItemName": 0,
+    "Rank": 0,
+    "Value": 0,
+    "Comment": "",
+    "ItemProbability": 0,
+    "RandomProbablility": [],
+    "URL": ""
+  },
+  {
+    "ItemName": 0,
+    "Rank": 0,
+    "Value": 0,
+    "Comment": "",
+    "ItemProbability": 0,
+    "RandomProbablility": [],
+    "URL": ""
+  },
+  {
+    "ItemName": 0,
+    "Rank": 0,
+    "Value": 0,
+    "Comment": "",
+    "ItemProbability": 0,
+    "RandomProbablility": [
+      0
+    ],
     "URL": ""
   }
 ]

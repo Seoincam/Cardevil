@@ -53,7 +53,6 @@ namespace Database
 
         private void Awake()
         {
-            isInitialized = true; // 임시로 true로 바꾸어서 오류를 없앤다.현재 이 값이 true로 변환되지않고있음.
             DontDestroyOnLoad(gameObject);
             Managers.Game._database = this;
         }
