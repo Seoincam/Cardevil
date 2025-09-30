@@ -11,6 +11,7 @@ using Cardevil.Systems;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
+using Database;
 
 [Serializable]
 public class GameManager : ISaveLoad
@@ -19,7 +20,8 @@ public class GameManager : ISaveLoad
     [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
-    [SerializeField] private PlayerStatus _playerStatus; // 플레이어 상태 
+    [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
+    [SerializeField] public DatabaseManager _database;
     
 
     public Field Field

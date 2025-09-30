@@ -11,16 +11,50 @@ namespace Database
     {
         public List<Example> ExampleList = new List<Example>();
         public List<mob> mobList = new List<mob>();
+        public List<shop> shopList = new List<shop>();
         public readonly List<string> ClassNames = new List<string> {
             "Example",
-            "mob"
+            "mob",
+            "shop"
         };
 
+
+        public T FindByName<T>(string name) where T : class
+        {
+            if (typeof(T) == null) return null;
+            switch (typeof(T).Name)
+            {
+                case "Example":
+                    foreach (var instance in ExampleList)
+                    {
+                        if (instance.name == name)
+                            return instance as T;
+                    }
+                    break;
+                default:
+                    Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 타입: {typeof(T).Name}");
+                    return null;
+            }
+            return null;
+        }
+
+        public T FindByIdentifier<T>(string identifier) where T : class
+        {
+            if (typeof(T) == null) return null;
+            switch (typeof(T).Name)
+            {
+                default:
+                    Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 타입: {typeof(T).Name}");
+                    return null;
+            }
+            return null;
+        }
 
         public void ClearAll()
         {
             ExampleList.Clear();
             mobList.Clear();
+            shopList.Clear();
         }
 
 
@@ -51,6 +85,9 @@ namespace Database
                     case "mob":
                         mobList = CreateInstance<mob>(df);
                         break;
+                    case "shop":
+                        shopList = CreateInstance<shop>(df);
+                        break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
                         break;
@@ -59,17 +96,21 @@ namespace Database
         }
 
 
-        public void AddInstancesFromJsonList(string className, string jsonList)
+        public void AddInstancesFromJsonList(string className, string json)
         {
             switch (className)
             {
                 case "Example":
-                    var newExampleItems = JsonUtilExtend.FromJsonList<Example>(jsonList);
+                    var newExampleItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Example>>(json);
                     ExampleList.AddRange(newExampleItems);
                     break;
                 case "mob":
-                    var newmobItems = JsonUtilExtend.FromJsonList<mob>(jsonList);
+                    var newmobItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<mob>>(json);
                     mobList.AddRange(newmobItems);
+                    break;
+                case "shop":
+                    var newshopItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<shop>>(json);
+                    shopList.AddRange(newshopItems);
                     break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
@@ -86,6 +127,8 @@ namespace Database
                     return typeof(Example);
                 case "mob":
                     return typeof(mob);
+                case "shop":
+                    return typeof(shop);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

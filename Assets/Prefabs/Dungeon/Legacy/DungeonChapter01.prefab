@@ -5720,6 +5720,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2663704201058976783, guid: cea80e09035cddb46af3379a6e793180, type: 3}
+      propertyPath: nodeUiPrefab
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2663704201058976783, guid: cea80e09035cddb46af3379a6e793180, type: 3}
       propertyPath: 'nodeUis.Array.data[0]'
       value: 
       objectReference: {fileID: 0}
