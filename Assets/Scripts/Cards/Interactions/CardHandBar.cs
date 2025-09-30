@@ -381,6 +381,7 @@ namespace Cardevil.Cards.Interactions
         public void InactivateInteraction()
         {
             CanInteraction = false;
+            Managers.Card.ResultCtx.Push();
         }
 
         public async UniTask DrawCard()

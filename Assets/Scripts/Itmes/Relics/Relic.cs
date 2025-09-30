@@ -13,10 +13,10 @@ namespace Cardevil.Relics
 
 
 
-        public string RelicId => _data.RelicId;
+        public string Id => _data.RelicId;
+        public int Level => _data.Level;
 
         public string Name => _data.DisplayName;
-
         public string Description => _data.DisplayDescription;
 
         public IReadOnlyList<RelicEffect> Effects => _effects;

@@ -3,7 +3,7 @@ using Cardevil.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.XR;
+using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -20,11 +20,21 @@ namespace Cardevil.Cards.Evaluations
     public class CardResultContext: IClearable
     {
         private List<CardResult> _history = new();
+        private CardResult _commitedResult = null;
 
         // 현재 가르키는 인덱스
         private int _cursor = -1;
 
         public IReadOnlyList<CardResult> History => _history;
+        public CardResult CommitedResult
+        {
+            get
+            {
+                if (_commitedResult == null)
+                    Debug.LogError("잘못된 시점에 commited Result에 접근!");
+                return _commitedResult;
+            }
+        }
 
         public CardResult CurrentResult
         {
@@ -46,12 +56,25 @@ namespace Cardevil.Cards.Evaluations
             _cursor = _history.Count - 1;
         }
 
-        public void Push(CardResult result)
+        /// <summary>
+        /// 결과를 History에 저장 전, 임시로 보관.
+        /// </summary>
+        public void Commmit(CardResult result)
         {
+            _commitedResult = result;
+        }
+
+        public void Push()
+        {
+            var result = _commitedResult;
+            if (_commitedResult == null)
+                Debug.LogError("커밋된 Result가 없습니다.");
+
             if (_history[^1] == null) _history[^1] = result;
             else _history.Add(result);
 
             _cursor = _history.Count - 1;
+            _commitedResult = null;
         }
 
         public void Clear()
@@ -59,7 +82,6 @@ namespace Cardevil.Cards.Evaluations
             _history.Clear();
             _cursor = -1;
         }
-
     }
 
 

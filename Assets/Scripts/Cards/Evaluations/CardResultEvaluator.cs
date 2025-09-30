@@ -28,14 +28,14 @@ namespace Cardevil.Cards.Evaluations
                 }
 
                 result = new(numbers, moves);
-                Managers.Card.ResultCtx.Push(result);
+                Managers.Card.ResultCtx.Commmit(result);
                 return;
             }
 
             // 족보
             var ranking = GetRanking(cards);
             result = new(CalculateRanking(numbers), numbers, moves);
-            Managers.Card.ResultCtx.Push(result);
+            Managers.Card.ResultCtx.Commmit(result);
 
             // 기본 족보 보너스
             if (ranking > HandRanking.High)

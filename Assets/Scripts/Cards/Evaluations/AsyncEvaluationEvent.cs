@@ -38,7 +38,7 @@ namespace Cardevil.Cards.Evaluations
                     await UniTask.Delay(TimeSpan.FromSeconds(1f));
                 }
 
-                Managers.Card.ResultCtx.CurrentResult.UpdateDamage(damage);
+                Managers.Card.ResultCtx.CommitedResult.UpdateDamage(damage);
             }
             catch (Exception ex)
             {

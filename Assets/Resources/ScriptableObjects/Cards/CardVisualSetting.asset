@@ -21,6 +21,7 @@ MonoBehaviour:
   _rerollCountScaleDuration: 0.4
   _rerollCountEase: 31
   _endRerollInterval: 1
+  _endRerollUpdateSlotInterval: 0.05
   _drawInterval: 0.225
   _discardInterval: 0.3
   _discardDrawInterval: 0.75

@@ -70,14 +70,13 @@ namespace Cardevil.Cards
                 else
                 {
                     var datas = Managers.Database.Database;
-                    // var rankingData = datas.HandRankingDataList
-                    //     .FirstOrDefault(d => d.Ranking == ranking);
+                    var rankingData = datas.HandRankingDataList
+                        .FirstOrDefault(d => d.Ranking == ranking);
 
-                    // if (rankingData == null)
-                    //     Debug.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
+                    if (rankingData == null)
+                        Debug.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
 
-                    // return $"{rankingData.DisplayName}\n{rankingData.Value}";
-                    return "";
+                    return $"{rankingData.DisplayName}\n{rankingData.Value}";
                 }
 
             }

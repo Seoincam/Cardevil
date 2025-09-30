@@ -76,19 +76,19 @@ namespace Cardevil.Relics
             {
                 var relic = new Relic(this, data);
 
-                if (string.IsNullOrEmpty(relic.RelicId))
+                if (string.IsNullOrEmpty(relic.Id))
                 {
                     Debug.LogWarning("[RelicDataManager] Relic with empty ID ignored.");
                     continue;
                 }
 
-                if (_relicById.ContainsKey((relic.RelicId, data.Level)))
+                if (_relicById.ContainsKey((relic.Id, data.Level)))
                 {
-                    Debug.LogWarning($"[RelicDataManager] Duplicate RelicId detected: {relic.RelicId} LV.{data.Level}. Overwriting previous entry.");
+                    Debug.LogWarning($"[RelicDataManager] Duplicate RelicId detected: {relic.Id} LV.{data.Level}. Overwriting previous entry.");
                 }
 
                 _allRelics.Add(relic);
-                _relicById[(relic.RelicId, data.Level)] = relic;
+                _relicById[(relic.Id, data.Level)] = relic;
             }
 
             #region Debug 
@@ -97,12 +97,13 @@ namespace Cardevil.Relics
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("[ 유물 ]");
-                foreach (var relicId in test.playerRelics)
+                foreach (var relicStr in test.playerRelics)
                 {
-                    var relic = GetRelicById(relicId);
+                    var relicStrs = relicStr.Split('/');
+                    var relic = GetRelicById(relicStrs[0], int.Parse(relicStrs[1]));
                     if (relic == null)
                     {
-                        sb.AppendLine($"<Missing Relic: {relicId}>");
+                        sb.AppendLine($"<Missing Relic: {relicStr}>");
                         continue;
                     }
 
