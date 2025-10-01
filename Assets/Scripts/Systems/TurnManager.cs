@@ -57,20 +57,18 @@ namespace Cardevil.Systems
             _loopTask = GameLoopAsync(_cts.Token);
         }
 
+        /// <summary>
+        /// 추후 스테이지 매니저 등 외부에서 await로 호출.
+        /// </summary>
         public async UniTask StopLoopAsync()
         {
             if (_cts == null) return;
 
-            var cts = _cts;
-            var localTask = _loopTask;
-
-            _cts = null;
-            _loopTask = default;
-
-            cts.Cancel();
+            _cts.Cancel();
             try
             {
-                await localTask;
+                LogEx.Log("Loop 정지 요청 받음.");
+                await _loopTask;
             }
             catch (OperationCanceledException)
             {
@@ -82,7 +80,10 @@ namespace Cardevil.Systems
             }
             finally
             {
-                cts.Dispose();
+                LogEx.Log("Loop 정지 완료.");
+                _cts.Dispose();
+                _cts = null;
+                _loopTask = default;
             }
         }
 
