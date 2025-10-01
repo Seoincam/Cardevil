@@ -23,7 +23,11 @@ namespace Cardevil.Test
 
         private void Update()
         {
-            
+            // Quit Stage
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _ = Managers.Turn.StopLoopAsync();
+            }
         }
 
         private void LateUpdate()
@@ -65,11 +69,19 @@ namespace Cardevil.Test
 
         public void StageGUI()
         {
-            GUILayout.Label("Stage Menu");
-            if (GUILayout.Button("Start Stage"))
+            if (!Managers.Database.IsInitialized)
             {
-                Managers.Game.StageStart();
+                GUILayout.Label("데이터베이스가 초기화되지 않았습니다.");
             }
+            else
+            {
+                GUILayout.Label("Stage Menu");
+                if (GUILayout.Button("Enter Stage"))
+                {
+                    Managers.Game.StageStart();
+                }
+            }
+
         }
         
         
