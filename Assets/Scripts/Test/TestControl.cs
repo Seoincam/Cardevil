@@ -1,5 +1,6 @@
 ﻿using Cardevil.Manager;
 using Cardevil.Pools;
+using Cardevil.Utils;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ namespace Cardevil.Test
             // Quit Stage
             if (Input.GetKeyDown(KeyCode.Q))
             {
+                LogEx.Log("Stop");
                 _ = Managers.Turn.StopLoopAsync();
             }
         }

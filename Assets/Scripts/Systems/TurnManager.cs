@@ -1,103 +1,135 @@
-using UnityEngine;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using System;
+using Cardevil.Core;
+using Cardevil.Utils;
 
 namespace Cardevil.Systems
 {
-    public class TurnManager
+    public class TurnManager: IClearable
     {   
-        private CancellationTokenSource cts;
+        private CancellationTokenSource _cts;
+        private UniTask _loopTask;
 
-        [Header("Interfaces")]
-        private ITurnPlayerInput playerInput;
-        private ITurnRerollInput rerollInput;
-        private ITurnPlayerMove playerMove;
-        private ITurnPlayerAction playerAction;
-        private ITurnEnemy enemy;
+        private ITurnPlayerInput _playerInput;
+        private ITurnRerollInput _rerollInput;
+        private ITurnPlayerMove _playerMove;
+        private ITurnPlayerAction _playerAction;
+        private ITurnEnemy _enemy;
 
 
+        public void Clear()
+        {
+            StopLoopAsync().Forget();
+            _playerInput = null;
+            _rerollInput = null;
+            _playerMove = null;
+            _playerAction = null;
+            _enemy = null;
+        }
+        
         public void Init(ITurnRerollInput rerollInput, ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
         {
-            if (rerollInput == null)
-            {
-                Debug.LogError("TurnManger.Init에서 rerollInput이 null입니다.");
-                return;
-            }
-            if (playerInput == null)
-            {
-                Debug.LogError("TurnManager.Init에서 userInput이 null입니다");
-                return;
-            }
-            if (playerMove == null)
-            {
-                Debug.LogError("TurnManager.Init에서 playerMove가 null입니다");
-                return;
-            }
-            if (playerAction == null)
-            {
-                Debug.LogError("TurnManager.Init에서 playerAction이 null입니다");
-                return;
-            }
-            if (enemy == null)
-            {
-                Debug.LogError("TurnManager.Init에서 enemy가 null입니다");
-                return;
-            }
-
-            this.rerollInput = rerollInput;
-            this.playerInput = playerInput;
-            this.playerMove = playerMove;
-            this.playerAction = playerAction;
-            this.enemy = enemy;
-
-            Init();
-        }
-
-        private void Init()
-        {
-            // 시작
-            cts = new();
-            GameLoopAsync(cts.Token).Forget();
-        }
-
-
-        private async UniTask GameLoopAsync(CancellationToken cts)
-        {
-            await enemy.TurnAttack();
-            await rerollInput.RerollCard();
+            Clear();
             
-            // TODO: 적에 대한 설명
-            await playerInput.DrawCard();
+            _rerollInput = rerollInput ?? throw new ArgumentNullException(nameof(rerollInput));
+            _playerInput = playerInput ?? throw new ArgumentNullException(nameof(playerInput));
+            _playerMove = playerMove ?? throw new ArgumentNullException(nameof(playerMove));
+            _playerAction = playerAction ?? throw new ArgumentNullException(nameof(playerAction));
+            _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
+        }
 
-            while (!cts.IsCancellationRequested)
+
+        /// <summary>
+        /// 스테이지 입장 시 턴 루프 시작. 외부 토큰과 링크.
+        /// </summary>
+        public void StartLoop(CancellationToken external = default)
+        {
+            _ = StartLoopAsync(external);
+        }
+
+        private async UniTask StartLoopAsync(CancellationToken external = default)
+        {
+            // 혹시 돌고 있던 루프가 있으면 안전 종료까지 대기
+            await StopLoopAsync();
+
+            _cts = CancellationTokenSource.CreateLinkedTokenSource(external);
+            _loopTask = GameLoopAsync(_cts.Token);
+        }
+
+        public async UniTask StopLoopAsync()
+        {
+            if (_cts == null) return;
+
+            var cts = _cts;
+            var localTask = _loopTask;
+
+            _cts = null;
+            _loopTask = default;
+
+            cts.Cancel();
+            try
             {
-                // 턴이 시작될때 Enemy의 Turn 값 초기화
-                Managers.Game.Enemy.TurnClear();
+                await localTask;
+            }
+            catch (OperationCanceledException)
+            {
+                // 정상적인 취소
+            }
+            catch (Exception e)
+            {
+                LogEx.LogError($"Stop Loop error: {e}");
+            }
+            finally
+            {
+                cts.Dispose();
+            }
+        }
 
-                await playerInput.DrawCard();
-                if (playerInput.IsNoCard)
+
+        private async UniTask GameLoopAsync(CancellationToken token)
+        {
+            try
+            {
+                // TODO: 적에 대한 설명 표시
+                await _enemy.TurnAttack();
+                await _rerollInput.RerollCard();
+
+                while (!token.IsCancellationRequested)
                 {
-                    // TODO: 게임 오버    
+                    await _playerInput.DrawCard();
+                    // TODO: 게임 오버
+
+                    _playerInput.ActivateInteraction();
+                    await _playerInput.WaitUserInput();
+                    _playerInput.InactivateInteraction();
+
+                    await _playerMove.TurnMove();
+                    await _playerAction.TurnAttack();
+
+                    if (_enemy.IsDead)
+                    {
+                        // TODO: 스테이지 클리어
+                        break;
+                    }
+
+                    await _enemy.TurnAttack();
+
+                    if (_playerAction.IsDead)
+                    {
+                        Managers.Game.PlayerDied();
+                        break;
+                    }
                 }
-
-                playerInput.ActivateInteraction();
-                await playerInput.WaitUserInput();
-                playerInput.InactivateInteraction();
-
-                await playerMove.TurnMove();
-                await playerAction.TurnAttack();
-
-                if (enemy.IsDead)
-                { 
-                    // TODO: 게임 클리어
-                }
-
-                await enemy.TurnAttack();
-                
-                if (playerAction.IsDead)
-                {
-                    Managers.Game.PlayerDied();
-                }
+            }
+            catch (OperationCanceledException)
+            {
+                // 정상적인 취소
+            }
+            catch (Exception e)
+            {
+                LogEx.LogError($"Loop exception: {e}");
+                // throw;
             }
         }
     }

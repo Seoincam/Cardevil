@@ -158,6 +158,8 @@ public class GameManager : ISaveLoad
             Player.GetComponent<ITurnPlayerAction>(),
             Enemy.GetComponent<ITurnEnemy>()
             );
+
+        Managers.Turn.StartLoop();
     }
 
     public void Save(GameSave currentSave)
