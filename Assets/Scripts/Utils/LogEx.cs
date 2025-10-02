@@ -170,7 +170,7 @@ namespace Cardevil.Utils
         }
         return false;
     }
-    #endif
+    
     
     /// <summary>
     /// 유니티 콘솔창에서 스택트레이스를 가져옵니다.
@@ -219,7 +219,7 @@ namespace Cardevil.Utils
 
 		return null;
 	}
-        
+#endif
         
         public static bool IsLogLevelEnabled(ILogExSupport obj, LogLevel level)
         {
