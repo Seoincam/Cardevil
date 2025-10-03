@@ -162,7 +162,7 @@ namespace Cardevil.Utils
                 line = Convert.ToInt32(pathline.Substring(split_index + 1));
                 string fullpath = Application.dataPath.Substring(0, Application.dataPath.LastIndexOf("Assets"));
                 fullpath = fullpath + path;
-                string strPath = fullpath.Replace('/', '\\');
+                string strPath = System.IO.Path.DirectorySeparatorChar == '\\' ? fullpath.Replace('/', '\\') : fullpath.Replace('\\', '/');
                 UnityEditorInternal.InternalEditorUtility.OpenFileAtLineExternal(strPath, line);
             }
             return true;
@@ -170,7 +170,7 @@ namespace Cardevil.Utils
         }
         return false;
     }
-    #endif
+    
     
     /// <summary>
     /// 유니티 콘솔창에서 스택트레이스를 가져옵니다.
@@ -219,7 +219,7 @@ namespace Cardevil.Utils
 
 		return null;
 	}
-        
+#endif
         
         public static bool IsLogLevelEnabled(ILogExSupport obj, LogLevel level)
         {
