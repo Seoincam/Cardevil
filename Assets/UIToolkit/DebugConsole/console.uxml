@@ -1,0 +1,26 @@
+<!-- Assets/UI/DebugConsole.uxml -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="Root" class="console-root">
+        <!-- 상단 바 -->
+        <ui:VisualElement name="TopBar" class="top-bar">
+            <ui:Label name="Title" text="Debug Console" class="title"/>
+            <ui:Label name="Hint" text="` to toggle • TAB to autocomplete • ENTER to run" class="hint"/>
+        </ui:VisualElement>
+
+        <!-- 히스토리(로그) -->
+        <ui:ScrollView name="HistoryContainer" class="history" vertical-scroller-visibility="Auto">
+            <!-- 로그 라인들이 여기로 추가됨 -->
+        </ui:ScrollView>
+
+        <!-- 자동완성 프리뷰 -->
+        <ui:VisualElement name="PreviewContainer" class="preview">
+            <!-- 후보들이 여기로 추가됨 -->
+        </ui:VisualElement>
+
+        <!-- 입력줄 -->
+        <ui:VisualElement name="InputRow" class="input-row">
+            <ui:Label text=">" class="prompt"/>
+            <ui:TextField name="InputField" class="input" isDelayed="true" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
