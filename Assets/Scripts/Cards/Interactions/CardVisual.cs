@@ -1,19 +1,23 @@
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core;
+using Cardevil.Pools;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Cardevil.Cards.Interactions
 {
-    [RequireComponent(typeof(Canvas))]
-    
-    public class CardVisual : MonoBehaviour, IEvaluateVisual
+    [RequireComponent(typeof(Canvas), typeof(Poolable))]
+    public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable
     {
         private Canvas canvas;
         private bool isInitalized = false;
 
         private Vector3 movementDelta;
         private Vector3 rotationDelta;
+
+        [Header("Pool")]
+        private Poolable _poolable;
 
         [Header("Card")]
         public Card parentCard;
@@ -39,31 +43,35 @@ namespace Cardevil.Cards.Interactions
         private float curveYOffset;
         private float curveRotationOffset;
 
+
+
         void Awake()
         {
             canvas = GetComponent<Canvas>();
             shadowOriginPosition = shadowTransform.localPosition;
+
+            _poolable = GetComponent<Poolable>();
+            _poolable.OnRelease += Clear;
+        }
+
+        public void Clear()
+        {
+            if (parentCard != null)
+            {
+                UnsubscribeFromParent(parentCard);
+                parentCard = null;
+            }
+
+            isDiscarded = false;
+            isInitalized = false;
         }
 
         public void Init(Card parentCard)
         {
             this.parentCard = parentCard;
+            SubscribeToParent(parentCard);
+
             UpdateVisual();
-
-            // 이벤트 구독
-            parentCard.OnPointerDownEvent += PointerDown;
-            parentCard.OnPointerUpEvent += OnPointerUp;
-            parentCard.OnBeginDragEvent += OnBeginDrag;
-            parentCard.OnEndDragEvent += OnEndDrag;
-            parentCard.OnSelectValueStartEvent += OnSelectStarted;
-            parentCard.OnSelectValueEndEvent += OnSelectEnded;
-
-            parentCard.OnDraw += OnDraw;
-            parentCard.OnDiscard += OnDiscard;
-            parentCard.OnRerollDraw += OnRerollDraw;
-            parentCard.OnRerollDiscard += OnRerollDiscard;
-            parentCard.OnDestory += Destroy;
-
             transform.position = GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().Front.position;
 
             isInitalized = true;
@@ -71,7 +79,7 @@ namespace Cardevil.Cards.Interactions
 
         void Update()
         {
-            if (!isInitalized || parentCard == null)
+            if (!isInitalized || parentCard == null || isDiscarded)
                 return;
 
             FollowWithLerp();
@@ -82,8 +90,6 @@ namespace Cardevil.Cards.Interactions
 
         private void FollowWithLerp()
         {
-            if (isDiscarded)
-                return;
             if (parentCard.IsReroll)
                 return;
             if (isDrawing)
@@ -95,9 +101,6 @@ namespace Cardevil.Cards.Interactions
 
         private void FollowRotation()
         {
-            if (isDiscarded)
-                return;
-
             Vector3 movement = transform.position - parentCard.transform.position;
             movementDelta = Vector3.Lerp(movementDelta, movement, 20 * Time.deltaTime);
             Vector3 movementRotation = (parentCard.isDragging ? movementDelta : movement) * visualSetting.RotationAmount;
@@ -108,8 +111,6 @@ namespace Cardevil.Cards.Interactions
 
         private void CurvePosition()
         {
-            if (isDiscarded)
-                return;
             if (parentCard.IsReroll)
                 return;
 
@@ -134,7 +135,49 @@ namespace Cardevil.Cards.Interactions
             transform.SetSiblingIndex(parentCard.HandIndex);
         }
 
-        private void PointerDown(Card _)
+        #region Subscribe
+
+        private void SubscribeToParent(Card p)
+        {
+            if (p == null) return;
+
+            p.OnPointerDownEvent += OnPointerDown;
+            p.OnPointerUpEvent += OnPointerUp;
+            p.OnBeginDragEvent += OnBeginDrag;
+            p.OnEndDragEvent += OnEndDrag;
+            p.OnSelectValueStartEvent += OnSelectStarted;
+            p.OnSelectValueEndEvent += OnSelectEnded;
+
+            p.OnDraw += OnDraw;
+            p.OnDiscard += OnDiscard;
+            p.OnRerollDraw += OnRerollDraw;
+            p.OnRerollDiscard += OnRerollDiscard;
+            p.OnDestory += Destroy;
+        }
+
+        private void UnsubscribeFromParent(Card p)
+        {
+            if (p == null) return;
+
+            p.OnPointerDownEvent -= OnPointerDown;
+            p.OnPointerUpEvent -= OnPointerUp;
+            p.OnBeginDragEvent -= OnBeginDrag;
+            p.OnEndDragEvent -= OnEndDrag;
+            p.OnSelectValueStartEvent -= OnSelectStarted;
+            p.OnSelectValueEndEvent -= OnSelectEnded;
+
+            p.OnDraw -= OnDraw;
+            p.OnDiscard -= OnDiscard;
+            p.OnRerollDraw -= OnRerollDraw;
+            p.OnRerollDiscard -= OnRerollDiscard;
+            p.OnDestory -= Destroy;
+        }
+
+        #endregion
+
+        #region Pointer Event
+
+        private void OnPointerDown(Card _)
         {
             transform.DOScale(endValue: visualSetting.SelectScale, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
@@ -160,6 +203,9 @@ namespace Cardevil.Cards.Interactions
             canvas.overrideSorting = false;
         }
 
+        #endregion
+
+        #region Draw/Discard Event
 
         private void OnDraw()
         {
@@ -222,12 +268,12 @@ namespace Cardevil.Cards.Interactions
             });
         }
 
-
+        #endregion
 
         private void Destroy()
         {
             DOTween.Kill(transform);
-            Destroy(gameObject);
+            Managers.Resource.Destroy(gameObject);
         }
 
         private void OnSelectStarted(Card _)

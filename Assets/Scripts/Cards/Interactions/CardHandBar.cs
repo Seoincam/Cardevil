@@ -205,11 +205,11 @@ namespace Cardevil.Cards.Interactions
         }
 
         public void UpdateSlots()
-        {       
+        {
             foreach (var card in ctx.Hand)
             {
                 card.SetSlot(slots[card.HandIndex], isDragging: card == DraggedCard);
-                card.SetReroll(false);
+                card.IsReroll = false;
             }          
         }
 

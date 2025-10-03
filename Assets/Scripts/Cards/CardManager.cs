@@ -40,7 +40,14 @@ namespace Cardevil.Cards
 
         public ITurnRerollInput RerollInput
         {
-            get => _rerollInput ??= CreateRerollInput();
+            get
+            {
+                if (_rerollGO == null)
+                    return CreateRerollInput();
+                
+                return _rerollInput;
+            }
+
         }
 
         public IReadOnlyList<CardData> RuntimeBaseDeck
