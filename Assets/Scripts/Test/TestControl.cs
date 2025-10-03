@@ -24,12 +24,7 @@ namespace Cardevil.Test
 
         private void Update()
         {
-            // Quit Stage
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                LogEx.Log("Stop");
-                _ = Managers.Turn.StopLoopAsync();
-            }
+
         }
 
         private void LateUpdate()
@@ -49,7 +44,32 @@ namespace Cardevil.Test
         }
 
         #endregion
-        
+
+        #region Turn/Stage
+        public void StageGUI()
+        {
+            GUILayout.Label("Stage Menu");
+            if (!Managers.Database.IsInitialized)
+            {
+                GUILayout.Label("데이터베이스가 초기화되지 않았습니다.");
+            }
+            else
+            {
+                if (GUILayout.Button("Enter Stage"))
+                {
+                    Managers.Game.StageStart();
+                }
+            }
+        }
+
+        [ContextMenu("Stop Turn Loop")]
+        public void StopTurn()
+        {
+            _ = Managers.Turn.StopLoopAsync();
+        }
+
+        #endregion
+
         #region Player
         [Header("Player Test")] 
         public int setHp = 3;
@@ -67,23 +87,6 @@ namespace Cardevil.Test
             {
                 Debug.LogError("플레이어가 초기화되지 않았습니다.");
             }
-        }
-
-        public void StageGUI()
-        {
-            if (!Managers.Database.IsInitialized)
-            {
-                GUILayout.Label("데이터베이스가 초기화되지 않았습니다.");
-            }
-            else
-            {
-                GUILayout.Label("Stage Menu");
-                if (GUILayout.Button("Enter Stage"))
-                {
-                    Managers.Game.StageStart();
-                }
-            }
-
         }
         
         
