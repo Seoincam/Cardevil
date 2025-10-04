@@ -965,6 +965,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Toggle Console",
+                    "type": "Button",
+                    "id": "76f0f88c-a343-42f9-93b7-57a12852936a",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1022,6 +1031,17 @@
                     "action": "PlayerMove",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "5e035667-accc-4075-9b31-d2d3841b9c3e",
+                    "path": "<Keyboard>/backquote",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Toggle Console",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

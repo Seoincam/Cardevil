@@ -1,26 +1,15 @@
-<!-- Assets/UI/DebugConsole.uxml -->
-<ui:UXML xmlns:ui="UnityEngine.UIElements">
-    <ui:VisualElement name="Root" class="console-root">
-        <!-- 상단 바 -->
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/DebugConsole/console.uss?fileID=7433441132597879392&amp;guid=7504d2bddc19be94794b4a44948171b3&amp;type=3#console" />
+    <ui:VisualElement name="Root" class="console-root" style="height: 201px;">
         <ui:VisualElement name="TopBar" class="top-bar">
-            <ui:Label name="Title" text="Debug Console" class="title"/>
-            <ui:Label name="Hint" text="` to toggle • TAB to autocomplete • ENTER to run" class="hint"/>
+            <ui:Label name="Title" text="Debug Console" class="title" />
+            <ui:Label name="Hint" text="` to toggle • TAB to autocomplete • ENTER to run" focusable="false" parse-escape-sequences="false" class="hint" />
         </ui:VisualElement>
-
-        <!-- 히스토리(로그) -->
-        <ui:ScrollView name="HistoryContainer" class="history" vertical-scroller-visibility="Auto">
-            <!-- 로그 라인들이 여기로 추가됨 -->
-        </ui:ScrollView>
-
-        <!-- 자동완성 프리뷰 -->
-        <ui:VisualElement name="PreviewContainer" class="preview">
-            <!-- 후보들이 여기로 추가됨 -->
-        </ui:VisualElement>
-
-        <!-- 입력줄 -->
+        <ui:ScrollView name="HistoryContainer" vertical-scroller-visibility="Auto" class="history" />
+        <ui:VisualElement name="PreviewContainer" class="preview info" />
         <ui:VisualElement name="InputRow" class="input-row">
-            <ui:Label text=">" class="prompt"/>
-            <ui:TextField name="InputField" class="input" isDelayed="true" />
+            <ui:Label text="&gt;" class="prompt" />
         </ui:VisualElement>
+        <ui:TextField name="InputField" isDelayed="true" focusable="true" is-delayed="false" auto-correction="false" class="input" style="flex-direction: row-reverse;" />
     </ui:VisualElement>
 </ui:UXML>

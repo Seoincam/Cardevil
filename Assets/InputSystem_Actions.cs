@@ -188,7 +188,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": ""WASD"",
                     ""id"": ""00ca640b-d935-4593-8157-c05846ea39b3"",
-                    ""path"": ""Dpad"",
+                    ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -197,7 +197,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""up"",
+                    ""name"": ""Up"",
                     ""id"": ""e2062cb9-1b15-46a2-838c-2f8d72a0bdd9"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
@@ -208,7 +208,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""up"",
+                    ""name"": ""Down"",
                     ""id"": ""8180e8bd-4097-4f4e-ab88-4523101a6ce9"",
                     ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
@@ -219,7 +219,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""down"",
+                    ""name"": ""Left"",
                     ""id"": ""320bffee-a40b-4347-ac70-c210eb8bc73a"",
                     ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
@@ -230,53 +230,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""down"",
+                    ""name"": ""Right"",
                     ""id"": ""1c5327b5-f71c-4f60-99c7-4e737386f1d1"",
                     ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""d2581a9b-1d11-4566-b27d-b92aff5fabbc"",
-                    ""path"": ""<Keyboard>/a"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""2e46982e-44cc-431b-9f0b-c11910bf467a"",
-                    ""path"": ""<Keyboard>/leftArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""fcfe95b8-67b9-4526-84b5-5d0bc98d6400"",
-                    ""path"": ""<Keyboard>/d"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard&Mouse"",
-                    ""action"": ""Move"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""right"",
-                    ""id"": ""77bff152-3580-4b21-b6de-dcd0c7e41164"",
-                    ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard&Mouse"",
@@ -1080,30 +1036,8 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             ""name"": ""Console"",
             ""id"": ""28ebb008-518d-4e05-b3ae-2025a76fc3e3"",
-            ""actions"": [
-                {
-                    ""name"": ""New action"",
-                    ""type"": ""Button"",
-                    ""id"": ""03faea70-6201-4c56-8dcd-61f021907f79"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                }
-            ],
-            ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""29013ee6-2f44-46e5-b069-58262e84ae00"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""New action"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                }
-            ]
+            ""actions"": [],
+            ""bindings"": []
         },
         {
             ""name"": ""Debug"",
@@ -1117,12 +1051,21 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Toggle Console"",
+                    ""type"": ""Button"",
+                    ""id"": ""76f0f88c-a343-42f9-93b7-57a12852936a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
                 {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""55f70421-c9d4-4368-b49a-692b115e8d5e"",
+                    ""name"": ""WASD"",
+                    ""id"": ""4beee1a7-93b5-44c4-8dd3-d62bdda152a7"",
                     ""path"": ""2DVector"",
                     ""interactions"": """",
                     ""processors"": """",
@@ -1132,48 +1075,59 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""up"",
-                    ""id"": ""aee1267a-58ee-4358-80a5-9f68adef0840"",
+                    ""name"": ""Up"",
+                    ""id"": ""77b0ec5c-5a1a-4704-8c45-4254cf0d55d9"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""PlayerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""down"",
-                    ""id"": ""7f4a4346-75d8-4b16-97ac-ae3adc7f5d91"",
-                    ""path"": """",
+                    ""name"": ""Down"",
+                    ""id"": ""12ce8c25-4729-424e-9ff6-77382490b5aa"",
+                    ""path"": ""<Keyboard>/upArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""PlayerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""left"",
-                    ""id"": ""6e89983f-61db-4d2c-b8e1-79289aaee3ed"",
-                    ""path"": """",
+                    ""name"": ""Left"",
+                    ""id"": ""a8be087b-043c-4967-b224-ed596a998961"",
+                    ""path"": ""<Keyboard>/s"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""PlayerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": ""right"",
-                    ""id"": ""07256101-b08a-4499-9696-d0536092bb72"",
-                    ""path"": """",
+                    ""name"": ""Right"",
+                    ""id"": ""d71d8872-95f9-434b-95c3-d0272a4fc08a"",
+                    ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""PlayerMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5e035667-accc-4075-9b31-d2d3841b9c3e"",
+                    ""path"": ""<Keyboard>/backquote"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Console"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1266,10 +1220,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         // Console
         m_Console = asset.FindActionMap("Console", throwIfNotFound: true);
-        m_Console_Newaction = m_Console.FindAction("New action", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_PlayerMove = m_Debug.FindAction("PlayerMove", throwIfNotFound: true);
+        m_Debug_ToggleConsole = m_Debug.FindAction("Toggle Console", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1732,7 +1686,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     // Console
     private readonly InputActionMap m_Console;
     private List<IConsoleActions> m_ConsoleActionsCallbackInterfaces = new List<IConsoleActions>();
-    private readonly InputAction m_Console_Newaction;
     /// <summary>
     /// Provides access to input actions defined in input action map "Console".
     /// </summary>
@@ -1744,10 +1697,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Construct a new instance of the input action map wrapper class.
         /// </summary>
         public ConsoleActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
-        /// <summary>
-        /// Provides access to the underlying input action "Console/Newaction".
-        /// </summary>
-        public InputAction @Newaction => m_Wrapper.m_Console_Newaction;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1774,9 +1723,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_ConsoleActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_ConsoleActionsCallbackInterfaces.Add(instance);
-            @Newaction.started += instance.OnNewaction;
-            @Newaction.performed += instance.OnNewaction;
-            @Newaction.canceled += instance.OnNewaction;
         }
 
         /// <summary>
@@ -1788,9 +1734,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="ConsoleActions" />
         private void UnregisterCallbacks(IConsoleActions instance)
         {
-            @Newaction.started -= instance.OnNewaction;
-            @Newaction.performed -= instance.OnNewaction;
-            @Newaction.canceled -= instance.OnNewaction;
         }
 
         /// <summary>
@@ -1829,6 +1772,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Debug;
     private List<IDebugActions> m_DebugActionsCallbackInterfaces = new List<IDebugActions>();
     private readonly InputAction m_Debug_PlayerMove;
+    private readonly InputAction m_Debug_ToggleConsole;
     /// <summary>
     /// Provides access to input actions defined in input action map "Debug".
     /// </summary>
@@ -1844,6 +1788,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Debug/PlayerMove".
         /// </summary>
         public InputAction @PlayerMove => m_Wrapper.m_Debug_PlayerMove;
+        /// <summary>
+        /// Provides access to the underlying input action "Debug/ToggleConsole".
+        /// </summary>
+        public InputAction @ToggleConsole => m_Wrapper.m_Debug_ToggleConsole;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1873,6 +1821,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @PlayerMove.started += instance.OnPlayerMove;
             @PlayerMove.performed += instance.OnPlayerMove;
             @PlayerMove.canceled += instance.OnPlayerMove;
+            @ToggleConsole.started += instance.OnToggleConsole;
+            @ToggleConsole.performed += instance.OnToggleConsole;
+            @ToggleConsole.canceled += instance.OnToggleConsole;
         }
 
         /// <summary>
@@ -1887,6 +1838,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @PlayerMove.started -= instance.OnPlayerMove;
             @PlayerMove.performed -= instance.OnPlayerMove;
             @PlayerMove.canceled -= instance.OnPlayerMove;
+            @ToggleConsole.started -= instance.OnToggleConsole;
+            @ToggleConsole.performed -= instance.OnToggleConsole;
+            @ToggleConsole.canceled -= instance.OnToggleConsole;
         }
 
         /// <summary>
@@ -2141,13 +2095,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// <seealso cref="ConsoleActions.RemoveCallbacks(IConsoleActions)" />
     public interface IConsoleActions
     {
-        /// <summary>
-        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNewaction(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Debug" which allows adding and removing callbacks.
@@ -2163,5 +2110,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPlayerMove(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Toggle Console" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleConsole(InputAction.CallbackContext context);
     }
 }

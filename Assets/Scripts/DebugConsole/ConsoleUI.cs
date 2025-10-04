@@ -1,23 +1,47 @@
-﻿using System.Collections.Generic;
+﻿using Cardevil.Attributes;
+using Cardevil.Utils;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Pool;
 using UnityEngine.UIElements;
 
 namespace Cardevil.DebugConsole
 {
     public class ConsoleUI : MonoBehaviour, IConsoleWindow
     {
+        /*
+         * 기본 설정
+         */
         [SerializeField] private GameObject consolePanel;
-        public bool IsOpen => consolePanel.activeSelf;
+        [SerializeField, VisibleOnly] private bool _isInitialized = false;
+        [SerializeField] private bool _isOpen = false;
+        
+        public bool IsInitialized => _isInitialized;
+        public bool IsOpen => _isOpen;
         public Console Console => Console.Instance;
         
         [Space]
+        /*
+         * UI 관련
+         */
+        private VisualElement trueRoot = null;
         private VisualElement root = null;
         TextField textField = null;
-        VisualElement previewContainer = null;
-        private VisualElement historyContainer = null;
         
-        private string _currentInput = "";
+        VisualElement previewContainer = null;
+        ScrollView historyContainer = null;
+        
+        /*
+         * 상태
+         */
+        
+        public string CurrentInput => textField.value.TrimEnd();
+        
+        /*
+         * 자동완성 관련
+         */
+        private string _cachedInput = "";
         private bool _isAutoCompleteRequested = false;
         private int _autoCompleteIndex = 0;
         private List<string> _suggestions = new List<string>();
@@ -25,7 +49,7 @@ namespace Cardevil.DebugConsole
         private void Reset()
         {
             consolePanel = this.gameObject;
-            root = GetComponent<UIDocument>().rootVisualElement;
+            trueRoot = GetComponent<UIDocument>().rootVisualElement;
         }
 
         private void Awake()
@@ -34,16 +58,29 @@ namespace Cardevil.DebugConsole
             {
                 consolePanel = this.gameObject;
             }
-            if (root == null)
+            if (trueRoot == null)
             {
-                root = GetComponent<UIDocument>().rootVisualElement;
+                trueRoot = GetComponent<UIDocument>().rootVisualElement;
             }
             
-            textField = root.Q<TextField>("InputField");
-            previewContainer = root.Q<VisualElement>("PreviewContainer");
-            historyContainer = root.Q<VisualElement>("HistoryContainer");
-
-            textField.isDelayed = true;
+            Console.RegisterWindow(this);
+            
+            
+            root = trueRoot.Q<VisualElement>("Root");
+            LogEx.Log($"ConsoleUI: {trueRoot}, {root}");
+            
+            
+            textField = trueRoot.Q<TextField>("InputField");
+            previewContainer = trueRoot.Q<VisualElement>("PreviewContainer");
+            historyContainer = trueRoot.Q<ScrollView>("HistoryContainer");
+            historyContainer.AddToClassList("history");
+            
+            Keyboard.current.onTextInput += c =>
+            {
+                if (c == '`') Toggle();
+            };
+            
+            _isInitialized = true;
             Close();
         }
 
@@ -60,59 +97,99 @@ namespace Cardevil.DebugConsole
 
         private void RegisterHandlers()
         {
-            textField.RegisterValueChangedCallback(evt => OnTextChanged(evt.newValue));
-            textField.RegisterCallback<FocusOutEvent>(evt => _isAutoCompleteRequested = false);
-            textField.RegisterCallback<KeyDownEvent>(evt =>  OnTextFieldKeyDown(evt));
+            LogEx.Log("RegisterHandlers");
+            
+            textField.RegisterValueChangedCallback(OnTextChanged);
+            textField.RegisterCallback<FocusOutEvent>(OnTextFieldUnfocused);
+            textField.RegisterCallback<KeyDownEvent>(OnTextFieldKeyDown, TrickleDown.TrickleDown);
         }
         
         private void UnregisterHandlers()
         {
-            textField.UnregisterValueChangedCallback(evt => OnTextChanged(evt.newValue));
-            textField.UnregisterCallback<FocusOutEvent>(evt => _isAutoCompleteRequested = false);
-            textField.UnregisterCallback<KeyDownEvent>(evt =>  OnTextFieldKeyDown(evt));
+            LogEx.Log("UnregisterHandlers");
+            textField.UnregisterValueChangedCallback(OnTextChanged);
+            textField.UnregisterCallback<FocusOutEvent>(OnTextFieldUnfocused);
+            textField.UnregisterCallback<KeyDownEvent>(OnTextFieldKeyDown, TrickleDown.TrickleDown);
         }
         
         
 
         public void Open()
         {
-            consolePanel.SetActive(true);
+            _isOpen = true;
+            trueRoot.style.display = DisplayStyle.Flex;
+            textField.Focus();
         }
 
         public void Close()
         {
-            consolePanel.SetActive(false);
+            _isOpen = false;
+            trueRoot.style.display = DisplayStyle.None;
+            textField.Blur();
         }
-
         public void Toggle()
         {
-            consolePanel.SetActive(!consolePanel.activeSelf);
+            if (!IsInitialized) return;
+            if (IsOpen) Close();
+            else Open();
+        }
+        public void Print(string message)
+        {
+            Print(LogType.Log, message);
+        }
+        
+        public void Print(LogType type, string message)
+        {
+            if (!IsInitialized)
+                return;
+            var label = new Label(message);
+            // label.styleSheets 
+            label.AddToClassList("log-line");
+            switch (type)
+            {
+                case LogType.Error:
+                case LogType.Exception:
+                    label.AddToClassList("error");
+                    break;
+                case LogType.Warning:
+                    label.AddToClassList("warn");
+                    break;
+                case LogType.Log:
+                default:
+                    label.AddToClassList("info");
+                    break;
+            }
+            
+            historyContainer.Add(label);
+            historyContainer.ScrollTo(label);
         }
 
-        public void Update()
+        public void ClearHistory()
         {
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard.backquoteKey.wasPressedThisFrame)
-            {
-                Toggle();
-            }
+            if (!IsInitialized)
+                return;
+            historyContainer.Clear();
         }
+
+
         
         public void OnSubmit(string input)
         {
-            _currentInput = input;
+            _cachedInput = input;
             ExecuteCommand(input);
             textField.value = "";
             _isAutoCompleteRequested = false;
             _autoCompleteIndex = 0;
             _suggestions.Clear();
             previewContainer.Clear();
+            textField.Focus();
+            Print($"> {input}");
         }
-
-
+        
         /// <inheritdoc cref="OnTextChanged(string)"/>
         public void OnTextChanged(ChangeEvent<string> input)
         {
+            LogEx.Log($"TextChanged: {input.newValue}");
             OnTextChanged(input.newValue);
         }
         /// <summary>
@@ -122,15 +199,14 @@ namespace Cardevil.DebugConsole
         /// <param name="input">새로 바뀐 텍스트</param>
         public void OnTextChanged(string input)
         {
-            var args = input.Split(' ');
-            
-            Console.GetAutoCompleteSuggestions(args, ref _suggestions);
-    
+            _cachedInput = input;
+            RefreshAutoCompleteSuggestions();
         }
         
         /// <inheritdoc cref="OnTextFieldUnfocused()"/>
         public void OnTextFieldUnfocused(FocusOutEvent evt)
         {
+            LogEx.Log("TextField Unfocused");
             OnTextFieldUnfocused();
         }
         
@@ -140,17 +216,25 @@ namespace Cardevil.DebugConsole
         public void OnTextFieldUnfocused()
         {
             previewContainer.Clear();
+            _isAutoCompleteRequested = false;
+            _autoCompleteIndex = 0;
         }
         
         public void OnTextFieldKeyDown(KeyDownEvent evt)
         {
+            LogEx.Log($"KeyDown: {evt.keyCode}");
             if (evt.keyCode == KeyCode.Tab)
             {
-                RequestAutoComplete(_currentInput);
+                evt.StopPropagation();
+                evt.StopImmediatePropagation();
+                FocusController focusController = textField.panel.focusController;
+                focusController.IgnoreEvent(evt);
+                RequestAutoComplete(CurrentInput);
             }
             else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
             {
-                OnSubmit(_currentInput);
+                OnSubmit(CurrentInput);
+                LogEx.Log($"Submitted: {CurrentInput}, {textField.value}");
             }
         }
         
@@ -171,13 +255,26 @@ namespace Cardevil.DebugConsole
             {
                 _isAutoCompleteRequested = true;
                 _autoCompleteIndex = 0;
-                _suggestions = new List<string>();
+                _suggestions.Clear();
+                var args = input.Split(' ');
+                Console.GetAutoCompleteSuggestions(args, ref _suggestions);
             }
+        }
+
+        /// <summary>
+        /// 자동완성 제안을 갱신합니다.
+        /// </summary>
+        public void RefreshAutoCompleteSuggestions()
+        {
+            previewContainer.Clear();
+            if (_suggestions.Count == 0) return;
+            Console.GetAutoCompleteSuggestions(_cachedInput.Split(' '), ref _suggestions);
+
         }
         
         public void SetInputField(string input)
         {
-            
+            textField.value = input;
         }
 
         public void ExecuteCommand(string input)

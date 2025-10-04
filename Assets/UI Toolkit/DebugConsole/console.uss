@@ -48,9 +48,9 @@
     white-space: normal;
 }
 
-.history .log-line.info { color: #b8d4ff; }     /* 파란 빛 정보 */
-.history .log-line.warn { color: #ffd37a; }     /* 경고 */
-.history .log-line.error { color: #ff8a8a; }    /* 에러 */
+.history .log-line.info { color: #b8d4ff; }     
+.history .log-line.warn { color: #ffd37a; }    
+.history .log-line.error { color: #ff8a8a; }    
 
 .preview {
     min-height: 20px;
@@ -69,7 +69,7 @@
     padding-bottom: 2px;
     border-radius: 4px;
     background-color: #232a2f;
-    color: #89ffa3; /* 마인크래프트 느낌의 라임 그린 추천 */
+    color: #89ffa3;
     border-width: 1px;
     border-color: #355b3b;
     border-left-width: 2px;
