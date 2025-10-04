@@ -282,6 +282,25 @@ namespace Cardevil.DebugConsole
         }
         
         /// <summary>
+        /// 콘솔 윈도우 등록을 해제합니다.
+        /// </summary>
+        /// <param name="window">해제할 윈도우. null 이거나 현재 등록된 윈도우와 같아야 해제됩니다.</param>
+        public void UnregisterWindow(IConsoleWindow window)
+        {
+            if (_window == null) return;
+            
+            if (window == null || _window == window)
+            {
+                _window.Close();
+                if (_window is MonoBehaviour behaviour)
+                {
+                    UnityEngine.Object.Destroy(behaviour);
+                }
+                _window = null;
+            }
+        }
+        
+        /// <summary>
         /// 자동 완성 제안을 가져옵니다.
         /// </summary>
         /// <param name="input"></param>

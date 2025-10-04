@@ -1,5 +1,6 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -17,11 +18,13 @@ namespace Cardevil.DebugConsole
         [SerializeField, VisibleOnly] private bool _isInitialized = false;
         [SerializeField] private bool _isOpen = false;
         
+        
+        [SerializeField] InputAction _toggleConsoleAction;
+        
         public bool IsInitialized => _isInitialized;
         public bool IsOpen => _isOpen;
         public Console Console => Console.Instance;
         
-        [Space]
         /*
          * UI 관련
          */
@@ -41,7 +44,7 @@ namespace Cardevil.DebugConsole
         /*
          * 자동완성 관련
          */
-        private string _cachedInput = "";
+        private string _cachedAutoCompleteInput = "";
         private bool _isAutoCompleteRequested = false;
         private int _autoCompleteIndex = 0;
         private List<string> _suggestions = new List<string>();
@@ -75,10 +78,22 @@ namespace Cardevil.DebugConsole
             historyContainer = trueRoot.Q<ScrollView>("HistoryContainer");
             historyContainer.AddToClassList("history");
             
-            Keyboard.current.onTextInput += c =>
+
+            if (_toggleConsoleAction != null)
             {
-                if (c == '`') Toggle();
-            };
+                _toggleConsoleAction.performed += OnToggleKeyPressed;
+                _toggleConsoleAction.Enable();
+            }
+            else
+            {
+                Keyboard.current.onTextInput += c =>
+                {
+                    if (c == '`')
+                    {
+                        Toggle();
+                    }
+                };
+            }
             
             _isInitialized = true;
             Close();
@@ -94,6 +109,17 @@ namespace Cardevil.DebugConsole
             UnregisterHandlers();
         }
 
+
+        private void OnDestroy()
+        {
+            if (_toggleConsoleAction != null)
+            {
+                _toggleConsoleAction.performed -= OnToggleKeyPressed;
+                _toggleConsoleAction.Disable();
+            }
+
+            Console.UnregisterWindow(this);
+        }
 
         private void RegisterHandlers()
         {
@@ -118,6 +144,7 @@ namespace Cardevil.DebugConsole
         {
             _isOpen = true;
             trueRoot.style.display = DisplayStyle.Flex;
+            textField.value = "";
             textField.Focus();
         }
 
@@ -175,7 +202,7 @@ namespace Cardevil.DebugConsole
         
         public void OnSubmit(string input)
         {
-            _cachedInput = input;
+            _cachedAutoCompleteInput = input;
             ExecuteCommand(input);
             textField.value = "";
             _isAutoCompleteRequested = false;
@@ -199,7 +226,7 @@ namespace Cardevil.DebugConsole
         /// <param name="input">새로 바뀐 텍스트</param>
         public void OnTextChanged(string input)
         {
-            _cachedInput = input;
+            _cachedAutoCompleteInput = input;
             RefreshAutoCompleteSuggestions();
         }
         
@@ -238,6 +265,11 @@ namespace Cardevil.DebugConsole
             }
         }
         
+        public void OnToggleKeyPressed(InputAction.CallbackContext context)
+        {
+            Toggle();
+        }
+        
         /// <summary>
         /// 자동완성 요청시 호출됩니다.
         /// 이미 자동완성 제안이 있다면 다음 제안을 선택합니다.
@@ -268,7 +300,7 @@ namespace Cardevil.DebugConsole
         {
             previewContainer.Clear();
             if (_suggestions.Count == 0) return;
-            Console.GetAutoCompleteSuggestions(_cachedInput.Split(' '), ref _suggestions);
+            Console.GetAutoCompleteSuggestions(_cachedAutoCompleteInput.Split(' '), ref _suggestions);
 
         }
         
