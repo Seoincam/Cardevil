@@ -2312,6 +2312,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ConsoleUI
       objectReference: {fileID: 0}
+    - target: {fileID: 8934324070627063684, guid: 93d3f4657318363438a75c0a2852265f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

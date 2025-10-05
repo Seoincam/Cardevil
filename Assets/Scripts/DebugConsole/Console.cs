@@ -19,7 +19,6 @@ namespace Cardevil.DebugConsole
         
         private IConsoleWindow _window;
         private LogLevel _logPrintLevel = LogLevel.Warning;
-        private bool _doPrintConsoleMessages = true;
         
         public LogLevel LogPrintLevel
         {
@@ -28,7 +27,7 @@ namespace Cardevil.DebugConsole
         }
         
         public bool IsWindowOpen => _window?.IsOpen ?? false;
-        
+#if !DO_NOT_USE_DEBUG_CONSOLE
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         public static void Initialize()
         {
@@ -42,7 +41,7 @@ namespace Cardevil.DebugConsole
         {
             Application.logMessageReceived -= OnLogReceived;
         }
-
+#endif
         /// <summary>
         /// 콘솔 윈도우를 등록합니다.
         /// 이미 등록된 윈도우가 있다면 교체합니다.
@@ -115,6 +114,7 @@ namespace Cardevil.DebugConsole
         public bool ExecuteCommand(string input)
         {
     
+#if !DO_NOT_USE_DEBUG_CONSOLE
             if (_window == null) return false;
             if (string.IsNullOrWhiteSpace(input)) return false;
 
@@ -140,6 +140,9 @@ namespace Cardevil.DebugConsole
                 Message(MessageType.Error, $"Unknown command: '{commandName}'. Type 'help' for a list of commands.");
                 return false;
             }
+#else
+            return false;
+#endif
         }
         
         public static void Print(string message)

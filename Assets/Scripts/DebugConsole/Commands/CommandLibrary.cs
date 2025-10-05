@@ -25,6 +25,7 @@ namespace Cardevil.DebugConsole.Commands
 
         static CommandLibrary()
         {
+#if !DO_NOT_USE_DEBUG_CONSOLE
             /*
              * 기본 명령어 등록
              * remark : 이곳에 등록된 명령어들은 수동으로 등록됩니다. Initialize() 메서드에 추가하세요.
@@ -51,6 +52,7 @@ namespace Cardevil.DebugConsole.Commands
                     Console.SetLogLevel((LogLevel)level);
                     Console.Print($"Log level set to {(LogLevel)level}");
             });
+#endif
         }
   
 
@@ -81,7 +83,12 @@ namespace Cardevil.DebugConsole.Commands
         /// <returns></returns>
         public static bool TryGetCommand(string commandName, out IConsoleCommand command)
         {
+#if !DO_NOT_USE_DEBUG_CONSOLE
             return _commands.TryGetValue(commandName, out command);
+#else
+            command = null;
+            return false;
+#endif
         }
 
         /// <summary>
@@ -94,7 +101,7 @@ namespace Cardevil.DebugConsole.Commands
         }
         
 
-        
+    #if !DO_NOT_USE_DEBUG_CONSOLE
         [RuntimeInitializeOnLoadMethod]
         private static void Initialize()
         {
@@ -133,6 +140,7 @@ namespace Cardevil.DebugConsole.Commands
                 }
             }
         }
+    #endif
         
     }
 }
