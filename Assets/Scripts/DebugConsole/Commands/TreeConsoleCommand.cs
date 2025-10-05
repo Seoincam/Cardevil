@@ -12,6 +12,7 @@ namespace Cardevil.DebugConsole.Commands
         public string Command { get; }
         public string Description { get; }
         
+        
         private List<IConsoleCommand> _subCommands = new List<IConsoleCommand>();
         public TreeConsoleCommand(string command, string description = "")
         {
@@ -27,8 +28,7 @@ namespace Cardevil.DebugConsole.Commands
         {
             get
             {
-                string subCommands = string.Join("|", _subCommands.ConvertAll(c => c.Command));
-                return $"{Command} ({subCommands}) - {Description}";
+                return $"{Command} <sub-command>";
             }
         }
 

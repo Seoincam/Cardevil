@@ -12,11 +12,14 @@ namespace Cardevil.DebugConsole
     {
         public string Command { get; }
         public string Description { get; }
+        
+        public string Signature { get;}
 
-        public ConsoleCommandAttribute(string command, string description = "")
+        public ConsoleCommandAttribute(string command, string description = "", string signature = null)
         {
             Command = command;
             Description = description;
+            Signature = signature;
         }
     }
 }

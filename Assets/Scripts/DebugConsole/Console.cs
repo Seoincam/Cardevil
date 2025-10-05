@@ -144,6 +144,7 @@ namespace Cardevil.DebugConsole
                 catch (Exception ex)
                 {
                     Message(MessageType.Error, $"Error executing command '{commandName}': {ex.Message}");
+                    _window.MessageInfo(_currentCommand.Signature);
                 }
                 _lastCommand = _currentCommand;
                 return true;
@@ -211,7 +212,7 @@ namespace Cardevil.DebugConsole
             Instance.PrintInternal(LogType.Log, "Available Commands:");
             foreach (var command in commands)
             {
-                Instance.PrintInternal(LogType.Log, $"- {command.Command}: {command.Description}");
+                Instance.PrintInternal(LogType.Log, $"- {command.Signature}: {command.Description}");
             }
         }
         

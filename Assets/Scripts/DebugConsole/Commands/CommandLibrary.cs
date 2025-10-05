@@ -75,6 +75,10 @@ namespace Cardevil.DebugConsole.Commands
             _commands[command.Command] = command;
         }
         
+        /// <summary>
+        /// 콘솔 명령어 등록을 해제합니다.
+        /// </summary>
+        /// <param name="commandName"></param>
         public static void UnregisterCommand(string commandName)
         {
             if (_commands.Remove(commandName))
@@ -114,6 +118,11 @@ namespace Cardevil.DebugConsole.Commands
         
 
     #if !DO_NOT_USE_DEBUG_CONSOLE
+        /// <summary>
+        /// 애플리케이션 시작 시점에 호출되어, 모든 콘솔 명령어를 자동으로 등록합니다.
+        /// 1. 수동으로 등록할 명령어가 있다면 이 메서드에 추가합니다.
+        /// 2. ConsoleCommandAttribute가 붙은 모든 static 메서드를 찾아 등록합니다.
+        /// </summary>
         [RuntimeInitializeOnLoadMethod]
         private static void Initialize()
         {
@@ -141,11 +150,11 @@ namespace Cardevil.DebugConsole.Commands
                             if(method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == typeof(string[]))
                             {
                                 // RawReflectionCommand 생성
-                                var rawCommand = new RawReflectionCommand(attr.Command, attr.Description, method);
+                                var rawCommand = new RawReflectionCommand(attr.Command, attr.Description, method, attr.Signature);
                                 RegisterCommand(rawCommand);
                             }else{
                                 // ReflectionCommand 생성
-                                bool success = ReflectionCommand.Create(attr.Command, attr.Description, method, out var consoleCommand);
+                                bool success = ReflectionCommand.Create(attr.Command, attr.Description, method, attr.Signature, out var consoleCommand);
                                 if (success)
                                 {
                                     RegisterCommand(consoleCommand);

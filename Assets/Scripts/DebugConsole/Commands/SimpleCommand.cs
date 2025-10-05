@@ -5,6 +5,9 @@ namespace Cardevil.DebugConsole.Commands
 {
 
 
+    /// <summary>
+    /// 매개변수가 없는 간단한 Command 클래스입니다.
+    /// </summary>
     public class SimpleCommand : IConsoleCommand
     {
         public string Command { get; }
@@ -24,17 +27,24 @@ namespace Cardevil.DebugConsole.Commands
         }
     }
     
+    /// <summary>
+    /// 매개변수가 하나인 간단한 Command 클래스입니다.
+    /// 자동으로 타입 변환을 시도합니다.
+    /// </summary>
     public class SimpleCommand<T> : IConsoleCommand
     {
         public string Command { get; }
         public string Description { get; }
         private readonly Action<T> _action;
+        private readonly string _signature;
+        public string Signature => _signature;
 
-        public SimpleCommand(string command, string description, Action<T> action)
+        public SimpleCommand(string command, string description, Action<T> action, string signature = null)
         {
             Command = command;
             Description = description;
             _action = action;
+            _signature = signature ?? $"{command} <{typeof(T).Name}>";
         }
 
         public void Execute(string[] args)

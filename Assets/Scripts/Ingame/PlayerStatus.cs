@@ -180,7 +180,7 @@ namespace Cardevil.Ingame
             other.CopyFrom(this);
         }
 
-        [ConsoleCommand("heal", "Heal the player by a specified amount. Usage: heal [amount]")]
+        [ConsoleCommand("heal", "Heal the player by a specified amount.","heal [int: amount (optional, default: 1)]")]
         private static void HealCommand(string[] args)
         {
             int amount;
@@ -205,7 +205,7 @@ namespace Cardevil.Ingame
             DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
         }
 
-        [ConsoleCommand("deal", "Deal damage to the player by a specified amount. Usage: deal [amount]")]
+        [ConsoleCommand("deal", "Deal damage to the player by a specified amount.", "deal [int: amount]")]
         private static void Deal(string[] args)
         {
             int amount;
@@ -230,7 +230,7 @@ namespace Cardevil.Ingame
             DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
         }
 
-        [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다. Usage: sethp <int: amount> [bool: broadcast (optional, default: true)]")]
+        [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다.","sethp <int: amount> [bool: broadcast (optional, default: true)]")]
         private static void SetHp(string[] args)
         {
             if (args.Length == 0)

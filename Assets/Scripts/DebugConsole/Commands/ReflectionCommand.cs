@@ -5,11 +5,16 @@ namespace Cardevil.DebugConsole.Commands
 {
     /// <summary>
     /// 리플렉션으로 등록되는 콘솔 명령어입니다.
+    /// 매개변수는 int, float, bool, string, enum 타입만 지원합니다.
+    /// 각 타입은 자동으로 파싱됩니다.
     /// </summary>
     public class ReflectionCommand : IConsoleCommand
     {
         public string Command { get; }
         public string Description { get; }
+        
+        private string _signature;
+        public string Signature { get => _signature; }
         private readonly System.Reflection.MethodInfo _method;
         private readonly Type[] _paramType;
 
@@ -33,7 +38,7 @@ namespace Cardevil.DebugConsole.Commands
                 Console.MessageError($"Error executing command '{Command}': {ex.Message}");
             }
         }
-        public static bool Create(string commandName, string description, System.Reflection.MethodInfo method, out ReflectionCommand command)
+        public static bool Create(string commandName, string description, System.Reflection.MethodInfo method,string signature, out ReflectionCommand command)
         {
             if (!method.IsStatic)
             {
@@ -47,8 +52,16 @@ namespace Cardevil.DebugConsole.Commands
                 command = null;
                 return false;
             }
+            command._signature = signature ?? $"{commandName} " + string.Join(" ", Array.ConvertAll(command._paramType, t => $"<{t.Name}>"));
             return true;
         }
+        
+        public static bool Create(string commandName, string description, System.Reflection.MethodInfo method, out ReflectionCommand command)
+        {
+            return Create(commandName, description, method, null, out command);
+        }
+        
+        
         
         private static bool IsSupportedType(Type type)
         {
