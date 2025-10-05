@@ -22,7 +22,7 @@ namespace Cardevil.Cards.Interactions
 
         [SerializeField] List<Transform> cards;
 
-        [SerializeField] CardVisualSetting visualSetting;
+        [SerializeField] CardVisualSettingSO visualSetting;
 
         public Transform Front => cards[0];
 

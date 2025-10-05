@@ -1,6 +1,7 @@
 using Cardevil.Cards.Interactions;
 using Cardevil.Events;
 using Cardevil.Systems;
+using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -17,7 +18,7 @@ namespace Cardevil
         private UniTaskCompletionSource _rerollCmp = new();
         private bool _isPreviewing = false;
 
-        [SerializeField] CardVisualSetting visual;
+        [SerializeField] CardVisualSettingSO visual;
         [SerializeField] CardDeckVisual deck;
 
         [Header("Cards")]
@@ -118,7 +119,8 @@ namespace Cardevil
                 {
                     var cardData = ctx.PopCard();
                     if (cardData == null) return null;
-                    var card = Instantiate(cardPrefab).GetComponent<Card>();
+                    // var card = Instantiate(cardPrefab).GetComponent<Card>();
+                    var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
                     card.Init(cardData, ctx);
 
                     ctx.Draw(card);
@@ -147,7 +149,7 @@ namespace Cardevil
             }
             catch (Exception ex)
             {
-                Debug.LogError($"RerollHandler에서 오류 발생: {ex}");
+                LogEx.LogError($"리롤 중 오류!: {ex}");
             }
         }
 
@@ -173,8 +175,6 @@ namespace Cardevil
 
             for (int i = 0; i < hand.Count; i++)
             {
-                var card = hand[i];
-                card.SetHandBar(manager.HandBar);
                 manager.HandBar.MoveToHandBar(i);
                 await UniTask.Delay(TimeSpan.FromSeconds(end));
             }
