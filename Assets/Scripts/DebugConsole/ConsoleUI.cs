@@ -1,4 +1,5 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.UIToolkit;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
@@ -26,7 +27,9 @@ namespace Cardevil.DebugConsole
         [SerializeField] private bool _isOpen = false;
         [SerializeField,Tooltip("자동 완성 기능 사용 여부")] private bool _useAutoComplete = false;
         [SerializeField] InputAction _toggleConsoleAction;
-        
+
+        [SerializeField] private Vector2 minSize = new Vector2(360, 200);
+        [SerializeField] private Vector2 maxSize = new Vector2(1920, 1200);
         public bool IsInitialized => _isInitialized;
         public bool IsOpen => _isOpen;
         public Console Console => Console.Instance;
@@ -73,6 +76,9 @@ namespace Cardevil.DebugConsole
             Destroy(this.gameObject);
             #else
             
+            /*
+             * 기초 설정ㄴ
+             */
             if (_instance != null && _instance != this)
             {
                 LogEx.LogWarning("Another instance of ConsoleUI already exists. Destroying this one.");
@@ -104,6 +110,9 @@ namespace Cardevil.DebugConsole
             Console.RegisterWindow(this);
             
             
+            /*
+             * UI 요소 찾기
+             */
             root = trueRoot.Q<VisualElement>("Root");
             LogEx.Log($"ConsoleUI: {trueRoot}, {root}");
             
@@ -113,7 +122,33 @@ namespace Cardevil.DebugConsole
             historyContainer = trueRoot.Q<ScrollView>("HistoryContainer");
             historyContainer.AddToClassList("history");
             
+            /*
+             * Manipulator 설정
+             */
+            var resizeEast = trueRoot.Q<VisualElement>("resize-east");
+            var resizeSouth = trueRoot.Q<VisualElement>("resize-south");
+            var resizeSouthEast = trueRoot.Q<VisualElement>("resize-southeast");
 
+            var eastManipulator = new ResizeManipulator(resizeEast, root, ResizeEdge.East);
+            var southManipulator = new ResizeManipulator(resizeSouth, root, ResizeEdge.South);
+            var southEastManipulator = new ResizeManipulator(resizeSouthEast, root, ResizeEdge.SouthEast);
+            eastManipulator.MinSize = southManipulator.MinSize = southEastManipulator.MinSize = minSize;
+            eastManipulator.MaxSize = southManipulator.MaxSize = southEastManipulator.MaxSize = maxSize;
+            eastManipulator.ClampToParentBounds = southManipulator.ClampToParentBounds = southEastManipulator.ClampToParentBounds = true;
+            
+            resizeEast.AddManipulator(eastManipulator);
+            resizeSouth.AddManipulator(southManipulator);
+            resizeSouthEast.AddManipulator(southEastManipulator);
+            
+            var topBar = trueRoot.Q<VisualElement>("TopBar");
+            var dragManipulator = new DragManipulator(topBar, root);
+            dragManipulator.ClampToParentBounds = true;
+            dragManipulator.Padding = new RectOffset(5,5,5,5);
+            topBar.AddManipulator(dragManipulator);
+            
+            /*
+             * 토글 단축키 설정
+             */
             if (_toggleConsoleAction != null)
             {
                 _toggleConsoleAction.performed += OnToggleKeyPressed;
