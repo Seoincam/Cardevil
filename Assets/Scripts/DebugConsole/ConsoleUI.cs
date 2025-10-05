@@ -16,16 +16,15 @@ namespace Cardevil.DebugConsole
     [RequireComponent(typeof(UIDocument))]
     public class ConsoleUI : MonoBehaviour, IConsoleWindow
     {
-        
+        private static ConsoleUI _instance;
+        public static ConsoleUI Instance => _instance;
         /*
-         * 기본 설정
+         * 기본 변수
          */
         [SerializeField] private GameObject consolePanel;
         [SerializeField, VisibleOnly] private bool _isInitialized = false;
         [SerializeField] private bool _isOpen = false;
         [SerializeField,Tooltip("자동 완성 기능 사용 여부")] private bool _useAutoComplete = false;
-        
-        
         [SerializeField] InputAction _toggleConsoleAction;
         
         public bool IsInitialized => _isInitialized;
@@ -73,6 +72,15 @@ namespace Cardevil.DebugConsole
             #if DO_NOT_USE_DEBUG_CONSOLE
             Destroy(this.gameObject);
             #else
+            
+            if (_instance != null && _instance != this)
+            {
+                LogEx.LogWarning("Another instance of ConsoleUI already exists. Destroying this one.");
+                Destroy(gameObject);
+                return;
+            }
+            _instance = this;
+            
             if (consolePanel == null)
             {
                 consolePanel = this.gameObject;
@@ -415,6 +423,12 @@ namespace Cardevil.DebugConsole
             {
                 Console.Message(msgType, $"Message of type {msgType}");
             }
+        }
+        
+        [Preserve, ConsoleCommand("clear", "Clears the console window.")]
+        private static void ClearCommand()
+        {
+            Instance.ClearHistory();
         }
     }
 }

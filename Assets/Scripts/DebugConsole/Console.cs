@@ -201,12 +201,6 @@ namespace Cardevil.DebugConsole
                 Instance.PrintInternal(LogType.Log, $"- {command.Command}: {command.Description}");
             }
         }
-
-        [Preserve, ConsoleCommand("clear", "Clears the console window.")]
-        private static void ClearCommand()
-        {
-            Instance?._window?.ClearHistory();
-        }
         
         [Preserve, ConsoleCommand("testTypeCommand", "A test command that demonstrates type-specific argument parsing.")]
         private static void TestTypeCommand(string strArg, int intArg, float floatArg, bool boolArg)
