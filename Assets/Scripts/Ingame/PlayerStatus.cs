@@ -206,7 +206,7 @@ namespace Cardevil.Ingame
         }
 
         [ConsoleCommand("deal", "Deal damage to the player by a specified amount.", "deal [int: amount]")]
-        private static void Deal(string[] args)
+        private static void DealCommand(string[] args)
         {
             int amount;
             if (args.Length == 0)
@@ -231,7 +231,7 @@ namespace Cardevil.Ingame
         }
 
         [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다.","sethp <int: amount> [bool: broadcast (optional, default: true)]")]
-        private static void SetHp(string[] args)
+        private static void SetHpCommand(string[] args)
         {
             if (args.Length == 0)
             {

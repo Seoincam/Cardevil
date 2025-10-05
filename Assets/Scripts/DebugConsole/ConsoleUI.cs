@@ -488,7 +488,7 @@ namespace Cardevil.DebugConsole
         }
         
         [Preserve, ConsoleCommand("printAllLogTypes", "Print all log types for testing purposes")]
-        private static void PrintAllLogTypes()
+        private static void PrintAllLogTypesCommand()
         {
             Console console = Console.Instance;
             if (console == null)

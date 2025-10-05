@@ -93,7 +93,7 @@ namespace Cardevil.Item
             }
         }
         [Preserve, ConsoleCommand("printItems", "Print all registered items in the ItemLibrary.")]
-        public static void PrintAllItemsConsole()
+        public static void PrintAllItemsCommand()
         {
             if (_instance == null)
             {
