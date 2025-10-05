@@ -1,16 +1,22 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Pool;
+using UnityEngine.Scripting;
 using UnityEngine.UIElements;
 
 namespace Cardevil.DebugConsole
 {
+    [DisallowMultipleComponent]
+    [RequireComponent(typeof(UIDocument))]
     public class ConsoleUI : MonoBehaviour, IConsoleWindow
     {
+        
         /*
          * 기본 설정
          */
@@ -46,9 +52,15 @@ namespace Cardevil.DebugConsole
          */
         private string _cachedAutoCompleteInput = "";
         private bool _isAutoCompleteRequested = false;
+        /// <summary>
+        /// 해당 텍스트 변경이 자동완성 요청에 의한 것인지 여부.
+        /// </summary>
+        private bool _wasAutoCompleteJustRequested = false;
         private int _autoCompleteIndex = 0;
         private List<string> _suggestions = new List<string>();
 
+
+        
         private void Reset()
         {
             consolePanel = this.gameObject;
@@ -57,13 +69,27 @@ namespace Cardevil.DebugConsole
 
         private void Awake()
         {
+            #if DO_NOT_USE_DEBUG_CONSOLE
+            Destroy(this.gameObject);
+            #else
             if (consolePanel == null)
             {
                 consolePanel = this.gameObject;
             }
             if (trueRoot == null)
             {
-                trueRoot = GetComponent<UIDocument>().rootVisualElement;
+                var uiDocument = GetComponent<UIDocument>();
+                if (uiDocument != null)
+                {
+                    uiDocument.enabled = true;
+                    trueRoot = uiDocument.rootVisualElement;
+                }
+                else
+                {
+                    LogEx.LogError("ConsoleUI: No UIDocument found!");
+                    return;
+                }
+                
             }
             
             Console.RegisterWindow(this);
@@ -97,6 +123,7 @@ namespace Cardevil.DebugConsole
             
             _isInitialized = true;
             Close();
+            #endif
         }
 
         private void OnEnable()
@@ -137,15 +164,18 @@ namespace Cardevil.DebugConsole
             textField.UnregisterCallback<FocusOutEvent>(OnTextFieldUnfocused);
             textField.UnregisterCallback<KeyDownEvent>(OnTextFieldKeyDown, TrickleDown.TrickleDown);
         }
-        
-        
 
         public void Open()
         {
             _isOpen = true;
             trueRoot.style.display = DisplayStyle.Flex;
             textField.value = "";
-            textField.Focus();
+
+            UniTask.DelayFrame(1).ContinueWith(() =>
+            {
+                if (!IsOpen) return;
+                textField.Focus();
+            });
         }
 
         public void Close()
@@ -160,6 +190,21 @@ namespace Cardevil.DebugConsole
             if (IsOpen) Close();
             else Open();
         }
+
+        public void Message(string message)
+        {
+            Message(MessageType.Default, message);
+        }
+        public void Message(MessageType type, string message)
+        {
+            var label = new Label(message);
+            label.AddToClassList("log-line");
+            label.AddToClassList("message");
+            label.AddToClassList(type.UssTag);
+            historyContainer.Add(label);
+            historyContainer.ScrollTo(label);
+        }
+
         public void Print(string message)
         {
             Print(LogType.Log, message);
@@ -197,78 +242,7 @@ namespace Cardevil.DebugConsole
                 return;
             historyContainer.Clear();
         }
-
-
         
-        public void OnSubmit(string input)
-        {
-            _cachedAutoCompleteInput = input;
-            ExecuteCommand(input);
-            textField.value = "";
-            _isAutoCompleteRequested = false;
-            _autoCompleteIndex = 0;
-            _suggestions.Clear();
-            previewContainer.Clear();
-            textField.Focus();
-            Print($"> {input}");
-        }
-        
-        /// <inheritdoc cref="OnTextChanged(string)"/>
-        public void OnTextChanged(ChangeEvent<string> input)
-        {
-            LogEx.Log($"TextChanged: {input.newValue}");
-            OnTextChanged(input.newValue);
-        }
-        /// <summary>
-        /// 텍스트 변경시 호출됩니다.
-        /// 자동완성 제안을 갱신합니다.
-        /// </summary>
-        /// <param name="input">새로 바뀐 텍스트</param>
-        public void OnTextChanged(string input)
-        {
-            _cachedAutoCompleteInput = input;
-            RefreshAutoCompleteSuggestions();
-        }
-        
-        /// <inheritdoc cref="OnTextFieldUnfocused()"/>
-        public void OnTextFieldUnfocused(FocusOutEvent evt)
-        {
-            LogEx.Log("TextField Unfocused");
-            OnTextFieldUnfocused();
-        }
-        
-        /// <summary>
-        /// 텍스트 필드가 포커스를 잃었을 때 호출됩니다.
-        /// </summary>
-        public void OnTextFieldUnfocused()
-        {
-            previewContainer.Clear();
-            _isAutoCompleteRequested = false;
-            _autoCompleteIndex = 0;
-        }
-        
-        public void OnTextFieldKeyDown(KeyDownEvent evt)
-        {
-            LogEx.Log($"KeyDown: {evt.keyCode}");
-            if (evt.keyCode == KeyCode.Tab)
-            {
-                evt.StopPropagation();
-                evt.StopImmediatePropagation();
-                FocusController focusController = textField.panel.focusController;
-                focusController.IgnoreEvent(evt);
-                RequestAutoComplete(CurrentInput);
-            }
-            else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
-            {
-                OnSubmit(CurrentInput);
-                LogEx.Log($"Submitted: {CurrentInput}, {textField.value}");
-            }
-        }
-        
-        public void OnToggleKeyPressed(InputAction.CallbackContext context)
-        {
-            Toggle();
-        }
         
         /// <summary>
         /// 자동완성 요청시 호출됩니다.
@@ -279,12 +253,28 @@ namespace Cardevil.DebugConsole
         {
             if (_isAutoCompleteRequested)
             {
+                // 기존 제안이 있는 경우
                 if (_suggestions.Count == 0) return;
                 _autoCompleteIndex = (_autoCompleteIndex + 1) % _suggestions.Count;
-                
+                _wasAutoCompleteJustRequested = true;
+                var previewLabels = previewContainer.Query<Label>().ToList();
+                for (int i = 0; i < previewLabels.Count; i++)
+                {
+                    if (i == _autoCompleteIndex)
+                    {
+                        previewLabels[i].AddToClassList("selected");
+                    }
+                    else
+                    {
+                        previewLabels[i].RemoveFromClassList("selected");
+                    }
+                }
+                SetInputField(_suggestions[_autoCompleteIndex]);
+                textField.Focus();
             }
             else
             {
+                // 새로운 자동완성 요청
                 _isAutoCompleteRequested = true;
                 _autoCompleteIndex = 0;
                 _suggestions.Clear();
@@ -301,7 +291,12 @@ namespace Cardevil.DebugConsole
             previewContainer.Clear();
             if (_suggestions.Count == 0) return;
             Console.GetAutoCompleteSuggestions(_cachedAutoCompleteInput.Split(' '), ref _suggestions);
-
+            foreach (var suggestion in _suggestions)
+            {
+                var label = new Label(suggestion);
+                label.AddToClassList("suggestion");
+                previewContainer.Add(label);
+            }
         }
         
         public void SetInputField(string input)
@@ -311,12 +306,110 @@ namespace Cardevil.DebugConsole
 
         public void ExecuteCommand(string input)
         {
-            string[] args = input.Split(' ');
-            if (args.Length == 0) return;
-            string command = args[0];
-            string[] commandArgs = args.Length > 1 ? args[1..] : new string[0];
+            Console.ExecuteCommand(input);
+        }
+        
+        private void OnSubmit(string input)
+        {
+            _cachedAutoCompleteInput = "";
+            textField.value = "";
+            _isAutoCompleteRequested = false;
+            _autoCompleteIndex = 0;
+            _suggestions.Clear();
+            previewContainer.Clear();
+            textField.Focus();
+            Message(MessageType.Gray,$"> {input}");
+            ExecuteCommand(input);
+        }
+        
+        /// <inheritdoc cref="OnTextChanged(string)"/>
+        private void OnTextChanged(ChangeEvent<string> input)
+        {
+            OnTextChanged(input.newValue);
+        }
+        /// <summary>
+        /// 텍스트 변경시 호출됩니다.
+        /// 자동완성 제안을 갱신합니다.
+        /// </summary>
+        /// <param name="input">새로 바뀐 텍스트</param>
+        private void OnTextChanged(string input)
+        {
+            if (_wasAutoCompleteJustRequested)
+            {
+                _wasAutoCompleteJustRequested = false;
+                // 자동완성 요청에 의한 텍스트 변경이므로 무시
+                return;
+            }
+            _cachedAutoCompleteInput = input;
+            if(string.IsNullOrWhiteSpace(input))
+            {
+                _isAutoCompleteRequested = false;
+                _autoCompleteIndex = 0;
+                _suggestions.Clear();
+                previewContainer.Clear();
+                return;
+            }
+            RefreshAutoCompleteSuggestions();
+        }
+        
+        /// <inheritdoc cref="OnTextFieldUnfocused()"/>
+        private void OnTextFieldUnfocused(FocusOutEvent evt)
+        {
+            // LogEx.Log("TextField Unfocused");
+            OnTextFieldUnfocused();
+        }
+        
+        /// <summary>
+        /// 텍스트 필드가 포커스를 잃었을 때 호출됩니다.
+        /// </summary>
+        private void OnTextFieldUnfocused()
+        {
+            previewContainer.Clear();
+            _isAutoCompleteRequested = false;
+            _autoCompleteIndex = 0;
+        }
+        
+        private void OnTextFieldKeyDown(KeyDownEvent evt)
+        {
+            // LogEx.Log($"KeyDown: {evt.keyCode}");
+            if (evt.keyCode == KeyCode.Tab)
+            {
+                evt.StopPropagation();
+                evt.StopImmediatePropagation();
+                FocusController focusController = textField.panel.focusController;
+                focusController.IgnoreEvent(evt);
+                RequestAutoComplete(CurrentInput);
+            }
+            else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
+            {
+                LogEx.Log($"Submitted: {CurrentInput}, {textField.value}");
+                OnSubmit(CurrentInput);
+            }
+        }
+        
+        private void OnToggleKeyPressed(InputAction.CallbackContext context)
+        {
+            Toggle();
+        }
+        
+        [Preserve, ConsoleCommand("printAllLogTypes", "Print all log types for testing purposes")]
+        private static void PrintAllLogTypes()
+        {
+            Console console = Console.Instance;
+            if (console == null)
+            {
+                LogEx.LogError("Console instance is null.");
+                return;
+            }
+            foreach (LogType type in Enum.GetValues(typeof(LogType)))
+            {
+                Console.Print(type, $"Log of type {type}");
+            }
             
-           
+            foreach (var msgType in MessageType.Default.AllTypes)
+            {
+                Console.Message(msgType, $"Message of type {msgType}");
+            }
         }
     }
 }

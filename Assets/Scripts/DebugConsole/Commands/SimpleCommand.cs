@@ -1,7 +1,7 @@
 using Cardevil.Utils;
 using System;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.DebugConsole.Commands
 {
 
 

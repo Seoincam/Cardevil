@@ -1,4 +1,4 @@
-/* Assets/UI/DebugConsole.uss */
+
 .console-root {
     width: 100%;
     height: 50%;
@@ -47,6 +47,19 @@
     margin-bottom: 2px;
     white-space: normal;
 }
+
+.history .log-line.message { color: #ffffff; }
+.history .log-line.message.default { color: #d1d7e0; }
+.history .log-line.message.info { color: #b8d4ff; }
+.history .log-line.message.warn { color: #ffd37a; }
+.history .log-line.message.error { color: #ff8a8a; }
+.history .log-line.message.success { color: #89ffa3; }
+
+.history .log-line.message.white{ color: #ffffff; }
+.history .log-line.message.gray { color: #8b949e; }
+.history .log-line.message.cyan { color: #79c0ff; }
+.history .log-line.message.debug { color: #89ffa3; }
+
 
 .history .log-line.info { color: #b8d4ff; }     
 .history .log-line.warn { color: #ffd37a; }    

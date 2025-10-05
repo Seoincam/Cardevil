@@ -1,4 +1,5 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.DebugConsole.Commands;
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,230 +7,9 @@ using UnityEngine.Scripting;
 
 namespace Cardevil.DebugConsole
 {
-    public interface IConsoleCommand
-    {
-        string Command { get; }
-        string Description { get; }
-        
-        
-        string Signature => Command + " " + (Description ?? "");
-        void Execute(string[] args);
-        
-        void AutoComplete(string[] args, ref List<string> suggestions) { }
-    }
-
-    public interface IConsoleWindow
-    {
-        void Open();
-        void Close();
-        void Print(string message);
-        void Print(LogType type, string message);
-        void ClearHistory();
-        void Toggle();
-        bool IsOpen { get; }
-    }
-    
-    /// <summary>
-    /// 하위 명령어를 가질 수 있는 트리 구조의 콘솔 명령어입니다.
-    /// </summary>
-    public class TreeConsoleCommand : IConsoleCommand
-    {
-        public string Command { get; }
-        public string Description { get; }
-        
-        private List<IConsoleCommand> _subCommands = new List<IConsoleCommand>();
-        public TreeConsoleCommand(string command, string description = "")
-        {
-            Command = command;
-            Description = description;
-        }
-        public TreeConsoleCommand AddSubCommand(IConsoleCommand command)
-        {
-            _subCommands.Add(command);
-            return this;
-        }
-        public string Signature
-        {
-            get
-            {
-                string subCommands = string.Join("|", _subCommands.ConvertAll(c => c.Command));
-                return $"{Command} ({subCommands}) - {Description}";
-            }
-        }
-
-        public void Execute(string[] args)
-        {
-            if (args.Length == 0)
-            {
-                Console.Print($"Usage: {Signature}");
-                return;
-            }
-
-            string subCommandName = args[0];
-            var subCommand = _subCommands.Find(c => c.Command.Equals(subCommandName, StringComparison.OrdinalIgnoreCase));
-            if (subCommand != null)
-            {
-                subCommand.Execute(args.Length > 1 ? args[1..] : Array.Empty<string>());
-            }
-            else
-            {
-                Console.Print($"Unknown sub-command '{subCommandName}'. Available sub-commands: {string.Join(", ", _subCommands.ConvertAll(c => c.Command))}");
-            }
-        }
-    }
-    
-    /// <summary>
-    /// 리플렉션으로 등록되는 콘솔 명령어입니다.
-    /// </summary>
-    public class ReflectionConsoleCommand : IConsoleCommand
-    {
-        public string Command { get; }
-        public string Description { get; }
-        private readonly System.Reflection.MethodInfo _method;
-
-        public ReflectionConsoleCommand(string command, string description, System.Reflection.MethodInfo method)
-        {
-            Command = command;
-            Description = description;
-            _method = method;
-        }
-
-        public void Execute(string[] args)
-        {
-            _method.Invoke(null, new object[] { args });
-        }
-    }
-    
- 
-    /// <summary>
-    /// 메서드에 적용하여 콘솔 명령어로 등록합니다.
-    /// </summary>
-    [Preserve]
-    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-    public class ConsoleCommandAttribute : Attribute
-    {
-        public string Command { get; }
-        public string Description { get; }
-
-        public ConsoleCommandAttribute(string command, string description = "")
-        {
-            Command = command;
-            Description = description;
-        }
-    }
-    
-
-    /// <summary>
-    /// 등록된 콘솔 명령어들을 관리합니다.
-    /// </summary>
-    [Preserve]
-    public static class CommandLibrary
-    {
-        /// <summary>
-        /// 명령어 이름을 키로, IConsoleCommand 객체를 값으로 가지는 사전
-        /// 순차 탐색을 위해 SortedDictionary 사용
-        /// </summary>
-        private static readonly SortedDictionary<string, IConsoleCommand> _commands = new SortedDictionary<string, IConsoleCommand>();
-        
-        /// <summary>
-        /// 콘솔 명령어를 등록합니다.
-        /// </summary>
-        /// <param name="command"></param>
-        public static void RegisterCommand(IConsoleCommand command)
-        {
-            if (_commands.ContainsKey(command.Command))
-            {
-                LogEx.LogWarning($"Command '{command.Command}' is already registered. Overwriting.");
-            }
-            else
-            {
-                LogEx.Log($"Registered command: {command.Command}");
-            }
-            _commands[command.Command] = command;
-        }
-
-        /// <summary>
-        /// 콘솔 명령어를 이름으로 검색합니다.
-        /// </summary>
-        /// <param name="commandName"></param>
-        /// <param name="command"></param>
-        /// <returns></returns>
-        public static bool TryGetCommand(string commandName, out IConsoleCommand command)
-        {
-            return _commands.TryGetValue(commandName, out command);
-        }
-
-        /// <summary>
-        /// 등록된 모든 콘솔 명령어를 반환합니다.
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<IConsoleCommand> GetAllCommands()
-        {
-            return _commands.Values;
-        }
-        
-        static SimpleCommand<int> setLogLevelCommand = new SimpleCommand<int>(
-            "setLogLevel",
-            "어떤 유니티 로그를 콘솔에 출력할 지 결정합니다. Usage: setLogLevel <0-4> (0: None, 1: Exception, 2: Error, 3: Warning, 4: Info)",
-            (level) =>
-            {
-                if (level < 0)
-                {
-                    Console.Print("Invalid log level. Minimum is 0 (None).");
-                    return;
-                }
-                if(level > (int)LogLevel.Info)
-                {
-                    level = (int)LogLevel.Info;
-                }
-                Console.SetLogLevel((LogLevel)level);
-                Console.Print($"Log level set to {(LogLevel)level}");
-            });
-        
-        
-        [RuntimeInitializeOnLoadMethod]
-        private static void Initialize()
-        {
-            /*
-             * 수동 등록
-             */
-            RegisterCommand(setLogLevelCommand);
-            
-            
-            /*
-             * ConsoleCommandAttribute 를 전부 찾아서 등록
-             */
-            var commandTypes = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in commandTypes)
-            {
-                foreach (var type in assembly.GetTypes())
-                {
-                    foreach (var method in type.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
-                    {
-                        var attrs = method.GetCustomAttributes(typeof(ConsoleCommandAttribute), false);
-                        if (attrs.Length > 0)
-                        {
-                            var attr = (ConsoleCommandAttribute)attrs[0];
-                            if (method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == typeof(string[]))
-                            {
-                                var command = new ReflectionConsoleCommand(attr.Command, attr.Description, method);
-                                RegisterCommand(command);
-                            }
-                            else
-                            {
-                                LogEx.LogWarning($"Method '{method.Name}' in '{type.Name}' has ConsoleCommandAttribute but does not match the required signature. It should have a single parameter of type string[].");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-    }
-
     /// <summary>
     /// 디버그 콘솔의 메인 클래스입니다.
-    /// 콘솔의 Model 역할을 합니다.
+    /// 콘솔의 Model과 Controller 역할을 합니다.
     /// </summary>
     public class Console
     {
@@ -239,6 +19,7 @@ namespace Cardevil.DebugConsole
         
         private IConsoleWindow _window;
         private LogLevel _logPrintLevel = LogLevel.Warning;
+        private bool _doPrintConsoleMessages = true;
         
         public LogLevel LogPrintLevel
         {
@@ -319,12 +100,46 @@ namespace Cardevil.DebugConsole
         /// <param name="type"></param>
         private void OnLogReceived(string condition, string stackTrace, LogType type)
         {
-            PrintInternal(type, condition);
+            if(_window == null) return;
+            if ((int)type > (int)_logPrintLevel) return;
+            _window.Print(type, condition);
         }
         
-        private void PrintInternal(LogType type, string message)
+        
+        /// <summary>
+        /// 입력된 명령어를 실행합니다.
+        /// 명령어가 실행되면 true, 명령어가 없거나 빈 입력이면 false를 반환합니다.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        public bool ExecuteCommand(string input)
         {
-            _window?.Print(type, message);
+    
+            if (_window == null) return false;
+            if (string.IsNullOrWhiteSpace(input)) return false;
+
+            var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var commandName = parts[0];
+            var args = parts.Length > 1 ? parts[1..] : Array.Empty<string>();
+
+            if (CommandLibrary.TryGetCommand(commandName, out var command))
+            {
+                try
+                {
+                    LogEx.Log($"Executing command: {commandName} with args: {string.Join(", ", args)}");
+                    command.Execute(args);
+                }
+                catch (Exception ex)
+                {
+                    Message(MessageType.Error, $"Error executing command '{commandName}': {ex.Message}");
+                }
+                return true;
+            }
+            else
+            {
+                Message(MessageType.Error, $"Unknown command: '{commandName}'. Type 'help' for a list of commands.");
+                return false;
+            }
         }
         
         public static void Print(string message)
@@ -335,6 +150,30 @@ namespace Cardevil.DebugConsole
         {
             Instance.PrintInternal(type, message);
         }
+        
+        public static void Message(string message)
+        {
+            Instance.MessageInternal(message);
+        }
+
+        public static void Message(MessageType type, string message)
+        {
+            Instance.MessageInternal(type, message);
+        }
+        
+        private void MessageInternal(string message)
+        {
+            _window?.Message(message);
+        }
+        private void MessageInternal(MessageType type, string message)
+        {
+            _window?.Message(type, message);
+        }
+        private void PrintInternal(LogType type, string message)
+        {
+            _window?.Print(type, message);
+        }
+        
         
         [Preserve, ConsoleCommand("echo", "Prints the input arguments back to the console.")]
         private static void EchoCommand(string[] args)
@@ -354,6 +193,12 @@ namespace Cardevil.DebugConsole
             }
         }
         
+        /// <summary>
+        /// 로그 출력 레벨을 설정합니다.
+        /// 수동 커맨드 등록 예제입니다.
+        /// <see cref="CommandLibrary.setLogLevelCommand"/> 에서 호출됩니다.
+        /// </summary>
+        /// <param name="level"></param>
         public static void SetLogLevel(LogLevel level)
         {
             Instance.LogPrintLevel = level;
