@@ -1,4 +1,5 @@
-﻿using Cardevil.Pools;
+﻿using Cardevil.DebugConsole;
+using Cardevil.Pools;
 using Cardevil.Utils;
 using Database;
 using System;
@@ -7,6 +8,9 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Scripting;
+using Console = Cardevil.DebugConsole.Console;
+using MessageType = Cardevil.DebugConsole.MessageType;
 
 namespace Cardevil.Item
 {
@@ -86,6 +90,20 @@ namespace Cardevil.Item
             foreach (var item in _instance._itemDictionary)
             {
                 LogEx.Log($"Item Name: {item.Key}, Item Type: {item.Value.Original.GetType().Name}");
+            }
+        }
+        [Preserve, ConsoleCommand("printItems", "Print all registered items in the ItemLibrary.")]
+        public static void PrintAllItemsConsole()
+        {
+            if (_instance == null)
+            {
+                Console.MessageError("ItemLibrary is not initialized.");
+                return;
+            }
+            
+            foreach (var item in _instance._itemDictionary)
+            {
+                Console.MessageDefault($"Item Name: {item.Key}, Item Type: {item.Value.Original.GetType().Name}");
             }
         }
         

@@ -387,7 +387,7 @@ namespace Cardevil.DebugConsole
             }
             else if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
             {
-                LogEx.Log($"Submitted: {CurrentInput}, {textField.value}");
+                // LogEx.Log($"Submitted: {CurrentInput}, {textField.value}");
                 OnSubmit(CurrentInput);
             }
         }

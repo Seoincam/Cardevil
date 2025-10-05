@@ -70,7 +70,7 @@ namespace Cardevil.DebugConsole.Commands
             }
             else
             {
-                LogEx.Log($"Registered command: {command.Command}");
+                LogEx.Log($"Registered command: {command.Command} ({command.GetType().Name})");
             }
             _commands[command.Command] = command;
         }
@@ -126,15 +126,24 @@ namespace Cardevil.DebugConsole.Commands
                         if (attrs.Length > 0)
                         {
                             var attr = (ConsoleCommandAttribute)attrs[0];
-                            if (method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == typeof(string[]))
+                            if(method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == typeof(string[]))
                             {
-                                var command = new ReflectionConsoleCommand(attr.Command, attr.Description, method);
-                                RegisterCommand(command);
+                                // RawReflectionCommand 생성
+                                var rawCommand = new RawReflectionCommand(attr.Command, attr.Description, method);
+                                RegisterCommand(rawCommand);
+                            }else{
+                                // ReflectionCommand 생성
+                                bool success = ReflectionCommand.Create(attr.Command, attr.Description, method, out var consoleCommand);
+                                if (success)
+                                {
+                                    RegisterCommand(consoleCommand);
+                                }
+                                else
+                                {
+                                    LogEx.LogWarning($"Failed to create console command for method \"{type.FullName}.{method.Name}\". \n Make sure the method is static and all parameter types are supported.");
+                                }
                             }
-                            else
-                            {
-                                LogEx.LogWarning($"Method '{method.Name}' in '{type.Name}' has ConsoleCommandAttribute but does not match the required signature. It should have a single parameter of type string[].");
-                            }
+                            
                         }
                     }
                 }

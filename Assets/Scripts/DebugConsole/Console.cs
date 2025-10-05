@@ -192,7 +192,7 @@ namespace Cardevil.DebugConsole
         }
 
         [Preserve, ConsoleCommand("help", "Lists all available commands.")]
-        private static void HelpCommand(string[] args)
+        private static void HelpCommand()
         {
             var commands = CommandLibrary.GetAllCommands();
             Instance.PrintInternal(LogType.Log, "Available Commands:");
@@ -200,6 +200,18 @@ namespace Cardevil.DebugConsole
             {
                 Instance.PrintInternal(LogType.Log, $"- {command.Command}: {command.Description}");
             }
+        }
+
+        [Preserve, ConsoleCommand("clear", "Clears the console window.")]
+        private static void ClearCommand()
+        {
+            Instance?._window?.ClearHistory();
+        }
+        
+        [Preserve, ConsoleCommand("testTypeCommand", "A test command that demonstrates type-specific argument parsing.")]
+        private static void TestTypeCommand(string strArg, int intArg, float floatArg, bool boolArg)
+        {
+            Instance.PrintInternal(LogType.Log, $"String: {strArg}, Int: {intArg}, Float: {floatArg}, Bool: {boolArg}");
         }
         
         /// <summary>
