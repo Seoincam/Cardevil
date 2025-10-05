@@ -320,6 +320,11 @@ namespace Cardevil.DebugConsole
             scroller.value = scroller.highValue > 0 ? scroller.highValue : 0;
         }
         
+        public void SetOpacity(float opacity)
+        {
+            root.style.opacity = Mathf.Clamp01(opacity);
+        }
+        
         /// <summary>
         /// 자동완성 요청시 호출됩니다.
         /// 이미 자동완성 제안이 있다면 다음 제안을 선택합니다.
@@ -512,6 +517,14 @@ namespace Cardevil.DebugConsole
         private static void ScrollToBottomCommand()
         {
             Instance.ScrollToBottom();
+        }
+
+        [Preserve, ConsoleCommand("setOpacity", "Sets the console opacity. Usage: setOpacity <value between 0 and 1>")]
+        private static void SetOpacityCommand(float opacity)
+        {
+            var clamped = Mathf.Clamp01(opacity);
+            Instance.SetOpacity(clamped);
+            Console.MessageInfo($"Console opacity set to {clamped}");
         }
     }
 }

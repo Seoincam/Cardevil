@@ -16,9 +16,20 @@ namespace Cardevil.DebugConsole
         private static Console _console;
         public static Console Instance => _console ??= new Console();
         
+        private IConsoleCommand _lastCommand;
+        private IConsoleCommand _currentCommand;
         
         private IConsoleWindow _window;
         private LogLevel _logPrintLevel = LogLevel.Warning;
+        
+        public IConsoleCommand LastCommand
+        {
+            get => _lastCommand;
+        }
+        public IConsoleCommand CurrentCommand
+        {
+            get => _currentCommand;
+        }
         
         public LogLevel LogPrintLevel
         {
@@ -124,6 +135,7 @@ namespace Cardevil.DebugConsole
 
             if (CommandLibrary.TryGetCommand(commandName, out var command))
             {
+                _currentCommand = command;
                 try
                 {
                     LogEx.Log($"Executing command: {commandName} with args: {string.Join(", ", args)}");
@@ -133,6 +145,7 @@ namespace Cardevil.DebugConsole
                 {
                     Message(MessageType.Error, $"Error executing command '{commandName}': {ex.Message}");
                 }
+                _lastCommand = _currentCommand;
                 return true;
             }
             else

@@ -1,10 +1,12 @@
 ﻿using Cardevil.Core;
 using Cardevil.DataStructure;
+using Cardevil.DebugConsole;
 using Cardevil.Events;
 using Cardevil.Save;
 using Cardevil.Utils;
 using System;
 using UnityEngine;
+using Console = Cardevil.DebugConsole.Console;
 
 namespace Cardevil.Ingame
 {
@@ -109,6 +111,16 @@ namespace Cardevil.Ingame
             return oldHp - _currentHP; // 실제로 감소한 체력 반환
         }
         
+        public void Heal(int amount)
+        {
+            if (amount < 0)
+            {
+                LogEx.LogWarning("Heal amount cannot be negative.");
+                return;
+            }
+            CurrentHp = Math.Min(CurrentHp + amount, MaxHp);
+        }
+        
         
         
         /// <summary>
@@ -166,6 +178,80 @@ namespace Cardevil.Ingame
         public void CopyTo(PlayerStatus other)
         {
             other.CopyFrom(this);
+        }
+
+        [ConsoleCommand("heal", "Heal the player by a specified amount. Usage: heal [amount]")]
+        private static void HealCommand(string[] args)
+        {
+            int amount;
+            if(args.Length == 0)
+            {
+                amount = 1;
+            }
+            else
+            {
+                if (!int.TryParse(args[0], out amount))
+                {
+                    DebugConsole.Console.MessageError("Invalid heal amount. Please provide a valid integer.");
+                    return;
+                }
+            }
+            if (amount < 0)
+            {
+                DebugConsole.Console.MessageWarning("Heal amount cannot be negative.");
+                return;
+            }
+            Managers.Game.PlayerStatus.Heal(amount);
+            DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+        }
+
+        [ConsoleCommand("deal", "Deal damage to the player by a specified amount. Usage: deal [amount]")]
+        private static void Deal(string[] args)
+        {
+            int amount;
+            if (args.Length == 0)
+            {
+                amount = 1;
+            }
+            else
+            {
+                if (!int.TryParse(args[0], out amount))
+                {
+                    DebugConsole.Console.MessageError("Invalid damage amount. Please provide a valid integer.");
+                    return;
+                }
+            }
+            if (amount < 0)
+            {
+                DebugConsole.Console.MessageWarning("Damage amount cannot be negative.");
+                return;
+            }
+            int actualDamage = Managers.Game.PlayerStatus.TakeDamage(amount);
+            DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+        }
+
+        [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다. Usage: sethp <int: amount> [bool: broadcast (optional, default: true)]")]
+        private static void SetHp(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                DebugConsole.Console.MessageError(Console.Instance.CurrentCommand.Description);
+                return;
+            }
+            
+            if(args.Length == 1)
+            {
+                int hp = CommandHelper.ParseArgument<int>(args[0]);
+                Managers.Game.PlayerStatus.ForceSetCurrentHp(hp, true);
+                DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+            }
+            else
+            {
+                int hp = CommandHelper.ParseArgument<int>(args[0]);
+                bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
+                Managers.Game.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
+                DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+            }
         }
     }
 }

@@ -39,7 +39,7 @@ namespace Cardevil.Test
 
         private void OnGUI()
         {
-            PlayerGUI();
+            // PlayerGUI();
             StageGUI();
         }
 

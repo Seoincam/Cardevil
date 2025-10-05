@@ -76,13 +76,13 @@ namespace Cardevil.DebugConsole.Commands
                 var targetType = _paramType[i];
                 var arg = args[i];
                 if (targetType == typeof(int))
-                    convertedArgs[i] = ParseArgument<int>(arg);
+                    convertedArgs[i] = this.ParseArgument<int>(arg);
                 else if (targetType == typeof(float))
-                    convertedArgs[i] = ParseArgument<float>(arg);
+                    convertedArgs[i] = this.ParseArgument<float>(arg);
                 else if (targetType == typeof(bool))
-                    convertedArgs[i] = ParseArgument<bool>(arg);
+                    convertedArgs[i] = this.ParseArgument<bool>(arg);
                 else if (targetType == typeof(string))
-                    convertedArgs[i] = ParseArgument<string>(arg);
+                    convertedArgs[i] = this.ParseArgument<string>(arg);
                 else if (targetType.IsEnum)
                 {
                     if (Enum.TryParse(targetType, arg, true, out object enumValue))
@@ -100,38 +100,7 @@ namespace Cardevil.DebugConsole.Commands
             return convertedArgs;
         }
         
-        private static T ParseArgument<T>(string arg)
-        {
-            if (typeof(T) == typeof(int))
-            {
-                if (int.TryParse(arg, out int result))
-                    return (T)(object)result;
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                if (float.TryParse(arg, out float result))
-                    return (T)(object)result;
-            }
-            else if (typeof(T) == typeof(bool))
-            {
-                if (bool.TryParse(arg, out bool result))
-                    return (T)(object)result;
-                if (arg == "1")
-                    return (T)(object)true;
-                if (arg == "0")
-                    return (T)(object)false;
-                if (arg.ToLower().Equals("t", StringComparison.OrdinalIgnoreCase))
-                    return (T)(object)true;
-                if (arg.ToLower().Equals("f", StringComparison.OrdinalIgnoreCase))
-                    return (T)(object)false;
-            }
-            else if (typeof(T) == typeof(string))
-            {
-                return (T)(object)arg;
-            }
-            
-            throw new ArgumentException($"Cannot parse argument '{arg}' to type {typeof(T)}");
-        }
+
         
     }
 }
