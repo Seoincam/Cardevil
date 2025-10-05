@@ -74,6 +74,18 @@ namespace Cardevil.DebugConsole.Commands
             }
             _commands[command.Command] = command;
         }
+        
+        public static void UnregisterCommand(string commandName)
+        {
+            if (_commands.Remove(commandName))
+            {
+                LogEx.Log($"Unregistered command: {commandName}");
+            }
+            else
+            {
+                LogEx.LogWarning($"Command '{commandName}' is not registered.");
+            }
+        }
 
         /// <summary>
         /// 콘솔 명령어를 이름으로 검색합니다.
