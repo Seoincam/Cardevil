@@ -13,5 +13,6 @@
         SoundEmitter,
         TileHighlight,
         Card,
+        CardVisual,
     }
 }

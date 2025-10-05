@@ -18,7 +18,7 @@ namespace Cardevil
         private UniTaskCompletionSource _rerollCmp = new();
         private bool _isPreviewing = false;
 
-        [SerializeField] CardVisualSetting visual;
+        [SerializeField] CardVisualSettingSO visual;
         [SerializeField] CardDeckVisual deck;
 
         [Header("Cards")]
@@ -175,8 +175,6 @@ namespace Cardevil
 
             for (int i = 0; i < hand.Count; i++)
             {
-                var card = hand[i];
-                card.SetHandBar(manager.HandBar);
                 manager.HandBar.MoveToHandBar(i);
                 await UniTask.Delay(TimeSpan.FromSeconds(end));
             }

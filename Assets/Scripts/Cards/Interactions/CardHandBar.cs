@@ -8,6 +8,7 @@ using TMPro;
 using System.Collections.Generic;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
+using Cardevil.Attributes;
 
 namespace Cardevil.Cards.Interactions
 {
@@ -17,11 +18,10 @@ namespace Cardevil.Cards.Interactions
         private StageCardsContext ctx;
 
         [Header("SO")]
-        [SerializeField] CardVisualSetting visualSetting;
+        [SerializeField] CardVisualSettingSO visualSetting;
 
         [Header("Card")]
-        [SerializeField] GameObject cardPrefab;
-        [SerializeField] Card _draggedCard;
+        [SerializeField, VisibleOnly] Card _draggedCard;
 
         [Header("Slots")]
         [SerializeField] GameObject cardSlotPrefab;
@@ -216,8 +216,8 @@ namespace Cardevil.Cards.Interactions
         public void MoveToHandBar(int index)
         {
             var card = ctx.GetHandCard(index);
-            card.SetHandBar(this);
             card.SetSlot(slots[index], isDragging: card == DraggedCard);
+            card.SetHandBar(this);
             AddListeners(card);
         }
 
@@ -291,13 +291,13 @@ namespace Cardevil.Cards.Interactions
 
         // Spawn
         // - - - - - - - - - - -
-        private Card Spawn(bool isReroll = false)
+        private Card Spawn()
         {
             var cardData = ctx.PopCard();
             if (cardData == null)
                 return null;
 
-            Card card = Instantiate(original: cardPrefab).GetComponent<Card>();
+            var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(ctx, handBar: this, cardData);
 
             // 이벤트 구독
