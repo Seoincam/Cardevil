@@ -20,10 +20,20 @@ namespace Cardevil.DebugConsole.Commands
         private static readonly SortedDictionary<string, IConsoleCommand> _commands = new SortedDictionary<string, IConsoleCommand>();
 
 
+        private static SimpleCommand ping; 
         private static SimpleCommand<int> setLogLevelCommand;
 
         static CommandLibrary()
         {
+            /*
+             * 기본 명령어 등록
+             * remark : 이곳에 등록된 명령어들은 수동으로 등록됩니다. Initialize() 메서드에 추가하세요.
+             */
+            ping = new SimpleCommand(
+                "ping",
+                "콘솔이 정상 작동하는지 확인합니다.",
+                () => Console.Print("Pong!")
+            );
             setLogLevelCommand = new SimpleCommand<int>(
                 "setLogLevel",
                 "어떤 유니티 로그를 콘솔에 출력할 지 결정합니다. Usage: setLogLevel <0-4> (0: None, 1: Exception, 2: Error, 3: Warning, 4: Info)",
@@ -31,7 +41,7 @@ namespace Cardevil.DebugConsole.Commands
                 {
                     if (level < 0)
                     {
-                        Console.Print("Invalid log level. Minimum is 0 (None).");
+                        Console.Message(MessageType.Error,"Invalid log level. Minimum is 0 (None).");
                         return;
                     }
                     if(level > (int)LogLevel.Info)
@@ -92,6 +102,7 @@ namespace Cardevil.DebugConsole.Commands
              * 수동 등록
              */
             RegisterCommand(setLogLevelCommand);
+            RegisterCommand(ping);
             
             
             /*
