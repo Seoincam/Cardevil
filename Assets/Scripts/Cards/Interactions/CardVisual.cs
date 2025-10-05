@@ -1,28 +1,22 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core;
+using Cardevil.Pools;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Cardevil.Cards.Interactions
 {
-    [RequireComponent(typeof(Canvas))]
-    
-    public class CardVisual : MonoBehaviour, IEvaluateVisual
+    [RequireComponent(typeof(Canvas), typeof(Poolable))]
+    public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable
     {
-        private Canvas canvas;
-        private bool isInitalized = false;
-
-        private Vector3 movementDelta;
-        private Vector3 rotationDelta;
-
         [Header("Card")]
-        public Card parentCard;
-        private bool isDiscarded = false;
-        private bool isDrawing = true;
-
+        [VisibleOnly] public Card parentCard;
+        
         [Header("SO")]
-        [SerializeField] CardVisualSetting visualSetting;
-        [SerializeField] CardSpriteManager spriteManger;
+        [SerializeField] CardVisualSettingSO visualSetting;
+        [SerializeField] CardVisualSpriteFactorySO spriteFactory;
 
         [Header("Card Visual")]
         [SerializeField] Transform shakeObject;
@@ -32,38 +26,57 @@ namespace Cardevil.Cards.Interactions
 
         [Header("Shadow Visual")]
         [SerializeField] Transform shadowTransform;
-        private Vector2 shadowOriginPosition;
 
-        [Header("Curve")]
-        [SerializeField] private CurveParameters curve;
+
+        private Poolable _poolable;
+        private Canvas canvas;
+
+        private Vector3 movementDelta;
+        private Vector3 rotationDelta;
         private float curveYOffset;
         private float curveRotationOffset;
+
+        private bool isInitalized;
+        private bool isDiscarded;
+        private bool isDrawing;
+
+        private Vector2 shadowOriginPosition;
+
 
         void Awake()
         {
             canvas = GetComponent<Canvas>();
             shadowOriginPosition = shadowTransform.localPosition;
+
+            _poolable = GetComponent<Poolable>();
+            _poolable.OnRelease += Clear;
+        }
+
+        public void Clear()
+        {
+            if (parentCard != null)
+            {
+                UnsubscribeFromParent(parentCard);
+                parentCard = null;
+            }
+
+            frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
+
+            canvas.overrideSorting = false;
+            isDiscarded = false;
+            isInitalized = false;
         }
 
         public void Init(Card parentCard)
         {
             this.parentCard = parentCard;
+            SubscribeToParent(parentCard);
+
             UpdateVisual();
-
-            // 이벤트 구독
-            parentCard.OnPointerDownEvent += PointerDown;
-            parentCard.OnPointerUpEvent += OnPointerUp;
-            parentCard.OnBeginDragEvent += OnBeginDrag;
-            parentCard.OnEndDragEvent += OnEndDrag;
-            parentCard.OnSelectValueStartEvent += OnSelectStarted;
-            parentCard.OnSelectValueEndEvent += OnSelectEnded;
-
-            parentCard.OnDraw += OnDraw;
-            parentCard.OnDiscard += OnDiscard;
-            parentCard.OnRerollDraw += OnRerollDraw;
-            parentCard.OnRerollDiscard += OnRerollDiscard;
-            parentCard.OnDestory += Destroy;
-
+            // Clear()에서 overrideSorting을 false로 설정해도
+            // 실제로 다시 pool에서 꺼낼 때 true가 됨
+            canvas.overrideSorting = false;
             transform.position = GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().Front.position;
 
             isInitalized = true;
@@ -71,7 +84,7 @@ namespace Cardevil.Cards.Interactions
 
         void Update()
         {
-            if (!isInitalized || parentCard == null)
+            if (!isInitalized || parentCard == null || isDiscarded)
                 return;
 
             FollowWithLerp();
@@ -80,10 +93,11 @@ namespace Cardevil.Cards.Interactions
             TiltCard();
         }
 
+
+        #region Update
+
         private void FollowWithLerp()
         {
-            if (isDiscarded)
-                return;
             if (parentCard.IsReroll)
                 return;
             if (isDrawing)
@@ -95,9 +109,6 @@ namespace Cardevil.Cards.Interactions
 
         private void FollowRotation()
         {
-            if (isDiscarded)
-                return;
-
             Vector3 movement = transform.position - parentCard.transform.position;
             movementDelta = Vector3.Lerp(movementDelta, movement, 20 * Time.deltaTime);
             Vector3 movementRotation = (parentCard.isDragging ? movementDelta : movement) * visualSetting.RotationAmount;
@@ -108,13 +119,11 @@ namespace Cardevil.Cards.Interactions
 
         private void CurvePosition()
         {
-            if (isDiscarded)
-                return;
             if (parentCard.IsReroll)
                 return;
-
-            curveYOffset = curve.positioning.Evaluate(parentCard.NormalizedPosition) * curve.positioningInfluence * (Managers.Card.StageCardsCtx.HandCount - 1);
-            curveRotationOffset = curve.rotation.Evaluate(parentCard.NormalizedPosition);
+            var c = visualSetting.Curve;
+            curveYOffset = c.positioning.Evaluate(parentCard.NormalizedPosition) * c.positioningInfluence * (Managers.Card.StageCardsCtx.HandCount - 1);
+            curveRotationOffset = c.rotation.Evaluate(parentCard.NormalizedPosition);
         }
 
         private void TiltCard()
@@ -122,11 +131,13 @@ namespace Cardevil.Cards.Interactions
             if (isDiscarded)
                 return;
 
-            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (curve.rotationInfluence * (Managers.Card.StageCardsCtx.HandCount - 1)));
+            var c = visualSetting.Curve;
+            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (c.rotationInfluence * (Managers.Card.StageCardsCtx.HandCount - 1)));
             float lerpZ = Mathf.LerpAngle(tiltZ, shakeObject.localEulerAngles.z, visualSetting.TiltSpeed / 2 * Time.deltaTime);
             shakeObject.localEulerAngles = new Vector3(0, 0, lerpZ);
         }
 
+        #endregion
 
 
         public void UpdateIndex()
@@ -134,7 +145,52 @@ namespace Cardevil.Cards.Interactions
             transform.SetSiblingIndex(parentCard.HandIndex);
         }
 
-        private void PointerDown(Card _)
+
+        #region Subscribe
+
+        private void SubscribeToParent(Card p)
+        {
+            if (p == null) return;
+
+            p.OnPointerDownEvent += OnPointerDown;
+            p.OnPointerUpEvent += OnPointerUp;
+            p.OnBeginDragEvent += OnBeginDrag;
+            p.OnEndDragEvent += OnEndDrag;
+            p.OnSelectValueStartEvent += OnSelectStarted;
+            p.OnSelectValueEndEvent += OnSelectEnded;
+
+            p.OnRerollDraw += OnRerollDraw;
+            p.OnRerollDiscard += OnRerollDiscard;
+            p.OnRerollEnd += OnRerollEnd;
+            p.OnDraw += OnDraw;
+            p.OnDiscard += OnDiscard;
+            p.OnDestory += Destroy;
+        }
+
+        private void UnsubscribeFromParent(Card p)
+        {
+            if (p == null) return;
+
+            p.OnPointerDownEvent -= OnPointerDown;
+            p.OnPointerUpEvent -= OnPointerUp;
+            p.OnBeginDragEvent -= OnBeginDrag;
+            p.OnEndDragEvent -= OnEndDrag;
+            p.OnSelectValueStartEvent -= OnSelectStarted;
+            p.OnSelectValueEndEvent -= OnSelectEnded;
+
+            p.OnRerollDraw -= OnRerollDraw;
+            p.OnRerollDiscard -= OnRerollDiscard;
+            p.OnRerollEnd -= OnRerollEnd;
+            p.OnDraw -= OnDraw;
+            p.OnDiscard -= OnDiscard;
+            p.OnDestory -= Destroy;
+        }
+
+        #endregion
+
+        #region Pointer Event
+
+        private void OnPointerDown(Card _)
         {
             transform.DOScale(endValue: visualSetting.SelectScale, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
@@ -160,35 +216,14 @@ namespace Cardevil.Cards.Interactions
             canvas.overrideSorting = false;
         }
 
+        #endregion
 
-        private void OnDraw()
-        {
-            GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
-            var tween = transform.DOMove(endValue: parentCard.transform.position, visualSetting.DrawDuration)
-                        .SetEase(visualSetting.RerollDrawEase);
-
-            var sequence = DOTween.Sequence();
-            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.DrawFlipDuration * .5f)
-                        .SetEase(visualSetting.FlipEase));
-            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.DrawFlipDuration * .5f)
-                        .SetEase(visualSetting.FlipEase));
-
-            tween.OnComplete(() => isDrawing = false);
-        }
-
-        private void OnDiscard()
-        {
-            isDiscarded = true;
-            canvas.overrideSorting = true;
-
-            var tween = transform.DOLocalMove(endValue: new Vector3(1050, 0, 0), visualSetting.DiscardDuration)
-                        .SetEase(visualSetting.DiscardEase);
-            tween.OnComplete(() => parentCard.Destroy());
-        }
-
+        #region Draw/Discard Event
 
         private void OnRerollDraw()
         {
+            canvas.overrideSorting = true;
+            
             GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                         .SetEase(visualSetting.RerollDrawEase);
@@ -222,12 +257,42 @@ namespace Cardevil.Cards.Interactions
             });
         }
 
+        private void OnRerollEnd()
+        {
+            canvas.overrideSorting = false;
+        }
 
+        private void OnDraw()
+        {
+            GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
+            var tween = transform.DOMove(endValue: parentCard.transform.position, visualSetting.DrawDuration)
+                        .SetEase(visualSetting.RerollDrawEase);
+
+            var sequence = DOTween.Sequence();
+            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.DrawFlipDuration * .5f)
+                        .SetEase(visualSetting.FlipEase));
+            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.DrawFlipDuration * .5f)
+                        .SetEase(visualSetting.FlipEase));
+
+            tween.OnComplete(() => isDrawing = false);
+        }
+
+        private void OnDiscard()
+        {
+            isDiscarded = true;
+            canvas.overrideSorting = true;
+
+            var tween = transform.DOLocalMove(endValue: new Vector3(1050, 0, 0), visualSetting.DiscardDuration)
+                        .SetEase(visualSetting.DiscardEase);
+            tween.OnComplete(() => parentCard.Destroy());
+        }
+
+        #endregion
 
         private void Destroy()
         {
             DOTween.Kill(transform);
-            Destroy(gameObject);
+            Managers.Resource.Destroy(gameObject);
         }
 
         private void OnSelectStarted(Card _)
@@ -243,30 +308,7 @@ namespace Cardevil.Cards.Interactions
 
         private void UpdateVisual()
         {
-            if (parentCard.data.valueType == CardData.ValueType.Move)
-            {
-                var move = parentCard.data.Move;
-                transform.name = move.DirectionValue.ToString();
-
-                frontImage.sprite = spriteManger.GetMoveBackground(move.DirectionValue, parentCard.data.selectType);
-            }
-
-            else if (parentCard.data.valueType == CardData.ValueType.Number)
-            {
-                var number = parentCard.data.Number;
-                transform.name = $"{number.ColorValue} {number.NumberValue}";
-
-                frontImage.sprite = spriteManger.GetNumberBackground(number.ColorValue);
-
-                // 일단 숫자 하나만 처리
-                numberImages[0].sprite = spriteManger.GetNumber(number.ColorValue, number.NumberValue, parentCard.data.selectType);
-                numberImages[0].gameObject.SetActive(true);
-                numberImages[1].gameObject.SetActive(false);
-                numberImages[2].gameObject.SetActive(false);
-            }
-
-            else
-                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
+            spriteFactory.UpdataVisual(parentCard.data, frontImage, numberImages[0]);
         }
 
         public void ExecuteEvaluationAction()

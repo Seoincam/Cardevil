@@ -12,5 +12,7 @@
         TestPoolable,
         SoundEmitter,
         TileHighlight,
+        Card,
+        CardVisual,
     }
 }

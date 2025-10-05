@@ -12,37 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ec11462675145a98c70c4eb8e3b279, type: 3}
   m_Name: CardVisualSetting
   m_EditorClassIdentifier: 
-  _isFastTestMode: 0
+  _isFastMode: 0
+  _fastModeMultiflier: 0.5
   _selectOffset: 50
-  _rerollDrawDiscardInterval: 1
-  _rerollDrawInterval: 0.15
-  _rerollDiscardInterval: 0.125
-  _rerollCountScale: 1.4
-  _rerollCountScaleDuration: 0.4
-  _rerollCountEase: 31
-  _endRerollInterval: 1
-  _endRerollUpdateSlotInterval: 0.05
+  _rDrawInterval: 0.15
+  _rDiscardInterval: 0.125
+  _rDrawDiscardInterval: 1
+  _rEndInterval: 1
+  _rEndUpdateSlotInterval: 0.05
+  _rCountScale: 1.4
+  _rCountScaleDuration: 0.4
+  _rCountEase: 31
+  _rFlipDuration: 0.3
+  _rFlipBackImageRatio: 0.8
+  _rDrawDuration: 0.8
+  _rDrawEase: 27
+  _rDiscardDuration: 0.7
+  _rDiscardEase: 26
+  _rEndMoveDuration: 0.5
+  _rEndMoveEase: 26
   _drawInterval: 0.225
   _discardInterval: 0.3
   _discardDrawInterval: 0.75
-  _reviveInterval: 0.4
   _endDragTweenDuration: 0.2
   _moveSpeedLimit: 4000
   _clickDetectThreshold: 0.2
-  _deck: {fileID: 0}
   _flipEase: 4
   _drawFlipDuration: 0.4
   _drawDuration: 0.5
   _drawEase: 17
   _discardDuration: 0.25
-  _discardPoint: {fileID: 0}
   _discardEase: 22
-  _rerollFlipDuration: 0.3
-  _rerollFlipBackImageRatio: 0.8
-  _rerollDrawDuration: 0.8
-  _rerollDrawEase: 27
-  _rerollDiscardDuration: 0.7
-  _rerollDiscardEase: 26
   _followSpeed: 9
   _rotationAmount: 0.2
   _rotationSpeed: 5
@@ -51,7 +51,8 @@ MonoBehaviour:
   _selectScaleTweenDuration: 0.15
   _selectScaleEase: 27
   _shadowOffset: 20
-  _curve: {fileID: 0}
+  _curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
   _deckInteractionScale: 1.125
   _deckInteractionDuration: 0.09
   _deckInteractionEase: 31
+  _reviveInterval: 0.4

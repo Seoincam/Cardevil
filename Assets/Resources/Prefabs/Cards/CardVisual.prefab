@@ -296,10 +296,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5989545209030238118}
   - component: {fileID: 2059842115371493516}
+  - component: {fileID: 4123142802437753040}
   - component: {fileID: 2752623643086630161}
   - component: {fileID: 2451222996254997911}
   m_Layer: 5
-  m_Name: Card Visual
+  m_Name: CardVisual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -340,7 +341,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentCard: {fileID: 0}
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
-  spriteManger: {fileID: 11400000, guid: 9b3a98705a1a145759601d30ac022742, type: 2}
+  spriteFactory: {fileID: 11400000, guid: 9b3a98705a1a145759601d30ac022742, type: 2}
   shakeObject: {fileID: 8032909874445604869}
   frontImage: {fileID: 850331243366006085}
   backImage: {fileID: 2095012618064697300}
@@ -350,6 +351,18 @@ MonoBehaviour:
   - {fileID: 1533622901236190433}
   shadowTransform: {fileID: 3781543390973892055}
   curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
+--- !u!114 &4123142802437753040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3734383039003881858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f039d13ee63469cadb7272bf453b238, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!223 &2752623643086630161
 Canvas:
   m_ObjectHideFlags: 0

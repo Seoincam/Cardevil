@@ -1,4 +1,6 @@
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core;
+using Cardevil.Pools;
 using Cardevil.Utils;
 using System;
 using UnityEngine;
@@ -6,17 +8,20 @@ using UnityEngine.EventSystems;
 
 namespace Cardevil.Cards.Interactions 
 {
-    public class Card : MonoBehaviour, IEvaluateVisual, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+    [RequireComponent(typeof(Poolable))]
+    public class Card : MonoBehaviour, IEvaluateVisual, IClearable,
+        IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
+        private Poolable _poolable;
+
         [Header("Card")]
         public CardData data;
         private bool isDiscarded = false;
         private StageCardsContext ctx;
 
-
         [Header("Visual")]
         [SerializeField] GameObject cardVisualPrefab;
-        [SerializeField] CardVisualSetting visualSetting;
+        [SerializeField] CardVisualSettingSO visualSetting;
         [SerializeField] CardVisual _cardVisual;
         private bool _isReroll;
 
@@ -38,10 +43,11 @@ namespace Cardevil.Cards.Interactions
         public Action<Card> OnSelectValueStartEvent;
         public Action<Card> OnSelectValueEndEvent;
 
-        public Action OnDraw;
-        public Action OnDiscard;
         public Action OnRerollDraw;
         public Action<Transform> OnRerollDiscard;
+        public Action OnRerollEnd;
+        public Action OnDraw;
+        public Action OnDiscard;
         public Action OnDestory;
 
 
@@ -49,10 +55,14 @@ namespace Cardevil.Cards.Interactions
 
         public CardVisual CardVisual
         {
-            get => _cardVisual ??= CreateCardVisual();
+            get
+            {
+                if (_cardVisual == null) _cardVisual = CreateCardVisual();
+                return _cardVisual;
+            }
         }
 
-        public bool IsReroll => _isReroll;
+        public bool IsReroll { get => _isReroll; set => _isReroll = value; }
 
         public int HandIndex => ctx.Hand.IndexOf(this);
 
@@ -80,6 +90,22 @@ namespace Cardevil.Cards.Interactions
         }
 
 
+        void Awake()
+        {
+            Clear();
+            _poolable = GetComponent<Poolable>();
+            _poolable.OnRelease += Clear;
+        }
+
+        public void Clear()
+        {
+            _isReroll = false;
+            isDragging = false;
+            isSelected = false;
+            isDiscarded = false;
+            _cardVisual = null;
+        }
+
         public void Init(CardData data, StageCardsContext ctx)
         {
             this.ctx = ctx;
@@ -101,6 +127,7 @@ namespace Cardevil.Cards.Interactions
         {
             this.handBar = handBar;
             _isReroll = false;
+            OnRerollEnd?.Invoke();
         }
 
 
@@ -137,7 +164,8 @@ namespace Cardevil.Cards.Interactions
         }
 
 
-
+        #region Point Event
+        
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!CanDrag)
@@ -234,8 +262,9 @@ namespace Cardevil.Cards.Interactions
             {
                 OnPointerUpEvent?.Invoke(this);
             }
-
         }
+
+        #endregion
 
 
 
@@ -260,12 +289,7 @@ namespace Cardevil.Cards.Interactions
         public void Destroy()
         {
             OnDestory?.Invoke();
-            Destroy(gameObject);
-        }
-
-        public void SetReroll(bool isReroll)
-        {
-            _isReroll = isReroll;
+            Managers.Resource.Destroy(gameObject);
         }
 
         public void ExecuteEvaluationAction()
@@ -277,10 +301,10 @@ namespace Cardevil.Cards.Interactions
         {
             var visualHandler = FindAnyObjectByType<CardVisualHandler>();
             if (visualHandler == null)
-                Debug.LogError("Visual Handler를 찾을 수 없음.");
+                LogEx.LogError("Visual Handler를 찾을 수 없음.");
 
-            _cardVisual = Instantiate(original: cardVisualPrefab, parent: visualHandler.transform).GetComponent<CardVisual>();
-            return _cardVisual;
+            var v = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform).GetComponent<CardVisual>();
+            return v;
         }
     }
 }
