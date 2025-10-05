@@ -23,6 +23,7 @@ namespace Cardevil.DebugConsole
         [SerializeField] private GameObject consolePanel;
         [SerializeField, VisibleOnly] private bool _isInitialized = false;
         [SerializeField] private bool _isOpen = false;
+        [SerializeField,Tooltip("자동 완성 기능 사용 여부")] private bool _useAutoComplete = false;
         
         
         [SerializeField] InputAction _toggleConsoleAction;
@@ -334,6 +335,8 @@ namespace Cardevil.DebugConsole
         /// <param name="input">새로 바뀐 텍스트</param>
         private void OnTextChanged(string input)
         {
+            if(!_useAutoComplete)
+                return;
             if (_wasAutoCompleteJustRequested)
             {
                 _wasAutoCompleteJustRequested = false;
@@ -374,6 +377,8 @@ namespace Cardevil.DebugConsole
             // LogEx.Log($"KeyDown: {evt.keyCode}");
             if (evt.keyCode == KeyCode.Tab)
             {
+                if(!_useAutoComplete)
+                    return;
                 evt.StopPropagation();
                 evt.StopImmediatePropagation();
                 FocusController focusController = textField.panel.focusController;
