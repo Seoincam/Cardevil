@@ -1,4 +1,5 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.ScreenHelper;
 using Cardevil.UIToolkit;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -75,9 +76,8 @@ namespace Cardevil.DebugConsole
             #if DO_NOT_USE_DEBUG_CONSOLE
             Destroy(this.gameObject);
             #else
-            
             /*
-             * 기초 설정ㄴ
+             * 기초 설정
              */
             if (_instance != null && _instance != this)
             {
@@ -132,9 +132,26 @@ namespace Cardevil.DebugConsole
             var eastManipulator = new ResizeManipulator(resizeEast, root, ResizeEdge.East);
             var southManipulator = new ResizeManipulator(resizeSouth, root, ResizeEdge.South);
             var southEastManipulator = new ResizeManipulator(resizeSouthEast, root, ResizeEdge.SouthEast);
-            eastManipulator.MinSize = southManipulator.MinSize = southEastManipulator.MinSize = minSize;
-            eastManipulator.MaxSize = southManipulator.MaxSize = southEastManipulator.MaxSize = maxSize;
+            
+            void SetResizeMinMaxSize(Vector2 min, Vector2 max)
+            {
+                eastManipulator.MinSize = southManipulator.MinSize = southEastManipulator.MinSize = min;
+                eastManipulator.MaxSize = southManipulator.MaxSize = southEastManipulator.MaxSize = max;
+            }
+            SetResizeMinMaxSize(minSize, maxSize);
             eastManipulator.ClampToParentBounds = southManipulator.ClampToParentBounds = southEastManipulator.ClampToParentBounds = true;
+            
+            var resolutionChangeWatcher = ResolutionWatcher.Instance;
+            if (resolutionChangeWatcher != null)
+            {
+                resolutionChangeWatcher.OnResolutionChanged += (newSize) =>
+                {
+                    SetResizeMinMaxSize(
+                        new Vector2(Mathf.Min(minSize.x, newSize.x), Mathf.Min(minSize.y, newSize.y)),
+                        new Vector2(Mathf.Min(maxSize.x, newSize.x), Mathf.Min(maxSize.y, newSize.y))
+                    );
+                };
+            }
             
             resizeEast.AddManipulator(eastManipulator);
             resizeSouth.AddManipulator(southManipulator);
