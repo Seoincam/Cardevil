@@ -163,6 +163,12 @@ namespace Cardevil.DebugConsole
         {
             Instance.MessageInternal(type, message);
         }
+        public static void MessageDefault(string message) => Instance?._window?.Message(message);
+        public static void MessageInfo(string message) => Instance?._window?.MessageInfo(message);
+        public static void MessageWarning(string message) => Instance?._window?.MessageWarning(message);
+        public static void MessageError(string message) => Instance?._window?.MessageError(message);
+        public static void MessageDebug(string message) => Instance?._window?.MessageDebug(message);
+        public static void MessageSuccess(string message) => Instance?._window?.MessageSuccess(message);
         
         private void MessageInternal(string message)
         {
@@ -170,7 +176,7 @@ namespace Cardevil.DebugConsole
         }
         private void MessageInternal(MessageType type, string message)
         {
-            _window?.Message(type, message);
+            _window?.Message(type, message); 
         }
         private void PrintInternal(LogType type, string message)
         {
