@@ -180,6 +180,8 @@ namespace Cardevil.DebugConsole
             trueRoot.style.display = DisplayStyle.Flex;
             textField.value = "";
 
+            ScrollToBottom();
+            
             UniTask.DelayFrame(1).ContinueWith(() =>
             {
                 if (!IsOpen) return;
@@ -245,6 +247,10 @@ namespace Cardevil.DebugConsole
             historyContainer.ScrollTo(label);
         }
 
+        /// <summary>
+        /// 히스토리를 모두 지웁니다.
+        /// 실제로 Label 오브젝트를 View에서 제거합니다.
+        /// </summary>
         public void ClearHistory()
         {
             if (!IsInitialized)
@@ -252,6 +258,15 @@ namespace Cardevil.DebugConsole
             historyContainer.Clear();
         }
         
+        /// <summary>
+        /// 스크롤을 맨 아래로 이동합니다.
+        /// </summary>
+        public void ScrollToBottom()
+        {
+            ScrollView scrollView = Instance.historyContainer;
+            Scroller scroller = scrollView.verticalScroller;
+            scroller.value = scroller.highValue > 0 ? scroller.highValue : 0;
+        }
         
         /// <summary>
         /// 자동완성 요청시 호출됩니다.
@@ -318,6 +333,10 @@ namespace Cardevil.DebugConsole
             Console.ExecuteCommand(input);
         }
         
+        /// <summary>
+        /// 입력이 제출되었을 때 호출됩니다.
+        /// </summary>
+        /// <param name="input"></param>
         private void OnSubmit(string input)
         {
             _cachedAutoCompleteInput = "";
@@ -326,9 +345,15 @@ namespace Cardevil.DebugConsole
             _autoCompleteIndex = 0;
             _suggestions.Clear();
             previewContainer.Clear();
-            textField.Focus();
+            
             Message(MessageType.Gray,$"> {input}");
             ExecuteCommand(input);
+            // 기다렸다가 스크롤을 맨 아래로 이동
+            historyContainer.schedule.Execute(() =>
+            {
+                ScrollToBottom();
+                textField.Focus();
+            }).ExecuteLater(1);
         }
         
         /// <inheritdoc cref="OnTextChanged(string)"/>
@@ -429,6 +454,12 @@ namespace Cardevil.DebugConsole
         private static void ClearCommand()
         {
             Instance.ClearHistory();
+        }
+
+        [Preserve, ConsoleCommand("bottom", "Scrolls the console to the bottom.")]
+        private static void ScrollToBottomCommand()
+        {
+            Instance.ScrollToBottom();
         }
     }
 }
