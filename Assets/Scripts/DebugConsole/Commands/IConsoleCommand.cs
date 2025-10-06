@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Cardevil.DebugConsole.Commands
 {
@@ -21,9 +22,9 @@ namespace Cardevil.DebugConsole.Commands
         /// &lt;&gt; 표시는 필수 인자를 의미합니다.
         /// [] 표시는 선택적 인자를 의미합니다.
         /// </summary>
-        string Signature => Command;
+        string Signature { get; }
         void Execute(string[] args);
         
-        void AutoComplete(string[] args, ref List<string> suggestions) { }
+        void AutoComplete(Span<string> args, ref List<string> suggestions) { }
     }
 }

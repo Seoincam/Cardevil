@@ -1,5 +1,6 @@
 ﻿using Cardevil.Utils;
 using System;
+using System.Collections.Generic;
 
 namespace Cardevil.DebugConsole.Commands
 {
@@ -17,6 +18,8 @@ namespace Cardevil.DebugConsole.Commands
         public string Signature { get => _signature; }
         private readonly System.Reflection.MethodInfo _method;
         private readonly Type[] _paramType;
+        private string[] _arg0AutoComplete;
+        public string[] Arg0AutoComplete => _arg0AutoComplete;
 
         private ReflectionCommand(string commandName, string description, System.Reflection.MethodInfo method)
         {
@@ -25,6 +28,45 @@ namespace Cardevil.DebugConsole.Commands
             _method = method;
             _paramType = Array.ConvertAll(_method.GetParameters(), p => p.ParameterType);
         }
+        
+        public void SetArg0AutoComplete(string[] suggestions)
+        {
+            _arg0AutoComplete = suggestions;
+        }
+
+        public void AutoComplete(Span<string> args, ref List<string> suggestions)
+        {
+            if (args.Length == 0)
+            {
+                // No arguments yet, suggest command name or first argument options
+                if (_arg0AutoComplete != null)
+                    suggestions.AddRange(_arg0AutoComplete);
+                return;
+            }
+
+            if (args.Length > _paramType.Length)
+                return; // No more parameters to suggest for
+            
+            int argIndex = args.Length - 1;
+            var currentArg = args[argIndex];
+            var targetType = _paramType[argIndex];
+            if (argIndex == 0)
+            {
+                // 첫 번째 인자라면, 미리 지정된 자동완성 옵션이 있다면 그것들 중에서
+                if (_arg0AutoComplete != null)
+                {
+                    foreach (var option in _arg0AutoComplete)
+                    {
+                        if (option.StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                            suggestions.Add(option);
+                    }
+                    return;
+                }
+            }
+            
+            // 기본 자동완성
+            CommandHelper.DefaultAutoComplete(targetType, args, ref suggestions);
+    }
 
         public void Execute(string[] args)
         {

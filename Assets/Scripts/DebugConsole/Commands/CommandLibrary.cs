@@ -19,9 +19,71 @@ namespace Cardevil.DebugConsole.Commands
         /// </summary>
         private static readonly SortedDictionary<string, IConsoleCommand> _commands = new SortedDictionary<string, IConsoleCommand>();
 
+        private class HelpCommand : IConsoleCommand
+        {
+            public string Command => "help";
+            public string Description => "등록된 모든 명령어를 출력합니다.";
+            public string Signature => "help [command]";
+
+            public void Execute(string[] args)
+            {
+                if(args.Length == 0)
+                {
+                    var commands = CommandLibrary.GetAllCommands();
+                    Console.MessageInfo("Available Commands:");
+                    foreach (var command in commands)
+                    {
+                        Console.MessageDefault($"- {command.Signature}: {command.Description}");
+                    }
+                    return;
+                }
+                else
+                {
+                    string commandName = args[0];
+                    if (CommandLibrary.TryGetCommand(commandName, out var command))
+                    {
+                        Console.MessageInfo( $"Command: {command.Signature}");
+                        Console.MessageDefault($"Description: {command.Description}");
+                    }
+                    else
+                    {
+                        Console.MessageError($"No help available for unknown command: '{commandName}'");
+                    }
+
+                    return;
+                }
+            }
+            
+            public void AutoComplete(Span<string> args, ref List<string> suggestions)
+            {
+                if (args.Length == 0)
+                {
+                    // 모든 명령어 제안
+                    foreach (var cmd in CommandLibrary.GetAllCommands())
+                    {
+                        suggestions.Add(cmd.Command);
+                    }
+                    return;
+                }
+                
+                int argIndex = args.Length - 1;
+                var currentArg = args[argIndex];
+                if (argIndex == 0)
+                {
+                    // 첫 번째 인자라면, 등록된 명령어들 중에서
+                    foreach (var cmd in CommandLibrary.GetAllCommands())
+                    {
+                        if (cmd.Command.StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                            suggestions.Add(cmd.Command);
+                    }
+                }
+                // 두 번째 인자부터는 자동완성 없음
+            }
+        }
 
         private static SimpleCommand ping; 
         private static SimpleCommand<int> setLogLevelCommand;
+        private static HelpCommand helpCommand = new HelpCommand();
 
         static CommandLibrary()
         {
@@ -131,6 +193,7 @@ namespace Cardevil.DebugConsole.Commands
              */
             RegisterCommand(setLogLevelCommand);
             RegisterCommand(ping);
+            RegisterCommand(helpCommand);
             
             
             /*
@@ -151,12 +214,16 @@ namespace Cardevil.DebugConsole.Commands
                             {
                                 // RawReflectionCommand 생성
                                 var rawCommand = new RawReflectionCommand(attr.Command, attr.Description, method, attr.Signature);
+                                if(attr.Arg0AutoComplete != null)
+                                    rawCommand.SetArg0AutoComplete(attr.Arg0AutoComplete);
                                 RegisterCommand(rawCommand);
                             }else{
                                 // ReflectionCommand 생성
-                                bool success = ReflectionCommand.Create(attr.Command, attr.Description, method, attr.Signature, out var consoleCommand);
+                                bool success = ReflectionCommand.Create(attr.Command, attr.Description, method, attr.Signature, out ReflectionCommand consoleCommand);
                                 if (success)
                                 {
+                                    if(attr.Arg0AutoComplete != null)
+                                        consoleCommand.SetArg0AutoComplete(attr.Arg0AutoComplete);
                                     RegisterCommand(consoleCommand);
                                 }
                                 else

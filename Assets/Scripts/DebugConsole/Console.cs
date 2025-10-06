@@ -205,16 +205,36 @@ namespace Cardevil.DebugConsole
             Instance.PrintInternal(LogType.Log, message);
         }
 
-        [Preserve, ConsoleCommand("help", "Lists all available commands.")]
-        private static void HelpCommand()
-        {
-            var commands = CommandLibrary.GetAllCommands();
-            Instance.PrintInternal(LogType.Log, "Available Commands:");
-            foreach (var command in commands)
-            {
-                Instance.PrintInternal(LogType.Log, $"- {command.Signature}: {command.Description}");
-            }
-        }
+        // [Preserve, ConsoleCommand("help", "Lists all available commands.", "help [commandName]", new string[] {"echo", "clear", "help"})]
+        // private static void HelpCommand(string[] args)
+        // {
+        //     if(args.Length == 0)
+        //     {
+        //         var commands = CommandLibrary.GetAllCommands();
+        //         Instance.PrintInternal(LogType.Log, "Available Commands:");
+        //         foreach (var command in commands)
+        //         {
+        //             Instance.PrintInternal(LogType.Log, $"- {command.Signature}: {command.Description}");
+        //         }
+        //
+        //         return;
+        //     }
+        //     else
+        //     {
+        //         string commandName = args[0];
+        //         if (CommandLibrary.TryGetCommand(commandName, out var command))
+        //         {
+        //             Instance.PrintInternal(LogType.Log, $"Command: {command.Signature}");
+        //             Instance.PrintInternal(LogType.Log, $"Description: {command.Description}");
+        //         }
+        //         else
+        //         {
+        //             Instance.PrintInternal(LogType.Warning, $"No help available for unknown command: '{commandName}'");
+        //         }
+        //
+        //         return;
+        //     }
+        // }
         
         [Preserve, ConsoleCommand("testTypeCommand", "A test command that demonstrates type-specific argument parsing.")]
         private static void TestTypeCommand(string strArg, int intArg, float floatArg, bool boolArg)
