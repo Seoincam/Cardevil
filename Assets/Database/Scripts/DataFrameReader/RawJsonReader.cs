@@ -59,7 +59,7 @@ namespace Database.DataReader
                 string varName = jVar.Key;
                 if(string.IsNullOrWhiteSpace(varName))
                     continue;
-                Debug.Log(jVar.Key);
+                // Debug.Log(jVar.Key);
                 nameIdx[varName] = idx++;
                 varNames.Add(varName);
                 types.Add(jVar.Value.ToString());

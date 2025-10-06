@@ -1,4 +1,5 @@
 using Cardevil.Cards.Evaluations;
+using Cardevil.DebugConsole;
 using Cardevil.Ingame.Field;
 using Cardevil.Systems;
 using Cardevil.Utils;
@@ -6,6 +7,8 @@ using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using UnityEngine.Scripting;
+using Console = Cardevil.DebugConsole.Console;
 
 namespace Cardevil.Ingame.Entities
 {
@@ -158,5 +161,21 @@ namespace Cardevil.Ingame.Entities
 
         #endregion
 
+
+
+        [Preserve, ConsoleCommand("togglePlayerDebug", "Toggle player debug mode")]
+        private static void TogglePlayerDebug()
+        {
+            var player = FindFirstObjectByType<PlayerCharacter>();
+            if (player != null)
+            {
+                player._isDebugMode = !player._isDebugMode;
+                Console.MessageInfo($"Player debug mode: {(player._isDebugMode ? "ON" : "OFF")}");
+            }
+            else
+            {
+                Console.MessageError("No PlayerCharacter found in the scene.");
+            }
+        }
     }
 }
