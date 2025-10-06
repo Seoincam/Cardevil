@@ -488,7 +488,8 @@ namespace Cardevil.DebugConsole
             {
                 ScrollToBottom();
                 textField.Focus();
-            }).ExecuteLater(1);
+            }).ExecuteLater(5);
+            _currentRecallIndex = -1;
         }
         
         /// <inheritdoc cref="OnTextChanged(string)"/>
@@ -570,6 +571,7 @@ namespace Cardevil.DebugConsole
                 evt.StopImmediatePropagation();
                 FocusController focusController = textField.panel.focusController;
                 focusController.IgnoreEvent(evt);
+                
                 RecallNext();
             }
         }
