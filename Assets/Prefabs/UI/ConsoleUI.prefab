@@ -48,7 +48,7 @@ MonoBehaviour:
   consolePanel: {fileID: 5747942972999059705}
   _isInitialized: 0
   _isOpen: 0
-  _useAutoComplete: 0
+  _useAutoComplete: 1
   _toggleConsoleAction:
     m_Name: Toggle Console
     m_Type: 0
