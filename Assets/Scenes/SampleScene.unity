@@ -2325,6 +2325,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DebugCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2956000624900588279, guid: 5f36c31d7b7e58a49920a6203c0176e1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3668823882288355070, guid: 5f36c31d7b7e58a49920a6203c0176e1, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2630,8 +2634,8 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2613411705685657411, guid: 93d3f4657318363438a75c0a2852265f, type: 3}
-      propertyPath: _toggleConsoleAction.m_Name
-      value: Toggle Console
+      propertyPath: _autoCompleteConsoleAction.m_Name
+      value: Auto Complete Console
       objectReference: {fileID: 0}
     - target: {fileID: 5160266128926049352, guid: 93d3f4657318363438a75c0a2852265f, type: 3}
       propertyPath: m_LocalPosition.x

@@ -23,12 +23,15 @@ namespace Cardevil.DebugConsole
         /*
          * 기본 변수
          */
+        [Header("기본 설정")]
         [SerializeField] private GameObject consolePanel;
         [SerializeField, VisibleOnly] private bool _isInitialized = false;
         [SerializeField] private bool _isOpen = false;
         [SerializeField,Tooltip("자동 완성 기능 사용 여부")] private bool _useAutoComplete = false;
+        [Header("단축키 설정")]
         [SerializeField] InputAction _toggleConsoleAction;
-
+        // [SerializeField] InputAction _autoCompleteConsoleAction;
+        [Header("크기 제한")]
         [SerializeField] private Vector2 minSize = new Vector2(360, 200);
         [SerializeField] private Vector2 maxSize = new Vector2(1920, 1200);
         public bool IsInitialized => _isInitialized;
