@@ -45,7 +45,7 @@ namespace Cardevil.DebugConsole
         private VisualElement root = null;
         TextField textField = null;
         
-        VisualElement previewContainer = null;
+        ScrollView previewContainer = null;
         ScrollView historyContainer = null;
         
         /*
@@ -57,16 +57,15 @@ namespace Cardevil.DebugConsole
         /*
          * 자동완성 관련
          */
-        private string _cachedAutoCompleteInput = "";
-        private bool _isAutoCompleteRequested = false;
+        [Header("자동완성 관련")]
+        private AutoCompleter _autoCompleter = new AutoCompleter();
         /// <summary>
         /// 해당 텍스트 변경이 자동완성 요청에 의한 것인지 여부.
         /// </summary>
         private bool _wasAutoCompleteJustRequested = false;
-        private int _autoCompleteIndex = 0;
-        private List<string> _suggestions = new List<string>();
-
-
+        private List<string> _submittedCommands = new List<string>();
+        private int _currentRecallIndex = -1;
+        public IReadOnlyList<string> SubmittedCommands => _submittedCommands.AsReadOnly();
         
         private void Reset()
         {
@@ -121,7 +120,7 @@ namespace Cardevil.DebugConsole
             
             
             textField = trueRoot.Q<TextField>("InputField");
-            previewContainer = trueRoot.Q<VisualElement>("PreviewContainer");
+            previewContainer = trueRoot.Q<ScrollView>("PreviewContainer");
             historyContainer = trueRoot.Q<ScrollView>("HistoryContainer");
             historyContainer.AddToClassList("history");
             
@@ -236,11 +235,12 @@ namespace Cardevil.DebugConsole
             textField.value = "";
 
             ScrollToBottom();
-            
-            UniTask.DelayFrame(1).ContinueWith(() =>
+
+            textField.schedule.Execute(() =>
             {
                 if (!IsOpen) return;
                 textField.Focus();
+                OnTextChanged(textField.value);
             });
         }
 
@@ -267,6 +267,21 @@ namespace Cardevil.DebugConsole
             label.AddToClassList("log-line");
             label.AddToClassList("message");
             label.AddToClassList(type.UssTag);
+            historyContainer.Add(label);
+            historyContainer.ScrollTo(label);
+        }
+        
+        private void Message(MessageType type, string message, params string[] additionalClasses)
+        {
+            var label = new Label(message);
+            label.AddToClassList("log-line");
+            label.AddToClassList("message");
+            label.AddToClassList(type.UssTag);
+            foreach (var cls in additionalClasses)
+            {
+                label.AddToClassList(cls);
+            }
+            
             historyContainer.Add(label);
             historyContainer.ScrollTo(label);
         }
@@ -335,53 +350,33 @@ namespace Cardevil.DebugConsole
         /// <param name="input"></param>
         public void RequestAutoComplete(string input)
         {
-            if (_isAutoCompleteRequested)
+            if(!_useAutoComplete)
+                return;
+            if (_autoCompleter.SuggestionCount == 0)
             {
-                // 기존 제안이 있는 경우
-                if (_suggestions.Count == 0) return;
-                _autoCompleteIndex = (_autoCompleteIndex + 1) % _suggestions.Count;
-                _wasAutoCompleteJustRequested = true;
-                var previewLabels = previewContainer.Query<Label>().ToList();
-                for (int i = 0; i < previewLabels.Count; i++)
+                _autoCompleter.TextInputChanged(input);
+                if (_autoCompleter.SuggestionCount == 0)
                 {
-                    if (i == _autoCompleteIndex)
-                    {
-                        previewLabels[i].AddToClassList("selected");
-                    }
-                    else
-                    {
-                        previewLabels[i].RemoveFromClassList("selected");
-                    }
+                    // 제안 없음
+                    previewContainer.Clear();
+                    return;
                 }
-                SetInputField(_suggestions[_autoCompleteIndex]);
-                textField.Focus();
+            }
+            string suggestion = _autoCompleter.GetNextSuggestion();
+            if (suggestion != null)
+            {
+                _wasAutoCompleteJustRequested = true;
+                SetInputField(suggestion);
+                UpdatePreviewContainer();
             }
             else
             {
-                // 새로운 자동완성 요청
-                _isAutoCompleteRequested = true;
-                _autoCompleteIndex = 0;
-                _suggestions.Clear();
-                var args = input.Split(' ');
-                Console.GetAutoCompleteSuggestions(args, ref _suggestions);
+                previewContainer.Clear();
             }
+            textField.cursorIndex = textField.value.Length;
+            textField.selectIndex = textField.value.Length;
         }
 
-        /// <summary>
-        /// 자동완성 제안을 갱신합니다.
-        /// </summary>
-        public void RefreshAutoCompleteSuggestions()
-        {
-            previewContainer.Clear();
-            if (_suggestions.Count == 0) return;
-            Console.GetAutoCompleteSuggestions(_cachedAutoCompleteInput.Split(' '), ref _suggestions);
-            foreach (var suggestion in _suggestions)
-            {
-                var label = new Label(suggestion);
-                label.AddToClassList("suggestion");
-                previewContainer.Add(label);
-            }
-        }
         
         public void SetInputField(string input)
         {
@@ -392,6 +387,85 @@ namespace Cardevil.DebugConsole
         {
             Console.ExecuteCommand(input);
         }
+
+        private void UpdatePreviewContainer()
+        {
+            previewContainer.Clear();
+            if (_autoCompleter.SuggestionCount == 0)
+                return;
+
+            // previewContainer가 ScrollView일 수도 있으므로 캐스팅
+
+            var suggestions = _autoCompleter.GetAllSuggestions();
+            Label selectedLabel = null;
+
+            foreach (var suggestion in suggestions)
+            {
+                var label = new Label(suggestion);
+                label.AddToClassList("suggest"); 
+                if (suggestion == _autoCompleter.GetCurrentSuggestion())
+                {
+                    label.AddToClassList("selected");
+                    selectedLabel = label;
+                }
+                // 클릭 시 바로 선택/실행하도록 이벤트 등록
+                label.RegisterCallback<ClickEvent>(_ => _autoCompleter.SetCurrentSuggestion(suggestion));
+                previewContainer.Add(label);
+            }
+            
+            if (previewContainer != null && selectedLabel != null)
+            {
+                previewContainer.schedule.Execute(() =>
+                {
+                    previewContainer.ScrollTo(selectedLabel);
+                });
+            }
+        }
+
+        
+        private void Recall(int targetIndex)
+        {
+            if (targetIndex < 0 || targetIndex >= _submittedCommands.Count)
+                return;
+            _currentRecallIndex = targetIndex;
+            SetInputField(_submittedCommands[_currentRecallIndex]);
+            textField.cursorIndex = textField.value.Length;
+            textField.selectIndex = textField.value.Length;
+        }
+        
+        public void RecallPrevious()
+        {
+            if (_submittedCommands.Count == 0)
+                return;
+            if (_currentRecallIndex == -1)
+            {
+                _currentRecallIndex = _submittedCommands.Count - 1;
+            }
+            else
+            {
+                _currentRecallIndex--;
+                if (_currentRecallIndex < 0)
+                    _currentRecallIndex = 0;
+            }
+            Recall(_currentRecallIndex);
+        }
+        
+        public void RecallNext()
+        {
+            if (_submittedCommands.Count == 0)
+                return;
+            if (_currentRecallIndex == -1)
+            {
+                _currentRecallIndex = 0;
+            }
+            else
+            {
+                _currentRecallIndex++;
+                if (_currentRecallIndex >= _submittedCommands.Count)
+                    _currentRecallIndex = _submittedCommands.Count - 1;
+            }
+            Recall(_currentRecallIndex);
+        }
         
         /// <summary>
         /// 입력이 제출되었을 때 호출됩니다.
@@ -399,15 +473,16 @@ namespace Cardevil.DebugConsole
         /// <param name="input"></param>
         private void OnSubmit(string input)
         {
-            _cachedAutoCompleteInput = "";
+            if (string.IsNullOrWhiteSpace(input))
+                return;
             textField.value = "";
-            _isAutoCompleteRequested = false;
-            _autoCompleteIndex = 0;
-            _suggestions.Clear();
+            _autoCompleter.Clear();
+            _wasAutoCompleteJustRequested = false;
             previewContainer.Clear();
             
             Message(MessageType.Gray,$"> {input}");
             ExecuteCommand(input);
+            _submittedCommands.Add(input);
             // 기다렸다가 스크롤을 맨 아래로 이동
             historyContainer.schedule.Execute(() =>
             {
@@ -428,6 +503,7 @@ namespace Cardevil.DebugConsole
         /// <param name="input">새로 바뀐 텍스트</param>
         private void OnTextChanged(string input)
         {
+            // LogEx.Log($"TextChanged: {input}");
             if(!_useAutoComplete)
                 return;
             if (_wasAutoCompleteJustRequested)
@@ -436,16 +512,13 @@ namespace Cardevil.DebugConsole
                 // 자동완성 요청에 의한 텍스트 변경이므로 무시
                 return;
             }
-            _cachedAutoCompleteInput = input;
-            if(string.IsNullOrWhiteSpace(input))
-            {
-                _isAutoCompleteRequested = false;
-                _autoCompleteIndex = 0;
-                _suggestions.Clear();
-                previewContainer.Clear();
-                return;
-            }
-            RefreshAutoCompleteSuggestions();
+            _autoCompleter.TextInputChanged(input);
+            // if(string.IsNullOrWhiteSpace(input))
+            // {
+            //     previewContainer.Clear();
+            //     return;
+            // }
+            UpdatePreviewContainer();
         }
         
         /// <inheritdoc cref="OnTextFieldUnfocused()"/>
@@ -461,8 +534,8 @@ namespace Cardevil.DebugConsole
         private void OnTextFieldUnfocused()
         {
             previewContainer.Clear();
-            _isAutoCompleteRequested = false;
-            _autoCompleteIndex = 0;
+            _autoCompleter.Clear();
+            previewContainer.Clear();
         }
         
         private void OnTextFieldKeyDown(KeyDownEvent evt)
@@ -482,6 +555,22 @@ namespace Cardevil.DebugConsole
             {
                 // LogEx.Log($"Submitted: {CurrentInput}, {textField.value}");
                 OnSubmit(CurrentInput);
+            }
+            else if (evt.keyCode == KeyCode.UpArrow)
+            {
+                evt.StopPropagation();
+                evt.StopImmediatePropagation();
+                FocusController focusController = textField.panel.focusController;
+                focusController.IgnoreEvent(evt);
+                RecallPrevious();
+            }
+            else if (evt.keyCode == KeyCode.DownArrow)
+            {
+                evt.StopPropagation();
+                evt.StopImmediatePropagation();
+                FocusController focusController = textField.panel.focusController;
+                focusController.IgnoreEvent(evt);
+                RecallNext();
             }
         }
         
