@@ -84,6 +84,7 @@ namespace Cardevil.DebugConsole.Commands
         private static SimpleCommand ping; 
         private static SimpleCommand<int> setLogLevelCommand;
         private static HelpCommand helpCommand = new HelpCommand();
+        private static RawCommand help2Command;
 
         static CommandLibrary()
         {
@@ -113,6 +114,60 @@ namespace Cardevil.DebugConsole.Commands
                     }
                     Console.SetLogLevel((LogLevel)level);
                     Console.Print($"Log level set to {(LogLevel)level}");
+            });
+            
+            help2Command = new RawCommand("help2", "등록된 모든 명령어를 출력합니다. (RawCommand 버전)", "help2 [command]",
+                action:(args) =>
+            {
+                if(args.Length == 0)
+                {
+                    var commands = CommandLibrary.GetAllCommands();
+                    Console.MessageInfo("Available Commands:");
+                    foreach (var command in commands)
+                    {
+                        Console.MessageDefault($"- {command.Signature}: {command.Description}");
+                    }
+                    return;
+                }
+                else
+                {
+                    string commandName = args[0];
+                    if (CommandLibrary.TryGetCommand(commandName, out var command))
+                    {
+                        Console.MessageInfo( $"Command: {command.Signature}");
+                        Console.MessageDefault($"Description: {command.Description}");
+                    }
+                    else
+                    {
+                        Console.MessageError($"No help available for unknown command: '{commandName}'");
+                    }
+
+                    return;
+                }
+            },  autoCompleteAction:(args, suggestions) =>
+            {
+                if (args.Length == 0)
+                {
+                    // 모든 명령어 제안
+                    foreach (var cmd in CommandLibrary.GetAllCommands())
+                    {
+                        suggestions.Add(cmd.Command);
+                    }
+                    return;
+                }
+                
+                int argIndex = args.Length - 1;
+                var currentArg = args[argIndex];
+                if (argIndex == 0)
+                {
+                    // 첫 번째 인자라면, 등록된 명령어들 중에서
+                    foreach (var cmd in CommandLibrary.GetAllCommands())
+                    {
+                        if (cmd.Command.StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                            suggestions.Add(cmd.Command);
+                    }
+                }
+                // 두 번째 인자부터는 자동완성 없음
             });
 #endif
         }
@@ -194,6 +249,7 @@ namespace Cardevil.DebugConsole.Commands
             RegisterCommand(setLogLevelCommand);
             RegisterCommand(ping);
             RegisterCommand(helpCommand);
+            RegisterCommand(help2Command);
             
             
             /*
