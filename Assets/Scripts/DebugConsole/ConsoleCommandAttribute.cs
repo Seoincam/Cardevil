@@ -15,11 +15,14 @@ namespace Cardevil.DebugConsole
         
         public string Signature { get;}
 
-        public ConsoleCommandAttribute(string command, string description = "", string signature = null)
+        public string[] Arg0AutoComplete { get; }
+
+        public ConsoleCommandAttribute(string command, string description = "", string signature = null, string[] arg0AutoComplete = null)
         {
             Command = command;
             Description = description;
             Signature = signature;
+            Arg0AutoComplete = arg0AutoComplete;
         }
     }
 }

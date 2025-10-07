@@ -5,6 +5,47 @@ namespace Cardevil.DebugConsole
 {
     public static class CommandHelper
     {
+        public static void DefaultAutoComplete(Type type, Span<string> args, ref System.Collections.Generic.List<string> suggestions)
+        {
+            string currentArg = args.Length > 0 ? args[args.Length - 1] : "";
+            
+            if (type == typeof(bool))
+            {
+                if ("true".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("true");
+                if ("false".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("false");
+            }else if (type.IsEnum)
+            {
+                foreach (var name in Enum.GetNames(type))
+                {
+                    if (name.StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                        suggestions.Add(name);
+                }
+            }else if (type == typeof(int))
+            {
+                if ("0".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("0");
+                if ("1".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("1");
+                if ("-1".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("-1");
+            }else if (type == typeof(float))
+            {
+                // 0.0, 0.5, 1.0
+                if ("0.0".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("0.0");
+                if ("0.5".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("0.5");
+                if ("1.0".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("1.0");
+            }else if (type == typeof(string))
+            {
+                if("string".StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
+                    suggestions.Add("string");
+            }
+        }
+        
         public static T ParseArgument<T>(this IConsoleCommand consoleCommand, string arg)
         {
             try

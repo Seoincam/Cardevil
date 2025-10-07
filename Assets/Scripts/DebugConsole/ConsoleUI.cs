@@ -28,6 +28,8 @@ namespace Cardevil.DebugConsole
         [SerializeField, VisibleOnly] private bool _isInitialized = false;
         [SerializeField] private bool _isOpen = false;
         [SerializeField,Tooltip("자동 완성 기능 사용 여부")] private bool _useAutoComplete = false;
+        [SerializeField] private bool autoScrollToBottomOnNewMessage = true;
+        [SerializeField] private bool autoScrollToBottomOnNewPrint = true;
         [Header("단축키 설정")]
         [SerializeField] InputAction _toggleConsoleAction;
         // [SerializeField] InputAction _autoCompleteConsoleAction;
@@ -52,6 +54,7 @@ namespace Cardevil.DebugConsole
          * 상태
          */
         
+        private bool _shouldScrollToBottom = false;
         public string CurrentInput => textField.value.TrimEnd();
         
         /*
@@ -123,6 +126,8 @@ namespace Cardevil.DebugConsole
             previewContainer = trueRoot.Q<ScrollView>("PreviewContainer");
             historyContainer = trueRoot.Q<ScrollView>("HistoryContainer");
             historyContainer.AddToClassList("history");
+            
+            textField.value = "";
             
             /*
              * Manipulator 설정
@@ -199,6 +204,15 @@ namespace Cardevil.DebugConsole
             UnregisterHandlers();
         }
 
+        private void LateUpdate()
+        {
+            if (_shouldScrollToBottom)
+            {
+                _shouldScrollToBottom = false;
+                ScrollToBottom();
+            }
+        }
+
 
         private void OnDestroy()
         {
@@ -232,15 +246,15 @@ namespace Cardevil.DebugConsole
         {
             _isOpen = true;
             trueRoot.style.display = DisplayStyle.Flex;
-            textField.value = "";
-
+            
             ScrollToBottom();
 
             textField.schedule.Execute(() =>
             {
                 if (!IsOpen) return;
                 textField.Focus();
-                OnTextChanged(textField.value);
+                OnTextChanged(CurrentInput);
+                // UpdatePreviewContainer();
             });
         }
 
@@ -269,6 +283,10 @@ namespace Cardevil.DebugConsole
             label.AddToClassList(type.UssTag);
             historyContainer.Add(label);
             historyContainer.ScrollTo(label);
+            if (autoScrollToBottomOnNewMessage)
+            {
+                _shouldScrollToBottom = true;
+            }
         }
         
         private void Message(MessageType type, string message, params string[] additionalClasses)
@@ -284,6 +302,10 @@ namespace Cardevil.DebugConsole
             
             historyContainer.Add(label);
             historyContainer.ScrollTo(label);
+            if (autoScrollToBottomOnNewMessage)
+            {
+                _shouldScrollToBottom = true;
+            }
         }
 
         public void Print(string message)
@@ -315,6 +337,10 @@ namespace Cardevil.DebugConsole
             
             historyContainer.Add(label);
             historyContainer.ScrollTo(label);
+            if (autoScrollToBottomOnNewPrint)
+            {
+                _shouldScrollToBottom = true;
+            }
         }
 
         /// <summary>
@@ -362,7 +388,7 @@ namespace Cardevil.DebugConsole
                     return;
                 }
             }
-            string suggestion = _autoCompleter.GetNextSuggestion();
+            string suggestion = _autoCompleter.GetNextFullSuggestion();
             if (suggestion != null)
             {
                 _wasAutoCompleteJustRequested = true;
@@ -409,7 +435,20 @@ namespace Cardevil.DebugConsole
                     selectedLabel = label;
                 }
                 // 클릭 시 바로 선택/실행하도록 이벤트 등록
-                label.RegisterCallback<ClickEvent>(_ => _autoCompleter.SetCurrentSuggestion(suggestion));
+                label.RegisterCallback<ClickEvent>(_ =>
+                {
+                    LogEx.Log($"Clicked suggestion: {suggestion}");
+                    _autoCompleter.SetCurrentSuggestion(suggestion);
+                    _wasAutoCompleteJustRequested = true;
+                    SetInputField(suggestion);
+                    label.schedule.Execute(() =>
+                    {
+                        textField.Focus();
+                        textField.cursorIndex = textField.value.Length;
+                        textField.selectIndex = textField.value.Length;
+                        UpdatePreviewContainer();
+                    }).ExecuteLater(1);
+                });
                 previewContainer.Add(label);
             }
             
@@ -534,9 +573,8 @@ namespace Cardevil.DebugConsole
         /// </summary>
         private void OnTextFieldUnfocused()
         {
-            previewContainer.Clear();
-            _autoCompleter.Clear();
-            previewContainer.Clear();
+            // previewContainer.Clear();
+            // _autoCompleter.Clear();
         }
         
         private void OnTextFieldKeyDown(KeyDownEvent evt)
@@ -607,13 +645,17 @@ namespace Cardevil.DebugConsole
             Instance.ClearHistory();
         }
 
-        [Preserve, ConsoleCommand("bottom", "Scrolls the console to the bottom.")]
-        private static void ScrollToBottomCommand()
+        [Preserve, ConsoleCommand("autoScroll", "새로운 출력이 있을 때 자동으로 스크롤을 맨 아래로 내립니다.")]
+        private static void ToggleAutoScrollCommand()
         {
-            Instance.ScrollToBottom();
+            if (Instance == null)
+                return;
+            Instance.autoScrollToBottomOnNewMessage = !Instance.autoScrollToBottomOnNewMessage;
+            Instance.autoScrollToBottomOnNewPrint = Instance.autoScrollToBottomOnNewMessage;
+            Console.MessageInfo($"Auto scroll to bottom on new message is now {(Instance.autoScrollToBottomOnNewMessage ? "enabled" : "disabled")}");
         }
 
-        [Preserve, ConsoleCommand("setOpacity", "Sets the console opacity. Usage: setOpacity <value between 0 and 1>")]
+        [Preserve, ConsoleCommand("setOpacity", "콘솔의 투명도를 설정합니다", "setOpacity <0.0 - 1.0>")]
         private static void SetOpacityCommand(float opacity)
         {
             var clamped = Mathf.Clamp01(opacity);

@@ -6,7 +6,7 @@
             <ui:Label name="Hint" text="` to toggle • TAB to autocomplete • ENTER to run" focusable="false" parse-escape-sequences="false" class="hint" />
         </ui:VisualElement>
         <ui:ScrollView name="HistoryContainer" vertical-scroller-visibility="Auto" class="history" />
-        <ui:ScrollView name="PreviewContainer" vertical-scroller-visibility="Auto" horizontal-scroller-visibility="Auto" mode="Horizontal" class="preview info" />
+        <ui:ScrollView name="PreviewContainer" mode="Horizontal" vertical-scroller-visibility="AlwaysVisible" horizontal-scroller-visibility="Auto" class="preview" />
         <ui:TextField name="InputField" isDelayed="true" focusable="true" is-delayed="false" auto-correction="false" class="input" style="flex-direction: row-reverse;" />
         <ui:VisualElement name="resize-east" class="resize-handle-east" />
         <ui:VisualElement name="resize-south" class="resize-handle-south" />

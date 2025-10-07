@@ -1,5 +1,6 @@
 using Cardevil.Utils;
 using System;
+using System.Collections.Generic;
 
 namespace Cardevil.DebugConsole.Commands
 {
@@ -12,6 +13,7 @@ namespace Cardevil.DebugConsole.Commands
     {
         public string Command { get; }
         public string Description { get; }
+        public string Signature => Command;
         private readonly Action _action;
 
         public SimpleCommand(string command, string description, Action action)
@@ -38,6 +40,7 @@ namespace Cardevil.DebugConsole.Commands
         private readonly Action<T> _action;
         private readonly string _signature;
         public string Signature => _signature;
+        public Action<string[], List<string>> AutoCompleteAction { get; set; }
 
         public SimpleCommand(string command, string description, Action<T> action, string signature = null)
         {
@@ -45,6 +48,19 @@ namespace Cardevil.DebugConsole.Commands
             Description = description;
             _action = action;
             _signature = signature ?? $"{command} <{typeof(T).Name}>";
+        }
+        
+        public void AutoComplete(Span<string> args, ref List<string> suggestions)
+        {
+            if (AutoCompleteAction != null)
+            {
+                AutoCompleteAction.Invoke(args.ToArray(), suggestions);
+                return;
+            }
+            // 기본 자동완성 동작
+            if (args.Length > 1)
+                return;
+            CommandHelper.DefaultAutoComplete(typeof(T), args, ref suggestions);
         }
 
         public void Execute(string[] args)

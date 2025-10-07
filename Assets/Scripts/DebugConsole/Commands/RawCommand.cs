@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 
 namespace Cardevil.DebugConsole.Commands
@@ -14,19 +15,38 @@ namespace Cardevil.DebugConsole.Commands
         private string _signature;
         
         private readonly Action<string[]> _action;
+        private Action<string[], List<string>> AutoCompleteAction { get;}
         
         public string Signature => _signature;
         
-        public RawCommand(string command, string description, Action<string[]> action, string signature = null)
+        public RawCommand(string command, string description, Action<string[]> action, string signature = null, Action<string[], List<string>> autoCompleteAction = null)
         {
             Command = command;
             Description = description;
             _action = action;
             _signature = signature ?? $"{command} <string[] args>";
+            AutoCompleteAction = autoCompleteAction;
+        }
+        public RawCommand(string command, string description, string signature, Action<string[]> action, Action<string[], List<string>> autoCompleteAction = null)
+        {
+            Command = command;
+            Description = description;
+            _action = action;
+            _signature = signature;
+            AutoCompleteAction = autoCompleteAction;
         }
         public void Execute(string[] args)
         {
             _action.Invoke(args);
+        }
+        
+        public void AutoComplete(Span<string> args, ref List<string> suggestions)
+        {
+            if (AutoCompleteAction != null)
+            {
+                AutoCompleteAction.Invoke(args.ToArray(), suggestions);
+                return;
+            }
         }
     }
 }

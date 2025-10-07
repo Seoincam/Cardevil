@@ -106,9 +106,9 @@
 .preview {
     min-height: 34px;
     max-height: 82px;
-    overflow: hidden;
-    flex-direction: row;
-    flex-wrap: wrap;
+    /*overflow: hidden;*/
+    flex-direction: column;
+    /*flex-wrap: wrap;*/
     gap: 6px;
     padding: 4px;
 }
@@ -134,6 +134,11 @@
     border-color: rgb(53, 91, 59);
     border-left-width: 2px;
     border-left-color: rgb(67, 160, 71);
+}
+
+.preview .suggest:hover {
+    background-color: rgb(45, 61, 52);
+    color: rgb(234, 255, 234);
 }
 
 .preview .suggest.selected {
@@ -172,4 +177,39 @@
     bottom: 0;
     width: 16px;
     height: 16px;
+}
+
+
+
+#HistoryContainer {
+    overflow: hidden; /* 레이아웃 안정 */
+}
+
+#HistoryContainer .unity-scroller__low-button,
+#HistoryContainer .unity-scroller__high-button {
+    display: none;
+}
+
+/* 프리뷰: 가로 스크롤만 */
+#PreviewContainer {
+    overflow: hidden; /* 세로 스크롤 숨김 */
+}
+/* 프리뷰의 컨텐츠를 가로로 배치 + 줄바꿈 없음 */
+#PreviewContainer .unity-scroll-view__content-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;      /* 가로 스크롤 유도 */
+    gap: 6px;
+    align-items: flex-start;
+}
+
+#PreviewContainer .unity-scroller__low-button,
+#PreviewContainer .unity-scroller__high-button {
+    visibility: hidden;
+    display: none;
+    width: 0;
+    height: 0;
+}
+#PreviewContainer .unity-scroller--horizontal {
+    height: 1px;
 }
