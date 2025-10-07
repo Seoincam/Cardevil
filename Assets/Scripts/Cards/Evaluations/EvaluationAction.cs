@@ -1,24 +1,11 @@
 using Cardevil.Core;
 using Cardevil.Relics;
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
 
 namespace Cardevil.Cards.Evaluations
 {    
-    /// <summary>
-    /// 카드를 사용했을 때 반응해야 할 개체가 구현. 
-    /// </summary>
-    public interface IEvaluateVisual
-    {
-        /// <summary>
-        /// Evaluation 시 반응.
-        /// </summary>
-        public void ExecuteEvaluationAction();
-    }
-
     public class EvaluationAction : IClearable, IDisposable
     {
         #region Pooling
@@ -43,7 +30,7 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         public void Dispose()
         {
-            Managers.Card.Evaluations.AddAction(this, _priority);
+            Managers.Card.EvaluationEvent.AddAction(this, _priority);
         }
 
         public void Clear()
@@ -90,7 +77,7 @@ namespace Cardevil.Cards.Evaluations
             _visuals.AddRange(visuals.Cast<IEvaluateVisual>());
         }
 
-        public float Evaluate(Text text, float damage)
+        public float Evaluate(float damage, out EvaluationEffect effect, out float value)
         {
             switch (_effectType)
             {
@@ -102,15 +89,8 @@ namespace Cardevil.Cards.Evaluations
             foreach (var visual in _visuals)
                 visual.ExecuteEvaluationAction();
 
-            // 임시
-            var seq = DOTween.Sequence();
-            seq.Append(text.transform.DOScale(1.2f, 0.15f)) // 커짐
-            .AppendCallback(() =>
-            {
-                text.text = damage.ToString();
-            })
-            .Append(text.transform.DOScale(1f, 0.15f)); // 원래 크기로 복귀
-
+            effect = _effectType;
+            value = _value;
             return damage;
         }
     }

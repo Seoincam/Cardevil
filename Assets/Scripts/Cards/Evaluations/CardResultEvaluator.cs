@@ -15,11 +15,11 @@ namespace Cardevil.Cards.Evaluations
         {
             CardResult result;
 
-            // move only
             cards.Sort((a, b) => a.HandIndex.CompareTo(b.HandIndex));
             var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number).ToList();
             var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move).ToList();
 
+            // move only
             if (numbers.Count == 0)
             {
                 using (var move = EvaluationAction.Get())
@@ -54,7 +54,7 @@ namespace Cardevil.Cards.Evaluations
 
 
             // 기본 데미지
-            // 4장의 카드를 쓰지 않는 경우를 계산
+            // 4장의 카드를 모두 쓰지 않는 경우를 따로 계산
             // priority 200번대
             var p = 200;
             switch (primaryRanking)

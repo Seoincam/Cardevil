@@ -6,6 +6,8 @@ using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
+using Cardevil.Utils;
+using Database.Generated;
 
 namespace Cardevil.Cards
 {
@@ -20,6 +22,8 @@ namespace Cardevil.Cards
         public List<CardData> Discards = new();
         public List<Card> Hand = new();
         public List<Card> Selects = new();
+
+        public Action<HandRanking> OnSelectsChaged;
 
         private int _discardRemainCount = 3;
 
@@ -57,31 +61,6 @@ namespace Cardevil.Cards
         /// </summary>
         public bool CanUseCard => SelectCount > 0 && AllValueSelected;
 
-        /// <summary>
-        /// 족보와 보너스 점수만을 반환.
-        /// </summary>
-        public string Description
-        {
-            get
-            {
-                var ranking = CardResultEvaluator.GetRanking(Selects);
-                if (ranking == HandRanking.None || ranking == HandRanking.High)
-                    return "";
-                else
-                {
-                    var datas = Managers.Database.Database;
-                    var rankingData = datas.HandRankingDataList
-                        .FirstOrDefault(d => d.Ranking == ranking);
-
-                    if (rankingData == null)
-                        Debug.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
-
-                    return $"{rankingData.DisplayName}\n{rankingData.Value}";
-                }
-
-            }
-        }
-
         /// <summary> 버리기 남은 횟수. </summary>
         public int DiscardRemainCount => _discardRemainCount;
 
@@ -105,11 +84,13 @@ namespace Cardevil.Cards
         public void Select(Card card)
         {
             Selects.Add(card);
+            OnSelectsChaged?.Invoke(CardResultEvaluator.GetRanking(Selects));
         }
 
         public void Deselect(Card card)
         {
             Selects.Remove(card);
+            OnSelectsChaged?.Invoke(CardResultEvaluator.GetRanking(Selects));
         }
 
         public void Swap(int indexA, int indexB)
@@ -128,6 +109,8 @@ namespace Cardevil.Cards
             Selects.Remove(card);
             Discards.Add(card.data);
             card.Discard();
+
+            OnSelectsChaged?.Invoke(HandRanking.None);
         }
 
         public void IncreaseDiscardCount(int amount)
