@@ -8,175 +8,28 @@ using UnityEngine.Scripting;
 namespace Cardevil.DebugConsole.Commands
 {
     /// <summary>
-    /// 등록된 콘솔 명령어들을 관리합니다.
+    /// (eng) A static library that manages all console commands.<br/>
+    /// (kor) 모든 콘솔 명령어를 관리하는 정적 라이브러리입니다.
     /// </summary>
     [Preserve]
     public static class CommandLibrary
     {
         /// <summary>
-        /// 명령어 이름을 키로, IConsoleCommand 객체를 값으로 가지는 사전
-        /// 순차 탐색을 위해 SortedDictionary 사용
+        /// (eng) A dictionary that maps command names to their corresponding IConsoleCommand instances.<br/>
+        /// (kor) 명령어 이름을 해당 IConsoleCommand 인스턴스에 매핑하는 사전입니다.
         /// </summary>
         private static readonly SortedDictionary<string, IConsoleCommand> _commands = new SortedDictionary<string, IConsoleCommand>();
-
-        private class HelpCommand : IConsoleCommand
-        {
-            public string Command => "help";
-            public string Description => "등록된 모든 명령어를 출력합니다.";
-            public string Signature => "help [command]";
-
-            public void Execute(string[] args)
-            {
-                if(args.Length == 0)
-                {
-                    var commands = CommandLibrary.GetAllCommands();
-                    Console.MessageInfo("Available Commands:");
-                    foreach (var command in commands)
-                    {
-                        Console.MessageDefault($"- {command.Signature}: {command.Description}");
-                    }
-                    return;
-                }
-                else
-                {
-                    string commandName = args[0];
-                    if (CommandLibrary.TryGetCommand(commandName, out var command))
-                    {
-                        Console.MessageInfo( $"Command: {command.Signature}");
-                        Console.MessageDefault($"Description: {command.Description}");
-                    }
-                    else
-                    {
-                        Console.MessageError($"No help available for unknown command: '{commandName}'");
-                    }
-
-                    return;
-                }
-            }
-            
-            public void AutoComplete(Span<string> args, ref List<string> suggestions)
-            {
-                if (args.Length == 0)
-                {
-                    // 모든 명령어 제안
-                    foreach (var cmd in CommandLibrary.GetAllCommands())
-                    {
-                        suggestions.Add(cmd.Command);
-                    }
-                    return;
-                }
-                
-                int argIndex = args.Length - 1;
-                var currentArg = args[argIndex];
-                if (argIndex == 0)
-                {
-                    // 첫 번째 인자라면, 등록된 명령어들 중에서
-                    foreach (var cmd in CommandLibrary.GetAllCommands())
-                    {
-                        if (cmd.Command.StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
-                            suggestions.Add(cmd.Command);
-                    }
-                }
-                // 두 번째 인자부터는 자동완성 없음
-            }
-        }
-
-        private static SimpleCommand ping; 
-        private static SimpleCommand<int> setLogLevelCommand;
-        private static HelpCommand helpCommand = new HelpCommand();
-        private static RawCommand help2Command;
-
-        static CommandLibrary()
-        {
-#if !DO_NOT_USE_DEBUG_CONSOLE
-            /*
-             * 기본 명령어 등록
-             * remark : 이곳에 등록된 명령어들은 수동으로 등록됩니다. Initialize() 메서드에 추가하세요.
-             */
-            ping = new SimpleCommand(
-                "ping",
-                "콘솔이 정상 작동하는지 확인합니다.",
-                () => Console.Print("Pong!")
-            );
-            setLogLevelCommand = new SimpleCommand<int>(
-                "setLogLevel",
-                "어떤 유니티 로그를 콘솔에 출력할 지 결정합니다. Usage: setLogLevel <0-4> (0: None, 1: Exception, 2: Error, 3: Warning, 4: Info)",
-                (level) =>
-                {
-                    if (level < 0)
-                    {
-                        Console.Message(MessageType.Error,"Invalid log level. Minimum is 0 (None).");
-                        return;
-                    }
-                    if(level > (int)LogLevel.Info)
-                    {
-                        level = (int)LogLevel.Info;
-                    }
-                    Console.SetLogLevel((LogLevel)level);
-                    Console.Print($"Log level set to {(LogLevel)level}");
-            });
-            
-            help2Command = new RawCommand("help2", "등록된 모든 명령어를 출력합니다. (RawCommand 버전)", "help2 [command]",
-                action:(args) =>
-            {
-                if(args.Length == 0)
-                {
-                    var commands = CommandLibrary.GetAllCommands();
-                    Console.MessageInfo("Available Commands:");
-                    foreach (var command in commands)
-                    {
-                        Console.MessageDefault($"- {command.Signature}: {command.Description}");
-                    }
-                    return;
-                }
-                else
-                {
-                    string commandName = args[0];
-                    if (CommandLibrary.TryGetCommand(commandName, out var command))
-                    {
-                        Console.MessageInfo( $"Command: {command.Signature}");
-                        Console.MessageDefault($"Description: {command.Description}");
-                    }
-                    else
-                    {
-                        Console.MessageError($"No help available for unknown command: '{commandName}'");
-                    }
-
-                    return;
-                }
-            },  autoCompleteAction:(args, suggestions) =>
-            {
-                if (args.Length == 0)
-                {
-                    // 모든 명령어 제안
-                    foreach (var cmd in CommandLibrary.GetAllCommands())
-                    {
-                        suggestions.Add(cmd.Command);
-                    }
-                    return;
-                }
-                
-                int argIndex = args.Length - 1;
-                var currentArg = args[argIndex];
-                if (argIndex == 0)
-                {
-                    // 첫 번째 인자라면, 등록된 명령어들 중에서
-                    foreach (var cmd in CommandLibrary.GetAllCommands())
-                    {
-                        if (cmd.Command.StartsWith(currentArg, StringComparison.OrdinalIgnoreCase))
-                            suggestions.Add(cmd.Command);
-                    }
-                }
-                // 두 번째 인자부터는 자동완성 없음
-            });
-#endif
-        }
+        
+       
   
 
         
         
         /// <summary>
-        /// 콘솔 명령어를 등록합니다.
+        /// (eng) Registers a new console command.<br/>
+        /// If a command with the same name already exists, it will be overwritten.<br/>
+        /// (kor) 새로운 콘솔 명령어를 등록합니다.<br/>
+        /// 동일한 이름의 명령어가 이미 존재하는 경우, 덮어쓰게 됩니다.
         /// </summary>
         /// <param name="command"></param>
         public static void RegisterCommand(IConsoleCommand command)
@@ -193,7 +46,10 @@ namespace Cardevil.DebugConsole.Commands
         }
         
         /// <summary>
-        /// 콘솔 명령어 등록을 해제합니다.
+        /// (eng) Unregisters a console command by its name.<br/>
+        /// If the command does not exist, a warning will be logged.<br/>
+        /// (kor) 콘솔 명령어를 이름으로 등록 해제합니다.<br/>
+        /// 명령어가 존재하지 않는 경우, 경고가 기록됩니다.
         /// </summary>
         /// <param name="commandName"></param>
         public static void UnregisterCommand(string commandName)
@@ -209,7 +65,10 @@ namespace Cardevil.DebugConsole.Commands
         }
 
         /// <summary>
-        /// 콘솔 명령어를 이름으로 검색합니다.
+        /// (eng) Tries to get a registered console command by its name.<br/>
+        /// Returns true if found, false otherwise.<br/>
+        /// (kor) 이름으로 등록된 콘솔 명령어를 가져오려고 시도합니다.<br/>
+        /// 찾으면 true, 그렇지 않으면 false를 반환합니다.
         /// </summary>
         /// <param name="commandName"></param>
         /// <param name="command"></param>
@@ -225,7 +84,8 @@ namespace Cardevil.DebugConsole.Commands
         }
 
         /// <summary>
-        /// 등록된 모든 콘솔 명령어를 반환합니다.
+        /// (eng) Gets all registered console commands.<br/>
+        /// (kor) 등록된 모든 콘솔 명령어를 가져옵니다.
         /// </summary>
         /// <returns></returns>
         public static IEnumerable<IConsoleCommand> GetAllCommands()
@@ -236,22 +96,11 @@ namespace Cardevil.DebugConsole.Commands
 
     #if !DO_NOT_USE_DEBUG_CONSOLE
         /// <summary>
-        /// 애플리케이션 시작 시점에 호출되어, 모든 콘솔 명령어를 자동으로 등록합니다.
-        /// 1. 수동으로 등록할 명령어가 있다면 이 메서드에 추가합니다.
-        /// 2. ConsoleCommandAttribute가 붙은 모든 static 메서드를 찾아 등록합니다.
+        /// (eng) 
         /// </summary>
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Initialize()
         {
-            /*
-             * 수동 등록
-             */
-            RegisterCommand(setLogLevelCommand);
-            RegisterCommand(ping);
-            RegisterCommand(helpCommand);
-            RegisterCommand(help2Command);
-            
-            
             /*
              * ConsoleCommandAttribute 를 전부 찾아서 등록
              */

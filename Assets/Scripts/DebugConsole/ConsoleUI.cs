@@ -247,6 +247,8 @@ namespace Cardevil.DebugConsole
             _isOpen = true;
             trueRoot.style.display = DisplayStyle.Flex;
             
+            textField.value = "";
+
             ScrollToBottom();
 
             textField.schedule.Execute(() =>
