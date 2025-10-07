@@ -1,7 +1,6 @@
 using Cardevil.Utils;
-using Database.Generated;
 using DG.Tweening;
-using Unity.VisualScripting;
+using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
@@ -20,6 +19,11 @@ namespace Cardevil.Cards.Evaluations
         private EvaluationTextController _mainText;
         private EvaluationTextController _subText;
 
+        private HandRanking cachedRanking;
+
+        private Tween mainRankingTween;
+        private Tween subRankingTween;
+
         void Start()
         {
             _mainText = main.GetComponentInChildren<EvaluationTextController>();
@@ -32,14 +36,31 @@ namespace Cardevil.Cards.Evaluations
             Managers.Card.StageCardsCtx.OnSelectsChaged += UpdateSelectedRanking;
         }
 
-        private void UpdateSelectedRanking(HandRankingData data)
+        private void UpdateSelectedRanking(HandRanking ranking)
         {
-            if (data == null)
+            if (ranking == cachedRanking) return;
+            cachedRanking = ranking;
+
+            if (ranking == HandRanking.None || ranking == HandRanking.High)
             {
                 _mainText.UpdateText();
                 _subText.UpdateText();
                 return;
             }
+
+            var data = Managers.Database.Database.HandRankingDataList.FirstOrDefault(i => i.Ranking == ranking);
+            if (data == null)
+            {
+                LogEx.LogError($"Can't find HandRanking Data: {ranking}");
+                return;
+            }
+
+            mainRankingTween?.Kill();
+            subRankingTween?.Kill();
+
+            sub.anchoredPosition = new Vector3(100, 0);
+            mainRankingTween = main.DOScale(1.2f, mainDur).SetLoops(2, LoopType.Yoyo);
+            subRankingTween = sub.DOAnchorPosX(0, subDur);
 
             _mainText.UpdateText(data.DisplayName);
             _subText.UpdateText("+" + data.Value.ToString());

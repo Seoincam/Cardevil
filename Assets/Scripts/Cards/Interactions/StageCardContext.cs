@@ -23,7 +23,7 @@ namespace Cardevil.Cards
         public List<Card> Hand = new();
         public List<Card> Selects = new();
 
-        public Action<HandRankingData> OnSelectsChaged;
+        public Action<HandRanking> OnSelectsChaged;
 
         private int _discardRemainCount = 3;
 
@@ -61,31 +61,6 @@ namespace Cardevil.Cards
         /// </summary>
         public bool CanUseCard => SelectCount > 0 && AllValueSelected;
 
-        /// <summary>
-        /// 족보와 보너스 점수를 반환.
-        /// </summary>
-        public HandRankingData SelectedRankingData
-        {
-            get
-            {
-                var ranking = CardResultEvaluator.GetRanking(Selects);
-                if (ranking == HandRanking.None || ranking == HandRanking.High)
-                    return null;
-                
-                var datas = Managers.Database.Database;
-                var rankingData = datas.HandRankingDataList
-                    .FirstOrDefault(d => d.Ranking == ranking);
-
-                if (rankingData == null)
-                {
-                    LogEx.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
-                    return null;
-                }
-
-                return rankingData;
-            }
-        }
-
         /// <summary> 버리기 남은 횟수. </summary>
         public int DiscardRemainCount => _discardRemainCount;
 
@@ -109,13 +84,13 @@ namespace Cardevil.Cards
         public void Select(Card card)
         {
             Selects.Add(card);
-            OnSelectsChaged?.Invoke(SelectedRankingData);
+            OnSelectsChaged?.Invoke(CardResultEvaluator.GetRanking(Selects));
         }
 
         public void Deselect(Card card)
         {
             Selects.Remove(card);
-            OnSelectsChaged?.Invoke(SelectedRankingData);
+            OnSelectsChaged?.Invoke(CardResultEvaluator.GetRanking(Selects));
         }
 
         public void Swap(int indexA, int indexB)
@@ -135,7 +110,7 @@ namespace Cardevil.Cards
             Discards.Add(card.data);
             card.Discard();
 
-            OnSelectsChaged?.Invoke(SelectedRankingData);
+            OnSelectsChaged?.Invoke(HandRanking.None);
         }
 
         public void IncreaseDiscardCount(int amount)
