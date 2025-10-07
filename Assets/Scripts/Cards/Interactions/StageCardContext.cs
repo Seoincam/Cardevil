@@ -6,6 +6,8 @@ using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
+using Cardevil.Utils;
+using Database.Generated;
 
 namespace Cardevil.Cards
 {
@@ -20,6 +22,8 @@ namespace Cardevil.Cards
         public List<CardData> Discards = new();
         public List<Card> Hand = new();
         public List<Card> Selects = new();
+
+        public Action<HandRankingData> OnSelectsChaged;
 
         private int _discardRemainCount = 3;
 
@@ -58,27 +62,27 @@ namespace Cardevil.Cards
         public bool CanUseCard => SelectCount > 0 && AllValueSelected;
 
         /// <summary>
-        /// 족보와 보너스 점수만을 반환.
+        /// 족보와 보너스 점수를 반환.
         /// </summary>
-        public string Description
+        public HandRankingData SelectedRankingData
         {
             get
             {
                 var ranking = CardResultEvaluator.GetRanking(Selects);
                 if (ranking == HandRanking.None || ranking == HandRanking.High)
-                    return "";
-                else
+                    return null;
+                
+                var datas = Managers.Database.Database;
+                var rankingData = datas.HandRankingDataList
+                    .FirstOrDefault(d => d.Ranking == ranking);
+
+                if (rankingData == null)
                 {
-                    var datas = Managers.Database.Database;
-                    var rankingData = datas.HandRankingDataList
-                        .FirstOrDefault(d => d.Ranking == ranking);
-
-                    if (rankingData == null)
-                        Debug.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
-
-                    return $"{rankingData.DisplayName}\n{rankingData.Value}";
+                    LogEx.LogError($"RankingData가 존재하지 않습니다 : {ranking}");
+                    return null;
                 }
 
+                return rankingData;
             }
         }
 
@@ -105,11 +109,13 @@ namespace Cardevil.Cards
         public void Select(Card card)
         {
             Selects.Add(card);
+            OnSelectsChaged?.Invoke(SelectedRankingData);
         }
 
         public void Deselect(Card card)
         {
             Selects.Remove(card);
+            OnSelectsChaged?.Invoke(SelectedRankingData);
         }
 
         public void Swap(int indexA, int indexB)
@@ -128,6 +134,8 @@ namespace Cardevil.Cards
             Selects.Remove(card);
             Discards.Add(card.data);
             card.Discard();
+
+            OnSelectsChaged?.Invoke(SelectedRankingData);
         }
 
         public void IncreaseDiscardCount(int amount)

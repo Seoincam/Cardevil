@@ -43,7 +43,7 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         public void Dispose()
         {
-            Managers.Card.Evaluations.AddAction(this, _priority);
+            Managers.Card.EvaluationEvent.AddAction(this, _priority);
         }
 
         public void Clear()
@@ -90,7 +90,7 @@ namespace Cardevil.Cards.Evaluations
             _visuals.AddRange(visuals.Cast<IEvaluateVisual>());
         }
 
-        public float Evaluate(Text text, float damage)
+        public float Evaluate(float damage, out EvaluationEffect effect, out float value)
         {
             switch (_effectType)
             {
@@ -103,14 +103,16 @@ namespace Cardevil.Cards.Evaluations
                 visual.ExecuteEvaluationAction();
 
             // 임시
-            var seq = DOTween.Sequence();
-            seq.Append(text.transform.DOScale(1.2f, 0.15f)) // 커짐
-            .AppendCallback(() =>
-            {
-                text.text = damage.ToString();
-            })
-            .Append(text.transform.DOScale(1f, 0.15f)); // 원래 크기로 복귀
+            // var seq = DOTween.Sequence();
+            // seq.Append(text.transform.DOScale(1.2f, 0.15f)) // 커짐
+            // .AppendCallback(() =>
+            // {
+            //     text.text = damage.ToString();
+            // })
+            // .Append(text.transform.DOScale(1f, 0.15f)); // 원래 크기로 복귀
 
+            effect = _effectType;
+            value = _value;
             return damage;
         }
     }

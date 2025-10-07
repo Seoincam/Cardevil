@@ -77,7 +77,7 @@ namespace Cardevil.Cards
             get => _resultCtx;
         }
 
-        public AsyncEvaluationEvent Evaluations
+        public AsyncEvaluationEvent EvaluationEvent
         {
             get => _evaluations;
         }

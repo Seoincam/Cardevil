@@ -33,7 +33,7 @@ namespace Cardevil.Cards.Interactions
         [SerializeField] Button discardCardButton;
         [SerializeField] Button sortByNumberButton;
         [SerializeField] Button sortByIconButton;
-        [SerializeField] Text selectResultText;
+        // [SerializeField] Text selectResultText;
         [SerializeField] TextMeshProUGUI deckCountText;
         [SerializeField] GameObject dummyCardVisual;
 
@@ -247,7 +247,7 @@ namespace Cardevil.Cards.Interactions
 
         private async UniTask UseAsync()
         {
-            await _manager.Evaluations.InvokeAsync(selectResultText);
+            await _manager.EvaluationEvent.InvokeAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             await DiscardAsync();
 
@@ -332,8 +332,6 @@ namespace Cardevil.Cards.Interactions
         // - - - - - - - - - - -
         private void UpdateUI()
         {
-            selectResultText.text = ctx.Description;
-
             var canUse = CanInput && ctx.CanUseCard && !DraggedCard;
             useCardButton.interactable = canUse;
             UpdateDeckCardCount();

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
 {
-    [RequireComponent(typeof(TextMeshProUGUI))]
+    [RequireComponent(typeof(TextMeshProUGUI), typeof(RectTransform))]
     public class EvaluationTextController : MonoBehaviour
     {
         [SerializeField] bool isWave = false;
@@ -21,12 +21,21 @@ namespace Cardevil.Cards.Evaluations
 
         private CancellationTokenSource _cts;
 
-        private TextMeshProUGUI textComponent;
+        private RectTransform _rect;
+        private TextMeshProUGUI _textComponent;
+        private Color _defaultColor;
+
+        public RectTransform Rect => _rect;
+        public TextMeshProUGUI Text => _textComponent;
+        public Color DefaultColor => _defaultColor;
 
 
         void Awake()
         {
-            textComponent = GetComponent<TextMeshProUGUI>();
+            _rect = GetComponent<RectTransform>();
+            _textComponent = GetComponent<TextMeshProUGUI>();
+            _defaultColor = _textComponent.color;
+
             RestartAnimation();
         }
 
@@ -38,12 +47,31 @@ namespace Cardevil.Cards.Evaluations
             if (text == "")
             {
                 _cts.Cancel();
-                textComponent.text = text;
+                _textComponent.text = text;
                 return;
             }
-            textComponent.text = text;
+            _textComponent.text = text;
             RestartAnimation();
         }
+
+        /// <summary>
+        /// AnchoredPositin을 설정합니다.
+        /// </summary>
+        public void SetPosition(Vector3 position)
+        {
+            _rect.anchoredPosition = position;
+        }
+
+        /// <summary>
+        /// DefaultColor의 알파값만을 조정합니다.
+        /// </summary>
+        public void SetAlpha(float alpha)
+        {
+            var c = _defaultColor;
+            alpha = Mathf.Clamp01(alpha);
+            _textComponent.faceColor = new Color(c.r, c.g, c.b, alpha);
+        }
+
 
         private void RestartAnimation()
         {
@@ -54,16 +82,16 @@ namespace Cardevil.Cards.Evaluations
 
         private async UniTask PlayShakeAnimationAsync(CancellationToken token)
         {
-            textComponent.ForceMeshUpdate();
-            var textInfo = textComponent.textInfo;
+            _textComponent.ForceMeshUpdate();
+            var textInfo = _textComponent.textInfo;
             var cachedMeshInfo = textInfo.CopyMeshInfoVertexData(); // 원본
 
             while (!token.IsCancellationRequested)
             {
-                if (textComponent.havePropertiesChanged)
+                if (_textComponent.havePropertiesChanged)
                 {
-                    textComponent.ForceMeshUpdate();
-                    textInfo = textComponent.textInfo;
+                    _textComponent.ForceMeshUpdate();
+                    textInfo = _textComponent.textInfo;
                     cachedMeshInfo = textInfo.CopyMeshInfoVertexData();
                 }
 
@@ -100,7 +128,7 @@ namespace Cardevil.Cards.Evaluations
                 {
                     var meshInfo = textInfo.meshInfo[m];
                     meshInfo.mesh.vertices = meshInfo.vertices;
-                    textComponent.UpdateGeometry(meshInfo.mesh, m);
+                    _textComponent.UpdateGeometry(meshInfo.mesh, m);
                 }
 
                 await UniTask.DelayFrame(1, cancellationToken: token);

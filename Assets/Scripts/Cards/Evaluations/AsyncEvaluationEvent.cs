@@ -1,10 +1,8 @@
 using Cardevil.Core;
+using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -12,37 +10,37 @@ namespace Cardevil.Cards.Evaluations
     {
         private SortedList<int, EvaluationAction> _actions = new();
 
+        public event Action<EvaluationStep> OnStep;
+
         public void AddAction(EvaluationAction action, int priority)
         {
             _actions.Add(priority, action);
         }
 
-        public async UniTask InvokeAsync(Text text)
+        public async UniTask InvokeAsync()
         {
             var damage = 0f;
-            var seq = DOTween.Sequence();
-            seq.Append(text.transform.DOScale(1.2f, .15f))
-            .AppendCallback(() =>
-            {
-                text.text = damage.ToString();
-            })
-            .Append(text.transform.DOScale(1f, .15f));
-
+            // TODO: Text 초기화
             await UniTask.Delay(TimeSpan.FromSeconds(.75f));
 
             try
             {
                 foreach (var action in _actions.Values)
                 {
-                    damage = action.Evaluate(text, damage);
-                    await UniTask.Delay(TimeSpan.FromSeconds(1f));
+                    var before = damage;
+                    var after = action.Evaluate(damage, out var effect, out var value);
+                    damage = after;
+
+                    OnStep?.Invoke(new EvaluationStep(effect, value, before, after));
+
+                    await UniTask.Delay(TimeSpan.FromSeconds(.7f));
                 }
 
                 Managers.Card.ResultCtx.CommitedResult.UpdateDamage(damage);
             }
             catch (Exception ex)
             {
-                Debug.LogError($"Evaluation Error: {ex}");
+                LogEx.LogError($"Evaluation Error: {ex}");
             }
             finally
             {
@@ -52,8 +50,7 @@ namespace Cardevil.Cards.Evaluations
 
         public void Clear()
         {
-            foreach (var action in _actions.Values)
-                action.Release();
+            foreach (var action in _actions.Values) action.Release();
             _actions.Clear();
         }
     }
