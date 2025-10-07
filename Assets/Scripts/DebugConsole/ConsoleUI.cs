@@ -257,7 +257,7 @@ namespace Cardevil.DebugConsole
                 textField.Focus();
                 OnTextChanged(CurrentInput);
                 // UpdatePreviewContainer();
-            });
+            }).ExecuteLater(5);
         }
 
         public void Close()
