@@ -96,7 +96,7 @@ namespace Cardevil.DebugConsole
             {
                 string[] parts = _chachedInput.Split(' ');
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i <= _completTarget; i++)
+                for (int i = 0; i < _completTarget; i++)
                 {
                     sb.Append(parts[i]);
                     sb.Append(' ');
