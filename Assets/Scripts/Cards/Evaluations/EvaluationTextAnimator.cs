@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Cardevil.Cards.Evaluations
 {
     [RequireComponent(typeof(TextMeshProUGUI), typeof(RectTransform))]
-    public class EvaluationTextController : MonoBehaviour
+    public class EvaluationTextAnimator : MonoBehaviour
     {
         [SerializeField] bool isWave = false;
         [SerializeField] float waveSpeed = 2f;

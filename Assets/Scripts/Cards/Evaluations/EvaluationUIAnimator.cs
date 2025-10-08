@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
 {
-    public class EvaluationVisualHandler : MonoBehaviour
+    public class EvaluationUIAnimator : MonoBehaviour
     {
         [SerializeField] CardEvaluationAnimSO anim;
 
@@ -14,8 +14,8 @@ namespace Cardevil.Cards.Evaluations
 
 
 
-        private EvaluationTextController _mainText;
-        private EvaluationTextController _subText;
+        private EvaluationTextAnimator _mainText;
+        private EvaluationTextAnimator _subText;
 
         private HandRanking _lastRanking;
 
@@ -27,8 +27,8 @@ namespace Cardevil.Cards.Evaluations
 
         void Start()
         {
-            _mainText = main.GetComponentInChildren<EvaluationTextController>();
-            _subText = sub.GetComponentInChildren<EvaluationTextController>();
+            _mainText = main.GetComponentInChildren<EvaluationTextAnimator>();
+            _subText = sub.GetComponentInChildren<EvaluationTextAnimator>();
             _mainText.UpdateText();
             _subText.UpdateText();
 
@@ -68,7 +68,7 @@ namespace Cardevil.Cards.Evaluations
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();
             main.localScale = Vector3.one;
-            sub.anchoredPosition = new Vector3(100, 0);
+            sub.anchoredPosition = new Vector3(anim.s_posX, 0);
 
             // 새 Tween
             _mainRankingTween = main.DOScale(1.2f, anim.m_RankingChangeDur)
@@ -89,7 +89,7 @@ namespace Cardevil.Cards.Evaluations
             _stepSeq?.Kill();
             _stepSeq = DOTween.Sequence().SetAutoKill(true).SetLink(gameObject);
 
-            sub.anchoredPosition = new Vector3(100, 0);
+            sub.anchoredPosition = new Vector3(anim.s_posX, 0);
             _subText.UpdateText($"{oper}{step.Value}");
 
             _stepSeq.Append(sub.DOAnchorPosX(0, anim.s_evaDur).SetEase(anim.s_evaEase));

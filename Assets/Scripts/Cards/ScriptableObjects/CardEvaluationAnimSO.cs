@@ -10,6 +10,9 @@ namespace Cardevil
         [VisibleOnly, SerializeField, TextArea]
         string description = "족보 선택/카드 변경 글자 애니메이션 설정 SO입니다.";
 
+        [Header("Common")]
+        [Tooltip("Sub PosX")]
+        [Min(30f)] public float s_posX;
 
         [Header("Ranking Changed")]
         [Tooltip("Main Scale Tween 지속 시간. 이 시간만큼 두 번 반복.")]
