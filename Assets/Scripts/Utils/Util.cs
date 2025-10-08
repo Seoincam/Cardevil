@@ -109,13 +109,5 @@ namespace Cardevil.Utils
             }
             return null;
         }
-        
-        /// <summary>
-        /// 카드가 Slot 안에서 몇 번째 위치인지 0~1 사이 값으로 정규화해 반환함
-        /// </summary>
-        public static float Remap(this float value, float from1, float to1, float from2, float to2)
-        {
-            return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-        }
     }
 }

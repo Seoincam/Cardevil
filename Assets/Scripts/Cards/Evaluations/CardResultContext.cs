@@ -91,18 +91,18 @@ namespace Cardevil.Cards.Evaluations
         public CardResult(List<HandRanking> rankings, List<Card> numberDatas, List<Card> moveDatas)
         {
             Rankings = rankings;
-            Numbers = numberDatas.Select(n => n.data.Number)
+            Numbers = numberDatas.Select(n => n.Data.Number)
                     .ToList();
-            Moves = moveDatas.Select(m => m.data.Move)
+            Moves = moveDatas.Select(m => m.Data.Move)
                     .ToList(); ;
         }
 
         public CardResult(List<Card> numberDatas, List<Card> moveDatas)
         {
             Rankings = new() { HandRanking.None };
-            Numbers = numberDatas.Select(n => n.data.Number)
+            Numbers = numberDatas.Select(n => n.Data.Number)
                     .ToList();
-            Moves = moveDatas.Select(m => m.data.Move)
+            Moves = moveDatas.Select(m => m.Data.Move)
                     .ToList(); ;
         } 
 

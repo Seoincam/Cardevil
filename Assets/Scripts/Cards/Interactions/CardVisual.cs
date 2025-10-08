@@ -103,7 +103,7 @@ namespace Cardevil.Cards.Interactions
             if (isDrawing)
                 return;
 
-            var verticalOffset = Vector3.up * (parentCard.isDragging ? 0 : curveYOffset);
+            var verticalOffset = Vector3.up * (parentCard.IsDragging ? 0 : curveYOffset);
             transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: visualSetting.FollowSpeed * Time.deltaTime);
         }
 
@@ -111,7 +111,7 @@ namespace Cardevil.Cards.Interactions
         {
             Vector3 movement = transform.position - parentCard.transform.position;
             movementDelta = Vector3.Lerp(movementDelta, movement, 20 * Time.deltaTime);
-            Vector3 movementRotation = (parentCard.isDragging ? movementDelta : movement) * visualSetting.RotationAmount;
+            Vector3 movementRotation = (parentCard.IsDragging ? movementDelta : movement) * visualSetting.RotationAmount;
             rotationDelta = Vector3.Lerp(rotationDelta, movementRotation, visualSetting.RotationSpeed * Time.deltaTime);
 
             transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, Mathf.Clamp(rotationDelta.x, -50f, 50f));
@@ -119,11 +119,14 @@ namespace Cardevil.Cards.Interactions
 
         private void CurvePosition()
         {
-            if (parentCard.IsReroll)
-                return;
+            if (parentCard.IsReroll) return;
+            if (!Managers.Card.StageCardsCtx.TryGetIndex(parentCard, out var idx)) return;
+
             var c = visualSetting.Curve;
-            curveYOffset = c.positioning.Evaluate(parentCard.NormalizedPosition) * c.positioningInfluence * (Managers.Card.StageCardsCtx.HandCount - 1);
-            curveRotationOffset = c.rotation.Evaluate(parentCard.NormalizedPosition);
+
+            var factor = (float)idx / (Managers.Card.MaxHandCount - 1);
+            curveYOffset = c.positioning.Evaluate(factor) * c.positioningInfluence * (Managers.Card.MaxHandCount - 1);
+            curveRotationOffset = c.rotation.Evaluate(factor);
         }
 
         private void TiltCard()
@@ -132,7 +135,7 @@ namespace Cardevil.Cards.Interactions
                 return;
 
             var c = visualSetting.Curve;
-            float tiltZ = parentCard.isDragging ? 0 : (curveRotationOffset * (c.rotationInfluence * (Managers.Card.StageCardsCtx.HandCount - 1)));
+            float tiltZ = parentCard.IsDragging ? 0 : (curveRotationOffset * (c.rotationInfluence * (Managers.Card.StageCardsCtx.HandCount - 1)));
             float lerpZ = Mathf.LerpAngle(tiltZ, shakeObject.localEulerAngles.z, visualSetting.TiltSpeed / 2 * Time.deltaTime);
             shakeObject.localEulerAngles = new Vector3(0, 0, lerpZ);
         }
@@ -142,7 +145,8 @@ namespace Cardevil.Cards.Interactions
 
         public void UpdateIndex()
         {
-            transform.SetSiblingIndex(parentCard.HandIndex);
+            if (!Managers.Card.StageCardsCtx.TryGetIndex(parentCard, out var idx)) return;
+            transform.SetSiblingIndex(idx);
         }
 
 
@@ -152,38 +156,38 @@ namespace Cardevil.Cards.Interactions
         {
             if (p == null) return;
 
-            p.OnPointerDownEvent += OnPointerDown;
-            p.OnPointerUpEvent += OnPointerUp;
-            p.OnBeginDragEvent += OnBeginDrag;
-            p.OnEndDragEvent += OnEndDrag;
-            p.OnSelectValueStartEvent += OnSelectStarted;
-            p.OnSelectValueEndEvent += OnSelectEnded;
+            p.PointerDown += OnPointerDown;
+            p.PointerUp += OnPointerUp;
+            p.DragStarted += OnBeginDrag;
+            p.DragEnded += OnEndDrag;
+            p.ValueSelectionStarted += OnSelectStarted;
+            p.ValueSelectionEnded += OnSelectEnded;
 
-            p.OnRerollDraw += OnRerollDraw;
-            p.OnRerollDiscard += OnRerollDiscard;
-            p.OnRerollEnd += OnRerollEnd;
-            p.OnDraw += OnDraw;
-            p.OnDiscard += OnDiscard;
-            p.OnDestory += Destroy;
+            p.RerollDrawn += OnRerollDraw;
+            p.RerollDiscarded += OnRerollDiscard;
+            p.RerollEnded += OnRerollEnd;
+            p.Drawn += OnDraw;
+            p.Discarded += OnDiscard;
+            p.Destroyed += Destroy;
         }
 
         private void UnsubscribeFromParent(Card p)
         {
             if (p == null) return;
 
-            p.OnPointerDownEvent -= OnPointerDown;
-            p.OnPointerUpEvent -= OnPointerUp;
-            p.OnBeginDragEvent -= OnBeginDrag;
-            p.OnEndDragEvent -= OnEndDrag;
-            p.OnSelectValueStartEvent -= OnSelectStarted;
-            p.OnSelectValueEndEvent -= OnSelectEnded;
+            p.PointerDown -= OnPointerDown;
+            p.PointerUp -= OnPointerUp;
+            p.DragStarted -= OnBeginDrag;
+            p.DragEnded -= OnEndDrag;
+            p.ValueSelectionStarted -= OnSelectStarted;
+            p.ValueSelectionEnded -= OnSelectEnded;
 
-            p.OnRerollDraw -= OnRerollDraw;
-            p.OnRerollDiscard -= OnRerollDiscard;
-            p.OnRerollEnd -= OnRerollEnd;
-            p.OnDraw -= OnDraw;
-            p.OnDiscard -= OnDiscard;
-            p.OnDestory -= Destroy;
+            p.RerollDrawn -= OnRerollDraw;
+            p.RerollDiscarded -= OnRerollDiscard;
+            p.RerollEnded -= OnRerollEnd;
+            p.Drawn -= OnDraw;
+            p.Discarded -= OnDiscard;
+            p.Destroyed -= Destroy;
         }
 
         #endregion
@@ -308,7 +312,7 @@ namespace Cardevil.Cards.Interactions
 
         private void UpdateVisual()
         {
-            spriteFactory.UpdataVisual(parentCard.data, frontImage, numberImages[0]);
+            spriteFactory.UpdataVisual(parentCard.Data, frontImage, numberImages[0]);
         }
 
         public void ExecuteEvaluationAction()

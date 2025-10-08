@@ -161,7 +161,7 @@ namespace Cardevil.Cards.Interactions
                 return;
 
             DraggedCard.transform.DOLocalMove(
-                endValue: DraggedCard.isSelected
+                endValue: DraggedCard.IsSelected
                     ? new Vector3(0, visualSetting.SelectOffset, 0)
                     : Vector3.zero,
                 duration: visualSetting.EndDragTweenDuration)
@@ -176,21 +176,34 @@ namespace Cardevil.Cards.Interactions
         // - - - - - - - - - - -
         private void DetectSwap()
         {
+            var dragged = DraggedCard;
+            if (dragged == null || ctx == null) return;
+
+            if (!dragged.IsDragging) return;
+
+            var draggedX = dragged.transform.position.x;
+            if (!ctx.TryGetIndex(dragged, out var draggedIdx)) return;
+
             for (int i = 0; i < ctx.HandCount; i++)
             {
-                if (DraggedCard.transform.position.x > ctx.GetHandCard(i).transform.position.x)
-                    if (DraggedCard.HandIndex < ctx.GetHandCard(i).HandIndex)
-                    {
-                        Swap(i);
-                        break;
-                    }
+                var other = ctx.GetHandCard(i);
+                if (other == null || other == dragged) continue;
 
-                if (DraggedCard.transform.position.x < ctx.GetHandCard(i).transform.position.x)
-                    if (DraggedCard.HandIndex > ctx.GetHandCard(i).HandIndex)
-                    {
-                        Swap(i);
-                        break;
-                    }
+                var otherX = other.transform.position.x;
+
+                if (!ctx.TryGetIndex(other, out var otherIdx)) continue;
+
+                if (draggedX > otherX && draggedIdx < otherIdx)
+                {
+                    Swap(i);
+                    break;
+                }
+
+                if (draggedX < otherX && draggedIdx > otherIdx)
+                {
+                    Swap(i);
+                    break;
+                }
             }
         }
 
@@ -198,7 +211,7 @@ namespace Cardevil.Cards.Interactions
         {
             IsSwapping = true;
 
-            _manager.StageCardsCtx.Swap(DraggedCard.HandIndex, index);
+            _manager.StageCardsCtx.Swap(DraggedCard, index);
             UpdateSlots();
 
             IsSwapping = false;
@@ -208,8 +221,8 @@ namespace Cardevil.Cards.Interactions
         {
             foreach (var card in ctx.Hand)
             {
-                card.SetSlot(slots[card.HandIndex], isDragging: card == DraggedCard);
-                card.IsReroll = false;
+                if (!ctx.TryGetIndex(card, out var idx)) continue;
+                card.SetSlot(slots[idx], isDragging: card == DraggedCard);
             }          
         }
 
@@ -217,15 +230,15 @@ namespace Cardevil.Cards.Interactions
         {
             var card = ctx.GetHandCard(index);
             card.SetSlot(slots[index], isDragging: card == DraggedCard);
-            card.SetHandBar(this);
+            card.CompleteReroll(this);
             AddListeners(card);
         }
 
         private void AddListeners(Card card)
         {
-            card.OnBeginDragEvent += BeginDrag;
-            card.OnEndDragEvent += EndDrag;
-            card.OnSelectValueEndEvent += OnSelectValueEnd;
+            card.DragStarted += BeginDrag;
+            card.DragEnded += EndDrag;
+            card.ValueSelectionEnded += OnSelectValueEnd;
         }
 
 
@@ -272,7 +285,7 @@ namespace Cardevil.Cards.Interactions
             var count = Managers.Card.MaxHandCount - ctx.HandCount;
             for (int i = 0; i < count; i++)
             {
-                Spawn().OnDraw?.Invoke();
+                Spawn().Drawn?.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DrawInterval));
             }
 
@@ -298,7 +311,7 @@ namespace Cardevil.Cards.Interactions
                 return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(ctx, handBar: this, cardData);
+            card.SpawnInHand(handBar: this, cardData);
 
             // 이벤트 구독
             AddListeners(card);

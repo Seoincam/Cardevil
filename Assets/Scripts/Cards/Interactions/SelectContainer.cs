@@ -58,13 +58,13 @@ namespace Cardevil.Cards.Interactions
             options = new();
             index = 0;
 
-            if (card.data.valueType == CardData.ValueType.Number)
+            if (card.Data.valueType == CardData.ValueType.Number)
             {
-                switch (card.data.selectType)
+                switch (card.Data.selectType)
                 {
                     case CardData.SelectType.Multiple:
-                        AddOption(card.data.DefaultNumber.NumberValue);
-                        foreach (var number in card.data.NumberOptions)
+                        AddOption(card.Data.DefaultNumber.NumberValue);
+                        foreach (var number in card.Data.NumberOptions)
                             AddOption(number);
                         break;
 
@@ -74,13 +74,13 @@ namespace Cardevil.Cards.Interactions
                         break;
                 }
             }
-            else if (card.data.valueType == CardData.ValueType.Move)
+            else if (card.Data.valueType == CardData.ValueType.Move)
             {
-                switch (card.data.selectType)
+                switch (card.Data.selectType)
                 {
                     case CardData.SelectType.Multiple:
-                        AddOption(card.data.DefaultMove.DirectionValue);
-                        AddOption(card.data.DefaultMove.DirectionValue.Opposite());
+                        AddOption(card.Data.DefaultMove.DirectionValue);
+                        AddOption(card.Data.DefaultMove.DirectionValue.Opposite());
                         break;
 
                     case CardData.SelectType.All:
@@ -99,11 +99,11 @@ namespace Cardevil.Cards.Interactions
         private void OnButtonSelected(int index)
         {
             if (options[index].Item1 != 0)
-                card.data.SelectValue(options[index].Item1);
+                card.Data.SelectValue(options[index].Item1);
             else
-                card.data.SelectValue(options[index].Item2);
+                card.Data.SelectValue(options[index].Item2);
 
-            card.OnSelectValueEndEvent?.Invoke(card);
+            card.ValueSelectionEnded?.Invoke(card);
             SetObjectActive(false);
         }
 
@@ -118,7 +118,7 @@ namespace Cardevil.Cards.Interactions
             backgroundButton.gameObject.SetActive(value);
             gameObject.SetActive(value);
             if (!value)
-                card.OnSelectValueEndEvent?.Invoke(card);
+                card.ValueSelectionEnded?.Invoke(card);
         }
     }
 }

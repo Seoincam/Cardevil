@@ -6,8 +6,6 @@ using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
-using Cardevil.Utils;
-using Database.Generated;
 
 namespace Cardevil.Cards
 {
@@ -33,7 +31,7 @@ namespace Cardevil.Cards
         public void Shuffle()
         {
             Deck.AddRange(Discards);
-            Deck.AddRange(Hand.Select(c => c.data));
+            Deck.AddRange(Hand.Select(c => c.Data));
 
             Discards.Clear();
             Hand.Clear();
@@ -74,10 +72,20 @@ namespace Cardevil.Cards
 
         public List<Card> SortedSelect => Selects.OrderBy(c => Hand.IndexOf(c)).ToList();
 
-        private bool AllValueSelected => Selects.All(c => c.data.CanUse);
+        private bool AllValueSelected => Selects.All(c => c.Data.CanUse);
 
 
 
+
+
+
+        public bool TryGetIndex(Card card, out int index)
+        {
+            index = -1;
+            if (card == null || Hand == null) return false;
+            index = Hand.IndexOf(card);
+            return index >= 0;
+        }
 
         public Card GetHandCard(int index) => Hand[index];
 
@@ -93,8 +101,9 @@ namespace Cardevil.Cards
             OnSelectsChaged?.Invoke(CardResultEvaluator.GetRanking(Selects));
         }
 
-        public void Swap(int indexA, int indexB)
+        public void Swap(Card a, int indexB)
         {
+            if (!TryGetIndex(a, out var indexA)) return;
             (Hand[indexA], Hand[indexB]) = (Hand[indexB], Hand[indexA]);
         }
 
@@ -107,7 +116,7 @@ namespace Cardevil.Cards
         {
             Hand.Remove(card);
             Selects.Remove(card);
-            Discards.Add(card.data);
+            Discards.Add(card.Data);
             card.Discard();
 
             OnSelectsChaged?.Invoke(HandRanking.None);
@@ -135,8 +144,8 @@ namespace Cardevil.Cards
 
                 // 숫자카드 정렬
                 .ThenBy(c => NumberSelectTypeRank(c))
-                .ThenBy(c => c.data.Number.NumberValue)
-                .ThenBy(c => c.data.Number.ColorValue)
+                .ThenBy(c => c.Data.Number.NumberValue)
+                .ThenBy(c => c.Data.Number.ColorValue)
 
                 .ToList();
         }
@@ -151,9 +160,9 @@ namespace Cardevil.Cards
                 .ThenBy(c => DirectionRank(c))
 
                 // 숫자카드 정렬
-                .ThenBy(c => c.data.Number.ColorValue)
+                .ThenBy(c => c.Data.Number.ColorValue)
                 .ThenBy(c => NumberSelectTypeRank(c))
-                .ThenBy(c => c.data.Number.NumberValue)
+                .ThenBy(c => c.Data.Number.NumberValue)
 
                 .ToList();
         }
@@ -199,44 +208,38 @@ namespace Cardevil.Cards
             return cardData;
         }
 
-        public void UpdateVisualIndex()
-        {
-            foreach (var card in Hand)
-                card.CardVisual.UpdateIndex();
-        }
-
         #region Sorting Helper
 
         private static int ValueTypeRank(Card c)
         {
-            return c.data.valueType == CardData.ValueType.Move ? 0 : 1;
+            return c.Data.valueType == CardData.ValueType.Move ? 0 : 1;
         }
 
         private static int MoveSelectTypeRank(Card c)
         {
-            if (c.data.selectType == CardData.SelectType.None || c.data.IsValueSelected)
+            if (c.Data.selectType == CardData.SelectType.None || c.Data.IsValueSelected)
                 return 0;
             else
-                return (int)c.data.selectType;
+                return (int)c.Data.selectType;
         }
 
         private static int NumberSelectTypeRank(Card c)
         {
-            if (c.data.selectType == CardData.SelectType.None
-                || (c.data.IsValueSelected && c.data.selectType == CardData.SelectType.Multiple))
+            if (c.Data.selectType == CardData.SelectType.None
+                || (c.Data.IsValueSelected && c.Data.selectType == CardData.SelectType.Multiple))
                 return -1;
-            else if (c.data.selectType == CardData.SelectType.All && c.data.IsValueSelected)
+            else if (c.Data.selectType == CardData.SelectType.All && c.Data.IsValueSelected)
                 return 0;
-            else if (c.data.selectType == CardData.SelectType.Multiple)
-                return c.data.NumberOptionCount;
-            else if (c.data.selectType == CardData.SelectType.All)
+            else if (c.Data.selectType == CardData.SelectType.Multiple)
+                return c.Data.NumberOptionCount;
+            else if (c.Data.selectType == CardData.SelectType.All)
                 return (int)CardData.SelectType.All;
             return 100;
         }
 
         private static int DirectionRank(Card c)
         {
-            return c.data.Move.DirectionValue switch
+            return c.Data.Move.DirectionValue switch
             {
                 Utils.Directions.Direction.Up => 0,
                 Utils.Directions.Direction.Down => 1,
