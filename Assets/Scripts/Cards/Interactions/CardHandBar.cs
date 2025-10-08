@@ -12,7 +12,7 @@ using Cardevil.Attributes;
 
 namespace Cardevil.Cards.Interactions
 {
-    public class CardHandBar : MonoBehaviour, ICardHandBar, ITurnPlayerInput, IClearable
+    public class CardHandBar : MonoBehaviour, ITurnPlayerInput, IClearable
     {
         private CardManager _manager;
         private StageCardsContext ctx;
