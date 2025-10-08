@@ -107,7 +107,7 @@ namespace Cardevil
                 // 버리기 Tween
                 foreach (var card in ctx.Hand)
                 {
-                    card.OnRerollDiscard?.Invoke(deck.Front);
+                    card.RerollDiscarded?.Invoke(deck.Front);
                     await UniTask.Delay(TimeSpan.FromSeconds(discard));
                 }
 
@@ -119,12 +119,12 @@ namespace Cardevil
                 {
                     var cardData = ctx.PopCard();
                     if (cardData == null) return null;
-                    // var card = Instantiate(cardPrefab).GetComponent<Card>();
                     var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-                    card.Init(cardData, ctx);
+                    card.SpawnAsReroll(cardData);
 
                     ctx.Draw(card);
-                    card.SetSlot(slots[card.HandIndex]);
+                    if (!ctx.TryGetIndex(card, out var idx)) return null;
+                    card.SetSlot(slots[idx]);
 
                     return card;
                 }
@@ -132,7 +132,7 @@ namespace Cardevil
                 // 카드 소환
                 for (int i = 0; i < slots.Count; i++)
                 {
-                    Spawn().OnRerollDraw?.Invoke();
+                    Spawn().RerollDrawn?.Invoke();
                     await UniTask.Delay(TimeSpan.FromSeconds(draw));
                 }
 
@@ -225,54 +225,3 @@ namespace Cardevil
         }
     }
 }
-
-
-        // Reroll
-        // - - - - - - - - - - -
-
-        // private void InitRerollPanel()
-        // {
-        //     endRerollButton.onClick.AddListener(EndReroll);
-        //     rerollButton.onClick.AddListener(Reroll);
-        //     toggleInGamePreviewButton.onClick.AddListener(ToggleStagePreview);
-
-        //     rerollPanel.gameObject.SetActive(true);
-        //     toggleInGamePreviewButton.gameObject.SetActive(true);
-        //     deckCountText.gameObject.SetActive(false);
-
-        //     Managers.Game.PlayerStatus.RerollTicket = initialRerollTicketCount; // 임시
-        //     _ = RerollAsync();
-        // }
-
-
-        // 카드 선택을 끝냄.
-        // private void EndReroll()
-        // {
-        //     UpdateSlot();
-
-        //     rerollPanel.gameObject.SetActive(false);
-        //     toggleInGamePreviewButton.gameObject.SetActive(false);
-        //     deckCountText.gameObject.SetActive(true);
-
-        //     rerollCmp.TrySetResult();
-        // }
-
-        // private void ToggleStagePreview()
-        // {
-        //     isPreviewInGame = !isPreviewInGame;
-
-        //     if (isPreviewInGame)
-        //     {
-        //         toggleInGamePreviewButton.GetComponentInChildren<Text>().text = "카드 선택하기";
-        //         rerollPanel.color = new Color(1, 1, 1, 0);
-        //     }
-        //     else
-        //     {
-        //         toggleInGamePreviewButton.GetComponentInChildren<Text>().text = "인게임 미리 보기";
-        //         rerollPanel.color = new Color(0, 0, 0, .85f);
-        //     }
-
-        //     rerollButton.gameObject.SetActive(!isPreviewInGame);
-        //     endRerollButton.gameObject.SetActive(!isPreviewInGame);
-        //     cardVisualHandler.SetActive(!isPreviewInGame);
-        // }

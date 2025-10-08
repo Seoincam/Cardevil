@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Pools;
@@ -10,84 +11,60 @@ namespace Cardevil.Cards.Interactions
 {
     [RequireComponent(typeof(Poolable))]
     public class Card : MonoBehaviour, IEvaluateVisual, IClearable,
-        IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+                        IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
-        private Poolable _poolable;
-
-        [Header("Card")]
-        public CardData data;
-        private bool isDiscarded = false;
-        private StageCardsContext ctx;
-
-        [Header("Visual")]
-        [SerializeField] GameObject cardVisualPrefab;
+        [Header("SO")]
         [SerializeField] CardVisualSettingSO visualSetting;
-        [SerializeField] CardVisual _cardVisual;
-        private bool _isReroll;
+        
+        [Header("Card")]
+        [SerializeField, VisibleOnly] CardData _data;
+        [SerializeField, VisibleOnly] CardVisual _visual;
+        [SerializeField, VisibleOnly] DragState _drag;
 
-        private Vector3 pointerOffset;
-        private float pointerDownTime;
-        private float pointerUpTime;
+        public event Action<Card> PointerDown, PointerUp;
+        public event Action<Card> DragStarted, DragEnded;
+        public Action<Card> ValueSelectionStarted, ValueSelectionEnded;
 
-
-        [Header("Drag")]
-        public bool isSelected;
-        public bool isDragging;
-
-
-        [Header("Events")]
-        public Action<Card> OnPointerDownEvent;
-        public Action<Card> OnPointerUpEvent;
-        public Action<Card> OnBeginDragEvent;
-        public Action<Card> OnEndDragEvent;
-        public Action<Card> OnSelectValueStartEvent;
-        public Action<Card> OnSelectValueEndEvent;
-
-        public Action OnRerollDraw;
-        public Action<Transform> OnRerollDiscard;
-        public Action OnRerollEnd;
-        public Action OnDraw;
-        public Action OnDiscard;
-        public Action OnDestory;
+        public Action RerollDrawn;
+        public Action<Transform> RerollDiscarded;
+        public Action RerollEnded;
+        public Action Drawn, Discarded, Destroyed;
 
 
-        private CardHandBar handBar;
+
+        private Poolable _poolable;
+        private CardHandBar _handBar;
+
+
+
+        public CardData Data => _data;
 
         public CardVisual CardVisual
         {
             get
             {
-                if (_cardVisual == null) _cardVisual = CreateCardVisual();
-                return _cardVisual;
+                if (_visual == null) _visual = CreateCardVisual();
+                return _visual;
             }
         }
 
-        public bool IsReroll { get => _isReroll; set => _isReroll = value; }
-
-        public int HandIndex => ctx.Hand.IndexOf(this);
-
-        public float NormalizedPosition => Util.Remap(HandIndex, 0, transform.parent.parent.childCount - 1, 0, 1);
+        public bool IsSelected  => _drag.isSelected;
+        public bool IsDragging  => _drag.isDragging;
+        public bool IsReroll    => _drag.isReroll;
 
         private bool CanDrag
         {
             get
             {
-                if (isDiscarded)
-                    return false;
-
-                if (_isReroll)
-                    return false;
-
-                if (handBar.DraggedCard != null
-                    && handBar.DraggedCard != this)
-                    return false;
-
-                if (!handBar.CanInput)
-                    return false;
+                if (_drag.isDiscarded) return false;
+                if (_drag.isReroll) return false;
+                if (!_handBar.CanInput) return false;
+                if (_handBar.DraggedCard != null && _handBar.DraggedCard != this) return false;
 
                 return true;
             }
         }
+
 
 
         void Awake()
@@ -99,50 +76,44 @@ namespace Cardevil.Cards.Interactions
 
         public void Clear()
         {
-            _isReroll = false;
-            isDragging = false;
-            isSelected = false;
-            isDiscarded = false;
-            _cardVisual = null;
+            _drag.isReroll = false;
+            _drag.isDragging = false;
+            _drag.isSelected = false;
+            _drag.isDiscarded = false;
+            _visual = null;
         }
 
-        public void Init(CardData data, StageCardsContext ctx)
+
+        public void SpawnInHand(CardHandBar handBar, CardData data)
         {
-            this.ctx = ctx;
-            this.data = data;
-            _isReroll = true;
+            _data = data;
+            _handBar = handBar;
+            _drag.isReroll = false;
             CardVisual.Init(this);
         }
 
-        public void Init(StageCardsContext ctx, CardHandBar handBar, CardData data)
+        public void SpawnAsReroll(CardData data)
         {
-            this.ctx = ctx;
-            this.data = data;
-            this.handBar = handBar;
-            _isReroll = false;
+            _data = data;
+            _drag.isReroll = true;
             CardVisual.Init(this);
         }
 
-        public void SetHandBar(CardHandBar handBar)
+        public void CompleteReroll(CardHandBar handBar)
         {
-            this.handBar = handBar;
-            _isReroll = false;
-            OnRerollEnd?.Invoke();
+            _handBar = handBar;
+            _drag.isReroll = false;
+            RerollEnded?.Invoke();
         }
-
-
-
 
         void Update()
         {
-            if (isDiscarded)
-                return;
+            if (_drag.isDiscarded) return;
 
-            // ClampPosition();
-
-            if (isDragging)
+            if (_drag.isDragging)
             {
-                var targetPosition = Input.mousePosition - pointerOffset;
+                // var targetPosition = Input.mousePosition - pointerOffset;
+                var targetPosition = Input.mousePosition;
                 var direction = (targetPosition - transform.position).normalized;
 
                 var neededVelocity = Vector2.Distance(transform.position, targetPosition) / Time.deltaTime;
@@ -152,20 +123,49 @@ namespace Cardevil.Cards.Interactions
             }
         }
 
-
-
-        private void ClampPosition()
+        public void SetSlot(Transform slot, bool isDragging = false)
         {
-            // Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-            // Vector3 clampedPosition = transform.position;
-            // clampedPosition.x = Mathf.Clamp(clampedPosition.x, -screenBounds.x, screenBounds.x);
-            // clampedPosition.y = Mathf.Clamp(clampedPosition.y, -screenBounds.y, screenBounds.y);
-            // transform.position = new Vector3(clampedPosition.x, clampedPosition.y, 0);
+            transform.SetParent(slot);
+
+            if (!isDragging)
+                transform.localPosition = _drag.isSelected
+                    ? new Vector3(0, visualSetting.SelectOffset, 0)
+                    : Vector3.zero;
+
+            _visual.UpdateIndex();
         }
+
+        public void Discard()
+        {
+            _drag.isDiscarded = true;
+            Discarded?.Invoke();
+        }
+
+        public void Destroy()
+        {
+            Destroyed?.Invoke();
+            Managers.Resource.Destroy(gameObject);
+        }
+
+        public void ExecuteEvaluationAction()
+        {
+            _visual.ExecuteEvaluationAction();
+        }
+
+        private CardVisual CreateCardVisual()
+        {
+            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
+            if (visualHandler == null)
+                LogEx.LogError("Visual Handler를 찾을 수 없음.");
+
+            var v = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform).GetComponent<CardVisual>();
+            return v;
+        }
+        
 
 
         #region Point Event
-        
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!CanDrag)
@@ -185,8 +185,8 @@ namespace Cardevil.Cards.Interactions
                 if (!CanDrag)
                     return;
 
-                OnPointerDownEvent?.Invoke(this);
-                pointerDownTime = Time.time;
+                PointerDown?.Invoke(this);
+                _drag.pointerDownTime = Time.time;
 
                 var mousePosition = Input.mousePosition;
                 var offset = mousePosition - transform.position;
@@ -194,14 +194,14 @@ namespace Cardevil.Cards.Interactions
 
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                OnPointerDownEvent?.Invoke(this);
+                PointerDown?.Invoke(this);
 
-                if (!data.CanOpenSelection)
+                if (!_data.CanOpenSelection)
                     return;
 
                 // TODO: 실행자 수정
-                handBar.selectContainer.OpenSelection(this);
-                OnSelectValueStartEvent?.Invoke(this);
+                _handBar.selectContainer.OpenSelection(this);
+                ValueSelectionStarted?.Invoke(this);
             }
         }
 
@@ -213,8 +213,8 @@ namespace Cardevil.Cards.Interactions
             if (!CanDrag)
                 return;
 
-            OnBeginDragEvent?.Invoke(this);
-            isDragging = true;
+            DragStarted?.Invoke(this);
+            _drag.isDragging = true;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -229,8 +229,8 @@ namespace Cardevil.Cards.Interactions
             if (!CanDrag)
                 return;
 
-            OnEndDragEvent?.Invoke(this);
-            isDragging = false;
+            DragEnded?.Invoke(this);
+            _drag.isDragging = false;
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -240,27 +240,27 @@ namespace Cardevil.Cards.Interactions
                 if (!CanDrag)
                     return;
 
-                OnPointerUpEvent?.Invoke(this);
-                pointerUpTime = Time.time;
-                if (pointerUpTime - pointerDownTime > visualSetting.ClickDetectThreshold)
+                PointerUp?.Invoke(this);
+                _drag.pointerUpTime = Time.time;
+                if (_drag.pointerUpTime - _drag.pointerDownTime > visualSetting.ClickDetectThreshold)
                     return;
 
-                isSelected = Managers.Card.StageCardsCtx.SelectCount < 4 && !isSelected;
+                _drag.isSelected = Managers.Card.StageCardsCtx.SelectCount < 4 && !_drag.isSelected;
 
-                if (isSelected)
+                if (_drag.isSelected)
                 {
                     transform.localPosition = new Vector3(0, visualSetting.SelectOffset, transform.localPosition.z);
-                    handBar.Select(this);
+                    _handBar.Select(this);
                 }
                 else
                 {
                     transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    handBar.Deselect(this);
+                    _handBar.Deselect(this);
                 }
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                OnPointerUpEvent?.Invoke(this);
+                PointerUp?.Invoke(this);
             }
         }
 
@@ -268,43 +268,11 @@ namespace Cardevil.Cards.Interactions
 
 
 
-        public void SetSlot(Transform slot, bool isDragging = false)
+        [Serializable]
+        private struct DragState
         {
-            transform.SetParent(slot);
-
-            if (!isDragging)
-                transform.localPosition = isSelected
-                    ? new Vector3(0, visualSetting.SelectOffset, 0)
-                    : Vector3.zero;
-
-            _cardVisual.UpdateIndex();
-        }
-
-        public void Discard()
-        {
-            isDiscarded = true;
-            OnDiscard?.Invoke();
-        }
-
-        public void Destroy()
-        {
-            OnDestory?.Invoke();
-            Managers.Resource.Destroy(gameObject);
-        }
-
-        public void ExecuteEvaluationAction()
-        {
-            _cardVisual.ExecuteEvaluationAction();
-        }
-
-        private CardVisual CreateCardVisual()
-        {
-            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
-            if (visualHandler == null)
-                LogEx.LogError("Visual Handler를 찾을 수 없음.");
-
-            var v = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform).GetComponent<CardVisual>();
-            return v;
+            public bool isSelected, isDragging, isDiscarded, isReroll;
+            public float pointerDownTime, pointerUpTime;
         }
     }
 }

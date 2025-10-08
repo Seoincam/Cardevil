@@ -15,9 +15,9 @@ namespace Cardevil.Cards.Evaluations
         {
             CardResult result;
 
-            cards.Sort((a, b) => a.HandIndex.CompareTo(b.HandIndex));
-            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number).ToList();
-            var moves = cards.Where(c => c.data.valueType == CardData.ValueType.Move).ToList();
+            // cards.Sort((a, b) => {});
+            var numbers = cards.Where(c => c.Data.valueType == CardData.ValueType.Number).ToList();
+            var moves = cards.Where(c => c.Data.valueType == CardData.ValueType.Move).ToList();
 
             // move only
             if (numbers.Count == 0)
@@ -61,10 +61,10 @@ namespace Cardevil.Cards.Evaluations
             {
                 case HandRanking.High:
                     var top = numbers.Aggregate((best, cur) =>
-                        cur.data.Number.NumberValue > best.data.Number.NumberValue ? cur : best);
+                        cur.Data.Number.NumberValue > best.Data.Number.NumberValue ? cur : best);
                     using (var high = EvaluationAction.Get())
                     {
-                        high.SetValue(priority: p++, EffectEvaluation.Plus, top.data.Number.NumberValue);
+                        high.SetValue(priority: p++, EffectEvaluation.Plus, top.Data.Number.NumberValue);
                         high.SetVisual(top);
                     }
                     break;
@@ -82,7 +82,7 @@ namespace Cardevil.Cards.Evaluations
                     {
                         using (var c = EvaluationAction.Get())
                         {
-                            c.SetValue(priority: p++, EffectEvaluation.Plus, card.data.Number.NumberValue);
+                            c.SetValue(priority: p++, EffectEvaluation.Plus, card.Data.Number.NumberValue);
                             c.SetVisual(card);
                         }
                     }
@@ -93,11 +93,11 @@ namespace Cardevil.Cards.Evaluations
             void AddEventByCount(List<Card> cards, int count)
             {
                 foreach (var card in cards
-                    .GroupBy(n => n.data.Number.NumberValue)
+                    .GroupBy(n => n.Data.Number.NumberValue)
                     .Where(g => g.Count() == count)
                     .SelectMany(g => g))
                 {
-                    var val = card.data.Number.NumberValue;
+                    var val = card.Data.Number.NumberValue;
                     using (var act = EvaluationAction.Get())
                     {
                         act.SetValue(priority: p++, EffectEvaluation.Plus, val);
@@ -160,7 +160,7 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         public static HandRanking GetRanking(List<Card> cards)
         {
-            var numbers = cards.Where(c => c.data.valueType == CardData.ValueType.Number)
+            var numbers = cards.Where(c => c.Data.valueType == CardData.ValueType.Number)
                     .ToList();
 
             if (numbers.Count == 0)
@@ -177,8 +177,8 @@ namespace Cardevil.Cards.Evaluations
         {
             var rankings = new List<HandRanking>();
 
-            var numberDatas = numberCards.Where(c => c.data.valueType == CardData.ValueType.Number)
-                .Select(c => c.data)
+            var numberDatas = numberCards.Where(c => c.Data.valueType == CardData.ValueType.Number)
+                .Select(c => c.Data)
                 .ToList();
 
             if (IsStraightFlush(numberDatas))
