@@ -6,6 +6,7 @@ using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 namespace Cardevil.Cards.Interactions 
 {
@@ -14,60 +15,64 @@ namespace Cardevil.Cards.Interactions
                         IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [Header("SO")]
-        [SerializeField] CardVisualSettingSO visualSetting;
+        [SerializeField] private CardVisualSettingSO visualSetting;
         
         [Header("Card")]
-        [SerializeField, VisibleOnly] CardData _data;
-        [SerializeField, VisibleOnly] CardVisual _visual;
-        [SerializeField, VisibleOnly] DragState _drag;
-
-        public event Action<Card> PointerDown, PointerUp;
-        public event Action<Card> DragStarted, DragEnded;
+        [SerializeField, VisibleOnly] private CardData data;
+        [SerializeField, VisibleOnly] private CardVisual visual;
+        [SerializeField, VisibleOnly] private DragState drag;
+        
+        public event Action DragStarted, DragEnded, Discarded, Destroyed;
+        public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
+        
+        // TODO: 외부에서 호출되지 않도록 메서드로 감싸기
         public Action<Card> ValueSelectionStarted, ValueSelectionEnded;
 
         public Action RerollDrawn;
         public Action<Transform> RerollDiscarded;
         public Action RerollEnded;
-        public Action Drawn, Discarded, Destroyed;
-
-
-
+        
+        public Action Drawn; 
+        
         private Poolable _poolable;
         private CardHandBar _handBar;
-
-
-
-        public CardData Data => _data;
-
-        public CardVisual CardVisual
+        
+        private CardVisual CardVisual
         {
             get
             {
-                if (_visual == null) _visual = CreateCardVisual();
-                return _visual;
+                if (visual == null) visual = CreateCardVisual();
+                return visual;
+
+                CardVisual CreateCardVisual()
+                {
+                    var visualHandler = FindAnyObjectByType<CardVisualHandler>();
+                    if (!visualHandler)
+                        LogEx.LogError("Visual Handler를 찾을 수 없음.");
+
+                    var v = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform).GetComponent<CardVisual>();
+                    return v;
+                }
             }
         }
-
-        public bool IsSelected  => _drag.isSelected;
-        public bool IsDragging  => _drag.isDragging;
-        public bool IsReroll    => _drag.isReroll;
-
+        
+        public CardData Data => data;
+        public bool IsSelected => drag.isSelected;
+        public bool IsDragging => drag.isDragging;
+        public bool IsReroll => drag.isReroll;
         private bool CanDrag
         {
             get
             {
-                if (_drag.isDiscarded) return false;
-                if (_drag.isReroll) return false;
+                if (drag.isDiscarded) return false;
+                if (drag.isReroll) return false;
                 if (!_handBar.CanInput) return false;
-                if (_handBar.DraggedCard != null && _handBar.DraggedCard != this) return false;
-
+                if (_handBar.DraggedCard && _handBar.DraggedCard != this) return false;
                 return true;
             }
         }
 
-
-
-        void Awake()
+        private void Awake()
         {
             Clear();
             _poolable = GetComponent<Poolable>();
@@ -76,41 +81,18 @@ namespace Cardevil.Cards.Interactions
 
         public void Clear()
         {
-            _drag.isReroll = false;
-            _drag.isDragging = false;
-            _drag.isSelected = false;
-            _drag.isDiscarded = false;
-            _visual = null;
+            drag.isReroll = false;
+            drag.isDragging = false;
+            drag.isSelected = false;
+            drag.isDiscarded = false;
+            if (visual != null) { visual.Clear(); visual = null; }
         }
 
-
-        public void SpawnInHand(CardHandBar handBar, CardData data)
+        private void Update()
         {
-            _data = data;
-            _handBar = handBar;
-            _drag.isReroll = false;
-            CardVisual.Init(this);
-        }
+            if (drag.isDiscarded) return;
 
-        public void SpawnAsReroll(CardData data)
-        {
-            _data = data;
-            _drag.isReroll = true;
-            CardVisual.Init(this);
-        }
-
-        public void CompleteReroll(CardHandBar handBar)
-        {
-            _handBar = handBar;
-            _drag.isReroll = false;
-            RerollEnded?.Invoke();
-        }
-
-        void Update()
-        {
-            if (_drag.isDiscarded) return;
-
-            if (_drag.isDragging)
+            if (drag.isDragging)
             {
                 // var targetPosition = Input.mousePosition - pointerOffset;
                 var targetPosition = Input.mousePosition;
@@ -122,22 +104,57 @@ namespace Cardevil.Cards.Interactions
                 transform.Translate(velocity * Time.deltaTime);
             }
         }
-
+        
+        /// <summary>
+        /// HandBar에서 Spawn 후 Initializer.
+        /// </summary>
+        public void SpawnInHand(CardHandBar handBar, CardData data)
+        {
+            this.data = data;
+            _handBar = handBar;
+            drag.isReroll = false;
+            CardVisual.Init(this);
+        }
+        
+        /// <summary>
+        /// Reroll 중 Spawn 후 Initializer.
+        /// </summary>
+        public void SpawnAsReroll(CardData data)
+        {
+            this.data = data;
+            drag.isReroll = true;
+            CardVisual.Init(this);
+        }
+        
+        /// <summary>
+        /// Reroll이 끝나고 HandBar로 옮겨질 때 추가적인 Initializer.
+        /// </summary>
+        /// <param name="handBar"></param>
+        public void CompleteReroll(CardHandBar handBar)
+        {
+            _handBar = handBar;
+            drag.isReroll = false;
+            RerollEnded?.Invoke();
+        }
+        
+        /// <summary>
+        /// 부모 Slot을 설정. 위치를 결정하는데 사용.
+        /// </summary>
         public void SetSlot(Transform slot, bool isDragging = false)
         {
             transform.SetParent(slot);
 
             if (!isDragging)
-                transform.localPosition = _drag.isSelected
+                transform.localPosition = drag.isSelected
                     ? new Vector3(0, visualSetting.SelectOffset, 0)
                     : Vector3.zero;
 
-            _visual.UpdateIndex();
+            visual.UpdateIndex();
         }
 
         public void Discard()
         {
-            _drag.isDiscarded = true;
+            drag.isDiscarded = true;
             Discarded?.Invoke();
         }
 
@@ -149,19 +166,18 @@ namespace Cardevil.Cards.Interactions
 
         public void ExecuteEvaluationAction()
         {
-            _visual.ExecuteEvaluationAction();
-        }
-
-        private CardVisual CreateCardVisual()
-        {
-            var visualHandler = FindAnyObjectByType<CardVisualHandler>();
-            if (visualHandler == null)
-                LogEx.LogError("Visual Handler를 찾을 수 없음.");
-
-            var v = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform).GetComponent<CardVisual>();
-            return v;
+            visual.ExecuteEvaluationAction();
         }
         
+        /// <summary>
+        /// Select 여부를 결정.
+        /// </summary>
+        public void SetSelect(bool isSelected)
+        {
+            drag.isSelected = isSelected;
+            var newY = isSelected ? visualSetting.SelectOffset : 0;
+            transform.localPosition = new Vector3(0, newY, transform.localPosition.z);
+        }
 
 
         #region Point Event
@@ -185,20 +201,17 @@ namespace Cardevil.Cards.Interactions
                 if (!CanDrag)
                     return;
 
-                PointerDown?.Invoke(this);
-                _drag.pointerDownTime = Time.time;
-
-                var mousePosition = Input.mousePosition;
-                var offset = mousePosition - transform.position;
+                PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
             }
-
+            
+            // TODO: 나중에 그래픽 나오면 우클릭 말고 전환 그래픽 클릭으로 변경하기
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                PointerDown?.Invoke(this);
-
-                if (!_data.CanOpenSelection)
+                PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
+            
+                if (!data.CanOpenSelection)
                     return;
-
+            
                 // TODO: 실행자 수정
                 _handBar.selectContainer.OpenSelection(this);
                 ValueSelectionStarted?.Invoke(this);
@@ -213,8 +226,8 @@ namespace Cardevil.Cards.Interactions
             if (!CanDrag)
                 return;
 
-            DragStarted?.Invoke(this);
-            _drag.isDragging = true;
+            DragStarted?.Invoke();
+            drag.isDragging = true;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -229,50 +242,33 @@ namespace Cardevil.Cards.Interactions
             if (!CanDrag)
                 return;
 
-            DragEnded?.Invoke(this);
-            _drag.isDragging = false;
+            DragEnded?.Invoke();
+            drag.isDragging = false;
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (!CanDrag)
+                return;
+            
             if (eventData.button == PointerEventData.InputButton.Left)
-            {
-                if (!CanDrag)
-                    return;
-
-                PointerUp?.Invoke(this);
-                _drag.pointerUpTime = Time.time;
-                if (_drag.pointerUpTime - _drag.pointerDownTime > visualSetting.ClickDetectThreshold)
-                    return;
-
-                _drag.isSelected = Managers.Card.StageCardsCtx.SelectCount < 4 && !_drag.isSelected;
-
-                if (_drag.isSelected)
-                {
-                    transform.localPosition = new Vector3(0, visualSetting.SelectOffset, transform.localPosition.z);
-                    _handBar.Select(this);
-                }
-                else
-                {
-                    transform.localPosition = new Vector3(0, 0, transform.localPosition.z);
-                    _handBar.Deselect(this);
-                }
-            }
+                PointerUp?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
+            // TODO: 나중에 그래픽 나오면 우클릭 말고 전환 그래픽 클릭으로 변경하기
             else if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                PointerUp?.Invoke(this);
-            }
+                PointerUp?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
         }
 
         #endregion
 
-
-
+        #region Nested
+        
         [Serializable]
         private struct DragState
         {
             public bool isSelected, isDragging, isDiscarded, isReroll;
             public float pointerDownTime, pointerUpTime;
         }
+
+        #endregion
     }
 }

@@ -62,6 +62,7 @@ namespace Cardevil.Cards.Interactions
 
             frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
             backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            shakeObject.localEulerAngles = Vector3.zero;
 
             canvas.overrideSorting = false;
             isDiscarded = false;
@@ -131,8 +132,8 @@ namespace Cardevil.Cards.Interactions
 
         private void TiltCard()
         {
-            if (isDiscarded)
-                return;
+            if (isDiscarded) return;
+            if (parentCard.IsReroll) return;
 
             var c = visualSetting.Curve;
             float tiltZ = parentCard.IsDragging ? 0 : (curveRotationOffset * (c.rotationInfluence * (Managers.Card.StageCardsCtx.HandCount - 1)));
@@ -194,7 +195,7 @@ namespace Cardevil.Cards.Interactions
 
         #region Pointer Event
 
-        private void OnPointerDown(Card _)
+        private void OnPointerDown(Card _, CardPointerArgs args)
         {
             transform.DOScale(endValue: visualSetting.SelectScale, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
@@ -202,7 +203,7 @@ namespace Cardevil.Cards.Interactions
             shadowTransform.localPosition += -Vector3.up * visualSetting.ShadowOffset;
         }
 
-        private void OnPointerUp(Card _)
+        private void OnPointerUp(Card _, CardPointerArgs args)
         {
             transform.DOScale(endValue: 1f, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
@@ -210,12 +211,12 @@ namespace Cardevil.Cards.Interactions
             shadowTransform.localPosition = shadowOriginPosition;
         }
 
-        private void OnBeginDrag(Card _)
+        private void OnBeginDrag()
         {
             canvas.overrideSorting = true;
         }
 
-        private void OnEndDrag(Card _)
+        private void OnEndDrag()
         {
             canvas.overrideSorting = false;
         }
