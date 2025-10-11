@@ -124,7 +124,7 @@ namespace Cardevil
 
                     ctx.Draw(card);
                     if (!ctx.TryGetIndex(card, out var idx)) return null;
-                    card.SetSlot(slots[idx]);
+                    card.UpdateIndex(slots[idx], idx);
 
                     return card;
                 }

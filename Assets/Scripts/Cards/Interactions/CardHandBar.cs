@@ -18,29 +18,15 @@ namespace Cardevil.Cards.Interactions
         [SerializeField] CardVisualSettingSO visualSetting;
         
         [Header("States")]
-        [SerializeField, VisibleOnly] private CardInteractionState interaction;
-        // 카드 관련 상호작용 가능한가?
+        [SerializeField, VisibleOnly] private HandBarState state;
         [SerializeField, VisibleOnly] private bool canInteraction = false;
-        // 카드가 정렬, 소환 등 움직이고 있나?
         [SerializeField, VisibleOnly] private bool isSwapping = false;
 
-        [Header("UI")]
-        public SelectContainer selectContainer;
-        [SerializeField] GameObject dummyCardVisual;
-
-        [Space, SerializeField] BlueFlushChoice blueFlushChoice;
-        [SerializeField] GameObject cardVisualHandler;
-        
-        
-        
         private CardManager _manager;
         private StageCardsContext _ctx;
-        
-        private List<Transform> slots = new();
-        
         private HandBarView _view;
         
-        public Card DraggedCard => interaction.draggedCard;
+        public Card DraggedCard => state.draggedCard;
         public bool CanInput => !isSwapping && CanInteraction;
 
         private bool IsSwapping
@@ -68,24 +54,14 @@ namespace Cardevil.Cards.Interactions
             _manager = manager;
             _ctx = ctx;
             _view = FindObjectsByType<HandBarView>(FindObjectsSortMode.None)[0];
-            _view.InitButtons(Use, Discard, SortByNumber, SortByIcon);
+            _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
         }
 
         public void Clear()
         {
             CanInteraction = false;
-
-            foreach (var slot in slots)
-            {
-                foreach (Transform child in slot)
-                    Destroy(child.gameObject);
-            }
-            if (slots.Count < _manager.MaxHandCount)
-            {
-                for (int i = 0; i < _manager.MaxHandCount; i++)
-                    slots.Add(Managers.Resource.Instantiate("Cards/Slot", transform).transform);
-            }
-
+            _view.Clear();
+            _view.ConfigureSlots(Managers.Card.MaxHandCount);
             UpdateUI();
         }
 
@@ -93,7 +69,7 @@ namespace Cardevil.Cards.Interactions
         {
             if (!CanInput)
                 return;
-            if (!interaction.draggedCard)
+            if (!state.draggedCard)
                 return;
             DetectSwap();
         }
@@ -127,15 +103,15 @@ namespace Cardevil.Cards.Interactions
         
         private void OnCardPointerDown(Card card, CardPointerArgs args)
         {
-            interaction.activateCard = card;
-            interaction.pointerDownTime = args.time;
+            state.activateCard = card;
+            state.pointerDownTime = args.time;
         }
 
         private void OnCardPointerUp(Card card, CardPointerArgs args)
         {
-            if (interaction.activateCard != card) return;
-            if (args.time - interaction.pointerDownTime > visualSetting.ClickDetectThreshold) return;
-            interaction.activateCard = null;
+            if (state.activateCard != card) return;
+            if (args.time - state.pointerDownTime > visualSetting.ClickDetectThreshold) return;
+            state.activateCard = null;
 
             if (_ctx.Selects.Contains(card))
             {
@@ -154,25 +130,14 @@ namespace Cardevil.Cards.Interactions
         
         private void BeginDrag()
         {
-            interaction.draggedCard = interaction.activateCard;
-            interaction.activateCard = null;
+            state.draggedCard = state.activateCard;
+            state.activateCard = null;
             UpdateUI();
         }
 
         private void EndDrag()
         {
-            var d = interaction.draggedCard;
-            if (d == null)
-                return;
-
-            d.transform.DOLocalMove(
-                    endValue: d.IsSelected
-                        ? new Vector3(0, visualSetting.SelectOffset, 0)
-                        : Vector3.zero,
-                    duration: visualSetting.EndDragTweenDuration)
-                .SetEase(Ease.OutBack);
-
-            interaction.draggedCard = null;
+            state.draggedCard = null;
             UpdateUI();
         }
 
@@ -182,7 +147,7 @@ namespace Cardevil.Cards.Interactions
 
         private void DetectSwap()
         {
-            var dragged = interaction.draggedCard;
+            var dragged = state.draggedCard;
             if (!dragged || _ctx == null) return;
 
             if (!dragged.IsDragging) return;
@@ -217,7 +182,7 @@ namespace Cardevil.Cards.Interactions
         {
             IsSwapping = true;
 
-            _manager.StageCardsCtx.Swap(interaction.draggedCard, index);
+            _manager.StageCardsCtx.Swap(state.draggedCard, index);
             UpdateSlots();
 
             IsSwapping = false;
@@ -227,19 +192,19 @@ namespace Cardevil.Cards.Interactions
 
         #region Slot
 
-        public void UpdateSlots()
+        private void UpdateSlots()
         {
             foreach (var card in _ctx.Hand)
             {
-                if (!_ctx.TryGetIndex(card, out var idx)) continue;
-                card.SetSlot(slots[idx], isDragging: card == interaction.draggedCard);
+                if (!_ctx.TryGetIndex(card, out var index)) continue;
+                _view.SetCardToSlot(card, index);
             }          
         }
 
         public void MoveToHandBar(int index)
         {
             var card = _ctx.GetHandCard(index);
-            card.SetSlot(slots[index], isDragging: card == interaction.draggedCard);
+            _view.SetCardToSlot(card, index);
             card.CompleteReroll(this);
             AddListeners(card);
         }
@@ -353,8 +318,8 @@ namespace Cardevil.Cards.Interactions
         // - - - - - - - - - - -
         private void UpdateUI()
         {
-            var canUse = CanInput && _ctx.CanUseCard && !interaction.draggedCard;
-            var canDiscard = CanInput && _ctx.SelectCount > 0 && !interaction.draggedCard;
+            var canUse = CanInput && _ctx.CanUseCard && !state.draggedCard;
+            var canDiscard = CanInput && _ctx.SelectCount > 0 && !state.draggedCard;
             var viewState = new HandBarViewState(canUse, canDiscard, true, _ctx.DeckCount, _ctx.DiscardRemainCount);
             _view.UpdateUI(viewState);
         }
@@ -379,7 +344,7 @@ namespace Cardevil.Cards.Interactions
         #region nested
 
         [Serializable]
-        private struct CardInteractionState
+        private struct HandBarState
         {
             public Card activateCard;
             public float pointerDownTime;

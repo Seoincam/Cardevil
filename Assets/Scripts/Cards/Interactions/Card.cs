@@ -3,6 +3,7 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
+using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,7 +21,7 @@ namespace Cardevil.Cards.Interactions
         [Header("Card")]
         [SerializeField, VisibleOnly] private CardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
-        [SerializeField, VisibleOnly] private DragState drag;
+        [SerializeField, VisibleOnly] private CardState state;
         
         public event Action DragStarted, DragEnded, Discarded, Destroyed;
         public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
@@ -57,15 +58,15 @@ namespace Cardevil.Cards.Interactions
         }
         
         public CardData Data => data;
-        public bool IsSelected => drag.isSelected;
-        public bool IsDragging => drag.isDragging;
-        public bool IsReroll => drag.isReroll;
+        public bool IsSelected => state.isSelected;
+        public bool IsDragging => state.isDragging;
+        public bool IsReroll => state.isReroll;
         private bool CanDrag
         {
             get
             {
-                if (drag.isDiscarded) return false;
-                if (drag.isReroll) return false;
+                if (state.isDiscarded) return false;
+                if (state.isReroll) return false;
                 if (!_handBar.CanInput) return false;
                 if (_handBar.DraggedCard && _handBar.DraggedCard != this) return false;
                 return true;
@@ -81,18 +82,18 @@ namespace Cardevil.Cards.Interactions
 
         public void Clear()
         {
-            drag.isReroll = false;
-            drag.isDragging = false;
-            drag.isSelected = false;
-            drag.isDiscarded = false;
+            state.isReroll = false;
+            state.isDragging = false;
+            state.isSelected = false;
+            state.isDiscarded = false;
             if (visual != null) { visual.Clear(); visual = null; }
         }
 
         private void Update()
         {
-            if (drag.isDiscarded) return;
+            if (state.isDiscarded) return;
 
-            if (drag.isDragging)
+            if (state.isDragging)
             {
                 // var targetPosition = Input.mousePosition - pointerOffset;
                 var targetPosition = Input.mousePosition;
@@ -112,7 +113,7 @@ namespace Cardevil.Cards.Interactions
         {
             this.data = data;
             _handBar = handBar;
-            drag.isReroll = false;
+            state.isReroll = false;
             CardVisual.Init(this);
         }
         
@@ -122,7 +123,7 @@ namespace Cardevil.Cards.Interactions
         public void SpawnAsReroll(CardData data)
         {
             this.data = data;
-            drag.isReroll = true;
+            state.isReroll = true;
             CardVisual.Init(this);
         }
         
@@ -133,28 +134,27 @@ namespace Cardevil.Cards.Interactions
         public void CompleteReroll(CardHandBar handBar)
         {
             _handBar = handBar;
-            drag.isReroll = false;
+            state.isReroll = false;
             RerollEnded?.Invoke();
         }
         
         /// <summary>
-        /// 부모 Slot을 설정. 위치를 결정하는데 사용.
+        /// Slot 상의 Index를 업데이트함.
         /// </summary>
-        public void SetSlot(Transform slot, bool isDragging = false)
+        public void UpdateIndex(int slotIndex)
         {
-            transform.SetParent(slot);
+            if (!state.isDragging)
+            {
+                float newY = state.isSelected ? visualSetting.SelectOffset : 0;
+                transform.localPosition = new Vector3(0, newY, 0);
+            }
 
-            if (!isDragging)
-                transform.localPosition = drag.isSelected
-                    ? new Vector3(0, visualSetting.SelectOffset, 0)
-                    : Vector3.zero;
-
-            visual.UpdateIndex();
+            visual.UpdateIndex(slotIndex);
         }
 
         public void Discard()
         {
-            drag.isDiscarded = true;
+            state.isDiscarded = true;
             Discarded?.Invoke();
         }
 
@@ -170,13 +170,13 @@ namespace Cardevil.Cards.Interactions
         }
         
         /// <summary>
-        /// Select 여부를 결정.
+        /// Select 여부를 설정.
         /// </summary>
-        public void SetSelect(bool isSelected)
+        public void SetSelect(bool value)
         {
-            drag.isSelected = isSelected;
-            var newY = isSelected ? visualSetting.SelectOffset : 0;
-            transform.localPosition = new Vector3(0, newY, transform.localPosition.z);
+            state.isSelected = value;
+            float newY = value ? visualSetting.SelectOffset : 0;
+            transform.localPosition = new Vector3(0, newY, 0);
         }
 
 
@@ -213,7 +213,7 @@ namespace Cardevil.Cards.Interactions
                     return;
             
                 // TODO: 실행자 수정
-                _handBar.selectContainer.OpenSelection(this);
+                // _handBar.selectContainer.OpenSelection(this);
                 ValueSelectionStarted?.Invoke(this);
             }
         }
@@ -227,7 +227,7 @@ namespace Cardevil.Cards.Interactions
                 return;
 
             DragStarted?.Invoke();
-            drag.isDragging = true;
+            state.isDragging = true;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -243,7 +243,13 @@ namespace Cardevil.Cards.Interactions
                 return;
 
             DragEnded?.Invoke();
-            drag.isDragging = false;
+            transform.DOLocalMove(
+                    endValue: state.isSelected
+                        ? new Vector3(0, visualSetting.SelectOffset, 0)
+                        : Vector3.zero,
+                    duration: visualSetting.EndDragTweenDuration)
+                .SetEase(Ease.OutBack);
+            state.isDragging = false;
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -263,7 +269,7 @@ namespace Cardevil.Cards.Interactions
         #region Nested
         
         [Serializable]
-        private struct DragState
+        private struct CardState
         {
             public bool isSelected, isDragging, isDiscarded, isReroll;
             public float pointerDownTime, pointerUpTime;

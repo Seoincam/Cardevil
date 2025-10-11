@@ -144,10 +144,9 @@ namespace Cardevil.Cards.Interactions
         #endregion
 
 
-        public void UpdateIndex()
+        public void UpdateIndex(int index)
         {
-            if (!Managers.Card.StageCardsCtx.TryGetIndex(parentCard, out var idx)) return;
-            transform.SetSiblingIndex(idx);
+            transform.SetSiblingIndex(index);
         }
 
 

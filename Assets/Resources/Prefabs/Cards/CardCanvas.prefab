@@ -1074,6 +1074,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3793904579827459190}
   - component: {fileID: 2445068190733357014}
+  - component: {fileID: 6095588788114922307}
   - component: {fileID: 8120841386423099128}
   - component: {fileID: 174999114468985003}
   - component: {fileID: 2091001320389122585}
@@ -1126,7 +1127,24 @@ MonoBehaviour:
   dummyCardVisual: {fileID: 6871754766093025274, guid: f34fe0959e61c43f4a75a209e3719c42, type: 3}
   blueFlushChoice: {fileID: 0}
   cardVisualHandler: {fileID: 1777876232332669533}
-  deck: {fileID: 8553997053376052617}
+--- !u!114 &6095588788114922307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2513949759068103829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81e4e432847d46a1a18935d6da69f2bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useButton: {fileID: 908310980731814065}
+  discardButton: {fileID: 6425291255583448941}
+  sortByNumberButton: {fileID: 1191654336244925079}
+  sortByIconButton: {fileID: 5804135477851645026}
+  deckCountText: {fileID: 8023658511799852321}
+  discardCountText: {fileID: 385391504916124815}
 --- !u!222 &8120841386423099128
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1397,60 +1415,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &3596358153095860360
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7492607779015581931}
-  - component: {fileID: 2500703766280824320}
-  m_Layer: 5
-  m_Name: HandBarView
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &7492607779015581931
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3596358153095860360}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2489317077210643816}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2500703766280824320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3596358153095860360}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81e4e432847d46a1a18935d6da69f2bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useButton: {fileID: 908310980731814065}
-  discardButton: {fileID: 6425291255583448941}
-  sortByNumberButton: {fileID: 1191654336244925079}
-  sortByIconButton: {fileID: 5804135477851645026}
-  deckCountText: {fileID: 8023658511799852321}
-  discardCountText: {fileID: 385391504916124815}
 --- !u!1 &3949272647517964315
 GameObject:
   m_ObjectHideFlags: 0
@@ -3311,7 +3275,6 @@ RectTransform:
   - {fileID: 4710142134123241251}
   - {fileID: 704551534398504556}
   - {fileID: 4445567398809606310}
-  - {fileID: 7492607779015581931}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
