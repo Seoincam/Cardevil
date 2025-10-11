@@ -26,11 +26,6 @@ namespace Cardevil.Cards.Interactions
 
         [Header("UI")]
         public SelectContainer selectContainer;
-        [SerializeField] Button useCardButton;
-        [SerializeField] Button discardCardButton;
-        [SerializeField] Button sortByNumberButton;
-        [SerializeField] Button sortByIconButton;
-        [SerializeField] TextMeshProUGUI deckCountText;
         [SerializeField] GameObject dummyCardVisual;
 
         [Space, SerializeField] BlueFlushChoice blueFlushChoice;
@@ -38,14 +33,13 @@ namespace Cardevil.Cards.Interactions
         
         
         
-        
-        public CardDeckVisual deck;
-        
         private CardManager _manager;
         private StageCardsContext _ctx;
         
         private List<Transform> slots = new();
-
+        
+        private HandBarView _view;
+        
         public Card DraggedCard => interaction.draggedCard;
         public bool CanInput => !isSwapping && CanInteraction;
 
@@ -73,12 +67,8 @@ namespace Cardevil.Cards.Interactions
         {
             _manager = manager;
             _ctx = ctx;
-
-            // Init Buttons
-            useCardButton.onClick.AddListener(Use);
-            discardCardButton.onClick.AddListener(Discard);
-            sortByNumberButton.onClick.AddListener(SortByNumber);
-            sortByIconButton.onClick.AddListener(SortByIcon);
+            _view = FindObjectsByType<HandBarView>(FindObjectsSortMode.None)[0];
+            _view.InitButtons(Use, Discard, SortByNumber, SortByIcon);
         }
 
         public void Clear()
@@ -96,7 +86,7 @@ namespace Cardevil.Cards.Interactions
                     slots.Add(Managers.Resource.Instantiate("Cards/Slot", transform).transform);
             }
 
-            UpdateDeckCardCount();
+            UpdateUI();
         }
 
         private void Update()
@@ -335,7 +325,7 @@ namespace Cardevil.Cards.Interactions
             AddListeners(card);
 
             _ctx.Draw(card);
-            UpdateDeckCardCount();
+            UpdateUI();
             UpdateSlots();
 
             return card;
@@ -364,17 +354,9 @@ namespace Cardevil.Cards.Interactions
         private void UpdateUI()
         {
             var canUse = CanInput && _ctx.CanUseCard && !interaction.draggedCard;
-            useCardButton.interactable = canUse;
-            UpdateDeckCardCount();
-
             var canDiscard = CanInput && _ctx.SelectCount > 0 && !interaction.draggedCard;
-            discardCardButton.interactable = canDiscard;
-            discardCardButton.GetComponentInChildren<Text>().text = $"버리기 ({_ctx.DiscardRemainCount})";
-        }
-
-        private void UpdateDeckCardCount()
-        {
-            deckCountText.text = $"{_ctx.DeckCount} / 50";
+            var viewState = new HandBarViewState(canUse, canDiscard, true, _ctx.DeckCount, _ctx.DiscardRemainCount);
+            _view.UpdateUI(viewState);
         }
 
 
@@ -383,14 +365,14 @@ namespace Cardevil.Cards.Interactions
             amount = Mathf.Min(amount, _ctx.DiscardCount);
             for (int i = 0; i < amount; i++)
             {
-                var dummyCard = Instantiate(dummyCardVisual, parent: deck.Front.transform);
-                dummyCard.transform.SetSiblingIndex(1);
-                var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
-                                            .SetEase(Ease.OutCubic);
-                await tween.AsyncWaitForCompletion();
-                Destroy(dummyCard);
-                _ctx.Revive();
-                UpdateDeckCardCount();
+                // var dummyCard = Instantiate(dummyCardVisual, parent: deck.Front.transform);
+                // dummyCard.transform.SetSiblingIndex(1);
+                // var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
+                //                             .SetEase(Ease.OutCubic);
+                // await tween.AsyncWaitForCompletion();
+                // Destroy(dummyCard);
+                // _ctx.Revive();
+                // UpdateUI();
             }
         }
 
