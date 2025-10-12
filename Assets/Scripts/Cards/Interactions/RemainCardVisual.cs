@@ -23,8 +23,8 @@ public class RemainCardVisual : MonoBehaviour
 
     public void UpdateVisual()
     {
-        isRemaining = Managers.Card.StageCardsCtx.Deck
-                        .Any(c => c.id == data.id);
+        // isRemaining = Managers.Card.StageCardsCtx.Deck
+        //                 .Any(c => c.id == data.id);
         // 색 설정
         cardImage.color = isRemaining ? Color.white : new Color(.5f, .5f, .5f);
 

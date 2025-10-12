@@ -1,75 +1,96 @@
 using UnityEngine;
-using DG.Tweening;
 using System;
 using Cysharp.Threading.Tasks;
-using UnityEngine.UI;
 using Cardevil.Systems;
-using TMPro;
-using System.Collections.Generic;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
-using Cardevil.Attributes;
+using Cardevil.Utils;
+using System.Linq;
+using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.Interactions
 {
-    public class CardHandBar : MonoBehaviour, ITurnPlayerInput, IClearable
+    public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
-        [Header("SO")]
-        [SerializeField] CardVisualSettingSO visualSetting;
+        public event Action<HandRanking> OnSelectsChanged;
         
-        [Header("States")]
-        [SerializeField, VisibleOnly] private HandBarState state;
-        [SerializeField, VisibleOnly] private bool canInteraction = false;
-        [SerializeField, VisibleOnly] private bool isSwapping = false;
-
-        private CardManager _manager;
-        private StageCardsContext _ctx;
-        private HandBarView _view;
+        private StageCardsModel _model;
+        private StageCardsView _view;
+        private CardVisualSettingSO _visualSetting;
         
-        public Card DraggedCard => state.draggedCard;
-        public bool CanInput => !isSwapping && CanInteraction;
+        private StageCardsPresenterState _state;
+        private bool _canInteract;
+        private bool _isSwapping;
+        
+        public Card DraggedCard => _state.draggedCard;
+        public bool CanInput => !_isSwapping && CanInteraction;
 
         private bool IsSwapping
         {
-            get => isSwapping;
+            get => _isSwapping;
             set
             {
-                isSwapping = value;
+                _isSwapping = value;
                 UpdateUI();
             }
         }
 
         private bool CanInteraction
         {
-            get => canInteraction;
+            get => _canInteract;
             set
             {
-                canInteraction = value;
+                _canInteract = value;
                 UpdateUI();
             }
         }
-
-        public void Init(CardManager manager, StageCardsContext ctx)
+        
+        public void Init(StageCardsModel model)
         {
-            _manager = manager;
-            _ctx = ctx;
-            _view = FindObjectsByType<HandBarView>(FindObjectsSortMode.None)[0];
+            if (model == null)
+            {
+                LogEx.LogError("Init() 실패 — model이 null입니다.");
+                return;
+            }
+            _model = model;
+
+            // View 찾기
+            var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
+            if (views == null || views.Length == 0)
+            {
+                LogEx.LogError("StageCardsView를 찾을 수 없음. 씬에 View가 배치되어 있는지 확인하세요.");
+                return;
+            }
+            _view = views[0];
             _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
+
+            // SO 로드
+            string path = "ScriptableObjects/Cards/CardVisualSetting";
+            _visualSetting = Resources.Load<CardVisualSettingSO>(path);
+            if (_visualSetting == null)
+            {
+                LogEx.LogError($"CardVisualSettingSO 로드 실패. 경로가 올바른지 확인하세요: {path}");
+                return;
+            }
+        }
+        
+        public void SetUp(int maxHandCount)
+        {
+            _view.ConfigureSlots(maxHandCount);
         }
 
         public void Clear()
         {
             CanInteraction = false;
             _view.Clear();
-            _view.ConfigureSlots(Managers.Card.MaxHandCount);
             UpdateUI();
         }
-
+        
         private void Update()
         {
             if (!CanInput)
                 return;
-            if (!state.draggedCard)
+            if (!_state.draggedCard)
                 return;
             DetectSwap();
         }
@@ -94,7 +115,7 @@ namespace Cardevil.Cards.Interactions
         
         // 플레이어 턴이면서 카드 값 선택이 바뀔 때.
         // Card.onselectEnded에서 호출
-        public void OnSelectValueEnd(Card _)
+        private void OnSelectValueEnd(Card _)
         {
             UpdateUI();
         }
@@ -103,41 +124,43 @@ namespace Cardevil.Cards.Interactions
         
         private void OnCardPointerDown(Card card, CardPointerArgs args)
         {
-            state.activateCard = card;
-            state.pointerDownTime = args.time;
+            _state.activateCard = card;
+            _state.pointerDownTime = args.time;
         }
 
         private void OnCardPointerUp(Card card, CardPointerArgs args)
         {
-            if (state.activateCard != card) return;
-            if (args.time - state.pointerDownTime > visualSetting.ClickDetectThreshold) return;
-            state.activateCard = null;
+            if (_state.activateCard != card) return;
+            if (args.time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
+            _state.activateCard = null;
 
-            if (_ctx.Selects.Contains(card))
+            if (_model.Selection.Contains(card))
             {
                 card.SetSelect(false);
-                _ctx.Deselect(card);
+                _model.Deselect(card);
                 UpdateUI();
+                OnSelectsChanged?.Invoke(_model.GetHandRanking());
                 return;
             }
 
-            if (_ctx.SelectCount >= 4) return;
+            if (_model.Selection.Count >= 4) return;
             
             card.SetSelect(true);
-            _ctx.Select(card);
+            _model.Select(card);
+            OnSelectsChanged?.Invoke(_model.GetHandRanking());
             UpdateUI();
         }
         
         private void BeginDrag()
         {
-            state.draggedCard = state.activateCard;
-            state.activateCard = null;
+            _state.draggedCard = _state.activateCard;
+            _state.activateCard = null;
             UpdateUI();
         }
 
         private void EndDrag()
         {
-            state.draggedCard = null;
+            _state.draggedCard = null;
             UpdateUI();
         }
 
@@ -147,22 +170,22 @@ namespace Cardevil.Cards.Interactions
 
         private void DetectSwap()
         {
-            var dragged = state.draggedCard;
-            if (!dragged || _ctx == null) return;
+            var dragged = _state.draggedCard;
+            if (!dragged || _model == null) return;
 
             if (!dragged.IsDragging) return;
 
             var draggedX = dragged.transform.position.x;
-            if (!_ctx.TryGetIndex(dragged, out var draggedIdx)) return;
+            if (!_model.TryGetIndex(dragged, out var draggedIdx)) return;
 
-            for (int i = 0; i < _ctx.HandCount; i++)
+            for (int i = 0; i < _model.Hand.Count; i++)
             {
-                var other = _ctx.GetHandCard(i);
+                var other = _model.GetHandCard(i);
                 if (!other || other == dragged) continue;
 
                 var otherX = other.transform.position.x;
 
-                if (!_ctx.TryGetIndex(other, out var otherIdx)) continue;
+                if (!_model.TryGetIndex(other, out var otherIdx)) continue;
 
                 if (draggedX > otherX && draggedIdx < otherIdx)
                 {
@@ -182,7 +205,7 @@ namespace Cardevil.Cards.Interactions
         {
             IsSwapping = true;
 
-            _manager.StageCardsCtx.Swap(state.draggedCard, index);
+            _model.Swap(_state.draggedCard, index);
             UpdateSlots();
 
             IsSwapping = false;
@@ -194,16 +217,16 @@ namespace Cardevil.Cards.Interactions
 
         private void UpdateSlots()
         {
-            foreach (var card in _ctx.Hand)
+            foreach (var card in _model.Hand)
             {
-                if (!_ctx.TryGetIndex(card, out var index)) continue;
+                if (!_model.TryGetIndex(card, out var index)) continue;
                 _view.SetCardToSlot(card, index);
             }          
         }
 
         public void MoveToHandBar(int index)
         {
-            var card = _ctx.GetHandCard(index);
+            var card = _model.GetHandCard(index);
             _view.SetCardToSlot(card, index);
             card.CompleteReroll(this);
             AddListeners(card);
@@ -216,20 +239,20 @@ namespace Cardevil.Cards.Interactions
         private void Use()
         {
             CanInteraction = false;
-            CardResultEvaluator.PreEvaluate(_ctx.Selects);
+            CardResultEvaluator.PreEvaluate(_model.SortedSelection);
             _ = UseAsync();
         }
 
         private void Discard()
         {
             // TODO: 버리기 횟수 0되면 못 버리게
-            _ctx.ReduceDiscardCount();
+            _model.TryReduceDiscardRemainCount();
             _ = DiscardAndDrawAsync();
         }
 
         private async UniTask UseAsync()
         {
-            await _manager.EvaluationEvent.InvokeAsync();
+            await Managers.Card.EvaluationEvent.InvokeAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             await DiscardAsync();
 
@@ -238,26 +261,25 @@ namespace Cardevil.Cards.Interactions
 
         private async UniTask DiscardAsync()
         {
-            foreach (var card in _ctx.SortedSelect)
+            foreach (var card in _model.SortedSelection)
             {
                 RemoveListeners(card);
-                _ctx.Discard(card);
-                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DiscardInterval));
+                _model.Discard(card);
+                card.Discard();
+                await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
                 UpdateSlots();
             }
-
-            _ctx.Selects.Clear();
         }
 
         private async UniTask DrawAsync()
         {
             IsSwapping = true;
-            var count = Managers.Card.MaxHandCount - _ctx.HandCount;
+            var count = Managers.Card.MaxHandCount - _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
                 var card = Spawn();
                 card.Drawn?.Invoke();
-                await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DrawInterval));
+                await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }
 
             IsSwapping = false;
@@ -267,19 +289,18 @@ namespace Cardevil.Cards.Interactions
         {
             IsSwapping = true;
             await DiscardAsync();
-            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.DiscardDrawInterval));
+            await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardDrawInterval));
             await DrawAsync();
             IsSwapping = false;
         }
 
         #endregion
         
-
         // Spawn
         // - - - - - - - - - - -
         private Card Spawn()
         {
-            var cardData = _ctx.PopCard();
+            var cardData = _model.PopCard();
             if (cardData == null)
                 return null;
 
@@ -289,45 +310,42 @@ namespace Cardevil.Cards.Interactions
             // 이벤트 구독
             AddListeners(card);
 
-            _ctx.Draw(card);
+            _model.Draw(card);
             UpdateUI();
             UpdateSlots();
 
             return card;
         }
-
-
+        
         // Sort
         // - - - - - - - - - - -
         private void SortByNumber()
         {
-            _ctx.SortByNumber();
+            _model.SortByNumber();
             UpdateUI();
             UpdateSlots();
         }
 
         private void SortByIcon()
         {
-            _ctx.SortByIcon();
+            _model.SortByIcon();
             UpdateUI();
             UpdateSlots();
         }
-
-
+        
         // UI
         // - - - - - - - - - - -
         private void UpdateUI()
         {
-            var canUse = CanInput && _ctx.CanUseCard && !state.draggedCard;
-            var canDiscard = CanInput && _ctx.SelectCount > 0 && !state.draggedCard;
-            var viewState = new HandBarViewState(canUse, canDiscard, true, _ctx.DeckCount, _ctx.DiscardRemainCount);
+            var canUse = CanInput && _model.CanUseCard && !_state.draggedCard;
+            var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
+            var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemainCount);
             _view.UpdateUI(viewState);
         }
-
-
+        
         public async UniTask Revive(int amount)
         {
-            amount = Mathf.Min(amount, _ctx.DiscardCount);
+            amount = Mathf.Min(amount, _model.DiscardPile.Count);
             for (int i = 0; i < amount; i++)
             {
                 // var dummyCard = Instantiate(dummyCardVisual, parent: deck.Front.transform);
@@ -344,7 +362,7 @@ namespace Cardevil.Cards.Interactions
         #region nested
 
         [Serializable]
-        private struct HandBarState
+        private struct StageCardsPresenterState
         {
             public Card activateCard;
             public float pointerDownTime;
@@ -359,7 +377,7 @@ namespace Cardevil.Cards.Interactions
 
         public void ActivateInteraction()
         {
-            _manager.ResultCtx.StepToNext();
+            Managers.Card.ResultCtx.StepToNext();
             cmp = new();
             CanInteraction = true;
         }

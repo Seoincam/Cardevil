@@ -44,7 +44,7 @@ public class DeckRemain : MonoBehaviour
         foreach (var cardVisual in cardVisuals)
             cardVisual.UpdateVisual();
 
-        remainText.text = $"{Managers.Card.StageCardsCtx.DeckCount}/50";
+        // remainText.text = $"{Managers.Card.StageCardsCtx.DeckCount}/50";
 
         gameObject.SetActive(true);
     }

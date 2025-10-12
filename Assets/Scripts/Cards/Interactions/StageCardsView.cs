@@ -1,6 +1,5 @@
 using Cardevil.Core;
 using Cardevil.Utils;
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Cardevil.Cards.Interactions
 {
-    public class HandBarView: MonoBehaviour, IClearable
+    public class StageCardsView: MonoBehaviour, IClearable
     {
         [Header("Buttons")]
         [SerializeField] private Button useButton;
@@ -21,8 +20,12 @@ namespace Cardevil.Cards.Interactions
         [SerializeField] private TextMeshProUGUI deckCountText;
         [SerializeField] private TextMeshProUGUI discardCountText;
         
-        private List<RectTransform> slots = new();
-        private HandBarViewState? _lastState; // 같은 값 재적용 방지
+        [Header("Transform")]
+        [SerializeField] private Transform bar;
+        
+        private readonly List<RectTransform> _slots = new();
+        private StageCardsViewState? _lastState; // 같은 값 재적용 방지
+        
         private void OnValidate()
         {
             if (useButton == null) LogEx.LogError("useButton == null");
@@ -39,7 +42,7 @@ namespace Cardevil.Cards.Interactions
         }
 
         /// <summary>
-        /// HandBar의 각 버튼에 전달된 UnityAction을 바인딩.  
+        /// 각 버튼에 전달된 UnityAction을 바인딩.  
         /// 기존에 등록된 모든 리스너를 제거한 뒤 새로 지정된 콜백을 연결.
         /// </summary>
         /// <param name="use">‘사용하기’ 버튼 클릭 시 호출될 콜백</param>
@@ -61,10 +64,10 @@ namespace Cardevil.Cards.Interactions
 
         
         /// <summary>
-        /// HandBar의 UI 상태를 전달받은 <see cref="HandBarViewState"/> 값으로 갱신.  
+        /// UI 상태를 전달받은 <see cref="StageCardsViewState"/> 값으로 갱신.  
         /// 직전 상태(<c>_lastState</c>)와 비교하여 변경된 항목만 업데이트.  
         /// </summary>
-        public void UpdateUI(HandBarViewState state)
+        public void UpdateUI(StageCardsViewState state)
         {
             if (_lastState is { } prev)
             {
@@ -98,16 +101,16 @@ namespace Cardevil.Cards.Interactions
         /// </summary>
         public void ConfigureSlots(int slotCount)
         {
-            while (slots.Count < slotCount)
+            while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate("Cards/Slot", transform).GetComponent<RectTransform>();
-                slots.Add(slot);
+                var slot = Managers.Resource.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
+                _slots.Add(slot);
             }
 
-            while (slots.Count > slotCount)
+            while (_slots.Count > slotCount)
             {
-                var last = slots[^1];
-                slots.RemoveAt(slots.Count - 1);
+                var last = _slots[^1];
+                _slots.RemoveAt(_slots.Count - 1);
                 Managers.Resource.Destroy(last.gameObject);
             }
         }
@@ -117,7 +120,7 @@ namespace Cardevil.Cards.Interactions
         /// </summary>
         public void SetCardToSlot(Card card, int slotIndex)
         {
-            card.transform.SetParent(slots[slotIndex]);
+            card.transform.SetParent(_slots[slotIndex]);
             card.UpdateIndex(slotIndex);
         }
     }

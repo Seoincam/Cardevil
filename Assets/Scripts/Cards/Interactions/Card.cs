@@ -36,7 +36,7 @@ namespace Cardevil.Cards.Interactions
         public Action Drawn; 
         
         private Poolable _poolable;
-        private CardHandBar _handBar;
+        private StageCardsPresenter _handBar;
         
         private CardVisual CardVisual
         {
@@ -109,7 +109,7 @@ namespace Cardevil.Cards.Interactions
         /// <summary>
         /// HandBar에서 Spawn 후 Initializer.
         /// </summary>
-        public void SpawnInHand(CardHandBar handBar, CardData data)
+        public void SpawnInHand(StageCardsPresenter handBar, CardData data)
         {
             this.data = data;
             _handBar = handBar;
@@ -131,7 +131,7 @@ namespace Cardevil.Cards.Interactions
         /// Reroll이 끝나고 HandBar로 옮겨질 때 추가적인 Initializer.
         /// </summary>
         /// <param name="handBar"></param>
-        public void CompleteReroll(CardHandBar handBar)
+        public void CompleteReroll(StageCardsPresenter handBar)
         {
             _handBar = handBar;
             state.isReroll = false;

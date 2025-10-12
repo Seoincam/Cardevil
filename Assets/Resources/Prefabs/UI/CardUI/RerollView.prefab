@@ -684,7 +684,7 @@ GameObject:
   - component: {fileID: 2450214189888731452}
   - component: {fileID: 7304566797924313912}
   m_Layer: 5
-  m_Name: Do Reroll Button
+  m_Name: Do Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -801,9 +801,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3247859238769854385}
-  - component: {fileID: 5262166093759926675}
+  - component: {fileID: 3355673790726964976}
   m_Layer: 5
-  m_Name: RerollHandler
+  m_Name: RerollView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -834,7 +834,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &5262166093759926675
+--- !u!114 &3355673790726964976
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -843,20 +843,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5287787895408358103}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68efff1ca335e428891392004f312412, type: 3}
+  m_Script: {fileID: 11500000, guid: 96bb31b9406e411bb1f81b3bded9e7bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visual: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
-  deck: {fileID: 0}
-  cardPrefab: {fileID: 78186141462634609, guid: f6140cd23d5414d4d96e15fc0a8b29ab, type: 3}
-  slotPrefab: {fileID: 1054305820576586383, guid: 3a89c663dae8a4edd82393ad2a6a7a9e, type: 3}
-  slots: []
-  backgroundPanel: {fileID: 8337301250976505008}
-  bar: {fileID: 3833381169485473935}
-  countText: {fileID: 3338182646698025903}
+  doButton: {fileID: 7304566797924313912}
   endButton: {fileID: 7681713255777851882}
-  doRerollButton: {fileID: 7304566797924313912}
   togglePreviewButton: {fileID: 9077955937329751370}
+  ticketCountText: {fileID: 3338182646698025903}
+  bar: {fileID: 3833381169485473935}
+  background: {fileID: 2174328575837546702}
 --- !u!1 &8661071473389613646
 GameObject:
   m_ObjectHideFlags: 0
