@@ -1,5 +1,7 @@
 using Cardevil.Core;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -36,9 +38,45 @@ namespace Cardevil.Cards.Interactions
             if (discardCountText == null) LogEx.LogError("discardCountText == null");
         }
         
+        /// <summary>
+        /// 뷰를 초기 상태로 정리.
+        /// 생성된 슬롯을 제거, 버튼의 모든 리스너를 해제.
+        /// </summary>
         public void Clear()
         {
             _lastState = null;
+            foreach (var slot in _slots)
+            {
+                if (slot) Managers.Resource.Destroy(slot.gameObject);
+            }
+            _slots.Clear();
+            
+            useButton.onClick.RemoveAllListeners();
+            discardButton.onClick.RemoveAllListeners();
+            sortByNumberButton.onClick.RemoveAllListeners();
+            sortByIconButton.onClick.RemoveAllListeners();
+        }
+
+        /// <summary>
+        /// HandBar UI를 화면에 등장시키는 애니메이션을 실행합니다.  
+        /// </summary>
+        /// <returns>애니메이션 완료 후 완료되는 <see cref="UniTask"/></returns>
+        public async UniTask EnterHandBarAsync()
+        {
+            useButton.transform.localScale = Vector3.zero;
+            discardButton.transform.localScale = Vector3.zero;
+            sortByNumberButton.transform.localScale = Vector3.zero;
+            sortByIconButton.transform.localScale = Vector3.zero;
+
+            await useButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
+            await discardButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
+            await sortByIconButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
+            await sortByNumberButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
+        }
+
+        public async UniTask ExitHandBarAsync()
+        {
+            
         }
 
         /// <summary>

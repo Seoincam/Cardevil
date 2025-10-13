@@ -25,50 +25,25 @@ namespace Cardevil.Cards.Interactions
         
         public event Action DragStarted, DragEnded, Discarded, Destroyed;
         public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
-        
-        // TODO: 외부에서 호출되지 않도록 메서드로 감싸기
-        public Action<Card> ValueSelectionStarted, ValueSelectionEnded;
+        public Action<Card> ValueSelectionStarted, ValueSelectionEnded; // TODO: 외부에서 호출되지 않도록 메서드로 감싸기
 
-        public Action RerollDrawn;
+        public Action RerollDrawn, RerollEnded;
         public Action<Transform> RerollDiscarded;
-        public Action RerollEnded;
-        
         public Action Drawn; 
         
         private Poolable _poolable;
-        private StageCardsPresenter _handBar;
-        
-        private CardVisual CardVisual
-        {
-            get
-            {
-                if (visual == null) visual = CreateCardVisual();
-                return visual;
-
-                CardVisual CreateCardVisual()
-                {
-                    var visualHandler = FindAnyObjectByType<CardVisualHandler>();
-                    if (!visualHandler)
-                        LogEx.LogError("Visual Handler를 찾을 수 없음.");
-
-                    var v = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform).GetComponent<CardVisual>();
-                    return v;
-                }
-            }
-        }
         
         public CardData Data => data;
-        public bool IsSelected => state.isSelected;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
+        
         private bool CanDrag
         {
             get
             {
                 if (state.isDiscarded) return false;
                 if (state.isReroll) return false;
-                if (!_handBar.CanInput) return false;
-                if (_handBar.DraggedCard && _handBar.DraggedCard != this) return false;
+                if (state.isAnyCardDragged && !state.isDragging) return false;
                 return true;
             }
         }
@@ -82,11 +57,8 @@ namespace Cardevil.Cards.Interactions
 
         public void Clear()
         {
-            state.isReroll = false;
-            state.isDragging = false;
-            state.isSelected = false;
-            state.isDiscarded = false;
-            if (visual != null) { visual.Clear(); visual = null; }
+            state = new CardState();
+            if (visual) { visual.Clear(); visual = null; }
         }
 
         private void Update()
@@ -107,35 +79,26 @@ namespace Cardevil.Cards.Interactions
         }
         
         /// <summary>
-        /// HandBar에서 Spawn 후 Initializer.
+        /// 주어진 데이터를 바탕으로 초기화.
+        /// Visual도 함께 생성.
         /// </summary>
-        public void SpawnInHand(StageCardsPresenter handBar, CardData data)
+        public void Init(CardData data)
         {
             this.data = data;
-            _handBar = handBar;
-            state.isReroll = false;
-            CardVisual.Init(this);
+            
+            // Card Visual
+            var visualHandler = GameObject.Find("Card Visual Transform");
+            if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
+
+            var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
+            visual = go.GetComponent<CardVisual>();
+            visual.Init(this);
         }
-        
-        /// <summary>
-        /// Reroll 중 Spawn 후 Initializer.
-        /// </summary>
-        public void SpawnAsReroll(CardData data)
+
+        public void SetRerollState(bool value)
         {
-            this.data = data;
-            state.isReroll = true;
-            CardVisual.Init(this);
-        }
-        
-        /// <summary>
-        /// Reroll이 끝나고 HandBar로 옮겨질 때 추가적인 Initializer.
-        /// </summary>
-        /// <param name="handBar"></param>
-        public void CompleteReroll(StageCardsPresenter handBar)
-        {
-            _handBar = handBar;
-            state.isReroll = false;
-            RerollEnded?.Invoke();
+            state.isReroll = value;
+            if (!value) RerollEnded?.Invoke();
         }
         
         /// <summary>
@@ -177,6 +140,11 @@ namespace Cardevil.Cards.Interactions
             state.isSelected = value;
             float newY = value ? visualSetting.SelectOffset : 0;
             transform.localPosition = new Vector3(0, newY, 0);
+        }
+
+        public void SetAnyCardDragged(bool value)
+        {
+            state.isAnyCardDragged = value;
         }
 
 
@@ -272,6 +240,7 @@ namespace Cardevil.Cards.Interactions
         private struct CardState
         {
             public bool isSelected, isDragging, isDiscarded, isReroll;
+            public bool isAnyCardDragged; // HandBar에서 드래그되고 있는 카드가 있나?
             public float pointerDownTime, pointerUpTime;
         }
 

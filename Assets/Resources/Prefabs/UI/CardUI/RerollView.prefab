@@ -408,7 +408,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -30, y: -30}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5126456587992582197
 CanvasRenderer:
@@ -852,6 +852,7 @@ MonoBehaviour:
   ticketCountText: {fileID: 3338182646698025903}
   bar: {fileID: 3833381169485473935}
   background: {fileID: 2174328575837546702}
+  ticketCountPanel: {fileID: 3644902625432316702}
 --- !u!1 &8661071473389613646
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,7 +865,7 @@ GameObject:
   - component: {fileID: 4604017597514432108}
   - component: {fileID: 517402031735596360}
   m_Layer: 5
-  m_Name: TicketCountPanel
+  m_Name: Ticket Count Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

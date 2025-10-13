@@ -2,6 +2,7 @@ using Cardevil.Attributes;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Pools;
+using Cardevil.Utils;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,6 +28,7 @@ namespace Cardevil.Cards.Interactions
         [Header("Shadow Visual")]
         [SerializeField] Transform shadowTransform;
 
+        private CardDeckVisual _deckVisual;
 
         private Poolable _poolable;
         private Canvas _canvas;
@@ -56,7 +58,7 @@ namespace Cardevil.Cards.Interactions
 
         public void Clear()
         {
-            if (parentCard != null)
+            if (parentCard)
             {
                 UnsubscribeFromParent(parentCard);
                 parentCard = null;
@@ -73,6 +75,8 @@ namespace Cardevil.Cards.Interactions
 
         public void Init(Card parentCard)
         {
+            if (_isInitalized) return;
+            
             this.parentCard = parentCard;
             SubscribeToParent(parentCard);
 
@@ -80,7 +84,12 @@ namespace Cardevil.Cards.Interactions
             // Clear()에서 overrideSorting을 false로 설정해도
             // 실제로 다시 pool에서 꺼낼 때 true가 됨
             _canvas.overrideSorting = false;
-            transform.position = GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().Front.position;
+            
+            var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
+            if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
+            _deckVisual = deckVisuals[0];
+
+            transform.position = _deckVisual.Front.position;
 
             _isInitalized = true;
         }
@@ -227,9 +236,9 @@ namespace Cardevil.Cards.Interactions
 
         private void OnRerollDraw()
         {
-            _canvas.overrideSorting = true;
+            // _canvas.overrideSorting = true;
             
-            GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
+            _deckVisual.OnInteraction();
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                         .SetEase(visualSetting.RerollDrawEase);
 
@@ -257,7 +266,7 @@ namespace Cardevil.Cards.Interactions
 
             tween.OnComplete(() =>
             {
-                GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
+                _deckVisual.OnInteraction();
                 parentCard.Destroy();
             });
         }
@@ -269,7 +278,7 @@ namespace Cardevil.Cards.Interactions
 
         private void OnDraw()
         {
-            GameObject.Find("Deck Button").GetComponent<CardDeckVisual>().OnInteraction();
+            _deckVisual.OnInteraction();
             var tween = transform.DOMove(endValue: parentCard.transform.position, visualSetting.DrawDuration)
                         .SetEase(visualSetting.RerollDrawEase);
 

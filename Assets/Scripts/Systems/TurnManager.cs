@@ -11,8 +11,7 @@ namespace Cardevil.Systems
         private CancellationTokenSource _cts;
         private UniTask _loopTask;
 
-        private ITurnPlayerInput _playerInput;
-        private ITurnRerollInput _rerollInput;
+        private ITurnCardFlow _cardFlow;
         private ITurnPlayerMove _playerMove;
         private ITurnPlayerAction _playerAction;
         private ITurnEnemy _enemy;
@@ -21,19 +20,17 @@ namespace Cardevil.Systems
         public void Clear()
         {
             StopLoopAsync().Forget();
-            _playerInput = null;
-            _rerollInput = null;
+            _cardFlow = null;
             _playerMove = null;
             _playerAction = null;
             _enemy = null;
         }
         
-        public void Init(ITurnRerollInput rerollInput, ITurnPlayerInput playerInput, ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
+        public void Init(ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
         {
             Clear();
-            
-            _rerollInput = rerollInput ?? throw new ArgumentNullException(nameof(rerollInput));
-            _playerInput = playerInput ?? throw new ArgumentNullException(nameof(playerInput));
+
+            _cardFlow = Managers.Card.BuildFlow();
             _playerMove = playerMove ?? throw new ArgumentNullException(nameof(playerMove));
             _playerAction = playerAction ?? throw new ArgumentNullException(nameof(playerAction));
             _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
@@ -94,16 +91,22 @@ namespace Cardevil.Systems
             {
                 // TODO: 적에 대한 설명 표시
                 await _enemy.TurnAttack();
-                await _rerollInput.RerollCard();
 
+                await _cardFlow.EnterRerollPhase(6);
+                await _cardFlow.Reroll.Reroll();
+                await _cardFlow.ExitRerollPhase();
+
+                await _cardFlow.EnterHandPhase();
                 while (!token.IsCancellationRequested)
                 {
-                    await _playerInput.DrawCard();
-                    // TODO: 게임 오버
+                    await _cardFlow.Hand.DrawCard();
+                    if (_cardFlow.Hand.IsNoCard)
+                    {
+                        // TODO: 게임 오버
+                        break;
+                    }
 
-                    _playerInput.ActivateInteraction();
-                    await _playerInput.WaitUserInput();
-                    _playerInput.InactivateInteraction();
+                    await _cardFlow.Hand.WaitUserInput();
 
                     await _playerMove.TurnMove();
                     await _playerAction.TurnAttack();
@@ -130,7 +133,10 @@ namespace Cardevil.Systems
             catch (Exception e)
             {
                 LogEx.LogError($"Loop exception: {e}");
-                // throw;
+            }
+            finally
+            {
+                await _cardFlow.ExitHandPhase();
             }
         }
     }

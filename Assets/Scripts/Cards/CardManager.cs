@@ -18,10 +18,8 @@ namespace Cardevil.Cards
         
         private readonly StageCardsModel _stageCardsModel = new();
         private List<CardData> _runtimeBaseDeck;
-        private int _maxHandCount = 6;
 
-        public ITurnPlayerInput PlayerInput => StageCardsPresenter;
-        public ITurnRerollInput RerollInput => RerollPresenter;
+        private int _maxHandCount = 6;
             
         public IReadOnlyList<CardData> RuntimeBaseDeck
         {
@@ -33,6 +31,12 @@ namespace Cardevil.Cards
             get => _maxHandCount;
         }
 
+        public ITurnCardFlow BuildFlow()
+        {
+            return new CardFlowController(_stageCardsModel, RerollPresenter, StageCardsPresenter);
+        }
+
+        
         public void Init()
         {
             Clear();
@@ -50,16 +54,8 @@ namespace Cardevil.Cards
         {
             Clear();
             _stageCardsModel.InitializeDeck(_runtimeBaseDeck, 3);
-            StageCardsPresenter.Init(_stageCardsModel);          
         }
-        
-
-        private ITurnPlayerInput GetPlayerInput()
-        {
-            return StageCardsPresenter;
-        }
-
-
+       
         public ILockable GetCard()
         {
             // return StageCardsCtx.GetRandomCard();

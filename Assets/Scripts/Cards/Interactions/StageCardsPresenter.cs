@@ -6,6 +6,7 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
 using System.Linq;
+using System.Threading;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.Interactions
@@ -18,9 +19,14 @@ namespace Cardevil.Cards.Interactions
         private StageCardsView _view;
         private CardVisualSettingSO _visualSetting;
         
+        private int _maxHand;
+        
         private StageCardsPresenterState _state;
         private bool _canInteract;
         private bool _isSwapping;
+        private bool _isInitialized;
+
+        private CancellationTokenSource _updateCts = new(); // UpdateAsync에 사용
         
         public Card DraggedCard => _state.draggedCard;
         public bool CanInput => !_isSwapping && CanInteraction;
@@ -45,24 +51,22 @@ namespace Cardevil.Cards.Interactions
             }
         }
         
+        /// <summary>
+        /// StageCardsPresenter 초기화.  
+        /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
+        /// 이미 초기화된 경우 중복 실행을 방지.
+        /// </summary>
+        /// <param name="model">현재 스테이지 카드 상태를 관리하는 <see cref="StageCardsModel"/> 인스턴스</param>
         public void Init(StageCardsModel model)
         {
+            if (_isInitialized) return;
+            
             if (model == null)
             {
                 LogEx.LogError("Init() 실패 — model이 null입니다.");
                 return;
             }
             _model = model;
-
-            // View 찾기
-            var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
-            if (views == null || views.Length == 0)
-            {
-                LogEx.LogError("StageCardsView를 찾을 수 없음. 씬에 View가 배치되어 있는지 확인하세요.");
-                return;
-            }
-            _view = views[0];
-            _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
 
             // SO 로드
             string path = "ScriptableObjects/Cards/CardVisualSetting";
@@ -72,27 +76,85 @@ namespace Cardevil.Cards.Interactions
                 LogEx.LogError($"CardVisualSettingSO 로드 실패. 경로가 올바른지 확인하세요: {path}");
                 return;
             }
-        }
-        
-        public void SetUp(int maxHandCount)
-        {
-            _view.ConfigureSlots(maxHandCount);
+
+            _isInitialized = true;
         }
 
+        /// <summary>
+        /// UI를 초기화, 카드를 슬롯에 배치, 버튼 이벤트를 바인딩.  
+        /// 카드의 시각적 상태를 설정, 입력 감지 Update 루프 시작.
+        /// </summary>
+        /// <param name="maxHand">손패의 최대 개수</param>
+        /// <returns>UI 초기화 완료 후 완료되는 <see cref="UniTask"/></returns>
+        public async UniTask SetUp(int maxHand)
+        {
+            _maxHand = maxHand;
+            
+            // View 생성
+            var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
+            if (views is { Length: > 0 }) _view = views[0];
+            else
+            {
+                Transform canvas = GameObject.Find("CardCanvas").transform;
+                GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
+                _view = go.GetComponent<StageCardsView>();
+            }
+            _view.ConfigureSlots(maxHand);
+            _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
+            
+            // 현재 카드 모두 HandBar 슬롯으로 이동
+            foreach (var card in _model.Hand)
+            {
+                AddListeners(card);
+                card.SetRerollState(false);
+                _model.TryGetIndex(card, out int index);
+                _view.SetCardToSlot(card, index);
+            }
+            
+            await _view.EnterHandBarAsync();
+            
+            // Update Async 구성
+            _updateCts.Cancel();
+            _updateCts = new();
+            UpdateAsync(_updateCts.Token).Forget();
+        }
+
+        /// <summary>
+        /// 스테이지가 종료된 후 UI를 비활성화, 
+        /// 내부 업데이트 루프를 정지시킵니다.
+        /// </summary>
+        /// <returns>UI 비활성화 후 완료되는 <see cref="UniTask"/></returns>
+        public async UniTask Exit()
+        {
+            // Update Async 정지
+            _updateCts.Cancel();
+            
+            await _view.ExitHandBarAsync();
+        }
+
+        /// <summary>
+        /// Presenter의 내부 상태를 초기화합니다.  
+        /// 상호작용 가능 여부를 비활성화하고, View를 파괴합니다.
+        /// </summary>
         public void Clear()
         {
             CanInteraction = false;
+            
+            if (!_view) return;
             _view.Clear();
-            UpdateUI();
+            Managers.Resource.Destroy(_view.gameObject);
         }
         
-        private void Update()
+        // MonoBehaviour의 Update()를 대체
+        private async UniTask UpdateAsync(CancellationToken token)
         {
-            if (!CanInput)
-                return;
-            if (!_state.draggedCard)
-                return;
-            DetectSwap();
+            while (!token.IsCancellationRequested)
+            {
+                if (CanInput && _state.draggedCard)
+                    DetectSwap();
+
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
         }
         
         private void AddListeners(Card card)
@@ -119,6 +181,32 @@ namespace Cardevil.Cards.Interactions
         {
             UpdateUI();
         }
+        
+        #region ITurnPlayerInput
+
+        public bool IsNoCard => false;
+        private UniTaskCompletionSource cmp;
+        
+
+        public async UniTask DrawCard()
+        {
+            await DrawAsync();
+        }
+
+        
+        public async UniTask WaitUserInput()
+        {
+            Managers.Card.ResultCtx.StepToNext();
+            cmp = new();
+            CanInteraction = true;
+            
+            await cmp.Task;
+
+            CanInteraction = false;
+            Managers.Card.ResultCtx.Push();
+        }
+
+        #endregion
         
         #region Card Events
         
@@ -155,12 +243,16 @@ namespace Cardevil.Cards.Interactions
         {
             _state.draggedCard = _state.activateCard;
             _state.activateCard = null;
+            
+            foreach (var card in _model.Hand) card.SetAnyCardDragged(true);
             UpdateUI();
         }
 
         private void EndDrag()
         {
             _state.draggedCard = null;
+            
+            foreach (var card in _model.Hand) card.SetAnyCardDragged(false);
             UpdateUI();
         }
 
@@ -203,12 +295,12 @@ namespace Cardevil.Cards.Interactions
 
         private void Swap(int index)
         {
-            IsSwapping = true;
-
+            Card swapped = _model.GetHandCard(index);
+            _model.TryGetIndex(_state.draggedCard, out int i);
+            
             _model.Swap(_state.draggedCard, index);
-            UpdateSlots();
-
-            IsSwapping = false;
+            _view.SetCardToSlot(swapped, i);
+            _view.SetCardToSlot(_state.draggedCard, index);
         }
 
         #endregion
@@ -223,15 +315,6 @@ namespace Cardevil.Cards.Interactions
                 _view.SetCardToSlot(card, index);
             }          
         }
-
-        public void MoveToHandBar(int index)
-        {
-            var card = _model.GetHandCard(index);
-            _view.SetCardToSlot(card, index);
-            card.CompleteReroll(this);
-            AddListeners(card);
-        }
-
         #endregion
 
         #region Use/Draw/Discard
@@ -305,7 +388,7 @@ namespace Cardevil.Cards.Interactions
                 return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.SpawnInHand(handBar: this, cardData);
+            card.Init(cardData);
 
             // 이벤트 구독
             AddListeners(card);
@@ -337,6 +420,7 @@ namespace Cardevil.Cards.Interactions
         // - - - - - - - - - - -
         private void UpdateUI()
         {
+            if (!_view) return;
             var canUse = CanInput && _model.CanUseCard && !_state.draggedCard;
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
             var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemainCount);
@@ -370,34 +454,5 @@ namespace Cardevil.Cards.Interactions
         }
 
         #endregion
-        
-        // Turn Interface UserInput
-        // - - - - - - - - - - -
-        public bool IsNoCard => false;
-
-        public void ActivateInteraction()
-        {
-            Managers.Card.ResultCtx.StepToNext();
-            cmp = new();
-            CanInteraction = true;
-        }
-
-        public void InactivateInteraction()
-        {
-            CanInteraction = false;
-            Managers.Card.ResultCtx.Push();
-        }
-
-        public async UniTask DrawCard()
-        {
-            await DrawAsync();
-        }
-
-        private UniTaskCompletionSource cmp;
-
-        public async UniTask WaitUserInput()
-        {
-            await cmp.Task;
-        }
     }
 }
