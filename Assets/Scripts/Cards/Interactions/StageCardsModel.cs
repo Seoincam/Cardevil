@@ -13,34 +13,25 @@ namespace Cardevil.Cards.Interactions
     /// 덱/버린 패/손 패/선택을 관리하고, 정렬/스왑 등 로직을 제공.
     /// </summary>
     [Serializable]
-    public class StageCardsModel : IClearable
+    public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
         private List<CardData> _deck = new();
         private List<CardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
         
-        /// <summary>버리기 가능 횟수의 현재 잔여량.</summary>
         public int DiscardRemainCount { get; private set; } = 3;
-        
-        /// <summary>현재 덱의 읽기 전용 뷰.</summary>
+
+        #region IReadOnlyStageCardsModel
+
         public IReadOnlyList<CardData> Deck => _deck;
-        
-        /// <summary>버린 패의 읽기 전용 뷰.</summary>
         public IReadOnlyList<CardData> DiscardPile => _discardPile;
-        
-        /// <summary>현재 손패의 읽기 전용 뷰.</summary>
         public IReadOnlyList<Card> Hand => _hand;
-        
-        /// <summary>현재 선택 카드 집합의 읽기 전용 뷰.</summary>
         public IReadOnlyCollection<Card> Selection => _selection;
-        
-        /// <summary>
-        /// 손패 내 인덱스 순서로 정렬된 선택 카드 목록을 반환.
-        /// 매 호출 시 새로운 리스트를 생성.
-        /// </summary>
         public IReadOnlyList<Card> SortedSelection => _selection.OrderBy(c => _hand.IndexOf(c)).ToList();
 
+        #endregion
+        
         /// <summary>
         /// 덱 상태만 기준으로 카드를 사용할 수 있는지 여부를 반환.
         /// (플레이어 턴/입력 가능 여부 등은 고려하지 않음)
