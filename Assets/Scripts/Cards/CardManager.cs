@@ -5,6 +5,7 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using System.Linq;
 using Cardevil.Cards.Interactions;
+using Cardevil.Utils;
 
 namespace Cardevil.Cards
 {
@@ -54,6 +55,13 @@ namespace Cardevil.Cards
         {
             Clear();
             _stageCardsModel.InitializeDeck(_runtimeBaseDeck, 3);
+            
+            // TODO:
+            var deckRemains =
+                Object.FindObjectsByType<DeckRemain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (deckRemains == null || deckRemains.Length == 0) { LogEx.LogError("Deck Remain이 씬내에 존재하지 않음!"); return; }
+            var deckRemain = deckRemains[0];
+            deckRemain.Init(_stageCardsModel);
         }
        
         public ILockable GetCard()

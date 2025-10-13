@@ -124,13 +124,11 @@ namespace Cardevil.Cards.Interactions
             var image = background.GetComponent<Image>();
             var color = image.color;
             
-            await image.DOColor(new Color(color.r, color.g, color.b, 0), 1f);
             await doButton.transform.DOScale(0f, .2f).SetEase(Ease.InBack);
             await endButton.transform.DOScale(0f, .2f).SetEase(Ease.InBack);
             await togglePreviewButton.transform.DOScale(0f, .2f).SetEase(Ease.InBack);
             await ticketCountPanel.transform.DOScale(0f, .2f).SetEase(Ease.InBack);
-            
-            await UniTask.Delay(TimeSpan.FromSeconds(.75f));
+            await image.DOColor(new Color(color.r, color.g, color.b, 0), .7f);
         }
 
         /// <summary>
