@@ -1,4 +1,5 @@
 using Cardevil.Cards;
+using Cardevil.Cards.Interactions;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -13,17 +14,35 @@ public class RemainCardVisual : MonoBehaviour
     [SerializeField] Image cardImage;
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] Transform shakeObject;
+    private StageCardsModel _model;
 
-    public void Init(CardData data)
+    public void Init(StageCardsModel model, CardData data)
     {
         this.data = data;
         isRemaining = true;
+        _model = model;
         UpdateVisual();
     }
 
     public void UpdateVisual()
     {
-        isRemaining = Managers.Card.StageCardsCtx.Deck
+        if (_model == null)
+        {
+            Debug.LogError("[RemainCardVisual] _model is null");
+            return;
+        }
+        if (_model.Deck == null)
+        {
+            Debug.LogError("[RemainCardVisual] _model.Deck is null");
+            return;
+        }
+        if (data == null)
+        {
+            Debug.LogError("[RemainCardVisual] data is null");
+            return;
+        }
+        
+        isRemaining = _model.Deck
                         .Any(c => c.id == data.id);
         // 색 설정
         cardImage.color = isRemaining ? Color.white : new Color(.5f, .5f, .5f);

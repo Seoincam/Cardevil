@@ -34,13 +34,13 @@ namespace Cardevil.Cards.Evaluations
 
 
             Managers.Card.EvaluationEvent.OnStep += StepEvaluation;
-            Managers.Card.StageCardsCtx.OnSelectsChaged += UpdateSelectedRanking;
+            Managers.Card.StageCardsPresenter.OnSelectsChanged += UpdateSelectedRanking;
         }
 
         void OnDestroy()
         {
             Managers.Card.EvaluationEvent.OnStep -= StepEvaluation;
-            Managers.Card.StageCardsCtx.OnSelectsChaged -= UpdateSelectedRanking;
+            Managers.Card.StageCardsPresenter.OnSelectsChanged -= UpdateSelectedRanking;
 
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();

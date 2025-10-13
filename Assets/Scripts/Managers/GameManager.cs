@@ -152,8 +152,6 @@ public class GameManager : ISaveLoad
         Managers.Relic.Init();
         Managers.Card.OnEnterStage();
         Managers.Turn.Init(
-            Managers.Card.RerollInput,
-            Managers.Card.PlayerInput,
             Player.GetComponent<ITurnPlayerMove>(),
             Player.GetComponent<ITurnPlayerAction>(),
             Enemy.GetComponent<ITurnEnemy>()

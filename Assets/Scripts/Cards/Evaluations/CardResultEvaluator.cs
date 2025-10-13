@@ -11,11 +11,10 @@ namespace Cardevil.Cards.Evaluations
         /// <summary>
         /// 미리 카드 결과를 계산 후, AsncEvaluationEvent에 등록.
         /// </summary>
-        public static void PreEvaluate(List<Card> cards)
+        public static void PreEvaluate(IReadOnlyList<Card> cards)
         {
             CardResult result;
-
-            // cards.Sort((a, b) => {});
+            
             var numbers = cards.Where(c => c.Data.valueType == CardData.ValueType.Number).ToList();
             var moves = cards.Where(c => c.Data.valueType == CardData.ValueType.Move).ToList();
 
@@ -158,7 +157,7 @@ namespace Cardevil.Cards.Evaluations
         /// 카드를 바탕으로 '가장 상위' 족보를 계산해서 반환.
         /// 숫자 카드가 없을 시 None 반환.
         /// </summary>
-        public static HandRanking GetRanking(List<Card> cards)
+        public static HandRanking GetRanking(IEnumerable<Card> cards)
         {
             var numbers = cards.Where(c => c.Data.valueType == CardData.ValueType.Number)
                     .ToList();

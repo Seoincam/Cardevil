@@ -9,12 +9,12 @@ public class BlueFlushChoice : MonoBehaviour
     public UniTaskCompletionSource BlueFlushCmp { get; private set; }
 
     private bool isInitalized = false;
-    private CardHandBar handBar;
+    private StageCardsPresenter handBar;
 
     [SerializeField] Button addDiscardRemainCountButton;
     [SerializeField] Button reviveCardButton;
 
-    public void GetSet(CardHandBar handBar)
+    public void GetSet(StageCardsPresenter handBar)
     {
         if (!isInitalized)
         {
@@ -35,7 +35,7 @@ public class BlueFlushChoice : MonoBehaviour
         addDiscardRemainCountButton.interactable = false;
         reviveCardButton.interactable = false;
 
-        Managers.Card.StageCardsCtx.IncreaseDiscardCount(3);
+        // Managers.Card.StageCardsCtx.IncreaseDiscardCount(3);
         BlueFlushCmp.TrySetResult();
         gameObject.SetActive(false);
     }
