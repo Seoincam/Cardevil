@@ -7,12 +7,14 @@ using Cardevil.Core;
 using Cardevil.Utils;
 using System.Linq;
 using System.Threading;
+using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.Interactions
 {
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
+        /// <summary>선택된 카드가 변경될 때 발행.</summary>
         public event Action<HandRanking> OnSelectsChanged;
         
         private StageCardsModel _model;
@@ -199,7 +201,7 @@ namespace Cardevil.Cards.Interactions
             OnSelectsChanged?.Invoke(HandRanking.None); // Evaluation Text 초기화
             CanInteraction = true;
             
-            await cmp.Task;
+            await cmp.Task; // Input 완료까지 대기
 
             CanInteraction = false;
             Managers.Card.ResultCtx.Push();
@@ -224,22 +226,39 @@ namespace Cardevil.Cards.Interactions
             if (_state.activateCard != card) return;
             if (args.time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
             _state.activateCard = null;
-
-            if (_model.Selection.Contains(card))
-            {
-                card.SetSelect(false);
-                _model.Deselect(card);
-                UpdateUI();
-                OnSelectsChanged?.Invoke(_model.GetHandRanking());
-                return;
-            }
-
-            if (_model.Selection.Count >= 4) return;
             
-            card.SetSelect(true);
-            _model.Select(card);
-            OnSelectsChanged?.Invoke(_model.GetHandRanking());
-            UpdateUI();
+            // 좌클릭 처리
+            if (args.button == MouseButton.LeftMouse)
+            {
+                if (_model.Selection.Contains(card))
+                {
+                    card.SetSelect(false);
+                    _model.Deselect(card);
+                    UpdateUI();
+                    OnSelectsChanged?.Invoke(_model.GetHandRanking());
+                    return;
+                }
+
+                if (_model.Selection.Count >= 4) return;
+            
+                card.SetSelect(true);
+                _model.Select(card);
+                OnSelectsChanged?.Invoke(_model.GetHandRanking());
+                UpdateUI();
+            }
+            
+            // 우클릭 처리
+            // TODO: 우클릭 관련 로직 추후 '전환 버튼'으로 이동
+            else if (args.button == MouseButton.RightMouse)
+            {
+                if (!card.Data.CanOpenSelection) return;
+                
+                var selectContainers = Object.FindObjectsByType<SelectContainer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                if (selectContainers == null || selectContainers.Length == 0) { LogEx.LogError("Select Container가 씬에 존재하지 않음"); return; }
+                var container = selectContainers[0];
+                
+                container.OpenSelection(card);
+            }
         }
         
         private void BeginDrag()
@@ -360,7 +379,7 @@ namespace Cardevil.Cards.Interactions
         private async UniTask DrawAsync()
         {
             IsSwapping = true;
-            var count = Managers.Card.MaxHandCount - _model.Hand.Count;
+            var count = _maxHand - _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
                 var card = Spawn();
