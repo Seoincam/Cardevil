@@ -37,7 +37,7 @@ namespace Cardevil.Cards.Interactions
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
         
-        private bool CanDrag
+        private bool CanInteraction
         {
             get
             {
@@ -152,13 +152,13 @@ namespace Cardevil.Cards.Interactions
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!CanDrag)
+            if (!CanInteraction)
                 return;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!CanDrag)
+            if (!CanInteraction)
                 return;
         }
 
@@ -166,7 +166,7 @@ namespace Cardevil.Cards.Interactions
         {
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                if (!CanDrag)
+                if (!CanInteraction)
                     return;
 
                 PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
@@ -191,7 +191,7 @@ namespace Cardevil.Cards.Interactions
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (!CanDrag)
+            if (!CanInteraction)
                 return;
 
             DragStarted?.Invoke();
@@ -207,7 +207,7 @@ namespace Cardevil.Cards.Interactions
             if (eventData.button != PointerEventData.InputButton.Left)
                 return;
 
-            if (!CanDrag)
+            if (!CanInteraction)
                 return;
 
             DragEnded?.Invoke();
@@ -222,7 +222,7 @@ namespace Cardevil.Cards.Interactions
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (!CanDrag)
+            if (!CanInteraction)
                 return;
             
             if (eventData.button == PointerEventData.InputButton.Left)

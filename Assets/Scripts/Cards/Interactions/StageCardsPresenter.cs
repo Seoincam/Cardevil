@@ -186,18 +186,17 @@ namespace Cardevil.Cards.Interactions
 
         public bool IsNoCard => false;
         private UniTaskCompletionSource cmp;
-        
 
         public async UniTask DrawCard()
         {
             await DrawAsync();
         }
-
         
         public async UniTask WaitUserInput()
         {
             Managers.Card.ResultCtx.StepToNext();
             cmp = new();
+            OnSelectsChanged?.Invoke(HandRanking.None); // Evaluation Text 초기화
             CanInteraction = true;
             
             await cmp.Task;
@@ -212,12 +211,16 @@ namespace Cardevil.Cards.Interactions
         
         private void OnCardPointerDown(Card card, CardPointerArgs args)
         {
+            if (!CanInteraction) return;
+            
             _state.activateCard = card;
             _state.pointerDownTime = args.time;
         }
 
         private void OnCardPointerUp(Card card, CardPointerArgs args)
         {
+            if (!CanInteraction) return;
+            
             if (_state.activateCard != card) return;
             if (args.time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
             _state.activateCard = null;
