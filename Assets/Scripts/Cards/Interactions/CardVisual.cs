@@ -14,7 +14,7 @@ namespace Cardevil.Cards.Interactions
     public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable
     {
         [Header("Card")]
-        [VisibleOnly] public Card parentCard;
+        [SerializeField, VisibleOnly] private Card parentCard;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
@@ -30,12 +30,12 @@ namespace Cardevil.Cards.Interactions
         [SerializeField] private Transform shadowTransform;
 
         private Poolable _poolable;
-        private IReadOnlyStageCardsModel _model;
         private Canvas _canvas;
         private CardDeckVisual _deckVisual;
 
+        private IReadOnlyStageCardsModel _model;
         private VisualTransformDelta _delta;
-        [SerializeField] private CardVisualState _state;
+        private CardVisualState _state;
 
         private void Awake()
         {
@@ -86,7 +86,7 @@ namespace Cardevil.Cards.Interactions
             // Subscribe Events
             SubscribeToParent(parentCard);
             _model.HandChanged += UpdateIndex;
-
+            
             _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             UpdateVisual();
             
@@ -121,8 +121,8 @@ namespace Cardevil.Cards.Interactions
         {
             if (parentCard.IsReroll)
                 return;
-            if (_state.isDrawing)
-                return;
+            // if (_state.isDrawing)
+            //     return;
 
             var verticalOffset = Vector3.up * (parentCard.IsDragging ? 0 : _delta.curveYOffset);
             transform.position = Vector3.Lerp(transform.position, parentCard.transform.position + verticalOffset, t: visualSetting.FollowSpeed * Time.deltaTime);
@@ -276,8 +276,6 @@ namespace Cardevil.Cards.Interactions
                         .SetEase(visualSetting.FlipEase));
             sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipFrontImageRation)
                         .SetEase(visualSetting.FlipEase));
-
-            _state.isDrawing = false;
         }
 
         private void OnRerollDiscard(Transform discardPoint)
@@ -309,16 +307,12 @@ namespace Cardevil.Cards.Interactions
         private void OnDraw()
         {
             _deckVisual.OnInteraction();
-            var tween = transform.DOMove(endValue: parentCard.transform.position, visualSetting.DrawDuration)
-                        .SetEase(visualSetting.RerollDrawEase);
 
             var sequence = DOTween.Sequence();
             sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.DrawFlipDuration * .5f)
                         .SetEase(visualSetting.FlipEase));
             sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.DrawFlipDuration * .5f)
                         .SetEase(visualSetting.FlipEase));
-
-            tween.OnComplete(() => _state.isDrawing = false);
         }
 
         private void OnDiscard()
@@ -388,7 +382,6 @@ namespace Cardevil.Cards.Interactions
             public int handIndex;
             public bool isInitialized;
             public bool isDiscarded;
-            public bool isDrawing;
         }
 
         #endregion
