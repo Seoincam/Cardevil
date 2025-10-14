@@ -162,6 +162,13 @@ namespace Cardevil.Cards.Interactions
             card.UpdatePosition();
         }
 
+        /// <summary>
+        /// 지정한 인덱스의 슬롯 활성화 상태를 설정하고,
+        /// 현재 손패 개수에 따라 bar의 크기를 조정.
+        /// </summary>
+        /// <param name="value">슬롯을 활성화(true) 또는 비활성화(false)할지 여부</param>
+        /// <param name="index">대상 슬롯의 인덱스</param>
+        /// <param name="handCount">현재 손패(슬롯) 개수</param>
         public void SetSlotActive(bool value, int index, int handCount)
         {
             _slots[index].gameObject.SetActive(value);
@@ -171,6 +178,11 @@ namespace Cardevil.Cards.Interactions
             bar.sizeDelta = new Vector2(width, height);
         }
 
+        /// <summary>
+        /// 슬롯 리스트를 활성화 상태 기준으로 정렬한 뒤,
+        /// 정렬 순서에 맞게 계층 내 형제 순서를 재배치.
+        /// 활성 슬롯은 앞으로, 비활성 슬롯은 뒤로 정렬.
+        /// </summary>
         public void AlignSlot()
         {
             _slots.Sort((a, b) =>
