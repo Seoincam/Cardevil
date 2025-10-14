@@ -109,6 +109,7 @@ namespace Cardevil.Cards.Evaluations
 
             // TODO: 추가 데미지
 
+            /*
             // 유물
             var relics = Managers.Relic;
             if (relics == null)
@@ -145,6 +146,7 @@ namespace Cardevil.Cards.Evaluations
             }
 
             return;
+            */
         }
 
 

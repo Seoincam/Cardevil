@@ -25,29 +25,22 @@ namespace Cardevil.Relics
     }
 
     [Serializable]
-    public class RelicEffect
+    public sealed class EvaluationRelicEffect : RelicEffectBase
     {
-        [SerializeField, VisibleOnly] Relic relic;
-        [SerializeField, VisibleOnly] EffectType _effectType;
-
-        [Header("Common")]
-        [SerializeField, VisibleOnly] string _inspectorDescription;
-        [SerializeField, VisibleOnly] string _effectId;
-
         [Header("OnEvaluation")]
+        [SerializeField, VisibleOnly] EffectType _effectType;
         [SerializeField, VisibleOnly] OnEvaluationDataValues _onEvaluationValues;
-
- 
+        
 
         public EffectType EffectType => _effectType;
-        public string EffectId => _effectId;
+        public string EffectId => effectId;
 
         public OnEvaluationDataValues OnEvaluationValues => _onEvaluationValues;
 
-        public RelicEffect(RelicEffectOnEvaluationData data)
+        public EvaluationRelicEffect(RelicEffectOnEvaluationData data)
         {
             _effectType = EffectType.OnEvaluation;
-            _effectId = data.EffectId;
+            effectId = data.EffectId;
 
             _onEvaluationValues = new(
                 true, data.Possibility, data.TriggerHp,

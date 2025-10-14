@@ -14,14 +14,14 @@ namespace Cardevil.Relics
         [SerializeField, VisibleOnly] int _level;
         [SerializeField, VisibleOnly] string _displayName;
         [SerializeField, VisibleOnly] string _displayDescription;
-        List<RelicEffect> _effects = new();
+        List<RelicEffectBase> _effects = new();
 
 
         public string Id => _id;
         public int Level => _level;
         public string DisplayName => _displayName;
         public string DisplayDescription => _displayDescription;
-        public IReadOnlyList<RelicEffect> Effects => _effects;
+        public IReadOnlyList<RelicEffectBase> Effects => _effects;
 
 
 
