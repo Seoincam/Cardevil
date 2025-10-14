@@ -343,14 +343,20 @@ namespace Cardevil.Cards.Interactions
 
         private async UniTask DiscardAsync()
         {
-            foreach (var card in _model.SortedSelection)
+            foreach (var card in _model.SortedSelection.Reverse())
             {
+                _model.TryGetIndex(card, out var index);
+                
                 RemoveListeners(card);
                 _model.Discard(card);
                 card.Discard();
+                
+                // slot 비활성화
+                _view.SetSlotActive(false, index);
+                
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
-                UpdateSlots();
             }
+            _view.AlignSlot();
         }
 
         private async UniTask DrawAsync()
@@ -358,9 +364,12 @@ namespace Cardevil.Cards.Interactions
             _state.isSwapping = true;
             UpdateUI();
             
-            var count = _state.maxHand - _model.Hand.Count;
+            int count = _state.maxHand - _model.Hand.Count;
+            int indexFactor = _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
+                // 슬롯 활성화
+                _view.SetSlotActive(true, indexFactor + i);
                 var card = Spawn();
                 card.Drawn?.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
@@ -394,7 +403,7 @@ namespace Cardevil.Cards.Interactions
                 return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData);
+            card.Init(cardData, _model);
 
             // 이벤트 구독
             AddListeners(card);
@@ -429,7 +438,7 @@ namespace Cardevil.Cards.Interactions
             if (!_view) return;
             var canUse = CanInput && _model.CanUseCard && !_state.draggedCard;
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
-            var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemainCount);
+            var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
             _view.UpdateUI(viewState);
         }
         

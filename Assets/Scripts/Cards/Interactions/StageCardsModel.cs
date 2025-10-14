@@ -15,21 +15,32 @@ namespace Cardevil.Cards.Interactions
     [Serializable]
     public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
-        private List<CardData> _deck = new();
-        private List<CardData> _discardPile = new();
-        private List<Card> _hand = new();
+        [SerializeField]private List<CardData> _deck = new();
+        [SerializeField]private List<CardData> _discardPile = new();
+        [SerializeField]private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
-        
-        public int DiscardRemainCount { get; private set; } = 3;
 
         #region IReadOnlyStageCardsModel
-
+        
+        public event Action HandChanged;
+        
+        public int MaxHand { get; private set; }
+        public int DiscardRemain { get; private set; }
+        
         public IReadOnlyList<CardData> Deck => _deck;
         public IReadOnlyList<CardData> DiscardPile => _discardPile;
         public IReadOnlyList<Card> Hand => _hand;
         public IReadOnlyCollection<Card> Selection => _selection;
         public IReadOnlyList<Card> SortedSelection => _selection.OrderBy(c => _hand.IndexOf(c)).ToList();
-
+        
+        public bool TryGetIndex(Card card, out int index)
+        {
+            index = -1;
+            if (!card || _hand == null) return false;
+            index = _hand.IndexOf(card);
+            return index >= 0;
+        }
+        
         #endregion
         
         /// <summary>
@@ -38,6 +49,17 @@ namespace Cardevil.Cards.Interactions
         /// </summary>
         public bool CanUseCard => _selection.Count > 0 && _selection.All(c => c.Data.CanUse);
 
+        /// <summary>
+        /// 주어진 카드 목록으로 스테이지 덱을 설정,
+        /// 최대 손패 수와 초기 버리기 횟수를 설정
+        /// </summary>
+        public void SetUp(IEnumerable<CardData> cards, int maxHand, int initialDiscardCount)
+        {
+            _deck = DeckFactory.CreateStageDeck(cards);
+            MaxHand = maxHand;
+            DiscardRemain = initialDiscardCount;
+        }
+        
         /// <summary>
         /// 모든 카드를 덱으로 되돌린 뒤 섞음.
         /// 내부적으로 버린 패/손패를 비우고, 덱을 셔플.
@@ -71,17 +93,7 @@ namespace Cardevil.Cards.Interactions
             _hand.Clear();
             _selection.Clear();
             
-            DiscardRemainCount = 3;
-        }
-        
-        /// <summary>
-        /// 주어진 카드 목록으로 스테이지 덱을 초기화,
-        /// 주어진 수로 버리기 잔여 횟수를 초기화
-        /// </summary>
-        public void InitializeDeck(IEnumerable<CardData> cards, int initialDiscardCount)
-        {
-            _deck = DeckFactory.CreateStageDeck(cards);
-            DiscardRemainCount =  initialDiscardCount;
+            DiscardRemain = 3;
         }
         
         /// <summary>
@@ -90,14 +102,6 @@ namespace Cardevil.Cards.Interactions
         public HandRanking GetHandRanking()
         {
             return CardResultEvaluator.GetRanking(_selection);
-        }
-        
-        public bool TryGetIndex(Card card, out int index)
-        {
-            index = -1;
-            if (card == null || _hand == null) return false;
-            index = _hand.IndexOf(card);
-            return index >= 0;
         }
 
         public Card GetHandCard(int index) => _hand[index];
@@ -108,6 +112,7 @@ namespace Cardevil.Cards.Interactions
         public void Select(Card card)
         {
             _selection.Add(card);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -116,6 +121,7 @@ namespace Cardevil.Cards.Interactions
         public void Deselect(Card card)
         {
             _selection.Remove(card);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -127,6 +133,7 @@ namespace Cardevil.Cards.Interactions
         {
             if (!TryGetIndex(a, out var indexA)) return;
             (_hand[indexA], _hand[indexB]) = (_hand[indexB], _hand[indexA]);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -135,6 +142,7 @@ namespace Cardevil.Cards.Interactions
         public void Draw(Card card)
         {
             _hand.Add(card);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -145,6 +153,7 @@ namespace Cardevil.Cards.Interactions
             _hand.Remove(card);
             _selection.Remove(card);
             _discardPile.Add(card.Data);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -153,7 +162,7 @@ namespace Cardevil.Cards.Interactions
         /// <param name="amount">증가량</param>
         public void IncreaseDiscardRemainCount(int amount)
         {
-            DiscardRemainCount += amount;
+            DiscardRemain += amount;
         }
         
         /// <summary>
@@ -165,8 +174,8 @@ namespace Cardevil.Cards.Interactions
         /// <returns>감소 후 잔여 횟수가 0보다 크면 true</returns>
         public bool TryReduceDiscardRemainCount(int amount = 1)
         {
-            DiscardRemainCount -= amount;
-            return DiscardRemainCount > 0;
+            DiscardRemain -= amount;
+            return DiscardRemain > 0;
         }
         
         /// <summary>
@@ -175,18 +184,19 @@ namespace Cardevil.Cards.Interactions
         public void SortByNumber()
         {
             _hand = _hand
-                .OrderBy(c => ValueTypeRank(c))
+                .OrderBy(ValueTypeRank)
 
                 // 이동카드 정렬
-                .ThenBy(c => MoveSelectTypeRank(c))
-                .ThenBy(c => DirectionRank(c))
+                .ThenBy(MoveSelectTypeRank)
+                .ThenBy(DirectionRank)
 
                 // 숫자카드 정렬
-                .ThenBy(c => NumberSelectTypeRank(c))
+                .ThenBy(NumberSelectTypeRank)
                 .ThenBy(c => c.Data.Number.NumberValue)
                 .ThenBy(c => c.Data.Number.ColorValue)
 
                 .ToList();
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -195,18 +205,19 @@ namespace Cardevil.Cards.Interactions
         public void SortByIcon()
         {
             _hand = _hand
-                .OrderBy(c => ValueTypeRank(c))
+                .OrderBy(ValueTypeRank)
 
                 // 이동카드 정렬
-                .ThenBy(c => MoveSelectTypeRank(c))
-                .ThenBy(c => DirectionRank(c))
+                .ThenBy(MoveSelectTypeRank)
+                .ThenBy(DirectionRank)
 
                 // 숫자카드 정렬
                 .ThenBy(c => c.Data.Number.ColorValue)
-                .ThenBy(c => NumberSelectTypeRank(c))
+                .ThenBy(NumberSelectTypeRank)
                 .ThenBy(c => c.Data.Number.NumberValue)
 
                 .ToList();
+            HandChanged?.Invoke();
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -159,7 +160,27 @@ namespace Cardevil.Cards.Interactions
         public void SetCardToSlot(Card card, int slotIndex)
         {
             card.transform.SetParent(_slots[slotIndex]);
-            card.UpdateIndex(slotIndex);
+            card.UpdatePosition();
+        }
+
+        public void SetSlotActive(bool value, int index)
+        {
+            _slots[index].gameObject.SetActive(value);
+        }
+
+        public void AlignSlot()
+        {
+            _slots.Sort((a, b) =>
+            {
+                bool aActive = a.gameObject.activeSelf;
+                bool bActive = b.gameObject.activeSelf;
+                return bActive.CompareTo(aActive);
+            });
+
+            for (int i = 0; i < _slots.Count; i++)
+            {
+                _slots[i].transform.SetSiblingIndex(i);
+            }
         }
     }
 }

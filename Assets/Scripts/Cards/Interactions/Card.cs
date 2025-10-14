@@ -23,15 +23,16 @@ namespace Cardevil.Cards.Interactions
         [SerializeField, VisibleOnly] private CardVisual visual;
         [SerializeField, VisibleOnly] private CardState state;
         
-        public event Action DragStarted, DragEnded, Discarded, Destroyed;
+        public event Action DragStarted, DragEnded, Discarded;
         public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
         public Action<Card> ValueSelectionStarted, ValueSelectionEnded; // TODO: 외부에서 호출되지 않도록 메서드로 감싸기
 
         public Action RerollDrawn, RerollEnded;
-        public Action<Transform> RerollDiscarded;
+        public event Action<Transform> RerollDiscarded;
         public Action Drawn; 
         
         private Poolable _poolable;
+        private IReadOnlyStageCardsModel _model;
         
         public CardData Data => data;
         public bool IsDragging => state.isDragging;
@@ -58,7 +59,7 @@ namespace Cardevil.Cards.Interactions
         public void Clear()
         {
             state = new CardState();
-            if (visual) { visual.Clear(); visual = null; }
+            visual = null;
         }
 
         private void Update()
@@ -82,9 +83,10 @@ namespace Cardevil.Cards.Interactions
         /// 주어진 데이터를 바탕으로 초기화.
         /// Visual도 함께 생성.
         /// </summary>
-        public void Init(CardData data)
+        public void Init(CardData data, IReadOnlyStageCardsModel model)
         {
             this.data = data;
+            _model = model;
             
             // Card Visual
             var visualHandler = GameObject.Find("Card Visual Transform");
@@ -92,7 +94,7 @@ namespace Cardevil.Cards.Interactions
 
             var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
-            visual.Init(this);
+            visual.Init(this, model);
         }
 
         public void SetRerollState(bool value)
@@ -101,29 +103,25 @@ namespace Cardevil.Cards.Interactions
             if (!value) RerollEnded?.Invoke();
         }
         
-        /// <summary>
-        /// Slot 상의 Index를 업데이트함.
-        /// </summary>
-        public void UpdateIndex(int slotIndex)
+        public void UpdatePosition()
         {
-            if (!state.isDragging)
-            {
-                float newY = state.isSelected ? visualSetting.SelectOffset : 0;
-                transform.localPosition = new Vector3(0, newY, 0);
-            }
+            if (state.isDragging) return;
 
-            visual.UpdateIndex(slotIndex);
+            float newY = state.isSelected ? visualSetting.SelectOffset : 0;
+            transform.localPosition = new Vector3(0, newY, 0);
         }
 
         public void Discard()
         {
             state.isDiscarded = true;
             Discarded?.Invoke();
+            Managers.Resource.Destroy(gameObject);
         }
-
-        public void Destroy()
+        
+        public void RerollDiscard(Transform target)
         {
-            Destroyed?.Invoke();
+            state.isReroll = true;
+            RerollDiscarded?.Invoke(target);
             Managers.Resource.Destroy(gameObject);
         }
 
