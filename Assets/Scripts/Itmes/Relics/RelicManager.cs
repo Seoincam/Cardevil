@@ -13,20 +13,13 @@ namespace Cardevil.Relics
     {
         [Header("All")]
         [SerializeField] List<Relic> _allRelics = new();
-        [SerializeField] List<RelicEffect> _allEffects = new();
-
-        [Header("Player")]
-        [SerializeField] List<Relic> _playerRelics = new();
-        [SerializeField] List<RelicEffect> _playerEffects = new();
+        [SerializeField] List<EvaluationRelicEffect> _allEffects = new();
 
         // ID로 탐색시 더 빠르게 접근.
         private readonly Dictionary<(string id, int level), Relic> _relicById = new();
-        private readonly Dictionary<string, RelicEffect> _effectById = new();
+        private readonly Dictionary<string, EvaluationRelicEffect> _effectById = new();
 
         private Text text;
-
-        public IReadOnlyList<Relic> PlayerRelics => _playerRelics;
-
 
         /// <summary>
         /// Data를 기반으로 실제 Relic 및 RelicEffect를 생성.
@@ -43,15 +36,13 @@ namespace Cardevil.Relics
 
             _allRelics.Clear();
             _allEffects.Clear();
-            _playerRelics.Clear();
-            _playerEffects.Clear();
             _relicById.Clear();
             _effectById.Clear();
 
             // Build effects
             foreach (var data in datas.RelicEffectOnEvaluationDataList)
             {
-                var effect = new RelicEffect(data);
+                var effect = new EvaluationRelicEffect(data);
 
                 if (string.IsNullOrEmpty(effect.EffectId))
                 {
@@ -134,7 +125,7 @@ namespace Cardevil.Relics
             return _relicById.TryGetValue((relicId, level), out var relic) ? relic : null;
         }
 
-        public RelicEffect GetEffectById(string effectId)
+        public EvaluationRelicEffect GetEffectById(string effectId)
         {
             if (string.IsNullOrEmpty(effectId)) return null;
             else
@@ -143,11 +134,11 @@ namespace Cardevil.Relics
             return _effectById.TryGetValue(effectId, out var effect) ? effect : null;
         }
 
-        public List<RelicEffect> GetPlayerEffect(EffectType type)
-        {
-            if (_playerEffects == null || _playerEffects.Count == 0) return new List<RelicEffect>(0);
-            return _playerEffects.Where(e => e.EffectType == type).ToList();
-        }
+        // public List<EvaluationRelicEffect> GetPlayerEffect(EffectType type)
+        // {
+        //     if (_playerEffects == null || _playerEffects.Count == 0) return new List<EvaluationRelicEffect>(0);
+        //     return _playerEffects.Where(e => e.EffectType == type).ToList();
+        // }
 
         #endregion
     }
