@@ -352,7 +352,7 @@ namespace Cardevil.Cards.Interactions
                 card.Discard();
                 
                 // slot 비활성화
-                _view.SetSlotActive(false, index);
+                _view.SetSlotActive(false, index, _model.Hand.Count);
                 
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
@@ -369,8 +369,8 @@ namespace Cardevil.Cards.Interactions
             for (int i = 0; i < count; i++)
             {
                 // 슬롯 활성화
-                _view.SetSlotActive(true, indexFactor + i);
                 var card = Spawn();
+                _view.SetSlotActive(true, indexFactor + i, _model.Hand.Count);
                 card.Drawn?.Invoke();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }

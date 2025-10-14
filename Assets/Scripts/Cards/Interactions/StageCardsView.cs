@@ -3,7 +3,6 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,7 +23,7 @@ namespace Cardevil.Cards.Interactions
         [SerializeField] private TextMeshProUGUI discardCountText;
         
         [Header("Transform")]
-        [SerializeField] private Transform bar;
+        [SerializeField] private RectTransform bar;
         
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
@@ -163,9 +162,13 @@ namespace Cardevil.Cards.Interactions
             card.UpdatePosition();
         }
 
-        public void SetSlotActive(bool value, int index)
+        public void SetSlotActive(bool value, int index, int handCount)
         {
             _slots[index].gameObject.SetActive(value);
+            
+            var width = 130 * handCount;
+            var height = 200;
+            bar.sizeDelta = new Vector2(width, height);
         }
 
         public void AlignSlot()

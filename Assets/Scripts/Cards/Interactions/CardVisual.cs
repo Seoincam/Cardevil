@@ -35,7 +35,7 @@ namespace Cardevil.Cards.Interactions
 
         private IReadOnlyStageCardsModel _model;
         private VisualTransformDelta _delta;
-        private CardVisualState _state;
+        private VisualState _state;
 
         private void Awake()
         {
@@ -377,7 +377,7 @@ namespace Cardevil.Cards.Interactions
         }
         
         [Serializable]
-        private struct CardVisualState
+        private struct VisualState
         {
             public int handIndex;
             public bool isInitialized;
