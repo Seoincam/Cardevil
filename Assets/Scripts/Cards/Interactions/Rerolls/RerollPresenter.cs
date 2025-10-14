@@ -139,7 +139,7 @@ namespace Cardevil.Cards.Interactions
                 // 버리기 Tween
                 foreach (var card in _model.Hand)
                 {
-                    card.RerollDiscarded?.Invoke(_view.DeckVisual.Front);
+                    card.RerollDiscard(_view.DeckVisual.Front);
                     await UniTask.Delay(TimeSpan.FromSeconds(discard));
                 }
 
@@ -178,7 +178,7 @@ namespace Cardevil.Cards.Interactions
             if (cardData == null) return null;
             
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData);
+            card.Init(cardData, _model);
             card.SetRerollState(true);
 
             _model.Draw(card);

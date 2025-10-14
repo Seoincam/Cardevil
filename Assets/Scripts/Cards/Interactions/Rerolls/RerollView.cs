@@ -186,7 +186,7 @@ namespace Cardevil.Cards.Interactions
         public void SetCardToSlot(Card card, int slotIndex)
         {
             card.transform.SetParent(_slots[slotIndex]);
-            card.UpdateIndex(slotIndex);
+            card.UpdatePosition();
         }
 
         #region Reroll Ticket Count

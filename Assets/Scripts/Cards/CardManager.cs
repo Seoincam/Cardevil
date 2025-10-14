@@ -6,6 +6,7 @@ using Cardevil.Core;
 using System.Linq;
 using Cardevil.Cards.Interactions;
 using Cardevil.Utils;
+using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards
 {
@@ -30,11 +31,6 @@ namespace Cardevil.Cards
         public IReadOnlyList<CardData> RuntimeBaseDeck
         {
             get => _runtimeBaseDeck;
-        }
-        
-        public int MaxHandCount
-        {
-            get => _maxHandCount;
         }
         
         /// <summary>
@@ -71,7 +67,7 @@ namespace Cardevil.Cards
         public void OnEnterStage()
         {
             Clear();
-            _stageCardsModel.InitializeDeck(_runtimeBaseDeck, 3);
+            _stageCardsModel.SetUp(_runtimeBaseDeck, _maxHandCount,3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             var deckRemains =
