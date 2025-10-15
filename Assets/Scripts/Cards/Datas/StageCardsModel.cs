@@ -4,9 +4,10 @@ using System.Linq;
 using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
+using Cardevil.Cards.Interactions;
 using Cardevil.Core;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.Data
 {
     /// <summary>
     /// 매 스테이지에서 사용되는 카드 시스템의 상태(Model).
@@ -15,9 +16,9 @@ namespace Cardevil.Cards.Interactions
     [Serializable]
     public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
-        [SerializeField]private List<CardData> _deck = new();
-        [SerializeField]private List<CardData> _discardPile = new();
-        [SerializeField]private List<Card> _hand = new();
+        private List<CardData> _deck = new();
+        private List<CardData> _discardPile = new();
+        private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
 
         #region IReadOnlyStageCardsModel

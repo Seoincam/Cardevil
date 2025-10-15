@@ -1,7 +1,8 @@
+using Cardevil.Cards.Interactions;
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.Data
 {
     /// <summary>
     /// 스테이지 내 카드 상태를 읽기 전용으로 조회할 수 있는 인터페이스.
