@@ -8,11 +8,22 @@ namespace Cardevil.Dungeon
     [Serializable]
     public class DungeonNode : ISerializationCallbackReceiver
     {
+        public enum NodeState
+        {
+            None,
+            InActive,
+            Active,
+            Cleared
+        }
         [SerializeField, VisibleOnly] private Dungeon dungeon;
         [SerializeField, VisibleOnly] private int nodeId;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodeTypes type;
         [SerializeField, VisibleOnly] private DungeonNodePreset preset;
+        [SerializeField] private NodeState state = NodeState.None;
+        [SerializeField] private bool isVisited = false;
+        [SerializeField] private bool isVisible = false;
+        
 
         public Dungeon Dungeon
         {
@@ -38,6 +49,24 @@ namespace Cardevil.Dungeon
         {
             get => preset;
             set => preset = value;
+        }
+        
+        public NodeState State 
+        {
+            get => state;
+            set => state = value;
+        }
+        
+        public bool IsVisited 
+        {
+            get => isVisited;
+            set => isVisited = value;
+        }
+        
+        public bool IsVisible 
+        {
+            get => isVisible;
+            set => isVisible = value;
         }
         
         [field:SerializeField] public bool IsBranchStart { get; set; } = false;

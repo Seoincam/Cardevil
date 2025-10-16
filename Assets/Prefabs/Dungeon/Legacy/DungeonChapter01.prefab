@@ -5853,6 +5853,7 @@ MonoBehaviour:
   rootNode: {fileID: 7132769125747782325}
   startNodeId: 1
   showLineRenderer: 1
+  nodeContainer: {fileID: 0}
 --- !u!114 &6902616585955811548 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2663704201058976783, guid: cea80e09035cddb46af3379a6e793180, type: 3}

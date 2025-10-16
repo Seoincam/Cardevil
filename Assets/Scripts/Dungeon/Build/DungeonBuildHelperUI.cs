@@ -346,6 +346,10 @@ public void ReconnectAllNodesByHierarchy()
 
         public IEnumerator<DungeonNodeUIDataComponent> GetEnumerator()
         {
+            if (nodeContainer == null)
+            {
+                yield break;
+            }
             var allNodes = nodeContainer.GetComponentsInChildren<DungeonNodeUIDataComponent>();
             foreach (var node in allNodes)
             {

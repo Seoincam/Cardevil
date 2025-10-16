@@ -13,14 +13,17 @@ namespace Cardevil.Dungeon.UI
     {
         [Header("Internal References")]
         [SerializeField] private Button _button;
-        [Header("Visual")]
+        [Header("Visual References")]
         [SerializeField] private Animator nodeAnimator;
         [SerializeField] private Image nodeImage;
         [SerializeField] private TextMeshProUGUI nodeText;
+        [SerializeField] private Image hoverImage;
         [Space]
         [Header("External References")]
         [SerializeField] private DungeonUI dungeonUI;
         [SerializeField] private DungeonChapterUI dungeonChapterUI;
+        [Header("Settings")]
+        [SerializeField] private DungeonNodeSettingSO setting = null;
         [Header("Dungeon Node Info")]
         [SerializeField,VisibleOnly] private DungeonNode dungeonNode;
         [Space]
@@ -66,6 +69,10 @@ namespace Cardevil.Dungeon.UI
         public void Awake()
         {
             _button.onClick.AddListener(OnClickButton);
+            if (setting == null)
+            {
+                setting = DungeonNodeSettingSO.Default;
+            }
         }
 
         public void OnClickButton()
@@ -74,10 +81,36 @@ namespace Cardevil.Dungeon.UI
             Managers.Dungeon.EnterNode(dungeonNode);
         }
 
+        private void Reset()
+        {
+            setting = DungeonNodeSettingSO.Default;
+        }
 
         private void OnValidate()
         {
+            if (setting == null)
+            {
+                setting = DungeonNodeSettingSO.Default;
+            }
+        }
 
+        public void UpdateView()
+        {
+            DungeonNodeSettingSO.SpriteSet spriteSet = setting.NodeTypeToSpriteSet[dungeonNode.Type];
+            switch (dungeonNode.State)
+            {
+                case DungeonNode.NodeState.None:
+                case DungeonNode.NodeState.InActive:
+                    nodeImage.sprite = spriteSet.Inactive;
+                    nodeText.text = "";
+                    break;
+                case DungeonNode.NodeState.Active:
+                    nodeImage.sprite = spriteSet.Active;
+                    // nodeText.text = dungeonNode.NodeId.ToString();
+                    break;
+                case DungeonNode.NodeState.Cleared:
+                    break;
+            }
         }
     }
 }

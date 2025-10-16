@@ -412,6 +412,7 @@ MonoBehaviour:
   nodeText: {fileID: 0}
   dungeonUI: {fileID: 0}
   dungeonChapterUI: {fileID: 0}
+  setting: {fileID: 0}
   dungeonNode:
     dungeon:
       dungeonId: 0

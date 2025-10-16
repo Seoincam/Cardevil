@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_GUID: 82c93f6e0f5c1984e84275fde773484e
+  m_SerializeEntries:
+  - m_GUID: 516ed434d1415e4488c03bd1965ef73a
+    m_Address: Assets/ScriptableObjects/DefaultDungeonNodeSetting.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 88accfc3586b3b348b3bb4cf8fc23313, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 36d61ddf9d380a14c964027e465db710, type: 2}
+    - {fileID: 11400000, guid: 6dc09e4731f613d48bccf46b986fb2a1, type: 2}
+    - {fileID: 11400000, guid: 7710fa18797beff42bc810f839ac82e8, type: 2}
