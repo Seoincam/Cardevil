@@ -48,7 +48,7 @@ namespace Cardevil.Cards.Evaluations
             _pending = null;
         }
         
-        // TODO: 현재 args 자동 등록 안됨!
+        // TODO: event 우선 순위 설정 로직 추가해야함
         public void BuildEvaluationArgs(IReadOnlyList<Card> cards)
         {
             EvaluationArg arg;
@@ -73,7 +73,7 @@ namespace Cardevil.Cards.Evaluations
             
             // 족보 계산
             HandRanking handRanking = GetPrimaryHandRanking(numberCards, out List<Card> cardsInHandRanking);
-            _pending = new EvaluationResult(moves);
+            _pending = new EvaluationResult(moves, handRanking);
             
             // 기본 족보 보너스
             if (handRanking > HandRanking.High)
@@ -169,9 +169,9 @@ namespace Cardevil.Cards.Evaluations
             await _event.InvokeAsync();
         }
 
-        public void UpdateHandRankingVisual(IEnumerable<Card> cards)
+        public void UpdateHandRankingVisual(IEnumerable<Card> cards = null)
         {
-            var handRanking = GetPrimaryHandRanking(cards, out var _);
+            var handRanking = cards == null || cards.Count() == 0 ? HandRanking.None : GetPrimaryHandRanking(cards, out var _);
             _event.Animator.UpdateHandRankingText(handRanking);
         } 
         
@@ -220,7 +220,7 @@ namespace Cardevil.Cards.Evaluations
             if (IsOnePair(numberCards, out cardsInHandRanking))
                 return HandRanking.OnePair;
 
-            return HandRanking.None;
+            return HandRanking.High;
         }
         
         #region HandRanking Helper

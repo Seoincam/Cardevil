@@ -5,7 +5,6 @@ using Cardevil.Systems;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
-using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
@@ -18,9 +17,6 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
-        /// <summary>선택된 카드가 변경될 때 발행.</summary>
-        public event Action<HandRanking> OnSelectsChanged;
-        
         private StageCardsModel _model;
         private EvaluationArgsBuilder _builder;
         private StageCardsView _view;
@@ -183,7 +179,7 @@ namespace Cardevil.Cards.InStage.Presenter
         public async UniTask WaitUserInput()
         {
             cmp = new();
-            OnSelectsChanged?.Invoke(HandRanking.None); // Evaluation Text 초기화
+            _builder.UpdateHandRankingVisual(); // Evaluation Text 초기화
             _state.canInteract = true;
             UpdateUI();
             
@@ -221,7 +217,7 @@ namespace Cardevil.Cards.InStage.Presenter
                     card.SetSelect(false);
                     _model.Deselect(card);
                     UpdateUI();
-                    OnSelectsChanged?.Invoke(_model.GetHandRanking());
+                    _builder.UpdateHandRankingVisual(_model.Selection);
                     return;
                 }
 
@@ -229,7 +225,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
                 card.SetSelect(true);
                 _model.Select(card);
-                OnSelectsChanged?.Invoke(_model.GetHandRanking());
+                _builder.UpdateHandRankingVisual(_model.Selection);
                 UpdateUI();
             }
             
@@ -366,6 +362,8 @@ namespace Cardevil.Cards.InStage.Presenter
                 
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
+            
+            _builder.UpdateHandRankingVisual();
             _view.AlignSlot();
         }
 

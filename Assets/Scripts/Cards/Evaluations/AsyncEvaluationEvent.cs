@@ -3,6 +3,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -16,18 +17,21 @@ namespace Cardevil.Cards.Evaluations
         
         public EvaluationUIAnimator Animator => _animator;
 
-        public void AddArg(EvaluationArg arg, int priority)
-        {
-            _args.Add(priority, arg);
-        }
-
         public AsyncEvaluationEvent(EvaluationArgsBuilder builder)
         {
             _builder = builder;
             
             // Evaluation UI Animator
+            var canvasName = "CardCanvas";
+            var canvas = GameObject.Find(canvasName).transform;
+            if (!canvas)
+            {
+                LogEx.LogError($"Canvas not found. : {canvasName}");
+                return;
+            }
+            
             string path = "UI/CardUI/Evaluation Visual";
-            var go = Managers.Resource.Instantiate(path).gameObject;
+            var go = Managers.Resource.Instantiate(path, canvas).gameObject;
             if (!go)
             {
                 LogEx.LogError($"Evaluation UI Animator가 존재하지 않음! path: {path}");
@@ -39,8 +43,18 @@ namespace Cardevil.Cards.Evaluations
         
         public void Clear()
         {
-            foreach (var action in _args.Values) action.Release();
+            foreach (var action in _args.Values) 
+                action.Release();
             _args.Clear();
+        }
+        
+        public void AddArg(EvaluationArg arg, int priority)
+        {
+            while (_args.ContainsKey(priority))
+            {
+                priority++;
+            }
+            _args.Add(priority, arg);
         }
 
         public async UniTask InvokeAsync()
@@ -51,10 +65,10 @@ namespace Cardevil.Cards.Evaluations
 
             try
             {
-                foreach (var action in _args.Values)
+                foreach (var arg in _args.Values)
                 {
                     var before = damage;
-                    var after = action.Evaluate(damage, out var effect, out var value);
+                    var after = arg.Evaluate(damage, out var effect, out var value);
                     damage = after;
 
                     OnStep?.Invoke(new EvaluationStep(effect, value, before, after));

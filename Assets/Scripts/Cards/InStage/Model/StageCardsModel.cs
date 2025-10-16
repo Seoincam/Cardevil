@@ -101,14 +101,6 @@ namespace Cardevil.Cards.InStage.Model
             
             DiscardRemain = 3;
         }
-        
-        /// <summary>
-        /// 현재 선택된 카드 기준의 족보를 계산해 반환.
-        /// </summary>
-        public HandRanking GetHandRanking()
-        {
-            return EvaluationArgsBuilder.GetPrimaryHandRanking(_selection, out var _);
-        }
 
         public Card GetHandCard(int index) => _hand[index];
         
@@ -292,6 +284,11 @@ namespace Cardevil.Cards.InStage.Model
 
         private static int DirectionRank(Card c)
         {
+            if (c.Data.Kind != CardKind.Move)
+                return 5;
+            if (!c.Data.Move.SelectState.FinalValue.HasValue)
+                return 5;
+            
             return c.Data.Move.SelectState.FinalValue switch
             {
                 Utils.Directions.Direction.Up => 0,

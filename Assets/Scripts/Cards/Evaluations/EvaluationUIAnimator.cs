@@ -40,8 +40,6 @@ namespace Cardevil.Cards.Evaluations
         {
             _mainText = main.GetComponentInChildren<EvaluationTextAnimator>();
             _subText = sub.GetComponentInChildren<EvaluationTextAnimator>();
-            _mainText.UpdateText();
-            _subText.UpdateText();
         }
 
         private void OnDestroy()

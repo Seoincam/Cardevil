@@ -15,7 +15,7 @@ namespace Cardevil.Cards.InStage.Model
         private readonly List<EvaluationResult> _history = new();
         private int _cursor = -1;
 
-        #region IReadOnlyStageEvaluationResultsModel
+        #region IReadOnlyEvaluationResultsModel
 
         public IReadOnlyList<EvaluationResult> History => _history;
         public EvaluationResult CurrentResult => (_cursor >= 0 && _cursor < _history.Count) ? _history[_cursor] : null;
@@ -33,9 +33,10 @@ namespace Cardevil.Cards.InStage.Model
         /// </summary>
         public void StepToNext()
         {
-            if (_history[^1] == null) return;
-            
-            _history.Add(null);
+            if (_history.Count == 0 || _history[^1] != null)
+            {
+                _history.Add(null);
+            }
             _cursor = _history.Count - 1;
         }
         
@@ -51,15 +52,16 @@ namespace Cardevil.Cards.InStage.Model
                 return;
             }
             
-            if (_history[^1] == null)
-            {
-                _history[^1] = result;
-            }
-            else
+            // 리스트가 비었거나 마지막이 이미 값이면 새로 추가
+            if (_history.Count == 0 || _history[^1] != null)
             {
                 _history.Add(result);
+                _cursor = _history.Count - 1;
+                return;
             }
             
+            // 마지막이 null 슬롯이면 거기에 채우기
+            _history[^1] = result;
             _cursor = _history.Count - 1;
         }
     }

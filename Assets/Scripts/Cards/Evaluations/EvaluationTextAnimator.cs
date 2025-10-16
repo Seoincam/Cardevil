@@ -1,4 +1,3 @@
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using TMPro;
@@ -29,14 +28,14 @@ namespace Cardevil.Cards.Evaluations
         public TextMeshProUGUI Text => _textComponent;
         public Color DefaultColor => _defaultColor;
 
-
-        void Awake()
+        private void OnEnable()
         {
             _rect = GetComponent<RectTransform>();
             _textComponent = GetComponent<TextMeshProUGUI>();
             _defaultColor = _textComponent.color;
-
+            
             RestartAnimation();
+            UpdateText("");
         }
 
         /// <summary>
@@ -46,7 +45,7 @@ namespace Cardevil.Cards.Evaluations
         {
             if (text == "")
             {
-                _cts.Cancel();
+                _cts?.Cancel();
                 _textComponent.text = text;
                 return;
             }
