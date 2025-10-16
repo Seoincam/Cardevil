@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.InStageData
+namespace Cardevil.Cards.Data.InStage
 {
     public class SelectState<T> where T : struct
     {

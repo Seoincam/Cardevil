@@ -1,12 +1,13 @@
-using Cardevil.Cards;
-using Cardevil.Cards.Interactions;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage.ReadOnlyModel;
 
-public class RemainCardVisual : MonoBehaviour
+namespace Cardevil.Cards.InStage
+{
+    public class RemainCardVisual : MonoBehaviour
 {
     public CardData data;
     public bool isRemaining;
@@ -91,3 +92,6 @@ public class RemainCardVisual : MonoBehaviour
             Debug.LogError("cardData가 어떤 타입도 아닙니다.");
     }
 }
+}
+
+

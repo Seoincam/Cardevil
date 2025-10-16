@@ -1,3 +1,4 @@
+using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -8,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage.View
 {
     public class StageCardsView: MonoBehaviour, IClearable
     {

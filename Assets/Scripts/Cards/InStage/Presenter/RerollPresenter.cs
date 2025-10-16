@@ -4,10 +4,12 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
-using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.View;
+using Cardevil.Cards.ScriptableObjects;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage.Presenter
 {
     public class RerollPresenter : ITurnRerollInput, IClearable
     {

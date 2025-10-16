@@ -1,4 +1,4 @@
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage.View
 {
     public readonly struct StageCardsViewState
     {

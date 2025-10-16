@@ -1,13 +1,16 @@
+using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
-using Cardevil.Cards.Interactions;
+using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.InStage.ReadOnlyModel;
 using Cardevil.Core;
 
-namespace Cardevil.Cards.InStageData
+namespace Cardevil.Cards.InStage.Model
 {
     /// <summary>
     /// 매 스테이지에서 사용되는 카드 시스템의 상태(Model).

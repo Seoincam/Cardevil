@@ -1,3 +1,5 @@
+using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -11,7 +13,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Math = System.Math;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage.View
 {
     public class RerollView : MonoBehaviour, IClearable
     {

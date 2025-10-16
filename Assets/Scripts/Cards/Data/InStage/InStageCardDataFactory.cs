@@ -2,7 +2,7 @@ using Cardevil.Cards.Data;
 using Cardevil.Utils;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.InStageData
+namespace Cardevil.Cards.Data.InStage
 {
     public class InStageCardDataFactory
     {

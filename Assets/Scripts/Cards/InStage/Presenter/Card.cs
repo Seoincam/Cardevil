@@ -1,6 +1,10 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
+using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.ReadOnlyModel;
+using Cardevil.Cards.InStage.View;
+using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
@@ -10,7 +14,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-namespace Cardevil.Cards.Interactions 
+namespace Cardevil.Cards.InStage.Presenter
 {
     [RequireComponent(typeof(Poolable))]
     public class Card : MonoBehaviour, IEvaluateVisual, IClearable,

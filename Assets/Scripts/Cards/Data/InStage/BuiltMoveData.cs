@@ -1,7 +1,7 @@
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.InStageData
+namespace Cardevil.Cards.Data.InStage
 {
     public class BuiltMoveData
     {

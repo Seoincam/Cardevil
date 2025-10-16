@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards
+namespace Cardevil.Cards.ScriptableObjects
 {
     /// <summary>
     /// Card의 Sprite를 가지고 있고, 직접 CardVisual의 Sprite를 수정함.

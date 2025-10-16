@@ -1,8 +1,8 @@
+using Cardevil.Cards.InStage.ReadOnlyModel;
 using TMPro;
 using UnityEngine;
-using Cardevil.Cards.Data;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage
 {
     public class DeckRemain : MonoBehaviour
     {

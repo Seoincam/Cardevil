@@ -1,6 +1,6 @@
 using System;
 
-namespace Cardevil.Cards.InStageData 
+namespace Cardevil.Cards.Data.InStage
 {
     /*
      * 값이 어떤 타입인지

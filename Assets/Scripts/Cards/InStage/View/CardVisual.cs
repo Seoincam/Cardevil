@@ -7,9 +7,11 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.InStage.ReadOnlyModel;
+using Cardevil.Cards.ScriptableObjects;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage.View
 {
     [RequireComponent(typeof(Canvas), typeof(Poolable))]
     public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable

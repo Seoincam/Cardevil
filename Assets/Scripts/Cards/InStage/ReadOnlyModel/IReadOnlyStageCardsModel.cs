@@ -1,8 +1,9 @@
-using Cardevil.Cards.Interactions;
+using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.InStage.Presenter;
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.InStageData
+namespace Cardevil.Cards.InStage.ReadOnlyModel
 {
     /// <summary>
     /// 스테이지 내 카드 상태를 읽기 전용으로 조회할 수 있는 인터페이스.

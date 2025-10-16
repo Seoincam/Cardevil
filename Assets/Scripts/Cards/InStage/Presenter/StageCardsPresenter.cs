@@ -6,12 +6,15 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.View;
+using Cardevil.Cards.ScriptableObjects;
 using System.Linq;
 using System.Threading;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage.Presenter
 {
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {

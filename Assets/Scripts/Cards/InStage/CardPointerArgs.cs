@@ -1,6 +1,6 @@
 using UnityEngine.UIElements;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage
 {
     public readonly struct CardPointerArgs
     {

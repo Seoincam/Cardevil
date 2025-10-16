@@ -1,9 +1,9 @@
+using Cardevil.Cards.ScriptableObjects;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using DG.Tweening;
 
-namespace Cardevil.Cards.Interactions
+namespace Cardevil.Cards.InStage
 {
     public class CardDeckVisual : MonoBehaviour
     {
