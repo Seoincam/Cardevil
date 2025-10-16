@@ -6,7 +6,10 @@ using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data
 {
-    // 카드 원본 데이터 생성기
+    /// <summary>
+    /// 카드의 기본 원본 데이터(50장)를 생성하는 팩토리 클래스.
+    /// 숫자(Number) 카드와 이동(Move) 카드를 모두 생성.
+    /// </summary>
     public static class CardDataFactory
     {
         public static List<CardData> CreateBaseData()

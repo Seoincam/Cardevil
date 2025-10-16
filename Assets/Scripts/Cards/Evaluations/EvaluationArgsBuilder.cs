@@ -11,6 +11,10 @@ using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Cards.Evaluations
 {
+    /// <summary>
+    /// 스테이지에서 사용된 카드 평가를 단계적으로 구성,
+    /// UI 연출(<see cref="AsyncEvaluationEvent"/>)과 모델(<see cref="EvaluationResultsModel"/>)에 반영하는 Builder.
+    /// </summary>
     public class EvaluationArgsBuilder : IClearable
     {
         private EvaluationResultsModel _model;
@@ -18,6 +22,15 @@ namespace Cardevil.Cards.Evaluations
         
         private EvaluationResult _pending;
         
+        /// <summary>
+        /// 결과를 기록할 <see cref="EvaluationResultsModel"/>을 주입,
+        /// 평가 연출을 담당할 <see cref="AsyncEvaluationEvent"/>를 준비.
+        /// </summary>
+        /// <param name="model">평가 결과 이력을 저장할 모델 인스턴스</param>
+        /// <remarks>
+        /// 이 메서드는 반드시 한 번 이상 호출되어야 함.
+        /// </remarks>
+
         public void Init(EvaluationResultsModel model)
         {
             if (model == null)
@@ -48,6 +61,19 @@ namespace Cardevil.Cards.Evaluations
             _pending = null;
         }
         
+        
+        /// <summary>
+        /// 주어진 카드 목록을 기반으로 평가 단계 인자를 구성.  
+        /// (예: 데미지 합산, 이동 결과, 족보 판정 등)  
+        /// 각 단계는 <see cref="AsyncEvaluationEvent"/>에 등록되어
+        /// 순차적인 UI 연출과 함께 적용.
+        /// </summary>
+        /// <param name="cards">평가 대상 카드 목록</param>
+        /// <remarks>
+        /// 내부적으로 <c>_pending</c> 결과를 생성/갱신하고,  
+        /// 단계별 인자(효과/값/우선순위)를 우선순위 <c>SortedList</c>에 쌓음.
+        /// 실제 모델 반영은 <see cref="SetDamage(int)"/> 호출 시 수행.
+        /// </remarks>
         // TODO: event 우선 순위 설정 로직 추가해야함
         public void BuildEvaluationArgs(IReadOnlyList<Card> cards)
         {

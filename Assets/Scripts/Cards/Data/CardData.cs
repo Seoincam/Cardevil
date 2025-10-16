@@ -3,9 +3,10 @@ using Cardevil.Cards.Data.Modifiers.Number;
 
 namespace Cardevil.Cards.Data
 {
-    // 카드의 “기본 데이터 원본”을 보관하는 클래스.
-    // 강화 등이 적용됨.
-    // 전 스테이지에 걸쳐 사용됨.
+    /// <summary>
+    /// 카드의 기본 데이터를 정의하는 클래스.
+    /// 각 카드는 고유한 Id와 함께 Number 또는 Move 타입의 Modifier 파이프라인을 가질 수 있음.
+    /// </summary>
     public class CardData
     {
         public int Id { get; }

@@ -5,10 +5,25 @@ using System.Linq;
 
 namespace Cardevil.Cards.Data.InStage
 {
+    /// <summary>
+    /// 선택 가능한 값들의 상태를 관리하는 제네릭 클래스.  
+    /// 숫자(<see cref="int"/>)나 방향(<see cref="Direction"/>) 선택형 데이터에 사용.
+    /// </summary>
+    /// <typeparam name="T">값의 타입 (<see cref="int"/>, <see cref="Direction"/>)</typeparam>
+
     public class SelectState<T> where T : struct
     {
+        /// <summary>
+        /// 선택 가능한 값들의 읽기 전용 목록.  
+        /// 확정되지 않은 값은 <c>null</c>로 유지.
+        /// </summary>
         public IReadOnlyList<T?> Selectables => _selectables;
         
+        /// <summary>
+        /// 최종 확정된 값.  
+        /// 선택지가 하나뿐이라면 그 값을 반환,  
+        /// 아직 확정이 되지 않은 경우 <c>null</c>를 반환.
+        /// </summary>
         public T? FinalValue => 
             _selectables.Count == 1 && _selectables[0].HasValue
                 ? _selectables[0].Value

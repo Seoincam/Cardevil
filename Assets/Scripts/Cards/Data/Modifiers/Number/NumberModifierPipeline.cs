@@ -3,16 +3,32 @@ using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data.Modifiers.Number
 {
-    // Modifier!
+    /// <summary>
+    /// 숫자(Number) 카드의 Modifier들을 관리,
+    /// 이를 순차적으로 적용하여 최종 숫자 데이터를 생성하는 파이프라인 클래스.
+    /// </summary>
     public class NumberModifierPipeline
     {
         private readonly List<INumberModifier> _mods = new();
 
+        /// <summary>
+        /// 숫자 Modifier를 파이프라인에 추가.
+        /// </summary>
         public void Add(INumberModifier mod)
         {
             _mods.Add(mod);
         }
 
+        /// <summary>
+        /// 등록된 숫자 Modifier들을 순차적으로 적용하여 최종 <see cref="BuiltNumberData"/>를 생성.
+        /// </summary>
+        /// <remarks>
+        /// 1. Color Modifier — 마지막에 등록된 색상 Modifier만 적용.<br/>
+        /// 2. Selectable Modifier — 선택 가능한 숫자 슬롯을 생성.<br/>
+        /// 3. SelectableConfirm Modifier — 슬롯 내 값을 확정.<br/>
+        /// 4. Damage Modifier — 누적된 공격력 배수를 적용.
+        /// </remarks>
+        /// <returns>모든 Modifier 적용이 완료된 숫자 데이터</returns>
         public BuiltNumberData Build()
         {
             var ctx = new NumberBuildContext
@@ -33,11 +49,6 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             color?.Apply(ref ctx);
             
             // Modify Selectable
-            /*
-             * 큰 도움이 될지는 모르겠지만,
-             * Selectable Modifier가 9개일 경우
-             * 바로 2~10 할당하는 방법도 있을 듯.
-             */
             foreach (var mod in _mods)
             {
                 if (mod.Type == NumberModifierType.Selectable)
