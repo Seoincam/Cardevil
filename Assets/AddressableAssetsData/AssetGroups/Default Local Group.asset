@@ -14,12 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: 82c93f6e0f5c1984e84275fde773484e
-  m_SerializeEntries:
-  - m_GUID: 516ed434d1415e4488c03bd1965ef73a
-    m_Address: Assets/ScriptableObjects/DefaultDungeonNodeSetting.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
+  m_SerializeEntries: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 88accfc3586b3b348b3bb4cf8fc23313, type: 2}
   m_SchemaSet:
