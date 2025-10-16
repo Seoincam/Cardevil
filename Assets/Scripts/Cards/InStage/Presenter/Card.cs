@@ -1,8 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
-using Cardevil.Cards.InStage.Model;
-using Cardevil.Cards.InStage.ReadOnlyModel;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;

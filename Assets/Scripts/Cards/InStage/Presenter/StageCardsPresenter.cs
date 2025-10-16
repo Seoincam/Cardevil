@@ -24,19 +24,21 @@ namespace Cardevil.Cards.InStage.Presenter
         private StageCardsModel _model;
         private StageCardsView _view;
         private CardVisualSettingSO _visualSetting;
+
+        private EvaluationArgsBuilder _builder;
         
         private StageCardsPresenterState _state;
         private CancellationTokenSource _updateCts = new(); // UpdateAsync에 사용
         
         private bool CanInput => _state is { isSwapping: false, canInteract: true };
-        
+
         /// <summary>
         /// StageCardsPresenter 초기화.  
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
         /// <param name="model">현재 스테이지 카드 상태를 관리하는 <see cref="StageCardsModel"/> 인스턴스</param>
-        public void Init(StageCardsModel model)
+        public void Init(StageCardsModel model, EvaluationArgsBuilder builder)
         {
             if (_state.isInitialized) return;
             
@@ -46,6 +48,13 @@ namespace Cardevil.Cards.InStage.Presenter
                 return;
             }
             _model = model;
+
+            if (builder == null)
+            {
+                LogEx.LogError("Init() 실패 - builder가 null입니다.");
+                return;
+            }
+            _builder = builder;
 
             // SO 로드
             string path = "ScriptableObjects/Cards/CardVisualSetting";
@@ -325,7 +334,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _state.canInteract = false;
             UpdateUI();
-            EvaluationArgsBuilder.PreEvaluate(_model.SortedSelection);
+            _builder.BuildEvaluationArgs(_model.SortedSelection);
             _ = UseAsync();
         }
 

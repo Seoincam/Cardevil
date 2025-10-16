@@ -1,4 +1,4 @@
-using Cardevil.Cards;
+using Cardevil.Cards.System;
 using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;

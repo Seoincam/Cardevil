@@ -1,6 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage.ReadOnlyModel;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
 using Cardevil.Utils;
 using System.Collections.Generic;

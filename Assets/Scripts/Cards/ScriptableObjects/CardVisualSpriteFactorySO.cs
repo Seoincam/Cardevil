@@ -1,6 +1,9 @@
+using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
+using System.Data;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,14 +22,14 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// CardVisual로부터 Image를 받아 Sprite를 수정함.
         /// </summary>
-        public void UpdataVisual(CardData data, Image frontImg, Image primaryNumberImg)
+        public void UpdataVisual(InStageCardData data, Image frontImg, Image primaryNumberImg)
         {
-            if (data.valueType == CardData.ValueType.Move)
+            if (data.Kind == CardKind.Move)
             {
                 primaryNumberImg.gameObject.SetActive(false);
                 UpdateVisual(data, frontImg);
             }
-            else if (data.valueType == CardData.ValueType.Number)
+            else if (data.Kind == CardKind.Number)
             {
                 primaryNumberImg.gameObject.SetActive(true);
                 UpdateVisual(data.Number, frontImg, primaryNumberImg);
@@ -40,28 +43,28 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// Move 타입의 CardVisual을 수정.
         /// </summary>
-        private void UpdateVisual(CardData data, Image frontImg)
+        private void UpdateVisual(InStageCardData data, Image frontImg)
         {
             var m = moveSprites;
 
-            if (data.Move.DirectionValue == Direction.None)
+            if (data.Move.SelectState.FinalValue == null)
             {
-                if (data.selectType == CardData.SelectType.Multiple)
+                switch (data.Move.SelectState.Selectables.Count)
                 {
-
-                }
-                else if (data.selectType == CardData.SelectType.All)
-                {
-                    frontImg.sprite = m.All;
-                }
-                else
-                {
-                    LogEx.LogError("Invalid MoveData.");
+                    case 2:
+                        
+                        break;
+                    case 4:
+                        frontImg.sprite = m.All;
+                        break;
+                    default:
+                        LogEx.LogError("Invalid MoveData.");
+                        break;
                 }
                 return;
             }
 
-            frontImg.sprite = data.Move.DirectionValue switch
+            frontImg.sprite = data.Move.SelectState.FinalValue switch
             {
                 Direction.Up => m.Up,
                 Direction.Down => m.Down,
@@ -74,33 +77,36 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// Number 타입의 CardVisual을 수정
         /// </summary>
-        private void UpdateVisual(NumberData data, Image frontImg, Image primaryNumberImg)
+        private void UpdateVisual(BuiltNumberData data, Image frontImg, Image primaryNumberImg)
         {
-            NumberSpriteSet? spriteSet = numberSprites.FirstOrDefault(s => s.Color == data.ColorValue);
+            NumberSpriteSet? spriteSet = numberSprites.FirstOrDefault(s => s.Color == data.Color);
             if (spriteSet is not { } s)
             {
-                LogEx.LogError($"No sprite set found. Color: {data.ColorValue}");
+                LogEx.LogError($"No sprite set found. Color: {data.Color}");
                 return;
             }
 
             frontImg.sprite = s.Background;
 
-            // Star 처리
-            if (data.NumberValue == 0)
+            if (!data.SelectState.FinalValue.HasValue)
             {
-                primaryNumberImg.sprite = s.Star;
-                return;
+                if (data.SelectState.Selectables.Count == 9)
+                {
+                    primaryNumberImg.sprite = s.Star;
+                    return;
+                }
+                // TODO: 2, 3개는 그래픽 정해지면 설정
             }
 
             // Index 계산
-            int index = data.NumberValue - 2;
+            int index = (int)data.SelectState.FinalValue - 2;
             if (s.Numbers != null && index >= 0 && index < s.Numbers.Length)
             {
                 primaryNumberImg.sprite = s.Numbers[index];
             }
             else
             {
-                LogEx.LogWarning($"Invalid NumberValue {data.NumberValue} for color {data.ColorValue}");
+                LogEx.LogWarning($"Invalid NumberValue {data.SelectState.FinalValue} for color {data.Color}");
             }
         }
 
@@ -110,7 +116,7 @@ namespace Cardevil.Cards.ScriptableObjects
         [Serializable]
         public struct NumberSpriteSet
         {
-            public NumberData.CardColor Color;
+            public CardColor Color;
             [Space]
             public Sprite Background;
             public Sprite Star;

@@ -6,8 +6,8 @@ using System.Linq;
 using System;
 using Random = UnityEngine.Random;
 using Cardevil.Cards.Evaluations;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.InStage.ReadOnlyModel;
 using Cardevil.Core;
 
 namespace Cardevil.Cards.InStage.Model
@@ -51,15 +51,17 @@ namespace Cardevil.Cards.InStage.Model
         /// 덱 상태만 기준으로 카드를 사용할 수 있는지 여부를 반환.
         /// (플레이어 턴/입력 가능 여부 등은 고려하지 않음)
         /// </summary>
-        public bool CanUseCard => _selection.Count > 0 && _selection.All(c => c.Data.CanUse);
+        public bool CanUseCard => _selection.Count > 0 && _selection.All(c => c.Data.Kind == CardKind.Number
+            ? c.Data.Number.SelectState.FinalValue != null
+            : c.Data.Move.SelectState.FinalValue != null);
 
         /// <summary>
         /// 주어진 카드 목록으로 스테이지 덱을 설정,
         /// 최대 손패 수와 초기 버리기 횟수를 설정
         /// </summary>
-        public void SetUp(IEnumerable<CardData> cards, int maxHand, int initialDiscardCount)
+        public void SetUp(List<InStageCardData> cards, int maxHand, int initialDiscardCount)
         {
-            _deck = DeckFactory.CreateStageDeck(cards);
+            _deck = cards;
             MaxHand = maxHand;
             DiscardRemain = initialDiscardCount;
         }
@@ -83,7 +85,7 @@ namespace Cardevil.Cards.InStage.Model
                 return;
             }
 
-            DeckFactory.Shuffle(_deck);
+            // DeckFactory.Shuffle(_deck);
         }
         
         /// <summary>
@@ -105,7 +107,7 @@ namespace Cardevil.Cards.InStage.Model
         /// </summary>
         public HandRanking GetHandRanking()
         {
-            return EvaluationArgsBuilder.GetPrimaryHandRanking(_selection);
+            return EvaluationArgsBuilder.GetPrimaryHandRanking(_selection, out var _);
         }
 
         public Card GetHandCard(int index) => _hand[index];
@@ -188,16 +190,16 @@ namespace Cardevil.Cards.InStage.Model
         public void SortByNumber()
         {
             _hand = _hand
-                .OrderBy(ValueTypeRank)
+                .OrderBy(ValueTypeOrder)
 
                 // 이동카드 정렬
-                .ThenBy(MoveSelectTypeRank)
+                .ThenBy(MoveSelectTypeOrder)
                 .ThenBy(DirectionRank)
 
                 // 숫자카드 정렬
                 .ThenBy(NumberSelectTypeRank)
-                .ThenBy(c => c.Data.Number.NumberValue)
-                .ThenBy(c => c.Data.Number.ColorValue)
+                .ThenBy(c => c.Data.Number.SelectState.FinalValue)
+                .ThenBy(c => c.Data.Number.SelectState.FinalValue)
 
                 .ToList();
             HandChanged?.Invoke();
@@ -209,16 +211,16 @@ namespace Cardevil.Cards.InStage.Model
         public void SortByIcon()
         {
             _hand = _hand
-                .OrderBy(ValueTypeRank)
+                .OrderBy(ValueTypeOrder)
 
                 // 이동카드 정렬
-                .ThenBy(MoveSelectTypeRank)
+                .ThenBy(MoveSelectTypeOrder)
                 .ThenBy(DirectionRank)
 
                 // 숫자카드 정렬
-                .ThenBy(c => c.Data.Number.ColorValue)
+                .ThenBy(c => c.Data.Number.Color)
                 .ThenBy(NumberSelectTypeRank)
-                .ThenBy(c => c.Data.Number.NumberValue)
+                .ThenBy(c => c.Data.Number.SelectState.FinalValue)
 
                 .ToList();
             HandChanged?.Invoke();
@@ -260,43 +262,37 @@ namespace Cardevil.Cards.InStage.Model
 
             var cardData = _deck[0];
             _deck.RemoveAt(0);
-            cardData.OnDraw();
+            // cardData.OnDraw();
 
             return cardData;
         }
 
         #region Sorting Helper
 
-        private static int ValueTypeRank(Card c)
+        private static int ValueTypeOrder(Card c)
         {
-            return c.Data.valueType == CardData.ValueType.Move ? 0 : 1;
+            return c.Data.Kind == CardKind.Move ? 0 : 1;
         }
 
-        private static int MoveSelectTypeRank(Card c)
+        private static int MoveSelectTypeOrder(Card c)
         {
-            if (c.Data.selectType == CardData.SelectType.None || c.Data.IsValueSelected)
-                return 0;
-            else
-                return (int)c.Data.selectType;
+            if (c.Data.Kind == CardKind.Number)
+                return int.MaxValue;
+
+            return c.Data.Move.SelectState.Selectables.Count;
         }
 
         private static int NumberSelectTypeRank(Card c)
         {
-            if (c.Data.selectType == CardData.SelectType.None
-                || (c.Data.IsValueSelected && c.Data.selectType == CardData.SelectType.Multiple))
-                return -1;
-            else if (c.Data.selectType == CardData.SelectType.All && c.Data.IsValueSelected)
-                return 0;
-            else if (c.Data.selectType == CardData.SelectType.Multiple)
-                return c.Data.NumberOptionCount;
-            else if (c.Data.selectType == CardData.SelectType.All)
-                return (int)CardData.SelectType.All;
-            return 100;
+            if (c.Data.Kind == CardKind.Move)
+                return int.MinValue;
+
+            return c.Data.Number.SelectState.Selectables.Count;
         }
 
         private static int DirectionRank(Card c)
         {
-            return c.Data.Move.DirectionValue switch
+            return c.Data.Move.SelectState.FinalValue switch
             {
                 Utils.Directions.Direction.Up => 0,
                 Utils.Directions.Direction.Down => 1,

@@ -3,16 +3,13 @@ using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data.InStage
 {
-    public class InStageCardDataFactory
+    public static class InStageCardDataFactory
     {
-        // 원본 데이터
-        public List<CardData> datas;
-
-        public List<InStageCardData> BuildInStageCardData()
+        public static List<InStageCardData> BuildInStageCardData(List<CardData> data)
         {
             List<InStageCardData> builtDatas = new();
 
-            foreach (CardData origin in datas)
+            foreach (CardData origin in data)
             {
                 InStageCardData builtData;
                 if (origin.NumberModifiers != null)

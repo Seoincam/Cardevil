@@ -7,12 +7,11 @@ using System.Collections.Generic;
 namespace Cardevil.Cards.Data
 {
     // 카드 원본 데이터 생성기
-    public class CardDataFactory
+    public static class CardDataFactory
     {
-        public List<CardData> datas;
-
-        public void Init()
+        public static List<CardData> CreateBaseData()
         {
+            List<CardData> data = new();
             int id = 0;
             
             // Number Data 생성
@@ -29,7 +28,7 @@ namespace Cardevil.Cards.Data
                     number.Add(new SelectableNumberModifier());
                     number.Add(new SelectableNumberConfirmModifier(i));
                     
-                    datas.Add(new CardData(id++, number));
+                    data.Add(new CardData(id++, number));
                 }
 
                 // 오망성 Number Data
@@ -38,7 +37,7 @@ namespace Cardevil.Cards.Data
                 for (int i = 0; i < 9; i++) 
                     number.Add(new SelectableNumberModifier());
                 
-                datas.Add(new CardData(id++, number));
+                data.Add(new CardData(id++, number));
             }
             
             // Move Data 생성
@@ -54,7 +53,7 @@ namespace Cardevil.Cards.Data
                     move.Add(new SelectableDirectionModifier());
                     move.Add(new SelectableDirectionConfirmModifier(direction));
                     
-                    datas.Add((new CardData(id++, move)));
+                    data.Add((new CardData(id++, move)));
                 }
             }
             
@@ -65,8 +64,10 @@ namespace Cardevil.Cards.Data
                 for (int j = 0; j < 4; j++)
                     move.Add((new SelectableDirectionModifier()));
             
-                datas.Add(new CardData(id++, move));
+                data.Add(new CardData(id++, move));
             }
+
+            return data;
         }
     }
 }

@@ -5,10 +5,11 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage;
 using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.InStage.ReadOnlyModel;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.System
@@ -54,7 +55,7 @@ namespace Cardevil.Cards.System
         public void Init()
         {
             Clear();
-            _runtimeBaseDeck = DeckFactory.CreateRuntimeBaseDeck();
+            _runtimeBaseDeck = CardDataFactory.CreateBaseData();
         }
 
         public void Clear()
@@ -73,15 +74,15 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            _stageCards.SetUp(_runtimeBaseDeck, 6,3);
+            _stageCards.SetUp(InStageCardDataFactory.BuildInStageCardData(_runtimeBaseDeck), 6,3);
             _evaluationArgsBuilder.SetUp(_stageResults, EvaluationEvent);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
-            var deckRemains =
-                Object.FindObjectsByType<DeckRemain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            if (deckRemains == null || deckRemains.Length == 0) { LogEx.LogError("Deck Remain이 씬내에 존재하지 않음!"); return; }
-            var deckRemain = deckRemains[0];
-            deckRemain.Init(_stageCards);
+            // var deckRemains =
+            //     Object.FindObjectsByType<DeckRemain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            // if (deckRemains == null || deckRemains.Length == 0) { LogEx.LogError("Deck Remain이 씬내에 존재하지 않음!"); return; }
+            // var deckRemain = deckRemains[0];
+            // deckRemain.Init(_stageCards);
         }
        
         public ILockable GetCard()

@@ -1,3 +1,4 @@
+using Cardevil.Cards.Evaluations;
 using Cardevil.Systems;
 using Cysharp.Threading.Tasks;
 using Cardevil.Cards.InStage.Model;
@@ -8,8 +9,11 @@ namespace Cardevil.Cards
     public sealed class CardFlowController : ITurnCardFlow
     {
         private readonly StageCardsModel _model;
+        
         private readonly RerollPresenter _rerollPresenter;
         private readonly StageCardsPresenter _handPresenter;
+
+        private readonly EvaluationArgsBuilder _builder;
 
         private int _maxHand;
 
@@ -44,7 +48,7 @@ namespace Cardevil.Cards
 
         public async UniTask EnterHandPhase()
         {
-            _handPresenter.Init(_model);
+            _handPresenter.Init(_model, _builder);
             await _handPresenter.SetUp(_maxHand);
             DeactivateReroll();
         }

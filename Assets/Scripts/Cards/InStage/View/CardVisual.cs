@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Evaluations;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
@@ -8,7 +9,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.InStage.ReadOnlyModel;
 using Cardevil.Cards.ScriptableObjects;
 
 namespace Cardevil.Cards.InStage.View

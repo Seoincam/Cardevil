@@ -1,4 +1,4 @@
-using Cardevil.Cards.InStage.ReadOnlyModel;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using TMPro;
 using UnityEngine;
 
