@@ -133,9 +133,9 @@ namespace Cardevil.Ingame.Entities
 
             await UniTask.Delay(100);
             // TODO : 적에 대한 공격 구현
-            var result = Managers.Card.ResultCtx.CurrentResult;
-            Debug.Log($"플레이어 공격 : {result?.Damage ?? 0} 피해. 구현 아직");
-            Managers.Game.Enemy.GetDamage(result?.Damage ?? 0);
+            var result = Managers.Card.EvaluationResults.CurrentResult;
+            Debug.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
+            Managers.Game.Enemy.GetDamage(result.TotalDamage);
       
         }
         
@@ -148,11 +148,14 @@ namespace Cardevil.Ingame.Entities
         public async UniTask TurnMove()
         {
             Debug.Log("Player Moves!");
-            var result = Managers.Card.ResultCtx.CurrentResult;
+            var result = Managers.Card.EvaluationResults.CurrentResult;
             //TODO 이동 로직 구현
-            foreach (var move in result?.Moves)
+            foreach (var move in result.Moves)
             {
-                Move(move.DirectionValue, move.LengthValue);
+                if (!move.SelectState.FinalValue.HasValue)
+                    continue;
+
+                Move((Direction)move.SelectState.FinalValue, move.Length);
                 await UniTask.Delay(100);
             }
             Debug.Log("Player Move Completed!");
