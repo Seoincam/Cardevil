@@ -1,4 +1,3 @@
-using Cardevil.Cards.Data;
 using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data.InStage

@@ -105,7 +105,7 @@ namespace Cardevil.Cards.InStage.Model
         /// </summary>
         public HandRanking GetHandRanking()
         {
-            return CardResultEvaluator.GetRanking(_selection);
+            return EvaluationArgsBuilder.GetPrimaryHandRanking(_selection);
         }
 
         public Card GetHandCard(int index) => _hand[index];

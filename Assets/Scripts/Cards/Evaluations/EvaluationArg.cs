@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace Cardevil.Cards.Evaluations
 {    
-    public class EvaluationAction : IClearable, IDisposable
+    public class EvaluationArg : IClearable, IDisposable
     {
         #region Pooling
 
-        private static readonly Queue<EvaluationAction> pool = new();
+        private static readonly Queue<EvaluationArg> pool = new();
 
-        public static EvaluationAction Get()
+        public static EvaluationArg Get()
         {
             var action = pool.Count > 0 ? pool.Dequeue() : new();
             return action;
@@ -51,7 +51,7 @@ namespace Cardevil.Cards.Evaluations
         private float _value;
         private List<IEvaluateVisual> _visuals = new();
         private int _priority;
-
+        
         public void SetValue(int priority, EffectEvaluation damageType, float value = 0)
         {
             _priority = priority;

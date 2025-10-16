@@ -1,4 +1,4 @@
-using Cardevil.Cards.InStageData;
+using Cardevil.Cards.Data.InStage;
 using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data.Modifiers.Number

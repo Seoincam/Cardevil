@@ -1,3 +1,5 @@
+using Cardevil.Cards.Data;
+using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Utils;
 using DG.Tweening;
 using System.Linq;
@@ -83,9 +85,9 @@ namespace Cardevil.Cards.Evaluations
 
         private void StepEvaluation(EvaluationStep step)
         {
-            if (step.Effect == EvaluationAction.EvaluationEffect.Move) return;
+            if (step.Effect == EvaluationArg.EvaluationEffect.Move) return;
 
-            var oper = step.Effect == EvaluationAction.EvaluationEffect.Plus ? "+" : "x";
+            var oper = step.Effect == EvaluationArg.EvaluationEffect.Plus ? "+" : "x";
             _stepSeq?.Kill();
             _stepSeq = DOTween.Sequence().SetAutoKill(true).SetLink(gameObject);
 

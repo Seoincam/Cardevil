@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
-using System.Linq;
-using Cardevil.Cards.Interactions;
 using Cardevil.Utils;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage;
+using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.InStage.ReadOnlyModel;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Cards
+namespace Cardevil.Cards.System
 {
     /// <summary>
     /// 카드 시스템 전체를 관리하는 매니저 클래스.
@@ -18,17 +20,18 @@ namespace Cardevil.Cards
     /// </summary>
     public class CardManager : IClearable
     {
+        private readonly StageCardsModel _stageCards = new();
+        private readonly StageEvaluationResultsModel _stageResults = new();
+        private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
+        
+        public IReadOnlyStageEvaluationResultsModel StageResults => _stageResults;
         public StageCardsPresenter StageCardsPresenter { get; } = new();
         public RerollPresenter RerollPresenter { get; } = new();
         
-        public CardResultContext ResultCtx { get; } = new();
         public AsyncEvaluationEvent EvaluationEvent { get; } = new();
         
-        private readonly StageCardsModel _stageCardsModel = new();
         private List<CardData> _runtimeBaseDeck;
-
-        private int _maxHandCount = 6;
-            
+        
         public IReadOnlyList<CardData> RuntimeBaseDeck
         {
             get => _runtimeBaseDeck;
@@ -41,7 +44,7 @@ namespace Cardevil.Cards
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
         {
-            return new CardFlowController(_stageCardsModel, RerollPresenter, StageCardsPresenter);
+            return new CardFlowController(_stageCards, RerollPresenter, StageCardsPresenter);
         }
         
         /// <summary>
@@ -56,9 +59,11 @@ namespace Cardevil.Cards
 
         public void Clear()
         {
+            _stageCards.Clear();
+            _stageResults.Clear();
+            
             StageCardsPresenter.Clear();
-            _stageCardsModel.Clear();
-            ResultCtx.Clear();
+            RerollPresenter.Clear();
         }
 
         /// <summary>
@@ -68,14 +73,15 @@ namespace Cardevil.Cards
         public void OnEnterStage()
         {
             Clear();
-            _stageCardsModel.SetUp(_runtimeBaseDeck, _maxHandCount,3);
+            _stageCards.SetUp(_runtimeBaseDeck, 6,3);
+            _evaluationArgsBuilder.SetUp(_stageResults, EvaluationEvent);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             var deckRemains =
                 Object.FindObjectsByType<DeckRemain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (deckRemains == null || deckRemains.Length == 0) { LogEx.LogError("Deck Remain이 씬내에 존재하지 않음!"); return; }
             var deckRemain = deckRemains[0];
-            deckRemain.Init(_stageCardsModel);
+            deckRemain.Init(_stageCards);
         }
        
         public ILockable GetCard()
@@ -89,22 +95,22 @@ namespace Cardevil.Cards
         /// 족보 데이터베이스를 참조하여 점수를 반환.
         /// </summary>
         /// <returns>현재 족보에 해당하는 점수</returns>
-        public int GetCurrentCardRankScore()
-        {
-            var result = ResultCtx.CurrentResult;
-            if (result == null)
-            {
-                Debug.LogError("잘못된 시점에 족보에 접근.");
-                result = ResultCtx.PreviousResult;
-            }
-            HandRanking rank = result.Ranking;
-
-            var data = Managers.Database.Database.HandRankingDataList
-                .FirstOrDefault(r => r.Ranking == rank);
-
-            int score = data?.Value ?? 0;
-            return score;
-        }
+        // public int GetCurrentCardRankScore()
+        // {
+        //     var result = ResultCtx.CurrentResult;
+        //     if (result == null)
+        //     {
+        //         Debug.LogError("잘못된 시점에 족보에 접근.");
+        //         result = ResultCtx.PreviousResult;
+        //     }
+        //     HandRanking rank = result.Ranking;
+        //
+        //     var data = Managers.Database.Database.HandRankingDataList
+        //         .FirstOrDefault(r => r.Ranking == rank);
+        //
+        //     int score = data?.Value ?? 0;
+        //     return score;
+        // }
     }
 }
 

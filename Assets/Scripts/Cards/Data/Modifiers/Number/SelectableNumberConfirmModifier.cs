@@ -1,5 +1,4 @@
 using System.Linq;
-using UnityEngine;
 
 namespace Cardevil.Cards.Data.Modifiers.Number 
 {
@@ -37,7 +36,7 @@ namespace Cardevil.Cards.Data.Modifiers.Number
                         availableNumbers.Remove(v.Value);
                 }
 
-                int randomIndex = Random.Range(0, availableNumbers.Count);
+                int randomIndex = UnityEngine.Random.Range(0, availableNumbers.Count);
                 _value = availableNumbers[randomIndex];
             }
 

@@ -325,7 +325,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _state.canInteract = false;
             UpdateUI();
-            CardResultEvaluator.PreEvaluate(_model.SortedSelection);
+            EvaluationArgsBuilder.PreEvaluate(_model.SortedSelection);
             _ = UseAsync();
         }
 

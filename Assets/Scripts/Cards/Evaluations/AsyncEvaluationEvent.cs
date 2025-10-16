@@ -8,13 +8,20 @@ namespace Cardevil.Cards.Evaluations
 {
     public class AsyncEvaluationEvent : IClearable
     {
-        private SortedList<int, EvaluationAction> _actions = new();
+        private EvaluationArgsBuilder _builder;
+        private SortedList<int, EvaluationArg> _args = new();
 
         public event Action<EvaluationStep> OnStep;
 
-        public void AddAction(EvaluationAction action, int priority)
+        public void AddArg(EvaluationArg arg, int priority)
         {
-            _actions.Add(priority, action);
+            _args.Add(priority, arg);
+        }
+        
+        public void Clear()
+        {
+            foreach (var action in _args.Values) action.Release();
+            _args.Clear();
         }
 
         public async UniTask InvokeAsync()
@@ -25,7 +32,7 @@ namespace Cardevil.Cards.Evaluations
 
             try
             {
-                foreach (var action in _actions.Values)
+                foreach (var action in _args.Values)
                 {
                     var before = damage;
                     var after = action.Evaluate(damage, out var effect, out var value);
@@ -36,7 +43,7 @@ namespace Cardevil.Cards.Evaluations
                     await UniTask.Delay(TimeSpan.FromSeconds(.7f));
                 }
 
-                Managers.Card.ResultCtx.CommitedResult.UpdateDamage(damage);
+                _builder.SetDamage((int)damage);
             }
             catch (Exception ex)
             {
@@ -46,12 +53,6 @@ namespace Cardevil.Cards.Evaluations
             {
                 Clear();
             }            
-        }
-
-        public void Clear()
-        {
-            foreach (var action in _actions.Values) action.Release();
-            _actions.Clear();
         }
     }
 }

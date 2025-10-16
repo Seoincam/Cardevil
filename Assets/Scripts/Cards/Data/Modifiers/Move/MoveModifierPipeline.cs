@@ -1,4 +1,4 @@
-using Cardevil.Cards.InStageData;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 

@@ -1,7 +1,7 @@
-using Cardevil.Cards.Interactions;
 using Cardevil.Systems;
 using Cysharp.Threading.Tasks;
-using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.Presenter;
 
 namespace Cardevil.Cards
 {
