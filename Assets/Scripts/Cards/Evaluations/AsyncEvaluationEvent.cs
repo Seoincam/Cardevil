@@ -8,14 +8,33 @@ namespace Cardevil.Cards.Evaluations
 {
     public class AsyncEvaluationEvent : IClearable
     {
-        private EvaluationArgsBuilder _builder;
-        private SortedList<int, EvaluationArg> _args = new();
+        private readonly EvaluationArgsBuilder _builder;
+        private EvaluationUIAnimator _animator;
+        private readonly SortedList<int, EvaluationArg> _args = new();
 
         public event Action<EvaluationStep> OnStep;
+        
+        public EvaluationUIAnimator Animator => _animator;
 
         public void AddArg(EvaluationArg arg, int priority)
         {
             _args.Add(priority, arg);
+        }
+
+        public AsyncEvaluationEvent(EvaluationArgsBuilder builder)
+        {
+            _builder = builder;
+            
+            // Evaluation UI Animator
+            string path = "UI/CardUI/Evaluation Visual";
+            var go = Managers.Resource.Instantiate(path).gameObject;
+            if (!go)
+            {
+                LogEx.LogError($"Evaluation UI Animator가 존재하지 않음! path: {path}");
+                return;
+            }
+            _animator = go.GetComponent<EvaluationUIAnimator>();
+            _animator.Init(this);
         }
         
         public void Clear()

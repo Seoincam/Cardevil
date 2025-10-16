@@ -22,10 +22,9 @@ namespace Cardevil.Cards.InStage.Presenter
         public event Action<HandRanking> OnSelectsChanged;
         
         private StageCardsModel _model;
+        private EvaluationArgsBuilder _builder;
         private StageCardsView _view;
         private CardVisualSettingSO _visualSetting;
-
-        private EvaluationArgsBuilder _builder;
         
         private StageCardsPresenterState _state;
         private CancellationTokenSource _updateCts = new(); // UpdateAsync에 사용
@@ -183,7 +182,6 @@ namespace Cardevil.Cards.InStage.Presenter
         
         public async UniTask WaitUserInput()
         {
-            Managers.Card.ResultCtx.StepToNext();
             cmp = new();
             OnSelectsChanged?.Invoke(HandRanking.None); // Evaluation Text 초기화
             _state.canInteract = true;
@@ -191,7 +189,6 @@ namespace Cardevil.Cards.InStage.Presenter
             
             await cmp.Task; // Input 완료까지 대기
             
-            Managers.Card.ResultCtx.Push();
             _state.canInteract = false;
             UpdateUI();
         }
@@ -347,7 +344,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private async UniTask UseAsync()
         {
-            await Managers.Card.EvaluationEvent.InvokeAsync();
+            await _builder.InvokeAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             await DiscardAsync();
 

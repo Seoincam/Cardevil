@@ -4,35 +4,39 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Presenter;
 
-namespace Cardevil.Cards
+namespace Cardevil.Cards.System
 {
     public sealed class CardFlowController : ITurnCardFlow
     {
-        private readonly StageCardsModel _model;
-        
+        private readonly StageCardsModel _stageCardsModel;
         private readonly RerollPresenter _rerollPresenter;
-        private readonly StageCardsPresenter _handPresenter;
+        private readonly StageCardsPresenter _stageCardsPresenter;
 
-        private readonly EvaluationArgsBuilder _builder;
+        private readonly EvaluationResultsModel _evaluationResultsModel;
+        private readonly EvaluationArgsBuilder _evaluationArgsBuilder;
 
         private int _maxHand;
 
         public ITurnRerollInput Reroll => _rerollPresenter;
-        public ITurnPlayerInput Hand => _handPresenter;
+        public ITurnPlayerInput StageCards => _stageCardsPresenter;
 
-        public CardFlowController(StageCardsModel model, RerollPresenter rerollPresenter,
-            StageCardsPresenter handPresenter)
+        public CardFlowController(StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
+            StageCardsPresenter stageCardsPresenter, EvaluationResultsModel evaluationResultsModel, 
+            EvaluationArgsBuilder evaluationArgsBuilder)
         {
-            _model = model;
+            _stageCardsModel = stageCardsModel;
             _rerollPresenter = rerollPresenter;
-            _handPresenter = handPresenter;
+            _stageCardsPresenter = stageCardsPresenter;
+            
+            _evaluationResultsModel = evaluationResultsModel;
+            _evaluationArgsBuilder = evaluationArgsBuilder;
         }
 
         public async UniTask EnterRerollPhase(int maxHand)
         {
             _maxHand = maxHand;
             
-            _rerollPresenter.Init(_model);
+            _rerollPresenter.Init(_stageCardsModel);
             await _rerollPresenter.SetUp(maxHand);
         }
 
@@ -48,19 +52,20 @@ namespace Cardevil.Cards
 
         public async UniTask EnterHandPhase()
         {
-            _handPresenter.Init(_model, _builder);
-            await _handPresenter.SetUp(_maxHand);
+            _evaluationArgsBuilder.Init(_evaluationResultsModel);
+            _stageCardsPresenter.Init(_stageCardsModel, _evaluationArgsBuilder);
+            await _stageCardsPresenter.SetUp(_maxHand);
             DeactivateReroll();
         }
 
         public async UniTask ExitHandPhase()
         {
-            await _handPresenter.Exit();
+            await _stageCardsPresenter.Exit();
         }
 
         public void DeactivateHandPhase()
         {
-            _handPresenter.Clear();
+            _stageCardsPresenter.Clear();
         }
     }
 }

@@ -7,21 +7,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Relics;
 using Cardevil.Utils;
-using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Cards.Evaluations
 {
     public class EvaluationArgsBuilder : IClearable
     {
-        private StageEvaluationResultsModel _model;
-        private AsyncEvaluationEvent _evaluationEvent;
+        private EvaluationResultsModel _model;
+        private AsyncEvaluationEvent _event;
         
         private EvaluationResult _pending;
         
-        public void SetUp(StageEvaluationResultsModel model,  AsyncEvaluationEvent asyncEvent)
+        public void Init(EvaluationResultsModel model)
         {
+            if (model == null)
+            {
+                LogEx.LogError("Init() 실패 - Stage Evaluation Results Model이 null입니다.");
+                return;
+            }
             _model = model;
-            _evaluationEvent = asyncEvent;
+
+            _event = new AsyncEvaluationEvent(this);
         }
         
         public void Clear()
@@ -56,6 +62,7 @@ namespace Cardevil.Cards.Evaluations
             {
                 using (arg = EvaluationArg.Get())
                 {
+                    arg.SetEvent(_event);
                     arg.SetValue(0, EffectEvaluation.None);
                     arg.SetVisual(moveCards);
                 }
@@ -82,6 +89,7 @@ namespace Cardevil.Cards.Evaluations
                         return;
                     }
                     
+                    arg.SetEvent(_event);
                     arg.SetValue(0, EffectEvaluation.Plus, data.Value);
                     arg.SetVisual(cardsInHandRanking); // 족보에 포함되는 카드들만 추가함
                 }
@@ -95,6 +103,7 @@ namespace Cardevil.Cards.Evaluations
                     cur.Data.Number.SelectState.FinalValue > best.Data.Number.SelectState.FinalValue ? cur : best);
                 using (arg = EvaluationArg.Get())
                 {
+                    arg.SetEvent(_event);
                     arg.SetValue(0, EffectEvaluation.Plus, (float)top.Data.Number.SelectState.FinalValue);
                     arg.SetVisual(top);
                 }
@@ -105,6 +114,7 @@ namespace Cardevil.Cards.Evaluations
                 {
                     using (arg = EvaluationArg.Get())
                     {
+                        arg.SetEvent(_event);
                         arg.SetValue(0, EffectEvaluation.Plus, (float)card.Data.Number.SelectState.FinalValue);
                         arg.SetVisual(card);
                     }
@@ -154,16 +164,23 @@ namespace Cardevil.Cards.Evaluations
             */
         }
 
+        public async UniTask InvokeAsync()
+        {
+            await _event.InvokeAsync();
+        }
 
-
-        #region 카드 족보 판정
+        public void UpdateHandRankingVisual(IEnumerable<Card> cards)
+        {
+            var handRanking = GetPrimaryHandRanking(cards, out var _);
+            _event.Animator.UpdateHandRankingText(handRanking);
+        } 
         
         public static HandRanking GetPrimaryHandRanking(IEnumerable<Card> cards, out List<Card> cardsInHandRanking)
         {
             cardsInHandRanking = new List<Card>();
             
             var numberCards = cards.Where(c => c.Data.Kind == CardKind.Number)
-                    .ToList();
+                .ToList();
             
             if (numberCards.Count == 0)
                 return HandRanking.None;
@@ -205,6 +222,8 @@ namespace Cardevil.Cards.Evaluations
 
             return HandRanking.None;
         }
+        
+        #region HandRanking Helper
 
         /// <summary>
         /// 숫자 카드를 바탕으로 '모든' 족보를 반환. 

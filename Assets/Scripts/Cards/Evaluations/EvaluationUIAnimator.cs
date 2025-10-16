@@ -14,8 +14,7 @@ namespace Cardevil.Cards.Evaluations
         [Space, SerializeField] RectTransform main;
         [SerializeField] RectTransform sub;
 
-
-
+        private AsyncEvaluationEvent _event;
         private EvaluationTextAnimator _mainText;
         private EvaluationTextAnimator _subText;
 
@@ -26,23 +25,29 @@ namespace Cardevil.Cards.Evaluations
         private Tween _subRankingTween;
 
 
+        public void Init(AsyncEvaluationEvent evaluationEvent)
+        {
+            if (_event == evaluationEvent)
+            {
+                LogEx.LogError("Evaluation Args Builder is null");
+                return;
+            }
+            _event = evaluationEvent;
+            _event.OnStep += StepEvaluation;
+        }
 
-        void Start()
+        private void Awake()
         {
             _mainText = main.GetComponentInChildren<EvaluationTextAnimator>();
             _subText = sub.GetComponentInChildren<EvaluationTextAnimator>();
             _mainText.UpdateText();
             _subText.UpdateText();
-
-
-            Managers.Card.EvaluationEvent.OnStep += StepEvaluation;
-            Managers.Card.StageCardsPresenter.OnSelectsChanged += UpdateSelectedRanking;
         }
 
-        void OnDestroy()
+        private void OnDestroy()
         {
-            Managers.Card.EvaluationEvent.OnStep -= StepEvaluation;
-            Managers.Card.StageCardsPresenter.OnSelectsChanged -= UpdateSelectedRanking;
+            if (_event != null)
+                _event.OnStep -= StepEvaluation;
 
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();
@@ -50,7 +55,7 @@ namespace Cardevil.Cards.Evaluations
 
 
 
-        private void UpdateSelectedRanking(HandRanking ranking)
+        public void UpdateHandRankingText(HandRanking ranking)
         {
             if (ranking == _lastRanking) return;
             _lastRanking = ranking;

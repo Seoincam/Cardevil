@@ -30,7 +30,7 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         public void Dispose()
         {
-            Managers.Card.EvaluationEvent.AddAction(this, _priority);
+            _event.AddArg(this, _priority);
         }
 
         public void Clear()
@@ -51,6 +51,13 @@ namespace Cardevil.Cards.Evaluations
         private float _value;
         private List<IEvaluateVisual> _visuals = new();
         private int _priority;
+
+        private AsyncEvaluationEvent _event;
+        
+        public void SetEvent(AsyncEvaluationEvent ev)
+        {
+            _event ??= ev;
+        }
         
         public void SetValue(int priority, EffectEvaluation damageType, float value = 0)
         {

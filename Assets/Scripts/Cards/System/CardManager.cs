@@ -1,16 +1,12 @@
 using Cardevil.Systems;
 using System.Collections.Generic;
-using UnityEngine;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
-using Cardevil.Utils;
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
-using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.System
 {
@@ -21,22 +17,17 @@ namespace Cardevil.Cards.System
     /// </summary>
     public class CardManager : IClearable
     {
-        private readonly StageCardsModel _stageCards = new();
-        private readonly StageEvaluationResultsModel _stageResults = new();
+        private readonly StageCardsModel _stageCardsModel = new();
+        private readonly RerollPresenter _rerollPresenter = new();
+        private readonly StageCardsPresenter _stageCardsPresenter = new();
+
+        private readonly EvaluationResultsModel _evaluationResultsModel = new();
         private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
-        
-        public IReadOnlyStageEvaluationResultsModel StageResults => _stageResults;
-        public StageCardsPresenter StageCardsPresenter { get; } = new();
-        public RerollPresenter RerollPresenter { get; } = new();
-        
-        public AsyncEvaluationEvent EvaluationEvent { get; } = new();
         
         private List<CardData> _runtimeBaseDeck;
         
-        public IReadOnlyList<CardData> RuntimeBaseDeck
-        {
-            get => _runtimeBaseDeck;
-        }
+        public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
+        public IReadOnlyList<CardData> RuntimeBaseDeck => _runtimeBaseDeck;
         
         /// <summary>
         /// 카드 단계(리롤, 손패 선택 등)를 관리하는 Flow을 생성.
@@ -45,7 +36,8 @@ namespace Cardevil.Cards.System
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
         {
-            return new CardFlowController(_stageCards, RerollPresenter, StageCardsPresenter);
+            return new CardFlowController(_stageCardsModel, _rerollPresenter, _stageCardsPresenter,
+                _evaluationResultsModel, _evaluationArgsBuilder);
         }
         
         /// <summary>
@@ -60,11 +52,12 @@ namespace Cardevil.Cards.System
 
         public void Clear()
         {
-            _stageCards.Clear();
-            _stageResults.Clear();
+            _stageCardsModel.Clear();
+            _rerollPresenter.Clear();
+            _stageCardsPresenter.Clear();
             
-            StageCardsPresenter.Clear();
-            RerollPresenter.Clear();
+            _evaluationResultsModel.Clear();
+            _evaluationArgsBuilder.Clear();
         }
 
         /// <summary>
@@ -74,8 +67,7 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            _stageCards.SetUp(InStageCardDataFactory.BuildInStageCardData(_runtimeBaseDeck), 6,3);
-            _evaluationArgsBuilder.SetUp(_stageResults, EvaluationEvent);
+            _stageCardsModel.SetUp(InStageCardDataFactory.BuildInStageCardData(_runtimeBaseDeck), 6,3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =

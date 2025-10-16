@@ -10,7 +10,7 @@ namespace Cardevil.Cards.InStage.Model
     // 플레이어 캐릭터 : 방향 및 총 데미지
     // 적 : 족보
     
-    public sealed class StageEvaluationResultsModel : IReadOnlyStageEvaluationResultsModel, IClearable
+    public sealed class EvaluationResultsModel : IReadOnlyEvaluationResultsModel, IClearable
     {
         private readonly List<EvaluationResult> _history = new();
         private int _cursor = -1;

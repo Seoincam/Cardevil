@@ -1,4 +1,4 @@
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.Data.InStage
 {
     public interface ILockable
     {

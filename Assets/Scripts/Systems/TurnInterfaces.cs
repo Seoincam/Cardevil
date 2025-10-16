@@ -17,7 +17,7 @@ namespace Cardevil.Systems
     public interface ITurnCardFlow
     {
         ITurnRerollInput Reroll { get; }
-        ITurnPlayerInput Hand { get; }
+        ITurnPlayerInput StageCards { get; }
         
         /// <summary>
         /// 리롤 단계 진입 시 호출.
