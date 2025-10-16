@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Cardevil.Cards.Data;
 
 public class RemainCardVisual : MonoBehaviour
 {
@@ -14,9 +15,9 @@ public class RemainCardVisual : MonoBehaviour
     [SerializeField] Image cardImage;
     [SerializeField] TextMeshProUGUI text;
     [SerializeField] Transform shakeObject;
-    private StageCardsModel _model;
+    private IReadOnlyStageCardsModel _model;
 
-    public void Init(StageCardsModel model, CardData data)
+    public void Init(IReadOnlyStageCardsModel model, CardData data)
     {
         this.data = data;
         isRemaining = true;

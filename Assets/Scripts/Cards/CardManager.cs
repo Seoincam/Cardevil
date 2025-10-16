@@ -6,6 +6,7 @@ using Cardevil.Core;
 using System.Linq;
 using Cardevil.Cards.Interactions;
 using Cardevil.Utils;
+using Cardevil.Cards.Data;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards

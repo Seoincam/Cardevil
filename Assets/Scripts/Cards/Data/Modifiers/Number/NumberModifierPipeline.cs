@@ -1,6 +1,7 @@
+using Cardevil.Cards.InStageData;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.Data.Modifiers.Number
 {
     // Modifier!
     public class NumberModifierPipeline

@@ -14,9 +14,9 @@ namespace Cardevil.Cards.Evaluations
         public static void PreEvaluate(IReadOnlyList<Card> cards)
         {
             CardResult result;
-            
-            var numbers = cards.Where(c => c.Data.valueType == CardData.ValueType.Number).ToList();
-            var moves = cards.Where(c => c.Data.valueType == CardData.ValueType.Move).ToList();
+
+            var numbers = cards.Where(c => c.Data.IsNumberType).ToList();
+            var moves = cards.Where(c => !c.Data.IsNumberType).ToList();
 
             // move only
             if (numbers.Count == 0)
@@ -60,10 +60,10 @@ namespace Cardevil.Cards.Evaluations
             {
                 case HandRanking.High:
                     var top = numbers.Aggregate((best, cur) =>
-                        cur.Data.Number.NumberValue > best.Data.Number.NumberValue ? cur : best);
+                        cur.Data.Number.FinalValue > best.Data.Number.FinalValue ? cur : best);
                     using (var high = EvaluationAction.Get())
                     {
-                        high.SetValue(priority: p++, EffectEvaluation.Plus, top.Data.Number.NumberValue);
+                        high.SetValue(priority: p++, EffectEvaluation.Plus, top.Data.Number.FinalValue);
                         high.SetVisual(top);
                     }
                     break;

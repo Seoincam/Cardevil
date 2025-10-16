@@ -7,6 +7,7 @@ using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Cardevil.Cards.Data;
 
 namespace Cardevil.Cards.Interactions
 {

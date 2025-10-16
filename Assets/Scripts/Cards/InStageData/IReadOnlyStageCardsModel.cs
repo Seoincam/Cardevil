@@ -2,7 +2,7 @@ using Cardevil.Cards.Interactions;
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.InStageData
 {
     /// <summary>
     /// 스테이지 내 카드 상태를 읽기 전용으로 조회할 수 있는 인터페이스.
@@ -34,12 +34,12 @@ namespace Cardevil.Cards.Data
         /// <summary>
         /// 현재 덱의 읽기 전용 뷰.
         /// </summary>
-        IReadOnlyList<CardData> Deck { get; }
+        IReadOnlyList<InStageCardData> Deck { get; }
         
         /// <summary>
         /// 버린 패의 읽기 전용 뷰.
         /// </summary>
-        IReadOnlyList<CardData> DiscardPile { get; }
+        IReadOnlyList<InStageCardData> DiscardPile { get; }
 
         /// <summary>
         /// 현재 손패의 읽기 전용 뷰.

@@ -1,4 +1,4 @@
-namespace Cardevil.Cards.Evaluations
+namespace Cardevil.Cards.Data
 {
     public enum HandRanking
     {

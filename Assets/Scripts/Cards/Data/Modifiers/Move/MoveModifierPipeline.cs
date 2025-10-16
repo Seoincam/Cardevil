@@ -1,7 +1,8 @@
+using Cardevil.Cards.InStageData;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.Data.Modifiers.Move
 {
     public class MoveModifierPipeline
     {

@@ -1,7 +1,8 @@
+using Cardevil.Cards.Data;
 using Cardevil.Utils;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.InStageData
 {
     public class InStageCardDataFactory
     {
@@ -18,13 +19,13 @@ namespace Cardevil.Cards.Data
                 if (origin.NumberModifiers != null)
                 {
                     var builtNumber = origin.NumberModifiers.Build();
-                    builtData = new InStageCardData(origin.Id, builtNumber);
+                    builtData = InStageCardData.FromNumber(origin.Id, builtNumber);
                     builtDatas.Add(builtData);
                 }
                 else if (origin.MoveModifiers != null)
                 {
                     var builtMove = origin.MoveModifiers.Build();
-                    builtData = new InStageCardData(origin.Id, builtMove);
+                    builtData = InStageCardData.FromMove(origin.Id, builtMove);
                     builtDatas.Add(builtData);
                 }
                 

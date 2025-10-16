@@ -7,7 +7,7 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.Interactions;
 using Cardevil.Core;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.InStageData
 {
     /// <summary>
     /// 매 스테이지에서 사용되는 카드 시스템의 상태(Model).
@@ -16,8 +16,8 @@ namespace Cardevil.Cards.Data
     [Serializable]
     public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
-        private List<CardData> _deck = new();
-        private List<CardData> _discardPile = new();
+        private List<InStageCardData> _deck = new();
+        private List<InStageCardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
 
@@ -28,8 +28,8 @@ namespace Cardevil.Cards.Data
         public int MaxHand { get; private set; }
         public int DiscardRemain { get; private set; }
         
-        public IReadOnlyList<CardData> Deck => _deck;
-        public IReadOnlyList<CardData> DiscardPile => _discardPile;
+        public IReadOnlyList<InStageCardData> Deck => _deck;
+        public IReadOnlyList<InStageCardData> DiscardPile => _discardPile;
         public IReadOnlyList<Card> Hand => _hand;
         public IReadOnlyCollection<Card> Selection => _selection;
         public IReadOnlyList<Card> SortedSelection => _selection.OrderBy(c => _hand.IndexOf(c)).ToList();
@@ -238,7 +238,7 @@ namespace Cardevil.Cards.Data
         /// <summary>
         /// 덱에서 랜덤한 카드를 반환하기만 함. 삭제하진 않음.
         /// </summary>
-        public CardData GetRandomCard()
+        public InStageCardData GetRandomCard()
         {
             int randomIndex = Random.Range(0, _deck.Count);
             return _deck[randomIndex];
@@ -247,7 +247,7 @@ namespace Cardevil.Cards.Data
         /// <summary>
         /// 덱의 첫 카드를 반환하고 덱에서 삭제함.
         /// </summary>
-        public CardData PopCard()
+        public InStageCardData PopCard()
         {
             if (_deck.Count == 0)
             {

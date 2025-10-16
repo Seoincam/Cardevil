@@ -1,3 +1,5 @@
+using Cardevil.Cards.Data.Modifiers.Move;
+using Cardevil.Cards.Data.Modifiers.Number;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;

@@ -4,6 +4,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using Cardevil.Cards.Data;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.Interactions

@@ -5,6 +5,7 @@ using Cardevil.Systems;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
+using Cardevil.Cards.Data;
 using System.Linq;
 using System.Threading;
 using UnityEngine.UIElements;
@@ -227,7 +228,7 @@ namespace Cardevil.Cards.Interactions
             // TODO: 우클릭 관련 로직 추후 '전환 버튼'으로 이동
             else if (args.button == MouseButton.RightMouse)
             {
-                if (!card.Data.CanOpenSelection) return;
+                // if (!card.Data.CanOpenSelection) return;
                 
                 var selectContainers = Object.FindObjectsByType<SelectContainer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 if (selectContainers == null || selectContainers.Length == 0) { LogEx.LogError("Select Container가 씬에 존재하지 않음"); return; }

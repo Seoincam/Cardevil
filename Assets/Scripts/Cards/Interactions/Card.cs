@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Pools;
@@ -19,7 +20,7 @@ namespace Cardevil.Cards.Interactions
         [SerializeField] private CardVisualSettingSO visualSetting;
         
         [Header("Card")]
-        [SerializeField, VisibleOnly] private CardData data;
+        [SerializeField, VisibleOnly] private InStageCardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
         [SerializeField, VisibleOnly] private CardState state;
         
@@ -34,7 +35,7 @@ namespace Cardevil.Cards.Interactions
         private Poolable _poolable;
         private IReadOnlyStageCardsModel _model;
         
-        public CardData Data => data;
+        public InStageCardData Data => data;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
         
@@ -83,7 +84,7 @@ namespace Cardevil.Cards.Interactions
         /// 주어진 데이터를 바탕으로 초기화.
         /// Visual도 함께 생성.
         /// </summary>
-        public void Init(CardData data, IReadOnlyStageCardsModel model)
+        public void Init(InStageCardData data, IReadOnlyStageCardsModel model)
         {
             this.data = data;
             _model = model;
@@ -174,8 +175,9 @@ namespace Cardevil.Cards.Interactions
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
                 PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
-            
-                if (!data.CanOpenSelection)
+                
+                // TODO: 값 선택가능한가?
+                if (true)
                     return;
             
                 // TODO: 실행자 수정
