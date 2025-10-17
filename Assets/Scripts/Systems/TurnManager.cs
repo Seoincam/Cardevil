@@ -99,14 +99,14 @@ namespace Cardevil.Systems
                 await _cardFlow.EnterHandPhase();
                 while (!token.IsCancellationRequested)
                 {
-                    await _cardFlow.Hand.DrawCard();
-                    if (_cardFlow.Hand.IsNoCard)
+                    await _cardFlow.StageCards.DrawCard();
+                    if (_cardFlow.StageCards.IsNoCard)
                     {
                         // TODO: 게임 오버
                         break;
                     }
 
-                    await _cardFlow.Hand.WaitUserInput();
+                    await _cardFlow.StageCards.WaitUserInput();
 
                     await _playerMove.TurnMove();
                     await _playerAction.TurnAttack();

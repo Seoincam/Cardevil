@@ -1,9 +1,8 @@
-using Cardevil.Cards.Evaluations;
 using Database.Generated;
 using System;
-using System.Linq;
 using UnityEngine;
 using Cardevil.Attributes;
+using Cardevil.Cards.Data;
 using System.Collections.Generic;
 
 namespace Cardevil.Relics
@@ -90,6 +89,7 @@ namespace Cardevil.Relics
         /// </summary>
         public bool CanTriggerOnEvaluation(HandRanking ranking)
         {
+            /*
             if (_effectType != EffectType.OnEvaluation)
                 return false;
 
@@ -104,7 +104,8 @@ namespace Cardevil.Relics
                 Managers.Game?.PlayerStatus?.CurrentHp != data.TriggerHp)
                 return false;
 
-            var resultCtx = Managers.Card.ResultCtx;
+            // var resultCtx = Managers.Card.ResultCtx;
+            IReadOnlyStageEvaluationResultsModel resultCtx;
             switch (data.ExecuteType)
             {
                 case EffectExcute.immediate:
@@ -148,9 +149,11 @@ namespace Cardevil.Relics
                 case EffectExcute.None:
                 default:
                     return false;
-            }
+                    */
+            return false;
         }
     }
 }
+
 
 
