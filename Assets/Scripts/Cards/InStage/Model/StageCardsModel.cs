@@ -9,6 +9,7 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
+using Cardevil.Utils;
 
 namespace Cardevil.Cards.InStage.Model
 {
@@ -186,12 +187,12 @@ namespace Cardevil.Cards.InStage.Model
 
                 // 이동카드 정렬
                 .ThenBy(MoveSelectTypeOrder)
-                .ThenBy(DirectionRank)
+                .ThenBy(DirectionOrder)
 
                 // 숫자카드 정렬
-                .ThenBy(NumberSelectTypeRank)
-                .ThenBy(c => c.Data.Number.SelectState.FinalValue)
-                .ThenBy(c => c.Data.Number.SelectState.FinalValue)
+                .ThenBy(NumberSelectTypeOrder)
+                // .ThenBy(c => c.Data.Number.SelectState.FinalValue)
+                .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
             HandChanged?.Invoke();
@@ -207,12 +208,12 @@ namespace Cardevil.Cards.InStage.Model
 
                 // 이동카드 정렬
                 .ThenBy(MoveSelectTypeOrder)
-                .ThenBy(DirectionRank)
+                .ThenBy(DirectionOrder)
 
                 // 숫자카드 정렬
-                .ThenBy(c => c.Data.Number.Color)
-                .ThenBy(NumberSelectTypeRank)
-                .ThenBy(c => c.Data.Number.SelectState.FinalValue)
+                .ThenBy(NumberColorOrder)
+                .ThenBy(NumberSelectTypeOrder)
+                .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
             HandChanged?.Invoke();
@@ -260,32 +261,19 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         #region Sorting Helper
-
-        private static int ValueTypeOrder(Card c)
-        {
-            return c.Data.Kind == CardKind.Move ? 0 : 1;
-        }
-
+        
         private static int MoveSelectTypeOrder(Card c)
         {
-            if (c.Data.Kind == CardKind.Number)
+            if (c.Data.Kind != CardKind.Move)
                 return int.MaxValue;
 
             return c.Data.Move.SelectState.Selectables.Count;
         }
-
-        private static int NumberSelectTypeRank(Card c)
-        {
-            if (c.Data.Kind == CardKind.Move)
-                return int.MinValue;
-
-            return c.Data.Number.SelectState.Selectables.Count;
-        }
-
-        private static int DirectionRank(Card c)
+        
+        private static int DirectionOrder(Card c)
         {
             if (c.Data.Kind != CardKind.Move)
-                return 5;
+                return int.MaxValue;
             if (!c.Data.Move.SelectState.FinalValue.HasValue)
                 return 5;
             
@@ -298,6 +286,57 @@ namespace Cardevil.Cards.InStage.Model
                 _ => 4,
             };
         }
+
+        private static int ValueTypeOrder(Card c)
+        {
+            return c.Data.Kind == CardKind.Move ? 0 : 1;
+        }
+        
+        private static int NumberSelectTypeOrder(Card c)
+        {
+            if (c.Data.Kind != CardKind.Number)
+                return int.MinValue;
+            
+            if (c.Data.Number == null)
+            {
+                LogEx.LogError("Number Data가 존재하지 않음!");
+                return 0;
+            }
+
+            return c.Data.Number.SelectState.Selectables.Count;
+        }
+
+        private static int NumberColorOrder(Card c)
+        {
+            if (c.Data.Kind != CardKind.Number)
+                return int.MinValue;
+
+            if (c.Data.Number == null)
+            {
+                LogEx.LogError("Number Data가 존재하지 않음!");
+                return 0;
+            }
+
+            return (int)c.Data.Number.Color;
+        }
+
+        private static int NumberSelectedValueOrder(Card c)
+        {
+            if (c.Data.Kind != CardKind.Number)
+                return int.MinValue;
+
+            if (c.Data.Number == null)
+            {
+                LogEx.LogError("Number Data가 존재하지 않음!");
+                return 0;
+            }
+
+            if (!c.Data.Number.SelectState.FinalValue.HasValue)
+                return int.MaxValue;
+
+            return (int)c.Data.Number.SelectState.FinalValue;
+        }
+        
         
         #endregion
     }
