@@ -11,13 +11,31 @@ namespace Cardevil.Cards.Data.Modifiers.Move
     public class MoveModifierPipeline
     {
         private readonly List<IMoveModifier> _mods = new();
+        private readonly List<MoveEnhancementData> _possibleEnhancements = new();
+        private MoveEnhancementData? _currentEnhancement = null;
+        
+        public IReadOnlyList<IMoveModifier> Modifiers => _mods;
+        public IReadOnlyList<MoveEnhancementData> PossibleEnhancements => _possibleEnhancements;
+        public MoveEnhancementData? CurrentEnhancement => _currentEnhancement;
         
         /// <summary>
         /// 이동 Modifier를 파이프라인에 추가.
         /// </summary>
-        public void Add(IMoveModifier mod)
+        public void AddModifier(IMoveModifier mod)
         {
             _mods.Add(mod);
+        }
+
+        public void SetCurrentEnhancement(MoveEnhancementData enhancement)
+        {
+            _currentEnhancement = enhancement;
+        }
+
+        public void SetPossibleEnhancements(params MoveEnhancementData[] enhancements)
+        {
+            _possibleEnhancements.Clear();
+            foreach (var enhancement in enhancements)
+                _possibleEnhancements.Add(enhancement);
         }
 
         /// <summary>

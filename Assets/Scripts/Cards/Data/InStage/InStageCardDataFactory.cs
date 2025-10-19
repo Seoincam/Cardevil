@@ -13,7 +13,7 @@ namespace Cardevil.Cards.Data.InStage
         /// <param name="shuffle">셔플 여부</param>
         /// <param name="seed">재현 가능한 셔플을 위한 시드 (null이면 랜덤)</param>
         public static List<InStageCardData> BuildInStageCardData(
-            List<CardPipeline> source,
+            IReadOnlyCollection<CardPipeline> source,
             bool shuffle = true,
             int? seed = null)
         {

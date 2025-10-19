@@ -73,12 +73,17 @@ namespace Cardevil.Cards.InStage.Model
         /// </summary>
         public void Shuffle()
         {
-            _deck.AddRange(_discardPile);
-            _deck.AddRange(_hand.Select(c => c.Data));
-
-            _discardPile.Clear();
-            _hand.Clear();
-
+            if (_discardPile.Count != 0)
+            {
+                _deck.AddRange(_discardPile);
+                _discardPile.Clear();
+            }
+            if (_hand.Count != 0)
+            {
+                _deck.AddRange(_hand.Select(c => c.Data));
+                _hand.Clear();
+            }
+            
             if (_deck.Count != 50)
             {
                 Debug.LogError("덱의 초기화에 실패했습니다.");

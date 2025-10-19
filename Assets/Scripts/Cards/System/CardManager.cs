@@ -7,6 +7,7 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Utils;
 
 namespace Cardevil.Cards.System
 {
@@ -17,6 +18,8 @@ namespace Cardevil.Cards.System
     /// </summary>
     public class CardManager : IClearable
     {
+        private readonly CardLibrary _cardLibrary = new();
+        
         private readonly StageCardsModel _stageCardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
         private readonly StageCardsPresenter _stageCardsPresenter = new();
@@ -24,10 +27,8 @@ namespace Cardevil.Cards.System
         private readonly EvaluationResultsModel _evaluationResultsModel = new();
         private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
         
-        private List<CardPipeline> _runtimeBaseDeck;
-        
+        public IReadOnlyCardLibrary CardLibrary => _cardLibrary;
         public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
-        public IReadOnlyList<CardPipeline> RuntimeBaseDeck => _runtimeBaseDeck;
         
         /// <summary>
         /// 카드 단계(리롤, 손패 선택 등)를 관리하는 Flow을 생성.
@@ -47,7 +48,7 @@ namespace Cardevil.Cards.System
         public void Init()
         {
             Clear();
-            _runtimeBaseDeck = CardDataFactory.CreateBaseData();
+            _cardLibrary.Init();
         }
 
         public void Clear()
@@ -67,7 +68,7 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            _stageCardsModel.SetUp(InStageCardDataFactory.BuildInStageCardData(_runtimeBaseDeck), 6,3);
+            _stageCardsModel.SetUp(InStageCardDataFactory.BuildInStageCardData(_cardLibrary.Pipelines), 6,3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =
@@ -82,28 +83,6 @@ namespace Cardevil.Cards.System
             // return StageCardsCtx.GetRandomCard();
             return null;
         }
-
-        /// <summary>
-        /// 현재 선택된 족보에 따른 점수를 계산.
-        /// 족보 데이터베이스를 참조하여 점수를 반환.
-        /// </summary>
-        /// <returns>현재 족보에 해당하는 점수</returns>
-        // public int GetCurrentCardRankScore()
-        // {
-        //     var result = ResultCtx.CurrentResult;
-        //     if (result == null)
-        //     {
-        //         Debug.LogError("잘못된 시점에 족보에 접근.");
-        //         result = ResultCtx.PreviousResult;
-        //     }
-        //     HandRanking rank = result.Ranking;
-        //
-        //     var data = Managers.Database.Database.HandRankingDataList
-        //         .FirstOrDefault(r => r.Ranking == rank);
-        //
-        //     int score = data?.Value ?? 0;
-        //     return score;
-        // }
     }
 }
 

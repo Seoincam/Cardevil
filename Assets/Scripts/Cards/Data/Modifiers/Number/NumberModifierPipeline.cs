@@ -10,13 +10,31 @@ namespace Cardevil.Cards.Data.Modifiers.Number
     public class NumberModifierPipeline
     {
         private readonly List<INumberModifier> _mods = new();
+        private readonly List<NumberEnhancementData> _possibleEnhancements = new();
+        private NumberEnhancementData? _currentEnhancement = null;
+        
+        public IReadOnlyList<INumberModifier> Modifiers => _mods;
+        public IReadOnlyList<NumberEnhancementData> PossibleEnhancements => _possibleEnhancements;
+        public NumberEnhancementData? CurrentEnhancement => _currentEnhancement;
 
         /// <summary>
         /// 숫자 Modifier를 파이프라인에 추가.
         /// </summary>
-        public void Add(INumberModifier mod)
+        public void AddModifier(INumberModifier mod)
         {
             _mods.Add(mod);
+        }
+
+        public void SetCurrentEnhancement(NumberEnhancementData enhancement)
+        {
+            _currentEnhancement = enhancement;
+        }
+
+        public void SetPossibleEnhancements(params NumberEnhancementData[] enhancements)
+        {
+            _possibleEnhancements.Clear();
+            foreach (var enhancement in enhancements)
+                _possibleEnhancements.Add(enhancement);
         }
 
         /// <summary>
