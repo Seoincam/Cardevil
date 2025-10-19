@@ -13,7 +13,7 @@ namespace Cardevil.Cards.Data.InStage
         /// <param name="shuffle">셔플 여부</param>
         /// <param name="seed">재현 가능한 셔플을 위한 시드 (null이면 랜덤)</param>
         public static List<InStageCardData> BuildInStageCardData(
-            List<CardData> source,
+            List<CardPipeline> source,
             bool shuffle = true,
             int? seed = null)
         {
@@ -28,8 +28,8 @@ namespace Cardevil.Cards.Data.InStage
                 }
 
                 // Number/Move 둘 다 있거나 둘 다 없는 경우 방어
-                bool hasNumber = origin.NumberModifiers != null;
-                bool hasMove   = origin.MoveModifiers   != null;
+                bool hasNumber = origin.NumberPipeline != null;
+                bool hasMove   = origin.MovePipeline   != null;
 
                 if (hasNumber == hasMove) // 둘 다 true 또는 둘 다 false
                 {
@@ -39,12 +39,12 @@ namespace Cardevil.Cards.Data.InStage
 
                 if (hasNumber)
                 {
-                    var builtNumber = origin.NumberModifiers.Build();
+                    var builtNumber = origin.NumberPipeline.Build();
                     result.Add(InStageCardData.FromNumber(origin.Id, builtNumber));
                 }
                 else // hasMove
                 {
-                    var builtMove = origin.MoveModifiers.Build();
+                    var builtMove = origin.MovePipeline.Build();
                     result.Add(InStageCardData.FromMove(origin.Id, builtMove));
                 }
             }

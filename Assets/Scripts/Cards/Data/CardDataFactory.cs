@@ -12,9 +12,9 @@ namespace Cardevil.Cards.Data
     /// </summary>
     public static class CardDataFactory
     {
-        public static List<CardData> CreateBaseData()
+        public static List<CardPipeline> CreateBaseData()
         {
-            List<CardData> data = new();
+            List<CardPipeline> data = new();
             int id = 0;
             
             // Number Data 생성
@@ -31,7 +31,7 @@ namespace Cardevil.Cards.Data
                     number.Add(new SelectableNumberModifier());
                     number.Add(new SelectableNumberConfirmModifier(i));
                     
-                    data.Add(new CardData(id++, number));
+                    data.Add(new CardPipeline(id++, number));
                 }
 
                 // 오망성 Number Data
@@ -40,7 +40,7 @@ namespace Cardevil.Cards.Data
                 for (int i = 0; i < 9; i++) 
                     number.Add(new SelectableNumberModifier());
                 
-                data.Add(new CardData(id++, number));
+                data.Add(new CardPipeline(id++, number));
             }
             
             // Move Data 생성
@@ -56,7 +56,7 @@ namespace Cardevil.Cards.Data
                     move.Add(new SelectableDirectionModifier());
                     move.Add(new SelectableDirectionConfirmModifier(direction));
                     
-                    data.Add((new CardData(id++, move)));
+                    data.Add((new CardPipeline(id++, move)));
                 }
             }
             
@@ -67,7 +67,7 @@ namespace Cardevil.Cards.Data
                 for (int j = 0; j < 4; j++)
                     move.Add((new SelectableDirectionModifier()));
             
-                data.Add(new CardData(id++, move));
+                data.Add(new CardPipeline(id++, move));
             }
 
             return data;

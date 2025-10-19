@@ -24,10 +24,10 @@ namespace Cardevil.Cards.System
         private readonly EvaluationResultsModel _evaluationResultsModel = new();
         private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
         
-        private List<CardData> _runtimeBaseDeck;
+        private List<CardPipeline> _runtimeBaseDeck;
         
         public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
-        public IReadOnlyList<CardData> RuntimeBaseDeck => _runtimeBaseDeck;
+        public IReadOnlyList<CardPipeline> RuntimeBaseDeck => _runtimeBaseDeck;
         
         /// <summary>
         /// 카드 단계(리롤, 손패 선택 등)를 관리하는 Flow을 생성.
