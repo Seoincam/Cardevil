@@ -41,7 +41,7 @@ namespace Cardevil.Ingame.Entities
             {
                 if (_initialTile == null)
                 {
-                    Debug.LogError("Initial tile is not set. Please assign a tile in the inspector.");
+                    LogEx.LogError("Initial tile is not set. Please assign a tile in the inspector.");
                     return;
                 }
                 _entity.Init(_initialTile);
@@ -65,7 +65,7 @@ namespace Cardevil.Ingame.Entities
                         else if (horizontal < 0) direction = Direction.Left;
                         else if (vertical > 0) direction = Direction.Up;
                         else if (vertical < 0) direction = Direction.Down;
-                        Debug.Log($"Moving in direction: {direction}");
+                        LogEx.Log($"Moving in direction: {direction}");
                         Move(direction);
                     }
                 }
@@ -109,7 +109,7 @@ namespace Cardevil.Ingame.Entities
         {
             if (tile == null)
             {
-                Debug.LogError("Cannot move to a null tile.");
+                LogEx.LogError("Cannot move to a null tile.");
                 return;
             }
             _entity.MoveTo(tile, true);
@@ -129,25 +129,25 @@ namespace Cardevil.Ingame.Entities
         public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
         public async UniTask TurnAttack()
         {
-            Debug.Log("Player Attacks!");
+            LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
             // TODO : 적에 대한 공격 구현
             var result = Managers.Card.EvaluationResults.CurrentResult;
-            Debug.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
+            LogEx.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
             Managers.Game.Enemy.GetDamage(result.TotalDamage);
       
         }
         
         public void PlayerGetDamage(float amount)
         {
-            Debug.Log($"Player takes {amount} damage!");
+            LogEx.Log($"Player takes {amount} damage!");
             PlayerStatus.TakeDamage((int)amount);
         }
 
         public async UniTask TurnMove()
         {
-            Debug.Log("Player Moves!");
+            LogEx.Log("Player Moves!");
             var result = Managers.Card.EvaluationResults.CurrentResult;
             //TODO 이동 로직 구현
             foreach (var move in result.Moves)
@@ -158,7 +158,7 @@ namespace Cardevil.Ingame.Entities
                 Move((Direction)move.SelectState.FinalValue, move.Length);
                 await UniTask.Delay(100);
             }
-            Debug.Log("Player Move Completed!");
+            LogEx.Log("Player Move Completed!");
         }
         
 
