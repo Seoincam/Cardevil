@@ -2,7 +2,7 @@ using Cardevil.Attributes;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Cardevil
+namespace Cardevil.Cards.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "CardEvaluationAnimSetting", menuName = "Cards/Card Evaluation Anim")]
     public class CardEvaluationAnimSO : ScriptableObject

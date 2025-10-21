@@ -1,0 +1,99 @@
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using Cardevil.Cards.Data;
+using Cardevil.Cards.InStage.Model.ReadOnly;
+
+namespace Cardevil.Cards.InStage
+{
+    public class RemainCardVisual : MonoBehaviour
+    {
+        public CardData data;
+        public bool isRemaining;
+        
+        [Header("Visual")]
+        [SerializeField] Image cardImage;
+        [SerializeField] TextMeshProUGUI text;
+        [SerializeField] Transform shakeObject;
+        private IReadOnlyStageCardsModel _model;
+
+        public void Init(IReadOnlyStageCardsModel model, CardData data)
+        {
+            this.data = data;
+            isRemaining = true;
+            _model = model;
+            UpdateVisual();
+        }
+
+        public void UpdateVisual()
+        {
+            /*
+            if (_model == null)
+            {
+                Debug.LogError("[RemainCardVisual] _model is null");
+                return;
+            }
+            if (_model.Deck == null)
+            {
+                Debug.LogError("[RemainCardVisual] _model.Deck is null");
+                return;
+            }
+            if (data == null)
+            {
+                Debug.LogError("[RemainCardVisual] data is null");
+                return;
+            }
+            
+            isRemaining = _model.Deck
+                            .Any(c => c.id == data.id);
+            // 색 설정
+            cardImage.color = isRemaining ? Color.white : new Color(.5f, .5f, .5f);
+
+            // 이름 설정
+            if (data.valueType == CardData.ValueType.Move)
+            {
+                var move = data.Move;
+                transform.name = move.DirectionValue.ToString();
+
+                string textString;
+                if (data.selectType == CardData.SelectType.All)
+                {
+                    if (!move.IsSet)
+                        textString = "All";
+                    else
+                        textString = move.DirectionValue.ToString() + "*";
+                }
+                else
+                {
+                    textString = move.DirectionValue.ToString();
+                }
+                text.text = textString;
+                text.fontSize = 25;
+            }
+
+            else if (data.valueType == CardData.ValueType.Number)
+            {
+                var number = data.Number;
+                transform.name = $"{number.ColorValue} {number.NumberValue}";
+                var textString = number.NumberValue == 0 ? "*" : number.NumberValue.ToString();
+                if (number.NumberValue != 0 && data.CanOpenSelection)
+                    textString += "*";
+                text.text = textString;
+                switch (number.ColorValue)
+                {
+                    case NumberData.CardColor.Green: text.color = new Color(.25f, .7f, .25f); break;
+                    case NumberData.CardColor.Blue: text.color = Color.blue; break;
+                    case NumberData.CardColor.Red: text.color = Color.red; break;
+                    default: break;
+                }
+            }
+
+            else
+                Debug.LogError("cardData가 어떤 타입도 아닙니다.");
+                */
+        }
+    }
+}
+
+

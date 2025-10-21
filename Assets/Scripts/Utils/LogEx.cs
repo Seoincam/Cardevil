@@ -63,7 +63,9 @@ namespace Cardevil.Utils
             }
             var className = classType?.Name ?? "UnknownClass";
             var method = frame.GetMethod();
-            string logMessage = message.StartsWith('[') ? message : $"[{className} :: {method.Name}] {message}";
+            string logMessage = message.StartsWith('[')
+                ? message
+                : $"[<color=#4FC3F7>{className}</color> :: <color=#FFD54F>{method.Name}</color>] {message}";    
             switch (level)
             {
                 case LogLevel.NoLog:
