@@ -3,15 +3,15 @@ namespace Cardevil.Cards.Data.Modifiers.Move
     /// <summary>
     /// 이동 카드에 선택 가능한 방향을 하나 추가하는 Modifier.
     /// </summary>
-    public sealed class SelectableDirectionModifier : IMoveModifier
+    public sealed class SelectableDirectionModifier : IModifier
     {
         /// <inheritdoc/>
-        public MoveModifierType Type => MoveModifierType.Selectable;
+        public ModifierType Type => ModifierType.MoveDirSelectable;
 
         /// <inheritdoc/>
-        public void Apply(ref MoveBuildContext ctx)
+        public void Apply(BuildCardContext ctx)
         {
-            ctx.Selectables.Add(null);
+            // ctx.Selectables.Add(null);
         }
     }
 }

@@ -3,13 +3,13 @@ namespace Cardevil.Cards.Data.Modifiers.Number
     /// <summary>
     /// 카드에 선택 가능한 미정 값을 추가하는 Modifier.  
     /// </summary>
-    public sealed class SelectableNumberModifier : INumberModifier
+    public sealed class SelectableNumberModifier : IModifier
     {
-        public NumberModifierType Type => NumberModifierType.Selectable;
+        public ModifierType Type => ModifierType.AttackNumSelectable;
 
-        public void Apply(ref NumberBuildContext ctx)
+        public void Apply(BuildCardContext ctx)
         {
-            ctx.Selectables.Add(null);
+            // ctx.Selectables.Add(null);
         }
     }
 }

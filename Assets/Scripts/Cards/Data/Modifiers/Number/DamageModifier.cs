@@ -3,9 +3,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
     /// <summary>
     /// 카드의 데미지 배율을 증가시키는 Modifier.
     /// </summary>
-    public sealed class DamageModifier : INumberModifier
+    public sealed class DamageModifier : IModifier
     {
-        public NumberModifierType Type => NumberModifierType.Damage;
+        public ModifierType Type => ModifierType.AttackDamage;
 
         private readonly float _damage;
 
@@ -18,9 +18,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _damage = damage;
         }
 
-        public void Apply(ref NumberBuildContext ctx)
+        public void Apply(BuildCardContext ctx)
         {
-            ctx.DamageMultiply += _damage;
+            // ctx.DamageMultiply += _damage;
         }
     }
 }

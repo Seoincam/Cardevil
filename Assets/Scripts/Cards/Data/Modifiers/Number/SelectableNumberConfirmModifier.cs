@@ -6,10 +6,10 @@ namespace Cardevil.Cards.Data.Modifiers.Number
     /// 선택 가능한 값 중 null 상태의 value를 실제 숫자로 확정하는 Modifier.  
     /// 값이 지정되지 않은 경우 2~10 중 중복되지 않는 임의의 값을 선택.
     /// </summary>
-    public sealed class SelectableNumberConfirmModifier : INumberModifier
+    public sealed class SelectableNumberConfirmModifier : IModifier
     {
         /// <inheritdoc/>
-        public NumberModifierType Type => NumberModifierType.SelectableConfirm;
+        public ModifierType Type => ModifierType.AttackNumSelectableConfirm;
 
         private int? _value;
 
@@ -22,31 +22,31 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _value = value;
         }
 
-        public void Apply(ref NumberBuildContext ctx)
+        public void Apply(BuildCardContext ctx)
         {
             // 값이 지정되지 않은 경우, 가능한 숫자 중 하나를 무작위로 선택
-            if (!_value.HasValue)
-            {
-                var availableNumbers = Enumerable.Range(2, 9).ToList();
-
-                // 이미 선택된 숫자 제거
-                foreach (var v in ctx.Selectables)
-                {
-                    if (v.HasValue)
-                        availableNumbers.Remove(v.Value);
-                }
-
-                int randomIndex = UnityEngine.Random.Range(0, availableNumbers.Count);
-                _value = availableNumbers[randomIndex];
-            }
-
-            // 첫 번째 null 슬롯에 선택값을 채움
-            for (int i = 0; i < ctx.Selectables.Count; i++)
-            {
-                if (ctx.Selectables[i].HasValue) continue;
-                ctx.Selectables[i] = _value;
-                break;
-            }
+            // if (!_value.HasValue)
+            // {
+            //     var availableNumbers = Enumerable.Range(2, 9).ToList();
+            //
+            //     // 이미 선택된 숫자 제거
+            //     foreach (var v in ctx.Selectables)
+            //     {
+            //         if (v.HasValue)
+            //             availableNumbers.Remove(v.Value);
+            //     }
+            //
+            //     int randomIndex = UnityEngine.Random.Range(0, availableNumbers.Count);
+            //     _value = availableNumbers[randomIndex];
+            // }
+            //
+            // // 첫 번째 null 슬롯에 선택값을 채움
+            // for (int i = 0; i < ctx.Selectables.Count; i++)
+            // {
+            //     if (ctx.Selectables[i].HasValue) continue;
+            //     ctx.Selectables[i] = _value;
+            //     break;
+            // }
         }
     }
 }

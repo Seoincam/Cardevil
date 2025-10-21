@@ -5,9 +5,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
     /// <summary>
     /// 카드의 색상을 변경하는 Modifier.
     /// </summary>
-    public sealed class ColorModifier : INumberModifier
+    public sealed class ColorModifier : IModifier
     {
-        public NumberModifierType Type => NumberModifierType.Color;
+        public ModifierType Type => ModifierType.AttackColor;
 
         private readonly CardColor _color;
 
@@ -21,9 +21,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _color = color;
         }
 
-        public void Apply(ref NumberBuildContext ctx)
+        public void Apply(BuildCardContext ctx)
         {
-            ctx.Color = _color;
+            // ctx.Color = _color;
         }
     }
 }
