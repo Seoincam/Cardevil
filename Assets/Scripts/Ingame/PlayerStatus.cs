@@ -7,7 +7,8 @@ using Cardevil.Utils;
 using System;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
-
+using System.Collections.Generic;
+using Cardevil.Relics;
 namespace Cardevil.Ingame
 {
     /// <summary>
@@ -24,6 +25,7 @@ namespace Cardevil.Ingame
         [SerializeField] private int _discardHand = 3;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
         [SerializeField] public int gold;
+        [SerializeField] public List<RelicEffectBase> relicEffectBases = new List<RelicEffectBase>();
 
         public bool canRevive = false;
 
@@ -267,5 +269,6 @@ namespace Cardevil.Ingame
                 DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
             }
         }
+
     }
 }
