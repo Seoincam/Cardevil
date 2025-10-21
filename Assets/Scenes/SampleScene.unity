@@ -1380,6 +1380,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &589736239
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 589736241}
+  - component: {fileID: 589736240}
+  m_Layer: 0
+  m_Name: '@EnemySpawner'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &589736240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589736239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9653861b3ad55b40866ec016a54af8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &589736241
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589736239}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 21.382969, y: -75.442276, z: 52.65863}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -1574,6 +1618,7 @@ MonoBehaviour:
         _maxHP: 3
         _shield: 0
         _rerollTicket: 0
+        _maxHand: 6
         _variableContainer:
           variables: []
         gold: 0
@@ -1592,8 +1637,6 @@ MonoBehaviour:
   _relic:
     _allRelics: []
     _allEffects: []
-    _playerRelics: []
-    _playerEffects: []
   _dungeon:
     dungeonConfigurations: []
     dungeons: []
@@ -2691,6 +2734,7 @@ SceneRoots:
   - {fileID: 2061991160}
   - {fileID: 563600088}
   - {fileID: 1538176313}
+  - {fileID: 589736241}
   - {fileID: 799136585}
   - {fileID: 683164374}
   - {fileID: 1736170422}
