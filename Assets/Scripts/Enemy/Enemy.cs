@@ -33,6 +33,7 @@ namespace Cardevil.InGame.Enemy
         public bool isPlayerAttack = true;
         private bool orderSettingGo = false;
         private int settingOrder = 3;
+        public int delayAttackByRelic = 0;
 
         private List<Attack> attackLists = new List<Attack>();
 
@@ -829,10 +830,13 @@ namespace Cardevil.InGame.Enemy
 
             tmpAttack.SetAttackCycle(attackCreateCycle);
 
-            if (firstCreate) { tmpAttack.attackTurnOrder++; }
+            if(firstCreate) 
+            { 
+                tmpAttack.attackTurnOrder++;
+                tmpAttack.attackTurnOrder += delayAttackByRelic;
 
-            SetAttack(tmpAttack, isPlayerAttack);
-
+            }
+            SetAttack(tmpAttack,isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
         public void AttackEnemyTurnStart()
