@@ -20,13 +20,13 @@ namespace Cardevil.Ingame
         [SerializeField] private int _maxHP = 3;
         [SerializeField] private int _shield = 0;
         [SerializeField] private int _rerollTicket = 0;
-
         [SerializeField] private int _maxHand = 6; // TODO: 실제 로직에 연결해야함.
         [SerializeField] private int _discardHand = 3;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
         [SerializeField] public int gold;
 
         public bool canRevive = false;
+
         /// <summary>
         /// 플레이어의 현재 체력
         /// </summary>

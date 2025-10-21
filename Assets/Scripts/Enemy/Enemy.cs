@@ -7,6 +7,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using Cardevil.Ingame.Entities;
+using Cardevil.Utils;
 using UnityEngine.UI;
 
 namespace Cardevil.InGame.Enemy
@@ -59,7 +60,7 @@ namespace Cardevil.InGame.Enemy
             public void SetAttackCycle(int cycle)
             {
                 attackCycle = cycle;
-                Debug.Log($"어택 턴오더 {attackTurnOrder} = 어택 사이클{attackCycle}");
+                LogEx.Log($"어택 턴오더 {attackTurnOrder} = 어택 사이클{attackCycle}");
                 attackTurnOrder = attackCycle; // 몇턴뒤에 공격
             }
             
@@ -122,7 +123,7 @@ namespace Cardevil.InGame.Enemy
         public void AttackEnemyTurnStart()
         {
             EnemyTurnClear();
-            Debug.Log("Enemy Turn!!");
+            LogEx.Log("Enemy Turn!!");
             AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
 
             // 우선 시작할때 공격구역 설정하도록 해보기 Test
@@ -145,7 +146,7 @@ namespace Cardevil.InGame.Enemy
             foreach (Attack attack in attackLists) // 현재 Enemy가 가지고 있는 Attack 
             {
                 attack.attackTurnOrder--; // 모든 Attack 들의 Turn Order 감소
-                Debug.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
+                LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
                 if (attack.attackTurnOrder == 0) // 0 이라면 공격시행
                 {
                     AttackingCheck(attack);
@@ -160,13 +161,13 @@ namespace Cardevil.InGame.Enemy
             if (AttackGo(attack))
             {
                 // 공격에 성공했음
-                Debug.Log("Enemy가 공격에 성공했다!");
+                LogEx.Log("Enemy가 공격에 성공했다!");
                 isAttackSuccess = true;
             }
             else
             {
                 isAttackSuccess = false;
-                Debug.Log("Enemy가 공격에 실패했다!");
+                LogEx.Log("Enemy가 공격에 실패했다!");
                 //공격에 실패했음.
             }
         }
@@ -217,7 +218,7 @@ namespace Cardevil.InGame.Enemy
 
             for (int i=0;i<count;i++) // 지워진 어택 갯수만큼 새로 생성
             {
-                Debug.Log("지워진 Attack 만큼 새로 생성");
+                LogEx.Log("지워진 Attack 만큼 새로 생성");
                 CreateAttack();
             }
 
@@ -249,7 +250,7 @@ namespace Cardevil.InGame.Enemy
         /// <param name="setPlayerAttack"></param>
         virtual public void SetAttack(Attack attack,bool setPlayerAttack = false)
         {   
-            Debug.Log(setPlayerAttack);
+            LogEx.Log(setPlayerAttack);
             if (setPlayerAttack) // 플레이어 위치로 공격할 것인가에 대해
             {
                 SetPlayerAttack(attack);
@@ -270,8 +271,8 @@ namespace Cardevil.InGame.Enemy
                 attack.attackPointNumber_x = attack.attackLineNumber;
                 AttackNoticeSign_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
             }
-            else { Debug.Log("currentAttackStyle을 찾지 못한 오류"); }
-            Debug.Log($"Attack 예상 sign {attack.currentAttackStyle}");
+            else { LogEx.Log("currentAttackStyle을 찾지 못한 오류"); }
+            LogEx.Log($"Attack 예상 sign {attack.currentAttackStyle}");
         }
         /// <summary>
         /// 플레이어위치로 공격설정
@@ -279,7 +280,7 @@ namespace Cardevil.InGame.Enemy
         /// <param name="attack"></param>
         public void SetPlayerAttack(Attack attack)
         {
-            Debug.Log("SetPlayerAttack!");
+            LogEx.Log("SetPlayerAttack!");
             // 현재 가로공격인지 세로공격인지 확인
             if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
             {
@@ -306,7 +307,7 @@ namespace Cardevil.InGame.Enemy
         /// <returns></returns>
         void SetRandomAttack(Attack attack)
         {
-            Debug.Log("SetRandomAttack!");
+            LogEx.Log("SetRandomAttack!");
             attack.attackLineNumber = UnityEngine.Random.Range(0, 2); // 랜덤으로 위치 지정
         }
         AttackStyle SetAttackType()
@@ -468,7 +469,7 @@ namespace Cardevil.InGame.Enemy
         public virtual bool GetDamage(float damage)
         {
             HP -= damage;
-            Debug.Log($"{damage}만큼의 피해를 입러 HP가 {HP}로 감소하였다!");
+            LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {HP}로 감소하였다!");
             UpdateHPBar();
             if (HP <= 0)
             {
@@ -517,11 +518,11 @@ namespace Cardevil.InGame.Enemy
                 if (i <= attack.attackTurnOrder)
                 {
                     attack.attackTurnOrder = i;
-                    Debug.Log($"attackTurnOrder이 {i}로 조정되었습니다.");
+                    LogEx.Log($"attackTurnOrder이 {i}로 조정되었습니다.");
                 }
                 else
                 {
-                    Debug.Log($"공격 턴오더 {i}가 현재 공격 턴 오더 {attack.attackTurnOrder} 보다 커서 조정되지않았습니다");
+                    LogEx.Log($"공격 턴오더 {i}가 현재 공격 턴 오더 {attack.attackTurnOrder} 보다 커서 조정되지않았습니다");
                 }
             }
         }
@@ -533,7 +534,7 @@ namespace Cardevil.InGame.Enemy
                 if (attack.attackTurnOrder <= 0)
                 {
                     attack.attackTurnOrder--;
-                    Debug.Log("공격턴 추가 감소!");
+                    LogEx.Log("공격턴 추가 감소!");
                 }
             }
         }

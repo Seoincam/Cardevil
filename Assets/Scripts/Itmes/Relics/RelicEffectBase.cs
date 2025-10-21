@@ -16,4 +16,3 @@ namespace Cardevil.Relics
         public virtual void ActivateRelicEffect() { }
     }
 
-}

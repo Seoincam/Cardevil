@@ -45,6 +45,7 @@ namespace Database
         [field: SerializeField] public SerializableDict<string, Sprite> SpriteCache { get; private set; } = new();
 
 
+        public event Action OnInitialized;
         public string FinalLocalPath => Path.Combine(Application.persistentDataPath, localJsonPath);
         public string FinalStreamingAssetPath => Path.Combine(Application.streamingAssetsPath, streamingAssetPath);
 
@@ -119,6 +120,7 @@ namespace Database
 
             Debug.Log("[DatabaseManager] 초기화 완료");
             isInitialized = true;
+            OnInitialized?.Invoke();
         }
 
         private IEnumerator LoadDatabase()

@@ -10,7 +10,7 @@ namespace Database.Generated
     public class HandRankingData    {
 
         /// <summary> 족보 </summary>
-        public Cardevil.Cards.Evaluations.HandRanking Ranking;
+        public Cardevil.Cards.Data.HandRanking Ranking;
         /// <summary> 보너스 점수 </summary>
         public int Value;
         /// <summary> 게임상 이름 </summary>

@@ -142,7 +142,7 @@ namespace Database
                 if (innerLower.StartsWith("enum<") && innerLower.EndsWith(">"))
                 {
                     string enumName = inner.Substring(5, inner.Length - 6).Trim();
-                    if (KnownEnumTypes.Contains(enumName))
+                    if (KnownEnumTypes.Contains(enumName) || ReflectionUtil.IsValidEnumType(enumName))
                     {
                         isKnown = true;
                         return "List<" + enumName + ">";
