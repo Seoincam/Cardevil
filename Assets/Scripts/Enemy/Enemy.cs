@@ -46,7 +46,7 @@ namespace Cardevil.InGame.Enemy
             OnePare,
             TwoPare,
             Triple,
-            Staright, // 원본 오타 유지
+            Straight, // 원본 오타 유지
             Plush,
             FourCard,
             StraightPlush
@@ -287,7 +287,7 @@ namespace Cardevil.InGame.Enemy
             attack.attackPointNumberExtra_x = new int[1];
             attack.attackPointNumberExtra_y = new int[1];
 
-            attack.currentAttackStyle = AttackStyle.Staright;
+            attack.currentAttackStyle = AttackStyle.Straight;
 
             // choose orientation same as Triple logic
             bool horizontal = (attack.isPlayerAttack) ? (UnityEngine.Random.value > 0.5f) : (UnityEngine.Random.value > 0.5f);
@@ -906,7 +906,7 @@ namespace Cardevil.InGame.Enemy
                     return (AttackTwoPare(attack));
                 case AttackStyle.Triple:
                     return (AttackTriple(attack));
-                case AttackStyle.Staright:
+                case AttackStyle.Straight:
                     return (AttackStraight(attack));
                 case AttackStyle.Plush:
                     return (AttackPlush(attack));
@@ -1005,7 +1005,7 @@ namespace Cardevil.InGame.Enemy
                 case AttackStyle.Triple:
                     SettingAttackTriple(attack);
                     break;
-                case AttackStyle.Staright:
+                case AttackStyle.Straight:
                     SettingAttackStraight(attack);
                     break;
                 case AttackStyle.Plush:
@@ -1116,7 +1116,7 @@ namespace Cardevil.InGame.Enemy
                         RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
                     break;
 
-                case AttackStyle.Staright:
+                case AttackStyle.Straight:
                     if (attack.currentAttackStyle == AttackStyle.AttackHorizontal)
                         RemoveHighLight_Horizontal(attack.attackLineNumber);
                     else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
