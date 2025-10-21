@@ -1,13 +1,15 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.DebugConsole;
 using Cardevil.Dungeon.Build;
-using Cardevil.Dungeon.DungeonFactories;
 using Cardevil.Dungeon.UI;
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Console = Cardevil.DebugConsole.Console;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Dungeon
+namespace Cardevil.Dungeon.Core
 {
     [Serializable]
     public class DungeonManager
@@ -28,13 +30,34 @@ namespace Cardevil.Dungeon
                     dungeonUI = Object.FindAnyObjectByType<DungeonUI>(FindObjectsInactive.Include);
                     if (dungeonUI == null)
                     {
-                        Debug.LogError("No DungeonUI found in the scene.");
+                        LogEx.LogError("No DungeonUI found in the scene.");
                     }
                 }
                 return dungeonUI;
             }
         }
-        public int CurrentDungeonIndex => currentDungeonIndex;
+
+        public int CurrentDungeonIndex
+        {
+            get => currentDungeonIndex;
+            set
+            {
+                Dungeon dungeon = GetDungeon(value);
+                if (dungeon == null)
+                {
+                    LogEx.LogError($"[DungeonManager] Dungeon with index {value} does not exist.");
+                    return;
+                }
+                currentDungeonIndex = value;
+                if (UI == null)
+                {
+                    LogEx.LogWarning("[DungeonManager] DungeonUI is not assigned.");
+                    return;
+                }
+
+                UI.UpdateShowingDungeon(currentDungeonIndex);
+            }
+        }
         public DungeonConfigurationSO CurrentDungeonConfiguration => dungeonConfigurations[currentDungeonIndex];
         public Dungeon CurrentDungeon => GetDungeon(currentDungeonIndex);
         public DungeonNode CurrentNode => currentNode;
@@ -42,6 +65,7 @@ namespace Cardevil.Dungeon
         
         public void Init()
         {
+            LogEx.Log("Initializing Dungeon Manager...");
             currentDungeonIndex = 1;
             
            
@@ -49,21 +73,37 @@ namespace Cardevil.Dungeon
             
             // UI 기반으로 던전 생성
             CreateDungeons();
-            
+            foreach (Dungeon dungeon in dungeons)
+            {
+                dungeon.Initialize();
+            }
+            UI.Initialize();
         }
 
         private void CreateDungeons()
         {
             dungeons.Clear();
-            Debug.Log("[DungeonManager] Creating dungeons from UI...");
+            LogEx.Log("Creating dungeons from UI...");
             var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>();
             foreach (DungeonBuildHelperUI buildHelper in buildHelpers)
             {
+                DungeonChapterUI chapterUI = buildHelper.GetComponent<DungeonChapterUI>();
                 Dungeon dungeon = buildHelper.BuildDungeon();
+                dungeon.dungeonId = chapterUI.DungeonId;
                 dungeons.Add(dungeon);
-                Debug.Log($"[DungeonManager] Dungeon {dungeon.DungeonId} created with {dungeon.Nodes.Count} nodes.");
-                Debug.Log(dungeon.GetDebugString());
+                LogEx.Log($"Dungeon {dungeon.DungeonId} created with {dungeon.Nodes.Count} nodes.");
+                LogEx.Log(dungeon.GetDebugString());
             }
+        }
+        
+        private void AssignDungeonUIs()
+        {
+            if (UI == null)
+            {
+                Debug.LogWarning("[DungeonManager] DungeonUI is not assigned.");
+                return;
+            }
+            
         }
 
         public Dungeon GetDungeon(int id)
@@ -94,6 +134,20 @@ namespace Cardevil.Dungeon
             Debug.Log($"Entering node: {node.NodeId}");
             currentNode = node;
             node.Preset.OnEnter();
+        }
+        
+        
+        [ConsoleCommand("dungeonSetCurrent", "Sets the current dungeon by index.", "dungeonSetCurrent <index>", new string[]{"1","2","3"})]
+        public static void SetCurrentDungeonCommand(int idx){
+            DungeonManager dm = Managers.Dungeon;
+            Dungeon dungeon = dm.GetDungeon(idx);
+            if (dungeon == null)
+            {
+                Console.MessageError($"Dungeon with index {idx} does not exist.");
+                return;
+            }
+            dm.CurrentDungeonIndex = idx;
+            Console.Message($"Current dungeon set to index {idx}.");
         }
     }
 }

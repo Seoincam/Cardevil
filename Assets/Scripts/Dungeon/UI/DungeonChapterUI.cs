@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cardevil.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -6,6 +7,9 @@ using UnityEditor;
 #endif
 namespace Cardevil.Dungeon.UI
 {
+    /// <summary>
+    /// 던전 챕터 UI 클래스
+    /// </summary>
     public class DungeonChapterUI : MonoBehaviour
     {
         [SerializeField] private int dungeonId = -1;
@@ -30,30 +34,40 @@ namespace Cardevil.Dungeon.UI
                 }
             }
         }
-        
 
-        [ContextMenu("Create Node UI")]
-        public void CreateNodeUI()
+        public void Initialize(DungeonUI dungeonUI)
         {
-            if (nodeUiPrefab == null)
+            LogEx.Log($"Initializing DungeonChapterUI for Dungeon ID: {dungeonId}");
+            this.dungeonUI = dungeonUI;
+            Dungeon dungeon = Managers.Dungeon.GetDungeon(dungeonId);
+            if (dungeon == null)
             {
-                Debug.LogError("Node UI Prefab is not assigned.");
+                LogEx.LogError($"Dungeon with ID {dungeonId} not found.");
                 return;
             }
+            
+            //노드 UI 받아오기
+            var allChildren = GetComponentsInChildren<DungeonNodeUI>(true);
+            nodeUis = new List<DungeonNodeUI>(allChildren);
+            
 
-            DungeonNodeUI newNodeUI = Instantiate(nodeUiPrefab, transform);
-            newNodeUI.InitRef(dungeonUI, this);
-            newNodeUI.transform.position = nodeUis[^1].transform.position + new Vector3(100, -100, 0);
-            nodeUis.Add(newNodeUI);
-            newNodeUI.name = $"NodeUI_{nodeUis.Count}";
+            //모든 노드 초기화
+            foreach (DungeonNodeUI nodeUi in nodeUis)
+            {
+                nodeUi.InitRef(dungeonUI, this);
+            }
+
+            foreach (DungeonNodeUI nodeUi in nodeUis)
+            {
+                nodeUi.InitializeLine();
+            }
         }
-        
         
         public DungeonNodeUI GetNodeUI(int nodeId)
         {
             foreach (DungeonNodeUI nodeUi in nodeUis)
             {
-                if (nodeUi.DungeonId == dungeonId)
+                if (nodeUi.DungeonId == nodeId)
                 {
                     return nodeUi;
                 }

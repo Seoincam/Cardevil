@@ -1,7 +1,9 @@
 using Cardevil.Pools;
+using Cardevil.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 public class ResourceManager
 {
@@ -20,12 +22,23 @@ public class ResourceManager
                 return original.gameObject as T;
             }
         }
+
         
         T resource = Resources.Load<T>(path);
         if (resource == null)
         {
-            Debug.LogError($"Failed to load resource at path: {path}");
-            return null;
+            LogEx.LogWarning($"Resource not found in Resources folder: {path}. Trying Addressables...");
+        }
+        else
+        {
+            return resource;
+        }
+        
+        var op = Addressables.LoadAssetAsync<T>(path);
+        op.WaitForCompletion();
+        if (op.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+        {
+            return op.Result;
         }
 
         return resource;

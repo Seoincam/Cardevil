@@ -1,6 +1,7 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.Dungeon;
 using Cardevil.Dungeon.UI;
+using Cardevil.Utils;
 using System;
 using TMPro;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace Cardevil.Dungeon.UI
         [Header("Settings")]
         [SerializeField] private DungeonNodeSettingSO setting = null;
         [Header("Dungeon Node Info")]
-        [SerializeField,VisibleOnly] private DungeonNode dungeonNode;
+        [SerializeReference,VisibleOnly] private DungeonNode dungeonNode;
         [Space]
         [Header("Variables")]
         [SerializeField] private int nodeId = -1;
@@ -61,7 +62,7 @@ namespace Cardevil.Dungeon.UI
                     continue;
                 }
                 
-                Debug.Log($"Init Node lies : {name} -> {nextNodeUI.name}");
+                Debug.Log($"Init Node lines : {name} -> {nextNodeUI.name}");
                 
             }
         }
@@ -103,12 +104,20 @@ namespace Cardevil.Dungeon.UI
                 case DungeonNode.NodeState.InActive:
                     nodeImage.sprite = spriteSet.Inactive;
                     nodeText.text = "";
+                    _button.interactable = false;
                     break;
                 case DungeonNode.NodeState.Active:
                     nodeImage.sprite = spriteSet.Active;
+                    _button.interactable = true;
                     // nodeText.text = dungeonNode.NodeId.ToString();
                     break;
                 case DungeonNode.NodeState.Cleared:
+                    break;
+                case DungeonNode.NodeState.Hide:
+                    LogEx.LogWarning("Hide 상태는 개발중입니다.");
+                    nodeImage.sprite = spriteSet.Inactive;
+                    nodeText.text = "";
+                    _button.interactable = false;
                     break;
             }
         }

@@ -1,53 +1,100 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.Utils;
+using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Cardevil.Dungeon.UI
 {
-    public class DungeonUI : UI_Popup
+    /// <summary>
+    /// 던전 UI 클래스. 
+    /// 현재로선 UI Manager를 통하지 않음.(생성/파괴가 없으므로)
+    /// </summary>
+    public class DungeonUI : MonoBehaviour
     {
-        [SerializeField, VisibleOnly] private int currentShowingDungeonId = -1;
-        [SerializeField] private List<DungeonChapterUI> stageUis = new List<DungeonChapterUI>();
-        
-        public override void Init()
+        [SerializeField, VisibleOnly] private Canvas _dungeonUICanvas = null;
+        [SerializeField] private List<DungeonChapterUI> _dungeonChapters = new List<DungeonChapterUI>();
+        [SerializeField] DungeonUICamera _dungeonUICamera = null;
+        public Canvas Canvas
         {
-            base.Init();
+            get
+            {
+                if (_dungeonUICanvas == null)
+                {
+                    _dungeonUICanvas = GetComponentInParent<Canvas>();
+                    if (_dungeonUICanvas == null)
+                    {
+                        LogEx.LogError("DungeonUI: No Canvas component found on the GameObject.");
+                    }
+                }
+                return _dungeonUICanvas;
+            }
+        }
+        
+        public DungeonUICamera Camera
+        {
+            get
+            {
+                if (_dungeonUICamera == null)
+                {
+                    _dungeonUICamera = Object.FindAnyObjectByType<DungeonUICamera>();
+                }
+                return _dungeonUICamera;
+            }
+        }
+
+        private void Reset()
+        {
+            _dungeonUICanvas = GetComponentInParent<Canvas>();      
+        }
+
+        private void Awake()
+        {
             
         }
 
+        public void Initialize()
+        {
+            LogEx.Log("Initializing Dungeon UI...");
+            /*
+             * 던전 UI 초기화
+             */
+            foreach (DungeonChapterUI chapterUI in _dungeonChapters)
+            {
+                chapterUI.Initialize(this);
+            }
+        }
+        
         public void UpdateShowingDungeon(int id)
         {
-            foreach (DungeonChapterUI stage in stageUis)
+            var toShow = _dungeonChapters.Find(chapter => chapter.DungeonId == id);
+            if (toShow == null)
             {
-                stage.gameObject.SetActive(false);
-            }
-            DungeonChapterUI chapterUI = null;
-            foreach (DungeonChapterUI stage in stageUis)
-            {
-                if (stage.DungeonId == id)
-                {
-                    chapterUI = stage;
-                    break;
-                }
-            }
-            if (chapterUI == null)
-            {
-                Debug.LogError($"No DungeonStageUI found for dungeon ID {id}");
+                LogEx.LogError($"[DungeonUI] No DungeonChapterUI found for dungeon ID {id}");
                 return;
             }
-            chapterUI.gameObject.SetActive(true);
-        }
-        
-        [ContextMenu("Test Inc Dungeon Id")]
-        public void TestIncDungeonId()
-        {
-            currentShowingDungeonId++;
-            if (currentShowingDungeonId >= stageUis.Count)
+            
+            foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
-                currentShowingDungeonId = 0;
+                chapterUI.gameObject.SetActive(true);
             }
-            UpdateShowingDungeon(currentShowingDungeonId);
+            
+            Camera.MoveTo(toShow.transform.position).OnComplete(() =>
+            {
+                foreach (DungeonChapterUI chapterUI in _dungeonChapters)
+                {
+                    chapterUI.gameObject.SetActive(chapterUI == toShow);
+                }
+            });
         }
-        
+
+
+
+        public void UpdateAll()
+        {
+            
+        }
     }
 }

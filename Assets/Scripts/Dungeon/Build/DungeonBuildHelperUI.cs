@@ -96,9 +96,9 @@ public void ReconnectAllNodesByHierarchy()
 
     /*
      * 재귀적으로 계층 구조를 탐색하여 노드를 연결합니다.
-     * @param containerNode 탐색할 부모 컨테이너 노드
-     * @param previousNodes 이 컨테이너의 첫 노드와 연결될 이전 노드들의 리스트
-     * @return 현재 컨테이너 탐색을 마친 후의 '마지막 노드'들의 리스트. 분기가 있으면 여러 개일 수 있습니다.
+     * containerNode 탐색할 부모 컨테이너 노드
+     * previousNodes 이 컨테이너의 첫 노드와 연결될 이전 노드들의 리스트
+     * return 현재 컨테이너 탐색을 마친 후의 '마지막 노드'들의 리스트. 분기가 있으면 여러 개일 수 있습니다.
      */
     List<DungeonNodeUIDataComponent> StartConnecting(ContainerNode containerNode, List<DungeonNodeUIDataComponent> previousNodes)
     {

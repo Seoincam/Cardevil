@@ -1,4 +1,5 @@
 ﻿
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -56,7 +57,11 @@ namespace Cardevil.Dungeon
         
         public void Initialize()
         {
-
+            LogEx.Log($"Initializing Dungeon ID: {dungeonId}");
+            foreach (var node in nodes)
+            {
+                node.State = DungeonNode.NodeState.InActive;
+            }
         }
 
         public string GetDebugString()
