@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 
 namespace Cardevil.Cards.InStage

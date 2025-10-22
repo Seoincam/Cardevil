@@ -1,5 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -22,17 +23,17 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// CardVisual로부터 Image를 받아 Sprite를 수정함.
         /// </summary>
-        public void UpdataVisual(InStageCardData data, Image frontImg, Image primaryNumberImg)
+        public void UpdataVisual(BuiltCardData data, Image frontImg, Image primaryNumberImg)
         {
             if (data.Kind == CardKind.Move)
             {
                 primaryNumberImg.gameObject.SetActive(false);
                 UpdateVisual(data, frontImg);
             }
-            else if (data.Kind == CardKind.Number)
+            else if (data.Kind == CardKind.Attack)
             {
                 primaryNumberImg.gameObject.SetActive(true);
-                UpdateVisual(data.Number, frontImg, primaryNumberImg);
+                UpdateVisual(data, frontImg, primaryNumberImg);
             }
             else
             {
@@ -43,13 +44,13 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// Move 타입의 CardVisual을 수정.
         /// </summary>
-        private void UpdateVisual(InStageCardData data, Image frontImg)
+        private void UpdateVisual(BuiltCardData data, Image frontImg)
         {
             var m = moveSprites;
 
-            if (data.Move.SelectState.FinalValue == null)
+            if (data.DirectionSelectState.FinalValue == null)
             {
-                switch (data.Move.SelectState.Selectables.Count)
+                switch (data.DirectionSelectState.Selectables.Count)
                 {
                     case 2:
                         
@@ -64,7 +65,7 @@ namespace Cardevil.Cards.ScriptableObjects
                 return;
             }
 
-            frontImg.sprite = data.Move.SelectState.FinalValue switch
+            frontImg.sprite = data.DirectionSelectState.FinalValue switch
             {
                 Direction.Up => m.Up,
                 Direction.Down => m.Down,
@@ -77,7 +78,7 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// Number 타입의 CardVisual을 수정
         /// </summary>
-        private void UpdateVisual(BuiltNumberData data, Image frontImg, Image primaryNumberImg)
+        private void UpdateVisual(BuiltCardData data, Image frontImg, Image primaryNumberImg)
         {
             NumberSpriteSet? spriteSet = numberSprites.FirstOrDefault(s => s.Color == data.Color);
             if (spriteSet is not { } s)
@@ -88,9 +89,9 @@ namespace Cardevil.Cards.ScriptableObjects
 
             frontImg.sprite = s.Background;
 
-            if (!data.SelectState.FinalValue.HasValue)
+            if (!data.NumberSelectState.FinalValue.HasValue)
             {
-                if (data.SelectState.Selectables.Count == 9)
+                if (data.NumberSelectState.Selectables.Count == 9)
                 {
                     primaryNumberImg.sprite = s.Star;
                     return;
@@ -99,14 +100,14 @@ namespace Cardevil.Cards.ScriptableObjects
             }
 
             // Index 계산
-            int index = (int)data.SelectState.FinalValue - 2;
+            int index = (int)data.NumberSelectState.FinalValue - 2;
             if (s.Numbers != null && index >= 0 && index < s.Numbers.Length)
             {
                 primaryNumberImg.sprite = s.Numbers[index];
             }
             else
             {
-                LogEx.LogWarning($"Invalid NumberValue {data.SelectState.FinalValue} for color {data.Color}");
+                LogEx.LogWarning($"Invalid NumberValue {data.NumberSelectState.FinalValue} for color {data.Color}");
             }
         }
 

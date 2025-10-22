@@ -21,9 +21,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _color = color;
         }
 
-        public void Apply(BuildCardContext ctx)
+        public void Apply(BuiltCardData.Builder b)
         {
-            // ctx.Color = _color;
+            b.SetColor(_color);
         }
     }
 }

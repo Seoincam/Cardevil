@@ -1,4 +1,4 @@
-using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Presenter;
 using System;
 using System.Collections.Generic;
@@ -35,12 +35,12 @@ namespace Cardevil.Cards.InStage.Model.ReadOnly
         /// <summary>
         /// 현재 덱의 읽기 전용 뷰.
         /// </summary>
-        IReadOnlyList<InStageCardData> Deck { get; }
+        IReadOnlyList<BuiltCardData> Deck { get; }
         
         /// <summary>
         /// 버린 패의 읽기 전용 뷰.
         /// </summary>
-        IReadOnlyList<InStageCardData> DiscardPile { get; }
+        IReadOnlyList<BuiltCardData> DiscardPile { get; }
 
         /// <summary>
         /// 현재 손패의 읽기 전용 뷰.

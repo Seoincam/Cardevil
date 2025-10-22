@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.Data.Modifiers.Move;
 using Cardevil.Cards.Data.Modifiers.Number;
 using Cardevil.Utils.Directions;
@@ -11,47 +12,47 @@ namespace Cardevil.Cards.Data
         /// <summary>
         /// 기본 카드 파이프라인(50개)을 생성하는 확장 메서드.
         /// </summary>
-        public static void CreateBasePipelines(this HashSet<CardPipeline> pipelines, CardDataModifierService modifierService)
+        public static void CreateBasePipelines(this Dictionary<int, CardPipeline> pipelines)
         {
             pipelines.Clear();
             int id = 0;
+            CardPipeline pipeline;
             
             // Number Data 생성
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
             {
-                NumberModifierPipeline number;
                 if (color == CardColor.None) continue;
                 
                 // 일반 Number Data (2~10)
                 for (int i = 2; i <= 10; i++)
                 {
-                    number = new NumberModifierPipeline();
+                    pipeline = new CardPipeline(CardKind.Attack, id);
                     
                     // Modifier 추가
-                    number.AddModifier(new ColorModifier(color));
-                    number.AddModifier(new SelectableNumberModifier());
-                    number.AddModifier(new SelectableNumberConfirmModifier(i));
+                    pipeline.AddModifier(new ColorModifier(color));
+                    pipeline.AddModifier(new SelectableNumberModifier());
+                    pipeline.AddModifier(new SelectableNumberConfirmModifier(i));
                     
-                    number.SetPossibleEnhancements
+                    // 강화 가능성 추가
+                    pipeline.SetPossibleEnhancements
                     (
-                        modifierService.GetBaseSelectableEnhancement(),
-                        modifierService.GetBaseDamageEnhancement()
+                        // modifierDatabase.GetBaseSelectableEnhancement(),
+                        // modifierDatabase.GetBaseDamageEnhancement()
                     );
-                    
-                    pipelines.Add(new CardPipeline(id++, number));
+
+                    pipelines[id++] = pipeline;
                 }
 
                 // 오망성 Number Data
-                number = new NumberModifierPipeline();
-                number.AddModifier(new ColorModifier(color));
+                pipeline = new CardPipeline(CardKind.Attack, id);
+                pipeline.AddModifier(new ColorModifier(color));
                 for (int i = 0; i < 9; i++) 
-                    number.AddModifier(new SelectableNumberModifier());
-                
-                pipelines.Add(new CardPipeline(id++, number));
+                    pipeline.AddModifier(new SelectableNumberModifier());
+
+                pipelines[id++] = pipeline;
             }
             
             // Move Data 생성
-            MoveModifierPipeline move;
             foreach (Direction direction in Enum.GetValues(typeof(Direction)))
             {
                 if (direction == Direction.None) continue;
@@ -59,30 +60,29 @@ namespace Cardevil.Cards.Data
                 // 일반 Move 
                 for (int i = 0; i < 2; i++)
                 {
-                    move = new MoveModifierPipeline();
+                    pipeline = new  CardPipeline(CardKind.Move, id);
                     
                     // Modifier 추가
-                    move.AddModifier(new SelectableDirectionModifier());
-                    move.AddModifier(new SelectableDirectionConfirmModifier(direction));
+                    pipeline.AddModifier(new DirSelectableModifier(direction));
                     
                     // 강화 가능성 추가
-                    move.SetPossibleEnhancements
+                    pipeline.SetPossibleEnhancements
                     (
-                        modifierService.GetBaseMoveEnhancement()
+                        // modifierDatabase.GetBaseMoveEnhancement()
                     );
                     
-                    pipelines.Add((new CardPipeline(id++, move)));
+                    pipelines[id++] = pipeline;
                 }
             }
             
             // 4방향 선택 가능 Move Data
             for (int i = 0; i < 2; i++)
             {
-                move = new MoveModifierPipeline();
+                pipeline = new CardPipeline(CardKind.Move, id);
                 for (int j = 0; j < 4; j++)
-                    move.AddModifier((new SelectableDirectionModifier()));
-            
-                pipelines.Add(new CardPipeline(id++, move));
+                    pipeline.AddModifier(new DirSelectableModifier());
+
+                pipelines[id++] = pipeline;
             }
         }
     }

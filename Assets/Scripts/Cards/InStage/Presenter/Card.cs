@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.View;
@@ -23,7 +24,7 @@ namespace Cardevil.Cards.InStage.Presenter
         [SerializeField] private CardVisualSettingSO visualSetting;
         
         [Header("Card")]
-        [SerializeField, VisibleOnly] private InStageCardData data;
+        [SerializeField, VisibleOnly] private BuiltCardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
         [SerializeField, VisibleOnly] private CardState state;
         
@@ -38,7 +39,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private Poolable _poolable;
         private IReadOnlyStageCardsModel _model;
         
-        public InStageCardData Data => data;
+        public BuiltCardData Data => data;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
         
@@ -87,7 +88,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// 주어진 데이터를 바탕으로 초기화.
         /// Visual도 함께 생성.
         /// </summary>
-        public void Init(InStageCardData data, IReadOnlyStageCardsModel model)
+        public void Init(BuiltCardData data, IReadOnlyStageCardsModel model)
         {
             this.data = data;
             _model = model;

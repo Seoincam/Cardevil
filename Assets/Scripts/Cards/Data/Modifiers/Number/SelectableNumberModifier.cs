@@ -7,9 +7,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
     {
         public ModifierType Type => ModifierType.AttackNumSelectable;
 
-        public void Apply(BuildCardContext ctx)
+        public void Apply(BuiltCardData.Builder b)
         {
-            // ctx.Selectables.Add(null);
+            b.AddNumberSelectable(null);
         }
     }
 }

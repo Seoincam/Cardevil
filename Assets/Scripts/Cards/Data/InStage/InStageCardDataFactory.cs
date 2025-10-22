@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,41 +13,30 @@ namespace Cardevil.Cards.Data.InStage
         /// <param name="source">원본 카드 데이터들</param>
         /// <param name="shuffle">셔플 여부</param>
         /// <param name="seed">재현 가능한 셔플을 위한 시드 (null이면 랜덤)</param>
-        public static List<InStageCardData> BuildInStageCardData(
-            IReadOnlyCollection<CardPipeline> source,
+        public static List<BuiltCardData> BuildInStageCardData(
+            IReadOnlyDictionary<int, CardPipeline> source,
             bool shuffle = true,
             int? seed = null)
         {
-            var result = new List<InStageCardData>(source.Count);
+            List<BuiltCardData> result = new(source.Count);
 
-            foreach (var origin in source)
+            foreach (var pipeline in source)
             {
-                if (origin == null)
+                if (pipeline.Value == null)
                 {
                     LogEx.LogError("null CardData가 전달됨.");
                     continue;
                 }
 
-                // Number/Move 둘 다 있거나 둘 다 없는 경우 방어
-                bool hasNumber = origin.NumberPipeline != null;
-                bool hasMove   = origin.MovePipeline   != null;
-
-                if (hasNumber == hasMove) // 둘 다 true 또는 둘 다 false
-                {
-                    LogEx.LogError($"잘못된 Modifier 구성 (Id:{origin.Id}) — Number/Move가 둘 다 있거나 둘 다 없음.");
-                    continue;
-                }
-
-                if (hasNumber)
-                {
-                    var builtNumber = origin.NumberPipeline.Build();
-                    result.Add(InStageCardData.FromNumber(origin.Id, builtNumber));
-                }
-                else // hasMove
-                {
-                    var builtMove = origin.MovePipeline.Build();
-                    result.Add(InStageCardData.FromMove(origin.Id, builtMove));
-                }
+                var builder = BuiltCardData.StartBuild(pipeline.Key, pipeline.Value.Kind);
+                
+                // TODO: 순서 및 로직
+                foreach(var mod in pipeline.Value.Modifiers)
+                    mod.Apply(builder);
+                
+                // TODO: 검증
+                
+                result.Add(builder.Build());
             }
 
             if (shuffle)
@@ -54,11 +44,11 @@ namespace Cardevil.Cards.Data.InStage
                 if (seed.HasValue)
                 {
                     var rng = new Random(seed.Value);
-                    result.ShuffleInPlace(rng);          // 재현 가능한 셔플
+                    result.ShuffleInPlace(rng); // 재현 가능한 셔플
                 }
                 else
                 {
-                    result.ShuffleInPlaceUnity();        // Unity 랜덤 셔플
+                    result.ShuffleInPlaceUnity(); // Unity 랜덤 셔플
                 }
             }
 

@@ -18,9 +18,9 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _damage = damage;
         }
 
-        public void Apply(BuildCardContext ctx)
+        public void Apply(BuiltCardData.Builder b)
         {
-            // ctx.DamageMultiply += _damage;
+            b.AddDamageMultiplier(_damage);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Cardevil.Cards.System
     /// </summary>
     public class CardManager : IClearable
     {
-        private readonly CardLibrary _cardLibrary = new();
+        private readonly CardLibrary _library = new();
         
         private readonly StageCardsModel _stageCardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
@@ -27,7 +27,7 @@ namespace Cardevil.Cards.System
         private readonly EvaluationResultsModel _evaluationResultsModel = new();
         private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
         
-        public IReadOnlyCardLibrary CardLibrary => _cardLibrary;
+        public IReadOnlyCardLibrary Library => _library;
         public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
         
         /// <summary>
@@ -48,7 +48,7 @@ namespace Cardevil.Cards.System
         public void Init()
         {
             Clear();
-            _cardLibrary.Init();
+            _library.Init();
         }
 
         public void Clear()
@@ -68,7 +68,7 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            _stageCardsModel.SetUp(InStageCardDataFactory.BuildInStageCardData(_cardLibrary.Pipelines), 6,3);
+            _stageCardsModel.SetUp(InStageCardDataFactory.BuildInStageCardData(_library.Pipelines), 6,3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =
