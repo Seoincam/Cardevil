@@ -1,4 +1,6 @@
-namespace Cardevil.Cards.Data.Modifiers.Number
+using Cardevil.Cards.Data.InStage;
+
+namespace Cardevil.Cards.Data.Modifiers
 {
     /// <summary>
     /// 카드의 데미지 배율을 증가시키는 Modifier.
@@ -18,7 +20,7 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _damage = damage;
         }
 
-        public void Apply(BuiltCardData.Builder b)
+        public void Apply(CardData.Builder b)
         {
             b.AddDamageMultiplier(_damage);
         }

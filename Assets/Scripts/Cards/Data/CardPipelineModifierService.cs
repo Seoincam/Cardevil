@@ -1,4 +1,4 @@
-using Cardevil.Cards.Data.Modifiers;
+using Cardevil.Cards.Data.Enhancement;
 
 namespace Cardevil.Cards.Data
 {

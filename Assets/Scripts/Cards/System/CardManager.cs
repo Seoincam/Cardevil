@@ -68,7 +68,7 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            _stageCardsModel.SetUp(InStageCardDataFactory.BuildInStageCardData(_library.Pipelines), 6,3);
+            _stageCardsModel.SetUp(CardDataFactory.BuildInStageCardData(_library.Pipelines), 6,3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =

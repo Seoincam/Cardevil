@@ -21,8 +21,8 @@ namespace Cardevil.Cards.InStage.Model
     [Serializable]
     public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
-        private List<BuiltCardData> _deck = new();
-        private List<BuiltCardData> _discardPile = new();
+        private List<CardData> _deck = new();
+        private List<CardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
 
@@ -33,8 +33,8 @@ namespace Cardevil.Cards.InStage.Model
         public int MaxHand { get; private set; }
         public int DiscardRemain { get; private set; }
         
-        public IReadOnlyList<BuiltCardData> Deck => _deck;
-        public IReadOnlyList<BuiltCardData> DiscardPile => _discardPile;
+        public IReadOnlyList<CardData> Deck => _deck;
+        public IReadOnlyList<CardData> DiscardPile => _discardPile;
         public IReadOnlyList<Card> Hand => _hand;
         public IReadOnlyCollection<Card> Selection => _selection;
         public IReadOnlyList<Card> SortedSelection => _selection.OrderBy(c => _hand.IndexOf(c)).ToList();
@@ -79,7 +79,7 @@ namespace Cardevil.Cards.InStage.Model
         /// 주어진 카드 목록으로 스테이지 덱을 설정,
         /// 최대 손패 수와 초기 버리기 횟수를 설정
         /// </summary>
-        public void SetUp(List<BuiltCardData> cards, int maxHand, int initialDiscardCount)
+        public void SetUp(List<CardData> cards, int maxHand, int initialDiscardCount)
         {
             _deck = cards;
             MaxHand = maxHand;
@@ -260,7 +260,7 @@ namespace Cardevil.Cards.InStage.Model
         /// <summary>
         /// 덱에서 랜덤한 카드를 반환하기만 함. 삭제하진 않음.
         /// </summary>
-        public BuiltCardData GetRandomCard()
+        public CardData GetRandomCard()
         {
             int randomIndex = Random.Range(0, _deck.Count);
             return _deck[randomIndex];
@@ -269,7 +269,7 @@ namespace Cardevil.Cards.InStage.Model
         /// <summary>
         /// 덱의 첫 카드를 반환하고 덱에서 삭제함.
         /// </summary>
-        public BuiltCardData PopCard()
+        public CardData PopCard()
         {
             if (_deck.Count == 0)
             {

@@ -70,7 +70,7 @@ namespace Cardevil.Cards.InStage.Model
     public sealed class EvaluationResult
     {
         public int TotalDamage { get; private set; }
-        public IReadOnlyList<BuiltCardData> Moves { get; }
+        public IReadOnlyList<CardData> Moves { get; }
         public HandRanking HandRanking { get; }
 
         public void SetDamage(int damage)
@@ -78,7 +78,7 @@ namespace Cardevil.Cards.InStage.Model
             TotalDamage = damage;
         }
         
-        public EvaluationResult(List<BuiltCardData> moves, HandRanking handRanking = HandRanking.None)
+        public EvaluationResult(List<CardData> moves, HandRanking handRanking = HandRanking.None)
         {
             Moves = moves;
             HandRanking = handRanking;

@@ -1,6 +1,7 @@
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Utils.Directions;
 
-namespace Cardevil.Cards.Data.Modifiers.Move
+namespace Cardevil.Cards.Data.Modifiers
 {
     /// <summary>
     /// 선택 가능한 방향 슬롯에 실제 방향 값을 확정하는 Modifier.  
@@ -19,7 +20,7 @@ namespace Cardevil.Cards.Data.Modifiers.Move
         }
         
         /// <inheritdoc/>
-        public void Apply(BuiltCardData.Builder b)
+        public void Apply(CardData.Builder b)
         {
             if (b.DirectionSelectables.Count == 1 && _direction.HasValue)
             {

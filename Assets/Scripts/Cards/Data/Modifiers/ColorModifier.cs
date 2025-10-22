@@ -1,6 +1,6 @@
-using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 
-namespace Cardevil.Cards.Data.Modifiers.Number
+namespace Cardevil.Cards.Data.Modifiers
 {
     /// <summary>
     /// 카드의 색상을 변경하는 Modifier.
@@ -21,7 +21,7 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _color = color;
         }
 
-        public void Apply(BuiltCardData.Builder b)
+        public void Apply(CardData.Builder b)
         {
             b.SetColor(_color);
         }

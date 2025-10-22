@@ -82,7 +82,7 @@ namespace Cardevil.Cards.Evaluations
             
             List<Card> attackCards = cards.Where(c => c.Data.Kind == CardKind.Attack).ToList();
             List<Card> moveCards = cards.Where(c => c.Data.Kind == CardKind.Move).ToList();
-            List<BuiltCardData> moves = moveCards.Select(c => c.Data).ToList();
+            List<CardData> moves = moveCards.Select(c => c.Data).ToList();
             
             // Move Only
             if (attackCards.Count == 0 && moveCards.Count > 0)

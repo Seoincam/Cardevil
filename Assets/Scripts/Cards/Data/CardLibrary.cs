@@ -1,10 +1,7 @@
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
-using Cardevil.Cards.Data.Modifiers.Number;
 using Cardevil.Core;
 using Cardevil.Utils;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Cardevil.Cards.Data
 {
@@ -16,8 +13,8 @@ namespace Cardevil.Cards.Data
     public class CardLibrary : IClearable, IReadOnlyCardLibrary
     {
         // <id, data>
-        private readonly Dictionary<int, CardPipeline> _pipelines;
-        private readonly Dictionary<int, BuiltCardData> _builtData;
+        private readonly Dictionary<int, CardPipeline> _pipelines = new();
+        private readonly Dictionary<int, CardData> _cardDatas = new();
         // TODO: Visual도 추가
 
         public IReadOnlyDictionary<int, CardPipeline> Pipelines => _pipelines;

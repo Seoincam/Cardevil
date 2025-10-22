@@ -1,6 +1,7 @@
+using Cardevil.Cards.Data.InStage;
 using System.Linq;
 
-namespace Cardevil.Cards.Data.Modifiers.Number 
+namespace Cardevil.Cards.Data.Modifiers 
 {
     /// <summary>
     /// 선택 가능한 값 중 null 상태의 value를 실제 숫자로 확정하는 Modifier.  
@@ -22,7 +23,7 @@ namespace Cardevil.Cards.Data.Modifiers.Number
             _number = number;
         }
 
-        public void Apply(BuiltCardData.Builder b)
+        public void Apply(CardData.Builder b)
         {
             // 값이 지정되지 않은 경우, 가능한 숫자 중 하나를 무작위로 선택
             if (!_number.HasValue)
