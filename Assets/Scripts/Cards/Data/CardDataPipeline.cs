@@ -21,6 +21,9 @@ namespace Cardevil.Cards.Data
         public int Id => id;
         public CardKind Kind => kind;
         public IReadOnlyList<IModifier> Modifiers => modifiers;
+        
+        public Guid CurrentEnhancementId => _currentEnhancementId;
+        public IReadOnlyList<Guid> PossibleEnhancementIds => _possibleEnhancementIds;
 
         #endregion
         
@@ -35,16 +38,16 @@ namespace Cardevil.Cards.Data
             modifiers.Add(mod);
         }
 
-        public void SetEnhancement(Guid id)
+        public void SetEnhancement(Guid guid)
         {
-            _currentEnhancementId = id;
+            _currentEnhancementId = guid;
         }
 
-        public void SetPossibleEnhancements(params Guid[] ids)
+        public void SetPossibleEnhancements(params Guid[] guids)
         {
             _possibleEnhancementIds.Clear();
 
-            foreach (var enhancement in ids)
+            foreach (var enhancement in guids)
                 _possibleEnhancementIds.Add(enhancement);
         }
     }

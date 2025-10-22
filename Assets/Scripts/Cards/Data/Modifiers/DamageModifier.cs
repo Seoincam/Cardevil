@@ -20,7 +20,7 @@ namespace Cardevil.Cards.Data.Modifiers
         /// 증가시킬 데미지 배율을 지정하여 초기화.
         /// </summary>
         /// <param name="damage">추가할 데미지 배율</param>
-        public DamageModifier(float damage)
+        public DamageModifier(float damage = 0.05f)
         {
             this.damage = damage;
         }

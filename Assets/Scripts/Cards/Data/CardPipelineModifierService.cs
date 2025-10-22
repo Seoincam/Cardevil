@@ -1,4 +1,5 @@
-using Cardevil.Cards.Data.Enhancement;
+using Cardevil.Cards.Data.Modifiers;
+using System;
 
 namespace Cardevil.Cards.Data
 {
@@ -11,12 +12,32 @@ namespace Cardevil.Cards.Data
             _library = library;
         }
         
-        public void Enhancement(int id, EnhancementData enhancementData)
+        public void Enhance(int id, ModifierType type, int count = 1)
         {
             var pipeline = _library.GetPipelineById(id);
             
-            // TODO: Data를 바탕으로 실제 Modifier를 생성 및 추가
+            for (int i = 0; i < count; i++)
+            {
+                // TODO: Factory 클래스를 만드는 것도 고려하기
+                switch (type)
+                {
+                    case ModifierType.AttackNumSelectable:
+                        pipeline.AddModifier(new SelectableNumberModifier());
+                        break;
+                    
+                    case ModifierType.AttackDamage:
+                        pipeline.AddModifier(new DamageModifier());
+                        break;
+                    
+                    case ModifierType.MoveDirSelectable:
+                        pipeline.AddModifier(new DirSelectableModifier());
+                        break;
+                    
+                    default:
+                        throw new InvalidOperationException();
+                }
+            }
+                
         }
     }
-
 }

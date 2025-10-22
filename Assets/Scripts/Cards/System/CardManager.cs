@@ -1,5 +1,4 @@
 using Cardevil.Systems;
-using System.Collections.Generic;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Cards.Data;
@@ -8,7 +7,7 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Utils;
+using Cardevil.Cards.OutStage;
 using System;
 using UnityEngine;
 
@@ -25,15 +24,24 @@ namespace Cardevil.Cards.System
         [SerializeField] private CardLibrary cardLibrary = new();
         [SerializeField] private EnhancementDataLibrary enhancementDataLibrary = new();
         
+        // Out Stage
+        private readonly CardPipelineModifierService _modifierService = new();
+        private readonly CardEnhancementPresenter _enhancementPresenter = new();
+        
+        // In Stage
         private readonly StageCardsModel _stageCardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
         private readonly StageCardsPresenter _stageCardsPresenter = new();
 
         private readonly EvaluationResultsModel _evaluationResultsModel = new();
         private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
-        
+
+        #region IReadOnly
+
         public IReadOnlyCardLibrary CardLibrary => cardLibrary;
         public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
+
+        #endregion
         
         /// <summary>
         /// 카드 단계(리롤, 손패 선택 등)를 관리하는 Flow을 생성.
@@ -53,8 +61,12 @@ namespace Cardevil.Cards.System
         public void Init()
         {
             Clear();
-            cardLibrary.Init();
+            
+            cardLibrary.Init(enhancementDataLibrary);
             enhancementDataLibrary.Init();
+
+            _modifierService.Init(cardLibrary);
+            _enhancementPresenter.Init(cardLibrary, enhancementDataLibrary, _modifierService);
         }
 
         public void Clear()

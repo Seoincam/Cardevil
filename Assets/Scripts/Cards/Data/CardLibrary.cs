@@ -1,38 +1,48 @@
-using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Core;
+using Cardevil.DataStructure;
 using Cardevil.Utils;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.Cards.Data
 {
     public interface IReadOnlyCardLibrary
     {
-        IReadOnlyDictionary<int, CardPipeline> Pipelines { get; }
+        IReadOnlyDictionary<int, CardDataPipeline> Pipelines { get; }
     }
     
+    [Serializable]
     public class CardLibrary : IClearable, IReadOnlyCardLibrary
     {
+        private EnhancementDataLibrary _enhancementDataLibrary;
+        
         // <id, data>
-        private readonly Dictionary<int, CardPipeline> _pipelines = new();
-        private readonly Dictionary<int, CardData> _cardDatas = new();
+        [SerializeField] private SerializableDict<int, CardDataPipeline> pipelines = new();
         // TODO: Visual도 추가
 
-        public IReadOnlyDictionary<int, CardPipeline> Pipelines => _pipelines;
+        #region IReadOnlyCardLibrary
+
+        public IReadOnlyDictionary<int, CardDataPipeline> Pipelines => pipelines;
+
+        #endregion
         
-        public void Init()
+        public void Init(EnhancementDataLibrary enhancementDataLibrary)
         {
+            _enhancementDataLibrary = enhancementDataLibrary;
+            
             Clear();
             // TODO: 세이브파일 로드 체크 로직 넣어야함.
-            
-            _pipelines.CreateBasePipelines();
+            pipelines.CreateBasePipelines(_enhancementDataLibrary);
         }
 
         public void Clear()
         {
-            _pipelines.Clear();
+            pipelines.Clear();
         }
         
-        public CardPipeline GetPipelineById(int id)
+        public CardDataPipeline GetPipelineById(int id)
         {
             if (id < 0 || id > 50)
             {
@@ -40,7 +50,7 @@ namespace Cardevil.Cards.Data
                 return null;
             }
 
-            if (!_pipelines.TryGetValue(id, out var pipeline))
+            if (!pipelines.TryGetValue(id, out var pipeline))
             {
                 LogEx.LogError($"존재하지 않는 id입니다. : {id}");
                 return null;

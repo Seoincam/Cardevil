@@ -28,7 +28,7 @@ namespace Cardevil.Cards.Data.InStage
         // Common
         public int Id => id;
         public CardKind Kind => kind;
-        public EnhancementData? CurrentEnhancement { get; }
+        public EnhancementData CurrentEnhancement { get; }
         
         // Attack Card
         public CardColor Color => color;
@@ -50,14 +50,14 @@ namespace Cardevil.Cards.Data.InStage
             private readonly int _id;
             private readonly CardKind _kind;
             
-            private CardColor _color;
+            private CardColor _color = CardColor.None;
             private float _damageMultiplier = 1f;
             private readonly List<int?> _numberSelectables = new();
 
             private int _length = 1;
             private readonly List<Direction?> _directionSelectables = new();
             
-            private EnhancementData? _currentEnhancement;
+            private EnhancementData _currentEnhancement;
             
             public IReadOnlyList<int?> NumberSelectables => _numberSelectables;
             public IReadOnlyList<Direction?> DirectionSelectables => _directionSelectables;
@@ -112,7 +112,7 @@ namespace Cardevil.Cards.Data.InStage
                 _directionSelectables.Add(direction);
             }
             
-            public void SetCurrentEnhancement(EnhancementData? currentEnhancement) => _currentEnhancement = currentEnhancement;
+            public void SetCurrentEnhancement(EnhancementData currentEnhancement) => _currentEnhancement = currentEnhancement;
 
             #endregion
             
@@ -143,7 +143,7 @@ namespace Cardevil.Cards.Data.InStage
         }
         
         private CardData(
-            int id, CardKind kind, EnhancementData? currentEnhancement, 
+            int id, CardKind kind, EnhancementData currentEnhancement, 
             CardColor color, float damageMultiplier, SelectState<int> numberSelectState, 
             int length, SelectState<Direction> directionSelectState)
         {
