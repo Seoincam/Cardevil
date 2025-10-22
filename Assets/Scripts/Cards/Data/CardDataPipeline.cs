@@ -50,5 +50,10 @@ namespace Cardevil.Cards.Data
             foreach (var enhancement in guids)
                 _possibleEnhancementIds.Add(enhancement);
         }
+
+        public void ClearPossibleEnhancements()
+        {
+            _possibleEnhancementIds.Clear();
+        }
     }
 }

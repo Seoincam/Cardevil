@@ -106,5 +106,24 @@ namespace Cardevil.Cards.Data.Enhancement
         {
             return table.GetValueOrDefault(id);
         }
+
+        public Guid GetNextId(Guid guid)
+        {
+            var curData = GetData(guid);
+            return GetNextId(curData);
+        }
+
+        public Guid GetNextId(EnhancementData curData)
+        {
+            var newLevel = curData.Level + 1;
+
+            foreach ((EnhancementData data, Guid id) in _reverseTable)
+            {
+                if (data.Type == curData.Type && data.Level == newLevel)
+                    return data.Id;
+            }
+            
+            return Guid.Empty;
+        }
     }
 }

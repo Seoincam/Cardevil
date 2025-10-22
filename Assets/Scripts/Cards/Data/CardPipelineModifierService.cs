@@ -37,7 +37,6 @@ namespace Cardevil.Cards.Data
                         throw new InvalidOperationException();
                 }
             }
-                
         }
     }
 }
