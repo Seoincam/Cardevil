@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data
 {
-    public class CardPipeline
+    public class CardDataPipeline
     {
         public int Id { get; }
         public CardKind Kind { get; }
@@ -16,7 +16,7 @@ namespace Cardevil.Cards.Data
         
         public IReadOnlyList<IModifier> Modifiers => _mods;
 
-        public CardPipeline(CardKind kind, int id)
+        public CardDataPipeline(CardKind kind, int id)
         {
             Kind = kind;
             Id = id;
