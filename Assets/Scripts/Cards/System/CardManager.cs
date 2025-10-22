@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Utils;
+using System;
+using UnityEngine;
 
 namespace Cardevil.Cards.System
 {
@@ -16,9 +19,11 @@ namespace Cardevil.Cards.System
     /// 카드 모델, 프레젠터, 평가 이벤트 등을 초기화,
     /// 스테이지 시작 시 덱을 구성하는 역할.
     /// </summary>
+    [Serializable]
     public class CardManager : IClearable
     {
-        private readonly CardLibrary _library = new();
+        [SerializeField] private CardLibrary cardLibrary = new();
+        [SerializeField] private EnhancementDataLibrary enhancementDataLibrary = new();
         
         private readonly StageCardsModel _stageCardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
@@ -27,7 +32,7 @@ namespace Cardevil.Cards.System
         private readonly EvaluationResultsModel _evaluationResultsModel = new();
         private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
         
-        public IReadOnlyCardLibrary Library => _library;
+        public IReadOnlyCardLibrary CardLibrary => cardLibrary;
         public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
         
         /// <summary>
@@ -48,7 +53,8 @@ namespace Cardevil.Cards.System
         public void Init()
         {
             Clear();
-            _library.Init();
+            cardLibrary.Init();
+            enhancementDataLibrary.Init();
         }
 
         public void Clear()
@@ -68,7 +74,7 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            _stageCardsModel.SetUp(CardDataFactory.BuildInStageCardData(_library.Pipelines), 6,3);
+            _stageCardsModel.SetUp(CardDataFactory.BuildInStageCardData(cardLibrary.Pipelines), 6,3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =

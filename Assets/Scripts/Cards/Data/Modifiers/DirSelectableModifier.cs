@@ -1,5 +1,9 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Utils;
 using Cardevil.Utils.Directions;
+using System;
+using UnityEngine;
 
 namespace Cardevil.Cards.Data.Modifiers
 {
@@ -7,24 +11,25 @@ namespace Cardevil.Cards.Data.Modifiers
     /// 선택 가능한 방향 슬롯에 실제 방향 값을 확정하는 Modifier.  
     /// - 슬롯이 2개인 경우: 첫 번째 값이 정해져 있으면 두 번째를 반대 방향으로 자동 확정  
     /// </summary>
+    [Serializable]
     public sealed class DirSelectableModifier : IModifier
     {
-        /// <inheritdoc/>
-        public ModifierType Type => ModifierType.MoveDirSelectable;
-
-        private Direction? _direction;
-
+        [SerializeField, VisibleOnly] private ModifierType type = ModifierType.MoveDirSelectable;
+        [SerializeField, VisibleOnly] private Optional<Direction> direction;
+        
+        public ModifierType Type => type;
+        
         public DirSelectableModifier(Direction? direction = null)
         {
-            _direction = direction;
+            this.direction = new Optional<Direction>(direction);
         }
         
         /// <inheritdoc/>
         public void Apply(CardData.Builder b)
         {
-            if (_direction.HasValue)
+            if (direction.hasValue)
             {
-                b.AddDirectionSelectable(_direction);
+                b.AddDirectionSelectable(direction.value);
                 return;
             }
             
