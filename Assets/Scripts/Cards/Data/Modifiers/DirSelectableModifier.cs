@@ -37,7 +37,10 @@ namespace Cardevil.Cards.Data.Modifiers
             if (b.DirectionSelectables.Count == 2 && b.DirectionSelectables[0].HasValue && !b.DirectionSelectables[1].HasValue)
             {
                 b.AddDirectionSelectable(b.DirectionSelectables[0]!.Value.Opposite());
+                return;
             }
+            
+            b.AddDirectionSelectable(null);
         }
     }
 }
