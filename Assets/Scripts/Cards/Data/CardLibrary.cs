@@ -33,6 +33,10 @@ namespace Cardevil.Cards.Data
             _enhancementDataLibrary = enhancementDataLibrary;
             
             Clear();
+        }
+
+        public void CreateBasePipelines()
+        {
             // TODO: 세이브파일 로드 체크 로직 넣어야함.
             pipelines.CreateBasePipelines(_enhancementDataLibrary);
         }

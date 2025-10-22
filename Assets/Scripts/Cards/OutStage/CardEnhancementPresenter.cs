@@ -1,7 +1,11 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.Enhancement;
+using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Cardevil.Cards.OutStage
 {
@@ -67,8 +71,112 @@ namespace Cardevil.Cards.OutStage
 
         public void Enhance(int id, EnhancementData enhancementData)
         {
-            _service.Enhance(id, enhancementData.Type, enhancementData.ModifierCount);
+            var type = enhancementData.Type;
+            var pipeline = _library.GetPipelineById(id);
+            int count = pipeline.PossibleEnhancementIds.Count;
+            
+            foreach (var modifier in pipeline.Modifiers)
+            {
+                if (modifier.Type == type)
+                    count--;
+            }
+
+            if (count <= 0)
+            {
+                LogEx.LogError("잘못된 강화 Modifier Count.");
+                return;
+            }
+            _service.Enhance(id, enhancementData.Type, count);
+            
+            // TODO: 현재/가능 강화 데이터 교체
+            
+            
             // TODO: UI 갱신
         }
+
+        #region Command
+
+        [ConsoleCommand("getPossibleEnhancements", "Log all possible enhancements", "getPossibleEnhancements [int: ID (0~49])")]
+        public static void GetPossibleEnhancementsCommand(string[] args)
+        {
+            int id;
+            if (args.Length == 0)
+            {
+                DebugConsole.Console.MessageError("This command needs ID. Pls try one more with ID.");
+                return;
+            }
+            if (!int.TryParse(args[0], out id))
+            {
+                DebugConsole.Console.MessageWarning("Invalid ID. Pls try one more with valid ID.");
+                return;
+            }
+            if (id < 0 || id > 49)
+            {
+                DebugConsole.Console.MessageWarning("ID should be between 0 and 49.");
+                return;
+            }
+            
+            bool canEnhance = Managers.Card.EnhancementPresenter.TryGetPossibleEnhancements(id, out List<EnhancementData> possibles);
+
+            if (!canEnhance)
+            {
+                DebugConsole.Console.Message("강화가 불가능합니다.");
+                return;
+            }
+            
+            DebugConsole.Console.Message($"강화가 가능합니다! 가능 개수: {possibles.Count}");
+            foreach (var data in possibles)
+                DebugConsole.Console.Message($"{data.Description}, {data.Type}, {data.ModifierCount}");
+        }
+        
+        [ConsoleCommand("enhance", "Enhance a card", "enhance [int: ID (0~49)] [int: enhancementIndex (usually 0~1)")]
+        public static void EnhanceById(string[] args)
+        {
+            int id;
+            int enhancementIndex;
+
+            if (args.Length != 2)
+            {
+                DebugConsole.Console.MessageError("This command needs ID and index. Pls try one more with ID and index.");
+                return;
+            }
+            if (!int.TryParse(args[0], out id))
+            {
+                DebugConsole.Console.MessageWarning("Invalid ID. Pls try one more with valid ID.");
+                return;
+            }
+            if (!int.TryParse(args[1], out enhancementIndex))
+            {
+                DebugConsole.Console.MessageWarning("Invalid index. Pls try one more with valid index.");
+                return;
+            }
+            if (id < 0 || id > 49)
+            {
+                DebugConsole.Console.MessageWarning("ID should be between 0 and 49.");
+                return;
+            }
+            
+            bool canEnhance = Managers.Card.EnhancementPresenter.TryGetPossibleEnhancements(id, out List<EnhancementData> possibles);
+
+            if (!canEnhance)
+            {
+                DebugConsole.Console.Message("강화가 불가능합니다.");
+                return;
+            }
+
+            if (enhancementIndex < 0 || enhancementIndex >= possibles.Count)
+            {
+                DebugConsole.Console.MessageWarning("Invalid index. Pls try one more with valid index.");
+                return;
+            }
+            
+            Managers.Card.EnhancementPresenter.Enhance(id, possibles[enhancementIndex]);
+            DebugConsole.Console.Message($"{possibles[enhancementIndex].Description} => 적용됐습니다.");
+            DebugConsole.Console.Message("Inspector의 Managers.Card.CardLibrary에서 확인할 수 있습니다.");
+        }
+
+        #endregion
+        
+
     }
 }
