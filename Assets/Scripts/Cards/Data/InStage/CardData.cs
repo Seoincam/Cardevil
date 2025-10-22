@@ -1,24 +1,45 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Utils.Directions;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.Cards.Data.InStage
 {
+    [Serializable]
     public sealed class CardData
     {
+        [Header("Common")]
+        [SerializeField, VisibleOnly] private int id;
+        [SerializeField, VisibleOnly] private CardKind kind;
+        
+        [Header("Attack Card")]
+        [SerializeField, VisibleOnly] private CardColor color;
+        [SerializeField, VisibleOnly] private float damageMultiplier;
+        [SerializeField, VisibleOnly] private SelectState<int> numberSelectState;
+
+        [Header("Move Card")]
+        [SerializeField, VisibleOnly] private int length;
+        [SerializeField, VisibleOnly] private SelectState<Direction> directionSelectState;
+
+        #region getter
+
         // Common
-        public int Id { get; }
-        public CardKind Kind { get; }
+        public int Id => id;
+        public CardKind Kind => kind;
         public EnhancementData? CurrentEnhancement { get; }
         
         // Attack Card
-        public CardColor Color { get; }
-        public float DamageMultiplier { get; }
-        public SelectState<int> NumberSelectState { get; }
+        public CardColor Color => color;
+        public float DamageMultiplier => damageMultiplier;
+        public SelectState<int> NumberSelectState => numberSelectState;
 
         // Move Card
-        public int Length { get; }
-        public SelectState<Direction> DirectionSelectState { get; }
+        public int Length => length;
+        public SelectState<Direction> DirectionSelectState => directionSelectState;
+
+        #endregion
         
         #region Builder
         
@@ -80,11 +101,14 @@ namespace Cardevil.Cards.Data.InStage
                 // direction.HasValue일 경우, 기존의 null을 direction으로 대체
                 for (int i = 0; i < _directionSelectables.Count; i++)
                 {
-                    if (_directionSelectables[i].HasValue) continue;
-                    _directionSelectables[i] = direction;
-                    return;
+                    if (!_directionSelectables[i].HasValue)
+                    {
+                        _directionSelectables[i] = direction;
+                        return;
+                    }
                 }
                 
+                // 기존 null이 없을 경우 새로 추가
                 _directionSelectables.Add(direction);
             }
             
@@ -94,13 +118,13 @@ namespace Cardevil.Cards.Data.InStage
             
             public CardData Build()
             {
-                if (_numberSelectables.Count == 9)
+                if (_kind == CardKind.Attack && _numberSelectables.Count == 9)
                 {
                     _numberSelectables.Clear();
                     _numberSelectables.AddRange(new int?[] { 2, 3, 4, 5, 6, 7, 8, 9, 10 });
                 }
                 
-                if (_directionSelectables.Count == 4)
+                if (_kind == CardKind.Move && _directionSelectables.Count == 4)
                 {
                     _directionSelectables.Clear();
                     _directionSelectables.AddRange(new Direction?[] { Direction.Up, Direction.Down, Direction.Left, Direction.Right });
@@ -123,16 +147,16 @@ namespace Cardevil.Cards.Data.InStage
             CardColor color, float damageMultiplier, SelectState<int> numberSelectState, 
             int length, SelectState<Direction> directionSelectState)
         {
-            Id = id;
-            Kind = kind;
+            this.id = id;
+            this.kind = kind;
             CurrentEnhancement = currentEnhancement;
 
-            Color = color;
-            DamageMultiplier = damageMultiplier;
-            NumberSelectState = numberSelectState;
+            this.color = color;
+            this.damageMultiplier = damageMultiplier;
+            this.numberSelectState = numberSelectState;
             
-            Length = length;
-            DirectionSelectState = directionSelectState;
+            this.length = length;
+            this.directionSelectState = directionSelectState;
         }
 
         #endregion

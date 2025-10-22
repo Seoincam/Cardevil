@@ -23,7 +23,7 @@ namespace Cardevil.Cards.ScriptableObjects
         /// <summary>
         /// CardVisual로부터 Image를 받아 Sprite를 수정함.
         /// </summary>
-        public void UpdataVisual(BuiltCardData data, Image frontImg, Image primaryNumberImg)
+        public void UpdataVisual(CardData data, Image frontImg, Image primaryNumberImg)
         {
             if (data.Kind == CardKind.Move)
             {
@@ -37,14 +37,12 @@ namespace Cardevil.Cards.ScriptableObjects
             }
             else
             {
-                LogEx.LogError("Invalid CardData Type.");
+                LogEx.LogError($"Invalid CardData Type. (Id) : {data.Id}");
             }
         }
 
-        /// <summary>
         /// Move 타입의 CardVisual을 수정.
-        /// </summary>
-        private void UpdateVisual(BuiltCardData data, Image frontImg)
+        private void UpdateVisual(CardData data, Image frontImg)
         {
             var m = moveSprites;
 
@@ -53,13 +51,12 @@ namespace Cardevil.Cards.ScriptableObjects
                 switch (data.DirectionSelectState.Selectables.Count)
                 {
                     case 2:
-                        
                         break;
                     case 4:
                         frontImg.sprite = m.All;
                         break;
                     default:
-                        LogEx.LogError("Invalid MoveData.");
+                        LogEx.LogError($"Invalid MoveData. (Id) : {data.Id}");
                         break;
                 }
                 return;
@@ -75,10 +72,8 @@ namespace Cardevil.Cards.ScriptableObjects
             };
         }
 
-        /// <summary>
-        /// Number 타입의 CardVisual을 수정
-        /// </summary>
-        private void UpdateVisual(BuiltCardData data, Image frontImg, Image primaryNumberImg)
+        /// Attack 타입의 CardVisual을 수정
+        private void UpdateVisual(CardData data, Image frontImg, Image primaryNumberImg)
         {
             NumberSpriteSet? spriteSet = numberSprites.FirstOrDefault(s => s.Color == data.Color);
             if (spriteSet is not { } s)
@@ -107,7 +102,7 @@ namespace Cardevil.Cards.ScriptableObjects
             }
             else
             {
-                LogEx.LogWarning($"Invalid NumberValue {data.NumberSelectState.FinalValue} for color {data.Color}");
+                LogEx.LogWarning($"Invalid NumberValue {data.NumberSelectState.FinalValue} for color {data.Color} (Id) : {data.Id}");
             }
         }
 

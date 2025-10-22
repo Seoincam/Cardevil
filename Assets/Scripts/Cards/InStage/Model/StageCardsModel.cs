@@ -63,9 +63,9 @@ namespace Cardevil.Cards.InStage.Model
                 foreach (var card in _selection)
                 {
                     var data = card.Data;
-                    if (data.Kind == CardKind.Attack && data.NumberSelectState.FinalValue == null)
+                    if (data.Kind == CardKind.Attack && data.NumberSelectState.FinalValue != null)
                         continue;
-                    if (data.Kind == CardKind.Move && data.DirectionSelectState.FinalValue == null)
+                    if (data.Kind == CardKind.Move && data.DirectionSelectState.FinalValue != null)
                         continue;
 
                     return false;

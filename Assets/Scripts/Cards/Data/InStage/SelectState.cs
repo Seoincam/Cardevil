@@ -92,40 +92,4 @@ namespace Cardevil.Cards.Data.InStage
             }
         }
     }
-    
-    /*
-    public static class MoveSelectStateExtensions
-    {
-        /// <summary>
-        /// 방향 선택 확정:
-        /// - 슬롯 2개이고 첫 슬롯만 확정되어 있으면 두 번째는 반대방향으로.
-        /// - 그 외엔 중복되지 않는 임의의 방향으로 채움.
-        /// </summary>
-        public static void ConfirmNullValues(this SelectState<Direction> state)
-        {
-            // 2칸 구조에서 [A, null]이면, 두 번째를 A의 반대로
-            if (state.Selectables.Count == 2 && state.Selectables[0].hasValue && !state.Selectables[1].hasValue)
-            {
-                state.TrySetFirstNull(state.Selectables[0].value.Opposite());
-                return;
-            }
-            
-            if (state.Selectables.Count == 4)
-            {
-                var availableDirections =
-                    new List<Direction>() { Direction.Up, Direction.Down, Direction.Left, Direction.Right };
-
-                foreach (var d in availableDirections)
-                {
-                    if (!state.Selectables.Contains(d))
-                        state.TrySetFirstNull(d);
-                }
-
-                return;
-            }
-            
-            LogEx.LogError("방향 확정 중 의도치 않은 경우가 있음!");
-        }
-    }
-    */
 }

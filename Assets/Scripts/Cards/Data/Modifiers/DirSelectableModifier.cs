@@ -22,9 +22,10 @@ namespace Cardevil.Cards.Data.Modifiers
         /// <inheritdoc/>
         public void Apply(CardData.Builder b)
         {
-            if (b.DirectionSelectables.Count == 1 && _direction.HasValue)
+            if (_direction.HasValue)
             {
                 b.AddDirectionSelectable(_direction);
+                return;
             }
             
             // 두 개의 슬롯이 있고, 첫 번째가 확정된 경우: 반대 방향으로 자동 확정

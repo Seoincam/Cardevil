@@ -1,7 +1,9 @@
 using Cardevil.Cards.Data.Modifiers;
+using System;
 
 namespace Cardevil.Cards.Data.Enhancement
 {
+    [Serializable]
     public struct EnhancementData
     {
         public readonly ModifierType type;

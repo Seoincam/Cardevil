@@ -12,12 +12,12 @@ namespace Cardevil.Cards.Data.InStage
         /// <param name="source">카드 파이프라인</param>
         /// <param name="shuffle">셔플 여부</param>
         /// <param name="seed">재현 가능한 셔플을 위한 시드 (null이면 랜덤)</param>
-        public static List<CardData> BuildInStageCardData(IReadOnlyDictionary<int, CardPipeline> source, 
+        public static List<CardData> BuildInStageCardData(IReadOnlyDictionary<int, CardDataPipeline> source, 
             bool shuffle = true, int? seed = null)
         {
             List<CardData> result = new(source.Count);
 
-            foreach ((int id, CardPipeline pipeline) in source)
+            foreach ((int id, CardDataPipeline pipeline) in source)
             {
                 if (pipeline == null)
                 {

@@ -10,7 +10,7 @@ namespace Cardevil.Cards.InStage
 {
     public class RemainCardVisual : MonoBehaviour
     {
-        public CardPipeline pipeline;
+        public CardDataPipeline dataPipeline;
         public bool isRemaining;
         
         [Header("Visual")]
@@ -19,9 +19,9 @@ namespace Cardevil.Cards.InStage
         [SerializeField] Transform shakeObject;
         private IReadOnlyStageCardsModel _model;
 
-        public void Init(IReadOnlyStageCardsModel model, CardPipeline pipeline)
+        public void Init(IReadOnlyStageCardsModel model, CardDataPipeline dataPipeline)
         {
-            this.pipeline = pipeline;
+            this.dataPipeline = dataPipeline;
             isRemaining = true;
             _model = model;
             UpdateVisual();
