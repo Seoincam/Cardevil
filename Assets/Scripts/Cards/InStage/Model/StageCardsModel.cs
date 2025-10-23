@@ -1,12 +1,10 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
 using Random = UnityEngine.Random;
-using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
@@ -76,15 +74,18 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         /// <summary>
-        /// 주어진 카드 목록으로 스테이지 덱을 설정,
-        /// 최대 손패 수와 초기 버리기 횟수를 설정
+        /// 최대 손패 수와 초기 버리기 횟수를 설정.
         /// </summary>
-        public void SetUp(List<CardData> cards, int maxHand, int initialDiscardCount)
+        public void SetUp(int maxHand, int initialDiscardCount)
         {
-            _deck = cards;
             MaxHand = maxHand;
             DiscardRemain = initialDiscardCount;
         }
+        
+        /// <summary>
+        /// 덱에 <see cref="CardData"/>를 추가.
+        /// </summary>
+        public void AddCardData(CardData cardData) => _deck.Add(cardData);
         
         /// <summary>
         /// 모든 카드를 덱으로 되돌린 뒤 섞음.
@@ -105,12 +106,12 @@ namespace Cardevil.Cards.InStage.Model
             
             if (_deck.Count != 50)
             {
-                Debug.LogError("덱의 초기화에 실패했습니다.");
+                LogEx.LogError("덱의 초기화에 실패했습니다.");
                 Clear();
                 return;
             }
 
-            // DeckFactory.Shuffle(_deck);
+            _deck.ShuffleListInPlace();
         }
         
         /// <summary>

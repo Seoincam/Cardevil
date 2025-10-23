@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.Enhancement;
+using Cardevil.Core;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace Cardevil.Cards.Data.InStage
 {
     [Serializable]
-    public sealed class CardData
+    public sealed class CardData : IClearable
     {
         [Header("Common")]
         [SerializeField, VisibleOnly] private int id;
@@ -22,6 +23,19 @@ namespace Cardevil.Cards.Data.InStage
         [Header("Move Card")]
         [SerializeField, VisibleOnly] private int length;
         [SerializeField, VisibleOnly] private SelectState<Direction> directionSelectState;
+        
+        /// <summary>
+        /// 스테이지 입장 전 상태로 초기화합니다.
+        /// </summary>
+        public void Clear()
+        {
+            switch (kind)
+            {
+                case CardKind.Attack: numberSelectState.Clear(); break;
+                case CardKind.Move: directionSelectState.Clear(); break;
+                default: throw new ArgumentOutOfRangeException();
+            }
+        }
 
         #region getter
 

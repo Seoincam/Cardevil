@@ -89,7 +89,16 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            // _stageCardsModel.SetUp(CardDataFactory.BuildInStageCardData(cardLibrary.Pipelines), 6,3);
+            
+            // Stage Cards Model 초기화 및 Card Data 주입
+            _stageCardsModel.SetUp(6, 3);
+            for (int i = 0; i < 50; i++)
+            {
+                var data = cardLibrary.GetDataById(i);
+                data.Clear();
+                _stageCardsModel.AddCardData(data);
+            }
+            _stageCardsModel.Shuffle();
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =
