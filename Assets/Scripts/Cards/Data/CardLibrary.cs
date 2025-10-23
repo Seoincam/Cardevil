@@ -99,6 +99,18 @@ namespace Cardevil.Cards.Data
             return data;
         }
 
+        /// <summary>
+        /// <see cref="CardDataPipeline"/>을 기반으로
+        /// <see cref="CardData"/>를 갱신합니다.
+        /// </summary>
+        /// <param name="id"></param>
+        public void UpdateData(int id)
+        {
+            var data = pipelineMap[id].Build();
+            dataMap[id] = data;
+            // TODO: 추후 visual 추가하면 visual도 갱신
+        }
+
         #region IReadOnlyCardLibrary
 
         public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id)
