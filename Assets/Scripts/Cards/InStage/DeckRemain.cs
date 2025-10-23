@@ -14,18 +14,20 @@ namespace Cardevil.Cards.InStage
         private bool isInitialized = false;
         private bool isOpened = false;
 
-        private int DeckSize => Managers.Card.RuntimeBaseDeck.Count;
+        // private int DeckSize => Managers.Card.CardLibrary.Pipelines.Count;
     
         public void Init(IReadOnlyStageCardsModel model)
         {
-            cardVisuals = new RemainCardVisual[DeckSize];
+            // cardVisuals = new RemainCardVisual[DeckSize];
 
             // 카드 비주얼 소환
-            for (int i = 0; i < 50; i++)
-            {
-                cardVisuals[i] = Instantiate(remainCardVisualPrefab, parent: cardsPanel);
-                cardVisuals[i].Init(model, Managers.Card.RuntimeBaseDeck[i]);
-            }
+            int i = 0;
+            // foreach (var pipeline in Managers.Card.CardLibrary.Pipelines)
+            // {
+            //     // cardVisuals[i] = Instantiate(remainCardVisualPrefab, parent: cardsPanel);
+            //     // cardVisuals[i].Init(model, pipeline);
+            //     // i++;
+            // }
 
             isInitialized = true;
         }

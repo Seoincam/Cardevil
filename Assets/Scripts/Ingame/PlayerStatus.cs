@@ -1,4 +1,4 @@
-using Cardevil.Core;
+﻿using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
@@ -7,8 +7,7 @@ using Cardevil.Utils;
 using System;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
-using System.Collections.Generic;
-using Cardevil.Relics;
+
 namespace Cardevil.Ingame
 {
     /// <summary>
@@ -22,13 +21,10 @@ namespace Cardevil.Ingame
         [SerializeField] private int _shield = 0;
         [SerializeField] private int _rerollTicket = 0;
         [SerializeField] private int _maxHand = 6; // TODO: 실제 로직에 연결해야함.
-        [SerializeField] private int _discardHand = 3;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
         [SerializeField] public int gold;
-        [SerializeField] public List<RelicEffectBase> relicEffectBases = new List<RelicEffectBase>();
-
-        public bool canRevive = false;
-
+        
+        
         /// <summary>
         /// 플레이어의 현재 체력
         /// </summary>
@@ -92,17 +88,7 @@ namespace Cardevil.Ingame
         
         public VariableContainer VariableContainer => _variableContainer;
         
-        public int MaxHand
-        {
-            get => _maxHand;
-            set => _maxHand = value;
-        }
         
-        public int DiscardCard
-        {
-            get => _discardHand;
-            set => _discardHand = value;
-        }
         public int TakeDamage(int damage)
         {
             if (damage < 0)
@@ -269,6 +255,5 @@ namespace Cardevil.Ingame
                 DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
             }
         }
-
     }
 }

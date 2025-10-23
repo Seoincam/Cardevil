@@ -3,13 +3,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 
 namespace Cardevil.Cards.InStage
 {
     public class RemainCardVisual : MonoBehaviour
     {
-        public CardData data;
+        public CardDataPipeline dataPipeline;
         public bool isRemaining;
         
         [Header("Visual")]
@@ -18,9 +19,9 @@ namespace Cardevil.Cards.InStage
         [SerializeField] Transform shakeObject;
         private IReadOnlyStageCardsModel _model;
 
-        public void Init(IReadOnlyStageCardsModel model, CardData data)
+        public void Init(IReadOnlyStageCardsModel model, CardDataPipeline dataPipeline)
         {
-            this.data = data;
+            this.dataPipeline = dataPipeline;
             isRemaining = true;
             _model = model;
             UpdateVisual();
