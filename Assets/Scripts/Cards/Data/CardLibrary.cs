@@ -106,11 +106,17 @@ namespace Cardevil.Cards.Data
         /// <see cref="CardData"/>를 갱신합니다.
         /// </summary>
         /// <param name="id"></param>
-        public void UpdateData(int id)
+        public void UpdateMaps(int id)
         {
-            var data = pipelineMap[id].Build();
-            dataMap[id] = data;
-            // TODO: 추후 visual 추가하면 visual도 갱신
+            // Card Data
+            var cardData = pipelineMap[id].Build();
+            if (cardData != null)
+                dataMap[id] = cardData;
+            
+            // Card Visual Sprite Set
+            var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
+            if (spriteSet != null)
+                visualSpriteSetMap[id] = spriteSet;
         }
 
         #region IReadOnlyCardLibrary

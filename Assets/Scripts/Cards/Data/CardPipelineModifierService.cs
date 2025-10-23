@@ -49,7 +49,7 @@ namespace Cardevil.Cards.Data
                 pipeline.SetCurrentEnhancementId(nextEnhancementId);
             
             // 데이터 갱신
-            _library.UpdateData(pipelineId);
+            _library.UpdateMaps(pipelineId);
         }
     }
 }
