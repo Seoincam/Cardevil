@@ -1,12 +1,10 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
 using Random = UnityEngine.Random;
-using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
@@ -108,12 +106,12 @@ namespace Cardevil.Cards.InStage.Model
             
             if (_deck.Count != 50)
             {
-                Debug.LogError("덱의 초기화에 실패했습니다.");
+                LogEx.LogError("덱의 초기화에 실패했습니다.");
                 Clear();
                 return;
             }
 
-            // DeckFactory.Shuffle(_deck);
+            _deck.ShuffleListInPlace();
         }
         
         /// <summary>
