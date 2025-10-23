@@ -406,12 +406,12 @@ namespace Cardevil.Cards.InStage.Presenter
         // - - - - - - - - - - -
         private Card Spawn()
         {
-            var cardData = _model.PopCard();
-            if (cardData == null)
-                return null;
+            var (cardData, visualSpriteSet) = _model.PopCard();
+            if (cardData == null) return null;
+            if (visualSpriteSet == null) return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, _model);
+            card.Init(cardData, visualSpriteSet, _model);
 
             // 이벤트 구독
             AddListeners(card);

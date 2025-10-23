@@ -88,7 +88,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// 주어진 데이터를 바탕으로 초기화.
         /// Visual도 함께 생성.
         /// </summary>
-        public void Init(CardData data, IReadOnlyStageCardsModel model)
+        public void Init(CardData data, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
         {
             this.data = data;
             _model = model;
@@ -99,7 +99,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
             var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
-            visual.Init(this, model);
+            visual.Init(this, visualSpriteSet, model);
         }
 
         public void SetRerollState(bool value)

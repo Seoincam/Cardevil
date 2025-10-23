@@ -23,6 +23,8 @@ namespace Cardevil.Cards.Data.InStage
             {
                 foreach (var set in so.numberSprites)
                 {
+                    if (data.Color != set.Color) continue;
+
                     numberSpriteSet = set;
                     break;
                 }

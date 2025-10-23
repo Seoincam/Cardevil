@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
@@ -79,7 +80,7 @@ namespace Cardevil.Cards.InStage.View
             _model = null;
         }
 
-        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
+        public void Init(Card parentCard, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
         {
             if (_state.isInitialized) return;
             
@@ -91,7 +92,10 @@ namespace Cardevil.Cards.InStage.View
             _model.HandChanged += UpdateIndex;
             
             _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
-            UpdateVisual();
+            // UpdateVisual();
+            frontImage.sprite = visualSpriteSet.FrontBackgroundImage;
+            numberImages[0].sprite = visualSpriteSet.FrontNumberImage;
+            numberImages[0].gameObject.SetActive(visualSpriteSet.FrontNumberImage);
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
             if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
@@ -354,13 +358,10 @@ namespace Cardevil.Cards.InStage.View
         private void OnSelectEnded(Card _)
         {
             _canvas.overrideSorting = false;
-            UpdateVisual();
+            // UpdateVisual();
+            // TODO: 값 선택 후 다시 visual sprite set 생성. Card가 생성 후 넘겨줌.
         }
-
-        private void UpdateVisual()
-        {
-            spriteFactory.UpdataVisual(parentCard.Data, frontImage, numberImages[0]);
-        }
+        
 
         public void ExecuteEvaluationAction()
         {

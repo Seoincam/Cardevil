@@ -63,6 +63,7 @@ namespace Cardevil.Cards.System
         {
             Clear();
             
+            // Data
             cardLibrary.Init(enhancementDataLibrary);
             enhancementDataLibrary.Init();
 
@@ -70,6 +71,9 @@ namespace Cardevil.Cards.System
             _enhancementPresenter.Init(cardLibrary, enhancementDataLibrary, _modifierService);
             
             cardLibrary.CreateBasePipelines();
+            
+            // Model
+            _stageCardsModel.Init(cardLibrary);
         }
 
         public void Clear()
@@ -90,15 +94,8 @@ namespace Cardevil.Cards.System
         {
             Clear();
             
-            // Stage Cards Model 초기화 및 Card Data 주입
+            // Stage Cards Model 초기화
             _stageCardsModel.SetUp(6, 3);
-            for (int i = 0; i < 50; i++)
-            {
-                var data = cardLibrary.GetDataById(i);
-                data.Clear();
-                _stageCardsModel.AddCardData(data);
-            }
-            _stageCardsModel.Shuffle();
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =

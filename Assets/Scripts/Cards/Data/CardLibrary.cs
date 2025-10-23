@@ -6,12 +6,16 @@ using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.Utils;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.Cards.Data
 {
     public interface IReadOnlyCardLibrary
     {
+        IReadOnlyDictionary<int, CardData> DataMap { get; }
+        IReadOnlyDictionary<int, CardVisualSpriteSet> VisualSpriteSetMap { get; }
+        
         /// <summary>
         /// 읽기만 가능한 파이프라인을 반환.
         /// </summary>
@@ -121,10 +125,10 @@ namespace Cardevil.Cards.Data
 
         #region IReadOnlyCardLibrary
 
-        public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id)
-        {
-            return GetPipelineById(id);
-        }
+        public IReadOnlyDictionary<int, CardData> DataMap => dataMap;
+        public IReadOnlyDictionary<int, CardVisualSpriteSet> VisualSpriteSetMap => visualSpriteSetMap;
+
+        public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);
 
         #endregion
     }

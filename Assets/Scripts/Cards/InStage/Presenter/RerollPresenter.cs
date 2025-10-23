@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Core;
 using Cardevil.Systems;
 using Cardevil.Utils;
@@ -80,6 +81,8 @@ namespace Cardevil.Cards.InStage.Presenter
             
             Managers.Game.PlayerStatus.RerollTicket = 5; // 임시
             await _view.EnterRerollAsync();
+            
+            await UniTask.WaitUntil(() => _model.IsSetUp); // 모델의 셔플이 끝나기 전 진입하는 현상 방지
         }
         
         /// <summary>
@@ -177,11 +180,12 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private Card Spawn()
         {
-            var cardData = _model.PopCard();
+            var (cardData, spriteSet) = _model.PopCard();
             if (cardData == null) return null;
+            if (spriteSet == null) return null;
             
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, _model);
+            card.Init(cardData, spriteSet, _model);
             card.SetRerollState(true);
 
             _model.Draw(card);
