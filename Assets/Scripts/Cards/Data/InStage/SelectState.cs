@@ -1,3 +1,4 @@
+using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -13,10 +14,12 @@ namespace Cardevil.Cards.Data.InStage
     /// </summary>
     /// <typeparam name="T">값의 타입 (<see cref="int"/>, <see cref="Direction"/>)</typeparam>\
     [Serializable]
-    public class SelectState<T> where T : struct
+    public class SelectState<T> : IClearable where T : struct
     {
-        [SerializeField] private List<Optional<T>> selectables;
+        [SerializeField] private List<Optional<T>> selectables = new();
         [SerializeField] private Optional<T> selectedValue;
+        
+        private List<Optional<T>> _initialSelectables = new(); // Clear() 시 해당 값으로 초기화
         
         /// <summary>
         /// 선택 가능한 값들의 읽기 전용 목록.  
@@ -60,9 +63,20 @@ namespace Cardevil.Cards.Data.InStage
         
         public SelectState(List<T?> selectables)
         {
-            this.selectables = new();
             foreach (var selectable in selectables)
+            {
                 this.selectables.Add(new Optional<T>(selectable));
+                _initialSelectables.Add(new Optional<T>(selectable));
+            }
+                
+        }
+
+        public void Clear()
+        {
+            selectedValue = new Optional<T>(null);
+            selectables.Clear();
+            foreach (var value in _initialSelectables)
+                selectables.Add(value);
         }
     }
 
