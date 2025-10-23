@@ -38,10 +38,10 @@ namespace Cardevil.Cards.Data
                     if (isEnhancement)
                     {
                         // 강화 상태 설정
-                        pipeline.SetEnhancement(Guid.Empty);
+                        pipeline.SetCurrentEnhancementId(Guid.Empty);
                         
                         // 강화 가능성 추가
-                        pipeline.SetPossibleEnhancements
+                        pipeline.SetNextEnhancementIds
                         (
                             enhancement.GetId(ModifierType.AttackNumSelectable, 1),
                             enhancement.GetId(ModifierType.AttackDamage, 1)
@@ -60,7 +60,7 @@ namespace Cardevil.Cards.Data
                 if (isEnhancement)
                 {
                     // 강화 상태 설정
-                    pipeline.SetEnhancement
+                    pipeline.SetCurrentEnhancementId
                     (
                         enhancement.GetId(ModifierType.AttackNumSelectable, 3)
                     );
@@ -85,10 +85,10 @@ namespace Cardevil.Cards.Data
                     if (isEnhancement)
                     {
                         // 강화 상태 설정
-                        pipeline.SetEnhancement(Guid.Empty);
+                        pipeline.SetCurrentEnhancementId(Guid.Empty);
                     
                         // 강화 가능성 추가
-                        pipeline.SetPossibleEnhancements
+                        pipeline.SetNextEnhancementIds
                         (
                             enhancement.GetId(ModifierType.MoveDirSelectable, 1)
                         );
@@ -110,7 +110,7 @@ namespace Cardevil.Cards.Data
                 if (isEnhancement)
                 {
                     // 강화 상태 설정
-                    pipeline.SetEnhancement(enhancement.GetId(ModifierType.MoveDirSelectable, 2));
+                    pipeline.SetCurrentEnhancementId(enhancement.GetId(ModifierType.MoveDirSelectable, 2));
                 }
                 
                 pipelines[id++] = pipeline;

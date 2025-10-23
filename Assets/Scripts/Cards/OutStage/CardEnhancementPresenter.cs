@@ -4,19 +4,16 @@ using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine;
 
 namespace Cardevil.Cards.OutStage
 {
     public class CardEnhancementPresenter
     {
-        private CardLibrary _library;
+        private IReadOnlyCardLibrary _library;
         private EnhancementDataLibrary _enhancementDataLibrary;
         private CardPipelineModifierService _service;
         
-        public void Init(CardLibrary library, EnhancementDataLibrary enhancementDataLibrary, CardPipelineModifierService service)
+        public void Init(IReadOnlyCardLibrary library, EnhancementDataLibrary enhancementDataLibrary, CardPipelineModifierService service)
         {
             if (library == null)
             {
@@ -40,23 +37,23 @@ namespace Cardevil.Cards.OutStage
             _service = service;
         }
 
-        public bool TryGetPossibleEnhancements(int id, out List<EnhancementData> possibles)
+        private bool TryGetPossibleEnhancements(int id, out List<EnhancementData> possibles)
         {
             possibles = new();
             
-            var pipeline = _library.GetPipelineById(id);
+            var pipeline = _library.GetReadOnlyPipelineById(id);
             if (pipeline == null)
             {
                 LogEx.LogError($"Pipeline을 찾을 수 없음! (id: {id})");
                 return false;
             }
 
-            if (pipeline.PossibleEnhancementIds == null || pipeline.PossibleEnhancementIds.Count == 0)
+            if (pipeline.NextEnhancementIds == null || pipeline.NextEnhancementIds.Count == 0)
             {
                 return false;
             }
 
-            foreach (var guid in pipeline.PossibleEnhancementIds)
+            foreach (var guid in pipeline.NextEnhancementIds)
             {
                 var data = _enhancementDataLibrary.GetData(guid);
                 if (data == null)
@@ -70,10 +67,10 @@ namespace Cardevil.Cards.OutStage
             return true;
         }
 
-        public void Enhance(int id, EnhancementData enhancementData)
+        private void Enhance(int id, EnhancementData enhancementData)
         {
             var type = enhancementData.Type;
-            var pipeline = _library.GetPipelineById(id);
+            var pipeline = _library.GetReadOnlyPipelineById(id);
             if (pipeline == null)
             {
                 LogEx.LogError($"id({id})에 해당하는 Pipeline이 존재하지 않음.");
@@ -94,19 +91,9 @@ namespace Cardevil.Cards.OutStage
                 return;
             }
             
-            // 실제 강화 적용
-            _service.Enhance(id, enhancementData.Type, remaining);
+            Guid nextId = _enhancementDataLibrary.GetNextId(enhancementData);
+            _service.Enhance(id, enhancementData.Id, enhancementData.Type, remaining, nextId);
             
-            // 현재 강화 데이터 변경
-            pipeline.SetEnhancement(enhancementData.Id);
-            
-            // 다음 강화 데이터 변경
-            var nextId = _enhancementDataLibrary.GetNextId(enhancementData);
-            if (nextId == Guid.Empty)
-                pipeline.ClearPossibleEnhancements();
-            else
-                pipeline.SetPossibleEnhancements(nextId);
-
             // TODO: UI 갱신
         }
 

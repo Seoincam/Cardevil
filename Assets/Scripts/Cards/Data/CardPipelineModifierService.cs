@@ -1,5 +1,6 @@
 using Cardevil.Cards.Data.Modifiers;
 using System;
+using Unity.VisualScripting;
 
 namespace Cardevil.Cards.Data
 {
@@ -11,10 +12,10 @@ namespace Cardevil.Cards.Data
         {
             _library = library;
         }
-        
-        public void Enhance(int id, ModifierType type, int count = 1)
+
+        public void Enhance(int pipelineId, Guid enhancementId, ModifierType type, int count, Guid nextEnhancementId)
         {
-            var pipeline = _library.GetPipelineById(id);
+            var pipeline = _library.GetPipelineById(pipelineId);
             
             for (int i = 0; i < count; i++)
             {
@@ -37,6 +38,15 @@ namespace Cardevil.Cards.Data
                         throw new InvalidOperationException();
                 }
             }
+            
+            // 현재 강화 단계로 갱신
+            pipeline.SetCurrentEnhancementId(enhancementId);
+            
+            // 가능한 다음 강화 단계 업데이트
+            if (nextEnhancementId == Guid.Empty)
+                pipeline.ClearNextEnhancementIds();
+            else 
+                pipeline.SetCurrentEnhancementId(nextEnhancementId);
         }
     }
 }
