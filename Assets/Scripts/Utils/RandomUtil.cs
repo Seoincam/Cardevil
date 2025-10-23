@@ -1,12 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UMRandom = Unity.Mathematics.Random;
 using URandom = UnityEngine.Random;
 
 namespace Cardevil.Utils
 {
-    public static class RandomUtil
+    public static partial class RandomUtil
     {
         public enum RandomType
         {
@@ -85,6 +84,27 @@ namespace Cardevil.Utils
                 InitSeed(save.type, save.initialSeed, save.state);
             }
             _isInitialized = true;
+        }
+    }
+
+    public static partial class RandomUtil
+    {
+        /// <summary>
+        /// <see cref="RandomType"/> 기반의 Fisher–Yates in place 셔플.  
+        /// </summary>
+        public static void ShuffleListInPlace<T>(this IList<T> list, RandomType type = RandomType.CardShuffle)
+        {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            
+            // Random Type의 초기화가 안 되어 있다면 초기화
+            if (!randoms.TryGetValue(type, out var r))
+                InitSeed(type);
+
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = randoms[type].NextInt(0, i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
         }
     }
 }
