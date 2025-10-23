@@ -1,6 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.Utils;
@@ -20,22 +21,27 @@ namespace Cardevil.Cards.Data
     [Serializable]
     public class CardLibrary : IClearable, IReadOnlyCardLibrary
     {
-        private EnhancementDataLibrary _enhancementDataLibrary;
-        
         // <id, data>
         [SerializeField, VisibleOnly] private SerializableDict<int, CardDataPipeline> pipelineMap = new();
         
-        /*
-         * 파이프라인을 바탕으로 생성된 데이터들.
-         * 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
-         * TODO: 갱신 로직 추가해야함.
-         */
+        // 파이프라인을 바탕으로 생성된 데이터들.
+        // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
         [SerializeField, VisibleOnly] private SerializableDict<int, CardData> dataMap = new();
-        // TODO: Visual도 추가
+        [SerializeField, VisibleOnly] private SerializableDict<int, CardVisualSpriteSet> visualSpriteSetMap = new();   
+        
+        private EnhancementDataLibrary _enhancementDataLibrary;
+        private CardVisualSpriteFactorySO _visualSpriteFactory;
         
         public void Init(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
+            
+            _visualSpriteFactory = Resources.Load<CardVisualSpriteFactorySO>("ScriptableObjects/Cards/CardVisualSpritesFactory");
+            if (!_visualSpriteFactory)
+            {
+                LogEx.LogError("No CardVisualSpriteFactorySO found");
+                return;
+            }
             
             Clear();
         }
@@ -51,12 +57,8 @@ namespace Cardevil.Cards.Data
             
             pipelineMap.CreateBasePipelines(_enhancementDataLibrary);
             
-            foreach ((int id, var pipeline) in pipelineMap)
-            {
-                var cardData = pipeline.Build();
-                if (cardData != null)
-                    dataMap[id] = cardData;
-            }
+            foreach (int id in pipelineMap.Keys)
+                UpdateMaps(id);
         }
 
         public void Clear()
@@ -119,6 +121,5 @@ namespace Cardevil.Cards.Data
         }
 
         #endregion
-        
     }
 }
