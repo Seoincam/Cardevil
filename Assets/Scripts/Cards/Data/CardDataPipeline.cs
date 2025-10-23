@@ -6,24 +6,34 @@ using UnityEngine;
 
 namespace Cardevil.Cards.Data
 {
+    public interface IReadOnlyCardDataPipeline
+    {
+        int Id { get; }
+        CardKind Kind { get; }
+        IReadOnlyList<IModifier> Modifiers { get; }
+        
+        Guid CurrentEnhancementId { get; }
+        IReadOnlyList<Guid> NextEnhancementIds { get; }
+    }
+    
     [Serializable]
-    public class CardDataPipeline
+    public class CardDataPipeline : IReadOnlyCardDataPipeline
     {
         [SerializeField, VisibleOnly] private int id;
         [SerializeField, VisibleOnly] private CardKind kind;
         [SerializeReference, VisibleOnly] private List<IModifier> modifiers = new(); 
         
         private Guid _currentEnhancementId;
-        private readonly List<Guid> _possibleEnhancementIds = new();
+        private readonly List<Guid> _nextEnhancementIds = new();
 
-        #region getter
+        #region IReadOnlyCardDataPipeline Members (getter)
 
         public int Id => id;
         public CardKind Kind => kind;
         public IReadOnlyList<IModifier> Modifiers => modifiers;
         
         public Guid CurrentEnhancementId => _currentEnhancementId;
-        public IReadOnlyList<Guid> PossibleEnhancementIds => _possibleEnhancementIds;
+        public IReadOnlyList<Guid> NextEnhancementIds => _nextEnhancementIds;
 
         #endregion
         
@@ -38,22 +48,22 @@ namespace Cardevil.Cards.Data
             modifiers.Add(mod);
         }
 
-        public void SetEnhancement(Guid guid)
+        public void SetCurrentEnhancementId(Guid guid)
         {
             _currentEnhancementId = guid;
         }
 
-        public void SetPossibleEnhancements(params Guid[] guids)
+        public void SetNextEnhancementIds(params Guid[] guids)
         {
-            _possibleEnhancementIds.Clear();
+            _nextEnhancementIds.Clear();
 
             foreach (var enhancement in guids)
-                _possibleEnhancementIds.Add(enhancement);
+                _nextEnhancementIds.Add(enhancement);
         }
 
-        public void ClearPossibleEnhancements()
+        public void ClearNextEnhancementIds()
         {
-            _possibleEnhancementIds.Clear();
+            _nextEnhancementIds.Clear();
         }
     }
 }

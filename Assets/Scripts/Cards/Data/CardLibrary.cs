@@ -10,7 +10,7 @@ namespace Cardevil.Cards.Data
 {
     public interface IReadOnlyCardLibrary
     {
-        IReadOnlyDictionary<int, CardDataPipeline> Pipelines { get; }
+        IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
     }
     
     [Serializable]
@@ -21,12 +21,6 @@ namespace Cardevil.Cards.Data
         // <id, data>
         [SerializeField] private SerializableDict<int, CardDataPipeline> pipelines = new();
         // TODO: Visual도 추가
-
-        #region IReadOnlyCardLibrary
-
-        public IReadOnlyDictionary<int, CardDataPipeline> Pipelines => pipelines;
-
-        #endregion
         
         public void Init(EnhancementDataLibrary enhancementDataLibrary)
         {
@@ -63,5 +57,9 @@ namespace Cardevil.Cards.Data
             return pipeline;
         }
 
+        public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id)
+        {
+            return GetPipelineById(id);
+        }
     }
 }
