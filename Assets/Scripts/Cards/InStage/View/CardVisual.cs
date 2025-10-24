@@ -22,7 +22,6 @@ namespace Cardevil.Cards.InStage.View
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
-        [SerializeField] private CardVisualSpriteFactorySO spriteFactory;
 
         [Header("Card Visual")]
         [SerializeField] private Transform shakeObject;

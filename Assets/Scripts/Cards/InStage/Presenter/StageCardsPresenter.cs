@@ -20,6 +20,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private StageCardsModel _model;
         private EvaluationArgsBuilder _builder;
         private StageCardsView _view;
+        private DeckRemainView _deckRemainView;
         private CardVisualSettingSO _visualSetting;
         
         private StageCardsPresenterState _state;
@@ -95,6 +96,17 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             
             await _view.EnterHandBarAsync();
+            
+            // Deck Remain View 생성
+            var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
+            if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
+            else
+            {
+                Transform canvas = GameObject.Find("CardCanvas").transform;
+                GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
+                _deckRemainView = go.GetComponent<DeckRemainView>();
+            }
+            _deckRemainView.Init(_model);
             
             // Update Async 구성
             _updateCts.Cancel();
