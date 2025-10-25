@@ -1,7 +1,6 @@
 using Cardevil.Attributes;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Cardevil.Cards.Data.InStage
 {

@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Systems;
 using Cysharp.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace Cardevil.Cards.System
 {
     public sealed class CardFlowController : ITurnCardFlow
     {
+        private readonly CardLibrary _library;
+        
         private readonly StageCardsModel _stageCardsModel;
         private readonly RerollPresenter _rerollPresenter;
         private readonly StageCardsPresenter _stageCardsPresenter;
@@ -20,10 +23,13 @@ namespace Cardevil.Cards.System
         public ITurnRerollInput Reroll => _rerollPresenter;
         public ITurnPlayerInput StageCards => _stageCardsPresenter;
 
-        public CardFlowController(StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
+        public CardFlowController(CardLibrary library,
+            StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
             StageCardsPresenter stageCardsPresenter, EvaluationResultsModel evaluationResultsModel, 
             EvaluationArgsBuilder evaluationArgsBuilder)
         {
+            _library = library;
+            
             _stageCardsModel = stageCardsModel;
             _rerollPresenter = rerollPresenter;
             _stageCardsPresenter = stageCardsPresenter;
@@ -36,7 +42,7 @@ namespace Cardevil.Cards.System
         {
             _maxHand = maxHand;
             
-            _rerollPresenter.Init(_stageCardsModel);
+            _rerollPresenter.Init(_library, _stageCardsModel);
             await _rerollPresenter.SetUp(maxHand);
         }
 
@@ -53,8 +59,8 @@ namespace Cardevil.Cards.System
         public async UniTask EnterHandPhase()
         {
             _evaluationArgsBuilder.Init(_evaluationResultsModel);
-            _stageCardsPresenter.Init(_stageCardsModel, _evaluationArgsBuilder);
-            await _stageCardsPresenter.SetUp(_maxHand);
+            _stageCardsPresenter.Init(_library, _stageCardsModel, _evaluationArgsBuilder);
+            await _stageCardsPresenter.SetUp();
             DeactivateReroll();
         }
 

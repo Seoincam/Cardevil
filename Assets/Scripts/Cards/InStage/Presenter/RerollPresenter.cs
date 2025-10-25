@@ -32,14 +32,20 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        /// <param name="model">현재 스테이지의 카드 상태를 관리하는 <see cref="StageCardsModel"/> 인스턴스.</param>
-        public void Init(StageCardsModel model)
+        public void Init(IReadOnlyCardLibrary library, StageCardsModel model)
         {
             if (_isInitialized) return;
+
+            if (library == null)
+            {
+                LogEx.LogError("library is null");
+                return;
+            }
+            _library = library;
             
             if (model == null)
             {
-                LogEx.LogError("Init() 실패 — model이 null입니다.");
+                LogEx.LogError("model is null");
                 return;
             }
             _model = model;
@@ -70,9 +76,19 @@ namespace Cardevil.Cards.InStage.Presenter
             
             // Model
             _model.SetUp(maxHand, 3);
-            
-            foreach (var data in _library.DataMap.Values)
+
+            for (int i = 0; i < _library.Count; i++)
+            {
+                var data = _library.GetCardDataById(i);
+                if (data == null)
+                {
+                    LogEx.LogError("data is null");
+                    continue;
+                }
+                
                 _model.AddDataInDeck(data);
+            }
+            
             _model.Shuffle();
             
             // View
@@ -191,8 +207,8 @@ namespace Cardevil.Cards.InStage.Presenter
             var cardData = _model.PopCard();
             if (cardData == null) return null;
 
-            if (!_library.VisualSpriteSetMap.TryGetValue(cardData.Id, out var spriteSet))
-                return null;
+            var spriteSet = _library.GetVisualSpriteSetById(cardData.Id);
+            if (spriteSet == null) return null;
             
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, spriteSet, _model);

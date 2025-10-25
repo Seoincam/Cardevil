@@ -51,7 +51,7 @@ namespace Cardevil.Cards.System
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
         {
-            return new CardFlowController(_stageCardsModel, _rerollPresenter, _stageCardsPresenter,
+            return new CardFlowController(cardLibrary, _stageCardsModel, _rerollPresenter, _stageCardsPresenter,
                 _evaluationResultsModel, _evaluationArgsBuilder);
         }
         

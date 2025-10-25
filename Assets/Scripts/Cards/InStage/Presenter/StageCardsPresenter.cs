@@ -78,12 +78,9 @@ namespace Cardevil.Cards.InStage.Presenter
         /// UI를 초기화, 카드를 슬롯에 배치, 버튼 이벤트를 바인딩.  
         /// 카드의 시각적 상태를 설정, 입력 감지 Update 루프 시작.
         /// </summary>
-        /// <param name="maxHand">손패의 최대 개수</param>
         /// <returns>UI 초기화 완료 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask SetUp(int maxHand)
+        public async UniTask SetUp()
         {
-            _state.maxHand = maxHand;
-            
             // View 생성
             var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
             if (views is { Length: > 0 }) _view = views[0];
@@ -93,10 +90,10 @@ namespace Cardevil.Cards.InStage.Presenter
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
-            _view.ConfigureSlots(maxHand);
+            _view.ConfigureSlots(_model.MaxHand);
             _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
             
-            // 현재 카드 모두 HandBar 슬롯으로 이동
+            // 현재 생성된 카드 모두 HandBar 슬롯으로 이동
             foreach (var card in _model.Hand)
             {
                 AddListeners(card);
@@ -104,8 +101,6 @@ namespace Cardevil.Cards.InStage.Presenter
                 _model.TryGetIndex(card, out int index);
                 _view.SetCardToSlot(card, index);
             }
-            
-            await _view.EnterHandBarAsync();
             
             // Deck Remain View 생성
             var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
@@ -116,7 +111,9 @@ namespace Cardevil.Cards.InStage.Presenter
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
-            _deckRemainView.Init(_model);
+            _deckRemainView.Init(_library, _model);
+            
+            await _view.EnterHandBarAsync();
             
             // Update Async 구성
             _updateCts.Cancel();
@@ -394,7 +391,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _state.isSwapping = true;
             UpdateUI();
             
-            int count = _state.maxHand - _model.Hand.Count;
+            int count = _model.MaxHand - _model.Hand.Count;
             int indexFactor = _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
@@ -430,9 +427,9 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             var cardData = _model.PopCard();
             if (cardData == null) return null;
-            
-            if (!_library.VisualSpriteSetMap.TryGetValue(cardData.Id, out var spriteSet)) 
-                return null;
+
+            var spriteSet = _library.GetVisualSpriteSetById(cardData.Id);
+            if (spriteSet == null) return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, spriteSet, _model);
@@ -495,7 +492,6 @@ namespace Cardevil.Cards.InStage.Presenter
         private struct StageCardsPresenterState
         {
             public bool isInitialized;
-            public int maxHand;
             
             public bool canInteract;
             public bool isSwapping;

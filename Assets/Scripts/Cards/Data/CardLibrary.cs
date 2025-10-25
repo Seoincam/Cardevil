@@ -5,6 +5,7 @@ using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.Utils;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,11 +14,25 @@ namespace Cardevil.Cards.Data
 {
     public interface IReadOnlyCardLibrary
     {
-        IReadOnlyDictionary<int, CardData> DataMap { get; }
-        IReadOnlyDictionary<int, CardVisualSpriteSet> VisualSpriteSetMap { get; }
+        /// <summary>
+        /// Pipeline, data, visualSprite Set의 개수.
+        /// </summary>
+        int Count { get; }
         
         /// <summary>
-        /// 읽기만 가능한 파이프라인을 반환.
+        /// 해당 id의 <see cref="CardData"/>를 반환.
+        /// </summary>
+        CardData GetCardDataById(int id);
+        
+        /// <summary>
+        /// 해당 id의 <see cref="CardVisualSpriteSet"/>을 반환.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        CardVisualSpriteSet GetVisualSpriteSetById(int id);
+        
+        /// <summary>
+        /// 해당 id의 <see cref="IReadOnlyCardDataPipeline"/>을 반환.
         /// </summary>
         IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
     }
@@ -73,11 +88,8 @@ namespace Cardevil.Cards.Data
         
         public CardDataPipeline GetPipelineById(int id)
         {
-            if (id < 0 || id > 49)
-            {
-                LogEx.LogError("잘못된 id를 입력했습니다.");
+            if (!ValidateId(id)) 
                 return null;
-            }
 
             if (!pipelineMap.TryGetValue(id, out var pipeline))
             {
@@ -90,11 +102,8 @@ namespace Cardevil.Cards.Data
 
         public CardData GetDataById(int id)
         {
-            if (id < 0 || id > 49)
-            {
-                LogEx.LogError("잘못된 id를 입력했습니다.");
+            if (!ValidateId(id))
                 return null;
-            }
             
             if (!dataMap.TryGetValue(id, out var data))
             {
@@ -123,10 +132,60 @@ namespace Cardevil.Cards.Data
                 visualSpriteSetMap[id] = spriteSet;
         }
 
+        private bool ValidateId(int id)
+        {
+            if (id < 0 || id > 49)
+            {
+                LogEx.LogError($"Invalid Id : {id}");
+                return false;
+            }
+
+            return true;
+        }
+
         #region IReadOnlyCardLibrary
 
-        public IReadOnlyDictionary<int, CardData> DataMap => dataMap;
-        public IReadOnlyDictionary<int, CardVisualSpriteSet> VisualSpriteSetMap => visualSpriteSetMap;
+        public int Count
+        {
+            get
+            {
+                if (pipelineMap.Count != dataMap.Count || dataMap.Count != visualSpriteSetMap.Count)
+                {
+                    LogEx.LogError("Incorrect number of maps!");
+                    return 0;
+                }
+
+                return pipelineMap.Count;
+            }
+        }
+
+        public CardData GetCardDataById(int id)
+        {
+            if (!ValidateId(id))
+                return null;
+
+            if (!dataMap.TryGetValue(id, out var data))
+            {
+                LogEx.LogError($"Cannot find CardData. Id: {id}");
+                return null;
+            }
+
+            return data;
+        }
+
+        public CardVisualSpriteSet GetVisualSpriteSetById(int id)
+        {
+            if (!ValidateId(id))
+                return null;
+
+            if (!visualSpriteSetMap.TryGetValue(id, out var spriteSet))
+            {
+                LogEx.LogError($"Cannot find CardVisualSpriteSet. Id: {id}");
+                return null;
+            }
+
+            return spriteSet;
+        }
 
         public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);
 

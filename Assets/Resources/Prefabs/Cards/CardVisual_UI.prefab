@@ -178,7 +178,7 @@ MonoBehaviour:
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   shakeObject: {fileID: 8721486063178528739}
   frontBackground: {fileID: 3926131398558317094}
-  frontNumberImage: {fileID: 4499047239432760969}
+  frontNumber: {fileID: 4499047239432760969}
 --- !u!1 &2485015231714976228
 GameObject:
   m_ObjectHideFlags: 0
