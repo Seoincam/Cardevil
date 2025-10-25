@@ -72,7 +72,7 @@ namespace Cardevil.Cards.InStage.View
 
             if (_model != null)
             {
-                _model.HandChanged -= UpdateIndex;
+                // _model.HandChanged -= UpdateIndex;
             }
 
             parentCard = null;
@@ -88,7 +88,7 @@ namespace Cardevil.Cards.InStage.View
             
             // Subscribe Events
             SubscribeToParent(parentCard);
-            _model.HandChanged += UpdateIndex;
+            // _model.HandChanged += UpdateIndex;
             
             _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             // UpdateVisual();
@@ -334,11 +334,13 @@ namespace Cardevil.Cards.InStage.View
 
         #endregion
 
-        private void UpdateIndex()
+        public void UpdateVisualIndex()
         {
             if (_model.TryGetIndex(parentCard, out int index))
             {
                 _state.handIndex = index;
+                // TODO: 현재 SetSiblingIndex을 업데이트 할 때 마지막 visual이 제대로 업데이트 되지 않는 문제가 발생.
+                // 마지막 visual일 시 더 큰 값으로 업데이트하는 등의 수정이 필요할 듯
                 transform.SetSiblingIndex(index);
             }
         }

@@ -150,6 +150,16 @@ namespace Cardevil.Cards.InStage.Presenter
             state.isAnyCardDragged = value;
         }
 
+        /// <summary>
+        /// <see cref="StageCardsPresenter"/>의
+        /// <c>_handChanged</c>를 구독.
+        /// <see cref="CardVisual"/>의 시각적 index를 업데이트.
+        /// </summary>
+        public void OnHandChanged()
+        {
+            visual?.UpdateVisualIndex();
+        }
+
 
         #region Point Event
 

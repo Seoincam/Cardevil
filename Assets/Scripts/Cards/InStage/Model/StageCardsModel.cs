@@ -26,8 +26,6 @@ namespace Cardevil.Cards.InStage.Model
         
         #region IReadOnlyStageCardsModel
         
-        public event Action HandChanged;
-        
         public int MaxHand { get; private set; }
         public int DiscardRemain { get; private set; }
         
@@ -133,7 +131,6 @@ namespace Cardevil.Cards.InStage.Model
         public void Select(Card card)
         {
             _selection.Add(card);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -142,7 +139,6 @@ namespace Cardevil.Cards.InStage.Model
         public void Deselect(Card card)
         {
             _selection.Remove(card);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -154,7 +150,6 @@ namespace Cardevil.Cards.InStage.Model
         {
             if (!TryGetIndex(a, out var indexA)) return;
             (_hand[indexA], _hand[indexB]) = (_hand[indexB], _hand[indexA]);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -163,7 +158,6 @@ namespace Cardevil.Cards.InStage.Model
         public void Draw(Card card)
         {
             _hand.Add(card);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -174,7 +168,6 @@ namespace Cardevil.Cards.InStage.Model
             _hand.Remove(card);
             _selection.Remove(card);
             _discardPile.Add(card.Data);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -217,7 +210,6 @@ namespace Cardevil.Cards.InStage.Model
                 .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -238,7 +230,6 @@ namespace Cardevil.Cards.InStage.Model
                 .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
-            HandChanged?.Invoke();
         }
 
         /// <summary>
