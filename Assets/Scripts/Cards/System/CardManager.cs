@@ -51,7 +51,7 @@ namespace Cardevil.Cards.System
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
         {
-            return new CardFlowController(_stageCardsModel, _rerollPresenter, _stageCardsPresenter,
+            return new CardFlowController(cardLibrary, _stageCardsModel, _rerollPresenter, _stageCardsPresenter,
                 _evaluationResultsModel, _evaluationArgsBuilder);
         }
         
@@ -63,6 +63,7 @@ namespace Cardevil.Cards.System
         {
             Clear();
             
+            // Data
             cardLibrary.Init(enhancementDataLibrary);
             enhancementDataLibrary.Init();
 
@@ -89,16 +90,6 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            
-            // Stage Cards Model 초기화 및 Card Data 주입
-            _stageCardsModel.SetUp(6, 3);
-            for (int i = 0; i < 50; i++)
-            {
-                var data = cardLibrary.GetDataById(i);
-                data.Clear();
-                _stageCardsModel.AddCardData(data);
-            }
-            _stageCardsModel.Shuffle();
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =

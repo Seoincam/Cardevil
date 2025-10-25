@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data;
 using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
@@ -17,13 +18,20 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
+        private IReadOnlyCardLibrary _library;
+        
         private StageCardsModel _model;
-        private EvaluationArgsBuilder _builder;
         private StageCardsView _view;
+        private DeckRemainView _deckRemainView;
+        
+        private EvaluationArgsBuilder _builder;
         private CardVisualSettingSO _visualSetting;
         
         private StageCardsPresenterState _state;
         private CancellationTokenSource _updateCts = new(); // UpdateAsync에 사용
+        
+        private event Action HandChanged;
+        private event Action DeckChanged;
         
         private bool CanInput => _state is { isSwapping: false, canInteract: true };
 
@@ -32,21 +40,27 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        /// <param name="model">현재 스테이지 카드 상태를 관리하는 <see cref="StageCardsModel"/> 인스턴스</param>
-        public void Init(StageCardsModel model, EvaluationArgsBuilder builder)
+        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, EvaluationArgsBuilder builder)
         {
             if (_state.isInitialized) return;
+
+            if (library == null)
+            {
+                LogEx.LogError("library가 null입니다.");
+                return;
+            }
+            _library = library;
             
             if (model == null)
             {
-                LogEx.LogError("Init() 실패 — model이 null입니다.");
+                LogEx.LogError("model이 null입니다.");
                 return;
             }
             _model = model;
 
             if (builder == null)
             {
-                LogEx.LogError("Init() 실패 - builder가 null입니다.");
+                LogEx.LogError("builder가 null입니다.");
                 return;
             }
             _builder = builder;
@@ -67,12 +81,9 @@ namespace Cardevil.Cards.InStage.Presenter
         /// UI를 초기화, 카드를 슬롯에 배치, 버튼 이벤트를 바인딩.  
         /// 카드의 시각적 상태를 설정, 입력 감지 Update 루프 시작.
         /// </summary>
-        /// <param name="maxHand">손패의 최대 개수</param>
         /// <returns>UI 초기화 완료 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask SetUp(int maxHand)
+        public async UniTask SetUp()
         {
-            _state.maxHand = maxHand;
-            
             // View 생성
             var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
             if (views is { Length: > 0 }) _view = views[0];
@@ -82,17 +93,31 @@ namespace Cardevil.Cards.InStage.Presenter
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
-            _view.ConfigureSlots(maxHand);
+            _view.ConfigureSlots(_model.MaxHand);
             _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
             
-            // 현재 카드 모두 HandBar 슬롯으로 이동
+            // 현재 생성된 카드 모두 HandBar 슬롯으로 이동
             foreach (var card in _model.Hand)
             {
                 AddListeners(card);
+                HandChanged += card.OnHandChanged;
                 card.SetRerollState(false);
                 _model.TryGetIndex(card, out int index);
                 _view.SetCardToSlot(card, index);
             }
+            HandChanged?.Invoke();
+            
+            // Deck Remain View 생성
+            var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
+            if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
+            else
+            {
+                Transform canvas = GameObject.Find("CardCanvas").transform;
+                GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
+                _deckRemainView = go.GetComponent<DeckRemainView>();
+            }
+            _deckRemainView.Init(_library, _model);
+            DeckChanged += _deckRemainView.OnDeckChanged;
             
             await _view.EnterHandBarAsync();
             
@@ -193,6 +218,7 @@ namespace Cardevil.Cards.InStage.Presenter
         
         #region Card Events
         
+        // 카드 클릭 상태를 기록
         private void OnCardPointerDown(Card card, CardPointerArgs args)
         {
             if (!_state.canInteract) return;
@@ -201,6 +227,8 @@ namespace Cardevil.Cards.InStage.Presenter
             _state.pointerDownTime = args.time;
         }
 
+        // 카드가 선택 가능 상태면 선택,
+        // 이미 선택된 상태면 선택 해제를 함
         private void OnCardPointerUp(Card card, CardPointerArgs args)
         {
             if (!_state.canInteract) return;
@@ -214,17 +242,19 @@ namespace Cardevil.Cards.InStage.Presenter
             {
                 if (_model.Selection.Contains(card))
                 {
-                    card.SetSelect(false);
                     _model.Deselect(card);
-                    UpdateUI();
+                    card.SetSelect(false);
+                    HandChanged?.Invoke();
                     _builder.UpdateHandRankingVisual(_model.Selection);
+                    UpdateUI();
                     return;
                 }
 
                 if (_model.Selection.Count >= 4) return;
             
-                card.SetSelect(true);
                 _model.Select(card);
+                card.SetSelect(true);
+                HandChanged?.Invoke();
                 _builder.UpdateHandRankingVisual(_model.Selection);
                 UpdateUI();
             }
@@ -303,6 +333,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _model.TryGetIndex(_state.draggedCard, out int i);
             
             _model.Swap(_state.draggedCard, index);
+            HandChanged?.Invoke();
             _view.SetCardToSlot(swapped, i);
             _view.SetCardToSlot(_state.draggedCard, index);
         }
@@ -355,6 +386,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 
                 RemoveListeners(card);
                 _model.Discard(card);
+                HandChanged?.Invoke();
                 card.Discard();
                 
                 // slot 비활성화
@@ -372,7 +404,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _state.isSwapping = true;
             UpdateUI();
             
-            int count = _state.maxHand - _model.Hand.Count;
+            int count = _model.MaxHand - _model.Hand.Count;
             int indexFactor = _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
@@ -407,16 +439,21 @@ namespace Cardevil.Cards.InStage.Presenter
         private Card Spawn()
         {
             var cardData = _model.PopCard();
-            if (cardData == null)
-                return null;
+            if (cardData == null) return null;
+
+            var spriteSet = _library.GetVisualSpriteSetById(cardData.Id);
+            if (spriteSet == null) return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, _model);
+            card.Init(cardData, spriteSet, _model);
 
             // 이벤트 구독
             AddListeners(card);
+            HandChanged += card.OnHandChanged;
 
             _model.Draw(card);
+            HandChanged?.Invoke();
+            DeckChanged?.Invoke();
             UpdateUI();
             UpdateSlots();
 
@@ -428,6 +465,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private void SortByNumber()
         {
             _model.SortByNumber();
+            HandChanged?.Invoke();
             UpdateUI();
             UpdateSlots();
         }
@@ -435,6 +473,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private void SortByIcon()
         {
             _model.SortByIcon();
+            HandChanged?.Invoke();
             UpdateUI();
             UpdateSlots();
         }
@@ -471,7 +510,6 @@ namespace Cardevil.Cards.InStage.Presenter
         private struct StageCardsPresenterState
         {
             public bool isInitialized;
-            public int maxHand;
             
             public bool canInteract;
             public bool isSwapping;

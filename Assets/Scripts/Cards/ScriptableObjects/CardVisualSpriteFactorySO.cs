@@ -1,10 +1,8 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
-using System.Data;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,8 +15,8 @@ namespace Cardevil.Cards.ScriptableObjects
     [CreateAssetMenu(menuName = "Cards/Card Visual Sprites Factory")]
     public class CardVisualSpriteFactorySO : ScriptableObject
     {
-        [SerializeField] NumberSpriteSet[] numberSprites;
-        [SerializeField] MoveSpriteSet moveSprites;
+        public NumberSpriteSet[] numberSprites;
+        public MoveSpriteSet moveSprites;
 
         /// <summary>
         /// CardVisual로부터 Image를 받아 Sprite를 수정함.

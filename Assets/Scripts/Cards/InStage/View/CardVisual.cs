@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
@@ -21,7 +22,6 @@ namespace Cardevil.Cards.InStage.View
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
-        [SerializeField] private CardVisualSpriteFactorySO spriteFactory;
 
         [Header("Card Visual")]
         [SerializeField] private Transform shakeObject;
@@ -72,14 +72,14 @@ namespace Cardevil.Cards.InStage.View
 
             if (_model != null)
             {
-                _model.HandChanged -= UpdateIndex;
+                // _model.HandChanged -= UpdateIndex;
             }
 
             parentCard = null;
             _model = null;
         }
 
-        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
+        public void Init(Card parentCard, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
         {
             if (_state.isInitialized) return;
             
@@ -88,10 +88,13 @@ namespace Cardevil.Cards.InStage.View
             
             // Subscribe Events
             SubscribeToParent(parentCard);
-            _model.HandChanged += UpdateIndex;
+            // _model.HandChanged += UpdateIndex;
             
             _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
-            UpdateVisual();
+            // UpdateVisual();
+            frontImage.sprite = visualSpriteSet.FrontBackgroundImage;
+            numberImages[0].sprite = visualSpriteSet.FrontNumberImage;
+            numberImages[0].gameObject.SetActive(visualSpriteSet.FrontNumberImage);
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
             if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
@@ -331,11 +334,13 @@ namespace Cardevil.Cards.InStage.View
 
         #endregion
 
-        private void UpdateIndex()
+        public void UpdateVisualIndex()
         {
             if (_model.TryGetIndex(parentCard, out int index))
             {
                 _state.handIndex = index;
+                // TODO: 현재 SetSiblingIndex을 업데이트 할 때 마지막 visual이 제대로 업데이트 되지 않는 문제가 발생.
+                // 마지막 visual일 시 더 큰 값으로 업데이트하는 등의 수정이 필요할 듯
                 transform.SetSiblingIndex(index);
             }
         }
@@ -354,13 +359,10 @@ namespace Cardevil.Cards.InStage.View
         private void OnSelectEnded(Card _)
         {
             _canvas.overrideSorting = false;
-            UpdateVisual();
+            // UpdateVisual();
+            // TODO: 값 선택 후 다시 visual sprite set 생성. Card가 생성 후 넘겨줌.
         }
-
-        private void UpdateVisual()
-        {
-            spriteFactory.UpdataVisual(parentCard.Data, frontImage, numberImages[0]);
-        }
+        
 
         public void ExecuteEvaluationAction()
         {

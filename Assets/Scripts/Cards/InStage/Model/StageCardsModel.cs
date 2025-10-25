@@ -23,10 +23,8 @@ namespace Cardevil.Cards.InStage.Model
         private List<CardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
-
-        #region IReadOnlyStageCardsModel
         
-        public event Action HandChanged;
+        #region IReadOnlyStageCardsModel
         
         public int MaxHand { get; private set; }
         public int DiscardRemain { get; private set; }
@@ -81,11 +79,8 @@ namespace Cardevil.Cards.InStage.Model
             MaxHand = maxHand;
             DiscardRemain = initialDiscardCount;
         }
-        
-        /// <summary>
-        /// 덱에 <see cref="CardData"/>를 추가.
-        /// </summary>
-        public void AddCardData(CardData cardData) => _deck.Add(cardData);
+
+        public void AddDataInDeck(CardData cardData) => _deck.Add(cardData);
         
         /// <summary>
         /// 모든 카드를 덱으로 되돌린 뒤 섞음.
@@ -136,7 +131,6 @@ namespace Cardevil.Cards.InStage.Model
         public void Select(Card card)
         {
             _selection.Add(card);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -145,7 +139,6 @@ namespace Cardevil.Cards.InStage.Model
         public void Deselect(Card card)
         {
             _selection.Remove(card);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -157,7 +150,6 @@ namespace Cardevil.Cards.InStage.Model
         {
             if (!TryGetIndex(a, out var indexA)) return;
             (_hand[indexA], _hand[indexB]) = (_hand[indexB], _hand[indexA]);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -166,7 +158,6 @@ namespace Cardevil.Cards.InStage.Model
         public void Draw(Card card)
         {
             _hand.Add(card);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -177,7 +168,6 @@ namespace Cardevil.Cards.InStage.Model
             _hand.Remove(card);
             _selection.Remove(card);
             _discardPile.Add(card.Data);
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -220,7 +210,6 @@ namespace Cardevil.Cards.InStage.Model
                 .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
-            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -241,7 +230,6 @@ namespace Cardevil.Cards.InStage.Model
                 .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
-            HandChanged?.Invoke();
         }
 
         /// <summary>
@@ -278,6 +266,7 @@ namespace Cardevil.Cards.InStage.Model
                 return null;
             }
 
+            // Card Data
             var cardData = _deck[0];
             _deck.RemoveAt(0);
             // cardData.OnDraw();
