@@ -71,9 +71,6 @@ namespace Cardevil.Cards.System
             _enhancementPresenter.Init(cardLibrary, enhancementDataLibrary, _modifierService);
             
             cardLibrary.CreateBasePipelines();
-            
-            // Model
-            _stageCardsModel.Init(cardLibrary);
         }
 
         public void Clear()
@@ -93,9 +90,6 @@ namespace Cardevil.Cards.System
         public void OnEnterStage()
         {
             Clear();
-            
-            // Stage Cards Model 초기화
-            _stageCardsModel.SetUp(6, 3);
             
             // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
             // var deckRemains =

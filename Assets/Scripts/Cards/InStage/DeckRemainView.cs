@@ -8,7 +8,6 @@ namespace Cardevil.Cards.InStage
     {
         [SerializeField] private CardVisualUI[] cardVisuals;
 
-        private IReadOnlyCardLibrary _library;
         private IReadOnlyStageCardsModel _model;
 
         public void Init(IReadOnlyStageCardsModel model)

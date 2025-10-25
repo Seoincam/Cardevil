@@ -19,15 +19,11 @@ namespace Cardevil.Cards.InStage.Model
     [Serializable]
     public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
-        private IReadOnlyCardLibrary _library;
-        
         private List<CardData> _deck = new();
         private List<CardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
         
-        public bool IsSetUp { get; private set; }
-
         #region IReadOnlyStageCardsModel
         
         public event Action HandChanged;
@@ -78,33 +74,15 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         /// <summary>
-        /// <see cref="IReadOnlyCardLibrary"/>를 주입.
-        /// </summary>
-        public void Init(IReadOnlyCardLibrary library)
-        {
-            _library = library;
-        }
-
-        /// <summary>
         /// 최대 손패 수와 초기 버리기 횟수를 설정.
         /// </summary>
         public void SetUp(int maxHand, int initialDiscardCount)
         {
-            IsSetUp = false;
-            
             MaxHand = maxHand;
             DiscardRemain = initialDiscardCount;
-
-            foreach (var cardData in _library.DataMap.Values)
-            {
-                cardData.Clear();
-                _deck.Add(cardData);
-            }
-            
-            Shuffle();
-
-            IsSetUp = true;
         }
+
+        public void AddDataInDeck(CardData cardData) => _deck.Add(cardData);
         
         /// <summary>
         /// 모든 카드를 덱으로 되돌린 뒤 섞음.
@@ -289,23 +267,20 @@ namespace Cardevil.Cards.InStage.Model
         /// <summary>
         /// 덱의 첫 카드를 반환하고 덱에서 삭제함.
         /// </summary>
-        public (CardData, CardVisualSpriteSet) PopCard()
+        public CardData PopCard()
         {
             if (_deck.Count == 0)
             {
                 Debug.LogError("Card Data가 없음.");
-                return (null, null);
+                return null;
             }
 
             // Card Data
             var cardData = _deck[0];
             _deck.RemoveAt(0);
             // cardData.OnDraw();
-            
-            // Card Visual Sprite Set
-            var set = _library.VisualSpriteSetMap[cardData.Id];
 
-            return (cardData, set);
+            return cardData;
         }
 
         #region Sorting Helper

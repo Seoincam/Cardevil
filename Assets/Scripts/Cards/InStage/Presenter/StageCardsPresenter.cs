@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data;
 using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
@@ -17,10 +18,13 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
+        private IReadOnlyCardLibrary _library;
+        
         private StageCardsModel _model;
-        private EvaluationArgsBuilder _builder;
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
+        
+        private EvaluationArgsBuilder _builder;
         private CardVisualSettingSO _visualSetting;
         
         private StageCardsPresenterState _state;
@@ -33,21 +37,27 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        /// <param name="model">현재 스테이지 카드 상태를 관리하는 <see cref="StageCardsModel"/> 인스턴스</param>
-        public void Init(StageCardsModel model, EvaluationArgsBuilder builder)
+        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, EvaluationArgsBuilder builder)
         {
             if (_state.isInitialized) return;
+
+            if (library == null)
+            {
+                LogEx.LogError("library가 null입니다.");
+                return;
+            }
+            _library = library;
             
             if (model == null)
             {
-                LogEx.LogError("Init() 실패 — model이 null입니다.");
+                LogEx.LogError("model이 null입니다.");
                 return;
             }
             _model = model;
 
             if (builder == null)
             {
-                LogEx.LogError("Init() 실패 - builder가 null입니다.");
+                LogEx.LogError("builder가 null입니다.");
                 return;
             }
             _builder = builder;
@@ -418,12 +428,14 @@ namespace Cardevil.Cards.InStage.Presenter
         // - - - - - - - - - - -
         private Card Spawn()
         {
-            var (cardData, visualSpriteSet) = _model.PopCard();
+            var cardData = _model.PopCard();
             if (cardData == null) return null;
-            if (visualSpriteSet == null) return null;
+            
+            if (!_library.VisualSpriteSetMap.TryGetValue(cardData.Id, out var spriteSet)) 
+                return null;
 
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, visualSpriteSet, _model);
+            card.Init(cardData, spriteSet, _model);
 
             // 이벤트 구독
             AddListeners(card);

@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Core;
 using Cardevil.Systems;
@@ -14,6 +15,8 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class RerollPresenter : ITurnRerollInput, IClearable
     {
+        private IReadOnlyCardLibrary _library;
+        
         private StageCardsModel _model;
         private RerollView _view;
         private CardVisualSettingSO _visualSetting;
@@ -65,6 +68,13 @@ namespace Cardevil.Cards.InStage.Presenter
             _maxHand = maxHand;
             _cmp = new UniTaskCompletionSource();
             
+            // Model
+            _model.SetUp(maxHand, 3);
+            
+            foreach (var data in _library.DataMap.Values)
+                _model.AddDataInDeck(data);
+            _model.Shuffle();
+            
             // View
             var views = Object.FindObjectsByType<RerollView>(FindObjectsSortMode.None);
             if (views is { Length: > 0} ) _view = views[0];
@@ -81,8 +91,6 @@ namespace Cardevil.Cards.InStage.Presenter
             
             Managers.Game.PlayerStatus.RerollTicket = 5; // 임시
             await _view.EnterRerollAsync();
-            
-            await UniTask.WaitUntil(() => _model.IsSetUp); // 모델의 셔플이 끝나기 전 진입하는 현상 방지
         }
         
         /// <summary>
@@ -180,9 +188,11 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private Card Spawn()
         {
-            var (cardData, spriteSet) = _model.PopCard();
+            var cardData = _model.PopCard();
             if (cardData == null) return null;
-            if (spriteSet == null) return null;
+
+            if (!_library.VisualSpriteSetMap.TryGetValue(cardData.Id, out var spriteSet))
+                return null;
             
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, spriteSet, _model);
