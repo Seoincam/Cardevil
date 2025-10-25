@@ -30,8 +30,8 @@ namespace Cardevil.Cards.InStage.Presenter
         private StageCardsPresenterState _state;
         private CancellationTokenSource _updateCts = new(); // UpdateAsync에 사용
         
-        private event Action _handChanged;
-        private event Action _deckChanged;
+        private event Action HandChanged;
+        private event Action DeckChanged;
         
         private bool CanInput => _state is { isSwapping: false, canInteract: true };
 
@@ -100,12 +100,12 @@ namespace Cardevil.Cards.InStage.Presenter
             foreach (var card in _model.Hand)
             {
                 AddListeners(card);
-                _handChanged += card.OnHandChanged;
+                HandChanged += card.OnHandChanged;
                 card.SetRerollState(false);
                 _model.TryGetIndex(card, out int index);
                 _view.SetCardToSlot(card, index);
             }
-            _handChanged?.Invoke();
+            HandChanged?.Invoke();
             
             // Deck Remain View 생성
             var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
@@ -117,6 +117,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
             _deckRemainView.Init(_library, _model);
+            DeckChanged += _deckRemainView.OnDeckChanged;
             
             await _view.EnterHandBarAsync();
             
@@ -243,7 +244,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 {
                     _model.Deselect(card);
                     card.SetSelect(false);
-                    _handChanged?.Invoke();
+                    HandChanged?.Invoke();
                     _builder.UpdateHandRankingVisual(_model.Selection);
                     UpdateUI();
                     return;
@@ -253,7 +254,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
                 _model.Select(card);
                 card.SetSelect(true);
-                _handChanged?.Invoke();
+                HandChanged?.Invoke();
                 _builder.UpdateHandRankingVisual(_model.Selection);
                 UpdateUI();
             }
@@ -332,7 +333,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _model.TryGetIndex(_state.draggedCard, out int i);
             
             _model.Swap(_state.draggedCard, index);
-            _handChanged?.Invoke();
+            HandChanged?.Invoke();
             _view.SetCardToSlot(swapped, i);
             _view.SetCardToSlot(_state.draggedCard, index);
         }
@@ -385,7 +386,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 
                 RemoveListeners(card);
                 _model.Discard(card);
-                _handChanged?.Invoke();
+                HandChanged?.Invoke();
                 card.Discard();
                 
                 // slot 비활성화
@@ -448,10 +449,11 @@ namespace Cardevil.Cards.InStage.Presenter
 
             // 이벤트 구독
             AddListeners(card);
-            _handChanged += card.OnHandChanged;
+            HandChanged += card.OnHandChanged;
 
             _model.Draw(card);
-            _handChanged?.Invoke();
+            HandChanged?.Invoke();
+            DeckChanged?.Invoke();
             UpdateUI();
             UpdateSlots();
 
@@ -463,7 +465,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private void SortByNumber()
         {
             _model.SortByNumber();
-            _handChanged?.Invoke();
+            HandChanged?.Invoke();
             UpdateUI();
             UpdateSlots();
         }
@@ -471,7 +473,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private void SortByIcon()
         {
             _model.SortByIcon();
-            _handChanged?.Invoke();
+            HandChanged?.Invoke();
             UpdateUI();
             UpdateSlots();
         }
