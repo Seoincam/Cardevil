@@ -32,8 +32,6 @@ namespace Cardevil.Cards.InStage.Presenter
         public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
         public Action<Card> ValueSelectionStarted, ValueSelectionEnded; // TODO: 외부에서 호출되지 않도록 메서드로 감싸기
 
-        public Action RerollDrawn, RerollEnded;
-        public event Action<Transform> RerollDiscarded;
         public Action Drawn; 
         
         private Poolable _poolable;
@@ -105,8 +103,10 @@ namespace Cardevil.Cards.InStage.Presenter
         public void SetRerollState(bool value)
         {
             state.isReroll = value;
-            if (!value) RerollEnded?.Invoke();
+            // if (!value) RerollEnded?.Invoke();
+            if (!value) visual.EndReroll();
         }
+        
         
         public void UpdatePosition()
         {
@@ -122,11 +122,17 @@ namespace Cardevil.Cards.InStage.Presenter
             Discarded?.Invoke();
             Managers.Resource.Destroy(gameObject);
         }
+
+        public void DoRerollDraw()
+        {
+            visual.AnimateRerollDraw();
+        }
         
-        public void RerollDiscard(Transform target)
+        public void DoRerollDiscard()
         {
             state.isReroll = true;
-            RerollDiscarded?.Invoke(target);
+            // RerollDiscarded?.Invoke(target);
+            visual.AnimateRerollDiscard();
             Managers.Resource.Destroy(gameObject);
         }
 

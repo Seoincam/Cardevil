@@ -169,7 +169,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 // 버리기 Tween
                 foreach (var card in _model.Hand)
                 {
-                    card.RerollDiscard(_view.DeckVisual.Front);
+                    card.DoRerollDiscard();
                     await UniTask.Delay(TimeSpan.FromSeconds(discard));
                 }
 
@@ -181,7 +181,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 for (int i = 0; i < _maxHand; i++)
                 {
                     var card = Spawn();
-                    card.RerollDrawn?.Invoke();
+                    card.DoRerollDraw();
                     await UniTask.Delay(TimeSpan.FromSeconds(draw));
                 }
 

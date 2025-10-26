@@ -99,7 +99,7 @@ namespace Cardevil.Cards.InStage.Presenter
             // 현재 생성된 카드 모두 HandBar 슬롯으로 이동
             foreach (var card in _model.Hand)
             {
-                AddListeners(card);
+                WireCard(card);
                 HandChanged += card.OnHandChanged;
                 card.SetRerollState(false);
                 _model.TryGetIndex(card, out int index);
@@ -166,7 +166,7 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
         
-        private void AddListeners(Card card)
+        private void WireCard(Card card)
         {
             card.PointerDown += OnCardPointerDown;
             card.PointerUp += OnCardPointerUp;
@@ -224,7 +224,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!_state.canInteract) return;
             
             _state.activateCard = card;
-            _state.pointerDownTime = args.time;
+            _state.pointerDownTime = args.Time;
         }
 
         // 카드가 선택 가능 상태면 선택,
@@ -234,11 +234,11 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!_state.canInteract) return;
             
             if (_state.activateCard != card) return;
-            if (args.time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
+            if (args.Time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
             _state.activateCard = null;
             
             // 좌클릭 처리
-            if (args.button == MouseButton.LeftMouse)
+            if (args.Button == MouseButton.LeftMouse)
             {
                 if (_model.Selection.Contains(card))
                 {
@@ -261,7 +261,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
             // 우클릭 처리
             // TODO: 우클릭 관련 로직 추후 '전환 버튼'으로 이동
-            else if (args.button == MouseButton.RightMouse)
+            else if (args.Button == MouseButton.RightMouse)
             {
                 // if (!card.Data.CanOpenSelection) return;
                 
@@ -448,7 +448,7 @@ namespace Cardevil.Cards.InStage.Presenter
             card.Init(cardData, spriteSet, _model);
 
             // 이벤트 구독
-            AddListeners(card);
+            WireCard(card);
             HandChanged += card.OnHandChanged;
 
             _model.Draw(card);

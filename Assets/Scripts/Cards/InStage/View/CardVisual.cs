@@ -211,10 +211,7 @@ namespace Cardevil.Cards.InStage.View
             p.DragEnded += OnEndDrag;
             p.ValueSelectionStarted += OnSelectStarted;
             p.ValueSelectionEnded += OnSelectEnded;
-
-            p.RerollDrawn += OnRerollDraw;
-            p.RerollDiscarded += OnRerollDiscard;
-            p.RerollEnded += OnRerollEnd;
+            
             p.Drawn += OnDraw;
             p.Discarded += OnDiscard;
         }
@@ -229,10 +226,7 @@ namespace Cardevil.Cards.InStage.View
             p.DragEnded -= OnEndDrag;
             p.ValueSelectionStarted -= OnSelectStarted;
             p.ValueSelectionEnded -= OnSelectEnded;
-
-            p.RerollDrawn -= OnRerollDraw;
-            p.RerollDiscarded -= OnRerollDiscard;
-            p.RerollEnded -= OnRerollEnd;
+            
             p.Drawn -= OnDraw;
             p.Discarded -= OnDiscard;
         }
@@ -271,7 +265,7 @@ namespace Cardevil.Cards.InStage.View
 
         #region Draw/Discard Event
 
-        private void OnRerollDraw()
+        public void AnimateRerollDraw()
         {
             _deckVisual.OnInteraction();
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
@@ -284,12 +278,12 @@ namespace Cardevil.Cards.InStage.View
                         .SetEase(visualSetting.FlipEase));
         }
 
-        private void OnRerollDiscard(Transform discardPoint)
+        public void AnimateRerollDiscard()
         {
             _state.isDiscarded = true;
             RemoveAllEvents();
 
-            var tween = transform.DOMove(endValue: discardPoint.position, visualSetting.RerollDiscardDuration)
+            var tween = transform.DOMove(endValue: _deckVisual.Front.position, visualSetting.RerollDiscardDuration)
                         .SetEase(visualSetting.RerollDiscardEase);
 
             var sequence = DOTween.Sequence();
@@ -305,7 +299,7 @@ namespace Cardevil.Cards.InStage.View
             });
         }
 
-        private void OnRerollEnd()
+        public void EndReroll()
         {
             _canvas.overrideSorting = false;
         }
