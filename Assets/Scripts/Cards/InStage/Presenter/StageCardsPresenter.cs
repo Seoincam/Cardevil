@@ -35,6 +35,8 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private bool CanInput => _state is { isSwapping: false, canInteract: true };
 
+        #region Initialization
+
         /// <summary>
         /// StageCardsPresenter 초기화.  
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
@@ -126,33 +128,6 @@ namespace Cardevil.Cards.InStage.Presenter
             _updateCts = new();
             UpdateAsync(_updateCts.Token).Forget();
         }
-
-        /// <summary>
-        /// 스테이지가 종료된 후 UI를 비활성화, 
-        /// 내부 업데이트 루프를 정지시킵니다.
-        /// </summary>
-        /// <returns>UI 비활성화 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask Exit()
-        {
-            // Update Async 정지
-            _updateCts.Cancel();
-            
-            await _view.ExitHandBarAsync();
-        }
-
-        /// <summary>
-        /// Presenter의 내부 상태를 초기화합니다.  
-        /// 상호작용 가능 여부를 비활성화하고, View를 파괴합니다.
-        /// </summary>
-        public void Clear()
-        {
-            _state.canInteract = false;
-            UpdateUI();
-            
-            if (!_view) return;
-            _view.Clear();
-            Managers.Resource.Destroy(_view.gameObject);
-        }
         
         // MonoBehaviour의 Update()를 대체
         private async UniTask UpdateAsync(CancellationToken token)
@@ -166,30 +141,64 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
         
+        #endregion
+
+        #region Clear
+
+        /// <summary>
+        /// 스테이지가 종료된 후 UI를 비활성화, 
+        /// 내부 업데이트 루프를 정지시킵니다.
+        /// </summary>
+        /// <returns>UI 비활성화 후 완료되는 <see cref="UniTask"/></returns>
+        public async UniTask Exit()
+        {
+            // Update Async 정지
+            _updateCts.Cancel();
+            
+            await _view.ExitHandBarAsync();
+        }
+        
+        /// <summary>
+        /// Presenter의 내부 상태를 초기화합니다.  
+        /// 상호작용 가능 여부를 비활성화하고, View를 파괴합니다.
+        /// </summary>
+        public void Clear()
+        {
+            _state.canInteract = false;
+            UpdateUI();
+            
+            if (!_view) return;
+            _view.Clear();
+            Managers.Resource.Destroy(_view.gameObject);
+        }
+
+        #endregion
+        
+        #region Wire
+
         private void WireCard(Card card)
         {
-            card.PointerDown += OnCardPointerDown;
-            card.PointerUp += OnCardPointerUp;
-            card.DragStarted += BeginDrag;
-            card.DragEnded += EndDrag;
-            card.ValueSelectionEnded += OnSelectValueEnd;
+            card.AddDragStart(OnDragStarted);
+            card.AddDragEnd(OnDragEnded);
+            
+            card.AddPointerDown(OnPointerDown);
+            card.AddPointerUp(OnPointerUp);
+            
+            // card.ValueSelectionEnded += OnSelectValueEnd;
         }
         
-        private void RemoveListeners(Card card)
+        private void UnwireCard(Card card)
         {
-            card.PointerDown -= OnCardPointerDown;
-            card.PointerUp -= OnCardPointerUp;
-            card.DragStarted -= BeginDrag;
-            card.DragEnded -= EndDrag;
-            card.ValueSelectionEnded -= OnSelectValueEnd;
+            card.RemoveDragStart(OnDragStarted);
+            card.RemoveDragEnd(OnDragEnded);
+            
+            card.RemovePointerDown(OnPointerDown);
+            card.RemovePointerUp(OnPointerUp);
+
+            // card.ValueSelectionEnded -= OnSelectValueEnd;
         }
-        
-        // 플레이어 턴이면서 카드 값 선택이 바뀔 때.
-        // Card.onselectEnded에서 호출
-        private void OnSelectValueEnd(Card _)
-        {
-            UpdateUI();
-        }
+
+        #endregion
         
         #region ITurnPlayerInput
 
@@ -218,8 +227,25 @@ namespace Cardevil.Cards.InStage.Presenter
         
         #region Card Events
         
+        private void OnDragStarted()
+        {
+            _state.draggedCard = _state.activateCard;
+            _state.activateCard = null;
+            
+            foreach (var card in _model.Hand) card.SetAnyCardDragged(true);
+            UpdateUI();
+        }
+
+        private void OnDragEnded()
+        {
+            _state.draggedCard = null;
+            
+            foreach (var card in _model.Hand) card.SetAnyCardDragged(false);
+            UpdateUI();
+        }
+        
         // 카드 클릭 상태를 기록
-        private void OnCardPointerDown(Card card, CardPointerArgs args)
+        private void OnPointerDown(Card card, CardPointerArgs args)
         {
             if (!_state.canInteract) return;
             
@@ -229,7 +255,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         // 카드가 선택 가능 상태면 선택,
         // 이미 선택된 상태면 선택 해제를 함
-        private void OnCardPointerUp(Card card, CardPointerArgs args)
+        private void OnPointerUp(Card card, CardPointerArgs args)
         {
             if (!_state.canInteract) return;
             
@@ -273,22 +299,7 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
         
-        private void BeginDrag()
-        {
-            _state.draggedCard = _state.activateCard;
-            _state.activateCard = null;
-            
-            foreach (var card in _model.Hand) card.SetAnyCardDragged(true);
-            UpdateUI();
-        }
 
-        private void EndDrag()
-        {
-            _state.draggedCard = null;
-            
-            foreach (var card in _model.Hand) card.SetAnyCardDragged(false);
-            UpdateUI();
-        }
 
         #endregion
         
@@ -384,10 +395,10 @@ namespace Cardevil.Cards.InStage.Presenter
             {
                 _model.TryGetIndex(card, out var index);
                 
-                RemoveListeners(card);
+                UnwireCard(card);
                 _model.Discard(card);
                 HandChanged?.Invoke();
-                card.Discard();
+                card.DoDiscard();
                 
                 // slot 비활성화
                 _view.SetSlotActive(false, index, _model.Hand.Count);
@@ -411,7 +422,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 // 슬롯 활성화
                 var card = Spawn();
                 _view.SetSlotActive(true, indexFactor + i, _model.Hand.Count);
-                card.Drawn?.Invoke();
+                card.DoDraw();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }
 
@@ -434,8 +445,6 @@ namespace Cardevil.Cards.InStage.Presenter
 
         #endregion
         
-        // Spawn
-        // - - - - - - - - - - -
         private Card Spawn()
         {
             var cardData = _model.PopCard();
@@ -488,22 +497,6 @@ namespace Cardevil.Cards.InStage.Presenter
             var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
             _view.UpdateUI(viewState);
         }
-        
-        public async UniTask Revive(int amount)
-        {
-            amount = Mathf.Min(amount, _model.DiscardPile.Count);
-            for (int i = 0; i < amount; i++)
-            {
-                // var dummyCard = Instantiate(dummyCardVisual, parent: deck.Front.transform);
-                // dummyCard.transform.SetSiblingIndex(1);
-                // var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
-                //                             .SetEase(Ease.OutCubic);
-                // await tween.AsyncWaitForCompletion();
-                // Destroy(dummyCard);
-                // _ctx.Revive();
-                // UpdateUI();
-            }
-        }
 
         #region nested
 
@@ -520,5 +513,30 @@ namespace Cardevil.Cards.InStage.Presenter
         }
 
         #endregion
+        
+        // 이동해야할 로직들
+        // - - - - - - - - - 
+        public async UniTask Revive(int amount)
+        {
+            amount = Mathf.Min(amount, _model.DiscardPile.Count);
+            for (int i = 0; i < amount; i++)
+            {
+                // var dummyCard = Instantiate(dummyCardVisual, parent: deck.Front.transform);
+                // dummyCard.transform.SetSiblingIndex(1);
+                // var tween = dummyCard.transform.DOLocalMove(new Vector3(0, 0), visualSetting.ReviveInterval)
+                //                             .SetEase(Ease.OutCubic);
+                // await tween.AsyncWaitForCompletion();
+                // Destroy(dummyCard);
+                // _ctx.Revive();
+                // UpdateUI();
+            }
+        }
+        
+        // 플레이어 턴이면서 카드 값 선택이 바뀔 때.
+        // Card.onselectEnded에서 호출
+        private void OnSelectValueEnd(Card _)
+        {
+            UpdateUI();
+        }
     }
 }
