@@ -27,12 +27,12 @@ namespace Cardevil.Sound
         [FormerlySerializedAs("_soundEffectAudioConfiguration")] [SerializeField]
         private AudioConfigurationSO _defaultSoundEffectAudioConfiguration;
 
-        [Header("Audio Clips")] private SerializableDict<string, AudioResource> _cachedAudioClips = new();
+        [Header("Audio Clips")] private SerializableDictionary<string, AudioResource> _cachedAudioClips = new();
         [Header("ETC")] [SerializeField] private List<SoundEmitter> _sfxEmitters = new List<SoundEmitter>();
 
         [SerializeField]
-        private SerializableDict<string, SoundEmitter> _cachedBackgroundSoundEmitters =
-            new SerializableDict<string, SoundEmitter>();
+        private SerializableDictionary<string, SoundEmitter> _cachedBackgroundSoundEmitters =
+            new SerializableDictionary<string, SoundEmitter>();
 
         [SerializeField] private string _currentPlayingBackgroundMusicName = string.Empty;
 

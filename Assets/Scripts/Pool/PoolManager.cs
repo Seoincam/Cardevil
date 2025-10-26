@@ -16,8 +16,8 @@ namespace Cardevil.Pools
         
 
         
-        [SerializeField] private SerializableDict<string, ICloneFactory<Poolable>> _factories = new();
-        [SerializeField] private SerializableDict<string, IObjectPool<Poolable>> _pools = new();
+        [SerializeField] private SerializableDictionary<string, ICloneFactory<Poolable>> _factories = new();
+        [SerializeField] private SerializableDictionary<string, IObjectPool<Poolable>> _pools = new();
         
         /// <summary>
         /// Root Transform임

@@ -42,7 +42,7 @@ namespace Database
         /// <summary>
         /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
         /// </summary>
-        [field: SerializeField] public SerializableDict<string, Sprite> SpriteCache { get; private set; } = new();
+        [field: SerializeField] public SerializableDictionary<string, Sprite> SpriteCache { get; private set; } = new();
 
 
         public event Action OnInitialized;

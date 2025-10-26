@@ -12,7 +12,7 @@ namespace Cardevil.Cards.Data.Enhancement
     public class EnhancementDataLibrary
     {
         // <Id, Data>
-        [SerializeField, VisibleOnly] private SerializableDict<Guid, EnhancementData> table = new();
+        [SerializeField, VisibleOnly] private SerializableDictionary<Guid, EnhancementData> table = new();
         private Dictionary<EnhancementData, Guid> _reverseTable = new();
         
         public IReadOnlyDictionary<Guid, EnhancementData> Table => table;
