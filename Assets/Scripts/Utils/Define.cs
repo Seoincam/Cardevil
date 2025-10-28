@@ -108,4 +108,5 @@ public class Define
         Epic,
         Legend
     }
+    
 }

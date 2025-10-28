@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 21ec11462675145a98c70c4eb8e3b279, type: 3}
   m_Name: CardVisualSetting
   m_EditorClassIdentifier: 
-  _isFastMode: 0
+  _isFastMode: 1
   _fastModeMultiflier: 0.5
   _selectOffset: 50
   _rDrawInterval: 0.15
@@ -23,7 +23,7 @@ MonoBehaviour:
   _rCountScale: 1.4
   _rCountScaleDuration: 0.4
   _rCountEase: 31
-  _rFlipDuration: 0.3
+  _rFlipDuration: 2
   _rFlipBackImageRatio: 0.8
   _rDrawDuration: 0.8
   _rDrawEase: 27

@@ -37,6 +37,7 @@ public class SlotMachine : UI_Popup
         {
             StartCoroutine(SettingSlots());
         }
+        
     }
 
 
