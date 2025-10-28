@@ -48,7 +48,12 @@ namespace Cardevil.Utils
             {
                 InitSeed(type);
             }
-            return randoms[type].NextInt(min, max);
+
+            var random = randoms[type];
+            int result = random.NextInt(min, max);
+            randoms[type] = random; // UMRandom이 struct이기 때문.
+            
+            return result;
         }
         
         /// <summary>
@@ -57,14 +62,10 @@ namespace Cardevil.Utils
         public static void ShuffleListInPlace<T>(this IList<T> list, RandomType type = RandomType.CardShuffle)
         {
             if (list == null) throw new ArgumentNullException(nameof(list));
-            
-            // Random Type의 초기화가 안 되어 있다면 초기화
-            if (!randoms.TryGetValue(type, out var r))
-                InitSeed(type);
 
             for (int i = list.Count - 1; i > 0; i--)
             {
-                int j = randoms[type].NextInt(0, i + 1);
+                int j = GetRandomInt(0, i + 1, type);
                 (list[i], list[j]) = (list[j], list[i]);
             }
             
