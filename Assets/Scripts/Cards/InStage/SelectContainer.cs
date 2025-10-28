@@ -123,8 +123,8 @@ namespace Cardevil.Cards.InStage
         {
             backgroundButton.gameObject.SetActive(value);
             gameObject.SetActive(value);
-            if (!value)
-                card.ValueSelectionEnded?.Invoke(card);
+            // if (!value)
+            //     card.ValueSelectionEnded?.Invoke(card);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
@@ -21,7 +22,6 @@ namespace Cardevil.Cards.InStage.View
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
-        [SerializeField] private CardVisualSpriteFactorySO spriteFactory;
 
         [Header("Card Visual")]
         [SerializeField] private Transform shakeObject;
@@ -40,6 +40,8 @@ namespace Cardevil.Cards.InStage.View
         private VisualTransformDelta _delta;
         private VisualState _state;
 
+        #region Unity Event
+
         private void Awake()
         {
             _canvas = GetComponent<Canvas>();
@@ -48,60 +50,7 @@ namespace Cardevil.Cards.InStage.View
             _poolable = GetComponent<Poolable>();
             _poolable.OnRelease += Clear;
         }
-
-        public void Clear()
-        {
-            RemoveAllEvents();
-
-            frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            shakeObject.localEulerAngles = Vector3.zero;
-
-            _canvas.overrideSorting = false;
-            _state.isDiscarded = false;
-            _state.isInitialized = false;
-        }
-
-        private void RemoveAllEvents()
-        {
-            if (parentCard)
-            {
-                UnsubscribeFromParent(parentCard);
-                parentCard = null;
-            }
-
-            if (_model != null)
-            {
-                _model.HandChanged -= UpdateIndex;
-            }
-
-            parentCard = null;
-            _model = null;
-        }
-
-        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
-        {
-            if (_state.isInitialized) return;
-            
-            this.parentCard = parentCard;
-            _model = model;
-            
-            // Subscribe Events
-            SubscribeToParent(parentCard);
-            _model.HandChanged += UpdateIndex;
-            
-            _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
-            UpdateVisual();
-            
-            var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
-            if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
-            _deckVisual = deckVisuals[0];
-
-            transform.position = _deckVisual.Front.position;
-
-            _state.isInitialized = true;
-        }
-
+        
         private void Update()
         {
             if (!_state.isInitialized || !parentCard || _state.isDiscarded)
@@ -113,8 +62,6 @@ namespace Cardevil.Cards.InStage.View
             ApplyCurveTilt();
         }
         
-        #region Update
-
         /// <summary>
         /// 카드 비주얼의 월드 위치를 부모 카드 위치로 부드럽게 보간해 따라감.
         /// 드래그 중에는 곡선 수직 오프셋을 적용하지 않음.
@@ -193,52 +140,65 @@ namespace Cardevil.Cards.InStage.View
 
             shakeObject.localEulerAngles = new Vector3(0f, 0f, nextZ);
         }
-        
-        #endregion
-        
-        #region Subscribe
-
-        private void SubscribeToParent(Card p)
-        {
-            if (!p) return;
-
-            p.PointerDown += OnPointerDown;
-            p.PointerUp += OnPointerUp;
-            p.DragStarted += OnBeginDrag;
-            p.DragEnded += OnEndDrag;
-            p.ValueSelectionStarted += OnSelectStarted;
-            p.ValueSelectionEnded += OnSelectEnded;
-
-            p.RerollDrawn += OnRerollDraw;
-            p.RerollDiscarded += OnRerollDiscard;
-            p.RerollEnded += OnRerollEnd;
-            p.Drawn += OnDraw;
-            p.Discarded += OnDiscard;
-        }
-
-        private void UnsubscribeFromParent(Card p)
-        {
-            if (!p) return;
-
-            p.PointerDown -= OnPointerDown;
-            p.PointerUp -= OnPointerUp;
-            p.DragStarted -= OnBeginDrag;
-            p.DragEnded -= OnEndDrag;
-            p.ValueSelectionStarted -= OnSelectStarted;
-            p.ValueSelectionEnded -= OnSelectEnded;
-
-            p.RerollDrawn -= OnRerollDraw;
-            p.RerollDiscarded -= OnRerollDiscard;
-            p.RerollEnded -= OnRerollEnd;
-            p.Drawn -= OnDraw;
-            p.Discarded -= OnDiscard;
-        }
 
         #endregion
 
-        #region Pointer Event
+        #region Initialization
 
-        private void OnPointerDown(Card _, CardPointerArgs args)
+        public void Init(Card parentCard, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
+        {
+            if (_state.isInitialized) return;
+            
+            this.parentCard = parentCard;
+            _model = model;
+            
+            // Subscribe Events
+            // SubscribeToParent(parentCard);
+            // _model.HandChanged += UpdateIndex;
+            
+            _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
+            // UpdateVisual();
+            frontImage.sprite = visualSpriteSet.FrontBackgroundImage;
+            numberImages[0].sprite = visualSpriteSet.FrontNumberImage;
+            numberImages[0].gameObject.SetActive(visualSpriteSet.FrontNumberImage);
+            
+            var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
+            if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
+            _deckVisual = deckVisuals[0];
+
+            transform.position = _deckVisual.Front.position;
+
+            _state.isInitialized = true;
+        }
+        
+        public void Clear()
+        {
+            parentCard = null;
+
+            frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            shakeObject.localEulerAngles = Vector3.zero;
+
+            _canvas.overrideSorting = false;
+            _state.isDiscarded = false;
+            _state.isInitialized = false;
+        }
+
+        #endregion
+        
+        #region Pointer Event Handler
+        
+        public void OnDragStart()
+        {
+            _canvas.overrideSorting = true;
+        }
+
+        public void OnDragEnd()
+        {
+            _canvas.overrideSorting = false;
+        }
+
+        public void OnPointerDown(Card _, CardPointerArgs args)
         {
             transform.DOScale(endValue: visualSetting.SelectScale, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
@@ -246,54 +206,43 @@ namespace Cardevil.Cards.InStage.View
             shadowTransform.localPosition += -Vector3.up * visualSetting.ShadowOffset;
         }
 
-        private void OnPointerUp(Card _, CardPointerArgs args)
+        public void OnPointerUp(Card _, CardPointerArgs args)
         {
             transform.DOScale(endValue: 1f, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
 
             shadowTransform.localPosition = _delta.shadowOriginPosition;
         }
-
-        private void OnBeginDrag()
-        {
-            _canvas.overrideSorting = true;
-        }
-
-        private void OnEndDrag()
-        {
-            _canvas.overrideSorting = false;
-        }
-
+        
         #endregion
 
-        #region Draw/Discard Event
+        #region Reroll
 
-        private void OnRerollDraw()
+        public void AnimateRerollDraw()
         {
             _deckVisual.OnInteraction();
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
-                        .SetEase(visualSetting.RerollDrawEase);
+                .SetEase(visualSetting.RerollDrawEase);
 
             var sequence = DOTween.Sequence();
             sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipBackImageRatio)
-                        .SetEase(visualSetting.FlipEase));
+                .SetEase(visualSetting.FlipEase));
             sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipFrontImageRation)
-                        .SetEase(visualSetting.FlipEase));
+                .SetEase(visualSetting.FlipEase));
         }
 
-        private void OnRerollDiscard(Transform discardPoint)
+        public void AnimateRerollDiscard()
         {
             _state.isDiscarded = true;
-            RemoveAllEvents();
 
-            var tween = transform.DOMove(endValue: discardPoint.position, visualSetting.RerollDiscardDuration)
-                        .SetEase(visualSetting.RerollDiscardEase);
+            var tween = transform.DOMove(endValue: _deckVisual.Front.position, visualSetting.RerollDiscardDuration)
+                .SetEase(visualSetting.RerollDiscardEase);
 
             var sequence = DOTween.Sequence();
             sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.RerollFlipDuration * .5f)
-                        .SetEase(visualSetting.FlipEase));
+                .SetEase(visualSetting.FlipEase));
             sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * .5f)
-                        .SetEase(visualSetting.FlipEase));
+                .SetEase(visualSetting.FlipEase));
 
             tween.OnComplete(() =>
             {
@@ -302,12 +251,16 @@ namespace Cardevil.Cards.InStage.View
             });
         }
 
-        private void OnRerollEnd()
+        public void EndReroll()
         {
             _canvas.overrideSorting = false;
         }
 
-        private void OnDraw()
+        #endregion
+
+        #region Draw/Discard
+
+        public void AnimateDraw()
         {
             _deckVisual.OnInteraction();
 
@@ -318,11 +271,10 @@ namespace Cardevil.Cards.InStage.View
                         .SetEase(visualSetting.FlipEase));
         }
 
-        private void OnDiscard()
+        public void Discard()
         {
             _state.isDiscarded = true;
             _canvas.overrideSorting = true;
-            RemoveAllEvents();
 
             var tween = transform.DOLocalMove(endValue: new Vector3(1050, 0, 0), visualSetting.DiscardDuration)
                         .SetEase(visualSetting.DiscardEase);
@@ -331,14 +283,20 @@ namespace Cardevil.Cards.InStage.View
 
         #endregion
 
-        private void UpdateIndex()
+        #region Visual Index
+
+        public void UpdateVisualIndex()
         {
             if (_model.TryGetIndex(parentCard, out int index))
             {
                 _state.handIndex = index;
+                // TODO: 현재 SetSiblingIndex을 업데이트 할 때 마지막 visual이 제대로 업데이트 되지 않는 문제가 발생.
+                // 마지막 visual일 시 더 큰 값으로 업데이트하는 등의 수정이 필요할 듯
                 transform.SetSiblingIndex(index);
             }
         }
+
+        #endregion
         
         private void Destroy()
         {
@@ -354,14 +312,10 @@ namespace Cardevil.Cards.InStage.View
         private void OnSelectEnded(Card _)
         {
             _canvas.overrideSorting = false;
-            UpdateVisual();
+            // UpdateVisual();
+            // TODO: 값 선택 후 다시 visual sprite set 생성. Card가 생성 후 넘겨줌.
         }
-
-        private void UpdateVisual()
-        {
-            spriteFactory.UpdataVisual(parentCard.Data, frontImage, numberImages[0]);
-        }
-
+        
         public void ExecuteEvaluationAction()
         {
             transform.DOShakePosition(.6f, 50);

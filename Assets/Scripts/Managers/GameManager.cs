@@ -12,7 +12,6 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using Database;
-using Cardevil.Enemy;
 
 [Serializable]
 public class GameManager : ISaveLoad
@@ -23,7 +22,7 @@ public class GameManager : ISaveLoad
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
     [SerializeField] public DatabaseManager _database;
-    [SerializeField] public EnemySpawner _enemySpawner;
+    
 
     public Field Field
     {
@@ -121,12 +120,7 @@ public class GameManager : ISaveLoad
     //플레이어 죽을 때 실행시킬 함수
     public void PlayerDied()
     {
-        if (PlayerStatus.canRevive)
-        {
-            //부활하기
-            Managers.Game.PlayerStatus.CurrentHp = 1;
 
-        }
     }
     
     public void GameStart()
@@ -144,7 +138,6 @@ public class GameManager : ISaveLoad
         LogEx.Log("Database가 초기화 되었습니다. GameStart 실행.");
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
-        Managers.Relic.SettingRelicsEffectBase();
     }
     
     private async UniTask LoadPlayerData()

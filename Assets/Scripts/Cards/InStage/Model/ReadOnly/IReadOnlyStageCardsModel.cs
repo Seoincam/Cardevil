@@ -1,4 +1,5 @@
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Presenter;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,6 @@ namespace Cardevil.Cards.InStage.Model.ReadOnly
     public interface IReadOnlyStageCardsModel
     {
         /// <summary>
-        /// 손패(Hand)가 변경되었을 때 발생하는 이벤트.  
-        /// 카드가 추가되거나 제거될 때 CardVisual 등에서 UI 갱신에 사용.
-        /// </summary>
-        event Action HandChanged;
-        
-        /// <summary>
         /// 최대 손패 수.
         /// </summary>
         int MaxHand { get; }
@@ -35,12 +30,12 @@ namespace Cardevil.Cards.InStage.Model.ReadOnly
         /// <summary>
         /// 현재 덱의 읽기 전용 뷰.
         /// </summary>
-        IReadOnlyList<InStageCardData> Deck { get; }
+        IReadOnlyList<CardData> Deck { get; }
         
         /// <summary>
         /// 버린 패의 읽기 전용 뷰.
         /// </summary>
-        IReadOnlyList<InStageCardData> DiscardPile { get; }
+        IReadOnlyList<CardData> DiscardPile { get; }
 
         /// <summary>
         /// 현재 손패의 읽기 전용 뷰.

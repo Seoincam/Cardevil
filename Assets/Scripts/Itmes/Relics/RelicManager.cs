@@ -114,25 +114,6 @@ namespace Cardevil.Relics
         }
 
 
-        /// <summary>
-        /// 유물을 획득하고 PlayerStatus로 넘겨줍니다.
-        /// </summary>
-        public void GetRelicToPlayer(RelicEffectBase relicEffectBase)
-        {
-            Managers.Game.PlayerStatus.relicEffectBases.Add(relicEffectBase);
-        }
-        /// <summary>
-        /// 게임이 시작할때 유물의 효과를 세팅합니다.
-        /// </summary>
-        public void SettingRelicsEffectBase()
-        {
-            List<RelicEffectBase> relicList = Managers.Game.PlayerStatus.relicEffectBases; 
-            foreach(var r in relicList)
-            {
-                r.ActivateRelicEffect();
-            }
-        }
-
         #region Helper
 
         public Relic GetRelicById(string relicId, int level = 1)
