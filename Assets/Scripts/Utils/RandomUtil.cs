@@ -68,10 +68,6 @@ namespace Cardevil.Utils
                 int j = GetRandomInt(0, i + 1, type);
                 (list[i], list[j]) = (list[j], list[i]);
             }
-            
-            // 테스트용으로 시드 삭제
-            randoms.Remove(type);
-            randomSeeds.Remove(type);
         }
 
         [Serializable]
