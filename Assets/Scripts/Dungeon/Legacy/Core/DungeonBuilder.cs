@@ -32,10 +32,10 @@ namespace Cardevil.Dungeon
             nodes.Add(rootNode); // 루트 노드를 초기 노드로 추가
         }
         
-        public DungeonBuilder AddNode(DungeonNodeTypes type, DungeonNodePreset preset = null, bool moveNode = true)
+        public DungeonBuilder AddNode(DungeonNodeTypes type, DungeonNodeBehaviour behaviour = null, bool moveNode = true)
         {
             int newNodeId = nodes.Count + 1;
-            var newNode = new DungeonNode(newNodeId, currentNode.Floor + 1, type, preset);
+            var newNode = new DungeonNode(newNodeId, currentNode.Floor + 1, type, behaviour);
             nodes.Add(newNode);
             currentNode.NextNodes.Add(newNode);
             newNode.PreviousNodes.Add(currentNode);
@@ -123,7 +123,7 @@ namespace Cardevil.Dungeon
         /// 브랜치의 끝에 새 노드를 추가하고, 모든 브랜치를 병합
         /// </summary>
         /// <returns></returns>
-        public DungeonBuilder AddNodeAndMergeBranch(DungeonNodeTypes type, DungeonNodePreset preset = null, bool moveNode = true)
+        public DungeonBuilder AddNodeAndMergeBranch(DungeonNodeTypes type, DungeonNodeBehaviour behaviour = null, bool moveNode = true)
         {
             DungeonNode highestNode = null;
             foreach (var endNode in branchEndNodes)
@@ -134,7 +134,7 @@ namespace Cardevil.Dungeon
                 }
             }
             currentNode = highestNode ?? currentNode;
-            AddNode(type, preset, false);
+            AddNode(type, behaviour, false);
             var newNode = nodes[nodes.Count - 1]; // 새로 추가된 노드
             
             branchStartNode.IsBranchStart = true; // 브랜치 시작 노드 설정

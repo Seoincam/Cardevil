@@ -52,6 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe61b669e18a48258b301de47ae64cbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _dungeonUICanvas: {fileID: 0}
+  _dungeonChapters: []
+  _dungeonUICamera: {fileID: 0}
 --- !u!1 &1564892216670426588
 GameObject:
   m_ObjectHideFlags: 0

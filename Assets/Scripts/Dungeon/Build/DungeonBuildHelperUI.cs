@@ -220,7 +220,7 @@ public void ReconnectAllNodesByHierarchy()
                     node.nodeId,
                     node.nodeFloor,
                     node.nodeType,
-                    node.nodePreset
+                    node.nodeBehaviour
                 );
                 nodes.Add(dungeonNode);
                 node.GetComponent<DungeonNodeUI>().DungeonNode = dungeonNode;

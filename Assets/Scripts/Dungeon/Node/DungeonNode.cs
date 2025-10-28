@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Dungeon
 {
@@ -20,7 +21,7 @@ namespace Cardevil.Dungeon
         [SerializeField, VisibleOnly] private int nodeId;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodeTypes type;
-        [SerializeField, VisibleOnly] private DungeonNodePreset preset;
+        [FormerlySerializedAs("preset")] [SerializeField, VisibleOnly] private DungeonNodeBehaviour behaviour;
         [SerializeField] private NodeState state = NodeState.None;
         [SerializeField] private bool isVisited = false;
         [SerializeField] private bool isVisible = false;
@@ -46,10 +47,10 @@ namespace Cardevil.Dungeon
             get => type;
             set => type = value;
         }
-        public DungeonNodePreset Preset 
+        public DungeonNodeBehaviour Behaviour 
         {
-            get => preset;
-            set => preset = value;
+            get => behaviour;
+            set => behaviour = value;
         }
         
         public NodeState State 
@@ -85,12 +86,12 @@ namespace Cardevil.Dungeon
         {
             return new DungeonNode(-1, -1, DungeonNodeTypes.None, null);
         }
-        public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodePreset preset)
+        public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodeBehaviour behaviour)
         {
             NodeId = nodeId;
             Floor = floor;
             Type = type;
-            Preset = preset;
+            Behaviour = behaviour;
         }
 
         /// <summary>
@@ -117,9 +118,9 @@ namespace Cardevil.Dungeon
         
         public override string ToString()
         {
-            if (Preset != null)
+            if (Behaviour != null)
             {
-                return $"NodeId: {NodeId}, Floor: {Floor}, Type: {Type}, Preset: {Preset.GetType().Name}";
+                return $"NodeId: {NodeId}, Floor: {Floor}, Type: {Type}, Preset: {Behaviour.GetType().Name}";
             }
             else
             {

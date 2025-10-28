@@ -1094,6 +1094,18 @@ PrefabInstance:
       propertyPath: m_Positions.Array.data[1].z
       value: -609.69
       objectReference: {fileID: 0}
+    - target: {fileID: 5590111452329120624, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: _button
+      value: 
+      objectReference: {fileID: 1984391376}
+    - target: {fileID: 5590111452329120624, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodeImage
+      value: 
+      objectReference: {fileID: 1984391377}
+    - target: {fileID: 5590111452329120624, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: hoverImage
+      value: 
+      objectReference: {fileID: 1984391377}
     - target: {fileID: 5844898520495346283, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Positions.Array.data[0].x
       value: -2073.4055
@@ -1214,6 +1226,22 @@ PrefabInstance:
       propertyPath: m_Positions.Array.data[1].z
       value: -609.69
       objectReference: {fileID: 0}
+    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: _dungeonChapters.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: '_dungeonChapters.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1787522967}
+    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: '_dungeonChapters.Array.data[1]'
+      value: 
+      objectReference: {fileID: 948165611}
+    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: '_dungeonChapters.Array.data[2]'
+      value: 
+      objectReference: {fileID: 1434824224}
     - target: {fileID: 7110569435501190842, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Positions.Array.data[0].x
       value: -1297.1168
@@ -2237,67 +2265,7 @@ MonoBehaviour:
     dungeonUI: {fileID: 0}
     currentNode:
       dungeon:
-        dungeonId: 0
-        dungeonConfiguration: {fileID: 0}
-        rootNode:
-          dungeon:
-            dungeonId: 0
-            dungeonConfiguration: {fileID: 0}
-            rootNode:
-              dungeon:
-                dungeonId: 0
-                dungeonConfiguration: {fileID: 0}
-                rootNode:
-                  dungeon:
-                    dungeonId: 0
-                    dungeonConfiguration: {fileID: 0}
-                    rootNode:
-                      dungeon:
-                        dungeonId: 0
-                      nodeId: 0
-                      floor: 0
-                      type: 0
-                      preset: {fileID: 0}
-                      state: 0
-                      isVisited: 0
-                      isVisible: 0
-                      <IsBranchStart>k__BackingField: 0
-                      <IsInBranch>k__BackingField: 0
-                      <IsBranchEnd>k__BackingField: 0
-                    nodes: []
-                  nodeId: 0
-                  floor: 0
-                  type: 0
-                  preset: {fileID: 0}
-                  state: 0
-                  isVisited: 0
-                  isVisible: 0
-                  <IsBranchStart>k__BackingField: 0
-                  <IsInBranch>k__BackingField: 0
-                  <IsBranchEnd>k__BackingField: 0
-                nodes: []
-              nodeId: 0
-              floor: 0
-              type: 0
-              preset: {fileID: 0}
-              state: 0
-              isVisited: 0
-              isVisible: 0
-              <IsBranchStart>k__BackingField: 0
-              <IsInBranch>k__BackingField: 0
-              <IsBranchEnd>k__BackingField: 0
-            nodes: []
-          nodeId: 0
-          floor: 0
-          type: 0
-          preset: {fileID: 0}
-          state: 0
-          isVisited: 0
-          isVisible: 0
-          <IsBranchStart>k__BackingField: 0
-          <IsInBranch>k__BackingField: 0
-          <IsBranchEnd>k__BackingField: 0
-        nodes: []
+        rid: -2
       nodeId: 0
       floor: 0
       type: 0
@@ -2308,10 +2276,14 @@ MonoBehaviour:
       <IsBranchStart>k__BackingField: 0
       <IsInBranch>k__BackingField: 0
       <IsBranchEnd>k__BackingField: 0
+      <PreviousNodes>k__BackingField: []
+      <NextNodes>k__BackingField: []
   _database: {fileID: 683164373}
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &799136585
 Transform:
   m_ObjectHideFlags: 0
@@ -2327,6 +2299,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &948165611 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2097193653438378425, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 362800788}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17b02d6ac31b440ab9a511ff5151aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1012406963
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2473,6 +2456,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3264d905ebbd8fe459a4e26c51070721, type: 3}
+--- !u!114 &1434824224 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4100018171326405881, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 362800788}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17b02d6ac31b440ab9a511ff5151aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1538176313
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2699,6 +2693,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1787522967 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7512300475251869851, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 362800788}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17b02d6ac31b440ab9a511ff5151aa8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1984391376 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3633705291790188362, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 362800788}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1984391377 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6147055437535947880, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 362800788}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2061991157
 GameObject:
   m_ObjectHideFlags: 0

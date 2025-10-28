@@ -1,5 +1,6 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
+using Cardevil.Dungeon;
 using Cardevil.Dungeon.Build;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
 using Object = UnityEngine.Object;
+
 
 namespace Cardevil.Dungeon.Core
 {
@@ -18,6 +20,7 @@ namespace Cardevil.Dungeon.Core
         
         [SerializeReference] private List<Dungeon> dungeons = new List<Dungeon>();
         [SerializeField] private DungeonUI dungeonUI = null;
+        [SerializeField, VisibleOnly] private DungeonNode previousNode;
         [SerializeField, VisibleOnly] private DungeonNode currentNode;
         private int currentDungeonIndex = -1;
 
@@ -60,6 +63,7 @@ namespace Cardevil.Dungeon.Core
         }
         public DungeonConfigurationSO CurrentDungeonConfiguration => dungeonConfigurations[currentDungeonIndex];
         public Dungeon CurrentDungeon => GetDungeon(currentDungeonIndex);
+        public DungeonNode PreviousNode => previousNode;
         public DungeonNode CurrentNode => currentNode;
 
         
@@ -100,7 +104,7 @@ namespace Cardevil.Dungeon.Core
         {
             if (UI == null)
             {
-                Debug.LogWarning("[DungeonManager] DungeonUI is not assigned.");
+                LogEx.LogWarning("[DungeonManager] DungeonUI is not assigned.");
                 return;
             }
             
@@ -123,17 +127,45 @@ namespace Cardevil.Dungeon.Core
         {
             if (node == null)
             {
-                Debug.LogWarning("No dungeon node provided.");
+                LogEx.LogWarning("No dungeon node provided.");
                 return;
             }
-            if(node.Preset == null)
+            if(node.Behaviour == null)
             {
-                Debug.LogWarning("No preset assigned to this dungeon node.");
+                LogEx.LogWarning("No preset assigned to this dungeon node.");
                 return;
             }
-            Debug.Log($"Entering node: {node.NodeId}");
+            LogEx.Log($"Entering node: {node.NodeId}");
             currentNode = node;
-            node.Preset.OnEnter();
+            node.Behaviour.OnEnter();
+        }
+
+        public void ExitCurrentNode(NodeClearInfo clearInfo)
+        {
+            if (currentNode == null)
+            {
+                LogEx.LogWarning("No current dungeon node to exit.");
+                return;
+            }
+            ExitNode(currentNode, clearInfo);
+        }
+        
+        public void ExitNode(DungeonNode node, NodeClearInfo clearInfo)
+        {
+            if (node == null)
+            {
+                LogEx.LogWarning("No dungeon node provided.");
+                return;
+            }
+            if(node.Behaviour == null)
+            {
+                LogEx.LogWarning("No preset assigned to this dungeon node.");
+                return;
+            }
+            LogEx.Log($"Exiting node: {node.NodeId}");
+            node.Behaviour.OnExit(clearInfo);
+            previousNode = node;
+            currentNode = null;
         }
         
         

@@ -69,89 +69,13 @@ MonoBehaviour:
   dungeonChapterUI: {fileID: 0}
   setting: {fileID: 11400000, guid: 516ed434d1415e4488c03bd1965ef73a, type: 2}
   dungeonNode:
-    dungeon:
-      dungeonId: 0
-      dungeonConfiguration: {fileID: 0}
-      rootNode:
-        dungeon:
-          dungeonId: 0
-          dungeonConfiguration: {fileID: 0}
-          rootNode:
-            dungeon:
-              dungeonId: 0
-              dungeonConfiguration: {fileID: 0}
-              rootNode:
-                dungeon:
-                  dungeonId: 0
-                  dungeonConfiguration: {fileID: 0}
-                  rootNode:
-                    dungeon:
-                      dungeonId: 0
-                      dungeonConfiguration: {fileID: 0}
-                      rootNode:
-                        nodeId: 0
-                        floor: 0
-                        isVisited: 0
-                        isVisible: 0
-                        <IsBranchStart>k__BackingField: 0
-                        <IsInBranch>k__BackingField: 0
-                        <IsBranchEnd>k__BackingField: 0
-                      nodes: []
-                    nodeId: 0
-                    floor: 0
-                    type: 0
-                    preset: {fileID: 0}
-                    state: 0
-                    isVisited: 0
-                    isVisible: 0
-                    <IsBranchStart>k__BackingField: 0
-                    <IsInBranch>k__BackingField: 0
-                    <IsBranchEnd>k__BackingField: 0
-                  nodes: []
-                nodeId: 0
-                floor: 0
-                type: 0
-                preset: {fileID: 0}
-                state: 0
-                isVisited: 0
-                isVisible: 0
-                <IsBranchStart>k__BackingField: 0
-                <IsInBranch>k__BackingField: 0
-                <IsBranchEnd>k__BackingField: 0
-              nodes: []
-            nodeId: 0
-            floor: 0
-            type: 0
-            preset: {fileID: 0}
-            state: 0
-            isVisited: 0
-            isVisible: 0
-            <IsBranchStart>k__BackingField: 0
-            <IsInBranch>k__BackingField: 0
-            <IsBranchEnd>k__BackingField: 0
-          nodes: []
-        nodeId: 0
-        floor: 0
-        type: 0
-        preset: {fileID: 0}
-        state: 0
-        isVisited: 0
-        isVisible: 0
-        <IsBranchStart>k__BackingField: 0
-        <IsInBranch>k__BackingField: 0
-        <IsBranchEnd>k__BackingField: 0
-      nodes: []
-    nodeId: 0
-    floor: 0
-    type: 0
-    preset: {fileID: 0}
-    state: 0
-    isVisited: 0
-    isVisible: 0
-    <IsBranchStart>k__BackingField: 0
-    <IsInBranch>k__BackingField: 0
-    <IsBranchEnd>k__BackingField: 0
+    rid: -2
   nodeId: -1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &7932035073756896530
 MonoBehaviour:
   m_ObjectHideFlags: 0
