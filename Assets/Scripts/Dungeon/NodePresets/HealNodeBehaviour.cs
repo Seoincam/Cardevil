@@ -12,7 +12,7 @@ namespace Cardevil.Dugeon.NodePresets
             LogEx.Log("Entering Heal Node: Player is healed.");
         }
 
-        public override void OnExit(NodeClearInfo clearInfo)
+        public override void OnExit(NodeExitInfo exitInfo)
         {
             LogEx.Log("Exiting Heal Node.");
         }

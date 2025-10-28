@@ -1,6 +1,6 @@
 ﻿namespace Cardevil.Dungeon.Core
 {
-    public struct NodeClearInfo
+    public struct NodeExitInfo
     {
         public bool IsCleared;
     }

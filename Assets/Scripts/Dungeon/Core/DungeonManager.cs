@@ -140,17 +140,17 @@ namespace Cardevil.Dungeon.Core
             node.Behaviour.OnEnter();
         }
 
-        public void ExitCurrentNode(NodeClearInfo clearInfo)
+        public void ExitCurrentNode(NodeExitInfo exitInfo)
         {
             if (currentNode == null)
             {
                 LogEx.LogWarning("No current dungeon node to exit.");
                 return;
             }
-            ExitNode(currentNode, clearInfo);
+            ExitNode(currentNode, exitInfo);
         }
         
-        public void ExitNode(DungeonNode node, NodeClearInfo clearInfo)
+        public void ExitNode(DungeonNode node, NodeExitInfo exitInfo)
         {
             if (node == null)
             {
@@ -163,11 +163,20 @@ namespace Cardevil.Dungeon.Core
                 return;
             }
             LogEx.Log($"Exiting node: {node.NodeId}");
-            node.Behaviour.OnExit(clearInfo);
+            node.Behaviour.OnExit(exitInfo);
             previousNode = node;
             currentNode = null;
         }
         
+        public void EnableBlackmarketOnCurrentNode()
+        {
+            if (currentNode == null)
+            {
+                LogEx.LogWarning("No current dungeon node to enable blackmarket.");
+                return;
+            }
+            LogEx.Log($"Enabling blackmarket on node: {currentNode.NodeId}");
+        }
         
         [ConsoleCommand("dungeonSetCurrent", "Sets the current dungeon by index.", "dungeonSetCurrent <index>", new string[]{"1","2","3"})]
         public static void SetCurrentDungeonCommand(int idx){
@@ -180,6 +189,19 @@ namespace Cardevil.Dungeon.Core
             }
             dm.CurrentDungeonIndex = idx;
             Console.Message($"Current dungeon set to index {idx}.");
+        }
+
+        [ConsoleCommand("dungeonClearCurrentNode", "Clears the current dungeon node.", "dungeonClearCurrentNode")]
+        public static void ClearCurrentNode()
+        {
+            DungeonManager dm = Managers.Dungeon;
+            if (dm.CurrentNode == null)
+            {
+                Console.MessageError("No current dungeon node to clear.");
+                return;
+            }
+            dm.ExitCurrentNode(new NodeExitInfo(){IsCleared = true});
+            Console.Message($"Current dungeon node cleared.");
         }
     }
 }

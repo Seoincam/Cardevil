@@ -12,7 +12,7 @@ namespace Cardevil.Dugeon.NodePresets
             LogEx.Log("Mini Boss Node Entered");
         }
 
-        public override void OnExit(NodeClearInfo clearInfo)
+        public override void OnExit(NodeExitInfo exitInfo)
         {
             LogEx.Log("Mini Boss Node Exited");
         }

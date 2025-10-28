@@ -11,7 +11,7 @@ namespace Cardevil.Dugeon.NodePresets
             Debug.Log("Final Boss Node Entered");
         }
 
-        public override void OnExit(NodeClearInfo clearInfo)
+        public override void OnExit(NodeExitInfo exitInfo)
         {
             Debug.Log("Final Boss Node Exited");
         }

@@ -12,9 +12,11 @@ namespace Cardevil.Dugeon.NodePresets
             LogEx.Log("Entering Mob Node");
         }
 
-        public override void OnExit(NodeClearInfo clearInfo)
+        public override void OnExit(NodeExitInfo exitInfo)
         {
             LogEx.Log("Exiting Mob Node");
+            
+            
         }
     }
 }

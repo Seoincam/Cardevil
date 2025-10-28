@@ -18,7 +18,7 @@ namespace Cardevil.Dungeon
         public float BlackmarketWeight => blackmarketWeight;
 
         public abstract void OnEnter();
-        public virtual void OnExit(NodeClearInfo info)
+        public virtual void OnExit(NodeExitInfo info)
         {
             
         }

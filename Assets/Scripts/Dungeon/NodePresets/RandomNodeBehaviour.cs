@@ -12,7 +12,7 @@ namespace Cardevil.Dugeon.NodePresets
             LogEx.Log("Entering Random Node: Player encounters a random event.");
         }
 
-        public override void OnExit(NodeClearInfo clearInfo)
+        public override void OnExit(NodeExitInfo exitInfo)
         {
             LogEx.Log("Exiting Random Node: Player leaves the random event.");
         }
