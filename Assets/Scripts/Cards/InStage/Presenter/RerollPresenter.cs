@@ -1,5 +1,3 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
 using Cardevil.Core;
 using Cardevil.Systems;
 using Cardevil.Utils;
@@ -15,8 +13,6 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class RerollPresenter : ITurnRerollInput, IClearable
     {
-        private IReadOnlyCardLibrary _library;
-        
         private StageCardsModel _model;
         private RerollView _view;
         private CardVisualSettingSO _visualSetting;
@@ -32,20 +28,14 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model)
+        /// <param name="model">현재 스테이지의 카드 상태를 관리하는 <see cref="StageCardsModel"/> 인스턴스.</param>
+        public void Init(StageCardsModel model)
         {
             if (_isInitialized) return;
-
-            if (library == null)
-            {
-                LogEx.LogError("library is null");
-                return;
-            }
-            _library = library;
             
             if (model == null)
             {
-                LogEx.LogError("model is null");
+                LogEx.LogError("Init() 실패 — model이 null입니다.");
                 return;
             }
             _model = model;
@@ -73,23 +63,6 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _maxHand = maxHand;
             _cmp = new UniTaskCompletionSource();
-            
-            // Model
-            _model.SetUp(maxHand, 3);
-
-            for (int i = 0; i < _library.Count; i++)
-            {
-                var data = _library.GetCardDataById(i);
-                if (data == null)
-                {
-                    LogEx.LogError("data is null");
-                    continue;
-                }
-                
-                _model.AddDataInDeck(data);
-            }
-            
-            _model.Shuffle();
             
             // View
             var views = Object.FindObjectsByType<RerollView>(FindObjectsSortMode.None);
@@ -169,7 +142,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 // 버리기 Tween
                 foreach (var card in _model.Hand)
                 {
-                    card.DoRerollDiscard();
+                    card.RerollDiscard(_view.DeckVisual.Front);
                     await UniTask.Delay(TimeSpan.FromSeconds(discard));
                 }
 
@@ -181,7 +154,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 for (int i = 0; i < _maxHand; i++)
                 {
                     var card = Spawn();
-                    card.DoRerollDraw();
+                    card.RerollDrawn?.Invoke();
                     await UniTask.Delay(TimeSpan.FromSeconds(draw));
                 }
 
@@ -206,12 +179,9 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             var cardData = _model.PopCard();
             if (cardData == null) return null;
-
-            var spriteSet = _library.GetVisualSpriteSetById(cardData.Id);
-            if (spriteSet == null) return null;
             
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, spriteSet, _model);
+            card.Init(cardData, _model);
             card.SetRerollState(true);
 
             _model.Draw(card);

@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 using Random = UnityEngine.Random;
+using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
@@ -19,18 +20,20 @@ namespace Cardevil.Cards.InStage.Model
     [Serializable]
     public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
     {
-        private List<CardData> _deck = new();
-        private List<CardData> _discardPile = new();
+        private List<InStageCardData> _deck = new();
+        private List<InStageCardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
-        
+
         #region IReadOnlyStageCardsModel
+        
+        public event Action HandChanged;
         
         public int MaxHand { get; private set; }
         public int DiscardRemain { get; private set; }
         
-        public IReadOnlyList<CardData> Deck => _deck;
-        public IReadOnlyList<CardData> DiscardPile => _discardPile;
+        public IReadOnlyList<InStageCardData> Deck => _deck;
+        public IReadOnlyList<InStageCardData> DiscardPile => _discardPile;
         public IReadOnlyList<Card> Hand => _hand;
         public IReadOnlyCollection<Card> Selection => _selection;
         public IReadOnlyList<Card> SortedSelection => _selection.OrderBy(c => _hand.IndexOf(c)).ToList();
@@ -49,38 +52,20 @@ namespace Cardevil.Cards.InStage.Model
         /// 덱 상태만 기준으로 카드를 사용할 수 있는지 여부를 반환.
         /// (플레이어 턴/입력 가능 여부 등은 고려하지 않음)
         /// </summary>
-        public bool CanUseCard
-        {
-            get
-            {
-                if (_selection.Count == 0)
-                    return false;
-
-                foreach (var card in _selection)
-                {
-                    var data = card.Data;
-                    if (data.Kind == CardKind.Attack && data.NumberSelectState.FinalValue != null)
-                        continue;
-                    if (data.Kind == CardKind.Move && data.DirectionSelectState.FinalValue != null)
-                        continue;
-
-                    return false;
-                }
-
-                return true;
-            }
-        }
+        public bool CanUseCard => _selection.Count > 0 && _selection.All(c => c.Data.Kind == CardKind.Number
+            ? c.Data.Number.SelectState.FinalValue != null
+            : c.Data.Move.SelectState.FinalValue != null);
 
         /// <summary>
-        /// 최대 손패 수와 초기 버리기 횟수를 설정.
+        /// 주어진 카드 목록으로 스테이지 덱을 설정,
+        /// 최대 손패 수와 초기 버리기 횟수를 설정
         /// </summary>
-        public void SetUp(int maxHand, int initialDiscardCount)
+        public void SetUp(List<InStageCardData> cards, int maxHand, int initialDiscardCount)
         {
+            _deck = cards;
             MaxHand = maxHand;
             DiscardRemain = initialDiscardCount;
         }
-
-        public void AddDataInDeck(CardData cardData) => _deck.Add(cardData);
         
         /// <summary>
         /// 모든 카드를 덱으로 되돌린 뒤 섞음.
@@ -88,25 +73,20 @@ namespace Cardevil.Cards.InStage.Model
         /// </summary>
         public void Shuffle()
         {
-            if (_discardPile.Count != 0)
-            {
-                _deck.AddRange(_discardPile);
-                _discardPile.Clear();
-            }
-            if (_hand.Count != 0)
-            {
-                _deck.AddRange(_hand.Select(c => c.Data));
-                _hand.Clear();
-            }
-            
+            _deck.AddRange(_discardPile);
+            _deck.AddRange(_hand.Select(c => c.Data));
+
+            _discardPile.Clear();
+            _hand.Clear();
+
             if (_deck.Count != 50)
             {
-                LogEx.LogError("덱의 초기화에 실패했습니다.");
+                Debug.LogError("덱의 초기화에 실패했습니다.");
                 Clear();
                 return;
             }
 
-            _deck.ShuffleListInPlace();
+            // DeckFactory.Shuffle(_deck);
         }
         
         /// <summary>
@@ -131,6 +111,7 @@ namespace Cardevil.Cards.InStage.Model
         public void Select(Card card)
         {
             _selection.Add(card);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -139,6 +120,7 @@ namespace Cardevil.Cards.InStage.Model
         public void Deselect(Card card)
         {
             _selection.Remove(card);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -150,6 +132,7 @@ namespace Cardevil.Cards.InStage.Model
         {
             if (!TryGetIndex(a, out var indexA)) return;
             (_hand[indexA], _hand[indexB]) = (_hand[indexB], _hand[indexA]);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -158,6 +141,7 @@ namespace Cardevil.Cards.InStage.Model
         public void Draw(Card card)
         {
             _hand.Add(card);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -168,6 +152,7 @@ namespace Cardevil.Cards.InStage.Model
             _hand.Remove(card);
             _selection.Remove(card);
             _discardPile.Add(card.Data);
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -210,6 +195,7 @@ namespace Cardevil.Cards.InStage.Model
                 .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
+            HandChanged?.Invoke();
         }
         
         /// <summary>
@@ -230,6 +216,7 @@ namespace Cardevil.Cards.InStage.Model
                 .ThenBy(NumberSelectedValueOrder)
 
                 .ToList();
+            HandChanged?.Invoke();
         }
 
         /// <summary>
@@ -249,7 +236,7 @@ namespace Cardevil.Cards.InStage.Model
         /// <summary>
         /// 덱에서 랜덤한 카드를 반환하기만 함. 삭제하진 않음.
         /// </summary>
-        public CardData GetRandomCard()
+        public InStageCardData GetRandomCard()
         {
             int randomIndex = Random.Range(0, _deck.Count);
             return _deck[randomIndex];
@@ -258,7 +245,7 @@ namespace Cardevil.Cards.InStage.Model
         /// <summary>
         /// 덱의 첫 카드를 반환하고 덱에서 삭제함.
         /// </summary>
-        public CardData PopCard()
+        public InStageCardData PopCard()
         {
             if (_deck.Count == 0)
             {
@@ -266,7 +253,6 @@ namespace Cardevil.Cards.InStage.Model
                 return null;
             }
 
-            // Card Data
             var cardData = _deck[0];
             _deck.RemoveAt(0);
             // cardData.OnDraw();
@@ -281,17 +267,17 @@ namespace Cardevil.Cards.InStage.Model
             if (c.Data.Kind != CardKind.Move)
                 return int.MaxValue;
 
-            return c.Data.DirectionSelectState.Selectables.Count;
+            return c.Data.Move.SelectState.Selectables.Count;
         }
         
         private static int DirectionOrder(Card c)
         {
             if (c.Data.Kind != CardKind.Move)
                 return int.MaxValue;
-            if (!c.Data.DirectionSelectState.FinalValue.HasValue)
+            if (!c.Data.Move.SelectState.FinalValue.HasValue)
                 return 5;
             
-            return c.Data.DirectionSelectState.FinalValue switch
+            return c.Data.Move.SelectState.FinalValue switch
             {
                 Utils.Directions.Direction.Up => 0,
                 Utils.Directions.Direction.Down => 1,
@@ -308,30 +294,49 @@ namespace Cardevil.Cards.InStage.Model
         
         private static int NumberSelectTypeOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Attack)
+            if (c.Data.Kind != CardKind.Number)
                 return int.MinValue;
+            
+            if (c.Data.Number == null)
+            {
+                LogEx.LogError("Number Data가 존재하지 않음!");
+                return 0;
+            }
 
-            return c.Data.NumberSelectState.Selectables.Count;
+            return c.Data.Number.SelectState.Selectables.Count;
         }
 
         private static int NumberColorOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Attack)
+            if (c.Data.Kind != CardKind.Number)
                 return int.MinValue;
 
-            return (int)c.Data.Color;
+            if (c.Data.Number == null)
+            {
+                LogEx.LogError("Number Data가 존재하지 않음!");
+                return 0;
+            }
+
+            return (int)c.Data.Number.Color;
         }
 
         private static int NumberSelectedValueOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Attack)
+            if (c.Data.Kind != CardKind.Number)
                 return int.MinValue;
 
-            if (!c.Data.NumberSelectState.FinalValue.HasValue)
+            if (c.Data.Number == null)
+            {
+                LogEx.LogError("Number Data가 존재하지 않음!");
+                return 0;
+            }
+
+            if (!c.Data.Number.SelectState.FinalValue.HasValue)
                 return int.MaxValue;
 
-            return (int)c.Data.NumberSelectState.FinalValue;
+            return (int)c.Data.Number.SelectState.FinalValue;
         }
+        
         
         #endregion
     }

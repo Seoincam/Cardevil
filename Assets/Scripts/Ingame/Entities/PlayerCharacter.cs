@@ -152,10 +152,10 @@ namespace Cardevil.Ingame.Entities
             //TODO 이동 로직 구현
             foreach (var move in result.Moves)
             {
-                if (!move.DirectionSelectState.FinalValue.HasValue)
+                if (!move.SelectState.FinalValue.HasValue)
                     continue;
 
-                Move((Direction)move.DirectionSelectState.FinalValue, move.Length);
+                Move((Direction)move.SelectState.FinalValue, move.Length);
                 await UniTask.Delay(100);
             }
             LogEx.Log("Player Move Completed!");

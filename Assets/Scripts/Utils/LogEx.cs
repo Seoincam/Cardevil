@@ -143,11 +143,6 @@ namespace Cardevil.Utils
             return false;
         }
         string stackTrace = GetStackTrace();
-        var firstLine = stackTrace?.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)[0];
-        if (firstLine == null || !firstLine.Contains(LoggerCs))
-        {
-            return false;
-        }
         if(!string.IsNullOrEmpty(stackTrace)) // can customize the label to be added here; the original code is confusing and does not need to be modified, you need to locate it yourself;
         {
             Match matches = Regex.Match(stackTrace, @"\(at(.+)\)", RegexOptions.IgnoreCase);

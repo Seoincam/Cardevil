@@ -1,6 +1,5 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
@@ -80,12 +79,12 @@ namespace Cardevil.Cards.Evaluations
         {
             EvaluationArg arg;
             
-            List<Card> attackCards = cards.Where(c => c.Data.Kind == CardKind.Attack).ToList();
+            List<Card> numberCards = cards.Where(c => c.Data.Kind == CardKind.Number).ToList();
             List<Card> moveCards = cards.Where(c => c.Data.Kind == CardKind.Move).ToList();
-            List<CardData> moves = moveCards.Select(c => c.Data).ToList();
+            List<BuiltMoveData> moves = moveCards.Select(c => c.Data.Move).ToList();
             
             // Move Only
-            if (attackCards.Count == 0 && moveCards.Count > 0)
+            if (numberCards.Count == 0 && moveCards.Count > 0)
             {
                 using (arg = EvaluationArg.Get())
                 {
@@ -99,7 +98,7 @@ namespace Cardevil.Cards.Evaluations
             }
             
             // 족보 계산
-            HandRanking handRanking = GetPrimaryHandRanking(attackCards, out List<Card> cardsInHandRanking);
+            HandRanking handRanking = GetPrimaryHandRanking(numberCards, out List<Card> cardsInHandRanking);
             _pending = new EvaluationResult(moves, handRanking);
             
             // 기본 족보 보너스
@@ -126,12 +125,12 @@ namespace Cardevil.Cards.Evaluations
             // 4장의 카드를 모두 쓰지 않는 경우를 따로 계산
             if (handRanking == HandRanking.High)
             {
-                var top = attackCards.Aggregate((best, cur) =>
-                    cur.Data.NumberSelectState.FinalValue > best.Data.NumberSelectState.FinalValue ? cur : best);
+                var top = numberCards.Aggregate((best, cur) =>
+                    cur.Data.Number.SelectState.FinalValue > best.Data.Number.SelectState.FinalValue ? cur : best);
                 using (arg = EvaluationArg.Get())
                 {
                     arg.SetEvent(_event);
-                    arg.SetValue(0, EffectEvaluation.Plus, (float)top.Data.NumberSelectState.FinalValue);
+                    arg.SetValue(0, EffectEvaluation.Plus, (float)top.Data.Number.SelectState.FinalValue);
                     arg.SetVisual(top);
                 }
             }
@@ -142,7 +141,7 @@ namespace Cardevil.Cards.Evaluations
                     using (arg = EvaluationArg.Get())
                     {
                         arg.SetEvent(_event);
-                        arg.SetValue(0, EffectEvaluation.Plus, (float)card.Data.NumberSelectState.FinalValue);
+                        arg.SetValue(0, EffectEvaluation.Plus, (float)card.Data.Number.SelectState.FinalValue);
                         arg.SetVisual(card);
                     }
                 }    
@@ -206,7 +205,7 @@ namespace Cardevil.Cards.Evaluations
         {
             cardsInHandRanking = new List<Card>();
             
-            var numberCards = cards.Where(c => c.Data.Kind == CardKind.Attack)
+            var numberCards = cards.Where(c => c.Data.Kind == CardKind.Number)
                 .ToList();
             
             if (numberCards.Count == 0)
@@ -223,7 +222,7 @@ namespace Cardevil.Cards.Evaluations
 
             if (IsFlush(numberCards, out cardsInHandRanking))
             {
-                var handRanking = numberCards[0].Data.Color switch
+                var handRanking = numberCards[0].Data.Number.Color switch
                 {
                     CardColor.Red => HandRanking.RedFlush,
                     CardColor.Green => HandRanking.GreenFlush,
@@ -305,7 +304,7 @@ namespace Cardevil.Cards.Evaluations
             if (numberCards.Count != 4) 
                 return false;
 
-            var values = numberCards.Select(c => c.Data.NumberSelectState.FinalValue)
+            var values = numberCards.Select(c => c.Data.Number.SelectState.FinalValue)
                     .OrderBy(v => v)
                     .ToList();
 
@@ -324,7 +323,7 @@ namespace Cardevil.Cards.Evaluations
             if (numberCards.Count != 4) 
                 return false;
             
-            bool value = numberCards.Select(c => c.Data.NumberSelectState.FinalValue)
+            bool value = numberCards.Select(c => c.Data.Number.SelectState.FinalValue)
                     .Distinct()
                     .Count() == 1;
             
@@ -354,7 +353,7 @@ namespace Cardevil.Cards.Evaluations
 
             // 같은 숫자 값으로 그룹화
             var group = numberCards
-                .GroupBy(c => c.Data.NumberSelectState.FinalValue)
+                .GroupBy(c => c.Data.Number.SelectState.FinalValue)
                 .FirstOrDefault(g => g.Count() == 4);
 
             if (group != null)
@@ -375,7 +374,7 @@ namespace Cardevil.Cards.Evaluations
 
             // 같은 숫자 값으로 그룹화
             var group = numberCards
-                .GroupBy(c => c.Data.NumberSelectState.FinalValue)
+                .GroupBy(c => c.Data.Number.SelectState.FinalValue)
                 .FirstOrDefault(g => g.Count() == 3);
 
             if (group != null)
@@ -394,7 +393,7 @@ namespace Cardevil.Cards.Evaluations
             if (numberCards.Count != 4)
                 return false;
 
-            var groupCount = numberCards.GroupBy(c => c.Data.NumberSelectState.FinalValue)
+            var groupCount = numberCards.GroupBy(c => c.Data.Number.SelectState.FinalValue)
                 .Count(g => g.Count() == 2);
 
             if (groupCount == 2)
@@ -412,7 +411,7 @@ namespace Cardevil.Cards.Evaluations
             if (numberCards.Count < 2)
                 return false;
 
-            var groupCount = numberCards.GroupBy(c => c.Data.NumberSelectState.FinalValue)
+            var groupCount = numberCards.GroupBy(c => c.Data.Number.SelectState.FinalValue)
                 .Count(g => g.Count() == 2);
 
             if (groupCount == 1)

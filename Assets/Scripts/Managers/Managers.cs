@@ -28,7 +28,7 @@ public class Managers : MonoBehaviour
     ExecutionManager _execution = new ExecutionManager();
     EventManager _event = new EventManager();
     TurnManager _turn = new TurnManager();
-    [SerializeField] CardManager _card = new CardManager();
+    CardManager _card = new CardManager();
     ItemManager _item = new ItemManager();
     [SerializeField] RelicManager _relic = new RelicManager();
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
