@@ -1,6 +1,5 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.View;
@@ -18,7 +17,8 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     [RequireComponent(typeof(Poolable))]
     public class Card : MonoBehaviour, IEvaluateVisual, IClearable,
-                        IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+                        IDragHandler, IBeginDragHandler, IEndDragHandler, 
+                        IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
@@ -28,17 +28,14 @@ namespace Cardevil.Cards.InStage.Presenter
         [SerializeField, VisibleOnly] private CardVisual visual;
         [SerializeField, VisibleOnly] private CardState state;
         
-        public event Action DragStarted, DragEnded, Discarded;
-        public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
-        public Action<Card> ValueSelectionStarted, ValueSelectionEnded; // TODO: 외부에서 호출되지 않도록 메서드로 감싸기
-
-        public Action RerollDrawn, RerollEnded;
-        public event Action<Transform> RerollDiscarded;
-        public Action Drawn; 
+        private event Action DragStart, DragEnd;
+        private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
         
         private Poolable _poolable;
         private IReadOnlyStageCardsModel _model;
-        
+
+        #region Property
+
         public CardData Data => data;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
@@ -54,19 +51,17 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
 
+        #endregion
+        
+        #region Unity Event
+
         private void Awake()
         {
             Clear();
             _poolable = GetComponent<Poolable>();
             _poolable.OnRelease += Clear;
         }
-
-        public void Clear()
-        {
-            state = new CardState();
-            visual = null;
-        }
-
+        
         private void Update()
         {
             if (state.isDiscarded) return;
@@ -83,14 +78,22 @@ namespace Cardevil.Cards.InStage.Presenter
                 transform.Translate(velocity * Time.deltaTime);
             }
         }
-        
+
+        #endregion
+
+        #region Initialization
+
         /// <summary>
-        /// 주어진 데이터를 바탕으로 초기화.
-        /// Visual도 함께 생성.
+        /// 카드 데이터 및 비주얼 초기화.
+        /// 지정된 <see cref="CardData"/>와 <see cref="CardVisualSpriteSet"/>을 기반으로
+        /// 카드 오브젝트 생성 및 비주얼 요소 설정.
         /// </summary>
-        public void Init(CardData data, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
+        /// <param name="cardData">카드 데이터 객체</param>
+        /// <param name="visualSpriteSet">비주얼 스프라이트 세트</param>
+        /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
+        public void Init(CardData cardData, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
         {
-            this.data = data;
+            data = cardData;
             _model = model;
             
             // Card Visual
@@ -100,39 +103,91 @@ namespace Cardevil.Cards.InStage.Presenter
             var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
             visual.Init(this, visualSpriteSet, model);
+            WireVisual(visual);
         }
 
+        public void Clear()
+        {
+            state = new CardState();
+            visual = null;
+        }
+
+        #endregion
+        
+        #region Reroll
+
+        /// <summary>
+        /// 리롤 상태 설정.
+        /// 지정된 값에 따라 리롤 상태를 갱신하고, 해제 시 비주얼 종료 처리.
+        /// </summary>
+        /// <param name="value">리롤 상태 값</param>
         public void SetRerollState(bool value)
         {
             state.isReroll = value;
-            if (!value) RerollEnded?.Invoke();
+            if (!value) 
+                visual.EndReroll();
         }
         
+        /// <summary>
+        /// 리롤 드로우 애니메이션 실행.
+        /// 비주얼 연출 수행.
+        /// </summary>
+        public void DoRerollDraw()
+        {
+            visual.AnimateRerollDraw();
+        }
+        
+        /// <summary>
+        /// (리롤) 버리기 처리.
+        /// 리롤 상태 설정 후 버리기 애니메이션 실행 및 카드 오브젝트 풀에 반환.
+        /// </summary>
+        public void DoRerollDiscard()
+        {
+            state.isReroll = true;
+            visual.AnimateRerollDiscard();
+            Managers.Resource.Destroy(gameObject);
+        }
+
+        #endregion
+
+        #region Draw/Discard
+
+        /// <summary>
+        /// 뽑기 애니메이션 실행.
+        /// </summary>
+        public void DoDraw()
+        {
+            visual.AnimateDraw();
+        }
+        
+        /// <summary>
+        /// 버리기 처리.
+        /// 카드 버리기 상태 설정 후 비주얼 해제 및 오브젝트 풀에 반환.
+        /// </summary>
+        public void DoDiscard()
+        {
+            state.isDiscarded = true;
+            
+            UnwireVisual(visual);
+            visual.Discard();
+            
+            Managers.Resource.Destroy(gameObject);
+        }
+
+        #endregion
+
+        #region Presenter
+
+        /// <summary>
+        /// 카드 위치 갱신.
+        /// 선택 및 드래그 상태에 따라 로컬 위치 조정.
+        /// </summary>
         public void UpdatePosition()
         {
             if (state.isDragging) return;
 
             float newY = state.isSelected ? visualSetting.SelectOffset : 0;
             transform.localPosition = new Vector3(0, newY, 0);
-        }
-
-        public void Discard()
-        {
-            state.isDiscarded = true;
-            Discarded?.Invoke();
-            Managers.Resource.Destroy(gameObject);
-        }
-        
-        public void RerollDiscard(Transform target)
-        {
-            state.isReroll = true;
-            RerollDiscarded?.Invoke(target);
-            Managers.Resource.Destroy(gameObject);
-        }
-
-        public void ExecuteEvaluationAction()
-        {
-            visual.ExecuteEvaluationAction();
         }
         
         /// <summary>
@@ -144,7 +199,11 @@ namespace Cardevil.Cards.InStage.Presenter
             float newY = value ? visualSetting.SelectOffset : 0;
             transform.localPosition = new Vector3(0, newY, 0);
         }
-
+        
+        /// <summary>
+        /// 전체 카드 드래그 상태 설정.
+        /// 다른 카드의 드래그 여부를 표시하는 상태 값 지정.
+        /// </summary>
         public void SetAnyCardDragged(bool value)
         {
             state.isAnyCardDragged = value;
@@ -159,9 +218,53 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             visual?.UpdateVisualIndex();
         }
+        
+        #endregion
+        
+        public void ExecuteEvaluationAction()
+        {
+            visual.ExecuteEvaluationAction();
+        }
 
+        #region Wire
 
-        #region Point Event
+        public void AddDragStart(Action h) => DragStart += h;
+        public void RemoveDragStart(Action h) => DragStart -= h;
+        
+        public void AddDragEnd(Action h) => DragEnd += h;
+        public void RemoveDragEnd(Action h) => DragEnd -= h;
+
+        public void AddPointerDown(Action<Card, CardPointerArgs> h) => PointerDown += h;
+        public void RemovePointerDown(Action<Card, CardPointerArgs> h) => PointerDown -= h;
+
+        public void AddPointerUp(Action<Card, CardPointerArgs> h) => PointerUp += h;
+        public void RemovePointerUp(Action<Card, CardPointerArgs> h) => PointerUp -= h;
+        
+        private void WireVisual(CardVisual cardVisual)
+        {
+            if (!cardVisual) return;
+            
+            DragStart += cardVisual.OnDragStart;
+            DragEnd += cardVisual.OnDragEnd;
+
+            PointerDown += cardVisual.OnPointerDown;
+            PointerUp += cardVisual.OnPointerUp;
+        }
+
+        private void UnwireVisual(CardVisual cardVisual)
+        {
+            if (!cardVisual) return;
+            
+            DragStart -= cardVisual.OnDragStart;
+            DragEnd -= cardVisual.OnDragEnd;
+            
+            PointerDown -= cardVisual.OnPointerDown;
+            PointerUp -= cardVisual.OnPointerUp;
+        }
+        
+        #endregion
+
+        #region Pointer Event Interfaces
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -196,7 +299,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
                 // TODO: 실행자 수정
                 // _handBar.selectContainer.OpenSelection(this);
-                ValueSelectionStarted?.Invoke(this);
+                // ValueSelectionStarted?.Invoke(this);
             }
         }
 
@@ -208,7 +311,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!CanInteraction)
                 return;
 
-            DragStarted?.Invoke();
+            DragStart?.Invoke();
             state.isDragging = true;
         }
 
@@ -224,7 +327,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!CanInteraction)
                 return;
 
-            DragEnded?.Invoke();
+            DragEnd?.Invoke();
             transform.DOLocalMove(
                     endValue: state.isSelected
                         ? new Vector3(0, visualSetting.SelectOffset, 0)
