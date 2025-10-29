@@ -9,9 +9,12 @@ namespace Cardevil.Relics.OnEvaluation
     [Serializable]
     public class DamageByHandRankingEffect : RelicEffectBase, IRelicEffectOnEvaluation
     {
+        [Header("By HandRanking")]
         [SerializeField, VisibleOnly] private HandRanking triggerHandRanking;
-        [SerializeField, VisibleOnly] private bool isPlus;
-        [SerializeField, VisibleOnly] private float damage;
+        
+        [Space, SerializeField, VisibleOnly] private bool isPlus;
+        [SerializeField, VisibleOnly] private int damageAmount;
+        [SerializeField, VisibleOnly] private float damageMultiplier;
         
         public bool CanTrigger(IReadOnlyEvaluationResultsModel resultModel)
         {
@@ -19,13 +22,15 @@ namespace Cardevil.Relics.OnEvaluation
         }
 
         public DamageByHandRankingEffect(string effectId, 
-            HandRanking triggerHandRanking, bool isPlus, float damage)
+            HandRanking triggerHandRanking, bool isPlus, float value)
         {
             this.effectId = effectId;
             
             this.triggerHandRanking = triggerHandRanking;
+            
             this.isPlus = isPlus;
-            this.damage = damage;
+            if (isPlus) damageAmount = (int)value;
+            else damageMultiplier = value;
         }
     }
 }
