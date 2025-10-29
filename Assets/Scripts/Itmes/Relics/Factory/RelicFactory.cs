@@ -38,9 +38,9 @@ namespace Cardevil.Items.Relics.Factory
                     var effect = RelicEffectRegistry.Create(spec);
                     results.Add(effect);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    LogEx.LogError($"Failed to create relic effect. (Id: {spec.EffectId})");
+                    LogEx.LogError($"Failed to create relic effect. (Id: {spec.EffectId}) : {ex.Message}");
                 }
             }
 
