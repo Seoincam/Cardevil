@@ -10,6 +10,8 @@ namespace Database
     public class McDatabase
     {
         public List<Example> ExampleList = new List<Example>();
+        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
+        public List<Heal> HealList = new List<Heal>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
         public List<MachineProbabillity> MachineProbabillityList = new List<MachineProbabillity>();
@@ -17,6 +19,8 @@ namespace Database
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
         public readonly List<string> ClassNames = new List<string> {
             "Example",
+            "BaseMobBossData",
+            "Heal",
             "HandRankingData",
             "MachineReward",
             "MachineProbabillity",
@@ -59,6 +63,8 @@ namespace Database
         public void ClearAll()
         {
             ExampleList.Clear();
+            BaseMobBossDataList.Clear();
+            HealList.Clear();
             HandRankingDataList.Clear();
             MachineRewardList.Clear();
             MachineProbabillityList.Clear();
@@ -91,6 +97,12 @@ namespace Database
                     case "Example":
                         ExampleList = CreateInstance<Example>(df);
                         break;
+                    case "BaseMobBossData":
+                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
+                        break;
+                    case "Heal":
+                        HealList = CreateInstance<Heal>(df);
+                        break;
                     case "HandRankingData":
                         HandRankingDataList = CreateInstance<HandRankingData>(df);
                         break;
@@ -121,6 +133,14 @@ namespace Database
                 case "Example":
                     var newExampleItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Example>>(json);
                     ExampleList.AddRange(newExampleItems);
+                    break;
+                case "BaseMobBossData":
+                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
+                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
+                    break;
+                case "Heal":
+                    var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
+                    HealList.AddRange(newHealItems);
                     break;
                 case "HandRankingData":
                     var newHandRankingDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<HandRankingData>>(json);
@@ -155,6 +175,10 @@ namespace Database
             {
                 case "Example":
                     return typeof(Example);
+                case "BaseMobBossData":
+                    return typeof(BaseMobBossData);
+                case "Heal":
+                    return typeof(Heal);
                 case "HandRankingData":
                     return typeof(HandRankingData);
                 case "MachineReward":
