@@ -58,9 +58,9 @@ namespace Cardevil.DataStructure.Serializables
             }
         }
         
-        public static SerializableDictionary<TKey, TValue> FromDictionary(Dictionary<TKey, TValue> dict)
+        public static SerializableReferenceDictionary<TKey, TValue> FromDictionary(Dictionary<TKey, TValue> dict)
         {
-            var serializableDict = new SerializableDictionary<TKey, TValue>();
+            var serializableDict = new SerializableReferenceDictionary<TKey, TValue>();
             foreach (var kvp in dict)
             {
                 serializableDict[kvp.Key] = kvp.Value;
