@@ -68,63 +68,7 @@ MonoBehaviour:
   dungeonChapterUI: {fileID: 0}
   dungeonNode:
     dungeon:
-      dungeonId: 0
-      dungeonConfiguration: {fileID: 0}
-      rootNode:
-        dungeon:
-          dungeonId: 0
-          dungeonConfiguration: {fileID: 0}
-          rootNode:
-            dungeon:
-              dungeonId: 0
-              dungeonConfiguration: {fileID: 0}
-              rootNode:
-                dungeon:
-                  dungeonId: 0
-                  dungeonConfiguration: {fileID: 0}
-                  rootNode:
-                    dungeon:
-                      dungeonId: 0
-                      dungeonConfiguration: {fileID: 0}
-                      rootNode:
-                        nodeId: 0
-                        floor: 0
-                        <IsBranchStart>k__BackingField: 0
-                        <IsInBranch>k__BackingField: 0
-                        <IsBranchEnd>k__BackingField: 0
-                      nodes: []
-                    nodeId: 0
-                    floor: 0
-                    type: 0
-                    preset: {fileID: 0}
-                    <IsBranchStart>k__BackingField: 0
-                    <IsInBranch>k__BackingField: 0
-                    <IsBranchEnd>k__BackingField: 0
-                  nodes: []
-                nodeId: 0
-                floor: 0
-                type: 0
-                preset: {fileID: 0}
-                <IsBranchStart>k__BackingField: 0
-                <IsInBranch>k__BackingField: 0
-                <IsBranchEnd>k__BackingField: 0
-              nodes: []
-            nodeId: 0
-            floor: 0
-            type: 0
-            preset: {fileID: 0}
-            <IsBranchStart>k__BackingField: 0
-            <IsInBranch>k__BackingField: 0
-            <IsBranchEnd>k__BackingField: 0
-          nodes: []
-        nodeId: 0
-        floor: 0
-        type: 0
-        preset: {fileID: 0}
-        <IsBranchStart>k__BackingField: 0
-        <IsInBranch>k__BackingField: 0
-        <IsBranchEnd>k__BackingField: 0
-      nodes: []
+      rid: -2
     nodeId: 0
     floor: 0
     type: 0
@@ -133,6 +77,11 @@ MonoBehaviour:
     <IsInBranch>k__BackingField: 0
     <IsBranchEnd>k__BackingField: 0
   nodeId: -1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!114 &7932035073756896530
 MonoBehaviour:
   m_ObjectHideFlags: 0

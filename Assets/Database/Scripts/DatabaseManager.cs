@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Cardevil.Scriptable.Cache;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;

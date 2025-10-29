@@ -1,6 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.Modifiers;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 ﻿using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Manager;
 using System;
 using UnityEngine;

@@ -4,6 +4,7 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using JetBrains.Annotations;
 using System;

@@ -1,5 +1,6 @@
 using Cardevil.Core;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Pools;
 using System;
 using System.Collections;

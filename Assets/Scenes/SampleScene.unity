@@ -142,6 +142,7 @@ MonoBehaviour:
   attackCreateCycle: 3
   isAttackSuccess: 0
   isPlayerAttack: 1
+  delayAttackByRelic: 0
 --- !u!1001 &362800788
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1495,6 +1496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mcDatabase:
     ExampleList: []
+    BaseMobBossDataList: []
     HandRankingDataList: []
     MachineRewardList: []
     MachineProbabillityList: []
@@ -1509,7 +1511,7 @@ MonoBehaviour:
   spriteCacheIndex: {fileID: 0}
   <SpriteCache>k__BackingField:
     defaultKey: 
-    data: []
+    _items: []
 --- !u!4 &683164374
 Transform:
   m_ObjectHideFlags: 0
@@ -1517,156 +1519,6 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 683164372}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &799136583
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 799136585}
-  - component: {fileID: 799136584}
-  m_Layer: 0
-  m_Name: '@Manager'
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &799136584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 799136583}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16129f8d2ad92cd48ac65dcf2f94dd6c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _pool:
-    _initialSize: 3
-    _maxSize: 100
-    _factories:
-      defaultKey: 
-      data: []
-    _pools:
-      defaultKey: 
-      data: []
-  _saveload:
-    DefaultSaveName: AutoSave
-    _exceptionScenes: []
-    _currentSave:
-      Name: DefaultSave
-      RawSaveTime: -8584430706108793894
-      PlayerStatus:
-        _currentHP: 3
-        _maxHP: 3
-        _shield: 0
-        _rerollTicket: 0
-        _variableContainer:
-          variables: []
-        gold: 0
-  _sound:
-    root: {fileID: 0}
-    audioMixer: {fileID: 0}
-    audioMixerGroups: []
-    defaultVolume: 0.75
-    _defaultBackgroundAudioConfiguration: {fileID: 0}
-    _defaultSoundEffectAudioConfiguration: {fileID: 0}
-    _sfxEmitters: []
-    _cachedBackgroundSoundEmitters:
-      defaultKey: 
-      data: []
-    _currentPlayingBackgroundMusicName: 
-  _relic:
-    _allRelics: []
-    _allEffects: []
-    _playerRelics: []
-    _playerEffects: []
-  _dungeon:
-    dungeonConfigurations: []
-    dungeons: []
-    dungeonUI: {fileID: 0}
-    currentNode:
-      dungeon:
-        dungeonId: 0
-        dungeonConfiguration: {fileID: 0}
-        rootNode:
-          dungeon:
-            dungeonId: 0
-            dungeonConfiguration: {fileID: 0}
-            rootNode:
-              dungeon:
-                dungeonId: 0
-                dungeonConfiguration: {fileID: 0}
-                rootNode:
-                  dungeon:
-                    dungeonId: 0
-                    dungeonConfiguration: {fileID: 0}
-                    rootNode:
-                      dungeon:
-                        dungeonId: 0
-                      nodeId: 0
-                      floor: 0
-                      type: 0
-                      preset: {fileID: 0}
-                      <IsBranchStart>k__BackingField: 0
-                      <IsInBranch>k__BackingField: 0
-                      <IsBranchEnd>k__BackingField: 0
-                    nodes: []
-                  nodeId: 0
-                  floor: 0
-                  type: 0
-                  preset: {fileID: 0}
-                  <IsBranchStart>k__BackingField: 0
-                  <IsInBranch>k__BackingField: 0
-                  <IsBranchEnd>k__BackingField: 0
-                nodes: []
-              nodeId: 0
-              floor: 0
-              type: 0
-              preset: {fileID: 0}
-              <IsBranchStart>k__BackingField: 0
-              <IsInBranch>k__BackingField: 0
-              <IsBranchEnd>k__BackingField: 0
-            nodes: []
-          nodeId: 0
-          floor: 0
-          type: 0
-          preset: {fileID: 0}
-          <IsBranchStart>k__BackingField: 0
-          <IsInBranch>k__BackingField: 0
-          <IsBranchEnd>k__BackingField: 0
-        nodes: []
-      nodeId: 0
-      floor: 0
-      type: 0
-      preset: {fileID: 0}
-      <IsBranchStart>k__BackingField: 0
-      <IsInBranch>k__BackingField: 0
-      <IsBranchEnd>k__BackingField: 0
-  _database: {fileID: 683164373}
-  references:
-    version: 2
-    RefIds: []
---- !u!4 &799136585
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 799136583}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -1825,10 +1677,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 907533169433264897, guid: 54cd319e68296884697a60275bff2ff2, type: 3}
-      propertyPath: testAudioResourcePath
-      value: Dev/music_jingle/Pizzicato jingles/jingles_PIZZI04
-      objectReference: {fileID: 0}
     - target: {fileID: 6879711159943004532, guid: 54cd319e68296884697a60275bff2ff2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.6601758
@@ -2682,6 +2530,103 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93d3f4657318363438a75c0a2852265f, type: 3}
+--- !u!1001 &7423361803755409626
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1430788552321671610, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _database
+      value: 
+      objectReference: {fileID: 683164373}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: 'managedReferences[-2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._factories.defaultKey
+      value: asa
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._pools._items.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._factories._items.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._pools._items.Array.data[0].Value
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._factories._items.Array.data[0].Key
+      value: asa
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._factories._items.Array.data[1].Key
+      value: asd
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._factories._items.Array.data[2].Key
+      value: asa
+      objectReference: {fileID: 0}
+    - target: {fileID: 4297439622610470747, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: _pool._factories._items.Array.data[0].Value
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9149789340131411427, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
+      propertyPath: m_Name
+      value: '@Manager'
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 785a7a91da7000e44aa9a8ff645285f5, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2691,7 +2636,7 @@ SceneRoots:
   - {fileID: 2061991160}
   - {fileID: 563600088}
   - {fileID: 1538176313}
-  - {fileID: 799136585}
+  - {fileID: 7423361803755409626}
   - {fileID: 683164374}
   - {fileID: 1736170422}
   - {fileID: 619394802}

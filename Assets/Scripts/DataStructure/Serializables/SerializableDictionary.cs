@@ -1,22 +1,21 @@
 ﻿using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditorInternal;
-#endif
-namespace Cardevil.DataStructure
+
+namespace Cardevil.DataStructure.Serializables
 {
     [System.Serializable]
     public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
     {
         [SerializeField] private TKey defaultKey;
-    
+        
+        
         [System.Serializable]
         public class SerializableKeyValuePair
         {
-            [FormerlySerializedAs("key")] public TKey Key;
-            [FormerlySerializedAs("value")] public TValue Value;
+            [FormerlySerializedAs("key")] [SerializeField] public TKey Key;
+            [FormerlySerializedAs("value")] [SerializeField] public TValue Value;
             
             public SerializableKeyValuePair(TKey key, TValue value)
             {
@@ -25,7 +24,7 @@ namespace Cardevil.DataStructure
             }
         }
     
-        [FormerlySerializedAs("data")] [SerializeField] private List<SerializableKeyValuePair> _items = new List<SerializableKeyValuePair>();
+        [FormerlySerializedAs("data")][SerializeField] private List<SerializableKeyValuePair> _items = new List<SerializableKeyValuePair>();
     
         public void OnBeforeSerialize()
         {
@@ -171,6 +170,11 @@ namespace Cardevil.DataStructure
         {
             using (new EditorGUI.IndentLevelScope(1))
             {
+                if (defaultKey == null)
+                {
+                    EditorGUI.LabelField(rect, "Default Key: not serializable");
+                    return;
+                }
                 // “다음 Add에 사용할 Key”
                 EditorGUI.PropertyField(rect, defaultKey, new GUIContent("Next Key (on Add)"), true);
             }
@@ -185,8 +189,8 @@ namespace Cardevil.DataStructure
                 var key = elem.FindPropertyRelative("Key");
                 var val = elem.FindPropertyRelative("Value");
 
-                float keyH = EditorGUI.GetPropertyHeight(key, true);
-                float valH = EditorGUI.GetPropertyHeight(val, true);
+                float keyH = key != null ? EditorGUI.GetPropertyHeight(key, true) : EditorGUIUtility.singleLineHeight;
+                float valH = val != null ? EditorGUI.GetPropertyHeight(val, true) : EditorGUIUtility.singleLineHeight;
                 bool singleLine = Mathf.Max(keyH, valH) <= EditorGUIUtility.singleLineHeight + 2f;
 
                 float rowH = singleLine
@@ -208,11 +212,12 @@ namespace Cardevil.DataStructure
             for (int i = 0; i < items.arraySize; i++)
             {
                 var elem = items.GetArrayElementAtIndex(i);
+                var enumerator = elem.GetChildProperties().GetEnumerator();
                 var key = elem.FindPropertyRelative("Key");
                 var val = elem.FindPropertyRelative("Value");
 
-                float keyH = EditorGUI.GetPropertyHeight(key, true);
-                float valH = EditorGUI.GetPropertyHeight(val, true);
+                float keyH = key != null ? EditorGUI.GetPropertyHeight(key, true) : EditorGUIUtility.singleLineHeight;
+                float valH = val != null ? EditorGUI.GetPropertyHeight(val, true) : EditorGUIUtility.singleLineHeight;
                 float rowH = Mathf.Max(keyH, valH) + 8f;
 
                 Rect rowRect = new Rect(x, y, w, rowH);
@@ -246,17 +251,31 @@ namespace Cardevil.DataStructure
                     float valLabelW = valRect.width * 0.3f;
 
                     // Key
-                    EditorGUI.BeginProperty(keyRect, GUIContent.none, key);
-                    EditorGUIUtility.labelWidth = keyLabelW;
-                    EditorGUI.PropertyField(keyRect, key, new GUIContent("Key"), true);
-                    EditorGUI.EndProperty();
+                    if (key != null)
+                    {
+                        EditorGUI.BeginProperty(keyRect, GUIContent.none, key);
+                        EditorGUIUtility.labelWidth = keyLabelW;
+                        EditorGUI.PropertyField(keyRect, key, new GUIContent("Key"), true);
+                        EditorGUI.EndProperty();
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(keyRect, "Key: not serializable");
+                    }
 
                     // Value
-                    EditorGUI.BeginProperty(valRect, GUIContent.none, val);
-                    EditorGUIUtility.labelWidth = valLabelW;
-                    EditorGUI.PropertyField(valRect, val, new GUIContent("Value"), true);
-                    EditorGUI.EndProperty();
+                    if (val != null)
+                    {
+                        EditorGUI.BeginProperty(valRect, GUIContent.none, val);
+                        EditorGUIUtility.labelWidth = valLabelW;
+                        EditorGUI.PropertyField(valRect, val, new GUIContent("Value"), true);
+                        EditorGUI.EndProperty();
+                    }
 
+                    else
+                    {
+                        EditorGUI.LabelField(valRect, "Value: not serializable");
+                    }
                     // Trash
                     if (GUI.Button(trashRect, EditorGUIUtility.IconContent("TreeEditor.Trash"), GUIStyle.none))
                     {
@@ -279,10 +298,18 @@ namespace Cardevil.DataStructure
                     float prevLW = EditorGUIUtility.labelWidth;
 
                     // Key
-                    EditorGUI.BeginProperty(keyRect, GUIContent.none, key);
-                    EditorGUIUtility.labelWidth = Mathf.Min(90f, keyRect.width * 0.35f);
-                    EditorGUI.PropertyField(keyRect, key, new GUIContent("Key"), true);
-                    EditorGUI.EndProperty();
+                    if (key != null)
+                    {
+                        EditorGUI.BeginProperty(keyRect, GUIContent.none, key);
+                        EditorGUIUtility.labelWidth = Mathf.Min(90f, keyRect.width * 0.35f);
+                        EditorGUI.PropertyField(keyRect, key, new GUIContent("Key"), true);
+                        EditorGUI.EndProperty();
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(keyRect, "Key: not serializable");
+                    }
+                    
 
                     // Trash
                     if (GUI.Button(trashRect, EditorGUIUtility.IconContent("TreeEditor.Trash"), GUIStyle.none))
@@ -294,10 +321,19 @@ namespace Cardevil.DataStructure
                     }
 
                     // Value (아래 전체 폭)
-                    EditorGUI.BeginProperty(valRect, GUIContent.none, val);
-                    EditorGUIUtility.labelWidth = Mathf.Min(90f, valRect.width * 0.18f);
-                    EditorGUI.PropertyField(valRect, val, new GUIContent("Value"), true);
-                    EditorGUI.EndProperty();
+                    if (val != null)
+                    {
+                        EditorGUI.BeginProperty(valRect, GUIContent.none, val);
+                        EditorGUIUtility.labelWidth = Mathf.Min(90f, valRect.width * 0.18f);
+                        EditorGUI.PropertyField(valRect, val, new GUIContent("Value"), true);
+                        EditorGUI.LabelField(valRect, "Value: not serializable");
+                        EditorGUI.EndProperty();
+                    }
+                    else
+                    {
+                        EditorGUI.LabelField(valRect, "Value: not serializable");
+                    }
+
 
                     EditorGUIUtility.labelWidth = prevLW;
                     y += keyH + valH + 12f;
@@ -324,6 +360,7 @@ namespace Cardevil.DataStructure
             {
                 var elem = items.GetArrayElementAtIndex(i);
                 var keyProp = elem.FindPropertyRelative("Key");
+                if (keyProp == null) continue;
                 if (SerializedObjectEqual(keyProp.boxedValue, targetKey))
                     return true;
             }
