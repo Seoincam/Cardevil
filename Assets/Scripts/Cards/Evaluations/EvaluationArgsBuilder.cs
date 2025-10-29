@@ -90,7 +90,7 @@ namespace Cardevil.Cards.Evaluations
                 using (arg = EvaluationArg.Get())
                 {
                     arg.SetEvent(_event);
-                    arg.SetValue(0, EffectEvaluation.None);
+                    arg.SetValue(0);
                     arg.SetVisual(moveCards);
                 }
 
@@ -117,7 +117,7 @@ namespace Cardevil.Cards.Evaluations
                     }
                     
                     arg.SetEvent(_event);
-                    arg.SetValue(0, EffectEvaluation.Plus, data.Value);
+                    arg.SetValue(0, true, data.Value);
                     arg.SetVisual(cardsInHandRanking); // 족보에 포함되는 카드들만 추가함
                 }
             }
@@ -131,7 +131,7 @@ namespace Cardevil.Cards.Evaluations
                 using (arg = EvaluationArg.Get())
                 {
                     arg.SetEvent(_event);
-                    arg.SetValue(0, EffectEvaluation.Plus, (float)top.Data.NumberSelectState.FinalValue);
+                    arg.SetValue(0, true, (float)top.Data.NumberSelectState.FinalValue);
                     arg.SetVisual(top);
                 }
             }
@@ -142,7 +142,7 @@ namespace Cardevil.Cards.Evaluations
                     using (arg = EvaluationArg.Get())
                     {
                         arg.SetEvent(_event);
-                        arg.SetValue(0, EffectEvaluation.Plus, (float)card.Data.NumberSelectState.FinalValue);
+                        arg.SetValue(0, true, (float)card.Data.NumberSelectState.FinalValue);
                         arg.SetVisual(card);
                     }
                 }    
