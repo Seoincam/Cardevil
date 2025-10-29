@@ -1,0 +1,112 @@
+[
+  {
+    "HealID": "Heal1.1",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 3,
+    "HealProbabillity": [
+      80,
+      20
+    ]
+  },
+  {
+    "HealID": "Heal1.2",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 3,
+    "HealProbabillity": [
+      80,
+      20
+    ]
+  },
+  {
+    "HealID": "Heal1.3",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 3,
+    "HealProbabillity": [
+      80,
+      20
+    ]
+  },
+  {
+    "HealID": "Heal2.1",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 4,
+    "HealProbabillity": [
+      90,
+      10
+    ]
+  },
+  {
+    "HealID": "Heal2.2",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 4,
+    "HealProbabillity": [
+      90,
+      10
+    ]
+  },
+  {
+    "HealID": "Heal2.3",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 5,
+    "HealProbabillity": [
+      90,
+      10
+    ]
+  },
+  {
+    "HealID": "Heal2.4",
+    "HealAmount": [
+      0
+    ],
+    "Gold": 5,
+    "HealProbabillity": [
+      90,
+      10
+    ]
+  },
+  {
+    "HealID": "Heal3.1",
+    "HealAmount": [
+      1
+    ],
+    "Gold": 6,
+    "HealProbabillity": [
+      100,
+      0
+    ]
+  },
+  {
+    "HealID": "Heal3.2",
+    "HealAmount": [
+      1
+    ],
+    "Gold": 6,
+    "HealProbabillity": [
+      100,
+      0
+    ]
+  },
+  {
+    "HealID": "Heal3.3",
+    "HealAmount": [
+      1
+    ],
+    "Gold": 6,
+    "HealProbabillity": [
+      100,
+      0
+    ]
+  }
+]

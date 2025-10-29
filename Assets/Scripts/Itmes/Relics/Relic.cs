@@ -36,9 +36,9 @@ namespace Cardevil.Relics
             {
                 foreach (var effectId in data.EffectIds)
                 {
-                    var effect = manager.GetEffectById(effectId);
-                    effect.Init(this);
-                    _effects.Add(effect);
+                    // var effect = manager.GetEffectById(effectId);
+                    // effect.Init(this);
+                    // _effects.Add(effect);
                 }
             }
             else

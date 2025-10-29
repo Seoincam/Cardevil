@@ -9,25 +9,27 @@ namespace Database.Generated
     [Serializable]
     public class RelicEffectOnEvaluationData    {
 
-        /// <summary> inspector상 설명 </summary>
+        /// <summary> NOEX_설명 </summary>
         public string Description;
         /// <summary> ID </summary>
         public string EffectId;
-        /// <summary> 확률 (0~1) </summary>
-        public float Possibility;
+        /// <summary> 종류 </summary>
+        public string EffectType;
+        /// <summary> 영구적인가? </summary>
+        public bool IsPermenent;
+        /// <summary> 실행 횟수 </summary>
+        public int ExecutionCount;
+        /// <summary> 발동 족보 </summary>
+        public Cardevil.Cards.Data.HandRanking TriggerHandRanking;
         /// <summary> 발동 Hp </summary>
         public int TriggerHp;
-        /// <summary> 실행 타입 </summary>
-        public Cardevil.Relics.EffectExcute ExecuteType;
-        /// <summary> 발동 족보 (None은 모두) </summary>
-        public Cardevil.Cards.Data.HandRanking TriggerRanking;
-        /// <summary> 효과 종류 </summary>
-        public Cardevil.Relics.EffectEvaluation EvaluationType;
+        /// <summary> 발동 확률 </summary>
+        public float TriggerPossibility;
+        /// <summary> 적 처치 숫자에 기반? </summary>
+        public bool IsBasedKillCount;
+        /// <summary> 합인가? </summary>
+        public bool IsPlus;
         /// <summary> 효과 값 </summary>
         public float EffectValue;
-        /// <summary> (Next) 실행 횟수 </summary>
-        public int ExecutionCount;
-        /// <summary> (Next/Permanent) 타겟 족보 리스트 </summary>
-        public List<Cardevil.Cards.Data.HandRanking> TargetRankings;
     }
 }

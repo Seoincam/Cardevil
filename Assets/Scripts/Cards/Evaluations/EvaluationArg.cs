@@ -59,18 +59,12 @@ namespace Cardevil.Cards.Evaluations
             _event ??= ev;
         }
         
-        public void SetValue(int priority, EffectEvaluation damageType, float value = 0)
+        public void SetValue(int priority, bool isPlus = true, float value = 0)
         {
             _priority = priority;
-
-            _effectType = damageType switch
-            {
-                EffectEvaluation.MultiplyRanking => EvaluationEffect.Multiply,
-                EffectEvaluation.MultiplyAll => EvaluationEffect.Multiply,
-                EffectEvaluation.Plus => EvaluationEffect.Plus,
-                _ => EvaluationEffect.Move
-            };
-
+            
+            _effectType = isPlus ? EvaluationEffect.Plus : EvaluationEffect.Multiply;
+        
             _value = value;
         }
 
