@@ -41,6 +41,14 @@ namespace Cardevil.Cards.Evaluations
             _subRankingTween?.Kill();
         }
         
+        public void Clear()
+        {
+            _mainText.ClearText();
+            foreach (var sub in SubPool)
+                sub.ClearText();
+            _prevDamage = 0f;
+        }
+        
         public void UpdateHandRankingText(HandRanking ranking)
         {
             if (ranking == _lastRanking) return;
@@ -96,8 +104,6 @@ namespace Cardevil.Cards.Evaluations
             string oper = s.Type == EvaluationStepType.Plus ? "+" : "x"; // TODO: 더 제대로 나눠야함.
             sub.UpdateText($"{oper}{s.Value}");
             
-            // 이 부분을 수정해야함. 
-            // 중간에 멈춰있도록 수정하기.
             _stepSeq
                 .Append(rect.DOAnchorPosX(animSO.s_posX, animSO.s_evaDur).SetEase(animSO.s_evaEase));
             
@@ -110,6 +116,9 @@ namespace Cardevil.Cards.Evaluations
         // 등록된 스텝을 일괄 실행
         public async UniTask DoStep(float totalDamage)
         {
+            if (RegisteredSubs.Count == 0)
+                return;
+            
             _mainText.UpdateText(_prevDamage.ToString());
 
             var subs = new List<TextAnimator>(RegisteredSubs.Count);
@@ -170,11 +179,6 @@ namespace Cardevil.Cards.Evaluations
             
             var sub = go.GetComponentInChildren<TextAnimator>();
             return sub;
-        }
-
-        public void Clear()
-        {
-            _prevDamage = 0f;
         }
     }
 }

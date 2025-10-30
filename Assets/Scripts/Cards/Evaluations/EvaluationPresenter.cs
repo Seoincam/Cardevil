@@ -1,8 +1,8 @@
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Utils;
-using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -75,15 +75,10 @@ namespace Cardevil.Cards.Evaluations
         public void ConfigureSequence(IEnumerable<Card> sortedCards)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
-            
-            List<Direction> moves = new();
-            foreach (var card in sortedCards)
-            {
-                if (card.Data.Kind != CardKind.Move)
-                    continue;
-                if (card.Data.DirectionSelectState.FinalValue != null)
-                    moves.Add((Direction)card.Data.DirectionSelectState.FinalValue);
-            }
+
+            List<CardData> moves = sortedCards
+                .Where(c => c.Data.Kind == CardKind.Move)
+                .Select(c => c.Data).ToList();
 
             _resultBuilder = EvaluationResult.CreateBuilder()
                 .SetHandRanking(handRanking)
@@ -118,7 +113,8 @@ namespace Cardevil.Cards.Evaluations
                 await _view.DoStep(totalDamage);
                 await UniTask.Delay(TimeSpan.FromSeconds(.2f));
             }
-
+            _view.Clear();
+            
             var result = _resultBuilder
                 .SetDamage((int)Math.Round(totalDamage))
                 .Build();

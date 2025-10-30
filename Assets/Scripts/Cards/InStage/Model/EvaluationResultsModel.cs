@@ -75,11 +75,11 @@ namespace Cardevil.Cards.InStage.Model
     public sealed class EvaluationResult
     {
         [SerializeField, VisibleOnly] private int totalDamage;
-        [SerializeField, VisibleOnly] private List<Direction> moves;
+        [SerializeField, VisibleOnly] private List<CardData> moves;
         [SerializeField, VisibleOnly] private HandRanking handRanking;
 
         public int TotalDamage => totalDamage;
-        public IReadOnlyList<Direction> Moves => moves;
+        public IReadOnlyList<CardData> Moves => moves;
         public HandRanking HandRanking => handRanking;
 
         #region Builder
@@ -89,7 +89,7 @@ namespace Cardevil.Cards.InStage.Model
         public sealed class Builder
         {
             private int _totalDamage;
-            private List<Direction> _moves;
+            private List<CardData> _moves;
             private HandRanking _handRanking;
 
             public Builder SetDamage(int damage)
@@ -97,7 +97,7 @@ namespace Cardevil.Cards.InStage.Model
                 _totalDamage += damage;
                 return this;
             }
-            public Builder SetMoves(List<Direction> moves)
+            public Builder SetMoves(List<CardData> moves)
             {
                 _moves = moves;
                 return this;
@@ -111,7 +111,7 @@ namespace Cardevil.Cards.InStage.Model
             public EvaluationResult Build() => new(_totalDamage, _moves, _handRanking);
         }
 
-        public EvaluationResult(int totalDamage, List<Direction> moves, HandRanking handRanking)
+        public EvaluationResult(int totalDamage, List<CardData> moves, HandRanking handRanking)
         {
             this.totalDamage = totalDamage;
             this.moves = moves;
