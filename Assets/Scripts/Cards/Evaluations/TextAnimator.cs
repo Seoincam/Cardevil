@@ -54,6 +54,8 @@ namespace Cardevil.Cards.Evaluations
                 _textComponent.text = text;
                 return;
             }
+ 
+            SetAlpha(1f);
             _textComponent.text = text;
             RestartAnimation();
         }

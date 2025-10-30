@@ -59,8 +59,8 @@ namespace Cardevil.Cards.Evaluations
 
             if (ranking is HandRanking.None or HandRanking.High)
             {
-                _mainText.ClearText();
-                sub.ClearText();
+                ClearText(_mainText);
+                ClearText(sub);
                 SubPool.Enqueue(sub);
                 return;
             }
@@ -159,7 +159,7 @@ namespace Cardevil.Cards.Evaluations
 
             foreach (var sub in subs)
             {
-                sub.ClearText();
+                await ClearText(sub);
                 SubPool.Enqueue(sub);
             }
         }
@@ -179,6 +179,19 @@ namespace Cardevil.Cards.Evaluations
             
             var sub = go.GetComponentInChildren<TextAnimator>();
             return sub;
+        }
+
+        private async UniTask ClearText(TextAnimator text)
+        {
+            var seq = DOTween.Sequence()
+                .Append(DOTween.To(
+                    () => 1f,
+                    text.SetAlpha,
+                    0f,
+                    .1f))
+                .OnComplete(text.ClearText);
+            
+            await seq;
         }
     }
 }

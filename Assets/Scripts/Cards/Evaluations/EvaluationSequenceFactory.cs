@@ -23,7 +23,6 @@ namespace Cardevil.Cards.Evaluations
             
             List<Card> attackCards = selection.Where(c => c.Data.Kind == CardKind.Attack).ToList();
             List<Card> moveCards = selection.Where(c => c.Data.Kind == CardKind.Move).ToList();
-            List<CardData> moves = moveCards.Select(c => c.Data).ToList();
             
             // Move Only
             if (attackCards.Count == 0 && moveCards.Count > 0)
@@ -33,13 +32,11 @@ namespace Cardevil.Cards.Evaluations
                     .SetValue(EvaluationStepType.Move)
                     .SetVisual(moveCards));
 
-                // _pending = new EvaluationResult(moves);
                 return seq;
             }
             
             // 족보 계산
             HandRanking handRanking = HandRankingEvaluator.EvaluateHandRanking(attackCards, out var cardsInHandRanking);
-            // _pending = new EvaluationResult(moves, handRanking);
             
             // 기본 족보 보너스
             if (handRanking > HandRanking.High)
@@ -58,6 +55,8 @@ namespace Cardevil.Cards.Evaluations
                     .SetValue(EvaluationStepType.Plus, data.Value)
                     .SetVisual(cardsInHandRanking)); // 족보에 포함되는 카드들만 추가함
             }
+            
+            // TODO: 기본 데미지 유물
 
             // 기본 데미지
             if (handRanking == HandRanking.High)
@@ -80,9 +79,9 @@ namespace Cardevil.Cards.Evaluations
                 }    
             }
             
-            // Plus 유물
+            // TODO: Plus 유물
             
-            // Multiply 유물
+            // TODO: Multiply 유물
 
             return seq;
         }
