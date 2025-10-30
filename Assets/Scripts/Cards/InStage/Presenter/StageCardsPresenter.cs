@@ -19,12 +19,12 @@ namespace Cardevil.Cards.InStage.Presenter
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
         private IReadOnlyCardLibrary _library;
-        
         private StageCardsModel _model;
+        private IEvaluationPresenter _evaluationPresenter;
+        
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
         
-        private EvaluationArgsBuilder _builder;
         private CardVisualSettingSO _visualSetting;
         
         private StageCardsPresenterState _state;
@@ -42,7 +42,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, EvaluationArgsBuilder builder)
+        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, IEvaluationPresenter evaluationPresenter)
         {
             if (_state.isInitialized) return;
 
@@ -60,12 +60,12 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             _model = model;
 
-            if (builder == null)
+            if (evaluationPresenter == null)
             {
-                LogEx.LogError("builder가 null입니다.");
+                LogEx.LogError("evaluation Presenter가 null입니다.");
                 return;
             }
-            _builder = builder;
+            _evaluationPresenter = evaluationPresenter;
 
             // SO 로드
             string path = "ScriptableObjects/Cards/CardVisualSetting";
@@ -213,7 +213,7 @@ namespace Cardevil.Cards.InStage.Presenter
         public async UniTask WaitUserInput()
         {
             cmp = new();
-            _builder.UpdateHandRankingVisual(); // Evaluation Text 초기화
+            _evaluationPresenter.ClearHandRankingText();
             _state.canInteract = true;
             UpdateUI();
             
@@ -270,18 +270,16 @@ namespace Cardevil.Cards.InStage.Presenter
                 {
                     _model.Deselect(card);
                     card.SetSelect(false);
-                    HandChanged?.Invoke();
-                    _builder.UpdateHandRankingVisual(_model.Selection);
-                    UpdateUI();
-                    return;
                 }
-
-                if (_model.Selection.Count >= 4) return;
-            
-                _model.Select(card);
-                card.SetSelect(true);
+                else if (_model.Selection.Count < 4)
+                {
+                    _model.Select(card);
+                    card.SetSelect(true);
+                }
+                else return;
+                
                 HandChanged?.Invoke();
-                _builder.UpdateHandRankingVisual(_model.Selection);
+                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
                 UpdateUI();
             }
             
@@ -369,7 +367,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _state.canInteract = false;
             UpdateUI();
-            _builder.BuildEvaluationArgs(_model.SortedSelection);
+            _evaluationPresenter.ConfigureSequence(_model.SortedSelection);
             _ = UseAsync();
         }
 
@@ -382,7 +380,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private async UniTask UseAsync()
         {
-            await _builder.InvokeAsync();
+            await _evaluationPresenter.ExcuteSequenceAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             await DiscardAsync();
 
@@ -406,7 +404,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
             
-            _builder.UpdateHandRankingVisual();
+            _evaluationPresenter.ClearHandRankingText();
             _view.AlignSlot();
         }
 
