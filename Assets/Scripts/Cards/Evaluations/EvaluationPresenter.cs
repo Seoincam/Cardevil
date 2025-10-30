@@ -4,6 +4,7 @@ using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using UnityEngine;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Cardevil.Cards.Evaluations
@@ -19,11 +20,11 @@ namespace Cardevil.Cards.Evaluations
     public class EvaluationPresenter : IEvaluationPresenter
     {
         private EvaluationResultsModel _model;
-        private EvaluationUIAnimator _view;
+        private EvaluationView _view;
         private EvaluationSequenceFactory _factory;
         
         private EvaluationSequence _seq;
-        private EvaluationResult _pending;
+        private EvaluationResult.Builder _builder;
 
         public void Init(EvaluationResultsModel model)
         {
@@ -37,6 +38,22 @@ namespace Cardevil.Cards.Evaluations
             _factory = new EvaluationSequenceFactory(model);
             
             // view 생성
+            var canvasName = "CardCanvas";
+            var canvas = GameObject.Find(canvasName).transform;
+            if (!canvas)
+            {
+                LogEx.LogError($"Canvas not found. : {canvasName}");
+                return;
+            }
+            
+            string path = "UI/CardUI/Evaluation Visual";
+            var go = Managers.Resource.Instantiate(path, canvas).gameObject;
+            if (!go)
+            {
+                LogEx.LogError($"Evaluation UI Animator가 존재하지 않음! path: {path}");
+                return;
+            }
+            _view = go.GetComponent<EvaluationView>();
         }
         
         // 족보 표시 텍스트 초기화()

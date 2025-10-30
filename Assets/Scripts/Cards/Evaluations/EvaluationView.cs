@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
 {
-    public class EvaluationUIAnimator : MonoBehaviour
+    public class EvaluationView : MonoBehaviour
     {
         [SerializeField] CardEvaluationAnimSO anim;
 
         [Space, SerializeField] RectTransform main;
         [SerializeField] RectTransform sub;
 
-        private EvaluationTextAnimator _mainText;
-        private EvaluationTextAnimator _subText;
+        private TextAnimator _mainText;
+        private TextAnimator _subText;
 
         private HandRanking _lastRanking;
 
@@ -25,8 +25,8 @@ namespace Cardevil.Cards.Evaluations
 
         private void Awake()
         {
-            _mainText = main.GetComponentInChildren<EvaluationTextAnimator>();
-            _subText = sub.GetComponentInChildren<EvaluationTextAnimator>();
+            _mainText = main.GetComponentInChildren<TextAnimator>();
+            _subText = sub.GetComponentInChildren<TextAnimator>();
         }
 
         private void OnDestroy()
