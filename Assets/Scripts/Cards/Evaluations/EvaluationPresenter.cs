@@ -2,10 +2,12 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Utils;
+using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using NotImplementedException = System.NotImplementedException;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -24,7 +26,7 @@ namespace Cardevil.Cards.Evaluations
         private EvaluationSequenceFactory _factory;
         
         private EvaluationSequence _seq;
-        private EvaluationResult.Builder _builder;
+        private EvaluationResult.Builder _resultBuilder;
 
         public void Init(EvaluationResultsModel model)
         {
@@ -46,7 +48,7 @@ namespace Cardevil.Cards.Evaluations
                 return;
             }
             
-            string path = "UI/CardUI/Evaluation Visual";
+            string path = "UI/CardUI/Evaluation View";
             var go = Managers.Resource.Instantiate(path, canvas).gameObject;
             if (!go)
             {
@@ -73,8 +75,19 @@ namespace Cardevil.Cards.Evaluations
         public void ConfigureSequence(IEnumerable<Card> sortedCards)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
-            _builder = EvaluationResult.CreateBuilder()
-                .SetHandRanking(handRanking);
+            
+            List<Direction> moves = new();
+            foreach (var card in sortedCards)
+            {
+                if (card.Data.Kind != CardKind.Move)
+                    continue;
+                if (card.Data.DirectionSelectState.FinalValue != null)
+                    moves.Add((Direction)card.Data.DirectionSelectState.FinalValue);
+            }
+
+            _resultBuilder = EvaluationResult.CreateBuilder()
+                .SetHandRanking(handRanking)
+                .SetMoves(moves);
             
             _seq = _factory.ConfigureSequence(sortedCards);
         }
@@ -82,7 +95,34 @@ namespace Cardevil.Cards.Evaluations
         // sequence 실행 / await 가능해야함
         public async UniTask InvokeSequence()
         {
-            throw new NotImplementedException();
+            _seq.Build();
+            _view.Clear();
+            
+            int index = 0;
+            float totalDamage = 0f;
+            while (_seq.TryGetStepGroup(index++, out List<EvaluationStep> stepGroup))
+            {
+                if (stepGroup == null || stepGroup.Count == 0) 
+                    continue;
+                
+                for (int i = 0; i < stepGroup.Count; i++)
+                {
+                    var step = stepGroup[i];
+                    step.CalculateDamage(ref totalDamage);
+                    _view.RegisterStep(step);
+                    
+                    if (i != stepGroup.Count - 1)
+                        await UniTask.Delay(TimeSpan.FromSeconds(.3f));
+                }
+                
+                await _view.DoStep(totalDamage);
+                await UniTask.Delay(TimeSpan.FromSeconds(.2f));
+            }
+
+            var result = _resultBuilder
+                .SetDamage((int)Math.Round(totalDamage))
+                .Build();
+            _model.Add(result);
         }
     }
 }

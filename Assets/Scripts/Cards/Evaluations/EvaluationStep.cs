@@ -1,8 +1,11 @@
+using Cardevil.Attributes;
 using Cardevil.Core;
 using Cardevil.Relics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -13,8 +16,8 @@ namespace Cardevil.Cards.Evaluations
         Plus, Multiply
     }
     
-    // 값 신경 쓰지 말고 비주얼만.
-    public class EvaluationStep : IClearable
+    [Serializable]
+    public sealed class EvaluationStep : IClearable
     {
         private static readonly Queue<EvaluationStep> Pool = new();
 
@@ -32,12 +35,12 @@ namespace Cardevil.Cards.Evaluations
 
         public void Clear()
         {
-            _value = 0;
+            Value = 0;
             _visuals.Clear();
         }
         
-        private EvaluationStepType _type;
-        private float _value;
+        public EvaluationStepType Type { get; private set; }
+        public float Value { get; private set; }
         private List<IEvaluateVisual> _visuals = new();
 
         public int IndexOnSequence { get; private set; }
@@ -51,8 +54,8 @@ namespace Cardevil.Cards.Evaluations
         
         public EvaluationStep SetValue(EvaluationStepType type, float value = 0)
         {
-            _type = type;
-            _value = value;
+            Type = type;
+            Value = value;
             return this;
         }
 
@@ -66,6 +69,22 @@ namespace Cardevil.Cards.Evaluations
         {
             _visuals.AddRange(visuals.Cast<IEvaluateVisual>());
             return this;
+        }
+
+        public void CalculateDamage(ref float totalDamage)
+        {
+            if (Type is EvaluationStepType.None or EvaluationStepType.Move)
+                return;
+
+            switch (Type)
+            {
+                case EvaluationStepType.Plus:
+                    totalDamage += Value;
+                    break;
+                case EvaluationStepType.Multiply:
+                    totalDamage *= Value;
+                    break;
+            }
         }
 
         // public float Evaluate(float damage, out EvaluationEffect effect, out float value)

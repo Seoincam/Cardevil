@@ -38,12 +38,17 @@ namespace Cardevil.Cards.Evaluations
             UpdateText("");
         }
 
+        public void ClearText()
+        {
+            UpdateText(string.Empty);
+        }
+
         /// <summary>
         /// 텍스트를 설정하고 Animation을 초기화합니다.
         /// </summary>
-        public void UpdateText(string text = "")
+        public void UpdateText(string text)
         {
-            if (text == "")
+            if (text == string.Empty)
             {
                 _cts?.Cancel();
                 _textComponent.text = text;

@@ -31,6 +31,7 @@ namespace Cardevil.Cards.System
             _rerollPresenter = rerollPresenter;
             _stageCardsPresenter = stageCardsPresenter;
             
+            _evaluationPresenter = evaluationPresenter;
         }
 
         public async UniTask EnterRerollPhase(int maxHand)
