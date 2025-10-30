@@ -13,10 +13,30 @@ namespace Cardevil.Cards.Evaluations
 {
     public interface IEvaluationPresenter
     {
+        /// <summary>
+        /// 족보 표시 텍스트를 지움.
+        /// </summary>
         void ClearHandRankingText();
-        void UpdateHandRankingText(IEnumerable<Card> cards);
+        
+        /// <summary>
+        /// 족보 표시 텍스트 갱신.
+        /// 선택된 카드 목록을 기반으로 족보 평가 후 표시 텍스트 업데이트.
+        /// </summary>
+        /// <param name="selection">선택된 카드 목록</param>
+        void UpdateHandRankingText(IEnumerable<Card> selection);
+        
+        /// <summary>
+        /// 평가 시퀀스 구성.
+        /// 정렬된 카드 목록을 기반으로 족보 및 이동 카드 데이터 설정.
+        /// </summary>
+        /// <param name="sortedCards">정렬된 카드 목록</param>
         void ConfigureSequence(IEnumerable<Card> sortedCards);
-        UniTask InvokeSequence();
+        
+        /// <summary>
+        /// 평가 시퀀스 실행.
+        /// 단계별 평가 및 뷰 연출 처리.
+        /// </summary>
+        UniTask ExcuteSequenceAsync();
     }
     
     public class EvaluationPresenter : IEvaluationPresenter
@@ -58,20 +78,17 @@ namespace Cardevil.Cards.Evaluations
             _view = go.GetComponent<EvaluationView>();
         }
         
-        // 족보 표시 텍스트 초기화()
         public void ClearHandRankingText()
         {
             _view.UpdateHandRankingText(HandRanking.None);
         }
         
-        // 족보 표시 텍스트 설정(선택한 카드 목록)
         public void UpdateHandRankingText(IEnumerable<Card> selection)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(selection);
             _view.UpdateHandRankingText(handRanking);
         }
 
-        // sequence 구성(정렬된 선택한 카드 목록)
         public void ConfigureSequence(IEnumerable<Card> sortedCards)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
@@ -87,8 +104,7 @@ namespace Cardevil.Cards.Evaluations
             _seq = _factory.ConfigureSequence(sortedCards);
         }
 
-        // sequence 실행 / await 가능해야함
-        public async UniTask InvokeSequence()
+        public async UniTask ExcuteSequenceAsync()
         {
             _seq.Build();
             _view.Clear();

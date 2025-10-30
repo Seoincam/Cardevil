@@ -380,7 +380,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private async UniTask UseAsync()
         {
-            await _evaluationPresenter.InvokeSequence();
+            await _evaluationPresenter.ExcuteSequenceAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             await DiscardAsync();
 
