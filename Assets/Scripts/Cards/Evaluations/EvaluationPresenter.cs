@@ -72,6 +72,10 @@ namespace Cardevil.Cards.Evaluations
         // sequence 구성(정렬된 선택한 카드 목록)
         public void ConfigureSequence(IEnumerable<Card> sortedCards)
         {
+            var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
+            _builder = EvaluationResult.CreateBuilder()
+                .SetHandRanking(handRanking);
+            
             _seq = _factory.ConfigureSequence(sortedCards);
         }
 
