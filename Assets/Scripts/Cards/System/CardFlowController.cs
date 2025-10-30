@@ -14,9 +14,7 @@ namespace Cardevil.Cards.System
         private readonly StageCardsModel _stageCardsModel;
         private readonly RerollPresenter _rerollPresenter;
         private readonly StageCardsPresenter _stageCardsPresenter;
-
-        private readonly EvaluationResultsModel _evaluationResultsModel;
-        private readonly EvaluationArgsBuilder _evaluationArgsBuilder;
+        private readonly IEvaluationPresenter _evaluationPresenter;
 
         private int _maxHand;
 
@@ -25,8 +23,7 @@ namespace Cardevil.Cards.System
 
         public CardFlowController(CardLibrary library,
             StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
-            StageCardsPresenter stageCardsPresenter, EvaluationResultsModel evaluationResultsModel, 
-            EvaluationArgsBuilder evaluationArgsBuilder)
+            StageCardsPresenter stageCardsPresenter, IEvaluationPresenter evaluationPresenter)
         {
             _library = library;
             
@@ -34,8 +31,6 @@ namespace Cardevil.Cards.System
             _rerollPresenter = rerollPresenter;
             _stageCardsPresenter = stageCardsPresenter;
             
-            _evaluationResultsModel = evaluationResultsModel;
-            _evaluationArgsBuilder = evaluationArgsBuilder;
         }
 
         public async UniTask EnterRerollPhase(int maxHand)
@@ -58,8 +53,7 @@ namespace Cardevil.Cards.System
 
         public async UniTask EnterHandPhase()
         {
-            _evaluationArgsBuilder.Init(_evaluationResultsModel);
-            _stageCardsPresenter.Init(_library, _stageCardsModel, _evaluationArgsBuilder);
+            _stageCardsPresenter.Init(_library, _stageCardsModel, _evaluationPresenter);
             await _stageCardsPresenter.SetUp();
             DeactivateReroll();
         }

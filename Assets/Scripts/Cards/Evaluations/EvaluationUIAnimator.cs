@@ -14,7 +14,6 @@ namespace Cardevil.Cards.Evaluations
         [Space, SerializeField] RectTransform main;
         [SerializeField] RectTransform sub;
 
-        private AsyncEvaluationEvent _event;
         private EvaluationTextAnimator _mainText;
         private EvaluationTextAnimator _subText;
 
@@ -24,18 +23,6 @@ namespace Cardevil.Cards.Evaluations
         private Tween _mainRankingTween;
         private Tween _subRankingTween;
 
-
-        public void Init(AsyncEvaluationEvent evaluationEvent)
-        {
-            if (_event == evaluationEvent)
-            {
-                LogEx.LogError("Evaluation Args Builder is null");
-                return;
-            }
-            _event = evaluationEvent;
-            _event.OnStep += StepEvaluation;
-        }
-
         private void Awake()
         {
             _mainText = main.GetComponentInChildren<EvaluationTextAnimator>();
@@ -44,15 +31,13 @@ namespace Cardevil.Cards.Evaluations
 
         private void OnDestroy()
         {
-            if (_event != null)
-                _event.OnStep -= StepEvaluation;
+            // if (_event != null)
+            // _event.OnStep -= StepEvaluation;
 
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();
         }
-
-
-
+        
         public void UpdateHandRankingText(HandRanking ranking)
         {
             if (ranking == _lastRanking) return;
@@ -86,6 +71,7 @@ namespace Cardevil.Cards.Evaluations
             _subText.UpdateText("+" + data.Value.ToString());
         }
 
+        /*
         private void StepEvaluation(EvaluationStep step)
         {
             if (step.Effect == EvaluationArg.EvaluationEffect.Move) return;
@@ -109,5 +95,6 @@ namespace Cardevil.Cards.Evaluations
             );
             _stepSeq.Append(main.DOScale(1f, anim.m_evaDur));
         }
+        */
     }
 }
