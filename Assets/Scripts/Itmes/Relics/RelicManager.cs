@@ -21,8 +21,18 @@ namespace Cardevil.Relics
         private Dictionary<RelicRarity, List<OwnedRelic>> _ownedByRarityCache = new();
         private bool _dirty;
         
+        /// <summary>
+        /// 보유 유물 읽기 전용 목록 반환.
+        /// 게터 호출 시 캐시 재빌드 수행.
+        /// </summary>
+        /// <remarks><see cref="RebuildCache"/> 호출 후 내부 목록 반환.</remarks>
+        /// <value>보유 유물 목록</value>
         public IReadOnlyList<OwnedRelic> OwnedRelics { get { RebuildCache(); return ownedRelics; } }
-
+        
+        /// <summary>
+        /// 유물 시스템 초기화.
+        /// 팩토리 등록, 희귀도별 캐시 생성, DB 초기화 이후 인스턴스 로드 및 기본 유물 획득.
+        /// </summary>
         public void Init()
         {
             RelicFactory.RegisterAllFactory();
@@ -51,6 +61,14 @@ namespace Cardevil.Relics
             };
         }
 
+        /// <summary>
+        /// 희귀도 기준 유물 후보 조회.
+        /// 요청 개수 충족 시 무작위 선정 목록 반환.
+        /// </summary>
+        /// <param name="rarity">조회 희귀도</param>
+        /// <param name="count">요청 개수</param>
+        /// <param name="relics">선정된 유물 목록 출력</param>
+        /// <returns>조회 성공 여부</returns>
         public bool TryGetData(RelicRarity rarity, int count, out List<Relic> relics)
         {
             relics = null;
@@ -77,6 +95,13 @@ namespace Cardevil.Relics
             return true;
         }
         
+        /// <summary>
+        /// 유물 ID와 레벨 기반 획득 시도.
+        /// 획득 가능 여부 검사 후 보유 목록 추가 및 더티 플래그 설정.
+        /// </summary>
+        /// <param name="relicId">유물 ID</param>
+        /// <param name="level">유물 레벨(기본 1)</param>
+        /// <returns>획득 성공 여부</returns>
         public bool TryAcquire(string relicId, int level = 1)
         {
             if (!_allById.TryGetValue((relicId, level), out var relicData))
@@ -85,6 +110,12 @@ namespace Cardevil.Relics
             return TryAcquire(relicData);
         }
 
+        /// <summary>
+        /// 유물 데이터 기반 획득 시도.
+        /// 획득 가능 여부 검사 후 보유 목록 추가 및 더티 플래그 설정.
+        /// </summary>
+        /// <param name="relicData">대상 유물 데이터</param>
+        /// <returns>획득 성공 여부</returns>
         public bool TryAcquire(Relic relicData)
         {
             if (!CanAcquirable(relicData))
