@@ -104,6 +104,7 @@ namespace Cardevil.Items.Relics.Factory
                 try
                 {
                     Relic relic = new(relicId, d.Level, d.Rarity, d.DisplayName, d.DisplayDescription, effects);
+
                     relics.Add(relic);
                     created++;
                 }

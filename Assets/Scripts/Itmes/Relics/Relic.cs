@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Cardevil.Attributes;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Relics
 {
@@ -11,6 +12,7 @@ namespace Cardevil.Relics
         [SerializeField, VisibleOnly] private string id;
         [SerializeField, VisibleOnly] private int level;
         [SerializeField, VisibleOnly] private RelicRarity rarity;
+
         [SerializeField, VisibleOnly] private string displayName;
         [SerializeField, VisibleOnly] private string displayDescription;
         [SerializeReference, VisibleOnly] private List<RelicEffectBase> effects;
@@ -27,6 +29,7 @@ namespace Cardevil.Relics
             this.id = id;
             this.level = level;
             this.rarity = rarity;
+
             this.displayName = displayName;
             this.displayDescription = displayDescription;
             this.effects = effects;

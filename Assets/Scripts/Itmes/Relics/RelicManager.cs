@@ -1,6 +1,5 @@
 using Cardevil.Attributes;
 using Cardevil.Items.Relics.Factory;
-using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +19,7 @@ namespace Cardevil.Relics
         private Dictionary<string, OwnedRelic> _ownedByIdCache = new();
         private Dictionary<RelicRarity, List<OwnedRelic>> _ownedByRarityCache = new();
         private bool _dirty;
+
         
         /// <summary>
         /// 보유 유물 읽기 전용 목록 반환.
@@ -80,6 +80,7 @@ namespace Cardevil.Relics
             // 후보 구성
             List<Relic> canAcquires = new(allOfRarity.Count);
             foreach (var r in allOfRarity)
+
             {
                 if (CanAcquirable(r))
                     canAcquires.Add(r);
