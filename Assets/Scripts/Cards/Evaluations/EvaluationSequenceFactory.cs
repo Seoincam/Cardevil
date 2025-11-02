@@ -29,7 +29,7 @@ namespace Cardevil.Cards.Evaluations
             {
                 seq.Append(
                     EvaluationStep.Get()
-                    .SetValue(EvaluationStepType.Move)
+                    .SetValue(EvaluationStep.Type.Move)
                     .SetVisual(moveCards));
 
                 return seq;
@@ -52,7 +52,7 @@ namespace Cardevil.Cards.Evaluations
                 }
 
                 seq.Append(EvaluationStep.Get()
-                    .SetValue(EvaluationStepType.Plus, data.Value)
+                    .SetValue(EvaluationStep.Type.Plus, data.Value)
                     .SetVisual(cardsInHandRanking)); // 족보에 포함되는 카드들만 추가함
             }
             
@@ -64,7 +64,7 @@ namespace Cardevil.Cards.Evaluations
                 var top = attackCards.Aggregate((best, cur) =>
                     cur.Data.NumberSelectState.FinalValue > best.Data.NumberSelectState.FinalValue ? cur : best);
                 seq.Append(EvaluationStep.Get()
-                    .SetValue(EvaluationStepType.Plus, (float)top.Data.NumberSelectState.FinalValue)
+                    .SetValue(EvaluationStep.Type.Plus, (float)top.Data.NumberSelectState.FinalValue)
                     .SetVisual(top));
                 // 추가 데미지
             }
@@ -73,7 +73,7 @@ namespace Cardevil.Cards.Evaluations
                 foreach (var card in cardsInHandRanking)
                 {
                     seq.Append(EvaluationStep.Get()
-                        .SetValue(EvaluationStepType.Plus, (float)card.Data.NumberSelectState.FinalValue)
+                        .SetValue(EvaluationStep.Type.Plus, (float)card.Data.NumberSelectState.FinalValue)
                         .SetVisual(card));
                     // 추가 데미지
                 }    
