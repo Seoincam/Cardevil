@@ -27,7 +27,7 @@ namespace Database.Generated
         public float TriggerPossibility;
         /// <summary> 적 처치 숫자에 기반? </summary>
         public bool IsBasedKillCount;
-        /// <summary> 합인가? </summary>
+        /// <summary> 합true/곱false </summary>
         public bool IsPlus;
         /// <summary> 효과 값 </summary>
         public float EffectValue;

@@ -5,7 +5,7 @@
     "RelicId": "Relic_001",
     "Level": 0,
     "EffectIds": [
-      "\"OnEvaluation_001\""
+      "\"EVAL_RED_FLUSH_NEXT_ATTACK\""
     ]
   },
   {
@@ -14,7 +14,7 @@
     "RelicId": "Relic_001",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_002\""
+      "\"EVAL_RED_FLUSH_NEXT_ATTACK_ALT\""
     ]
   },
   {
@@ -51,7 +51,7 @@
     "RelicId": "Relic_004",
     "Level": 0,
     "EffectIds": [
-      "\"OnEvaluation_003\""
+      "\"EVAL_BLACK_FLUSH_NEXT_ATTACK\""
     ]
   },
   {
@@ -60,7 +60,7 @@
     "RelicId": "Relic_004",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_004\""
+      "\"EVAL_BLACK_FLUSH_NEXT_ATTACK_ALT\""
     ]
   },
   {
@@ -69,8 +69,8 @@
     "RelicId": "Relic_005",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_005\"",
-      "\"OnEvaluation_006\""
+      "\"EVAL_RANK_ONEPAIR_BONUS\"",
+      "\"EVAL_RANK_TWOPAIR_BONUS\""
     ]
   },
   {
@@ -79,12 +79,12 @@
     "RelicId": "Relic_006",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_007\"",
-      "\"OnEvaluation_008\"",
-      "\"OnEvaluation_009\"",
-      "\"OnEvaluation_010\"",
-      "\"OnEvaluation_011\"",
-      "\"OnEvaluation_012\""
+      "\"EVAL_RANK_STRAIGHT_BONUS\"",
+      "\"EVAL_RED_FLUSH_BONUS\"",
+      "\"EVAL_GREEN_FLUSH_BONUS\"",
+      "\"EVAL_BLUE_FLUSH_BONUS\"",
+      "\"EVAL_BLACK_FLUSH_BONUS\"",
+      "\"EVAL_RANK_STRAIGHTFLUSH_BONUS\""
     ]
   },
   {
@@ -93,17 +93,17 @@
     "RelicId": "Relic_007",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_013\"",
-      "\"OnEvaluation_014\""
+      "\"EVAL_RANK_TRIPLE_BONUS\"",
+      "\"EVAL_RANK_FOURCARD_BONUS\""
     ]
   },
   {
     "DisplayName": "유물8",
-    "DisplayDescription": "하이카드 공격이 다음 족보 데미지를 125%로 증가시킵니다.",
+    "DisplayDescription": "하이카드 공격이 다음 데미지를 125%로 증가시킵니다.",
     "RelicId": "Relic_008",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_015\""
+      "\"EVAL_STATE_PREV_HIGH_NOW_ATTACK\""
     ]
   },
   {
@@ -112,7 +112,7 @@
     "RelicId": "Relic_009",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_016\""
+      "\"EVAL_RANDOM_ALWAYS\""
     ]
   },
   {
@@ -121,7 +121,7 @@
     "RelicId": "Relic_010",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_017\""
+      "\"EVAL_HP1\""
     ]
   },
   {
@@ -130,7 +130,16 @@
     "RelicId": "Relic_011",
     "Level": 1,
     "EffectIds": [
-      "\"OnEvaluation_018\""
+      "\"EVAL_STAT_BASE_DMG_PLUS\""
+    ]
+  },
+  {
+    "DisplayName": "유물12",
+    "DisplayDescription": "적을 처치할수록, 카드의 기본 데미지가 +1씩 증가합니다.",
+    "RelicId": "Relic_012",
+    "Level": 1,
+    "EffectIds": [
+      "\"EVAL_STACK_KILL_BONUS_DMG\""
     ]
   }
 ]
