@@ -55,6 +55,28 @@ namespace Cardevil.Utils
             
             return result;
         }
+
+        /// <summary>
+        /// Returns a random float within [0.0..1.0]
+        /// </summary>
+        public static float GetValue(RandomType type = RandomType.Default)
+        {
+            return GetRandomFloat(0, 1, type);
+        }
+        
+        public static float GetRandomFloat(float min, float max, RandomType type = RandomType.Default)
+        {
+            if (!randoms.TryGetValue(type, out var r))
+            {
+                InitSeed(type);
+            }
+            
+            var random = randoms[type];
+            float result = random.NextFloat(min, max);
+            randoms[type] = random; // UMRandom이 struct이기 때문.
+            
+            return result;
+        }
         
         /// <summary>
         /// <see cref="RandomType"/> 기반의 Fisher–Yates in place 셔플.  
