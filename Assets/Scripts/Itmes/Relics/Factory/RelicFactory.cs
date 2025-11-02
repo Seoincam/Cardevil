@@ -103,7 +103,7 @@ namespace Cardevil.Items.Relics.Factory
                 string relicId = d.RelicId.Trim('"', ' ');
                 try
                 {
-                    Relic relic = new(relicId, d.Level, d.DisplayName, d.DisplayDescription, effects);
+                    Relic relic = new(relicId, d.Level, d.Rarity, d.DisplayName, d.DisplayDescription, effects);
                     relics.Add(relic);
                     created++;
                 }
