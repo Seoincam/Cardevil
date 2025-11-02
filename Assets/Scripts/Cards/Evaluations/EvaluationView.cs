@@ -91,7 +91,7 @@ namespace Cardevil.Cards.Evaluations
         // 스텝을 등록함
         public void RegisterStep(EvaluationStep s)
         {
-            if (s.Type is EvaluationStepType.None or EvaluationStepType.Move) 
+            if (s.StepType is EvaluationStep.Type.None or EvaluationStep.Type.Move) 
                 return;
             
             var sub = GetSub();
@@ -101,7 +101,7 @@ namespace Cardevil.Cards.Evaluations
             _stepSeq = DOTween.Sequence().SetAutoKill(true).SetLink(sub.gameObject);
             
             rect.anchoredPosition= new Vector3(animSO.s_posX * 1.5f, _lastStepY);
-            string oper = s.Type == EvaluationStepType.Plus ? "+" : "x"; // TODO: 더 제대로 나눠야함.
+            string oper = s.StepType == EvaluationStep.Type.Plus ? "+" : "x"; // TODO: 더 제대로 나눠야함.
             sub.UpdateText($"{oper}{s.Value}");
             
             _stepSeq

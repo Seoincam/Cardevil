@@ -15,7 +15,7 @@ namespace Database.Generated
         public string DisplayDescription;
         /// <summary> ID </summary>
         public string RelicId;
-        /// <summary> 레벨. 같은 ID 유물을 대체. </summary>
+        /// <summary> 레벨 </summary>
         public int Level;
         /// <summary> 효과 ID </summary>
         public List<string> EffectIds;

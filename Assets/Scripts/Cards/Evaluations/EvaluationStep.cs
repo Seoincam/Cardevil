@@ -9,13 +9,6 @@ using UnityEngine.Serialization;
 
 namespace Cardevil.Cards.Evaluations
 {
-    public enum EvaluationStepType
-    {
-        None,
-        Move, 
-        Plus, Multiply
-    }
-    
     [Serializable]
     public sealed class EvaluationStep : IClearable
     {
@@ -39,7 +32,7 @@ namespace Cardevil.Cards.Evaluations
             _visuals.Clear();
         }
         
-        public EvaluationStepType Type { get; private set; }
+        public Type StepType { get; private set; }
         public float Value { get; private set; }
         private List<IEvaluateVisual> _visuals = new();
 
@@ -52,9 +45,9 @@ namespace Cardevil.Cards.Evaluations
             Priority = priority;
         }
         
-        public EvaluationStep SetValue(EvaluationStepType type, float value = 0)
+        public EvaluationStep SetValue(Type type, float value = 0)
         {
-            Type = type;
+            StepType = type;
             Value = value;
             return this;
         }
@@ -73,18 +66,25 @@ namespace Cardevil.Cards.Evaluations
 
         public void CalculateDamage(ref float totalDamage)
         {
-            if (Type is EvaluationStepType.None or EvaluationStepType.Move)
+            if (StepType is Type.None or Type.Move)
                 return;
 
-            switch (Type)
+            switch (StepType)
             {
-                case EvaluationStepType.Plus:
+                case Type.Plus:
                     totalDamage += Value;
                     break;
-                case EvaluationStepType.Multiply:
+                case Type.Multiply:
                     totalDamage *= Value;
                     break;
             }
+        }
+        
+        public enum Type
+        {
+            None,
+            Move, 
+            Plus, Multiply
         }
 
         // public float Evaluate(float damage, out EvaluationEffect effect, out float value)
