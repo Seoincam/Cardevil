@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.DebugConsole;
 using Cardevil.Items.Relics.Factory;
 using Cardevil.Utils;
 using System;
@@ -199,5 +200,46 @@ namespace Cardevil.Relics
             
             _dirty = false;
         }
+
+        #region ConsoleCommand
+
+        [ConsoleCommand("getRelic", "Get Relic by relicId and level", "getRelic [string: relicId] [int: level (optional, default: 1)]")]
+        private static void GetRelicCommand(string[] args)
+        {
+            string relicId = string.Empty;
+            int level = 1;
+
+            if (args.Length == 0)
+            {
+                DebugConsole.Console.MessageError("Please specify a relic ID.");
+                return;
+            }
+
+            if (args.Length == 1)
+            {
+                relicId = args[0];
+            }
+            else if (args.Length == 2)
+            {
+                relicId = args[0];
+                if (!int.TryParse(args[1], out level))
+                {
+                    DebugConsole.Console.MessageError("Invalid relic level.");
+                    return;
+                }
+            }
+
+            if (!Managers.Relic.TryAcquire(relicId, level))
+            {
+                DebugConsole.Console.MessageError("Failed to acquire relic.");
+                return;
+            }
+            else
+            {
+                DebugConsole.Console.Message($"Relic acquired by {relicId}");
+            }
+        }
+
+        #endregion
     }
 }
