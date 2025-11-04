@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cardevil.Events.Core;
+using System;
 using System.Collections.Generic;
 
 namespace Cardevil.Events

@@ -1,4 +1,6 @@
-﻿namespace Cardevil.Events
+﻿using Cardevil.Events.Core;
+
+namespace Cardevil.Events
 {
     /// <summary>
     /// 플레이어의 체력 변화 이벤트 인자.
