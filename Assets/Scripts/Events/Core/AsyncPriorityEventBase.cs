@@ -1,7 +1,7 @@
 ﻿using Cardevil.Core;
 using System.Collections.Generic;
 
-namespace Cardevil.Events
+namespace Cardevil.Events.Core
 {
     public abstract class AsyncPriorityEventBase : IClearable
     {
