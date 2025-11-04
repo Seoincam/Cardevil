@@ -139,7 +139,6 @@ namespace Cardevil.Cards.Evaluations
 
                 waitAll.Add(seq.AwaitForComplete());
             }
-            //ㅇㅇ
             
             await UniTask.WhenAll(waitAll);
             
