@@ -11,6 +11,7 @@ namespace Database
     {
         public List<Example> ExampleList = new List<Example>();
         public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
+        public List<RoomData> RoomDataList = new List<RoomData>();
         public List<Heal> HealList = new List<Heal>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
@@ -20,6 +21,7 @@ namespace Database
         public readonly List<string> ClassNames = new List<string> {
             "Example",
             "BaseMobBossData",
+            "RoomData",
             "Heal",
             "HandRankingData",
             "MachineReward",
@@ -64,6 +66,7 @@ namespace Database
         {
             ExampleList.Clear();
             BaseMobBossDataList.Clear();
+            RoomDataList.Clear();
             HealList.Clear();
             HandRankingDataList.Clear();
             MachineRewardList.Clear();
@@ -99,6 +102,9 @@ namespace Database
                         break;
                     case "BaseMobBossData":
                         BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
+                        break;
+                    case "RoomData":
+                        RoomDataList = CreateInstance<RoomData>(df);
                         break;
                     case "Heal":
                         HealList = CreateInstance<Heal>(df);
@@ -137,6 +143,10 @@ namespace Database
                 case "BaseMobBossData":
                     var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
                     BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
+                    break;
+                case "RoomData":
+                    var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
+                    RoomDataList.AddRange(newRoomDataItems);
                     break;
                 case "Heal":
                     var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
@@ -177,6 +187,8 @@ namespace Database
                     return typeof(Example);
                 case "BaseMobBossData":
                     return typeof(BaseMobBossData);
+                case "RoomData":
+                    return typeof(RoomData);
                 case "Heal":
                     return typeof(Heal);
                 case "HandRankingData":
