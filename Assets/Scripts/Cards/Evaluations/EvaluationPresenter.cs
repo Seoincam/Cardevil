@@ -17,7 +17,7 @@ namespace Cardevil.Cards.Evaluations
         /// 족보 표시 텍스트를 지움.
         /// </summary>
         void ClearHandRankingText();
-        //ㅇㅇ
+        
         /// <summary>
         /// 족보 표시 텍스트 갱신.
         /// 선택된 카드 목록을 기반으로 족보 평가 후 표시 텍스트 업데이트.
