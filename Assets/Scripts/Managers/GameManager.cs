@@ -144,7 +144,6 @@ public class GameManager : ISaveLoad
         LogEx.Log("Database가 초기화 되었습니다. GameStart 실행.");
         _playerStatus = new PlayerStatus();
         _playerStatus.BroadcastInitialStatus();
-        Managers.Relic.SettingRelicsEffectBase();
     }
     
     private async UniTask LoadPlayerData()
@@ -156,7 +155,6 @@ public class GameManager : ISaveLoad
     public void StageStart()
     {
         TurnOrder = 0;
-        Managers.Relic.Init();
         Managers.Card.OnEnterStage();
         Managers.Turn.Init(
             Player.GetComponent<ITurnPlayerMove>(),

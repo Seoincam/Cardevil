@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2470107783525647385}
   - component: {fileID: 8289856201403206661}
   - component: {fileID: 2859985017689319202}
+  - component: {fileID: 1113063258549556067}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -88,33 +89,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01d3d1deed13e4665ad05676d738146e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   data:
     id: 0
-    valueType: 0
-    _defaultNumber:
-      _isSet: 0
-      _color: -1
-      _number: 0
-      _damageReinforceLevel: 0
-    _defaultMove:
-      _isSet: 0
-      _direction: -1
-      _length: 0
-    selectType: 0
-    _selectedNumber:
-      _isSet: 0
-      _color: -1
-      _number: 0
-      _damageReinforceLevel: 0
-    _selectedMove:
-      _isSet: 0
-      _direction: -1
-      _length: 0
-    _numberOptionCount: 0
-    reinforceEnabled: 0
-    isLocked: 0
-  cardVisualPrefab: {fileID: 3734383039003881858, guid: d6553053a711840798f23ff1436fc86f, type: 3}
-  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
-  cardVisual: {fileID: 0}
-  isSelected: 0
-  isDragging: 0
+    kind: 0
+    color: 0
+    damageMultiplier: 0
+    numberSelectState:
+      selectables: []
+      selectedValue:
+        hasValue: 0
+        value: 0
+    length: 0
+    directionSelectState:
+      selectables: []
+      selectedValue:
+        hasValue: 0
+        value: 0
+  visual: {fileID: 0}
+  state:
+    isSelected: 0
+    isDragging: 0
+    isDiscarded: 0
+    isReroll: 0
+    isAnyCardDragged: 0
+    pointerDownTime: 0
+    pointerUpTime: 0
+--- !u!114 &1113063258549556067
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78186141462634609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f039d13ee63469cadb7272bf453b238, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
