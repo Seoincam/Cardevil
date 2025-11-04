@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class DiscardRelic : RelicEffectBase
+    public class DiscardRelic : RelicEffectBase, IRelicEffectOnAcquire
     {
-        public override void ActivateRelicEffect()
+        public void OnAcquire()
         {
             Managers.Game.PlayerStatus.DiscardCard += 1;
         }

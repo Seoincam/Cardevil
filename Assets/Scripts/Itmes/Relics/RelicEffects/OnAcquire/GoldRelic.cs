@@ -2,10 +2,9 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class GoldRelic : RelicEffectBase
+    public class GoldRelic : RelicEffectBase, IRelicEffectOnAcquire
     {
-
-        public override void ActivateRelicEffect()
+        public void OnAcquire()
         {
             Managers.Game.PlayerStatus.gold += Random.Range(18,24);
         }

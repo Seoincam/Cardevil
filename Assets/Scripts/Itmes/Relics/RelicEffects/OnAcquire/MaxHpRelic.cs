@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class MaxHpRelic : RelicEffectBase
+    public class MaxHpRelic : RelicEffectBase, IRelicEffectOnAcquire
     {
-        public override void ActivateRelicEffect()
+        public void OnAcquire()
         {
             Managers.Game.PlayerStatus.MaxHp += 1;  
         }

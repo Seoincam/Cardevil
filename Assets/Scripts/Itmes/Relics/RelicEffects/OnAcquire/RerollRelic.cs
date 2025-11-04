@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class RerollRelic : RelicEffectBase
+    public class RerollRelic : RelicEffectBase, IRelicEffectOnAcquire
     {
-        public override void ActivateRelicEffect()
+        public void OnAcquire()
         {
             Managers.Game.PlayerStatus.RerollTicket += 3;
         }
