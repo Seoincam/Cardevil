@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class RerollRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class RerollRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {

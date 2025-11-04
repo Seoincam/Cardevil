@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class RandomUpgradeRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class RandomUpgradeRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class ColorChangeRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class ColorChangeRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {

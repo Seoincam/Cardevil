@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class DiscardRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class DiscardRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {

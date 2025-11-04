@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class MaxHpRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class MaxHpRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {

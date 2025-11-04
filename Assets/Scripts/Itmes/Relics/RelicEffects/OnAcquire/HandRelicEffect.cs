@@ -3,7 +3,7 @@ using Cardevil.Relics;
 
 namespace Cardevil.Relics
 {
-    public class HandRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class HandRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {

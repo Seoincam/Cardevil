@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class AttackDelayRelic : RelicEffectBase, IRelicEffectOnAcquire
+    public class AttackDelayRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
         public void OnAcquire()
         {
