@@ -54,7 +54,17 @@ namespace Cardevil.Ingame.Field
         /// <param name="direction"></param>
         /// <param name="wrapAround">타일 컨테이너의 경계를 넘어갈 경우, 반대편 타일을 반환할지 여부</param>
         /// <returns></returns>
-        Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false);
+        Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false, int distance = 1);
+        
+        /// <summary>
+        /// 타일을 기준으로 방향에 따라 타일을 반환한다.
+        /// </summary>
+        /// <param name="tile"></param>
+        /// <param name="direction"></param>
+        /// <param name="wrapped"></param>
+        /// <param name="distance"></param>
+        /// <returns></returns>
+        Tile GetTileByDirectionWrap(Tile tile, Direction direction, out bool wrapped, int distance = 1);
         
         
         /// <summary>

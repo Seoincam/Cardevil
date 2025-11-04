@@ -197,12 +197,20 @@ namespace Cardevil.Ingame.Field
             }
             return _tileContainer[i][j];
         }
-        public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
+        public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false, int distance = 1)
         {
+            return GetTileByDirectionWrap(tile, direction, out bool _, distance);
+        }
+        
+        public Tile GetTileByDirectionWrap(Tile tile, Direction direction, out bool wrapped, int distance = 1)
+        {
+            wrapped = false;
             var coordinate = tile.Coordinate;
-            var nextCoordinate = coordinate + direction.ToTileVector();
-            if (wrapAround)
+            var nextCoordinate = coordinate + direction.ToTileVector() * distance;
+            if (nextCoordinate.i < 0 || nextCoordinate.i >= height ||
+                nextCoordinate.j < 0 || nextCoordinate.j >= width)
             {
+                wrapped = true;
                 while (nextCoordinate.i < 0)
                     nextCoordinate.i += height;
                 while (nextCoordinate.i >= height)
@@ -216,7 +224,6 @@ namespace Cardevil.Ingame.Field
             return GetTile(nextCoordinate);
         }
         
-
         public Tile GetTileByDelta(Tile tile, TileVector delta, bool wrapAround = false)
         {
             var coordinate = tile.Coordinate;

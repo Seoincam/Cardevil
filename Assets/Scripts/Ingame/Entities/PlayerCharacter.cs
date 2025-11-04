@@ -5,6 +5,7 @@ using Cardevil.Systems;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -21,12 +22,23 @@ namespace Cardevil.Ingame.Entities
         [SerializeField] protected bool _isDebugMode = false;
         [SerializeField] protected bool _initTileManually = false;
         [SerializeField] protected Tile _initialTile;
+        [Header("Settings")]
+        [SerializeField] protected float _moveSpeed = 5f; // 이동 속도
         [Header("References")]
         [SerializeField] protected Entity _entity;
+        [SerializeField] protected PlayerVisual _playerVisual;
 
         
+        public float MoveSpeed => _moveSpeed;
+        private void Reset()
+        {
+            _entity = GetComponent<Entity>();
+            _playerVisual = GetComponentInChildren<PlayerVisual>(); 
+        }
+
         public Entity Entity => _entity;
         public PlayerStatus PlayerStatus => Managers.Game.PlayerStatus;
+        public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
         {
             if(_entity == null)
@@ -66,7 +78,7 @@ namespace Cardevil.Ingame.Entities
                         else if (vertical > 0) direction = Direction.Up;
                         else if (vertical < 0) direction = Direction.Down;
                         LogEx.Log($"Moving in direction: {direction}");
-                        Move(direction);
+                        MoveWithAnim(direction);
                     }
                 }
             }
@@ -77,22 +89,46 @@ namespace Cardevil.Ingame.Entities
          * TODO : Move 메서드 개선. 현재는 즉시이동 + wrapAround 활성화
          * 
          */
-        public void Move(Direction[] directions)
+
+
+        /// <summary>
+        /// 플레이어를 해당 방향으로 한 칸 이동시킵니다.
+        /// </summary>
+        /// <remarks>
+        /// transform은 바로 이동하지 않고, 애니메이션을 통해 이동합니다.
+        /// </remarks>
+        /// <param name="direction"></param>
+        public async UniTask MoveWithAnim(Direction direction)
         {
-            foreach (var direction in directions)
+            await MoveWithAnim(direction, 1);
+        }
+
+        /// <summary>
+        /// 플레이어를 해당 방향으로 distance 칸 이동시킵니다.
+        /// </summary>
+        /// <remarks>
+        /// transform은 바로 이동하지 않고, 애니메이션을 통해 이동합니다.
+        /// </remarks>
+        /// <param name="direction"></param>
+        /// <param name="distance"></param>
+        public async UniTask MoveWithAnim(Direction direction, int distance)
+        {
+            bool wrapped = false;
+            Tile targetTile = _entity.CurrentTile.Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped);
+            _entity.MoveTo(targetTile, false);
+            async UniTask MoveTask(Vector3 endPosition)
             {
-                Move(direction, 1);
+                PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
+                PlayerVisual.IsRunning = true;
+                var tween = transform.DOMove(endPosition, 1f / _moveSpeed).SetEase(Ease.Linear);
+                await tween.AsyncWaitForCompletion();
+                PlayerVisual.IsRunning = false;
             }
-        }
-
-        public void Move(Direction direction)
-        {
-            Move(direction, 1);
-        }
-
-        public void Move(Direction direction, int distance)
-        {
-            _entity.MoveDirection(direction, distance, true);
+            
+            Vector3 startPosition = transform.position;
+            Vector3 targetPosition = _entity.CurrentTile.transform.position;
+            targetPosition.y = startPosition.y; // Y 축은 유지
+            await MoveTask(targetPosition);
         }
 
         public void MoveTo(int i, int j)
@@ -135,7 +171,12 @@ namespace Cardevil.Ingame.Entities
             // TODO : 적에 대한 공격 구현
             var result = Managers.Card.EvaluationResults.CurrentResult;
             LogEx.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
-            Managers.Game.Enemy.GetDamage(result.TotalDamage);
+            void DealDamageToEnemies()
+            {
+                Managers.Game.Enemy.GetDamage(result.TotalDamage);
+            }
+            DealDamageToEnemies();
+            PlayerVisual.PlayAttackAnimation();
       
         }
         
@@ -143,6 +184,7 @@ namespace Cardevil.Ingame.Entities
         {
             LogEx.Log($"Player takes {amount} damage!");
             PlayerStatus.TakeDamage((int)amount);
+            
         }
 
         public async UniTask TurnMove()
@@ -155,8 +197,8 @@ namespace Cardevil.Ingame.Entities
                 if (!move.DirectionSelectState.FinalValue.HasValue)
                     continue;
 
-                Move((Direction)move.DirectionSelectState.FinalValue, move.Length);
-                await UniTask.Delay(100);
+                await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
+                await UniTask.Delay(300);
             }
             LogEx.Log("Player Move Completed!");
         }
