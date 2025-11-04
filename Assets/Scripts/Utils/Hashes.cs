@@ -2,7 +2,7 @@
 
 namespace Cardevil.Utils
 {
-    public static class ShaderHashes
+    public static class Hashes
     {
         public static readonly int SHADER_COLOR =  Shader.PropertyToID("_Color");
         
@@ -15,5 +15,6 @@ namespace Cardevil.Utils
         public static readonly int UpDown = Animator.StringToHash("UpDown");
         public static readonly int Attack = Animator.StringToHash("Attack");
         public static readonly int Hit = Animator.StringToHash("Attacked");
+        public static readonly int IsFalling = Animator.StringToHash("IsFalling");
     }
 }

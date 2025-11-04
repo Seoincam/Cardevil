@@ -49,7 +49,7 @@ MonoBehaviour:
   _isDebugMode: 0
   _initTileManually: 1
   _initialTile: {fileID: 0}
-  _moveSpeed: 5
+  playerCharacterSetting: {fileID: 11400000, guid: 74d535166e29311479c7f27457430b66, type: 2}
   _entity: {fileID: 2032631788511929565}
   _playerVisual: {fileID: 739627054653589435}
 --- !u!114 &2032631788511929565

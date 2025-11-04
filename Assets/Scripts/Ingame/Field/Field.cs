@@ -161,6 +161,9 @@ namespace Cardevil.Ingame.Field
             var wrappedJ = (j % width + width) % width;
             return new TileVector(wrappedI, wrappedJ);
         }
+        public Vector3 GetTileCenterWorld(TileVector tile){
+            return grid.GetCellCenterWorld(new Vector3Int(tile.j, tile.i, 0));
+        }
         
         public Vector3 GetCenterPosition()
         {
@@ -177,6 +180,7 @@ namespace Cardevil.Ingame.Field
                 return null;
             return _tileContainer[cellPosition.y][cellPosition.x];
         }
+        
         public TileVector WorldToCoordinate(Vector3 worldPosition)
         {
             var localPosition = transform.InverseTransformPoint(worldPosition);

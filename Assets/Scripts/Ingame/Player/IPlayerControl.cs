@@ -3,7 +3,7 @@ using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Ingame.Entities
+namespace Cardevil.Ingame.Player
 {
     public interface IPlayerControl
     {

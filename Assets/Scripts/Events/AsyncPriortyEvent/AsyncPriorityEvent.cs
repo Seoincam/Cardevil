@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Cardevil.Events.AsyncPriorityEvent
 {
+    [Obsolete("Use ExecEvent system instead.", true)]
     public class AsyncPriorityEvent : AsyncPriorityEventBase
     {
         private SortedList<int,AsyncEventHandler> _events = new ();

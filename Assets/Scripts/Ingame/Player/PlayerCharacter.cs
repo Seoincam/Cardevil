@@ -1,17 +1,22 @@
 using Cardevil.Cards.Evaluations;
 using Cardevil.DebugConsole;
+using Cardevil.Events.AsyncPriorityEvent;
+using Cardevil.Events.Core;
+using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Field;
 using Cardevil.Systems;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using JetBrains.Annotations;
 using System;
 using UnityEngine;
 using UnityEngine.Scripting;
+using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
 
-namespace Cardevil.Ingame.Entities
+namespace Cardevil.Ingame.Player
 {
     /// <summary>
     /// 플레이어 캐릭터 클래스
@@ -22,14 +27,14 @@ namespace Cardevil.Ingame.Entities
         [SerializeField] protected bool _isDebugMode = false;
         [SerializeField] protected bool _initTileManually = false;
         [SerializeField] protected Tile _initialTile;
-        [Header("Settings")]
-        [SerializeField] protected float _moveSpeed = 5f; // 이동 속도
+        [Header("Settings")] 
+        [SerializeField] protected PlayerCharacterSettingSO playerCharacterSetting;
         [Header("References")]
         [SerializeField] protected Entity _entity;
         [SerializeField] protected PlayerVisual _playerVisual;
 
-        
-        public float MoveSpeed => _moveSpeed;
+
+        public float MoveSpeed => playerCharacterSetting.moveSpeed;
         private void Reset()
         {
             _entity = GetComponent<Entity>();
@@ -37,6 +42,7 @@ namespace Cardevil.Ingame.Entities
         }
 
         public Entity Entity => _entity;
+        public Field.Field Field => Managers.Game.Field;
         public PlayerStatus PlayerStatus => Managers.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
@@ -113,22 +119,70 @@ namespace Cardevil.Ingame.Entities
         /// <param name="distance"></param>
         public async UniTask MoveWithAnim(Direction direction, int distance)
         {
+            /*
+             * 1. 이동할 위치를 받아온다.
+             * 2. Wrap이 아니라면, 평범하게 이동
+             * 3. Wrap이라면, 특수 애니메이션
+             *
+             * A. 원래 가려고 했던 위치 받아오기
+             * 
+             */
             bool wrapped = false;
-            Tile targetTile = _entity.CurrentTile.Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped);
+            Tile targetTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
+            Tile originalTile = _entity.CurrentTile;
             _entity.MoveTo(targetTile, false);
+            
             async UniTask MoveTask(Vector3 endPosition)
             {
                 PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
                 PlayerVisual.IsRunning = true;
-                var tween = transform.DOMove(endPosition, 1f / _moveSpeed).SetEase(Ease.Linear);
+                var tween = transform.DOMove(endPosition, 1f / MoveSpeed).SetEase(Ease.Linear);
                 await tween.AsyncWaitForCompletion();
                 PlayerVisual.IsRunning = false;
             }
+
+            if (!wrapped)
+            {
+                Vector3 startPosition = transform.position;
+                Vector3 targetPosition = _entity.CurrentTile.transform.position;
+                targetPosition.y = startPosition.y; // Y 축은 유지
+                await MoveTask(targetPosition);
+            }
+            else
+            {
+                Vector3 startPosition = transform.position;
+                // 여러칸 이동했더라도 한칸만 이동한 것으로 취급
+                Vector3 outPosition = Field.GetTileCenterWorld(originalTile.Coordinate + direction.ToTileVector());
+                Vector3 targetPosition = _entity.CurrentTile.transform.position;
+                outPosition.y = targetPosition.y = startPosition.y; // Y 축은 유지
+                await MoveTask(outPosition);
+                PlayerVisual.IsFalling = true;
+
+                transform.DOShakePosition(playerCharacterSetting.coyoteTime);
+                await UniTask.WaitForSeconds(playerCharacterSetting.coyoteTime);
+                
+                var sequence = DOTween.Sequence();
+                // 떨어지는 시퀀스
+                sequence.Append(transform.DOMoveY(startPosition.y - playerCharacterSetting.fallHeight,
+                    playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                // 떨어지는 페이드아웃
+                float fadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
+                    playerCharacterSetting.fallFadeStartRatio);
+                sequence.Insert(fadeoutStartTime,
+                    DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,0, playerCharacterSetting.fallDuration-fadeoutStartTime));
+                
+               
+                // 다시 떨어지는 시퀀스
+                sequence.AppendCallback(() => transform.position = targetPosition + Vector3.up * playerCharacterSetting.fallHeight);
+                sequence.Append(transform.DOMoveY(targetPosition.y,
+                    playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                float fadeinEndTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
+                    playerCharacterSetting.fallFadeEndRatio);
+                sequence.Join(DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,1,fadeinEndTime));
+                await sequence.AwaitForComplete();
+                PlayerVisual.IsFalling = false;
+            }
             
-            Vector3 startPosition = transform.position;
-            Vector3 targetPosition = _entity.CurrentTile.transform.position;
-            targetPosition.y = startPosition.y; // Y 축은 유지
-            await MoveTask(targetPosition);
         }
 
         public void MoveTo(int i, int j)

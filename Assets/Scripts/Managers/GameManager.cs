@@ -13,6 +13,7 @@ using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using Database;
 using Cardevil.Enemy;
+using Cardevil.Ingame.Player;
 
 [Serializable]
 public class GameManager : ISaveLoad

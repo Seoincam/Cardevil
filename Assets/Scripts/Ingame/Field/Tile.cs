@@ -180,7 +180,7 @@ namespace Cardevil.Ingame.Field
             {
                 MaterialPropertyBlock block = new MaterialPropertyBlock();
                 _meshRenderer.GetPropertyBlock(block);
-                block.SetColor(ShaderHashes.SHADER_COLOR, color);
+                block.SetColor(Hashes.SHADER_COLOR, color);
             }
         }
         

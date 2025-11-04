@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Cardevil.Ingame.Entities
+namespace Cardevil.Ingame.Player
 {
     [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
     public class PlayerVisual : MonoBehaviour, IAnimSignalListener
@@ -19,6 +19,12 @@ namespace Cardevil.Ingame.Entities
             set => _animator.SetBool(Utils.AnimatorHashes.IsRunning, value);
         }
         
+        public bool IsFalling
+        {
+            get => _animator.GetBool(Utils.AnimatorHashes.IsFalling);
+            set => _animator.SetBool(Utils.AnimatorHashes.IsFalling, value);
+        }
+        
         public Vector2 MoveDirection
         {
             get => new Vector2(_animator.GetFloat(Utils.AnimatorHashes.LeftRight), _animator.GetFloat(Utils.AnimatorHashes.UpDown));
@@ -27,6 +33,12 @@ namespace Cardevil.Ingame.Entities
                 _animator.SetFloat(Utils.AnimatorHashes.LeftRight, value.x);
                 _animator.SetFloat(Utils.AnimatorHashes.UpDown, -value.y);
             }
+        }
+        
+        public float FadeAlpha
+        {
+            get => _mainSpriteRenderer.color.a;
+            set => SetFade(value);
         }
         
         public void PlayAttackAnimation()
@@ -85,6 +97,13 @@ namespace Cardevil.Ingame.Entities
                     LogEx.LogError("Unknown PlayerVisual test type: " + type);
                     break;
             }
+        }
+        
+        public void SetFade(float alpha)
+        {
+            Color color = _mainSpriteRenderer.color;
+            color.a = alpha;
+            _mainSpriteRenderer.color = color;
         }
         
     }
