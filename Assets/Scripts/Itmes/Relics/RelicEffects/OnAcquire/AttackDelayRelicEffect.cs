@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Cardevil.Relics
 {
-    public class AttackDelayRelic : RelicEffectBase
+    public class AttackDelayRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
-        public override void ActivateRelicEffect()
+        public void OnAcquire()
         {
             Managers.Game.Enemy.delayAttackByRelic = 2;
         }

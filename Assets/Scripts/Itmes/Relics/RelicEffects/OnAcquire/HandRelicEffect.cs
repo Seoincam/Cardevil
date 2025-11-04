@@ -3,9 +3,9 @@ using Cardevil.Relics;
 
 namespace Cardevil.Relics
 {
-    public class HandRelic : RelicEffectBase
+    public class HandRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {
-        public override void ActivateRelicEffect()
+        public void OnAcquire()
         {
             Managers.Game.PlayerStatus.MaxHand = 7;
         }
