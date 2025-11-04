@@ -1,9 +1,14 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
 using Cardevil.Utils;
+using Cardevil.Utils.Directions;
+using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.Cards.InStage.Model
 {
@@ -66,21 +71,53 @@ namespace Cardevil.Cards.InStage.Model
         }
     }
 
+    [Serializable]
     public sealed class EvaluationResult
     {
-        public int TotalDamage { get; private set; }
-        public IReadOnlyList<BuiltMoveData> Moves { get; }
-        public HandRanking HandRanking { get; }
+        [SerializeField, VisibleOnly] private int totalDamage;
+        [SerializeField, VisibleOnly] private List<CardData> moves;
+        [SerializeField, VisibleOnly] private HandRanking handRanking;
 
-        public void SetDamage(int damage)
-        {
-            TotalDamage = damage;
-        }
+        public int TotalDamage => totalDamage;
+        public IReadOnlyList<CardData> Moves => moves;
+        public HandRanking HandRanking => handRanking;
+
+        #region Builder
+
+        public static Builder CreateBuilder() => new(); 
         
-        public EvaluationResult(List<BuiltMoveData> moves, HandRanking handRanking = HandRanking.None)
+        public sealed class Builder
         {
-            Moves = moves;
-            HandRanking = handRanking;
+            private int _totalDamage;
+            private List<CardData> _moves;
+            private HandRanking _handRanking;
+
+            public Builder SetDamage(int damage)
+            {
+                _totalDamage += damage;
+                return this;
+            }
+            public Builder SetMoves(List<CardData> moves)
+            {
+                _moves = moves;
+                return this;
+            }
+            public Builder SetHandRanking(HandRanking handRanking)
+            {
+                _handRanking = handRanking;
+                return this;
+            }
+
+            public EvaluationResult Build() => new(_totalDamage, _moves, _handRanking);
         }
+
+        public EvaluationResult(int totalDamage, List<CardData> moves, HandRanking handRanking)
+        {
+            this.totalDamage = totalDamage;
+            this.moves = moves;
+            this.handRanking = handRanking;
+        }
+
+        #endregion
     }
 }

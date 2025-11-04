@@ -143,9 +143,23 @@ namespace Cardevil.Utils
             return false;
         }
         string stackTrace = GetStackTrace();
+        Match matches = Regex.Match(stackTrace, @"\(at(.+)\)", RegexOptions.IgnoreCase);
+        if (!matches.Success)
+        {
+            return false;
+        }
+        if(matches.Groups.Count < 2)
+        {
+            return false;
+        }
+        string firstLine = matches.Groups[1].Value;
+        if (firstLine == null || !firstLine.Contains(LoggerCs))
+        {
+            return false;
+        }
         if(!string.IsNullOrEmpty(stackTrace)) // can customize the label to be added here; the original code is confusing and does not need to be modified, you need to locate it yourself;
         {
-            Match matches = Regex.Match(stackTrace, @"\(at(.+)\)", RegexOptions.IgnoreCase);
+            // Match matches = Regex.Match(stackTrace, @"\(at(.+)\)", RegexOptions.IgnoreCase);
             string pathline = "";
             while (matches.Success)
             {

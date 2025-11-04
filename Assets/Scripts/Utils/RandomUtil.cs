@@ -1,6 +1,7 @@
-﻿
+﻿using Cardevil.DebugConsole;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UMRandom = Unity.Mathematics.Random;
 using URandom = UnityEngine.Random;
 
@@ -47,7 +48,48 @@ namespace Cardevil.Utils
             {
                 InitSeed(type);
             }
-            return randoms[type].NextInt(min, max);
+
+            var random = randoms[type];
+            int result = random.NextInt(min, max);
+            randoms[type] = random; // UMRandom이 struct이기 때문.
+            
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a random float within [0.0..1.0]
+        /// </summary>
+        public static float GetValue(RandomType type = RandomType.Default)
+        {
+            return GetRandomFloat(0, 1, type);
+        }
+        
+        public static float GetRandomFloat(float min, float max, RandomType type = RandomType.Default)
+        {
+            if (!randoms.TryGetValue(type, out var r))
+            {
+                InitSeed(type);
+            }
+            
+            var random = randoms[type];
+            float result = random.NextFloat(min, max);
+            randoms[type] = random; // UMRandom이 struct이기 때문.
+            
+            return result;
+        }
+        
+        /// <summary>
+        /// <see cref="RandomType"/> 기반의 Fisher–Yates in place 셔플.  
+        /// </summary>
+        public static void ShuffleListInPlace<T>(this IList<T> list, RandomType type = RandomType.CardShuffle)
+        {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = GetRandomInt(0, i + 1, type);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
         }
 
         [Serializable]
@@ -85,6 +127,37 @@ namespace Cardevil.Utils
                 InitSeed(save.type, save.initialSeed, save.state);
             }
             _isInitialized = true;
+        }
+    }
+    
+    public class RandomUtilShuffleTest
+    {
+        /*
+         * 카드 셔플을 하면 많은 경우
+         * Red 2, 3, 4, 5가 포함되어 있다고 느껴졌음.
+         * 검증을 위해 ShuffleTest 클래스를 만듦.
+         */
+        
+        [ConsoleCommand("testShuffle")]
+        public static void Test()
+        {
+            int deckSize = 50, handSize = 6, trialCount = 500_000;
+            int[] buckets = new int[5]; // id 0~3 중, 0~4장 포함 카운트
+            
+            for (int t = 0; t < trialCount; t++)
+            {
+                var deck = Enumerable.Range(0, deckSize).ToList();
+                deck.ShuffleListInPlace(); // 테스트 위해 셔플마다 시드 삭제 후 InitSeed()
+
+                int cnt = deck.Take(handSize).Count(id => id < 4);
+                buckets[cnt]++;
+            }
+
+            for (int k = 0; k <= 4; k++)
+                LogEx.Log($"{k}장 포함: {(double)buckets[k]/trialCount*100:F3}%");
+
+            double rate = (double)buckets[4]/trialCount*100;
+            LogEx.Log($"모두 포함 확률: {rate:F5}%");
         }
     }
 }

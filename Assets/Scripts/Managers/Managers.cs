@@ -84,7 +84,7 @@ public class Managers : MonoBehaviour
             s_instance._card.Init();
             s_instance._dungeon.Init();
             s_instance._item.Init();
-            // s_instance._relic.Init();
+            s_instance._relic.Init();
             s_instance._game.Init();
 
             if (s_instance._database == null)
