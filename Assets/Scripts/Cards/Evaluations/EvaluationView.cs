@@ -13,7 +13,7 @@ namespace Cardevil.Cards.Evaluations
 {
     /*
      * 1. sub 글자가 사라지기 (ok)
-     * 2. value에 따라 main 텍스트 올라가는 시간이 바뀌기
+     * 2. value에 따라 main 텍스트 올라가는 시간이 바뀌기 (ok)
      * 3. 점점 빨라지기
      */
     public class EvaluationView : MonoBehaviour, IClearable
@@ -123,19 +123,17 @@ namespace Cardevil.Cards.Evaluations
         {
             if (RegisteredSubs.Count == 0)
                 return;
-            
             _mainText.UpdateText(_prevDamage.ToString());
 
+            // 1. sub Text 이동
             var subs = new List<TextAnimator>(RegisteredSubs.Count);
             while(RegisteredSubs.Count > 0)
                 subs.Add(RegisteredSubs.Dequeue());
-
+            
             var waitAll = new List<UniTask>(subs.Count);
-
             foreach (var sub in subs)
             {
                 var rect = sub.transform.parent.GetComponent<RectTransform>();
-
                 var seq = DOTween.Sequence()
                     .Append(rect.DOAnchorPosX(0, animSO.subEvaDur)
                         .SetEase(animSO.subEvaEase))
@@ -151,9 +149,10 @@ namespace Cardevil.Cards.Evaluations
 
                 waitAll.Add(seq.AwaitForComplete());
             }
-            
             await UniTask.WhenAll(waitAll);
             
+            // 2. main Text에 total damage 반영
+            float dur = ((totalDamage - _prevDamage) / 10f + 1) * animSO.mainEvaChangeDur; // 데미지에 따라 시간 늘어나도록
             var mainSeq = DOTween.Sequence()
                 .Append(main.DOScale(animSO.mainRankingScaleValue, animSO.mainEvaDur)
                     .SetLoops(2, LoopType.Yoyo))
@@ -161,7 +160,7 @@ namespace Cardevil.Cards.Evaluations
                     () => _prevDamage,
                     v => _mainText.UpdateText(v.ToString("0")),
                     totalDamage,
-                    animSO.mainEvaChangeDur))
+                    dur))
                 .SetAutoKill()
                 .SetRecyclable()
                 .SetLink(gameObject);
@@ -170,6 +169,7 @@ namespace Cardevil.Cards.Evaluations
             _prevDamage = totalDamage;
             _lastStepY = 0f;
 
+            // 3. 다시 pool에 sub Text 반환
             foreach (var sub in subs)
             {
                 await ClearText(sub);
