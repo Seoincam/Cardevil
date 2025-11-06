@@ -355,6 +355,7 @@ MonoBehaviour:
   - {fileID: 5691823281554090458}
   - {fileID: 5611854195493241416}
   - {fileID: 7809546956830108485}
+  visualSO: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
 --- !u!225 &7648998667566695106
 CanvasGroup:
   m_ObjectHideFlags: 0

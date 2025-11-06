@@ -106,8 +106,8 @@ namespace Cardevil.Cards.ScriptableObjects
         [SerializeField] float _deckInteractionScale = 1.125f;
         [SerializeField] float _deckInteractionDuration = .09f;
         [SerializeField] Ease _deckInteractionEase = Ease.InOutBounce;
-        [Space(25)]
-
+        [Space(25)] 
+        [SerializeField] private float deckRemainViewToggleDur;
 
         [Header("[ Etc ]")]
         [SerializeField] private float _reviveInterval = .4f;
@@ -172,7 +172,9 @@ namespace Cardevil.Cards.ScriptableObjects
         public float DeckInteractionScale => _deckInteractionScale;
         public float DeckInteractionDuration => _deckInteractionDuration * SpeedFactor;
         public Ease DeckInteractionEase => _deckInteractionEase;
-        
+
+        public float DeckRemainViewToggleDur => deckRemainViewToggleDur * SpeedFactor;
+
         public float ReviveInterval => _reviveInterval * SpeedFactor;
         
         #endregion
