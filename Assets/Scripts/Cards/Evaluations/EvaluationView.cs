@@ -48,9 +48,9 @@ namespace Cardevil.Cards.Evaluations
         
         public void Clear()
         {
-            _mainText.ClearText();
+            ClearTextAsync(_mainText).Forget();
             foreach (var sub in SubPool)
-                sub.ClearText();
+                ClearTextAsync(sub).Forget();
             _prevDamage = 0f;
         }
         
@@ -60,12 +60,10 @@ namespace Cardevil.Cards.Evaluations
             _lastRanking = ranking;
 
             var sub = GetSub();
-            var subRect= sub.transform.parent.GetComponent<RectTransform>();
-
-            if (ranking is HandRanking.None or HandRanking.High)
+            if (ranking is HandRanking.None)
             {
-                ClearText(_mainText);
-                ClearText(sub);
+                ClearTextAsync(_mainText).Forget();
+                ClearTextAsync(sub).Forget();
                 SubPool.Enqueue(sub);
                 return;
             }
@@ -74,6 +72,8 @@ namespace Cardevil.Cards.Evaluations
                 .FirstOrDefault(i => i.Ranking == ranking);
             if (data == null) { LogEx.LogError($"Can't find HandRanking Data: {ranking}"); return; }
 
+            var subRect= sub.transform.parent.GetComponent<RectTransform>();
+            
             // 이전 Tween 정리 및 Transform 초기화
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();
@@ -172,7 +172,7 @@ namespace Cardevil.Cards.Evaluations
             // 3. 다시 pool에 sub Text 반환
             foreach (var sub in subs)
             {
-                await ClearText(sub);
+                sub.ClearText();
                 SubPool.Enqueue(sub);
             }
         }
@@ -194,18 +194,15 @@ namespace Cardevil.Cards.Evaluations
             return sub;
         }
 
-        private async UniTask ClearText(TextAnimator text)
+        private async UniTaskVoid ClearTextAsync(TextAnimator text)
         {
-            return;
-            var seq = DOTween.Sequence()
+            await DOTween.Sequence()
                 .Append(DOTween.To(
                     () => 1f,
                     text.SetAlpha,
                     0f,
-                    .1f))
-                .OnComplete(text.ClearText);
-            
-            await seq;
+                    animSO.clearTextDur));
+            text.ClearText();
         }
     }
 }

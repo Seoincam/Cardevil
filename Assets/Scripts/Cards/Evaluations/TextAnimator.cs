@@ -1,3 +1,4 @@
+using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using TMPro;
@@ -35,11 +36,12 @@ namespace Cardevil.Cards.Evaluations
             _defaultColor = _textComponent.color;
             
             RestartAnimation();
-            UpdateText("");
+            ClearText();
         }
 
         public void ClearText()
         {
+            LogEx.Log($"{name} {Time.time}");
             UpdateText(string.Empty);
         }
 
@@ -61,7 +63,7 @@ namespace Cardevil.Cards.Evaluations
         }
 
         /// <summary>
-        /// AnchoredPositin을 설정합니다.
+        /// AnchoredPosition을 설정합니다.
         /// </summary>
         public void SetPosition(Vector3 position)
         {
@@ -77,8 +79,7 @@ namespace Cardevil.Cards.Evaluations
             alpha = Mathf.Clamp01(alpha);
             _textComponent.color = new Color(c.r, c.g, c.b, alpha);
         }
-
-
+        
         private void RestartAnimation()
         {
             _cts?.Cancel();
@@ -86,7 +87,7 @@ namespace Cardevil.Cards.Evaluations
             PlayShakeAnimationAsync(_cts.Token).Forget();
         }
 
-        private async UniTask PlayShakeAnimationAsync(CancellationToken token)
+        private async UniTaskVoid PlayShakeAnimationAsync(CancellationToken token)
         {
             _textComponent.ForceMeshUpdate();
             var textInfo = _textComponent.textInfo;

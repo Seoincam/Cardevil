@@ -11,7 +11,7 @@ namespace Cardevil.Cards.ScriptableObjects
         [VisibleOnly, SerializeField, TextArea]
         private string description = "족보 선택/카드 변경 글자 애니메이션 설정 SO입니다.";
 
-        [Header("Common")]
+        [Header("[ Common ]")]
         [FormerlySerializedAs("s_posX")]
         [Tooltip("Sub PosX")]
         [Min(30f)] public float subPosX;
@@ -20,7 +20,7 @@ namespace Cardevil.Cards.ScriptableObjects
         public float mainRankingScaleValue;
 
         
-        [Header("Ranking Changed")]
+        [Header("[ Ranking Changed ]")]
         [FormerlySerializedAs("m_RankingChangeDur"), Min(0f)]
         [Tooltip("Main Scale Tween 지속 시간. 이 시간만큼 두 번 반복.")]
         public float mainRankingChangeDur;
@@ -30,7 +30,7 @@ namespace Cardevil.Cards.ScriptableObjects
         public float subRankingChangeDur;
 
 
-        [Header("Step Evaluation")]
+        [Header("[ Step Evaluation ]")]
         [FormerlySerializedAs("mainevaDur")]
         [FormerlySerializedAs("m_evaDur")]
         [Tooltip("Main Scale Tween 지속 시간. 이 시간만큼 두 번 반복.")]
@@ -54,5 +54,8 @@ namespace Cardevil.Cards.ScriptableObjects
         [Min(1f)] public float cardScaleValue;
         [Min(0f)] public float cardScaleDur;
         public Ease cardScaleEase;
+
+        [Header("[ Etc ]")] 
+        [Min(0f)] public float clearTextDur;
     }
 }
