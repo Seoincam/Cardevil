@@ -41,7 +41,6 @@ namespace Cardevil.Cards.Evaluations
 
         public void ClearText()
         {
-            LogEx.Log($"{name} {Time.time}");
             UpdateText(string.Empty);
         }
 
