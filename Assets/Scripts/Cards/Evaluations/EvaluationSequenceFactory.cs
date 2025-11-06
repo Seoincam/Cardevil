@@ -31,9 +31,13 @@ namespace Cardevil.Cards.Evaluations
             // Move Only
             if (attackCards.Count == 0 && moveCards.Count > 0)
             {
+                List<IEvaluateVisual> visuals = new();
+                foreach (var card in moveCards)
+                    visuals.Add(card.EvaluateVisual);
+                
                 seq.Append(EvaluationStep.Get()
                     .SetValue(EvaluationStep.Type.Move)
-                    .SetVisual(moveCards));
+                    .SetVisual(visuals));
 
                 return seq;
             }
@@ -67,9 +71,13 @@ namespace Cardevil.Cards.Evaluations
             // 기본 족보 보너스
             if (data != null && handRanking > HandRanking.High)
             {
+                List<IEvaluateVisual> visuals = new();
+                foreach (var card in inRankCards)
+                    visuals.Add(card.EvaluateVisual);
+                
                 seq.Append(EvaluationStep.Get()
                     .SetValue(EvaluationStep.Type.Plus, data.Value)
-                    .SetVisual(inRankCards)); // 족보에 포함되는 카드들만 추가함
+                    .SetVisual(visuals)); // 족보에 포함되는 카드들만 추가함
             }
             
             // 기본 데미지 + 보너스 데미지
@@ -85,7 +93,7 @@ namespace Cardevil.Cards.Evaluations
                 
                 seq.Append(EvaluationStep.Get()
                     .SetValue(EvaluationStep.Type.Plus, topVal)
-                    .SetVisual(top));
+                    .SetVisual(top.EvaluateVisual));
                 
                 // 추가 데미지 유물 효과 적용
                 foreach (var effect in perCardBonus)
@@ -99,7 +107,7 @@ namespace Cardevil.Cards.Evaluations
                     
                     seq.Append(EvaluationStep.Get()
                         .SetValue(EvaluationStep.Type.Plus, v)
-                        .SetVisual(card));
+                        .SetVisual(card.EvaluateVisual));
                     
                     // 추가 데미지 유물 효과 적용
                     foreach (var effect in perCardBonus)

@@ -78,13 +78,13 @@ namespace Cardevil.Cards.Evaluations
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();
             main.localScale = Vector3.one;
-            subRect.anchoredPosition = new Vector3(animSO.s_posX, 0);
+            subRect.anchoredPosition = new Vector3(animSO.subPosX, 0);
 
             // 새 Tween
-            _mainRankingTween = main.DOScale(1.2f, animSO.m_RankingChangeDur)
+            _mainRankingTween = main.DOScale(animSO.mainRankingScaleValue, animSO.mainRankingChangeDur)
                 .SetLoops(2, LoopType.Yoyo)
                 .SetAutoKill(true).SetLink(main.gameObject);
-            _subRankingTween = subRect.DOAnchorPosX(0, animSO.s_RankingChangeDur)
+            _subRankingTween = subRect.DOAnchorPosX(0, animSO.subRankingChangeDur)
                 .SetAutoKill(true).SetLink(sub.gameObject);
 
             _mainText.UpdateText(data.DisplayName);
@@ -105,12 +105,12 @@ namespace Cardevil.Cards.Evaluations
             _stepSeq?.Kill();
             _stepSeq = DOTween.Sequence().SetAutoKill(true).SetLink(sub.gameObject);
             
-            rect.anchoredPosition= new Vector3(animSO.s_posX * 1.5f, _lastStepY);
+            rect.anchoredPosition= new Vector3(animSO.subPosX * 1.5f, _lastStepY);
             string oper = s.StepType == EvaluationStep.Type.Plus ? "+" : "x"; // TODO: 더 제대로 나눠야함.
             sub.UpdateText($"{oper}{s.Value}");
             
             _stepSeq
-                .Append(rect.DOAnchorPosX(animSO.s_posX, animSO.s_evaDur).SetEase(animSO.s_evaEase));
+                .Append(rect.DOAnchorPosX(animSO.subPosX, animSO.subEvaDur).SetEase(animSO.subEvaEase));
             
             RegisteredSubs.Enqueue(sub);
             _lastStepY += 100f;
@@ -137,7 +137,14 @@ namespace Cardevil.Cards.Evaluations
                 var rect = sub.transform.parent.GetComponent<RectTransform>();
 
                 var seq = DOTween.Sequence()
-                    .Append(rect.DOAnchorPosX(0, animSO.s_evaDur).SetEase(animSO.s_evaEase))
+                    .Append(rect.DOAnchorPosX(0, animSO.subEvaDur)
+                        .SetEase(animSO.subEvaEase))
+                    .Join(DOTween.To(
+                        () => 1f,
+                        sub.SetAlpha,
+                        0f,
+                        animSO.subEvaDur)
+                        .SetEase(animSO.subFadeOutEase))
                     .SetAutoKill()
                     .SetRecyclable()
                     .SetLink(gameObject);
@@ -148,12 +155,13 @@ namespace Cardevil.Cards.Evaluations
             await UniTask.WhenAll(waitAll);
             
             var mainSeq = DOTween.Sequence()
-                .Append(main.DOScale(1.1f, animSO.m_evaDur))
+                .Append(main.DOScale(animSO.mainRankingScaleValue, animSO.mainEvaDur)
+                    .SetLoops(2, LoopType.Yoyo))
                 .Join(DOTween.To(
                     () => _prevDamage,
                     v => _mainText.UpdateText(v.ToString("0")),
                     totalDamage,
-                    animSO.m_evaChangeDur))
+                    animSO.mainEvaChangeDur))
                 .SetAutoKill()
                 .SetRecyclable()
                 .SetLink(gameObject);
@@ -188,6 +196,7 @@ namespace Cardevil.Cards.Evaluations
 
         private async UniTask ClearText(TextAnimator text)
         {
+            return;
             var seq = DOTween.Sequence()
                 .Append(DOTween.To(
                     () => 1f,

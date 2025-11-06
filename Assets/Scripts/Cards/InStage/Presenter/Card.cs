@@ -16,7 +16,7 @@ using UnityEngine.UIElements;
 namespace Cardevil.Cards.InStage.Presenter
 {
     [RequireComponent(typeof(Poolable))]
-    public class Card : MonoBehaviour, IEvaluateVisual, IClearable,
+    public class Card : MonoBehaviour, IClearable,
                         IDragHandler, IBeginDragHandler, IEndDragHandler, 
                         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
@@ -34,8 +34,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private Poolable _poolable;
         private IReadOnlyStageCardsModel _model;
 
-        #region Property
-
+        public IEvaluateVisual EvaluateVisual => visual;
         public CardData Data => data;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
@@ -50,38 +49,6 @@ namespace Cardevil.Cards.InStage.Presenter
                 return true;
             }
         }
-
-        #endregion
-        
-        #region Unity Event
-
-        private void Awake()
-        {
-            Clear();
-            _poolable = GetComponent<Poolable>();
-            _poolable.OnRelease += Clear;
-        }
-        
-        private void Update()
-        {
-            if (state.isDiscarded) return;
-
-            if (state.isDragging)
-            {
-                // var targetPosition = Input.mousePosition - pointerOffset;
-                var targetPosition = Input.mousePosition;
-                var direction = (targetPosition - transform.position).normalized;
-
-                var neededVelocity = Vector2.Distance(transform.position, targetPosition) / Time.deltaTime;
-                var velocity = direction * Mathf.Min(visualSetting.MoveSpeedLimit, neededVelocity);
-
-                transform.Translate(velocity * Time.deltaTime);
-            }
-        }
-
-        #endregion
-
-        #region Initialization
 
         /// <summary>
         /// 카드 데이터 및 비주얼 초기화.
@@ -110,6 +77,32 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             state = new CardState();
             visual = null;
+        }
+        
+        #region Unity Event
+
+        private void Awake()
+        {
+            Clear();
+            _poolable = GetComponent<Poolable>();
+            _poolable.OnRelease += Clear;
+        }
+        
+        private void Update()
+        {
+            if (state.isDiscarded) return;
+
+            if (state.isDragging)
+            {
+                // var targetPosition = Input.mousePosition - pointerOffset;
+                var targetPosition = Input.mousePosition;
+                var direction = (targetPosition - transform.position).normalized;
+
+                var neededVelocity = Vector2.Distance(transform.position, targetPosition) / Time.deltaTime;
+                var velocity = direction * Mathf.Min(visualSetting.MoveSpeedLimit, neededVelocity);
+
+                transform.Translate(velocity * Time.deltaTime);
+            }
         }
 
         #endregion
