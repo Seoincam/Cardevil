@@ -11,6 +11,11 @@ using NotImplementedException = System.NotImplementedException;
 
 namespace Cardevil.Cards.Evaluations
 {
+    /*
+     * 1. sub 글자가 사라지기 (ok)
+     * 2. value에 따라 main 텍스트 올라가는 시간이 바뀌기
+     * 3. 점점 빨라지기
+     */
     public class EvaluationView : MonoBehaviour, IClearable
     {
         [SerializeField] private CardEvaluationAnimSO animSO;

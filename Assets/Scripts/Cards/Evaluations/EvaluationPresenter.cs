@@ -122,8 +122,7 @@ namespace Cardevil.Cards.Evaluations
                     step.CalculateDamage(ref totalDamage);
                     _view.RegisterStep(step);
                     
-                    if (i != stepGroup.Count - 1)
-                        await UniTask.Delay(TimeSpan.FromSeconds(.3f));
+                    await UniTask.Delay(TimeSpan.FromSeconds(.3f));
                 }
                 
                 await _view.DoStep(totalDamage);

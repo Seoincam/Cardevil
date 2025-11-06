@@ -75,7 +75,7 @@ namespace Cardevil.Cards.Evaluations
         {
             var c = _defaultColor;
             alpha = Mathf.Clamp01(alpha);
-            _textComponent.faceColor = new Color(c.r, c.g, c.b, alpha);
+            _textComponent.color = new Color(c.r, c.g, c.b, alpha);
         }
 
 
