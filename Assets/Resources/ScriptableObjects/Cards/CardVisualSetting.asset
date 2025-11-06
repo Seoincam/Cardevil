@@ -55,4 +55,5 @@ MonoBehaviour:
   _deckInteractionScale: 1.125
   _deckInteractionDuration: 0.09
   _deckInteractionEase: 31
+  deckRemainViewToggleDur: 0.3
   _reviveInterval: 0.4
