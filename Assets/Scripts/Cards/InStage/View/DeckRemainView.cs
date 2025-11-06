@@ -72,7 +72,6 @@ namespace Cardevil.Cards.InStage.View
         public void OnPointerExitAtDeck()
         {
             if (_isClicked) return;
-            _isVisible = false;
             _tween?.Kill();
             
             const float targetAlpha = 0f;
@@ -87,6 +86,7 @@ namespace Cardevil.Cards.InStage.View
             {
                 canvasGroup.interactable = false;
                 canvasGroup.blocksRaycasts = false;
+                _isVisible = false;
             });
         }
 

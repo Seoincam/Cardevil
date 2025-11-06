@@ -45,26 +45,22 @@ namespace Cardevil.Cards.InStage
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            LogEx.Log("OnPointerEnter");
             PointerEnter?.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            LogEx.Log("OnPointerExit");
             PointerExit?.Invoke();
         }
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            LogEx.Log("OnPointerDown");
             transform.DOScale(visualSetting.DeckInteractionScale, visualSetting.DeckInteractionDuration)
                 .SetEase(visualSetting.DeckInteractionEase);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            LogEx.Log("OnPointerUp");
             PointerUp?.Invoke();
             transform.DOScale(1f, visualSetting.DeckInteractionDuration)
                 .SetEase(visualSetting.DeckInteractionEase);
