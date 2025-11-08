@@ -1,4 +1,5 @@
 ﻿using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Manager;
 using System;
 using UnityEngine;
@@ -16,9 +17,9 @@ namespace Cardevil.Pools
     [CreateAssetMenu(fileName = "PoolableFactoryContainer", menuName = "Pool/PoolableFactoryContainer")]
     public class PoolableFactoryContainerSO : ScriptableObject
     {
-        [SerializeField] private SerializableDict<Poolables, PoolableFactorySo> _factories = new ();
+        [SerializeField] private SerializableDictionary<Poolables, PoolableFactorySo> _factories = new ();
         
-        public SerializableDict<Poolables, PoolableFactorySo> Factories
+        public SerializableDictionary<Poolables, PoolableFactorySo> Factories
         {
             get => _factories;
         }

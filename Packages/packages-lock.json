@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.alexeytaranov.serializereferencedropdown": {
+      "version": "https://github.com/AlexeyTaranov/SerializeReferenceDropdown.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.2.0"
+      },
+      "hash": "31efbd8c340da95e361f1e1bcd23b9d29be8c394"
+    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
       "depth": 0,
