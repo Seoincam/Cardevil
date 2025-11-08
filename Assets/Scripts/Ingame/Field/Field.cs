@@ -161,6 +161,9 @@ namespace Cardevil.Ingame.Field
             var wrappedJ = (j % width + width) % width;
             return new TileVector(wrappedI, wrappedJ);
         }
+        public Vector3 GetTileCenterWorld(TileVector tile){
+            return grid.GetCellCenterWorld(new Vector3Int(tile.j, tile.i, 0));
+        }
         
         public Vector3 GetCenterPosition()
         {
@@ -177,6 +180,7 @@ namespace Cardevil.Ingame.Field
                 return null;
             return _tileContainer[cellPosition.y][cellPosition.x];
         }
+        
         public TileVector WorldToCoordinate(Vector3 worldPosition)
         {
             var localPosition = transform.InverseTransformPoint(worldPosition);
@@ -197,12 +201,20 @@ namespace Cardevil.Ingame.Field
             }
             return _tileContainer[i][j];
         }
-        public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false)
+        public Tile GetTileByDirection(Tile tile, Direction direction, bool wrapAround = false, int distance = 1)
         {
+            return GetTileByDirectionWrap(tile, direction, out bool _, distance);
+        }
+        
+        public Tile GetTileByDirectionWrap(Tile tile, Direction direction, out bool wrapped, int distance = 1)
+        {
+            wrapped = false;
             var coordinate = tile.Coordinate;
-            var nextCoordinate = coordinate + direction.ToTileVector();
-            if (wrapAround)
+            var nextCoordinate = coordinate + direction.ToTileVector() * distance;
+            if (nextCoordinate.i < 0 || nextCoordinate.i >= height ||
+                nextCoordinate.j < 0 || nextCoordinate.j >= width)
             {
+                wrapped = true;
                 while (nextCoordinate.i < 0)
                     nextCoordinate.i += height;
                 while (nextCoordinate.i >= height)
@@ -216,7 +228,6 @@ namespace Cardevil.Ingame.Field
             return GetTile(nextCoordinate);
         }
         
-
         public Tile GetTileByDelta(Tile tile, TileVector delta, bool wrapAround = false)
         {
             var coordinate = tile.Coordinate;

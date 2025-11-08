@@ -19,12 +19,12 @@ namespace Cardevil.Cards.InStage.Presenter
     public class StageCardsPresenter : ITurnPlayerInput, IClearable
     {
         private IReadOnlyCardLibrary _library;
-        
         private StageCardsModel _model;
+        private IEvaluationPresenter _evaluationPresenter;
+        
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
         
-        private EvaluationArgsBuilder _builder;
         private CardVisualSettingSO _visualSetting;
         
         private StageCardsPresenterState _state;
@@ -42,7 +42,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, EvaluationArgsBuilder builder)
+        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, IEvaluationPresenter evaluationPresenter)
         {
             if (_state.isInitialized) return;
 
@@ -60,12 +60,12 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             _model = model;
 
-            if (builder == null)
+            if (evaluationPresenter == null)
             {
-                LogEx.LogError("builder가 null입니다.");
+                LogEx.LogError("evaluation Presenter가 null입니다.");
                 return;
             }
-            _builder = builder;
+            _evaluationPresenter = evaluationPresenter;
 
             // SO 로드
             string path = "ScriptableObjects/Cards/CardVisualSetting";
@@ -86,12 +86,13 @@ namespace Cardevil.Cards.InStage.Presenter
         /// <returns>UI 초기화 완료 후 완료되는 <see cref="UniTask"/></returns>
         public async UniTask SetUp()
         {
+            Transform canvas = GameObject.Find("CardCanvas").transform;
+            
             // View 생성
             var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
             if (views is { Length: > 0 }) _view = views[0];
             else
             {
-                Transform canvas = GameObject.Find("CardCanvas").transform;
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
@@ -109,17 +110,21 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             HandChanged?.Invoke();
             
-            // Deck Remain View 생성
+            // Deck Remain View 생성 및 DeckVisual에 바인딩
             var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
             if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
             else
             {
-                Transform canvas = GameObject.Find("CardCanvas").transform;
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
             _deckRemainView.Init(_library, _model);
             DeckChanged += _deckRemainView.OnDeckChanged;
+
+            CardDeckVisual.Instance.PointerEnter += _deckRemainView.OnPointerEnterAtDeck;
+            CardDeckVisual.Instance.PointerExit += _deckRemainView.OnPointerExitAtDeck;
+            CardDeckVisual.Instance.PointerUp += _deckRemainView.OnPointerClickAtDeck;
+            CardDeckVisual.Instance.transform.SetAsLastSibling();
             
             await _view.EnterHandBarAsync();
             
@@ -154,6 +159,10 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             // Update Async 정지
             _updateCts.Cancel();
+            
+            CardDeckVisual.Instance.PointerEnter -= _deckRemainView.OnPointerEnterAtDeck;
+            CardDeckVisual.Instance.PointerExit -= _deckRemainView.OnPointerExitAtDeck;
+            CardDeckVisual.Instance.PointerUp -= _deckRemainView.OnPointerClickAtDeck;
             
             await _view.ExitHandBarAsync();
         }
@@ -213,7 +222,7 @@ namespace Cardevil.Cards.InStage.Presenter
         public async UniTask WaitUserInput()
         {
             cmp = new();
-            _builder.UpdateHandRankingVisual(); // Evaluation Text 초기화
+            _evaluationPresenter.ClearHandRankingText();
             _state.canInteract = true;
             UpdateUI();
             
@@ -270,18 +279,16 @@ namespace Cardevil.Cards.InStage.Presenter
                 {
                     _model.Deselect(card);
                     card.SetSelect(false);
-                    HandChanged?.Invoke();
-                    _builder.UpdateHandRankingVisual(_model.Selection);
-                    UpdateUI();
-                    return;
                 }
-
-                if (_model.Selection.Count >= 4) return;
-            
-                _model.Select(card);
-                card.SetSelect(true);
+                else if (_model.Selection.Count < 4)
+                {
+                    _model.Select(card);
+                    card.SetSelect(true);
+                }
+                else return;
+                
                 HandChanged?.Invoke();
-                _builder.UpdateHandRankingVisual(_model.Selection);
+                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
                 UpdateUI();
             }
             
@@ -369,7 +376,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _state.canInteract = false;
             UpdateUI();
-            _builder.BuildEvaluationArgs(_model.SortedSelection);
+            _evaluationPresenter.ConfigureSequence(_model.SortedSelection);
             _ = UseAsync();
         }
 
@@ -382,7 +389,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private async UniTask UseAsync()
         {
-            await _builder.InvokeAsync();
+            await _evaluationPresenter.ExcuteSequenceAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             await DiscardAsync();
 
@@ -406,7 +413,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
             
-            _builder.UpdateHandRankingVisual();
+            _evaluationPresenter.ClearHandRankingText();
             _view.AlignSlot();
         }
 

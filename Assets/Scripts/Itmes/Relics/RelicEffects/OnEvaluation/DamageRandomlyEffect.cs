@@ -1,5 +1,8 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data;
+using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Utils;
 using System;
 using UnityEngine;
 
@@ -14,12 +17,19 @@ namespace Cardevil.Relics.OnEvaluation
         [Space, SerializeField, VisibleOnly] private bool isPlus;
         [SerializeField, VisibleOnly] private int damageAmount;
         [SerializeField, VisibleOnly] private float damageMultiplier;
-
-        public bool CanTrigger(IReadOnlyEvaluationResultsModel resultModel)
-        {
-            throw new System.NotImplementedException();
-        }
         
+        public bool CanTrigger(HandRanking currentHandRanking, IReadOnlyEvaluationResultsModel resultModel)
+            => RandomUtil.GetValue() < triggerPossibility;
+
+        public EvaluationStep MakeEvaluationStep()
+        {
+            var type = isPlus ? EvaluationStep.Type.Plus : EvaluationStep.Type.Multiply;
+            var value = isPlus ? damageAmount : damageMultiplier;
+            
+            return EvaluationStep.Get()
+                .SetValue(type, value);
+        }
+
         public DamageRandomlyEffect(string effectId, float triggerPossibility, bool isPlus, float value)
         {
             this.effectId = effectId;

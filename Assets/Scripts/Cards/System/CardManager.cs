@@ -34,8 +34,8 @@ namespace Cardevil.Cards.System
         private readonly StageCardsPresenter _stageCardsPresenter = new();
 
         private readonly EvaluationResultsModel _evaluationResultsModel = new();
-        private readonly EvaluationArgsBuilder _evaluationArgsBuilder = new();
-
+        private readonly EvaluationPresenter _evaluationPresenter = new();
+        
         #region IReadOnly
 
         public IReadOnlyEvaluationResultsModel EvaluationResults => _evaluationResultsModel;
@@ -50,10 +50,7 @@ namespace Cardevil.Cards.System
         /// </summary>
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
-        {
-            return new CardFlowController(cardLibrary, _stageCardsModel, _rerollPresenter, _stageCardsPresenter,
-                _evaluationResultsModel, _evaluationArgsBuilder);
-        }
+            => new CardFlowController(cardLibrary, _stageCardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
         
         /// <summary>
         /// 카드 매니저를 초기화.  
@@ -71,6 +68,8 @@ namespace Cardevil.Cards.System
             _enhancementPresenter.Init(cardLibrary, enhancementDataLibrary, _modifierService);
             
             cardLibrary.CreateBasePipelines();
+            
+            _evaluationPresenter.Init(_evaluationResultsModel);
         }
 
         public void Clear()
@@ -80,7 +79,6 @@ namespace Cardevil.Cards.System
             _stageCardsPresenter.Clear();
             
             _evaluationResultsModel.Clear();
-            _evaluationArgsBuilder.Clear();
         }
 
         /// <summary>

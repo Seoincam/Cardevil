@@ -1,9 +1,11 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Cardevil.Events.Core;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 
 namespace Cardevil.Events.AsyncPriorityEvent
 {
+    [Obsolete("Use ExecEvent system instead.", true)]
     public class AsyncPriorityEvent<T0> : AsyncPriorityEventBase
     {
         private SortedList<int,AsyncEventHandler<T0>> _events = new ();

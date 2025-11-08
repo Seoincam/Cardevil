@@ -1,169 +1,244 @@
 using Cardevil.Attributes;
+using Cardevil.DebugConsole;
 using Cardevil.Items.Relics.Factory;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Cardevil.Relics
 {
     [Serializable]
     public class RelicManager
     {
-        [SerializeField, VisibleOnly] private RelicFactory factory;
+        // 모든 유물
+        [SerializeField, VisibleOnly] private List<Relic> all = new();
+        private Dictionary<(string id, int level), Relic> _allById = new();
+        private Dictionary<RelicRarity, List<Relic>> _allByRarity = new();
         
-        [Header("All")]
-        [SerializeField] List<Relic> _allRelics = new();
-        // [SerializeField] List<EvaluationRelicEffect> _allEffects = new();
+        // 보유 상태
+        [SerializeField, VisibleOnly] private List<OwnedRelic> ownedRelics = new();
+        private Dictionary<string, OwnedRelic> _ownedByIdCache = new();
+        private Dictionary<RelicRarity, List<OwnedRelic>> _ownedByRarityCache = new();
+        private bool _dirty;
 
-        // ID로 탐색시 더 빠르게 접근.
-        private readonly Dictionary<(string id, int level), Relic> _relicById = new();
-        // private readonly Dictionary<string, EvaluationRelicEffect> _effectById = new();
-
-        private Text text;
-
+        
         /// <summary>
-        /// Data를 기반으로 실제 Relic 및 RelicEffect를 생성.
+        /// 보유 유물 읽기 전용 목록 반환.
+        /// 게터 호출 시 캐시 재빌드 수행.
         /// </summary>
-        [ContextMenu("Init")]
+        /// <remarks><see cref="RebuildCache"/> 호출 후 내부 목록 반환.</remarks>
+        /// <value>보유 유물 목록</value>
+        public IReadOnlyList<OwnedRelic> OwnedRelics { get { RebuildCache(); return ownedRelics; } }
+        
+        /// <summary>
+        /// 유물 시스템 초기화.
+        /// 팩토리 등록, 희귀도별 캐시 생성, DB 초기화 이후 인스턴스 로드 및 기본 유물 획득.
+        /// </summary>
         public void Init()
         {
-            factory.MakeEffectInstances();
+            RelicFactory.RegisterAllFactory();
+            for (RelicRarity r = 0; r <= RelicRarity.FinBoss; r++)
+            {
+                _allByRarity[r] = new List<Relic>();
+                _ownedByRarityCache[r] = new List<OwnedRelic>();
+            }
             
-            // var datas = Managers.Database.Database;
-            // if (datas.RelicDataList == null || datas.RelicDataList.Count == 0)
-            // {
-            //     LogEx.LogError("Database 초기화 전에 접근.");
-            // }
-
-
-            // _allRelics.Clear();
-            // _allEffects.Clear();
-            // _relicById.Clear();
-            // _effectById.Clear();
-
-            // Build effects
-            // foreach (var data in datas.RelicEffectOnEvaluationDataList)
-            // {
-            //     var effect = new EvaluationRelicEffect(data);
-            //
-            //     if (string.IsNullOrEmpty(effect.EffectId))
-            //     {
-            //         Debug.LogWarning("[RelicDataManager] Effect with empty ID ignored.");
-            //         continue;
-            //     }
-            //
-            //     if (_effectById.ContainsKey(effect.EffectId))
-            //     {
-            //         Debug.LogWarning($"[RelicDataManager] Duplicate EffectId detected: {effect.EffectId}. Overwriting previous entry.");
-            //     }
-            //
-            //     _allEffects.Add(effect);
-            //     _effectById[effect.EffectId] = effect;
-            // }
-
-            // Build relics
-            // foreach (var data in datas.RelicDataList)
-            // {
-            //     var relic = new Relic(this, data);
-            //
-            //     if (string.IsNullOrEmpty(relic.Id))
-            //     {
-            //         Debug.LogWarning("[RelicDataManager] Relic with empty ID ignored.");
-            //         continue;
-            //     }
-            //
-            //     if (_relicById.ContainsKey((relic.Id, data.Level)))
-            //     {
-            //         Debug.LogWarning($"[RelicDataManager] Duplicate RelicId detected: {relic.Id} LV.{data.Level}. Overwriting previous entry.");
-            //     }
-            //
-            //     _allRelics.Add(relic);
-            //     _relicById[(relic.Id, data.Level)] = relic;
-            // }
-
-            /*
-            if (test != null && test.playerRelics != null)
+            Managers.Database.OnInitialized += () =>
             {
-                var sb = new StringBuilder();
-                sb.AppendLine("[ 유물 ]");
-                foreach (var relicStr in test.playerRelics)
+                foreach (Relic relic in RelicFactory.MakeRelicInstances())
                 {
-                    var relicStrs = relicStr.Split('/');
-                    var relic = GetRelicById(relicStrs[0], int.Parse(relicStrs[1]));
-                    if (relic == null)
-                    {
-                        sb.AppendLine($"<Missing Relic: {relicStr}>");
-                        continue;
-                    }
-
-                    _playerRelics.Add(relic);
-
-                    var effects = relic.Effects;
-                    if (effects != null)
-                    {
-                        foreach (var effect in effects)
-                            _playerEffects.Add(effect);
-                    }
-
-                    sb.AppendLine($"<{relic.Name}>");
-                    sb.AppendLine(relic.Description);
-                    sb.AppendLine();
+                    all.Add(relic);
+                    _allById[(relic.Id, relic.Level)] = relic;
+                    _allByRarity[relic.Rarity].Add(relic);
                 }
-
-                if (text != null) text.text = sb.ToString();
-            }
-            */
+                
+                // TODO: 세이브-로드 로직 작성하며 다시 수정하기.
+                // 기본 유물 획득
+                foreach (var relic in all)
+                {
+                    if (relic.Rarity == RelicRarity.DefaultRelic && relic.Level == 0)
+                        Acquire(relic);
+                }
+            };
         }
 
+        /// <summary>
+        /// 희귀도 기준 유물 후보 조회.
+        /// 요청 개수 충족 시 무작위 선정 목록 반환.
+        /// </summary>
+        /// <param name="rarity">조회 희귀도</param>
+        /// <param name="count">요청 개수</param>
+        /// <param name="relics">선정된 유물 목록 출력</param>
+        /// <returns>조회 성공 여부</returns>
+        public bool TryGetData(RelicRarity rarity, int count, out List<Relic> relics)
+        {
+            relics = null;
+            RebuildCache();
 
-        /// <summary>
-        /// 유물을 획득하고 PlayerStatus로 넘겨줍니다.
-        /// </summary>
-        public void GetRelicToPlayer(RelicEffectBase relicEffectBase)
-        {
-            Managers.Game.PlayerStatus.relicEffectBases.Add(relicEffectBase);
-        }
-        /// <summary>
-        /// 게임이 시작할때 유물의 효과를 세팅합니다.
-        /// </summary>
-        public void SettingRelicsEffectBase()
-        {
-            List<RelicEffectBase> relicList = Managers.Game.PlayerStatus.relicEffectBases; 
-            foreach(var r in relicList)
+            if (!_allByRarity.TryGetValue(rarity, out var allOfRarity))
+                return false;
+
+            // 후보 구성
+            List<Relic> canAcquires = new(allOfRarity.Count);
+            foreach (var r in allOfRarity)
+
             {
-                r.ActivateRelicEffect();
+                if (CanAcquirable(r))
+                    canAcquires.Add(r);
+            }
+                
+            // 개수 체크
+            count = Math.Max(0, count);
+            if (count > canAcquires.Count)
+                return false;
+            
+            canAcquires.ShuffleListInPlace();
+            relics = canAcquires.GetRange(0, count);
+            return true;
+        }
+        
+        /// <summary>
+        /// 유물 ID와 레벨 기반 획득 시도.
+        /// 획득 가능 여부 검사 후 보유 목록 추가 및 더티 플래그 설정.
+        /// </summary>
+        /// <param name="relicId">유물 ID</param>
+        /// <param name="level">유물 레벨(기본 1)</param>
+        /// <returns>획득 성공 여부</returns>
+        public bool TryAcquire(string relicId, int level = 1)
+        {
+            if (!_allById.TryGetValue((relicId, level), out var relicData))
+                return false;
+
+            return TryAcquire(relicData);
+        }
+
+        /// <summary>
+        /// 유물 데이터 기반 획득 시도.
+        /// 획득 가능 여부 검사 후 보유 목록 추가 및 더티 플래그 설정.
+        /// </summary>
+        /// <param name="relicData">대상 유물 데이터</param>
+        /// <returns>획득 성공 여부</returns>
+        public bool TryAcquire(Relic relicData)
+        {
+            if (!CanAcquirable(relicData))
+                return false;
+
+            var newOwned = new OwnedRelic(relicData);
+            ownedRelics.Add(newOwned);
+            
+            // TODO: (일회용이면) 효과 실행
+
+            MakeDirty();
+            return true;
+        }
+
+        private void Acquire(Relic data)
+        {
+            if (data == null)
+            {
+                LogEx.LogWarning($"Relic Data is null.");
+                return;
+            }
+            
+            var newOwned = new OwnedRelic(data);
+            ownedRelics.Add(newOwned);
+            
+            // TODO: (일회용이면) 효과 실행
+
+            MakeDirty();
+        }
+
+        private bool CanAcquirable(string relicId, int level = 1)
+        {
+            RebuildCache();
+            
+            if (!_allById.TryGetValue((relicId, level), out var relicData))
+            {
+                LogEx.LogWarning("Invalid relic id " + relicId);
+                return false;
+            }
+                
+            return CanAcquirable(relicData);
+        }
+
+        private bool CanAcquirable(Relic data)
+        {
+            RebuildCache();
+            
+            if (data == null)
+                return false;
+            if (data.Level == 0)
+                return false;
+            if (data.Rarity == RelicRarity.DefaultRelic)
+                return false;
+            if (_ownedByIdCache.TryGetValue(data.Id, out _))
+                return false;
+
+            return true;
+        }
+
+        private void MakeDirty()
+        {
+            _dirty = true;
+        }
+        
+        private void RebuildCache()
+        {
+            if (!_dirty)
+                return;
+
+            _ownedByIdCache.Clear();
+            for (RelicRarity r = 0; r <= RelicRarity.FinBoss; r++)
+                _ownedByRarityCache[r].Clear();
+            
+            foreach (var owned in ownedRelics)
+            {
+                _ownedByIdCache[owned.Relic.Id] = owned;
+                _ownedByRarityCache[owned.Relic.Rarity].Add(owned);
+            }
+            
+            _dirty = false;
+        }
+
+        #region ConsoleCommand
+
+        [ConsoleCommand("getRelic", "Get Relic by relicId and level", "getRelic [string: relicId] [int: level (optional, default: 1)]")]
+        private static void GetRelicCommand(string[] args)
+        {
+            string relicId = string.Empty;
+            int level = 1;
+
+            if (args.Length == 0)
+            {
+                DebugConsole.Console.MessageError("Please specify a relic ID.");
+                return;
+            }
+
+            if (args.Length == 1)
+            {
+                relicId = args[0];
+            }
+            else if (args.Length == 2)
+            {
+                relicId = args[0];
+                if (!int.TryParse(args[1], out level))
+                {
+                    DebugConsole.Console.MessageError("Invalid relic level.");
+                    return;
+                }
+            }
+
+            if (!Managers.Relic.TryAcquire(relicId, level))
+            {
+                DebugConsole.Console.MessageError("Failed to acquire relic.");
+                return;
+            }
+            else
+            {
+                DebugConsole.Console.Message($"Relic acquired by {relicId}");
             }
         }
-
-        #region Helper
-
-        public Relic GetRelicById(string relicId, int level = 1)
-        {
-            if (string.IsNullOrEmpty(relicId)) return null;
-            else
-                relicId = relicId.Trim('"');
-
-            return _relicById.TryGetValue((relicId, level), out var relic) ? relic : null;
-        }
-
-        // public EvaluationRelicEffect GetEffectById(string effectId)
-        // {
-        //     if (string.IsNullOrEmpty(effectId)) return null;
-        //     else
-        //         effectId = effectId.Trim('"');
-        //
-        //     return _effectById.TryGetValue(effectId, out var effect) ? effect : null;
-        // }
-
-        // public List<EvaluationRelicEffect> GetPlayerEffect(EffectType type)
-        // {
-        //     if (_playerEffects == null || _playerEffects.Count == 0) return new List<EvaluationRelicEffect>(0);
-        //     return _playerEffects.Where(e => e.EffectType == type).ToList();
-        // }
 
         #endregion
     }

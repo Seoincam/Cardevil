@@ -182,7 +182,7 @@
     "EffectValue": 300.0
   },
   {
-    "Description": "최근 족보가 high && 현재 족보공격",
+    "Description": "최근 족보가 high",
     "EffectId": "EVAL_STATE_PREV_HIGH_NOW_ATTACK",
     "EffectType": "NextByHandRanking",
     "IsPermenent": false,
@@ -209,7 +209,7 @@
   },
   {
     "Description": "체력이 1일 때",
-    "EffectId": "EVAL_COND_HP1_ONLY",
+    "EffectId": "EVAL_HP1",
     "EffectType": "ByHp",
     "IsPermenent": false,
     "ExecutionCount": 0,
@@ -222,7 +222,7 @@
   },
   {
     "Description": "기본 데미지 +10",
-    "EffectId": "EVAL_STAT_BASE_DMG_PLUS10",
+    "EffectId": "EVAL_STAT_BASE_DMG_PLUS",
     "EffectType": "OnEachCard",
     "IsPermenent": false,
     "ExecutionCount": 0,
@@ -230,7 +230,7 @@
     "TriggerHp": 0,
     "TriggerPossibility": 0.0,
     "IsBasedKillCount": false,
-    "IsPlus": false,
+    "IsPlus": true,
     "EffectValue": 10.0
   },
   {
@@ -243,7 +243,7 @@
     "TriggerHp": 0,
     "TriggerPossibility": 0.0,
     "IsBasedKillCount": true,
-    "IsPlus": false,
+    "IsPlus": true,
     "EffectValue": 1.0
   }
 ]

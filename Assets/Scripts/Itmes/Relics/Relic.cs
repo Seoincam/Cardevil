@@ -1,50 +1,38 @@
-using Database.Generated;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
-using TMPro;
 using Cardevil.Attributes;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Relics
 {
     [Serializable]
     public class Relic
     {
-        [SerializeField, VisibleOnly] string _id;
-        [SerializeField, VisibleOnly] int _level;
-        [SerializeField, VisibleOnly] string _displayName;
-        [SerializeField, VisibleOnly] string _displayDescription;
-        List<RelicEffectBase> _effects = new();
+        [SerializeField, VisibleOnly] private string id;
+        [SerializeField, VisibleOnly] private int level;
+        [SerializeField, VisibleOnly] private RelicRarity rarity;
 
+        [SerializeField, VisibleOnly] private string displayName;
+        [SerializeField, VisibleOnly] private string displayDescription;
+        [SerializeReference, VisibleOnly] private List<RelicEffectBase> effects;
 
-        public string Id => _id;
-        public int Level => _level;
-        public string DisplayName => _displayName;
-        public string DisplayDescription => _displayDescription;
-        public IReadOnlyList<RelicEffectBase> Effects => _effects;
+        public string Id => id;
+        public int Level => level;
+        public RelicRarity Rarity => rarity;
+        public string DisplayName => displayName;
+        public string DisplayDescription => displayDescription;
+        public IReadOnlyList<RelicEffectBase> Effects => effects;
 
-
-
-        public Relic(RelicManager manager, RelicData data)
+        public Relic(string id, int level, RelicRarity rarity, string displayName, string displayDescription, List<RelicEffectBase> effects)
         {
-            _id = data.RelicId;
-            _displayName = data.DisplayName;
-            _displayDescription = data.DisplayDescription;
-            _level = data.Level;
+            this.id = id;
+            this.level = level;
+            this.rarity = rarity;
 
-            if (data.EffectIds != null)
-            {
-                foreach (var effectId in data.EffectIds)
-                {
-                    // var effect = manager.GetEffectById(effectId);
-                    // effect.Init(this);
-                    // _effects.Add(effect);
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"Relic '{data?.RelicId}' has null EffectIds.");
-            }
+            this.displayName = displayName;
+            this.displayDescription = displayDescription;
+            this.effects = effects;
         }
     }
 }
