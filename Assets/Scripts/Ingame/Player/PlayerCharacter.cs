@@ -158,8 +158,14 @@ namespace Cardevil.Ingame.Player
                 await MoveTask(outPosition);
                 PlayerVisual.IsFalling = true;
 
-                transform.DOShakePosition(playerCharacterSetting.coyoteTime);
-                await UniTask.WaitForSeconds(playerCharacterSetting.coyoteTime);
+                
+                await transform.DOShakePosition(playerCharacterSetting.coyoteTime,
+                    strength:playerCharacterSetting.coyoteShakeStrength * new Vector3(1,0,1),
+                    vibrato:playerCharacterSetting.coyoteShakeCount,
+                    randomness:90,
+                    snapping:false,
+                    fadeOut:true).ToUniTask();
+                await UniTask.Delay(playerCharacterSetting.fallDelayAfterCoyoteTimeMs);
                 
                 var sequence = DOTween.Sequence();
                 // 떨어지는 시퀀스
