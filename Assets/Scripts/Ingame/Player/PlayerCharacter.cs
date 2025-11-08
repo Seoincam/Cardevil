@@ -137,7 +137,7 @@ namespace Cardevil.Ingame.Player
                 PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
                 PlayerVisual.IsRunning = true;
                 var tween = transform.DOMove(endPosition, 1f / MoveSpeed).SetEase(Ease.Linear);
-                await tween.AsyncWaitForCompletion();
+                await tween.ToUniTask();
                 PlayerVisual.IsRunning = false;
             }
 
@@ -185,7 +185,7 @@ namespace Cardevil.Ingame.Player
                 float fadeinEndTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
                     playerCharacterSetting.fallFadeEndRatio);
                 sequence.Join(DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,1,fadeinEndTime));
-                await sequence.AwaitForComplete();
+                await sequence.ToUniTask();
                 PlayerVisual.IsFalling = false;
             }
             

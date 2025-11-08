@@ -13,7 +13,10 @@ MonoBehaviour:
   m_Name: PlayerSettingSO
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  coyoteTime: 0.2
+  coyoteTime: 0.35
+  coyoteShakeCount: 25
+  coyoteShakeStrength: 0.1
+  fallDelayAfterCoyoteTimeMs: 200
   fallHeight: 5
   fallDuration: 1
   fallEase: 5
