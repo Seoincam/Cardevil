@@ -7,6 +7,7 @@ using System.Collections;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using Cardevil.Ingame.Entities;
+using Cardevil.Ingame.Player;
 using Cardevil.Utils;
 using UnityEngine.UI;
 

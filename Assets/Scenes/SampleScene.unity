@@ -142,6 +142,7 @@ MonoBehaviour:
   attackCreateCycle: 3
   isAttackSuccess: 0
   isPlayerAttack: 1
+  delayAttackByRelic: 0
 --- !u!1001 &362800788
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1495,6 +1496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mcDatabase:
     ExampleList: []
+    BaseMobBossDataList: []
     HandRankingDataList: []
     MachineRewardList: []
     MachineProbabillityList: []
@@ -1574,9 +1576,12 @@ MonoBehaviour:
         _maxHP: 3
         _shield: 0
         _rerollTicket: 0
+        _maxHand: 6
+        _discardHand: 3
         _variableContainer:
           variables: []
         gold: 0
+        canRevive: 0
   _sound:
     root: {fileID: 0}
     audioMixer: {fileID: 0}
@@ -1589,11 +1594,23 @@ MonoBehaviour:
       defaultKey: 
       data: []
     _currentPlayingBackgroundMusicName: 
+  _card:
+    cardLibrary:
+      pipelineMap:
+        defaultKey: 0
+        data: []
+      dataMap:
+        defaultKey: 0
+        data: []
+      visualSpriteSetMap:
+        defaultKey: 0
+        data: []
+    enhancementDataLibrary:
+      table:
+        data: []
   _relic:
-    _allRelics: []
-    _allEffects: []
-    _playerRelics: []
-    _playerEffects: []
+    all: []
+    ownedRelics: []
   _dungeon:
     dungeonConfigurations: []
     dungeons: []
@@ -1687,14 +1704,6 @@ PrefabInstance:
       propertyPath: _initialTile
       value: 
       objectReference: {fileID: 401468741}
-    - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
-      propertyPath: _isDebugMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
-      propertyPath: _initTileManually
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3457398501423220523, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
@@ -1796,6 +1805,10 @@ PrefabInstance:
       propertyPath: 'm_Cameras.Array.data[0]'
       value: 
       objectReference: {fileID: 2061991158}
+    - target: {fileID: 2645662928973578389, guid: 3264d905ebbd8fe459a4e26c51070721, type: 3}
+      propertyPath: orthographic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2645662928973578389, guid: 3264d905ebbd8fe459a4e26c51070721, type: 3}
       propertyPath: m_BackGroundColor.b
       value: 0.023529412

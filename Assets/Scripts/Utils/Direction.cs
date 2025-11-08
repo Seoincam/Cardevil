@@ -46,6 +46,11 @@ namespace Cardevil.Utils.Directions
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
+
+        public static Vector2Int ToVector2Int(this Direction direction)
+        {
+            return direction.ToTileVector().ToVector2Int();
+        }
         public static DirectionFlag ToDirectionFlag(this Direction direction)
         {
             return direction switch
