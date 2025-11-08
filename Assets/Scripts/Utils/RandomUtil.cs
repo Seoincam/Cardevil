@@ -18,7 +18,7 @@ namespace Cardevil.Utils
         }
         
         private static Dictionary<RandomType, UMRandom> randoms = new Dictionary<RandomType, UMRandom>();
-        private static Dictionary<RandomType, uint> randomSeeds = new Dictionary<RandomType, uint>();
+        private static Dictionary<RandomType, uint> randomInitialSeeds = new Dictionary<RandomType, uint>();
         
         
         private static bool _isInitialized = false;
@@ -36,10 +36,14 @@ namespace Cardevil.Utils
         {
             if (setSeed == 0)
             {
-                setSeed = initialSeed == 0 ? (uint) URandom.Range(int.MinValue, int.MaxValue) : initialSeed;
+                if (initialSeed == 0)
+                {
+                    initialSeed = (uint)URandom.Range(1, int.MaxValue);
+                }
+                setSeed = initialSeed;
             }
             randoms[type] = new UMRandom(setSeed);
-            randomSeeds[type] = setSeed;
+            randomInitialSeeds[type] = initialSeed;
         }
         
         public static int GetRandomInt(int min, int max, RandomType type = RandomType.Default)
@@ -113,7 +117,7 @@ namespace Cardevil.Utils
                 saves.Add(new RandomSave
                 {
                     type = kvp.Key,
-                    initialSeed = randomSeeds[kvp.Key],
+                    initialSeed = randomInitialSeeds[kvp.Key],
                     state = kvp.Value.state
                 });
             }
