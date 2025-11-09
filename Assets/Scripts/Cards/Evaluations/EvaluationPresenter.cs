@@ -107,7 +107,7 @@ namespace Cardevil.Cards.Evaluations
         public async UniTask ExcuteSequenceAsync()
         {
             _seq.Build();
-            _view.Clear();
+            await _view.Clear();
             
             int index = 0;
             float totalDamage = 0f;
@@ -129,7 +129,7 @@ namespace Cardevil.Cards.Evaluations
                 await _view.DoStep(totalDamage);
                 await UniTask.Delay(TimeSpan.FromSeconds(.2f));
             }
-            _view.Clear();
+            _view.Clear().Forget();
             
             var result = _resultBuilder
                 .SetDamage((int)Math.Round(totalDamage))
