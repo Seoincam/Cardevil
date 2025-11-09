@@ -16,7 +16,7 @@ namespace Cardevil.Cards.Evaluations
      * 2. value에 따라 main 텍스트 올라가는 시간이 바뀌기 (ok)
      * 3. 점점 빨라지기
      */
-    public class EvaluationView : MonoBehaviour, IClearable
+    public class EvaluationView : MonoBehaviour
     {
         [SerializeField] private CardEvaluationAnimSO animSO;
         [SerializeField] private RectTransform main;
@@ -46,12 +46,16 @@ namespace Cardevil.Cards.Evaluations
             _subRankingTween?.Kill();
         }
         
-        public void Clear()
+        public async UniTask Clear()
         {
-            ClearTextAsync(_mainText).Forget();
-            foreach (var sub in SubPool)
-                ClearTextAsync(sub).Forget();
             _prevDamage = 0f;
+
+            var waitAll = new List<UniTask>(SubPool.Count + 1);
+            waitAll.Add(ClearTextAsync(_mainText));
+            foreach (var sub in SubPool)
+                waitAll.Add(ClearTextAsync(sub));
+
+            await waitAll;
         }
         
         public void UpdateHandRankingText(HandRanking ranking)
@@ -194,7 +198,7 @@ namespace Cardevil.Cards.Evaluations
             return sub;
         }
 
-        private async UniTaskVoid ClearTextAsync(TextAnimator text)
+        private async UniTask ClearTextAsync(TextAnimator text)
         {
             await DOTween.Sequence()
                 .Append(DOTween.To(
