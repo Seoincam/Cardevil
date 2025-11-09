@@ -60,7 +60,7 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         }
     }
     
-    public bool HasVariable(CardVariableKey cardVariableKey) => HasVariable(cardVariableKey.ToString());
+    public bool HasVariable(TEnum variableKey) => HasVariable(variableKey.ToString());
     public bool HasVariable(string key)
     {
         foreach (var agument in variables)
@@ -73,9 +73,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         return false;
     }
     
-    public KeyVariablePair<TEnum> GetVariable(CardVariableKey cardVariableKey)
+    public KeyVariablePair<TEnum> GetVariable(TEnum variableKey)
     {
-        return GetVariable(cardVariableKey.ToString());
+        return GetVariable(variableKey.ToString());
     }
     public KeyVariablePair<TEnum> GetVariable(string key)
     {
@@ -89,18 +89,18 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         return null;
     }
     
-    public bool TryGetVariable(CardVariableKey cardVariableKey, out KeyVariablePair<TEnum> variablePair)
+    public bool TryGetVariable(TEnum variableKey, out KeyVariablePair<TEnum> variablePair)
     {
-        return TryGetVariable(cardVariableKey.ToString(), out variablePair);
+        return TryGetVariable(variableKey.ToString(), out variablePair);
     }
     public bool TryGetVariable(string key, out KeyVariablePair<TEnum> variablePair)
     {
         variablePair = GetVariable(key);
         return variablePair != null;
     }
-    public bool TryGetString(CardVariableKey cardVariableKey, out string value)
+    public bool TryGetString(TEnum variableKey, out string value)
     {
-        return TryGetString(cardVariableKey.ToString(), out value);
+        return TryGetString(variableKey.ToString(), out value);
     }
     public bool TryGetString(string key, out string value)
     {
@@ -113,9 +113,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         value = variable.stringValue;
         return true;
     }
-    public bool TryGetInt(CardVariableKey cardVariableKey, out int value)
+    public bool TryGetInt(TEnum variableKey, out int value)
     {
-        return TryGetInt(cardVariableKey.ToString(), out value);
+        return TryGetInt(variableKey.ToString(), out value);
     }
     public bool TryGetInt(string key, out int value)
     {
@@ -128,9 +128,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         value = variable.intValue;
         return true;
     }
-    public bool TryGetFloat(CardVariableKey cardVariableKey, out float value)
+    public bool TryGetFloat(TEnum variableKey, out float value)
     {
-        return TryGetFloat(cardVariableKey.ToString(), out value);
+        return TryGetFloat(variableKey.ToString(), out value);
     }
     public bool TryGetFloat(string key, out float value)
     {
@@ -145,7 +145,7 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
     }
     
     
-    public string GetString(CardVariableKey cardVariableKey) => GetStringDefault(cardVariableKey.ToString(), string.Empty);
+    public string GetString(TEnum variableKey) => GetStringDefault(variableKey.ToString(), string.Empty);
     public string GetString(string key) => GetStringDefault(key, string.Empty);
     public string GetStringDefault(string key, string defaultValue)
     {
@@ -157,7 +157,7 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         return variable.stringValue;
     }
     
-    public int GetInt(CardVariableKey cardVariableKey) => GetIntDefault(cardVariableKey.ToString(), 0);
+    public int GetInt(TEnum variableKey) => GetIntDefault(variableKey.ToString(), 0);
     public int GetInt(string key) => GetIntDefault(key, 0);
     public int GetIntDefault(string key, int defaultValue)
     {
@@ -169,9 +169,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         return variable.intValue;
     }
     
-    public void SetString(CardVariableKey cardVariableKey, string value)
+    public void SetString(TEnum variableKey, string value)
     {
-        SetString(cardVariableKey.ToString(), value);
+        SetString(variableKey.ToString(), value);
     }
     public void SetString(string key, string value)
     {
@@ -184,9 +184,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         }
         variable.stringValue = value;
     }
-    public void SetInt(CardVariableKey cardVariableKey, int value)
+    public void SetInt(TEnum variableKey, int value)
     {
-        SetInt(cardVariableKey.ToString(), value);
+        SetInt(variableKey.ToString(), value);
     }
     public void SetInt(string key, int value)
     {
@@ -200,9 +200,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         variable.intValue = value;
     }
     
-    public void AddInt(CardVariableKey cardVariableKey, int value)
+    public void AddInt(TEnum variableKey, int value)
     {
-        AddInt(cardVariableKey.ToString(), value);
+        AddInt(variableKey.ToString(), value);
     }
     public void AddInt(string key, int value)
     {
@@ -216,9 +216,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         variable.intValue += value;
     }
     
-    public void SetFloat(CardVariableKey cardVariableKey, float value)
+    public void SetFloat(TEnum variableKey, float value)
     {
-        SetFloat(cardVariableKey.ToString(), value);
+        SetFloat(variableKey.ToString(), value);
     }
     public void SetFloat(string key, float value)
     {
@@ -231,7 +231,7 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         }
         variable.floatValue = value;
     }
-    public float GetFloat(CardVariableKey cardVariableKey) => GetFloatDefault(cardVariableKey.ToString(), 0f);
+    public float GetFloat(TEnum variableKey) => GetFloatDefault(variableKey.ToString(), 0f);
     public float GetFloat(string key) => GetFloatDefault(key, 0f);
     public float GetFloatDefault(string key, float defaultValue)
     {
@@ -243,9 +243,9 @@ public class VariableContainer<TEnum> : ICopy<VariableContainer<TEnum>> where TE
         return variable.floatValue;
     }
     
-    public void AddFloat(CardVariableKey cardVariableKey, float value)
+    public void AddFloat(TEnum variableKey, float value)
     {
-        AddFloat(cardVariableKey.ToString(), value);
+        AddFloat(variableKey.ToString(), value);
     }
     public void AddFloat(string key, float value)
     {
