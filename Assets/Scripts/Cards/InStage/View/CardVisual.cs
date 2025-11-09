@@ -22,6 +22,7 @@ namespace Cardevil.Cards.InStage.View
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
+        [SerializeField] private CardEvaluationAnimSO animSo;
 
         [Header("Card Visual")]
         [SerializeField] private Transform shakeObject;
@@ -318,7 +319,10 @@ namespace Cardevil.Cards.InStage.View
         
         public void ExecuteEvaluationAction()
         {
-            transform.DOShakePosition(.6f, 50);
+            var seq = DOTween.Sequence()
+                .Append(transform.DOScale(animSo.cardScaleValue, animSo.cardScaleDur)
+                    .SetEase(animSo.cardScaleEase)
+                    .SetLoops(2, LoopType.Yoyo));
         }
 
         #region nested

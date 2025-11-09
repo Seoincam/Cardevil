@@ -87,6 +87,12 @@ namespace Cardevil.Cards.Evaluations
             Plus, Multiply
         }
 
+        public void ExecuteVisualEffect()
+        {
+            foreach (var visual in _visuals)
+                visual.ExecuteEvaluationAction();
+        }
+
         // public float Evaluate(float damage, out EvaluationEffect effect, out float value)
         // {
         //     switch (_effectType)

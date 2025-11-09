@@ -204,7 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parentCard: {fileID: 0}
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
-  spriteFactory: {fileID: 11400000, guid: 9b3a98705a1a145759601d30ac022742, type: 2}
+  animSo: {fileID: 11400000, guid: 86cca5790825e4f938459e939ac90ea1, type: 2}
   shakeObject: {fileID: 8032909874445604869}
   frontImage: {fileID: 850331243366006085}
   backImage: {fileID: 2095012618064697300}

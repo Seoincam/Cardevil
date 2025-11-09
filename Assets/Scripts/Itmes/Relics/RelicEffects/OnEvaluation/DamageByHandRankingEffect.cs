@@ -17,6 +17,8 @@ namespace Cardevil.Relics.OnEvaluation
         [SerializeField, VisibleOnly] private int damageAmount;
         [SerializeField, VisibleOnly] private float damageMultiplier;
 
+        public bool IsPlus => isPlus;
+        
         public bool CanTrigger(HandRanking currentHandRanking, IReadOnlyEvaluationResultsModel resultModel) =>
             currentHandRanking == triggerHandRanking;
 

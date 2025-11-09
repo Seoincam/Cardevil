@@ -120,10 +120,10 @@ namespace Cardevil.Cards.Evaluations
                 {
                     var step = stepGroup[i];
                     step.CalculateDamage(ref totalDamage);
+                    step.ExecuteVisualEffect();
                     _view.RegisterStep(step);
                     
-                    if (i != stepGroup.Count - 1)
-                        await UniTask.Delay(TimeSpan.FromSeconds(.3f));
+                    await UniTask.Delay(TimeSpan.FromSeconds(.3f));
                 }
                 
                 await _view.DoStep(totalDamage);

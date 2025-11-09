@@ -8,6 +8,6 @@ namespace Cardevil.Cards.Evaluations
         /// <summary>
         /// Evaluation 시 반응.
         /// </summary>
-        public void ExecuteEvaluationAction();
+        void ExecuteEvaluationAction();
     }
 }

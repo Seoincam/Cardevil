@@ -6,6 +6,8 @@ namespace Cardevil.Relics.OnEvaluation
 {
     public interface IRelicEffectOnEvaluation
     {
+        bool IsPlus { get; }
+        
         /// <summary>
         /// 효과 발동 가능 여부 평가.
         /// 현재 족보와 평가 결과 모델을 기반으로 조건 검증.
