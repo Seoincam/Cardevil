@@ -259,7 +259,7 @@ namespace Database
                 {
                     try
                     {
-                        var instance = JsonUtility.FromJson(value, targetType);
+                        var instance = JsonConvert.DeserializeObject(value, targetType);
                         return instance;
                     }
                     catch (Exception e)
