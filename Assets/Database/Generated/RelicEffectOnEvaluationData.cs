@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class RelicEffectOnEvaluationData    {
+    public partial class RelicEffectOnEvaluationData: IDBData {
 
         /// <summary> NOEX_설명 </summary>
         public string Description;
@@ -31,5 +31,7 @@ namespace Database.Generated
         public bool IsPlus;
         /// <summary> 효과 값 </summary>
         public float EffectValue;
+        /// <summary> 기타 변수들 </summary>
+        public List<string> OtherVars;
     }
 }
