@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class MachineReward    {
+    public partial class MachineReward: IDBData {
 
         /// <summary> 이름 </summary>
         public Define.SlotRewardType ItemName;

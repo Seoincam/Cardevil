@@ -1,0 +1,83 @@
+{
+  "name": "Heal",
+  "varNames": [
+    "HealID",
+    "HealAmount",
+    "Gold",
+    "HealProbabillity"
+  ],
+  "types": [
+    "string",
+    "List<int>",
+    "int",
+    "List<int>"
+  ],
+  "comments": [
+    "방번호",
+    "힐량",
+    "골드 획득량",
+    "힐 가중치"
+  ],
+  "data": [
+    [
+      "Heal1.1",
+      "[\r\n  null\r\n]",
+      "3",
+      "[\r\n  80,\r\n  20\r\n]"
+    ],
+    [
+      "Heal1.2",
+      "[\r\n  null\r\n]",
+      "3",
+      "[\r\n  80,\r\n  20\r\n]"
+    ],
+    [
+      "Heal1.3",
+      "[\r\n  null\r\n]",
+      "3",
+      "[\r\n  80,\r\n  20\r\n]"
+    ],
+    [
+      "Heal2.1",
+      "[\r\n  null\r\n]",
+      "4",
+      "[\r\n  90,\r\n  10\r\n]"
+    ],
+    [
+      "Heal2.2",
+      "[\r\n  null\r\n]",
+      "4",
+      "[\r\n  90,\r\n  10\r\n]"
+    ],
+    [
+      "Heal2.3",
+      "[\r\n  null\r\n]",
+      "5",
+      "[\r\n  90,\r\n  10\r\n]"
+    ],
+    [
+      "Heal2.4",
+      "[\r\n  null\r\n]",
+      "5",
+      "[\r\n  90,\r\n  10\r\n]"
+    ],
+    [
+      "Heal3.1",
+      "[\r\n  1\r\n]",
+      "6",
+      "[\r\n  100,\r\n  0\r\n]"
+    ],
+    [
+      "Heal3.2",
+      "[\r\n  1\r\n]",
+      "6",
+      "[\r\n  100,\r\n  0\r\n]"
+    ],
+    [
+      "Heal3.3",
+      "[\r\n  1\r\n]",
+      "6",
+      "[\r\n  100,\r\n  0\r\n]"
+    ]
+  ]
+}

@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class RoomData    {
+    public partial class RoomData: IDBData {
 
         /// <summary> 방ID </summary>
         public string RoomID;

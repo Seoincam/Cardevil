@@ -6,11 +6,35 @@
       1001
     ],
     "shortEnumList": 1,
-    "HPRate": {
+    "CustomClass": {
       "a": 10,
-      "b": 20,
+      "b": 20.0,
       "c": "Hello World"
     },
-    "HPRateProbabillity": "{\n  \"a\": 10,\n  \"b\": 20,\n  \"c\": \"Hello World\"\n}"
+    "CustomClassList": [
+      {
+        "a": 10,
+        "b": 20.0,
+        "c": "Hello World"
+      },
+      {
+        "a": 22,
+        "b": 56.0,
+        "c": "sssrld"
+      }
+    ],
+    "ListList": [
+      [
+        2,
+        3,
+        3
+      ],
+      [
+        2,
+        3,
+        1,
+        2
+      ]
+    ]
   }
 ]

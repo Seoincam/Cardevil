@@ -52,7 +52,7 @@ namespace Database
 
 
 
-        public static object ConvertValue(Type targetType, string value)
+        public static object ConvertValue(Type targetType, string value, int depth = 0)
         {
             // 널/공백 정리
             value = value?.Trim() ?? string.Empty;
@@ -61,30 +61,100 @@ namespace Database
             if (targetType.IsArray)
             {
                 Type elementType = targetType.GetElementType()!;
-                string[] elements = SplitCsv(value);
+                string[] elements = SplitToList(value);
                 Array arrayInstance = Array.CreateInstance(elementType, elements.Length);
 
                 for (int i = 0; i < elements.Length; i++)
                 {
-                    object convertedValue = ConvertValue(elementType, elements[i]);
-                    arrayInstance.SetValue(convertedValue, i);
+                    try
+                    {
+
+                        object convertedValue = ConvertValue(elementType, elements[i], depth + 1);
+                        arrayInstance.SetValue(convertedValue, i);
+                    }
+                    catch (Exception e)
+                    {
+                        if(i == elements.Length - 1 && string.IsNullOrEmpty(elements[i]))
+                        {
+                            Array newArrayInstance = Array.CreateInstance(elementType, elements.Length - 1);
+                            Array.Copy(arrayInstance, newArrayInstance, elements.Length - 1);
+                            return newArrayInstance;
+                        }
+                        else
+                        {
+                            Debug.LogError($"[ClassInstanceFactory] 배열 요소 변환 실패: {targetType.Name}, 값: '{elements[i]}', 예외: {e}");
+                            throw;
+                        }
+                    }
                 }
                 return arrayInstance;
             }
 
             // 제네릭 List<T>
-            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.List<>))
+            if (targetType.IsGenericType)
             {
-                Type elementType = targetType.GetGenericArguments()[0];
-                string[] elements = SplitCsv(value);
-                var listInstance = Activator.CreateInstance(targetType);
-                var addMethod = targetType.GetMethod("Add");
-                foreach (var element in elements)
+                if (targetType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.List<>))
                 {
-                    object convertedValue = ConvertValue(elementType, element);
-                    addMethod!.Invoke(listInstance, new[] { convertedValue });
+                    Type elementType = targetType.GetGenericArguments()[0];
+                    string[] elements = SplitToList(value);
+                    var listInstance = Activator.CreateInstance(targetType);
+                    var addMethod = targetType.GetMethod("Add");
+                    foreach (var element in elements)
+                    {
+                        try
+                        {
+                            object convertedValue = ConvertValue(elementType, element, depth + 1);
+                            addMethod!.Invoke(listInstance, new[] { convertedValue });
+                        } 
+                        catch (Exception e)
+                        {
+                            if(element == elements[elements.Length - 1] && string.IsNullOrEmpty(element))
+                            {
+                                // 마지막 요소가 빈 문자열인 경우 무시
+                                continue;
+                            }
+                            else
+                            {
+                                Debug.LogError($"[ClassInstanceFactory] 리스트 요소 변환 실패: {targetType.Name}, 값: '{element}', 예외: {e}");
+                                throw;
+                            }
+                        
+                        }
+                    }
+                    return listInstance!;
                 }
-                return listInstance!;
+                if (targetType.GetGenericTypeDefinition() == typeof(Database.ListWrapper<>))
+                {
+                    Type elementType = targetType.GetGenericArguments()[0];
+                    string[] elements = SplitToList(value);
+                    var listWrapperInstance = Activator.CreateInstance(targetType);
+                    var addMethod = targetType.GetMethod("Add");
+                    foreach (var element in elements)
+                    {
+                        try
+                        {
+                            object convertedValue = ConvertValue(elementType, element, depth + 1);
+                            addMethod!.Invoke(listWrapperInstance, new[] { convertedValue });
+                        }
+                        catch (Exception e)
+                        {
+                            if (element == elements[elements.Length - 1] && string.IsNullOrEmpty(element))
+                            {
+                                // 마지막 요소가 빈 문자열인 경우 무시
+                                continue;
+                            }
+                            else
+                            {
+                                Debug.LogError($"[ClassInstanceFactory] 리스트래퍼 요소 변환 실패: {targetType.Name}, 값: '{element}', 예외: {e}");
+                                throw;
+                            }
+
+                        }
+                    }
+                    return listWrapperInstance!;
+                }
+                
+                
             }
 
             // 열거형
@@ -145,7 +215,7 @@ namespace Database
                 Type jsonUtilType = typeof(IJsonUtilitySupport);
                 if(jsonUtilType.IsAssignableFrom(targetType))
                 {
-                    var instance = JsonUtility.FromJson(value, targetType);
+                    var instance = JsonConvert.DeserializeObject(value, targetType);
                     return instance;
                 }
             }
@@ -189,7 +259,7 @@ namespace Database
                 {
                     try
                     {
-                        var instance = JsonConvert.DeserializeObject(value, targetType);
+                        var instance = JsonUtility.FromJson(value, targetType);
                         return instance;
                     }
                     catch (Exception e)
@@ -218,13 +288,51 @@ namespace Database
             return Convert.ChangeType(value, targetType, ci);
         }
 
-        private static string[] SplitCsv(string value)
+        private static string[] SplitToList(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) return Array.Empty<string>(); 
-            value = value.Replace("[", "").Replace("]", ""); // 대괄호 제거
-            return value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                        .Select(s => s.Trim())
-                        .ToArray();
+            if (string.IsNullOrWhiteSpace(value)) return Array.Empty<string>();
+            if (value[0] == '[' && value[^1] == ']')
+            {
+                value = value.Substring(1, value.Length - 2);
+            }
+            if(value.Length == 0) return Array.Empty<string>();
+            if(value.Length > 0 && value[value.Length - 1] == ',')
+            {
+                value = value.Substring(0, value.Length - 1);
+            }
+
+            var elements = new System.Collections.Generic.List<string>();
+            int bracketCount = 0; // 중첩된 대괄호 [] 카운트
+            int braceCount = 0;   // 중첩된 중괄호 {} 카운트
+            int lastSplitIndex = 0;
+            
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+        
+                // 괄호 카운팅 업데이트
+                if (c == '[') bracketCount++;
+                else if (c == ']') bracketCount--;
+                else if (c == '{') braceCount++;
+                else if (c == '}') braceCount--;
+
+                // 쉼표를 발견했을 때:
+                // 1) 어떤 괄호(대괄호 또는 중괄호) 안에도 있지 않고 (최상위 레벨의 쉼표)
+                // 2) 현재 문자가 쉼표일 경우
+                if (c == ',' && bracketCount == 0 && braceCount == 0)
+                {
+                    elements.Add(value.Substring(lastSplitIndex, i - lastSplitIndex).Trim());
+                    lastSplitIndex = i + 1;
+                }
+            }
+            
+            // 마지막 요소
+            if (lastSplitIndex < value.Length)
+            {
+                elements.Add(value.Substring(lastSplitIndex).Trim());
+            }
+    
+            return elements.ToArray();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class CustomClassTest    {
+    public partial class CustomClassTest: IDBData {
 
         /// <summary> 문자열 </summary>
         public string stringVar;
@@ -18,9 +18,10 @@ namespace Database.Generated
         /// <summary> 짧은 이름 enum 리스트 </summary>
         public Define.SlotRewardType shortEnumList;
         /// <summary> 커스텀 클래스 </summary>
-        public Cardevil.Database.Sample.DBSampleEntryClassJson HPRate;
-        /// <summary> (Reference:Class<DBSampleEntryClassTarget>) 
-         /// 커스텀 클래스(외부구현) </summary>
-        public string HPRateProbabillity;
+        public Database.DBSampleEntryClassJson CustomClass;
+        /// <summary> 커스텀 클래스 리스트 </summary>
+        public List<Database.DBSampleEntryClassJson> CustomClassList;
+        /// <summary> 2차원 리스트 </summary>
+        public List<ListWrapper<int>> ListList;
     }
 }

@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class Heal    {
+    public partial class Heal: IDBData {
 
         /// <summary> 방번호 </summary>
         public string HealID;

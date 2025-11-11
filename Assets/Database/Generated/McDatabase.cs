@@ -9,8 +9,8 @@ namespace Database
     [Serializable]
     public class McDatabase
     {
-        public List<RoomData> RoomDataList = new List<RoomData>();
         public List<CustomClassTest> CustomClassTestList = new List<CustomClassTest>();
+        public List<RoomData> RoomDataList = new List<RoomData>();
         public List<Heal> HealList = new List<Heal>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
@@ -18,8 +18,8 @@ namespace Database
         public List<RelicData> RelicDataList = new List<RelicData>();
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
         public readonly List<string> ClassNames = new List<string> {
-            "RoomData",
             "CustomClassTest",
+            "RoomData",
             "Heal",
             "HandRankingData",
             "MachineReward",
@@ -55,8 +55,8 @@ namespace Database
 
         public void ClearAll()
         {
-            RoomDataList.Clear();
             CustomClassTestList.Clear();
+            RoomDataList.Clear();
             HealList.Clear();
             HandRankingDataList.Clear();
             MachineRewardList.Clear();
@@ -87,11 +87,11 @@ namespace Database
             {
                 switch (df.name)
                 {
-                    case "RoomData":
-                        RoomDataList = CreateInstance<RoomData>(df);
-                        break;
                     case "CustomClassTest":
                         CustomClassTestList = CreateInstance<CustomClassTest>(df);
+                        break;
+                    case "RoomData":
+                        RoomDataList = CreateInstance<RoomData>(df);
                         break;
                     case "Heal":
                         HealList = CreateInstance<Heal>(df);
@@ -123,13 +123,13 @@ namespace Database
         {
             switch (className)
             {
-                case "RoomData":
-                    var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
-                    RoomDataList.AddRange(newRoomDataItems);
-                    break;
                 case "CustomClassTest":
                     var newCustomClassTestItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CustomClassTest>>(json);
                     CustomClassTestList.AddRange(newCustomClassTestItems);
+                    break;
+                case "RoomData":
+                    var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
+                    RoomDataList.AddRange(newRoomDataItems);
                     break;
                 case "Heal":
                     var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
@@ -166,10 +166,10 @@ namespace Database
         {
             switch (className)
             {
-                case "RoomData":
-                    return typeof(RoomData);
                 case "CustomClassTest":
                     return typeof(CustomClassTest);
+                case "RoomData":
+                    return typeof(RoomData);
                 case "Heal":
                     return typeof(Heal);
                 case "HandRankingData":

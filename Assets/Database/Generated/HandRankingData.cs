@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class HandRankingData    {
+    public partial class HandRankingData: IDBData {
 
         /// <summary> 족보 </summary>
         public Cardevil.Cards.Data.HandRanking Ranking;

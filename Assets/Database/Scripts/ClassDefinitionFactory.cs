@@ -41,7 +41,7 @@ namespace Database
               .AppendLine("    [Serializable]")
               .Append("    public partial class ")
               .Append(df.name)
-              .AppendLine("    {")
+              .AppendLine(": IDBData {")
               .AppendLine();
 
             for (int i = 0; i < df.MaxColumn; i++)
@@ -101,7 +101,7 @@ namespace Database
 
         // "int" / "string" 등 알려진 타입만 그대로 두고,
         // 그 외(배열, 제네릭, enum, 커스텀 등)는 모두 string으로 강등
-        private static string DecideType(string original, out bool isKnown)
+        private static string DecideType(string original, out bool isKnown,int depth =0)
         {
             isKnown = false;
             if (string.IsNullOrEmpty(original)) return "string";
@@ -204,13 +204,21 @@ namespace Database
                 string inner = typeName.Substring(5, typeName.Length - 6).Trim(); 
         
                 // 내부 타입을 결정하기 위해 자기 자신(DecideType)을 재귀적으로 호출
-                string determinedInnerType = DecideType(inner, out bool innerIsKnown);
+                string determinedInnerType = DecideType(inner, out bool innerIsKnown,depth +1);
 
                 if (innerIsKnown)
                 {
-                    isKnown = true;
-                    // 내부 타입이 결정되었으면 List<결정된타입> 형식으로 반환
-                    return "List<" + determinedInnerType + ">";
+                    if(depth ==0)
+                    {
+                        isKnown = true;
+                        // 내부 타입이 결정되었으면 List<결정된타입> 형식으로 반환
+                        return "List<" + determinedInnerType + ">";
+                    }
+                    else
+                    {
+                        isKnown = true;
+                        return "ListWrapper<" + determinedInnerType + ">";
+                    }
                 }
         
                 // 내부 타입이 알려지지 않은 경우
