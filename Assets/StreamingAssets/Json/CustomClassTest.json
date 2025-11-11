@@ -1,0 +1,16 @@
+[
+  {
+    "stringVar": "1.1",
+    "integerVar": 1,
+    "fullEnumList": [
+      1001
+    ],
+    "shortEnumList": 1,
+    "HPRate": {
+      "a": 10,
+      "b": 20,
+      "c": "Hello World"
+    },
+    "HPRateProbabillity": "{\n  \"a\": 10,\n  \"b\": 20,\n  \"c\": \"Hello World\"\n}"
+  }
+]

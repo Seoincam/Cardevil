@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Database.Generated;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Database
@@ -166,6 +167,50 @@ namespace Database
             catch (Exception e)
             {
                 Debug.LogError($"[ClassInstanceFactory] ILoadFromDatabaseString 변환 실패: {targetType.Name}, {e}");
+            }
+            
+            if (targetType == typeof(DateTime))
+            {
+                if (DateTime.TryParse(value, ci, DateTimeStyles.None, out DateTime dt))
+                    return dt;
+                return DateTime.MinValue;
+            }
+            if (targetType == typeof(TimeSpan))
+            {
+                if (TimeSpan.TryParse(value, ci, out TimeSpan ts))
+                    return ts;
+                return TimeSpan.Zero;
+            }
+            // 클래스 확인
+            if (targetType.IsClass)
+            {
+                // Serializable 클래스는 JsonUtility로 파싱 시도
+                if (Attribute.IsDefined(targetType, typeof(SerializableAttribute)))
+                {
+                    try
+                    {
+                        var instance = JsonConvert.DeserializeObject(value, targetType);
+                        return instance;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[ClassInstanceFactory] Serializable 클래스 변환 실패: {targetType.Name}, {e}");
+                    }
+                }
+
+                if (Attribute.IsDefined(targetType, typeof(JsonConverterAttribute)))
+                {
+                    try
+                    {
+                        var instance = JsonConvert.DeserializeObject(value, targetType);
+                        return instance!;
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[ClassInstanceFactory] JsonConverter 클래스 변환 실패: {targetType.Name}, {e}");
+                    }
+                }
+                
             }
             
             // 기타 타입은 ChangeType 시도

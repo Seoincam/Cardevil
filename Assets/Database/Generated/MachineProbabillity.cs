@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class MachineProbabillity    {
+    public partial class MachineProbabillity    {
 
         /// <summary> 머신레벨 </summary>
         public int MachineLevel;
