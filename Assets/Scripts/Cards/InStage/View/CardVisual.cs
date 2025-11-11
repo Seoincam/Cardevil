@@ -41,8 +41,6 @@ namespace Cardevil.Cards.InStage.View
         private VisualTransformDelta _delta;
         private VisualState _state;
 
-        #region Unity Event
-
         private void Awake()
         {
             _canvas = GetComponent<Canvas>();
@@ -141,11 +139,7 @@ namespace Cardevil.Cards.InStage.View
 
             shakeObject.localEulerAngles = new Vector3(0f, 0f, nextZ);
         }
-
-        #endregion
-
-        #region Initialization
-
+        
         public void Init(Card parentCard, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
         {
             if (_state.isInitialized) return;
@@ -184,8 +178,6 @@ namespace Cardevil.Cards.InStage.View
             _state.isDiscarded = false;
             _state.isInitialized = false;
         }
-
-        #endregion
         
         #region Pointer Event Handler
         
@@ -258,9 +250,7 @@ namespace Cardevil.Cards.InStage.View
         }
 
         #endregion
-
-        #region Draw/Discard
-
+        
         public void AnimateDraw()
         {
             _deckVisual.OnInteraction();
@@ -281,9 +271,7 @@ namespace Cardevil.Cards.InStage.View
                         .SetEase(visualSetting.DiscardEase);
             tween.OnComplete(Destroy);
         }
-
-        #endregion
-
+        
         #region Visual Index
 
         public void UpdateVisualIndex()
@@ -325,8 +313,6 @@ namespace Cardevil.Cards.InStage.View
                     .SetLoops(2, LoopType.Yoyo));
         }
 
-        #region nested
-
         private struct VisualTransformDelta
         {
             public Vector3 movementDelta;
@@ -345,6 +331,18 @@ namespace Cardevil.Cards.InStage.View
             public bool isDiscarded;
         }
 
-        #endregion
+        [ContextMenu("Set Front")]
+        private void SetFront()
+        {
+            frontImage.rectTransform.eulerAngles = new Vector3(0, 0, 0);
+            backImage.rectTransform.eulerAngles = new Vector3(0, 90, 0);
+        }
+        
+        [ContextMenu("Set Back")]
+        private void SetBack()
+        {
+            frontImage.rectTransform.eulerAngles = new Vector3(0, 90, 0);
+            backImage.rectTransform.eulerAngles = new Vector3(0, 0, 0);
+        }
     }
 }
