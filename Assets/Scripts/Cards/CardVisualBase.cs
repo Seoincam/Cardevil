@@ -22,6 +22,13 @@ namespace Cardevil.Cards
         [SerializeField] private List<Image> enhancementFrames;
 
         private bool _isFront = false;
+        
+        public RectTransform Rect { get; private set; }
+
+        private void Awake()
+        {
+            Rect = GetComponent<RectTransform>();
+        }
 
         public void TryFlipFrontAnim(float duration, Ease ease = Ease.Unset)
         {
@@ -40,7 +47,7 @@ namespace Cardevil.Cards
             _isFront = true;
         }
 
-        public void TryFlipBack(float duration, Ease ease = Ease.Unset)
+        public void TryFlipBackAnim(float duration, Ease ease = Ease.Unset)
         {
             if (!_isFront) return;
 

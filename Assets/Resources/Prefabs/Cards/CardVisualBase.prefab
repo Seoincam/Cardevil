@@ -497,7 +497,7 @@ GameObject:
   - component: {fileID: 4905869576256811905}
   - component: {fileID: 3206279331392590133}
   m_Layer: 5
-  m_Name: CardVisualOriginal
+  m_Name: CardVisualBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -17,21 +17,14 @@ namespace Cardevil.Cards.InStage.View
     [RequireComponent(typeof(Canvas), typeof(Poolable))]
     public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable
     {
+        [SerializeField] private CardVisualBase visual;
+            
         [Header("Card")]
         [SerializeField, VisibleOnly] private Card parentCard;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
         [SerializeField] private CardEvaluationAnimSO animSo;
-
-        [Header("Card Visual")]
-        [SerializeField] private Transform shakeObject;
-        [SerializeField] private Image frontImage;
-        [SerializeField] private Image backImage;
-        [SerializeField] private Image[] numberImages;
-
-        [Header("Shadow Visual")]
-        [SerializeField] private Transform shadowTransform;
 
         private Poolable _poolable;
         private Canvas _canvas;
@@ -44,7 +37,7 @@ namespace Cardevil.Cards.InStage.View
         private void Awake()
         {
             _canvas = GetComponent<Canvas>();
-            _delta.shadowOriginPosition = shadowTransform.localPosition;
+            // _delta.shadowOriginPosition = shadowTransform.localPosition;
 
             _poolable = GetComponent<Poolable>();
             _poolable.OnRelease += Clear;
@@ -128,7 +121,7 @@ namespace Cardevil.Cards.InStage.View
 
             var c = visualSetting.Curve;
             
-            float currentZ = shakeObject.localEulerAngles.z;
+            float currentZ = visual.Rect.localEulerAngles.z;
             float targetZ = parentCard.IsDragging
                 ? 0f
                 : (_delta.curveRotationOffset * (c.rotationInfluence * _model.Hand.Count));
@@ -137,7 +130,7 @@ namespace Cardevil.Cards.InStage.View
             float t = (visualSetting.TiltSpeed * 0.5f) * Time.deltaTime;
             float nextZ = Mathf.LerpAngle(currentZ, targetZ, t);
 
-            shakeObject.localEulerAngles = new Vector3(0f, 0f, nextZ);
+            visual.Rect.localEulerAngles = new Vector3(0f, 0f, nextZ);
         }
         
         public void Init(Card parentCard, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
@@ -153,9 +146,9 @@ namespace Cardevil.Cards.InStage.View
             
             _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             // UpdateVisual();
-            frontImage.sprite = visualSpriteSet.FrontBackgroundImage;
-            numberImages[0].sprite = visualSpriteSet.FrontNumberImage;
-            numberImages[0].gameObject.SetActive(visualSpriteSet.FrontNumberImage);
+            // frontImage.sprite = visualSpriteSet.FrontBackgroundImage;
+            // numberImages[0].sprite = visualSpriteSet.FrontNumberImage;
+            // numberImages[0].gameObject.SetActive(visualSpriteSet.FrontNumberImage);
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
             if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
@@ -170,9 +163,9 @@ namespace Cardevil.Cards.InStage.View
         {
             parentCard = null;
 
-            frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            shakeObject.localEulerAngles = Vector3.zero;
+            // frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            // backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            // shakeObject.localEulerAngles = Vector3.zero;
 
             _canvas.overrideSorting = false;
             _state.isDiscarded = false;
@@ -196,7 +189,7 @@ namespace Cardevil.Cards.InStage.View
             transform.DOScale(endValue: visualSetting.SelectScale, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
 
-            shadowTransform.localPosition += -Vector3.up * visualSetting.ShadowOffset;
+            // shadowTransform.localPosition += -Vector3.up * visualSetting.ShadowOffset;
         }
 
         public void OnPointerUp(Card _, CardPointerArgs args)
@@ -204,7 +197,7 @@ namespace Cardevil.Cards.InStage.View
             transform.DOScale(endValue: 1f, duration: visualSetting.SelectScaleTweenDuration)
                 .SetEase(visualSetting.SelectScaleEase);
 
-            shadowTransform.localPosition = _delta.shadowOriginPosition;
+            // shadowTransform.localPosition = _delta.shadowOriginPosition;
         }
         
         #endregion
@@ -216,12 +209,9 @@ namespace Cardevil.Cards.InStage.View
             _deckVisual.OnInteraction();
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                 .SetEase(visualSetting.RerollDrawEase);
-
-            var sequence = DOTween.Sequence();
-            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipBackImageRatio)
-                .SetEase(visualSetting.FlipEase));
-            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * visualSetting.RerollFlipFrontImageRation)
-                .SetEase(visualSetting.FlipEase));
+            
+            visual.TryFlipBackImmediate();
+            visual.TryFlipFrontAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
         }
 
         public void AnimateRerollDiscard()
@@ -230,12 +220,9 @@ namespace Cardevil.Cards.InStage.View
 
             var tween = transform.DOMove(endValue: _deckVisual.Front.position, visualSetting.RerollDiscardDuration)
                 .SetEase(visualSetting.RerollDiscardEase);
-
-            var sequence = DOTween.Sequence();
-            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.RerollFlipDuration * .5f)
-                .SetEase(visualSetting.FlipEase));
-            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.RerollFlipDuration * .5f)
-                .SetEase(visualSetting.FlipEase));
+            
+            visual.TryFlipFrontImmediate();
+            visual.TryFlipBackAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
 
             tween.OnComplete(() =>
             {
@@ -254,12 +241,9 @@ namespace Cardevil.Cards.InStage.View
         public void AnimateDraw()
         {
             _deckVisual.OnInteraction();
-
-            var sequence = DOTween.Sequence();
-            sequence.Append(backImage.transform.DOLocalRotate(new Vector3(0, 90, 0), visualSetting.DrawFlipDuration * .5f)
-                        .SetEase(visualSetting.FlipEase));
-            sequence.Append(frontImage.transform.DOLocalRotate(new Vector3(0, 0, 0), visualSetting.DrawFlipDuration * .5f)
-                        .SetEase(visualSetting.FlipEase));
+            
+            visual.TryFlipBackImmediate();
+            visual.TryFlipFrontAnim(visualSetting.DrawFlipDuration, visualSetting.FlipEase);
         }
 
         public void Discard()
@@ -329,20 +313,6 @@ namespace Cardevil.Cards.InStage.View
             public int handIndex;
             public bool isInitialized;
             public bool isDiscarded;
-        }
-
-        [ContextMenu("Set Front")]
-        private void SetFront()
-        {
-            frontImage.rectTransform.eulerAngles = new Vector3(0, 0, 0);
-            backImage.rectTransform.eulerAngles = new Vector3(0, 90, 0);
-        }
-        
-        [ContextMenu("Set Back")]
-        private void SetBack()
-        {
-            frontImage.rectTransform.eulerAngles = new Vector3(0, 90, 0);
-            backImage.rectTransform.eulerAngles = new Vector3(0, 0, 0);
         }
     }
 }

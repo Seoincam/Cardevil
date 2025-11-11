@@ -52,17 +52,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63cb8ac91c58d408bb15c2ef15a9851b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  visual: {fileID: 3075103807123323649}
   parentCard: {fileID: 0}
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   animSo: {fileID: 11400000, guid: 86cca5790825e4f938459e939ac90ea1, type: 2}
-  shakeObject: {fileID: 0}
-  frontImage: {fileID: 0}
-  backImage: {fileID: 0}
-  numberImages:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  shadowTransform: {fileID: 0}
 --- !u!114 &4123142802437753040
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +211,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3aa5d2ba467274871b70c891d1a63bdb, type: 3}
+--- !u!114 &3075103807123323649 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3206279331392590133, guid: 3aa5d2ba467274871b70c891d1a63bdb, type: 3}
+  m_PrefabInstance: {fileID: 491464718559242804}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e44185a60574bbaac2a7aaa99b14145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4811866326042843573 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4905869576256811905, guid: 3aa5d2ba467274871b70c891d1a63bdb, type: 3}
