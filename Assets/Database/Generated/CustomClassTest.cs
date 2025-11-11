@@ -22,6 +22,6 @@ namespace Database.Generated
         /// <summary> 커스텀 클래스 리스트 </summary>
         public List<Database.DBSampleEntryClassJson> CustomClassList;
         /// <summary> 2차원 리스트 </summary>
-        public List<ListWrapper<int>> ListList;
+        public List<List<int>> ListList;
     }
 }

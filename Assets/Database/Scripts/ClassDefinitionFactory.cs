@@ -217,7 +217,7 @@ namespace Database
                     else
                     {
                         isKnown = true;
-                        return "ListWrapper<" + determinedInnerType + ">";
+                        return "List<" + determinedInnerType + ">";
                     }
                 }
         

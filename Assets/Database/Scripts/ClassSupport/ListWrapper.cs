@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace Database
 {
+    [Obsolete("Use List<T> directly instead of ListWrapper<T>")]
     [JsonConverter(typeof(ListWrapperConverter))]
     [System.Serializable]
     public class ListWrapper<T> : IList<T>, IReadOnlyList<T>
