@@ -23,6 +23,7 @@ namespace Cardevil.Cards.Data.InStage
         [Header("Move Card")]
         [SerializeField, VisibleOnly] private int length;
         [SerializeField, VisibleOnly] private SelectState<Direction> directionSelectState;
+        [SerializeField, VisibleOnly] private DirectionFlag directionFlag;
         
         /// <summary>
         /// 스테이지 입장 전 상태로 초기화합니다.
@@ -52,6 +53,7 @@ namespace Cardevil.Cards.Data.InStage
         // Move Card
         public int Length => length;
         public SelectState<Direction> DirectionSelectState => directionSelectState;
+        public DirectionFlag DirectionFlag => directionFlag;
 
         #endregion
         
@@ -70,6 +72,7 @@ namespace Cardevil.Cards.Data.InStage
 
             private int _length = 1;
             private readonly List<Direction?> _directionSelectables = new();
+            private DirectionFlag _directionFlag = DirectionFlag.None;
             
             private EnhancementData _currentEnhancement;
             
@@ -150,16 +153,22 @@ namespace Cardevil.Cards.Data.InStage
                 if (_kind == CardKind.Attack)
                     numberSelectState = new(_numberSelectables);
                 else if (_kind == CardKind.Move)
+                {
                     directionSelectState = new(_directionSelectables);
+                    
+                    // Direction Flag 확정
+                    foreach (var dir in directionSelectState.Selectables)
+                        _directionFlag |= dir.value.ToDirectionFlag();
+                }
 
-                return new CardData(_id, _kind, _currentEnhancement, _color, _damageMultiplier, numberSelectState, _length, directionSelectState);
+                return new CardData(_id, _kind, _currentEnhancement, _color, _damageMultiplier, numberSelectState, _length, directionSelectState, _directionFlag);
             }
         }
         
         private CardData(
             int id, CardKind kind, EnhancementData currentEnhancement, 
             CardColor color, float damageMultiplier, SelectState<int> numberSelectState, 
-            int length, SelectState<Direction> directionSelectState)
+            int length, SelectState<Direction> directionSelectState, DirectionFlag directionFlag)
         {
             this.id = id;
             this.kind = kind;
@@ -171,6 +180,7 @@ namespace Cardevil.Cards.Data.InStage
             
             this.length = length;
             this.directionSelectState = directionSelectState;
+            this.directionFlag = directionFlag;
         }
 
         #endregion
