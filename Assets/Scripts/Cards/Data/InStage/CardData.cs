@@ -53,6 +53,7 @@ namespace Cardevil.Cards.Data.InStage
         // Move Card
         public int Length => length;
         public SelectState<Direction> DirectionSelectState => directionSelectState;
+        public DirectionFlag DirectionFlag => directionFlag;
 
         #endregion
         
