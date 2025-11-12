@@ -102,8 +102,16 @@ namespace Cardevil.Utils.Directions
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
-        
 
-        
+        public static string ToCustomString(this DirectionFlag directionFlag)
+        {
+            return directionFlag switch
+            {
+                DirectionFlag.UpDown => "UpDown",
+                DirectionFlag.LeftRight => "LeftRight",
+                DirectionFlag.All => "All",
+                _ => directionFlag.ToString()
+            };
+        }
     }
 }
