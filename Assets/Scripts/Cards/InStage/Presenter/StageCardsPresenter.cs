@@ -86,12 +86,13 @@ namespace Cardevil.Cards.InStage.Presenter
         /// <returns>UI 초기화 완료 후 완료되는 <see cref="UniTask"/></returns>
         public async UniTask SetUp()
         {
+            Transform canvas = GameObject.Find("CardCanvas").transform;
+            
             // View 생성
             var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
             if (views is { Length: > 0 }) _view = views[0];
             else
             {
-                Transform canvas = GameObject.Find("CardCanvas").transform;
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
@@ -109,17 +110,21 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             HandChanged?.Invoke();
             
-            // Deck Remain View 생성
+            // Deck Remain View 생성 및 DeckVisual에 바인딩
             var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
             if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
             else
             {
-                Transform canvas = GameObject.Find("CardCanvas").transform;
                 GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
             _deckRemainView.Init(_library, _model);
             DeckChanged += _deckRemainView.OnDeckChanged;
+
+            CardDeckVisual.Instance.PointerEnter += _deckRemainView.OnPointerEnterAtDeck;
+            CardDeckVisual.Instance.PointerExit += _deckRemainView.OnPointerExitAtDeck;
+            CardDeckVisual.Instance.PointerUp += _deckRemainView.OnPointerClickAtDeck;
+            CardDeckVisual.Instance.transform.SetAsLastSibling();
             
             await _view.EnterHandBarAsync();
             
@@ -154,6 +159,10 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             // Update Async 정지
             _updateCts.Cancel();
+            
+            CardDeckVisual.Instance.PointerEnter -= _deckRemainView.OnPointerEnterAtDeck;
+            CardDeckVisual.Instance.PointerExit -= _deckRemainView.OnPointerExitAtDeck;
+            CardDeckVisual.Instance.PointerUp -= _deckRemainView.OnPointerClickAtDeck;
             
             await _view.ExitHandBarAsync();
         }

@@ -14,10 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   description: "\uC871\uBCF4 \uC120\uD0DD/\uCE74\uB4DC \uBCC0\uACBD \uAE00\uC790
     \uC560\uB2C8\uBA54\uC774\uC158 \uC124\uC815 SO\uC785\uB2C8\uB2E4."
-  s_posX: 200
-  m_RankingChangeDur: 0.15
-  s_RankingChangeDur: 0.2
-  m_evaDur: 0.15
-  m_evaChangeDur: 0.2
-  s_evaDur: 0.3
-  s_evaEase: 27
+  subPosX: 200
+  mainRankingScaleValue: 1.2
+  mainRankingChangeDur: 0.15
+  subRankingChangeDur: 0.2
+  mainEvaDur: 0.2
+  mainEvaChangeDur: 0.2
+  subEvaDur: 0.3
+  subEvaEase: 27
+  subFadeOutEase: 8
+  cardScaleValue: 1.2
+  cardScaleDur: 0.1
+  cardScaleEase: 0
+  clearTextDur: 0.07

@@ -1,4 +1,6 @@
-﻿using Cardevil.Manager;
+﻿using Cardevil.DataStructure.Serializables;
+using Cardevil.Dungeon;
+using Cardevil.Manager;
 using Cardevil.Pools;
 using Cardevil.Utils;
 using NUnit.Framework;
@@ -15,6 +17,20 @@ namespace Cardevil.Test
     /// </summary>
     public class TestControl : MonoBehaviour
     {
+        [SerializeReference] DungeonNodePreset testDungeonNodePreset;
+        public SerializableDictionary<string, int> testSerializableDictionary = new SerializableDictionary<string, int>()
+        {
+            {"One", 1},
+            {"Two", 2},
+            {"Three", 3}
+        };
+
+        public SerializableReferenceDictionary<string, IComparable> testSerializableReferenceDictionary =
+            new SerializableReferenceDictionary<string, IComparable>()
+            {
+                { "IntValue", 42 }, { "StringValue", "Hello, World!" }, { "FloatValue", 3.14f }
+            };
+        
         #region Unity Events
 
         private void Start()

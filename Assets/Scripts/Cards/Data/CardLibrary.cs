@@ -4,6 +4,7 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using JetBrains.Annotations;
 using System;
@@ -41,12 +42,12 @@ namespace Cardevil.Cards.Data
     public class CardLibrary : IClearable, IReadOnlyCardLibrary
     {
         // <id, data>
-        [SerializeField, VisibleOnly] private SerializableDict<int, CardDataPipeline> pipelineMap = new();
+        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
         
         // 파이프라인을 바탕으로 생성된 데이터들.
         // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
-        [SerializeField, VisibleOnly] private SerializableDict<int, CardData> dataMap = new();
-        [SerializeField, VisibleOnly] private SerializableDict<int, CardVisualSpriteSet> visualSpriteSetMap = new();   
+        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardData> dataMap = new();
+        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardVisualSpriteSet> visualSpriteSetMap = new();   
         
         private EnhancementDataLibrary _enhancementDataLibrary;
         private CardVisualSpriteFactorySO _visualSpriteFactory;

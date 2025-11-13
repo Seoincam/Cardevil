@@ -102,12 +102,18 @@ namespace Cardevil.Cards.Evaluations
             if (numberCards.Count != 4) 
                 return false;
             
-            bool value = numberCards.Select(c => c.Data.NumberSelectState.FinalValue)
-                    .Distinct()
-                    .Count() == 1;
-            
-            if (value) cardsInRanking = numberCards.ToList();
-            return value;
+            bool allSameColor = true;
+            for (int i = 1; i < numberCards.Count; i++)
+            {
+                if (numberCards[i].Data.Color == numberCards[i - 1].Data.Color)
+                    continue;
+
+                allSameColor = false;
+                break;
+            }
+
+            if (allSameColor) cardsInRanking = numberCards;
+            return allSameColor;
         }
 
         private static bool IsStraightFlush(List<Card> numberCards,  out List<Card> cardsInRanking)

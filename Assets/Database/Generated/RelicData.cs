@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class RelicData    {
+    public partial class RelicData: IDBData {
 
         /// <summary> 게임상 이름 </summary>
         public string DisplayName;

@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Cardevil.Scriptable.Cache;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
@@ -42,7 +43,7 @@ namespace Database
         /// <summary>
         /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
         /// </summary>
-        [field: SerializeField] public SerializableDict<string, Sprite> SpriteCache { get; private set; } = new();
+        [field: SerializeField] public SerializableDictionary<string, Sprite> SpriteCache { get; private set; } = new();
 
 
         public event Action OnInitialized;
@@ -128,12 +129,12 @@ namespace Database
             if (forceUseStreamingAsset)
             {
                 Debug.Log("[DatabaseManager] 강제 스트리밍 에셋 모드. 로컬 파일을 로드합니다.");
-                yield return LoadLocal();
+                yield return LoadLocalDf();
             }
             else if (String.IsNullOrEmpty(googleSheetUrl))
             {
                 Debug.Log("[DatabaseManager] 구글 시트 URL이 비었습니다. 로컬 파일을 로드합니다.");
-                yield return LoadLocal();
+                yield return LoadLocalDf();
             }
             else if (IsInternetAvailable())
             {
@@ -149,17 +150,56 @@ namespace Database
                 else
                 {
                     Debug.LogWarning("[DatabaseManager] 구글 시트 데이터 로드 실패. 로컬 파일을 로드합니다.");
-                    yield return LoadLocal();
+                    yield return LoadLocalDf();
                 }
             }
             else
             {
                 Debug.Log("[DatabaseManager] 인터넷 연결안됨. 로컬 파일을 로드합니다.");
-                yield return LoadLocal();
+                yield return LoadLocalDf();
             }
         }
 
-        private IEnumerator LoadLocal()
+        private IEnumerator LoadLocalDf()
+        {
+            string json = null;
+            List<string> targetClassNames = mcDatabase.ClassNames;
+            List<DataFrame> dataFrames = new List<DataFrame>();
+            foreach (var className in targetClassNames)
+            {
+                string fileName = $"{className}.df";
+                string localPath = Path.Combine(FinalLocalPath, fileName);
+                string streamingPath = Path.Combine(FinalStreamingAssetPath, fileName);
+                Debug.Log($"[DatabaseManager] 로컬 파일 로드 시도: {localPath}");
+                yield return LoadSavedFile(localPath, result => json = result);
+                if (string.IsNullOrEmpty(json))
+                {
+                    Debug.Log($"[DatabaseManager] 스트리밍 에셋 로드 시도: {streamingPath}");
+                    yield return LoadStreamingAsset(streamingPath, result => json = result);
+                }
+                if (!string.IsNullOrEmpty(json))
+                {
+                    DataFrame df = JsonConvert.DeserializeObject<DataFrame>(json);
+                    if (df != null)
+                    {
+                        dataFrames.Add(df);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[DatabaseManager] {className} 데이터 프레임 역직렬화 실패.");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"[DatabaseManager] {className} 데이터 로드 실패. 파일이 존재하지 않음.");
+                }
+
+            }
+            
+            mcDatabase.InitializeAll(dataFrames);
+            
+        }
+        private IEnumerator LoadLocalJson()
         {
             string json = null;
             List<string> targetClassNames = mcDatabase.ClassNames;

@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class RelicEffectOnEvaluationData    {
+    public partial class RelicEffectOnEvaluationData: IDBData {
 
         /// <summary> NOEX_설명 </summary>
         public string Description;
