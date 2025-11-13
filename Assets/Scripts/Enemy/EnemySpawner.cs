@@ -15,6 +15,8 @@ namespace Cardevil.Enemy
         // Key(string) = MobID, Value = BaseMobBossData
         private Dictionary<string, BaseMobBossData> mobBossDataDict = new Dictionary<string, BaseMobBossData>();
 
+
+
         [SerializeField] GameObject enemyContainer;
         void Start()
         {
@@ -52,8 +54,10 @@ namespace Cardevil.Enemy
                 }
                 isInit = true;
 
+
+                // 기믹에 해당하는 Prefab을 불러옵니다.
                 // test
-                InitiateRoomEnemy("1.5");
+                InitiateRoomEnemy("Test");
             }
         }
 

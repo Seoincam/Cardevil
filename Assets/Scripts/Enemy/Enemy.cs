@@ -25,7 +25,7 @@ namespace Cardevil.InGame.Enemy
         TwoPair,
         Triple,
         Straight,
-        Plush,
+        Flush,
         FourCard,
         StraightPlush
     }
@@ -91,6 +91,10 @@ namespace Cardevil.InGame.Enemy
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
 
+        }
+
+        private void Awake()
+        {
         }
 
         #region 족보공격 구현
@@ -352,9 +356,9 @@ namespace Cardevil.InGame.Enemy
         {
             LogEx.Log("SetPlushAttack! (2x2)");
 
-            attack.currentAttackStyle = AttackStyle.Plush;
+            attack.currentAttackStyle = AttackStyle.Flush;
 
-            // Plush : 2x2 square that includes player's tile (but clamped inside 3x3)
+            // Flush : 2x2 square that includes player's tile (but clamped inside 3x3)
             attack.attackPointNumberExtra_x = new int[3]; // we will store the other 3 tiles; main point stored in attackPointNumber_x/y
             attack.attackPointNumberExtra_y = new int[3];
 
@@ -915,7 +919,7 @@ namespace Cardevil.InGame.Enemy
                     return (AttackTriple(attack));
                 case AttackStyle.Straight:
                     return (AttackStraight(attack));
-                case AttackStyle.Plush:
+                case AttackStyle.Flush:
                     return (AttackPlush(attack));
                 case AttackStyle.FourCard:
                     return (AttackFourCard(attack));
@@ -1015,7 +1019,7 @@ namespace Cardevil.InGame.Enemy
                 case AttackStyle.Straight:
                     SettingAttackStraight(attack);
                     break;
-                case AttackStyle.Plush:
+                case AttackStyle.Flush:
                     SettingAttackPlush(attack);
                     break;
                 case AttackStyle.FourCard:
@@ -1140,7 +1144,7 @@ namespace Cardevil.InGame.Enemy
                     }
                     break;
 
-                case AttackStyle.Plush:
+                case AttackStyle.Flush:
                     RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
                     if (attack.attackPointNumberExtra_x != null)
                     {
@@ -1462,8 +1466,19 @@ namespace Cardevil.InGame.Enemy
                 SetPatternRandomBaseWeight();
             }
             isPlayerAttack = baseMobBossData.AttackPlayer;
-        }
 
+            SettingGimmick(_baseMobBossData);
+
+        }
+            
+        private void SettingGimmick(BaseMobBossData baseMobBossData)
+        {
+            // TODO : 여러개 기믹이 존재하는 몹이 있으면 [0]을 수정해야함.
+
+            char trimText = '"';
+            IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
+            igimmick.Apply(this);
+        }
         private void SetPatternRandomBaseWeight()
         {
             List<int> weights = baseMobBossData.AttackWeight;

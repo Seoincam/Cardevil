@@ -9,7 +9,7 @@ namespace Database.Generated
     [Serializable]
     public class BaseMobBossData    {
 
-        /// <summary> 몹ID (이름) </summary>
+        /// <summary> 몹ID </summary>
         public string MobID;
         /// <summary> 몹이름(한글명) </summary>
         public string MobKorID;
@@ -25,12 +25,17 @@ namespace Database.Generated
         public int AttackCycle;
         /// <summary> 공격 데미지 </summary>
         public int AttackDamage;
-        /// <summary> 0 - Weight따라 결정,1 - 패턴 고정 </summary>
+        /// <summary> 0 - 가중치따라 결정 / 1 - 패턴 고정 </summary>
         public bool BoolAttackType;
+        /// <summary> 가중치 </summary>
         public List<int> AttackWeight;
-        /// <summary> 사용 족보 순서(알맞게넣으세요 !오타없이) </summary>
+        /// <summary> 사용 족보 순서(오타없이, 띄어쓰기없이) </summary>
         public List<Cardevil.InGame.Enemy.AttackStyle> AttackPattern;
         /// <summary> 0 - 랜덤 / 1 - 유도 </summary>
         public bool AttackPlayer;
+        /// <summary> 기믹이름 </summary>
+        public List<string> GimmickName;
+        /// <summary> 기믹 value </summary>
+        public List<float> GimmickValue;
     }
 }
