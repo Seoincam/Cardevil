@@ -19,7 +19,7 @@ using Cardevil.Ingame.Player;
 public class GameManager : ISaveLoad
 {
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
-    [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
+    [FormerlySerializedAs("enemy")] [SerializeField] public Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 

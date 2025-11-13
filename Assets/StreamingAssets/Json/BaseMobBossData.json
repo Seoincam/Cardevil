@@ -1,7 +1,7 @@
 [
   {
-    "MobID": "ga",
-    "MobKorID": "능숙한 사기꾼",
+    "MobID": "1001",
+    "MobKorID": "능숙한 사귀꾼",
     "MobType": "",
     "BaseHP": 300,
     "ChapterFactor": 1.0,
@@ -9,17 +9,41 @@
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
-    "AttackWeight": [
-      4,
-      6,
-      4,
-      2
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
     ],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_None\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "na",
+    "MobID": "1002",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 350,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": [
+      1.0,
+      1.0
+    ]
+  },
+  {
+    "MobID": "1003",
     "MobKorID": "사냥개",
     "MobType": "개",
     "BaseHP": 350,
@@ -29,11 +53,37 @@
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "da",
+    "MobID": "1004",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 350,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1005",
     "MobKorID": "사냥개",
     "MobType": "개",
     "BaseHP": 350,
@@ -43,11 +93,18 @@
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ra",
+    "MobID": "1006",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 200,
@@ -57,414 +114,1036 @@
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ma",
+    "MobID": "1007",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 400,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 4,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
-  },
-  {
-    "MobID": "MBoss",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 700,
-    "ChapterFactor": 1.0,
+    "ChapterFactor": 0.0,
     "HPGrowFactor": 0,
-    "AttackCycle": 4,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "sa",
+    "MobID": "1008",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
+    "BaseHP": 400,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "a",
+    "MobID": "1009",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 600,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
+    "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ja",
+    "MobID": "1010",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1011",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 400,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 16,
-    "AttackCycle": 3,
+    "AttackCycle": 4,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "cha",
+    "MobID": "1012",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 700,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
+    "BaseHP": 350,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "JBoss",
+    "MobID": "1013",
+    "MobKorID": "",
+    "MobType": "괴짜",
+    "BaseHP": 400,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1014",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1015",
+    "MobKorID": "",
+    "MobType": "괴짜",
+    "BaseHP": 400,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "9001",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 800,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1016",
+    "MobKorID": "",
+    "MobType": "악마",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ka",
+    "MobID": "1017",
+    "MobKorID": "",
+    "MobType": "악마",
+    "BaseHP": 400,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1018",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1019",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1020",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "1021",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "9002",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 1100,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "2001",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 4,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ta",
+    "MobID": "2002",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "pa",
+    "MobID": "2003",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "2004",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "2005",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "2006",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "2007",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ha",
+    "MobID": "2008",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "2009",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "Qboss",
+    "MobID": "2010",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 700,
+    "BaseHP": 500,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "9003",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 1000,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 0,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "2011",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "2012",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "2013",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 2,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
-  },
-  {
-    "MobID": "KBoss",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 1000,
+    "BaseHP": 500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "2014",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 0,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "9004",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 1500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 0,
+    "AttackCycle": 2,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "3001",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3002",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 0,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "3003",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3004",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3005",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 550,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "3006",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 550,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "3007",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 550,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "3008",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3009",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "ABoss",
+    "MobID": "9005",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 900,
+    "BaseHP": 1800,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3010",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 4,
     "AttackDamage": 2,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": false
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3011",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "",
+    "MobID": "3012",
     "MobKorID": "",
     "MobType": "",
-    "BaseHP": 0,
+    "BaseHP": 550,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
-    "MobID": "KABoss",
+    "MobID": "3013",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 550,
+    "ChapterFactor": 0.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 0,
+    "AttackDamage": 0,
+    "BoolAttackType": false,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "9006",
+    "MobKorID": "",
+    "MobType": "",
+    "BaseHP": 5000,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 0,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
+  },
+  {
+    "MobID": "9007",
     "MobKorID": "",
     "MobType": "",
     "BaseHP": 1500,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
-  },
-  {
-    "MobID": "Cardevil",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 1000,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 2,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": "HighCard,OnePair,HighCard,OnePair",
-    "AttackPlayer": true
+    "AttackPattern": [
+      4,
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Test\""
+    ],
+    "GimmickValue": []
   },
   {
     "MobID": "",
@@ -476,232 +1155,15 @@
     "AttackCycle": 0,
     "AttackDamage": 0,
     "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": "",
-    "AttackPlayer": false
+    "AttackWeight": [
+      4,
+      6,
+      4,
+      2
+    ],
+    "AttackPattern": [],
+    "AttackPlayer": false,
+    "GimmickName": [],
+    "GimmickValue": []
   }
 ]

@@ -10,6 +10,7 @@ namespace Database
     public class McDatabase
     {
         public List<CustomClassTest> CustomClassTestList = new List<CustomClassTest>();
+        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
         public List<RoomData> RoomDataList = new List<RoomData>();
         public List<Heal> HealList = new List<Heal>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
@@ -19,6 +20,7 @@ namespace Database
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
         public readonly List<string> ClassNames = new List<string> {
             "CustomClassTest",
+            "BaseMobBossData",
             "RoomData",
             "Heal",
             "HandRankingData",
@@ -56,6 +58,7 @@ namespace Database
         public void ClearAll()
         {
             CustomClassTestList.Clear();
+            BaseMobBossDataList.Clear();
             RoomDataList.Clear();
             HealList.Clear();
             HandRankingDataList.Clear();
@@ -89,6 +92,9 @@ namespace Database
                 {
                     case "CustomClassTest":
                         CustomClassTestList = CreateInstance<CustomClassTest>(df);
+                        break;
+                    case "BaseMobBossData":
+                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
                         break;
                     case "RoomData":
                         RoomDataList = CreateInstance<RoomData>(df);
@@ -126,6 +132,10 @@ namespace Database
                 case "CustomClassTest":
                     var newCustomClassTestItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CustomClassTest>>(json);
                     CustomClassTestList.AddRange(newCustomClassTestItems);
+                    break;
+                case "BaseMobBossData":
+                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
+                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
                     break;
                 case "RoomData":
                     var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
@@ -168,6 +178,8 @@ namespace Database
             {
                 case "CustomClassTest":
                     return typeof(CustomClassTest);
+                case "BaseMobBossData":
+                    return typeof(BaseMobBossData);
                 case "RoomData":
                     return typeof(RoomData);
                 case "Heal":

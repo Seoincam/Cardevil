@@ -583,5 +583,24 @@
       1.0
     ],
     "MachineLevel": 5
+  },
+  {
+    "RoomID": "Test",
+    "MobCount": 1,
+    "MobList": [
+      "\"1002\""
+    ],
+    "RoomSequence": 1,
+    "HPRate": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "HPRateProbabillity": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "MachineLevel": 1
   }
 ]
