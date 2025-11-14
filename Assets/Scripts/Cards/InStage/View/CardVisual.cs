@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Visual;
 
 namespace Cardevil.Cards.InStage.View
 {

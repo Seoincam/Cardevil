@@ -11,7 +11,6 @@ namespace Cardevil.Cards.Visual
     public class CardVisualBase : MonoBehaviour
     {
         [Header("SO")] 
-        [SerializeField] private CardSpriteAtlas spriteAtlas;
         [SerializeField] private CardVisualAnimSetting animSetting;
         
         [Header("Group")]

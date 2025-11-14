@@ -495,6 +495,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4905869576256811905}
+  - component: {fileID: 3897703792434606943}
   - component: {fileID: 3206279331392590133}
   m_Layer: 5
   m_Name: CardVisualBase
@@ -525,6 +526,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3897703792434606943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4627923435394325943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82b368745be24ba38cd49a4a7bf7674a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atlas: {fileID: 0}
 --- !u!114 &3206279331392590133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,6 +551,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e44185a60574bbaac2a7aaa99b14145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteAtlas: {fileID: 0}
+  animSetting: {fileID: 0}
   cardFrontGroup: {fileID: 2902432938298084927}
   cardBackGroup: {fileID: 5964001764712778089}
   selectionGroups:
@@ -644,7 +660,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 74480d40ba33a41adb3d5e222effbf6a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9a26480845b8245bcbb920822996a65f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1046,7 +1062,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &880016997037309318
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1234,7 +1250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1434953441125698061
 RectTransform:
   m_ObjectHideFlags: 0

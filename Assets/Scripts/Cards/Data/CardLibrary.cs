@@ -50,18 +50,10 @@ namespace Cardevil.Cards.Data
         [SerializeField, VisibleOnly] private SerializableDictionary<int, CardVisualSpriteSet> visualSpriteSetMap = new();   
         
         private EnhancementDataLibrary _enhancementDataLibrary;
-        private CardVisualSpriteFactorySO _visualSpriteFactory;
         
         public void Init(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
-            
-            _visualSpriteFactory = Resources.Load<CardVisualSpriteFactorySO>("ScriptableObjects/Cards/CardVisualSpritesFactory");
-            if (!_visualSpriteFactory)
-            {
-                LogEx.LogError("No CardVisualSpriteFactorySO found");
-                return;
-            }
             
             Clear();
         }
@@ -128,9 +120,9 @@ namespace Cardevil.Cards.Data
                 dataMap[id] = cardData;
             
             // Card Visual Sprite Set
-            var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
-            if (spriteSet != null)
-                visualSpriteSetMap[id] = spriteSet;
+            // var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
+            // if (spriteSet != null)
+            //     visualSpriteSetMap[id] = spriteSet;
         }
 
         private bool ValidateId(int id)
