@@ -10,16 +10,33 @@ using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Player;
 using Cardevil.Utils;
 using UnityEngine.UI;
+using Database.Generated;
 
 namespace Cardevil.InGame.Enemy
 {
     //
+    public enum AttackStyle
+    {
+        UnKnown,
+        AttackPoint,
+        AttackVertical,
+        AttackHorizontal,
+        HighCard,
+        OnePair,
+        TwoPair,
+        Triple,
+        Straight,
+        Flush,
+        FourCard,
+        StraightPlush
+    }
     public class Enemy : MonoBehaviour, ITurnEnemy
     {
 
         //-----HP UI-----///
         [SerializeField] private Slider hpBar; // Inspector에서 UI Slider를 드래그하여 연결합니다.
         private float maxHP = 100;
+        private BaseMobBossData baseMobBossData;
 
         private Field field;
         private float damage = 1; // Enemy의 공격력
@@ -38,21 +55,7 @@ namespace Cardevil.InGame.Enemy
 
         private List<Attack> attackLists = new List<Attack>();
 
-        public enum AttackStyle
-        {
-            UnKnown,
-            AttackPoint,
-            AttackVertical,
-            AttackHorizontal,
-            HighCard,
-            OnePare,
-            TwoPare,
-            Triple,
-            Straight, // 원본 오타 유지
-            Plush,
-            FourCard,
-            StraightPlush
-        }
+
 
         private AttackStyle currentAttackStyle;
 
@@ -91,6 +94,10 @@ namespace Cardevil.InGame.Enemy
 
         }
 
+        private void Awake()
+        {
+        }
+
         #region 족보공격 구현
 
         /// <summary>
@@ -121,7 +128,7 @@ namespace Cardevil.InGame.Enemy
         {
             LogEx.Log("SetOnePareAttack!");
 
-            attack.currentAttackStyle = AttackStyle.OnePare;
+            attack.currentAttackStyle = AttackStyle.OnePair;
 
             // ensure extras arrays allocated
             attack.attackPointNumberExtra_x = new int[1];
@@ -173,7 +180,7 @@ namespace Cardevil.InGame.Enemy
         {
             LogEx.Log("SetTwoPareAttack!");
 
-            attack.currentAttackStyle = AttackStyle.TwoPare;
+            attack.currentAttackStyle = AttackStyle.TwoPair;
 
             // allocate extras for two points
             attack.attackPointNumberExtra_x = new int[2];
@@ -350,9 +357,9 @@ namespace Cardevil.InGame.Enemy
         {
             LogEx.Log("SetPlushAttack! (2x2)");
 
-            attack.currentAttackStyle = AttackStyle.Plush;
+            attack.currentAttackStyle = AttackStyle.Flush;
 
-            // Plush : 2x2 square that includes player's tile (but clamped inside 3x3)
+            // Flush : 2x2 square that includes player's tile (but clamped inside 3x3)
             attack.attackPointNumberExtra_x = new int[3]; // we will store the other 3 tiles; main point stored in attackPointNumber_x/y
             attack.attackPointNumberExtra_y = new int[3];
 
@@ -831,13 +838,13 @@ namespace Cardevil.InGame.Enemy
 
             tmpAttack.SetAttackCycle(attackCreateCycle);
 
-            if(firstCreate) 
-            { 
+            if (firstCreate)
+            {
                 tmpAttack.attackTurnOrder++;
                 tmpAttack.attackTurnOrder += delayAttackByRelic;
 
             }
-            SetAttack(tmpAttack,isPlayerAttack);
+            SetAttack(tmpAttack, isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
         public void AttackEnemyTurnStart()
@@ -905,15 +912,15 @@ namespace Cardevil.InGame.Enemy
             {
                 case AttackStyle.HighCard:
                     return (AttackHighCard(attack));
-                case AttackStyle.OnePare:
+                case AttackStyle.OnePair:
                     return (AttackOnePare(attack));
-                case AttackStyle.TwoPare:
+                case AttackStyle.TwoPair:
                     return (AttackTwoPare(attack));
                 case AttackStyle.Triple:
                     return (AttackTriple(attack));
                 case AttackStyle.Straight:
                     return (AttackStraight(attack));
-                case AttackStyle.Plush:
+                case AttackStyle.Flush:
                     return (AttackPlush(attack));
                 case AttackStyle.FourCard:
                     return (AttackFourCard(attack));
@@ -1001,10 +1008,10 @@ namespace Cardevil.InGame.Enemy
                 case AttackStyle.HighCard:
                     SettingAttackHighCard(attack);
                     break;
-                case AttackStyle.OnePare:
+                case AttackStyle.OnePair:
                     SettingAttackOnePare(attack);
                     break;
-                case AttackStyle.TwoPare:
+                case AttackStyle.TwoPair:
                     SettingAttackTwoPare(attack);
                     break;
                 case AttackStyle.Triple:
@@ -1013,7 +1020,7 @@ namespace Cardevil.InGame.Enemy
                 case AttackStyle.Straight:
                     SettingAttackStraight(attack);
                     break;
-                case AttackStyle.Plush:
+                case AttackStyle.Flush:
                     SettingAttackPlush(attack);
                     break;
                 case AttackStyle.FourCard:
@@ -1070,10 +1077,12 @@ namespace Cardevil.InGame.Enemy
             return currentAttackStyle;
         }
 
+        int nowAttackPatternIndex = 0;
         AttackStyle GetRandomAttackStyle() // 랜덤으로 어택스타일 받기
         {
             Array values = Enum.GetValues(typeof(AttackStyle));
-            return (isPlayerAttack) ? (AttackStyle)values.GetValue(UnityEngine.Random.Range(2, values.Length)) : (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
+            return baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
+            // return (isPlayerAttack) ? (AttackStyle)values.GetValue(UnityEngine.Random.Range(2, values.Length)) : (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
             // 랜덤값 다르게받기
         }
 
@@ -1097,13 +1106,13 @@ namespace Cardevil.InGame.Enemy
                     RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
                     break;
 
-                case AttackStyle.OnePare:
+                case AttackStyle.OnePair:
                     RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
                     if (attack.attackPointNumberExtra_x != null && attack.attackPointNumberExtra_x.Length > 0)
                         RemoveHighLight_Point(attack.attackPointNumberExtra_x[0], attack.attackPointNumberExtra_y[0]);
                     break;
 
-                case AttackStyle.TwoPare:
+                case AttackStyle.TwoPair:
                     RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
                     if (attack.attackPointNumberExtra_x != null)
                     {
@@ -1136,7 +1145,7 @@ namespace Cardevil.InGame.Enemy
                     }
                     break;
 
-                case AttackStyle.Plush:
+                case AttackStyle.Flush:
                     RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
                     if (attack.attackPointNumberExtra_x != null)
                     {
@@ -1348,7 +1357,8 @@ namespace Cardevil.InGame.Enemy
         }
 
 
-#endregion
+        #endregion
+
         #region Tool 관련
 
         private void EnemyTurnClear()
@@ -1442,6 +1452,108 @@ namespace Cardevil.InGame.Enemy
 
         #endregion
 
-        
+        #region EnemySpawner 세팅
+        public void Setup(BaseMobBossData _baseMobBossData)
+        {
+            baseMobBossData = _baseMobBossData;
+            Debug.Log($"SetUp! : {_baseMobBossData.MobID}");
+
+            if (baseMobBossData.BoolAttackType) // 1 이라면
+            {
+                attackCreateCycle = _baseMobBossData.AttackCycle;
+            }
+            else
+            {
+                SetPatternRandomBaseWeight();
+            }
+            isPlayerAttack = baseMobBossData.AttackPlayer;
+
+            SettingGimmick(_baseMobBossData);
+
+        }
+            
+        private void SettingGimmick(BaseMobBossData baseMobBossData)
+        {
+            // TODO : 여러개 기믹이 존재하는 몹이 있으면 [0]을 수정해야함.
+
+            char trimText = '"';
+            IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
+            igimmick.Apply(this);
+        }
+        private void SetPatternRandomBaseWeight()
+        {
+            List<int> weights = baseMobBossData.AttackWeight;
+
+            List<AttackStyle> originalPatterns = baseMobBossData.AttackPattern;
+
+            Debug.Log("11");
+            // 1. 유효성 검사
+            if (weights == null || originalPatterns == null || weights.Count == 0 || weights.Count != originalPatterns.Count)
+            {
+                Debug.LogError("Enemy Setup: AttackWeight or AttackPattern data is invalid or mismatched.");
+                return;
+            }
+
+                // int totalWeight = weights.Sum(); // Linq 사용 시
+                int totalWeight = 0;
+                foreach (int w in weights)
+                {
+                    totalWeight += w;
+                }
+
+                // 총 가중치가 0 이하면 로직 실행 불가
+                if (totalWeight <= 0)
+                {
+                    Debug.LogError("Enemy Setup: Total weight is 0. Cannot generate weighted pattern.");
+                    return;
+                }
+               
+
+                // 15개의 새로운 패턴을 저장할 리스트 생성
+                // (만약 originalPatterns가 List<string>이면 여기도 List<string>으로 변경)
+                List<AttackStyle> newGeneratedPattern = new List<AttackStyle>(15);
+
+                // 15번 반복하여 패턴 생성
+                for (int i = 0; i < 15; i++)
+                {
+                    // 0 ~ (totalWeight - 1) 사이의 랜덤 값 생성
+                    int randomValue = UnityEngine.Random.Range(0, totalWeight);
+
+                    int currentWeightSum = 0;
+                    // 5. 가중치 리스트를 순회하며 랜덤 값이 어느 구간에 속하는지 확인
+                    for (int j = 0; j < weights.Count; j++)
+                    {
+                        currentWeightSum += weights[j];
+
+                        // 6. 랜덤 값이 현재 가중치 누적 합보다 작으면, 이 패턴(j)을 선택
+                        // 예: weight[5, 2, 3], total=10
+                        // randomValue=0~4 (5개) -> j=0 선택
+                        // randomValue=5~6 (2개) -> j=1 선택
+                        // randomValue=7~9 (3개) -> j=2 선택
+                        if (randomValue < currentWeightSum)
+                        {
+                            // 해당 인덱스(j)의 "원본 패턴"을 새 리스트에 추가
+                            newGeneratedPattern.Add(originalPatterns[j]);
+
+                            // 이(i) 번째 패턴을 찾았으므로 j루프 탈출
+                            break;
+                        }
+                    }
+                }
+
+                // 7. "baseMobBossData에 저장"
+                // -> 생성된 15개의 패턴 리스트로 기존 AttackPattern 리스트를 덮어씁니다.
+                baseMobBossData.AttackPattern = newGeneratedPattern;
+
+
+                Debug.Log("여기 진입 완료");
+                for(int x=0;x<15;x++)
+                {
+                    Debug.Log($"패턴 리스트 : {baseMobBossData.AttackPattern[x]}");
+                }
+                // --- 구현 종료 ---
+            }
+            #endregion
+        }
     }
-}
+

@@ -32,6 +32,9 @@ namespace Cardevil.DebugConsole
         [SerializeField] private bool autoScrollToBottomOnNewPrint = true;
         [Header("단축키 설정")]
         [SerializeField] InputAction _toggleConsoleAction;
+        [SerializeField] InputAction _ctrlAction;
+        [SerializeField] InputAction _sizeUpAction;
+        [SerializeField] InputAction _sizeDownAction;
         // [SerializeField] InputAction _autoCompleteConsoleAction;
         [Header("크기 제한")]
         [SerializeField] private Vector2 minSize = new Vector2(360, 200);
@@ -177,6 +180,24 @@ namespace Cardevil.DebugConsole
             {
                 _toggleConsoleAction.performed += OnToggleKeyPressed;
                 _toggleConsoleAction.Enable();
+                _ctrlAction?.Enable();
+                _sizeUpAction?.Enable();
+                _sizeDownAction?.Enable();
+                _sizeUpAction.performed += ctx =>
+                {
+                    if (_ctrlAction != null && _ctrlAction.IsPressed())
+                    {
+                        FontSizeUp();
+                    }
+                };
+                _sizeDownAction.performed += ctx =>
+                {
+                    if (_ctrlAction != null && _ctrlAction.IsPressed())
+                    {
+                        FontSizeDown();
+                    }
+                    
+                };
             }
             else
             {
@@ -185,6 +206,17 @@ namespace Cardevil.DebugConsole
                     if (c == '`')
                     {
                         Toggle();
+                    }
+                    if (Keyboard.current.ctrlKey.isPressed)
+                    {
+                        if (c == '+')
+                        {
+                            FontSizeUp();
+                        }
+                        else if (c == '-')
+                        {
+                            FontSizeDown();
+                        }
                     }
                 };
             }
@@ -369,6 +401,25 @@ namespace Cardevil.DebugConsole
         public void SetOpacity(float opacity)
         {
             root.style.opacity = Mathf.Clamp01(opacity);
+        }
+        
+        public void FontSizeUp(int step = 2)
+        {
+            float newSize = root.resolvedStyle.fontSize + step;
+            Message(MessageType.Gray,$"Font size up to {newSize}");
+            root.style.fontSize = newSize;
+            previewContainer.MarkDirtyRepaint(); 
+
+        }
+
+        public void FontSizeDown(int step = 2)
+        {
+            float newSize = root.resolvedStyle.fontSize - step;
+            if (newSize < 6)
+                newSize = 6;
+            Message(MessageType.Gray,$"Font size down to {newSize}");
+            root.style.fontSize = newSize;
+            previewContainer.MarkDirtyRepaint(); 
         }
         
         /// <summary>
