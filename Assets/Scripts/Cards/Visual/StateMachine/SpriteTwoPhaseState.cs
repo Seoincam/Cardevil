@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using UnityEngine;
 
 namespace Cardevil.Cards.Visual.StateMachine
 {
@@ -28,15 +29,17 @@ namespace Cardevil.Cards.Visual.StateMachine
                 break;
             }
             
+            _group.NumberGroup.SetActive(true);
+            
             _group.NumberMap[CardVisualBase.SelectionGroup.Position.Top].sprite = spriteSet.sprites[0];
             _group.NumberMap[CardVisualBase.SelectionGroup.Position.Bottom].sprite = spriteSet.sprites[1];
             
             foreach (var image in _group.NumberMap.Values)
-                image.gameObject.SetActive(true);
+                image.rectTransform.localScale = Vector3.zero;
             
             var seq = DOTween.Sequence();
             foreach (var image in _group.NumberMap.Values)
-                seq.Join(image.rectTransform.DOScale(1f, .5f));
+                seq.Join(image.rectTransform.DOScale(.75f, .5f));
 
             await seq;
         }
@@ -49,8 +52,9 @@ namespace Cardevil.Cards.Visual.StateMachine
                 seq.Join(image.rectTransform.DOScale(0f, .5f));
             await seq;
             
-            foreach (var image in _group.NumberMap.Values)
-                image.gameObject.SetActive(false);
+            _group.NumberGroup.SetActive(true);
+            // foreach (var image in _group.NumberMap.Values)
+            //     image.gameObject.SetActive(false);
         }
 
         public async UniTask SetPhase(VisualPhase phase)
