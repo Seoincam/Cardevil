@@ -206,12 +206,9 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             var cardData = _model.PopCard();
             if (cardData == null) return null;
-
-            var spriteSet = _library.GetVisualSpriteSetById(cardData.Id);
-            if (spriteSet == null) return null;
             
             var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, spriteSet, _model);
+            card.Init(cardData, _model);
             card.SetRerollState(true);
 
             _model.Draw(card);

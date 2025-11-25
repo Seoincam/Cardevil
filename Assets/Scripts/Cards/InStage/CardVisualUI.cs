@@ -1,7 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Visual;
 using Cardevil.Core;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -15,40 +15,34 @@ namespace Cardevil.Cards.InStage
     {
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
-        
-        [Header("Card Visual")]
-        [SerializeField] private Transform shakeObject;
-        [SerializeField] private Image frontBackground;
-        [SerializeField] private Image frontNumber;
+
+        [Header("Visual")] 
+        [SerializeField] private CardVisualController visualController;
+        [SerializeField] private CardVisualBase visualBase;
 
         public event Action OnClicked;
         
-        private int _id = -1;
         private bool _state = true;
         private Tween _backgroundTween, _numberTween;
         
-        private Color darkColor = new Color(0.2f, 0.2f, 0.2f);
+        private readonly Color _darkColor = new(0.2f, 0.2f, 0.2f);
 
-        public void Init(int id, CardVisualSpriteSet visualSpriteSet)
+        public void Init(CardData data)
         {
             Clear();
-            _id = id;    
-            UpdateVisual(visualSpriteSet);
+            visualController.Init(data);
         }
         
         public void Clear()
         {
             OnClicked = null;
-            _id = -1;
             _state = true;
             SetStateImmediate(_state);
         }
         
-        public void UpdateVisual(CardVisualSpriteSet visualSpriteSet)
+        public void UpdateVisual(CardData data)
         {
-            frontBackground.sprite = visualSpriteSet.FrontBackgroundImage;
-            frontNumber.sprite = visualSpriteSet.FrontNumberImage;
-            frontNumber.gameObject.SetActive(visualSpriteSet.FrontNumberImage);
+            visualController.UpdateData(data).Forget();
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -65,9 +59,9 @@ namespace Cardevil.Cards.InStage
             if (value == _state) return;
             _state = value;
             
-            var color = value ? Color.white : darkColor;
-            frontBackground.color = color;
-            frontNumber.color = color;
+            var color = value ? Color.white : _darkColor;
+            // frontBackground.color = color;
+            // frontNumber.color = color;
         }
 
         /// <summary>
@@ -83,18 +77,18 @@ namespace Cardevil.Cards.InStage
             _backgroundTween?.Kill();
             _numberTween?.Kill();
             
-            var color = value ? Color.white : darkColor;
+            var color = value ? Color.white : _darkColor;
             float dur = .5f;
 
-            _backgroundTween = frontBackground
-                .DOColor(color, dur)
-                .SetRecyclable(true)
-                .SetLink(gameObject);
-
-            _numberTween = frontNumber
-                .DOColor(color, dur)
-                .SetRecyclable(true)
-                .SetLink(gameObject);
+            // _backgroundTween = frontBackground
+            //     .DOColor(color, dur)
+            //     .SetRecyclable(true)
+            //     .SetLink(gameObject);
+            //
+            // _numberTween = frontNumber
+            //     .DOColor(color, dur)
+            //     .SetRecyclable(true)
+            //     .SetLink(gameObject);
 
             await UniTask.WhenAll(
                 _backgroundTween.AwaitForComplete().AttachExternalCancellation(ct),

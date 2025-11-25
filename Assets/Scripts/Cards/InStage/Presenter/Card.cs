@@ -58,7 +58,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// <param name="cardData">카드 데이터 객체</param>
         /// <param name="visualSpriteSet">비주얼 스프라이트 세트</param>
         /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
-        public void Init(CardData cardData, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
+        public void Init(CardData cardData, IReadOnlyStageCardsModel model)
         {
             data = cardData;
             _model = model;
@@ -69,7 +69,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
             var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
-            visual.Init(this, visualSpriteSet, model);
+            visual.Init(this, model);
             WireVisual(visual);
         }
 
@@ -79,8 +79,6 @@ namespace Cardevil.Cards.InStage.Presenter
             visual = null;
         }
         
-        #region Unity Event
-
         private void Awake()
         {
             Clear();
@@ -104,8 +102,6 @@ namespace Cardevil.Cards.InStage.Presenter
                 transform.Translate(velocity * Time.deltaTime);
             }
         }
-
-        #endregion
         
         #region Reroll
 
