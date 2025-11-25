@@ -37,9 +37,7 @@ namespace Cardevil.Cards.Data.InStage
                 default: throw new ArgumentOutOfRangeException();
             }
         }
-
-        #region getter
-
+        
         // Common
         public int Id => id;
         public CardKind Kind => kind;
@@ -54,8 +52,6 @@ namespace Cardevil.Cards.Data.InStage
         public int Length => length;
         public SelectState<Direction> DirectionSelectState => directionSelectState;
         public DirectionFlag DirectionFlag => directionFlag;
-
-        #endregion
         
         #region Builder
         

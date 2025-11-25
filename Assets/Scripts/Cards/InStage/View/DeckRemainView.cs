@@ -135,8 +135,9 @@ namespace Cardevil.Cards.InStage.View
                 LogEx.LogError($"CardVisual_UI[{index}] is null!");
                 return;
             }
-                
-            cardVisualUI.Init(index);
+
+            var data = _library.GetCardDataById(index);
+            cardVisualUI.Init(data);
         }
     }
 }

@@ -1,5 +1,4 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
@@ -8,15 +7,13 @@ using Cardevil.Utils;
 using DG.Tweening;
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
-using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Cards.InStage.View
 {
-    [RequireComponent(typeof(Canvas), typeof(Poolable))]
+    [RequireComponent(typeof(Poolable))]
     public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable
     {
         [Header("Card")]
@@ -31,7 +28,6 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private CardEvaluationAnimSO animSo;
 
         private Poolable _poolable;
-        private Canvas _canvas;
         private CardDeckVisual _deckVisual;
 
         private IReadOnlyStageCardsModel _model;
@@ -40,7 +36,6 @@ namespace Cardevil.Cards.InStage.View
 
         private void Awake()
         {
-            _canvas = GetComponent<Canvas>();
             // _delta.shadowOriginPosition = shadowTransform.localPosition;
 
             _poolable = GetComponent<Poolable>();
@@ -144,7 +139,7 @@ namespace Cardevil.Cards.InStage.View
             this.parentCard = parentCard;
             _model = model;
             
-            _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
+            // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             
             visualController.Init(parentCard.Data);
             visualBase.TryFlipBackImmediate();
@@ -166,7 +161,7 @@ namespace Cardevil.Cards.InStage.View
             // backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
             // shakeObject.localEulerAngles = Vector3.zero;
 
-            _canvas.overrideSorting = false;
+            // _canvas.overrideSorting = false;
             _state.isDiscarded = false;
             _state.isInitialized = false;
         }
@@ -175,12 +170,12 @@ namespace Cardevil.Cards.InStage.View
         
         public void OnDragStart()
         {
-            _canvas.overrideSorting = true;
+            // _canvas.overrideSorting = true;
         }
 
         public void OnDragEnd()
         {
-            _canvas.overrideSorting = false;
+            // _canvas.overrideSorting = false;
         }
 
         public void OnPointerDown(Card _, CardPointerArgs args)
@@ -232,7 +227,7 @@ namespace Cardevil.Cards.InStage.View
 
         public void EndReroll()
         {
-            _canvas.overrideSorting = false;
+            // _canvas.overrideSorting = false;
         }
 
         #endregion
@@ -248,7 +243,7 @@ namespace Cardevil.Cards.InStage.View
         public void Discard()
         {
             _state.isDiscarded = true;
-            _canvas.overrideSorting = true;
+            // _canvas.overrideSorting = true;
 
             var tween = transform.DOLocalMove(endValue: new Vector3(1050, 0, 0), visualSetting.DiscardDuration)
                         .SetEase(visualSetting.DiscardEase);
@@ -278,12 +273,12 @@ namespace Cardevil.Cards.InStage.View
 
         private void OnSelectStarted(Card _)
         {
-            _canvas.overrideSorting = true;
+            // _canvas.overrideSorting = true;
         }
 
         private void OnSelectEnded(Card _)
         {
-            _canvas.overrideSorting = false;
+            // _canvas.overrideSorting = false;
             // UpdateVisual();
             // TODO: 값 선택 후 다시 visual sprite set 생성. Card가 생성 후 넘겨줌.
         }
