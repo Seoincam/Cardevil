@@ -52,8 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63cb8ac91c58d408bb15c2ef15a9851b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visual: {fileID: 3075103807123323649}
   parentCard: {fileID: 0}
+  visualController: {fileID: 3514325568015145323}
+  visualBase: {fileID: 3075103807123323649}
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   animSo: {fileID: 11400000, guid: 86cca5790825e4f938459e939ac90ea1, type: 2}
 --- !u!114 &4123142802437753040
@@ -220,6 +221,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3e44185a60574bbaac2a7aaa99b14145, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3514325568015145323 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3897703792434606943, guid: 3aa5d2ba467274871b70c891d1a63bdb, type: 3}
+  m_PrefabInstance: {fileID: 491464718559242804}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82b368745be24ba38cd49a4a7bf7674a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &4811866326042843573 stripped
