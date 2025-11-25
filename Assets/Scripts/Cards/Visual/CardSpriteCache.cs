@@ -9,9 +9,7 @@ namespace Cardevil.Cards.Visual
 {
     public static class CardSpriteCache
     {
-        private static SpriteAtlas _atlas;
-        private static Dictionary<string, Sprite> _cache;
-        private static bool _isInitialized;
+        private static SpriteAtlas _atlas; private static bool _isInitialized;
 
         private const string AtlasPath = "Arts/CardAtlas";
         private const string CloneSuffix = "(Clone)";
@@ -22,21 +20,12 @@ namespace Cardevil.Cards.Visual
                 return true;
             
             _atlas = Resources.Load<SpriteAtlas>(AtlasPath);
-            if (_atlas == null)
+            if (!_atlas)
             {
                 LogEx.LogError("Atlas not found: Resources/" + AtlasPath);
                 return false;
             }
             
-            _cache = new Dictionary<string, Sprite>();
-            var arr = new Sprite[_atlas.spriteCount];
-            _atlas.GetSprites(arr);
-            foreach (var sprite in arr)
-            {
-                var name = NormalizeSpriteName(sprite.name);
-                _cache[name] = sprite;
-            }
-
             _isInitialized = true;
             return true;
         }
@@ -71,27 +60,21 @@ namespace Cardevil.Cards.Visual
         // Move Card Sprites
         public static Sprite GetInnerFrame(DirectionFlag flag)
         {
-            var s = $"Card_Direction_Frame_{flag}";
+            var s = $"Card_Direction_Frame_{flag.ToCustomString()}";
             return GetSprite(s);
         }
         public static Sprite GetArrow(DirectionFlag flag)
         {
-            var s = $"Card_Direction_Icon_{flag}";
+            var s = $"Card_Direction_Icon_{flag.ToCustomString()}";
             return GetSprite(s);
         }
         
-        private static Sprite GetSprite(string spriteName)
+        private static Sprite GetSprite(string key)
         {
             if (!TryInitialize())
                 return null;
             
-            if (!_cache.TryGetValue(spriteName, out var sprite))
-            {
-                LogEx.LogWarning("No sprite found for: " + spriteName);
-                return null;
-            }
-            
-            return sprite;
+            return _atlas.GetSprite(key);
         }
 
         private static string NormalizeSpriteName(string rawName)
