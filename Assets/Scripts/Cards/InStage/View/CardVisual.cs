@@ -12,16 +12,19 @@ using UnityEngine.UI;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
+using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Cards.InStage.View
 {
     [RequireComponent(typeof(Canvas), typeof(Poolable))]
     public class CardVisual : MonoBehaviour, IEvaluateVisual, IClearable
     {
-        [SerializeField] private CardVisualBase visual;
-            
         [Header("Card")]
         [SerializeField, VisibleOnly] private Card parentCard;
+        
+        [Header("Visual")]
+        [SerializeField] private CardVisualController visualController;
+        [SerializeField] private CardVisualBase visualBase;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
@@ -122,7 +125,7 @@ namespace Cardevil.Cards.InStage.View
 
             var c = visualSetting.Curve;
             
-            float currentZ = visual.Rect.localEulerAngles.z;
+            float currentZ = visualBase.Rect.localEulerAngles.z;
             float targetZ = parentCard.IsDragging
                 ? 0f
                 : (_delta.curveRotationOffset * (c.rotationInfluence * _model.Hand.Count));
@@ -131,25 +134,20 @@ namespace Cardevil.Cards.InStage.View
             float t = (visualSetting.TiltSpeed * 0.5f) * Time.deltaTime;
             float nextZ = Mathf.LerpAngle(currentZ, targetZ, t);
 
-            visual.Rect.localEulerAngles = new Vector3(0f, 0f, nextZ);
+            visualBase.Rect.localEulerAngles = new Vector3(0f, 0f, nextZ);
         }
         
-        public void Init(Card parentCard, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
+        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
         {
             if (_state.isInitialized) return;
             
             this.parentCard = parentCard;
             _model = model;
             
-            // Subscribe Events
-            // SubscribeToParent(parentCard);
-            // _model.HandChanged += UpdateIndex;
-            
             _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
-            // UpdateVisual();
-            // frontImage.sprite = visualSpriteSet.FrontBackgroundImage;
-            // numberImages[0].sprite = visualSpriteSet.FrontNumberImage;
-            // numberImages[0].gameObject.SetActive(visualSpriteSet.FrontNumberImage);
+            
+            visualController.Init(parentCard.Data);
+            visualBase.TryFlipBackImmediate();
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
             if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
@@ -211,8 +209,8 @@ namespace Cardevil.Cards.InStage.View
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                 .SetEase(visualSetting.RerollDrawEase);
             
-            visual.TryFlipBackImmediate();
-            visual.TryFlipFrontAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            visualBase.TryFlipBackImmediate();
+            visualBase.TryFlipFrontAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
         }
 
         public void AnimateRerollDiscard()
@@ -222,8 +220,8 @@ namespace Cardevil.Cards.InStage.View
             var tween = transform.DOMove(endValue: _deckVisual.Front.position, visualSetting.RerollDiscardDuration)
                 .SetEase(visualSetting.RerollDiscardEase);
             
-            visual.TryFlipFrontImmediate();
-            visual.TryFlipBackAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            visualBase.TryFlipFrontImmediate();
+            visualBase.TryFlipBackAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
 
             tween.OnComplete(() =>
             {
@@ -243,8 +241,8 @@ namespace Cardevil.Cards.InStage.View
         {
             _deckVisual.OnInteraction();
             
-            visual.TryFlipBackImmediate();
-            visual.TryFlipFrontAnim(visualSetting.DrawFlipDuration, visualSetting.FlipEase);
+            visualBase.TryFlipBackImmediate();
+            visualBase.TryFlipFrontAnim(visualSetting.DrawFlipDuration, visualSetting.FlipEase);
         }
 
         public void Discard()

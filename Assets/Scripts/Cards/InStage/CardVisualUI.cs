@@ -29,11 +29,11 @@ namespace Cardevil.Cards.InStage
         
         private Color darkColor = new Color(0.2f, 0.2f, 0.2f);
 
-        public void Init(int id, CardVisualSpriteSet visualSpriteSet)
+        public void Init(int id)
         {
             Clear();
             _id = id;    
-            UpdateVisual(visualSpriteSet);
+            UpdateVisual();
         }
         
         public void Clear()
@@ -44,11 +44,11 @@ namespace Cardevil.Cards.InStage
             SetStateImmediate(_state);
         }
         
-        public void UpdateVisual(CardVisualSpriteSet visualSpriteSet)
+        public void UpdateVisual()
         {
-            frontBackground.sprite = visualSpriteSet.FrontBackgroundImage;
-            frontNumber.sprite = visualSpriteSet.FrontNumberImage;
-            frontNumber.gameObject.SetActive(visualSpriteSet.FrontNumberImage);
+            // frontBackground.sprite = visualSpriteSet.FrontBackgroundImage;
+            // frontNumber.sprite = visualSpriteSet.FrontNumberImage;
+            // frontNumber.gameObject.SetActive(visualSpriteSet.FrontNumberImage);
         }
 
         public void OnPointerClick(PointerEventData eventData)

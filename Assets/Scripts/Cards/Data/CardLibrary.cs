@@ -26,13 +26,6 @@ namespace Cardevil.Cards.Data
         CardData GetCardDataById(int id);
         
         /// <summary>
-        /// 해당 id의 <see cref="CardVisualSpriteSet"/>을 반환.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        CardVisualSpriteSet GetVisualSpriteSetById(int id);
-        
-        /// <summary>
         /// 해당 id의 <see cref="IReadOnlyCardDataPipeline"/>을 반환.
         /// </summary>
         IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
@@ -47,7 +40,6 @@ namespace Cardevil.Cards.Data
         // 파이프라인을 바탕으로 생성된 데이터들.
         // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
         [SerializeField, VisibleOnly] private SerializableDictionary<int, CardData> dataMap = new();
-        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardVisualSpriteSet> visualSpriteSetMap = new();   
         
         private EnhancementDataLibrary _enhancementDataLibrary;
         
@@ -142,7 +134,7 @@ namespace Cardevil.Cards.Data
         {
             get
             {
-                if (pipelineMap.Count != dataMap.Count || dataMap.Count != visualSpriteSetMap.Count)
+                if (pipelineMap.Count != dataMap.Count)
                 {
                     LogEx.LogError("Incorrect number of maps!");
                     return 0;
@@ -164,20 +156,6 @@ namespace Cardevil.Cards.Data
             }
 
             return data;
-        }
-
-        public CardVisualSpriteSet GetVisualSpriteSetById(int id)
-        {
-            if (!ValidateId(id))
-                return null;
-
-            if (!visualSpriteSetMap.TryGetValue(id, out var spriteSet))
-            {
-                LogEx.LogError($"Cannot find CardVisualSpriteSet. Id: {id}");
-                return null;
-            }
-
-            return spriteSet;
         }
 
         public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);

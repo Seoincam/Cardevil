@@ -135,15 +135,8 @@ namespace Cardevil.Cards.InStage.View
                 LogEx.LogError($"CardVisual_UI[{index}] is null!");
                 return;
             }
-
-            var spriteSet = _library.GetVisualSpriteSetById(index);
-            if (spriteSet == null)
-            {
-                LogEx.LogError($"spriteSet is null! id: {index}");
-                return;
-            }
                 
-            cardVisualUI.Init(index, spriteSet);
+            cardVisualUI.Init(index);
         }
     }
 }
