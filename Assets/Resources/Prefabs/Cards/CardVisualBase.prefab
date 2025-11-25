@@ -87,12 +87,12 @@ GameObject:
   - component: {fileID: 4114916703874958695}
   - component: {fileID: 1904935644631075051}
   m_Layer: 5
-  m_Name: Selection3 Container Bottom
+  m_Name: Selection Bottom Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2224684308151309347
 RectTransform:
   m_ObjectHideFlags: 0
@@ -313,12 +313,12 @@ GameObject:
   - component: {fileID: 7915627867195363180}
   - component: {fileID: 7824710391963363735}
   m_Layer: 5
-  m_Name: Selection3 Container Mid
+  m_Name: Selection Middle Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4369941407860613882
 RectTransform:
   m_ObjectHideFlags: 0
@@ -413,42 +413,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 180, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &4203995490175320255
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2901955659304489930}
-  m_Layer: 5
-  m_Name: Selection2 Backgrounds
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &2901955659304489930
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4203995490175320255}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6565924511393820877}
-  m_Father: {fileID: 5258663822683713568}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &4536065782369401900
 GameObject:
   m_ObjectHideFlags: 0
@@ -459,12 +423,12 @@ GameObject:
   m_Component:
   - component: {fileID: 6317628784794337281}
   m_Layer: 5
-  m_Name: Selection3 Backgrounds
+  m_Name: Selection Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6317628784794337281
 RectTransform:
   m_ObjectHideFlags: 0
@@ -555,13 +519,7 @@ MonoBehaviour:
   cardBackGroup: {fileID: 5964001764712778089}
   selectionGroups:
   - count: 2
-    backgroundGroup: {fileID: 4203995490175320255}
     numberGroup: {fileID: 8622338179314672209}
-    backgroundMap:
-      defaultKey: 0
-      _items:
-      - Key: 2
-        Value: {fileID: 8995343613214990397}
     numberMap:
       defaultKey: 2
       _items:
@@ -570,15 +528,7 @@ MonoBehaviour:
       - Key: 2
         Value: {fileID: 8494581481891755259}
   - count: 3
-    backgroundGroup: {fileID: 4536065782369401900}
     numberGroup: {fileID: 7122947597627461535}
-    backgroundMap:
-      defaultKey: 2
-      _items:
-      - Key: 1
-        Value: {fileID: 7824710391963363735}
-      - Key: 2
-        Value: {fileID: 1904935644631075051}
     numberMap:
       defaultKey: 2
       _items:
@@ -588,6 +538,8 @@ MonoBehaviour:
         Value: {fileID: 5630632581024428450}
       - Key: 2
         Value: {fileID: 6553024332033013242}
+  selMidBackground: {fileID: 4369941407860613882}
+  selBotBackground: {fileID: 2224684308151309347}
   innerFrame: {fileID: 7758025542399416117}
   number: {fileID: 566944155178206559}
   enhancementFrames:
@@ -610,7 +562,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &909164408081593043
 RectTransform:
   m_ObjectHideFlags: 0
@@ -734,81 +686,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: b029f124fc7914504bbc5fb82621668b, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!1 &4856055471739068411
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6565924511393820877}
-  - component: {fileID: 1046430773741384571}
-  - component: {fileID: 8995343613214990397}
-  m_Layer: 5
-  m_Name: Selection2 Container Bottom
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &6565924511393820877
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4856055471739068411}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2901955659304489930}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 220, y: 312}
-  m_Pivot: {x: 1, y: 0}
---- !u!222 &1046430773741384571
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4856055471739068411}
-  m_CullTransparentMesh: 1
---- !u!114 &8995343613214990397
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4856055471739068411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 066b2ff971da84e8ab69a93774cab859, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1374,7 +1251,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 2901955659304489930}
   - {fileID: 6317628784794337281}
   - {fileID: 9002725308887801140}
   - {fileID: 7732930475086978946}

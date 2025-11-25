@@ -1,4 +1,3 @@
-using Cardevil.Cards.ScriptableObjects;
 using Cardevil.DataStructure.Serializables;
 using DG.Tweening;
 using System;
@@ -18,6 +17,10 @@ namespace Cardevil.Cards.Visual
         [SerializeField] private RectTransform cardBackGroup;
         [SerializeField] private List<SelectionGroup> selectionGroups = new();
 
+        [Header("Background")]
+        [SerializeField] private RectTransform selMidBackground;
+        [SerializeField] private RectTransform selBotBackground;
+
         [Header("Default")]
         [SerializeField] private Image innerFrame;
         [SerializeField] private Image number;
@@ -29,12 +32,26 @@ namespace Cardevil.Cards.Visual
         
         public RectTransform CardFrontGroup => cardFrontGroup;
         public RectTransform CardBackGroup => cardBackGroup;
-        public IReadOnlyList<SelectionGroup> SelectionGroups => selectionGroups;
+        
+        public RectTransform SelMidBackground => selMidBackground;
+        public RectTransform SelBotBackground => selBotBackground;
         
         public Image InnerFrame => innerFrame;
         public Image Number => number;
         
         public IReadOnlyList<Image> EnhancementFrames => enhancementFrames;
+
+        public SelectionGroup GetSelectionGroup(int count)
+        {
+            foreach (var group in selectionGroups)
+            {
+                if (group.Count != count)
+                    continue;
+                return group;
+            }
+
+            return null;
+        }
         
         public RectTransform Rect { get; private set; }
 
@@ -94,29 +111,36 @@ namespace Cardevil.Cards.Visual
 
         
         [Serializable]
-        public struct SelectionGroup
+        public class SelectionGroup
         {
             [SerializeField] private int count;
-            
-            [Space, SerializeField] private GameObject backgroundGroup;
             [SerializeField] private GameObject numberGroup;
-
-            [Space, SerializeField] private SerializableDictionary<Position, Image> backgroundMap;
             [SerializeField] private SerializableDictionary<Position, Image> numberMap;
             
             // getter
             public int Count => count;
-            
-            public GameObject BackgroundGroup => backgroundGroup;
             public GameObject NumberGroup => numberGroup;
-            
-            public IReadOnlyDictionary<Position, Image> BackgroundMap => backgroundMap;
             public IReadOnlyDictionary<Position, Image> NumberMap => numberMap;
+        }
+
+        public struct BackgroundPos
+        {
+            public static BackgroundPos MidSetting => new BackgroundPos(160, -125, 45, 0);
+            public static BackgroundPos BotSetting => new BackgroundPos(80, -80, 0, 0);
             
-            public enum Position
+            public Vector2 initPos;
+            public Vector2 finalPos;
+
+            private BackgroundPos(float initX, float initY, float finalX, float finalY)
             {
-                Top, Middle, Bottom
+                initPos = new Vector2(initX, initY);
+                finalPos = new Vector2(finalX, finalY);
             }
+        }
+        
+        public enum Position
+        {
+            Top, Middle, Bottom
         }
     }
 

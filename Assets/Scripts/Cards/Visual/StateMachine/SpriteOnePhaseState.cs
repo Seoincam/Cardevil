@@ -6,7 +6,7 @@ namespace Cardevil.Cards.Visual.StateMachine
 {
     public class SpriteOnePhaseState : IPhaseState
     {
-        private CardVisualBase _visual;
+        private readonly CardVisualBase _visual;
         public VisualPhase Kind => VisualPhase.SpriteOne;
 
         public SpriteOnePhaseState(CardVisualBase visual)
@@ -46,12 +46,36 @@ namespace Cardevil.Cards.Visual.StateMachine
 
         private async UniTask TransitToTwoAsync()
         {
+            var midSetting = CardVisualBase.BackgroundPos.MidSetting;
+
+            // 초기화
+            _visual.SelBotBackground.gameObject.SetActive(false);
+
+            _visual.SelMidBackground.anchoredPosition = midSetting.initPos;
+            _visual.SelMidBackground.gameObject.SetActive(true);
             
+            // 트윈
+            var dur = .5f;
+            await _visual.SelMidBackground.DOAnchorPos(midSetting.finalPos, dur);
         }
 
         private async UniTask TransitToThreeAsync()
         {
+            var midSetting = CardVisualBase.BackgroundPos.MidSetting;
+            var botSetting = CardVisualBase.BackgroundPos.BotSetting;
             
+            // 초기화
+            _visual.SelBotBackground.anchoredPosition = botSetting.initPos;
+            _visual.SelBotBackground.gameObject.SetActive(true);
+
+            _visual.SelMidBackground.anchoredPosition = midSetting.initPos;
+            _visual.SelMidBackground.gameObject.SetActive(true);
+            
+            // 트윈
+            var dur = .5f;
+            await DOTween.Sequence()
+                .Join(_visual.SelBotBackground.DOAnchorPos(Vector2.zero, dur))
+                .Join(_visual.SelMidBackground.DOAnchorPos(Vector2.zero, dur));
         }
     }
 }
