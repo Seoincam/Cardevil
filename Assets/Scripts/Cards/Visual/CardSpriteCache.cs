@@ -58,9 +58,19 @@ namespace Cardevil.Cards.Visual
         }
         
         // Move Card Sprites
+        public static Sprite GetInnerFrame(Direction dir)
+        {
+            var s = $"Card_Direction_Frame_{dir}";
+            return GetSprite(s);
+        }
         public static Sprite GetInnerFrame(DirectionFlag flag)
         {
             var s = $"Card_Direction_Frame_{flag.ToCustomString()}";
+            return GetSprite(s);
+        }
+        public static Sprite GetArrow(Direction dir)
+        {
+            var s = $"Card_Direction_Icon_{dir}";
             return GetSprite(s);
         }
         public static Sprite GetArrow(DirectionFlag flag)

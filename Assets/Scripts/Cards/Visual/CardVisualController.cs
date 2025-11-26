@@ -1,12 +1,9 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual.StateMachine;
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
-using CardVisualSpriteSet = Cardevil.Cards.Visual.StateMachine.CardVisualSpriteSet;
 
 namespace Cardevil.Cards.Visual
 {
@@ -66,7 +63,7 @@ namespace Cardevil.Cards.Visual
                 }
             }
             
-            return new Cardevil.Cards.Visual.StateMachine.CardVisualSpriteSet(innerFrame, sprites);
+            return new CardVisualSpriteSet(innerFrame, sprites);
         }
 
         private CardVisualSpriteSet UpdateMoveData(CardData data)
@@ -74,7 +71,7 @@ namespace Cardevil.Cards.Visual
             Sprite innerFrame = CardSpriteCache.GetInnerFrame(data.DirectionFlag);
             List<Sprite> sprites = new() { CardSpriteCache.GetArrow(data.DirectionFlag) };
             
-            return new Cardevil.Cards.Visual.StateMachine.CardVisualSpriteSet(innerFrame, sprites);
+            return new CardVisualSpriteSet(innerFrame, sprites);
         }
     }
 }
