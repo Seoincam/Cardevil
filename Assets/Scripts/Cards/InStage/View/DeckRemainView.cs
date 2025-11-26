@@ -1,8 +1,10 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,8 +16,11 @@ namespace Cardevil.Cards.InStage.View
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSO;
 
-        [Header("UI")] 
-        [SerializeField] private Button closeButton; 
+        [Header("Summary Area")] 
+        [SerializeField] private SerializableDictionary<string, TextMeshProUGUI> countTexts;
+        [SerializeField] private Button closeButton;
+        
+        [Header("Cards Area")]
         [SerializeField] private CardVisualUI[] cardVisuals;
         
         private IReadOnlyCardLibrary _library;
@@ -54,6 +59,7 @@ namespace Cardevil.Cards.InStage.View
             
             _isVisible = false;
             gameObject.SetActive(false);
+            OnDeckChanged();
         }
         
         /// <summary>
@@ -61,24 +67,38 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void OnDeckChanged()
         {
-            int id;
+            int red = 10, green = 10, blue = 10, black = 10, arrow = 10;
             
             foreach (var handCard in _model.Hand)
-            {
-                id = handCard.Data.Id;
-                if (_isVisible)
-                    cardVisuals[id].SetStateAsync(false).Forget();
-                else 
-                    cardVisuals[id].SetStateImmediate(false);
-            }
+                DecreaseCountById(handCard.Data.Id, ref red, ref green, ref blue, ref black, ref arrow);
 
             foreach (var discarded in _model.DiscardPile)
+                DecreaseCountById(discarded.Id, ref red, ref green, ref blue, ref black, ref arrow);
+
+            int allRemains = red + green + blue + black + arrow;
+            countTexts["all"].text = $"{allRemains}/50";
+            countTexts["red"].text = red.ToString();
+            countTexts["green"].text = green.ToString();
+            countTexts["blue"].text = blue.ToString();
+            countTexts["black"].text = black.ToString();
+            countTexts["arrow"].text = arrow.ToString();
+            
+            void DecreaseCountById(int id, ref int red, ref int green, ref int blue, ref int black, ref int arrow)
             {
-                id = discarded.Id;
                 if (_isVisible)
                     cardVisuals[id].SetStateAsync(false).Forget();
                 else 
                     cardVisuals[id].SetStateImmediate(false);
+                
+                var group = id / 10;
+                switch (group)
+                {
+                    case 0: red--; break;
+                    case 1: green--; break;
+                    case 2: blue--; break;
+                    case 3: black--; break;
+                    case 4: arrow--; break;
+                }
             }
         }
 
