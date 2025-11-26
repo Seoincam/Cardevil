@@ -4,19 +4,24 @@ using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Utils;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class DeckRemainView : UI_Popup
     {
-        [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private CardVisualUI[] cardVisuals;
+        [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSO;
 
+        [Header("UI")] 
+        [SerializeField] private Button closeButton; 
+        [SerializeField] private CardVisualUI[] cardVisuals;
+        
         private IReadOnlyCardLibrary _library;
         private IReadOnlyStageCardsModel _model;
-
+        
+        private CanvasGroup _canvasGroup;
         private bool _isVisible;
         private bool _isClicked;
         private Tween _tween;
@@ -32,67 +37,23 @@ namespace Cardevil.Cards.InStage.View
                 return;
             }
 
+            // UI 바인딩
             for (int i = 0; i < cardVisuals.Length; i++)
                 UpdateSpriteSet(i);
-            
-            // 해당 시점에서 이미 손패가 결정되어있음.
             foreach (var card in _model.Hand)
             {
                 int id = card.Data.Id;
                 cardVisuals[id].SetStateImmediate(false);
             }
-
+            
+            closeButton.onClick.AddListener(Close);
+            
+            _canvasGroup = GetComponent<CanvasGroup>();
+            // _canvasGroup.interactable = false;
+            // _canvasGroup.blocksRaycasts = false;
+            
             _isVisible = false;
-            canvasGroup.alpha = 0;
-            canvasGroup.interactable = false;
-            canvasGroup.blocksRaycasts = false;
-        }
-
-        public void OnPointerEnterAtDeck()
-        {
-            if (_isClicked) return;
-            _isVisible = true;
-            _tween?.Kill();
-            
-            const float targetAlpha = 1f;
-
-            canvasGroup.interactable = false;
-            
-            _tween = canvasGroup.DOFade(targetAlpha, visualSO.DeckRemainViewToggleDur)
-                .SetLink(gameObject)
-                .SetRecyclable(true);
-            
-            _tween.OnComplete(() =>
-            {
-                canvasGroup.interactable = true;
-                canvasGroup.blocksRaycasts = true;
-            });
-        }
-
-        public void OnPointerExitAtDeck()
-        {
-            if (_isClicked) return;
-            _tween?.Kill();
-            
-            const float targetAlpha = 0f;
-
-            canvasGroup.interactable = false;
-            
-            _tween = canvasGroup.DOFade(targetAlpha, visualSO.DeckRemainViewToggleDur)
-                .SetLink(gameObject)
-                .SetRecyclable(true);
-            
-            _tween.OnComplete(() =>
-            {
-                canvasGroup.interactable = false;
-                canvasGroup.blocksRaycasts = false;
-                _isVisible = false;
-            });
-        }
-
-        public void OnPointerClickAtDeck()
-        {
-            _isClicked = !_isClicked;
+            gameObject.SetActive(false);
         }
         
         /// <summary>
@@ -119,6 +80,18 @@ namespace Cardevil.Cards.InStage.View
                 else 
                     cardVisuals[id].SetStateImmediate(false);
             }
+        }
+
+        public void Open()
+        {
+            _isVisible = true;
+            gameObject.SetActive(true);
+        }
+
+        private void Close()
+        {
+            _isVisible = false;
+            gameObject.SetActive(false);
         }
 
         private void UpdateSpriteSet(int index)

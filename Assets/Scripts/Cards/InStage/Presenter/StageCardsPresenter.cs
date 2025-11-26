@@ -34,9 +34,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private event Action DeckChanged;
         
         private bool CanInput => _state is { isSwapping: false, canInteract: true };
-
-        #region Initialization
-
+        
         /// <summary>
         /// StageCardsPresenter 초기화.  
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
@@ -120,11 +118,8 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             _deckRemainView.Init(_library, _model);
             DeckChanged += _deckRemainView.OnDeckChanged;
-
-            CardDeckVisual.Instance.PointerEnter += _deckRemainView.OnPointerEnterAtDeck;
-            CardDeckVisual.Instance.PointerExit += _deckRemainView.OnPointerExitAtDeck;
-            CardDeckVisual.Instance.PointerUp += _deckRemainView.OnPointerClickAtDeck;
-            CardDeckVisual.Instance.transform.SetAsLastSibling();
+            
+            CardDeckVisual.Instance.PointerUp += _deckRemainView.Open;
             
             await _view.EnterHandBarAsync();
             
@@ -146,10 +141,6 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
         
-        #endregion
-
-        #region Clear
-
         /// <summary>
         /// 스테이지가 종료된 후 UI를 비활성화, 
         /// 내부 업데이트 루프를 정지시킵니다.
@@ -160,9 +151,7 @@ namespace Cardevil.Cards.InStage.Presenter
             // Update Async 정지
             _updateCts.Cancel();
             
-            CardDeckVisual.Instance.PointerEnter -= _deckRemainView.OnPointerEnterAtDeck;
-            CardDeckVisual.Instance.PointerExit -= _deckRemainView.OnPointerExitAtDeck;
-            CardDeckVisual.Instance.PointerUp -= _deckRemainView.OnPointerClickAtDeck;
+            CardDeckVisual.Instance.PointerUp -= _deckRemainView.Open;
             
             await _view.ExitHandBarAsync();
         }
@@ -180,8 +169,6 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.Clear();
             Managers.Resource.Destroy(_view.gameObject);
         }
-
-        #endregion
         
         #region Wire
 
