@@ -31,7 +31,8 @@ namespace Cardevil.UI
         {
             _tween?.Kill();
             _tween = _target.DOScale(scale, duration)
-                .SetUpdate(true);
+                .SetUpdate(true)
+                .SetLink(gameObject);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

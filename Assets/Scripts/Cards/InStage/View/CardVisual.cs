@@ -10,6 +10,7 @@ using UnityEngine;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
+using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -88,6 +89,11 @@ namespace Cardevil.Cards.InStage.View
             selectionButton.onClick.RemoveAllListeners();
             _state.isDiscarded = false;
             _state.isInitialized = false;
+        }
+
+        public void UpdateVisual()
+        {
+            visualController.UpdateData(parentCard.Data).Forget();
         }
         
         private void Update()

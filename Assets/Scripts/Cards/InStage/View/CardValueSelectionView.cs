@@ -1,7 +1,10 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.Visual;
+using Cardevil.Core;
 using Cardevil.Utils;
+using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -11,8 +14,10 @@ using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
 {
-    public class CardValueSelectionView : MonoBehaviour
+    public class CardValueSelectionView : MonoBehaviour, IClearable
     {
+        public event Action<Card, (int, Direction)> ValueSelected;
+        
         private const float CardScale = .6f;
         private const string SlotPath = "Cards/Slot";
         private readonly Dictionary<int, float> _frameWidths = new()
@@ -25,6 +30,11 @@ namespace Cardevil.Cards.InStage.View
         private readonly List<RectTransform> _slots = new();
         private readonly List<CardVisualLightUI> _visuals = new();
 
+        private Card _card;
+        private CardKind _kind;
+        private (CardColor, int) _attackValue;
+        private Direction _moveValue;
+
         public void Init()
         {
             _bar = GetComponent<Image>();
@@ -32,8 +42,14 @@ namespace Cardevil.Cards.InStage.View
             gameObject.SetActive(false);
         }
         
-        public void Open(CardData cardData, Vector2 position)
+        public void Open(Card card, Vector2 position)
         {
+            Clear();
+
+            _card = card;
+            var cardData = card.Data;
+            _kind = cardData.Kind;
+            
             // 구성
             int count = cardData.Kind switch
             {
@@ -51,6 +67,34 @@ namespace Cardevil.Cards.InStage.View
             
             // 애니메이션
             DoAnim().Forget();
+        }
+
+        public void Close()
+        {
+            gameObject.SetActive(false);
+            Clear();
+        }
+        
+        public void Clear()
+        {
+            // TODO Pooling하기
+
+            if (_visuals.Count == 0)
+                return;
+
+            for (int i = _visuals.Count - 1; i >= 0; i--)
+            {
+                _visuals[i].Selected -= OnValueSelected;
+                Managers.Resource.Destroy(_visuals[i].gameObject);
+            }
+                
+            _visuals.Clear();
+        }
+
+        private void OnValueSelected((int, Direction) values)
+        {
+            ValueSelected?.Invoke(_card, values);
+            Close();
         }
 
         private async UniTaskVoid DoAnim()
@@ -73,9 +117,11 @@ namespace Cardevil.Cards.InStage.View
                     .SetEase(Ease.OutBack);
                 await UniTask.Delay(TimeSpan.FromSeconds(interval));
             }
-            
         } 
         
+        /// <summary>
+        /// <see cref="_bar"/> 크기를 조정.
+        /// </summary>
         private void ConfigureFrame(int slotCount)
         {
             if (!_frameWidths.TryGetValue(slotCount, out var width))
@@ -107,6 +153,9 @@ namespace Cardevil.Cards.InStage.View
             }
         }
 
+        /// <summary>
+        /// 카드 UI 생성 및 데이터 바인딩
+        /// </summary>
         private void ConfigureCards(CardData data, int count)
         {
             const string path = "UI/CardUI/CardVisual_Light_UI";
@@ -115,21 +164,20 @@ namespace Cardevil.Cards.InStage.View
             {
                 var go = Managers.Resource.Instantiate(path, _slots[i]);
                 var visual = go.GetComponent<CardVisualLightUI>();
-                visual.SetScale(CardScale);
+                visual.Selected += OnValueSelected;
 
                 if (data.Kind == CardKind.Attack)
                 {
                     var num = data.NumberSelectState.Selectables[i].value;
-                    visual.Base.Setup(data.Color, num);
+                    visual.Init(CardScale, data.Color, num);
                 }
                 else if (data.Kind == CardKind.Move)
                 {
                     var dir = data.DirectionSelectState.Selectables[i].value;
-                    visual.Base.Setup(dir);
+                    visual.Init(CardScale, dir);
                 }
-
+                
                 _visuals.Add(visual);
-
             }
         }
     }

@@ -4,6 +4,7 @@ using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Cardevil.Cards.Data.InStage
@@ -52,13 +53,36 @@ namespace Cardevil.Cards.Data.InStage
         {
             for (int i = 0; i < selectables.Count; i++)
             {
-                if (!selectables[i].hasValue)
-                {
-                    selectables[i] = new Optional<T>(value);
-                    return true;
-                }
+                if (selectables[i].hasValue)
+                    continue;
+                
+                selectables[i] = new Optional<T>(value);
+                return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 값 선택을 시도.
+        /// </summary>
+        /// <returns>시도한 값이 선택 가능한 값인지 여부.</returns>
+        public bool TrySelect(T value)
+        {
+            bool contain = false;
+            foreach (var selectable in selectables)
+            {
+                if (!selectable.value.Equals(value))
+                    continue;
+                contain = true;
+                break;
+            }
+
+            if (!contain)
+                return false;
+
+            selectedValue.value = value;
+            selectedValue.hasValue = true;
+            return true;
         }
         
         public SelectState(List<T?> selectables)
@@ -68,7 +92,6 @@ namespace Cardevil.Cards.Data.InStage
                 this.selectables.Add(new Optional<T>(selectable));
                 _initialSelectables.Add(new Optional<T>(selectable));
             }
-                
         }
 
         public void Clear()

@@ -83,6 +83,8 @@ namespace Cardevil.Cards.InStage.Presenter
             state = new CardState();
             visual = null;
         }
+
+        public void UpdateVisual() => visual.UpdateVisual();
         
         private void Awake()
         {
@@ -111,11 +113,6 @@ namespace Cardevil.Cards.InStage.Presenter
         private void OnValueSelectionTapped()
         {
             SelectionButtonTapped?.Invoke(this);
-        }
-
-        private Card OnValueSelected()
-        {
-            return this;
         }
         
         #region Reroll

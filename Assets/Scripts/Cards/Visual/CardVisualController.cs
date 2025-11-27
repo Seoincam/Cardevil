@@ -2,6 +2,7 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Visual.StateMachine;
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -34,12 +35,12 @@ namespace Cardevil.Cards.Visual
 
         private CardVisualSpriteSet ConfigureSpriteSet(CardData data)
         {
-            if (data.Kind == CardKind.Attack)
-                return UpdateAttackData(data);
-            if (data.Kind == CardKind.Move)
-                return UpdateMoveData(data);
-
-            return new CardVisualSpriteSet();
+            return data.Kind switch
+            {
+                CardKind.Attack => UpdateAttackData(data),
+                CardKind.Move => UpdateMoveData(data),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
         
         // TODO 강화 데이터 핸들링
@@ -48,14 +49,22 @@ namespace Cardevil.Cards.Visual
             Sprite innerFrame = CardSpriteCache.GetInnerFrame(data.Color);
             List<Sprite> sprites = new();
 
+            var n = data.NumberSelectState;
+            
+            if (n.FinalValue.HasValue)
+            {
+                sprites.Add(CardSpriteCache.GetNumber(data.Color, n.FinalValue.Value));
+                return new CardVisualSpriteSet(innerFrame, sprites);
+            }
+
             // 오망성인 경우 따로 분류
-            if (data.NumberSelectState.Selectables.Count == 9)
+            if (n.Selectables.Count == 9)
             {
                 sprites.Add(CardSpriteCache.GetStar(data.Color));
             }
             else
             {
-                foreach (var item in data.NumberSelectState.Selectables)
+                foreach (var item in n.Selectables)
                 {
                     sprites.Add(item.hasValue
                         ? CardSpriteCache.GetNumber(data.Color, item.value)
@@ -69,7 +78,17 @@ namespace Cardevil.Cards.Visual
         private CardVisualSpriteSet UpdateMoveData(CardData data)
         {
             Sprite innerFrame = CardSpriteCache.GetInnerFrame(data.DirectionFlag);
-            List<Sprite> sprites = new() { CardSpriteCache.GetArrow(data.DirectionFlag) };
+            List<Sprite> sprites = new();
+
+            var d = data.DirectionSelectState;
+
+            if (d.FinalValue.HasValue)
+            {
+                sprites.Add(CardSpriteCache.GetArrow(d.FinalValue.Value));
+                return new CardVisualSpriteSet(innerFrame, sprites);
+            }
+            
+            sprites.Add(CardSpriteCache.GetArrow(data.DirectionFlag));
             
             return new CardVisualSpriteSet(innerFrame, sprites);
         }

@@ -9,6 +9,7 @@ using Cardevil.Utils;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Utils.Directions;
 using System.Linq;
 using System.Threading;
 using UnityEngine.UIElements;
@@ -135,6 +136,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 _selectionView = go.GetComponent<CardValueSelectionView>();
             }
             _selectionView.Init();
+            _selectionView.ValueSelected += OnValueSelected;
             
             await _view.EnterHandBarAsync();
             
@@ -546,7 +548,25 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void OnValueSelectionButtonTapped(Card card)
         {
-            _selectionView.Open(card.Data, new Vector2(0, -180));
+            _selectionView.Open(card, new Vector2(0, -180));
+        }
+
+        private void OnValueSelected(Card card, (int num, Direction dir) values)
+        {
+            var d = card.Data;
+            var error = false;
+
+            error = d.Kind switch
+            {
+                CardKind.Attack => d.NumberSelectState.TrySelect(values.num),
+                CardKind.Move => d.DirectionSelectState.TrySelect(values.dir),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            
+            if (error)
+                LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
+            
+            card.UpdateVisual();
         }
     }
 }

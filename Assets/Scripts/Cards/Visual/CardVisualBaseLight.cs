@@ -14,23 +14,16 @@ namespace Cardevil.Cards.Visual
         [SerializeField] private Image innerFrame;
         [SerializeField] private Image mainValue;
 
-        public (CardColor, int) AttackValue { get; private set; }
-        public Direction MoveValue { get; private set; }
-
-        public void Setup(CardColor color, int numberValue)
+        public void UpdateVisual(CardColor color, int numberValue)
         {
             innerFrame.sprite = CardSpriteCache.GetInnerFrame(color);
             mainValue.sprite = CardSpriteCache.GetNumber(color, numberValue);
-            
-            AttackValue = (color, numberValue);
         }
 
-        public void Setup(Direction direction)
+        public void UpdateVisual(Direction direction)
         {
             innerFrame.sprite = CardSpriteCache.GetInnerFrame(direction);
             mainValue.sprite = CardSpriteCache.GetArrow(direction);
-            
-            MoveValue = direction;
         }
     }
 }

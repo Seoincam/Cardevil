@@ -1,46 +1,71 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Visual;
 using Cardevil.Utils.Directions;
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage
 {
     public class CardVisualLightUI : MonoBehaviour
     {
+        public event Action<(int, Direction)> Selected;
+        
         private Button _button;
         private CardVisualBaseLight _base;
+        
+        private (CardColor color, int numValue, Direction dirValue) _values;
+        private bool _initialized;
 
         public RectTransform Rect { get; private set; }
-        public CardVisualBaseLight Base
+
+        public void Init(float scale, CardColor color, int numberValue)
         {
-            get
+            Init(scale);
+            
+            _values.color = color;
+            _values.numValue = numberValue;
+            _base.UpdateVisual(color, numberValue);
+        }
+        public void Init(float scale, Direction directionValue)
+        {
+            Init(scale);
+            
+            _values.dirValue = directionValue;
+            _base.UpdateVisual(directionValue);
+        }
+        
+        private void Init(float scale)
+        {
+            if (!_initialized)
             {
-                if (!_base)
-                    _base = GetComponentInChildren<CardVisualBaseLight>();
-                return _base;
+                _button = GetComponentInChildren<Button>();
+                _base = GetComponentInChildren<CardVisualBaseLight>();
+                Rect = GetComponent<RectTransform>();
+                
+                _initialized = true;
             }
+            
+            SetScale(scale);
+            RemoveAllListeners();
+            Bind();
         }
 
-        public void SetScale(float scale)
+        private void SetScale(float scale)
         {
-            if (!Rect)
-                Rect = GetComponent<RectTransform>();
             Rect.localScale = new Vector3(scale, scale, scale);
         }
 
-        public void Bind(UnityAction action)
+        private void Bind()
         {
-            if (!_button)
-                _button = GetComponent<Button>();
-            _button.onClick.AddListener(action);
+            _button.onClick.AddListener(() =>
+            {
+                Selected?.Invoke((_values.numValue, _values.dirValue));
+            });
         }
-
-        public void RemoveAllListeners()
+        
+        private void RemoveAllListeners()
         {
-            if (!_button)
-                _button = GetComponent<Button>();
             _button.onClick.RemoveAllListeners();
         }
     }
