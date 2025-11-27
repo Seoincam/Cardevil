@@ -4,12 +4,14 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
 using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
@@ -30,6 +32,7 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private event Action DragStart, DragEnd;
         private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
+        private event Action<Card> SelectionButtonTapped;
         
         private Poolable _poolable;
         private IReadOnlyStageCardsModel _model;
@@ -56,7 +59,6 @@ namespace Cardevil.Cards.InStage.Presenter
         /// 카드 오브젝트 생성 및 비주얼 요소 설정.
         /// </summary>
         /// <param name="cardData">카드 데이터 객체</param>
-        /// <param name="visualSpriteSet">비주얼 스프라이트 세트</param>
         /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
         public void Init(CardData cardData, IReadOnlyStageCardsModel model)
         {
@@ -70,6 +72,9 @@ namespace Cardevil.Cards.InStage.Presenter
             var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
             visual.Init(this, model);
+            if (data.CanOpenSelection)
+                visual.BindSelectionButton(OnValueSelectionTapped);
+            
             WireVisual(visual);
         }
 
@@ -101,6 +106,16 @@ namespace Cardevil.Cards.InStage.Presenter
 
                 transform.Translate(velocity * Time.deltaTime);
             }
+        }
+
+        private void OnValueSelectionTapped()
+        {
+            SelectionButtonTapped?.Invoke(this);
+        }
+
+        private Card OnValueSelected()
+        {
+            return this;
         }
         
         #region Reroll
@@ -214,9 +229,8 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             visual.ExecuteEvaluationAction();
         }
-
-        #region Wire
-
+        
+        // Wire By StageCardsPresenter
         public void AddDragStart(Action h) => DragStart += h;
         public void RemoveDragStart(Action h) => DragStart -= h;
         
@@ -229,6 +243,10 @@ namespace Cardevil.Cards.InStage.Presenter
         public void AddPointerUp(Action<Card, CardPointerArgs> h) => PointerUp += h;
         public void RemovePointerUp(Action<Card, CardPointerArgs> h) => PointerUp -= h;
         
+        public void AddSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped += h;
+        public void RemoveSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped -= h;
+        
+        // Wire CardVisual
         private void WireVisual(CardVisual cardVisual)
         {
             if (!cardVisual) return;
@@ -239,7 +257,6 @@ namespace Cardevil.Cards.InStage.Presenter
             PointerDown += cardVisual.OnPointerDown;
             PointerUp += cardVisual.OnPointerUp;
         }
-
         private void UnwireVisual(CardVisual cardVisual)
         {
             if (!cardVisual) return;
@@ -251,7 +268,6 @@ namespace Cardevil.Cards.InStage.Presenter
             PointerUp -= cardVisual.OnPointerUp;
         }
         
-        #endregion
 
         #region Pointer Event Interfaces
 

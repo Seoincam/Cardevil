@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 6881006766052193510}
   - component: {fileID: 7674790000118968520}
   - component: {fileID: 929584358720157682}
+  - component: {fileID: 222955848066359845}
   - component: {fileID: 7681713255777851882}
   m_Layer: 5
   m_Name: End Button
@@ -288,6 +289,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &222955848066359845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2981972335761843379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.05
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1
 --- !u!114 &7681713255777851882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,6 +599,7 @@ GameObject:
   - component: {fileID: 6010411967504301058}
   - component: {fileID: 5785961422821152147}
   - component: {fileID: 2450214189888731452}
+  - component: {fileID: 1842696049688053216}
   - component: {fileID: 7304566797924313912}
   m_Layer: 5
   m_Name: Do Button
@@ -647,6 +666,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1842696049688053216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4538862599871126564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.05
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1
 --- !u!114 &7304566797924313912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1111,6 +1147,7 @@ GameObject:
   - component: {fileID: 6101655569377725569}
   - component: {fileID: 3079836303097354169}
   - component: {fileID: 8291618914189990559}
+  - component: {fileID: 985205295517144563}
   - component: {fileID: 9077955937329751370}
   m_Layer: 5
   m_Name: Toggle Preview Button
@@ -1177,6 +1214,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &985205295517144563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8951052464742403845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.05
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1
 --- !u!114 &9077955937329751370
 MonoBehaviour:
   m_ObjectHideFlags: 0

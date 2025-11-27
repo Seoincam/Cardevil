@@ -24,6 +24,7 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
+        private CardValueSelectionView _selectionView;
         
         private CardVisualSettingSO _visualSetting;
         
@@ -34,9 +35,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private event Action DeckChanged;
         
         private bool CanInput => _state is { isSwapping: false, canInteract: true };
-
-        #region Initialization
-
+        
         /// <summary>
         /// StageCardsPresenter 초기화.  
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
@@ -126,6 +125,17 @@ namespace Cardevil.Cards.InStage.Presenter
             CardDeckVisual.Instance.PointerUp += _deckRemainView.OnPointerClickAtDeck;
             CardDeckVisual.Instance.transform.SetAsLastSibling();
             
+            // Value Selection View 생성
+            var valueSelectionViews = Object.FindObjectsByType<CardValueSelectionView>(FindObjectsSortMode.None);
+            if (views is { Length: > 0}) _selectionView = valueSelectionViews[0];
+            else
+            {
+                const string path = "UI/CardUI/ValueSelectionView";
+                GameObject go = Managers.Resource.Instantiate(path, canvas);
+                _selectionView = go.GetComponent<CardValueSelectionView>();
+            }
+            _selectionView.Init();
+            
             await _view.EnterHandBarAsync();
             
             // Update Async 구성
@@ -146,10 +156,6 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
         
-        #endregion
-
-        #region Clear
-
         /// <summary>
         /// 스테이지가 종료된 후 UI를 비활성화, 
         /// 내부 업데이트 루프를 정지시킵니다.
@@ -181,10 +187,7 @@ namespace Cardevil.Cards.InStage.Presenter
             Managers.Resource.Destroy(_view.gameObject);
         }
 
-        #endregion
         
-        #region Wire
-
         private void WireCard(Card card)
         {
             card.AddDragStart(OnDragStarted);
@@ -193,7 +196,7 @@ namespace Cardevil.Cards.InStage.Presenter
             card.AddPointerDown(OnPointerDown);
             card.AddPointerUp(OnPointerUp);
             
-            // card.ValueSelectionEnded += OnSelectValueEnd;
+            card.AddSelectionButtonTapped(OnValueSelectionButtonTapped);
         }
         
         private void UnwireCard(Card card)
@@ -204,10 +207,8 @@ namespace Cardevil.Cards.InStage.Presenter
             card.RemovePointerDown(OnPointerDown);
             card.RemovePointerUp(OnPointerUp);
 
-            // card.ValueSelectionEnded -= OnSelectValueEnd;
+            card.RemoveSelectionButtonTapped(OnValueSelectionButtonTapped);
         }
-
-        #endregion
         
         #region ITurnPlayerInput
 
@@ -541,6 +542,11 @@ namespace Cardevil.Cards.InStage.Presenter
         private void OnSelectValueEnd(Card _)
         {
             UpdateUI();
+        }
+
+        private void OnValueSelectionButtonTapped(Card card)
+        {
+            _selectionView.Open(card.Data, new Vector2(0, -180));
         }
     }
 }

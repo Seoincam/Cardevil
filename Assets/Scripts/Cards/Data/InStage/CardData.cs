@@ -53,6 +53,15 @@ namespace Cardevil.Cards.Data.InStage
         public SelectState<Direction> DirectionSelectState => directionSelectState;
         public DirectionFlag DirectionFlag => directionFlag;
         
+        // Etc
+        public bool CanOpenSelection =>
+            kind switch
+            {
+                CardKind.Attack => numberSelectState.Selectables.Count > 1,
+                CardKind.Move => directionSelectState.Selectables.Count > 1,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
         #region Builder
         
         public static Builder CreateBuilder(int id, CardKind kind) => new(id, kind);

@@ -10,6 +10,8 @@ using UnityEngine;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
 {
@@ -18,10 +20,13 @@ namespace Cardevil.Cards.InStage.View
     {
         [Header("Card")]
         [SerializeField, VisibleOnly] private Card parentCard;
-        
-        [Header("Visual")]
+
+        [Header("Visual")] 
         [SerializeField] private CardVisualController visualController;
         [SerializeField] private CardVisualBase visualBase;
+        [Space]
+        [SerializeField] private RectTransform objectsRect;
+        [SerializeField] private Button selectionButton;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
@@ -40,6 +45,49 @@ namespace Cardevil.Cards.InStage.View
 
             _poolable = GetComponent<Poolable>();
             _poolable.OnRelease += Clear;
+        }
+        
+        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
+        {
+            if (_state.isInitialized) return;
+            
+            this.parentCard = parentCard;
+            _model = model;
+            
+            // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
+            
+            visualController.Init(parentCard.Data);
+            visualBase.TryFlipBackImmediate();
+            
+            var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
+            if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
+            _deckVisual = deckVisuals[0];
+
+            transform.position = _deckVisual.Front.position;
+
+            _state.isInitialized = true;
+        }
+
+        public void BindSelectionButton(UnityAction onTapped)
+        {
+            selectionButton.gameObject.SetActive(true);
+            selectionButton.onClick.AddListener(onTapped);
+        }
+        
+        public void Clear()
+        {
+            parentCard = null;
+
+            // frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
+            // backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            // shakeObject.localEulerAngles = Vector3.zero;
+
+            // _canvas.overrideSorting = false;
+            
+            selectionButton.gameObject.SetActive(false);
+            selectionButton.onClick.RemoveAllListeners();
+            _state.isDiscarded = false;
+            _state.isInitialized = false;
         }
         
         private void Update()
@@ -120,7 +168,7 @@ namespace Cardevil.Cards.InStage.View
 
             var c = visualSetting.Curve;
             
-            float currentZ = visualBase.Rect.localEulerAngles.z;
+            float currentZ = objectsRect.localEulerAngles.z;
             float targetZ = parentCard.IsDragging
                 ? 0f
                 : (_delta.curveRotationOffset * (c.rotationInfluence * _model.Hand.Count));
@@ -129,41 +177,7 @@ namespace Cardevil.Cards.InStage.View
             float t = (visualSetting.TiltSpeed * 0.5f) * Time.deltaTime;
             float nextZ = Mathf.LerpAngle(currentZ, targetZ, t);
 
-            visualBase.Rect.localEulerAngles = new Vector3(0f, 0f, nextZ);
-        }
-        
-        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
-        {
-            if (_state.isInitialized) return;
-            
-            this.parentCard = parentCard;
-            _model = model;
-            
-            // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
-            
-            visualController.Init(parentCard.Data);
-            visualBase.TryFlipBackImmediate();
-            
-            var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
-            if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
-            _deckVisual = deckVisuals[0];
-
-            transform.position = _deckVisual.Front.position;
-
-            _state.isInitialized = true;
-        }
-        
-        public void Clear()
-        {
-            parentCard = null;
-
-            // frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            // backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            // shakeObject.localEulerAngles = Vector3.zero;
-
-            // _canvas.overrideSorting = false;
-            _state.isDiscarded = false;
-            _state.isInitialized = false;
+            objectsRect.localEulerAngles = new Vector3(0f, 0f, nextZ);
         }
         
         #region Pointer Event Handler

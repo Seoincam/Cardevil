@@ -2,34 +2,39 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Visual;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour
     {
+        private const float CardScale = .6f;
         private const string SlotPath = "Cards/Slot";
         private readonly Dictionary<int, float> _frameWidths = new()
         {
-            {2, 308f}, {3, 426f}, {4, 544f}, {9, 1134f}
+            {2, 391}, {3, 542}, {4, 691}, {9, 1300}
         };
         
+        private Image _bar;
         private RectTransform _rect;
         private readonly List<RectTransform> _slots = new();
-        private readonly List<CardVisualBaseLight> _visuals = new();
-        
-        private void Awake()
+        private readonly List<CardVisualLightUI> _visuals = new();
+
+        public void Init()
         {
+            _bar = GetComponent<Image>();
             _rect = GetComponent<RectTransform>();
-            
             gameObject.SetActive(false);
         }
         
         public void Open(CardData cardData, Vector2 position)
         {
-            // TODO 데이터 해석
+            // 구성
             int count = cardData.Kind switch
             {
                 CardKind.Attack => cardData.NumberSelectState.Selectables.Count,
@@ -43,7 +48,33 @@ namespace Cardevil.Cards.InStage.View
 
             _rect.anchoredPosition = position; 
             gameObject.SetActive(true);
+            
+            // 애니메이션
+            DoAnim().Forget();
         }
+
+        private async UniTaskVoid DoAnim()
+        {
+            // 외관 초기화
+            _bar.color -= new Color(0, 0, 0, _bar.color.a);
+            foreach (var visual in _visuals)
+                visual.Rect.localScale = Vector3.zero;
+            
+            // 애니메이션 처리
+            var dur = .4f;
+            var dur2 = .2f;
+            var interval = .06f;
+
+            await _bar.DOFade(1f, dur);
+
+            foreach (var visual in _visuals)
+            {
+                visual.Rect.DOScale(CardScale, dur2)
+                    .SetEase(Ease.OutBack);
+                await UniTask.Delay(TimeSpan.FromSeconds(interval));
+            }
+            
+        } 
         
         private void ConfigureFrame(int slotCount)
         {
@@ -78,21 +109,23 @@ namespace Cardevil.Cards.InStage.View
 
         private void ConfigureCards(CardData data, int count)
         {
-            const string path = "Cards/CardVisualBaseLight";
+            const string path = "UI/CardUI/CardVisual_Light_UI";
 
             for (int i = 0; i < count; i++)
             {
-                var visual = Managers.Resource.Instantiate(path, _slots[i]).GetComponent<CardVisualBaseLight>();
+                var go = Managers.Resource.Instantiate(path, _slots[i]);
+                var visual = go.GetComponent<CardVisualLightUI>();
+                visual.SetScale(CardScale);
 
                 if (data.Kind == CardKind.Attack)
                 {
                     var num = data.NumberSelectState.Selectables[i].value;
-                    visual.Setup(data.Color, num);
+                    visual.Base.Setup(data.Color, num);
                 }
                 else if (data.Kind == CardKind.Move)
                 {
                     var dir = data.DirectionSelectState.Selectables[i].value;
-                    visual.Setup(dir);
+                    visual.Base.Setup(dir);
                 }
 
                 _visuals.Add(visual);
