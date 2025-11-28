@@ -558,8 +558,8 @@ namespace Cardevil.Cards.InStage.Presenter
 
             error = d.Kind switch
             {
-                CardKind.Attack => d.NumberSelectState.TrySelect(values.num),
-                CardKind.Move => d.DirectionSelectState.TrySelect(values.dir),
+                CardKind.Attack => !d.NumberSelectState.TrySelect(values.num),
+                CardKind.Move => !d.DirectionSelectState.TrySelect(values.dir),
                 _ => throw new ArgumentOutOfRangeException()
             };
             
