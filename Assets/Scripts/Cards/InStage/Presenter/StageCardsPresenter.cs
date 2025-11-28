@@ -531,7 +531,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void OnValueSelectionButtonTapped(Card card)
         {
-            _selectionView.Open(card, new Vector2(0, -180));
+            _selectionView.Toggle(card);
         }
 
         private void OnValueSelected(Card card, (int num, Direction dir) values)

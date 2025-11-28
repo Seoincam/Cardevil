@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,10 +17,13 @@ namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
+        // TODO 카드가 버려지면 닫히기
+        
         public event Action<Card, (int, Direction)> ValueSelected;
         
         private const float CardScale = .6f;
         private const string SlotPath = "Cards/Slot";
+        private readonly Vector2 _position = new Vector2(0, -125);
         private readonly Dictionary<int, float> _frameWidths = new()
         {
             {2, 391}, {3, 542}, {4, 691}, {9, 1300}
@@ -29,11 +33,14 @@ namespace Cardevil.Cards.InStage.View
         private RectTransform _rect;
         private readonly List<RectTransform> _slots = new();
         private readonly List<CardVisualLightUI> _visuals = new();
-
-        private Card _card;
+        private readonly List<Tween> _tweens = new();
+        
+        private Card _cardCache;
         private CardKind _kind;
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
+
+        private CancellationTokenSource _animCts;
 
         public void Init()
         {
@@ -41,12 +48,24 @@ namespace Cardevil.Cards.InStage.View
             _rect = GetComponent<RectTransform>();
             gameObject.SetActive(false);
         }
+
+        public void Toggle(Card card)
+        {
+            if (card == _cardCache)
+                Close();
+            else 
+                Open(card);
+        }
         
-        public void Open(Card card, Vector2 position)
+        private void Open(Card card)
         {
             Clear();
+            
+            _animCts?.Cancel();
+            _animCts?.Dispose();
+            _animCts = null;
 
-            _card = card;
+            _cardCache = card;
             var cardData = card.Data;
             _kind = cardData.Kind;
             
@@ -62,15 +81,23 @@ namespace Cardevil.Cards.InStage.View
             ConfigureSlots(count);
             ConfigureCards(cardData, count);
 
-            _rect.anchoredPosition = position; 
+            _rect.anchoredPosition = _position;
             gameObject.SetActive(true);
             
             // 애니메이션
-            DoAnim().Forget();
+            _animCts = new CancellationTokenSource();
+            DoAnim(_animCts.Token).Forget();
         }
 
         public void Close()
         {
+            _animCts?.Cancel();
+            _animCts?.Dispose();
+            _animCts = null;
+            
+            foreach(var tween in _tweens)
+                tween?.Kill();
+            
             gameObject.SetActive(false);
             Clear();
         }
@@ -87,35 +114,51 @@ namespace Cardevil.Cards.InStage.View
                 _visuals[i].Selected -= OnValueSelected;
                 Managers.Resource.Destroy(_visuals[i].gameObject);
             }
-                
+            
             _visuals.Clear();
+            _tweens.Clear();
+            _cardCache = null;
         }
 
         private void OnValueSelected((int, Direction) values)
         {
-            ValueSelected?.Invoke(_card, values);
+            ValueSelected?.Invoke(_cardCache, values);
             Close();
         }
 
-        private async UniTaskVoid DoAnim()
+        private async UniTaskVoid DoAnim(CancellationToken ct)
         {
-            // 외관 초기화
-            _bar.color -= new Color(0, 0, 0, _bar.color.a);
-            foreach (var visual in _visuals)
-                visual.Rect.localScale = Vector3.zero;
-            
-            // 애니메이션 처리
-            var dur = .4f;
-            var dur2 = .2f;
-            var interval = .06f;
-
-            await _bar.DOFade(1f, dur);
-
-            foreach (var visual in _visuals)
+            try
             {
-                visual.Rect.DOScale(CardScale, dur2)
-                    .SetEase(Ease.OutBack);
-                await UniTask.Delay(TimeSpan.FromSeconds(interval));
+                ct.ThrowIfCancellationRequested();
+                
+                // 외관 초기화
+                _bar.color -= new Color(0, 0, 0, _bar.color.a);
+                foreach (var visual in _visuals)
+                    visual.Rect.localScale = Vector3.zero;
+            
+                // 애니메이션 처리
+                var dur = .4f;
+                var dur2 = .2f;
+                var interval = .06f;
+                Tween tween;
+            
+                tween = _bar.DOFade(1f, dur);
+                _tweens.Add(tween);
+                await tween.ToUniTask(cancellationToken: ct);
+            
+                foreach (var visual in _visuals)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    tween = visual.Rect.DOScale(CardScale, dur2)
+                        .SetEase(Ease.OutBack);
+                    _tweens.Add(tween);
+                    await UniTask.Delay(TimeSpan.FromSeconds(interval), cancellationToken: ct);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+  
             }
         } 
         
