@@ -77,17 +77,19 @@ namespace Cardevil.Cards.Visual
 
         private CardVisualSpriteSet UpdateMoveData(CardData data)
         {
-            Sprite innerFrame = CardSpriteCache.GetInnerFrame(data.DirectionFlag);
+            Sprite innerFrame = null;
             List<Sprite> sprites = new();
 
             var d = data.DirectionSelectState;
 
             if (d.FinalValue.HasValue)
             {
+                innerFrame = CardSpriteCache.GetInnerFrame(d.FinalValue.Value);
                 sprites.Add(CardSpriteCache.GetArrow(d.FinalValue.Value));
                 return new CardVisualSpriteSet(innerFrame, sprites);
             }
-            
+
+            innerFrame = CardSpriteCache.GetInnerFrame(data.DirectionFlag);
             sprites.Add(CardSpriteCache.GetArrow(data.DirectionFlag));
             
             return new CardVisualSpriteSet(innerFrame, sprites);
