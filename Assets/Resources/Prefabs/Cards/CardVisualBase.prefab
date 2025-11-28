@@ -461,7 +461,6 @@ GameObject:
   - component: {fileID: 4905869576256811905}
   - component: {fileID: 3897703792434606943}
   - component: {fileID: 3206279331392590133}
-  - component: {fileID: 6324461858283108261}
   m_Layer: 5
   m_Name: CardVisualBase
   m_TagString: Untagged
@@ -546,18 +545,6 @@ MonoBehaviour:
   enhancementFrames:
   - {fileID: 2622694233588831660}
   - {fileID: 736602562011721313}
---- !u!225 &6324461858283108261
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4627923435394325943}
-  m_Enabled: 1
-  m_Alpha: 0.94
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &4693693918252130930
 GameObject:
   m_ObjectHideFlags: 0

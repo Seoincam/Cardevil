@@ -291,7 +291,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 else return;
                 
                 HandChanged?.Invoke();
-                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
+                UpdateHandRankingText();
                 UpdateUI();
             }
             
@@ -554,9 +554,8 @@ namespace Cardevil.Cards.InStage.Presenter
         private void OnValueSelected(Card card, (int num, Direction dir) values)
         {
             var d = card.Data;
-            var error = false;
 
-            error = d.Kind switch
+            bool error = d.Kind switch
             {
                 CardKind.Attack => !d.NumberSelectState.TrySelect(values.num),
                 CardKind.Move => !d.DirectionSelectState.TrySelect(values.dir),
@@ -567,6 +566,15 @@ namespace Cardevil.Cards.InStage.Presenter
                 LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
             
             card.UpdateVisual();
+            UpdateHandRankingText();
+        }
+
+        private void UpdateHandRankingText()
+        {
+            if (!_model.CanUseCard)
+                _evaluationPresenter.ClearHandRankingText();
+            else
+                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
         }
     }
 }
