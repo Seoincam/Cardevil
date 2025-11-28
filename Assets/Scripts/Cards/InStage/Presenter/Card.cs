@@ -287,21 +287,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 if (!CanInteraction)
                     return;
 
-                PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
-            }
-            
-            // TODO: 나중에 그래픽 나오면 우클릭 말고 전환 그래픽 클릭으로 변경하기
-            else if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
-                
-                // TODO: 값 선택가능한가?
-                if (true)
-                    return;
-            
-                // TODO: 실행자 수정
-                // _handBar.selectContainer.OpenSelection(this);
-                // ValueSelectionStarted?.Invoke(this);
+                PointerDown?.Invoke(this, new CardPointerArgs(Time.time));
             }
         }
 
@@ -344,11 +330,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!CanInteraction)
                 return;
             
-            if (eventData.button == PointerEventData.InputButton.Left)
-                PointerUp?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
-            // TODO: 나중에 그래픽 나오면 우클릭 말고 전환 그래픽 클릭으로 변경하기
-            else if (eventData.button == PointerEventData.InputButton.Right)
-                PointerUp?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
+            PointerUp?.Invoke(this, new CardPointerArgs(Time.time));
         }
 
         #endregion

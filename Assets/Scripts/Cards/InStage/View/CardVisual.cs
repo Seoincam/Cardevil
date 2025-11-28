@@ -290,18 +290,6 @@ namespace Cardevil.Cards.InStage.View
             DOTween.Kill(transform);
             Managers.Resource.Destroy(gameObject);
         }
-
-        private void OnSelectStarted(Card _)
-        {
-            // _canvas.overrideSorting = true;
-        }
-
-        private void OnSelectEnded(Card _)
-        {
-            // _canvas.overrideSorting = false;
-            // UpdateVisual();
-            // TODO: 값 선택 후 다시 visual sprite set 생성. Card가 생성 후 넘겨줌.
-        }
         
         public void ExecuteEvaluationAction()
         {

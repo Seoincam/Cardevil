@@ -275,38 +275,21 @@ namespace Cardevil.Cards.InStage.Presenter
             if (args.Time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
             _state.activateCard = null;
             
-            // 좌클릭 처리
-            if (args.Button == MouseButton.LeftMouse)
+            if (_model.Selection.Contains(card))
             {
-                if (_model.Selection.Contains(card))
-                {
-                    _model.Deselect(card);
-                    card.SetSelect(false);
-                }
-                else if (_model.Selection.Count < 4)
-                {
-                    _model.Select(card);
-                    card.SetSelect(true);
-                }
-                else return;
-                
-                HandChanged?.Invoke();
-                UpdateHandRankingText();
-                UpdateUI();
+                _model.Deselect(card);
+                card.SetSelect(false);
             }
+            else if (_model.Selection.Count < 4)
+            {
+                _model.Select(card);
+                card.SetSelect(true);
+            }
+            else return;
             
-            // 우클릭 처리
-            // TODO: 우클릭 관련 로직 추후 '전환 버튼'으로 이동
-            else if (args.Button == MouseButton.RightMouse)
-            {
-                // if (!card.Data.CanOpenSelection) return;
-                
-                var selectContainers = Object.FindObjectsByType<SelectContainer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                if (selectContainers == null || selectContainers.Length == 0) { LogEx.LogError("Select Container가 씬에 존재하지 않음"); return; }
-                var container = selectContainers[0];
-                
-                container.OpenSelection(card);
-            }
+            HandChanged?.Invoke();
+            UpdateHandRankingText();
+            UpdateUI();
         }
         
 
