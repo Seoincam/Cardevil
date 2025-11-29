@@ -27,6 +27,10 @@ namespace Cardevil.Cards.InStage.View
             {2, 391}, {3, 542}, {4, 691}, {9, 1300}
         };
         
+        /// <summary>
+        /// 값 선택 완료 이벤트.
+        /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
+        /// </summary>
         public event Action<Card, (int, Direction)> ValueSelected;
         
         private Image _bar;
@@ -41,6 +45,10 @@ namespace Cardevil.Cards.InStage.View
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
 
+        /// <summary>
+        /// 선택 UI 초기화.
+        /// 내부 참조 캐싱 및 초기 비활성화 처리.
+        /// </summary>
         public void Init()
         {
             _bar = GetComponent<Image>();
@@ -48,6 +56,11 @@ namespace Cardevil.Cards.InStage.View
             gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// 선택 UI 토글.
+        /// 동일 카드 입력 시 닫기 처리, 다른 카드 입력 시 선택 UI 열기.
+        /// </summary>
+        /// <param name="card">선택 UI 표시 대상 카드</param>
         public void Toggle(Card card)
         {
             if (card == _cardCache)
@@ -83,6 +96,10 @@ namespace Cardevil.Cards.InStage.View
             DoAnim(_animCts.Token).Forget();
         }
 
+        /// <summary>
+        /// 선택 UI 닫기.
+        /// 애니메이션 취소, 트윈 정리, 오브젝트 비활성화 및 내부 상태 초기화.
+        /// </summary>
         public void Close()
         {
             if (!gameObject.activeSelf)
@@ -117,6 +134,10 @@ namespace Cardevil.Cards.InStage.View
             _cardCache = null;
         }
 
+        /// <summary>
+        /// 값 선택 시 호출되는 내부 핸들러.
+        /// 선택 이벤트 전달 후 UI 닫기.
+        /// </summary>
         private void OnValueSelected((int, Direction) values)
         {
             ValueSelected?.Invoke(_cardCache, values);
