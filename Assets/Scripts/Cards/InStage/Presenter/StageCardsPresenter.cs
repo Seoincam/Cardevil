@@ -291,8 +291,6 @@ namespace Cardevil.Cards.InStage.Presenter
             UpdateHandRankingText();
             UpdateUI();
         }
-        
-
 
         #endregion
         
@@ -361,6 +359,8 @@ namespace Cardevil.Cards.InStage.Presenter
         private void Use()
         {
             _state.canInteract = false;
+            _selectionView.Close();
+            
             UpdateUI();
             _evaluationPresenter.ConfigureSequence(_model.SortedSelection);
             _ = UseAsync();
@@ -368,6 +368,8 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void Discard()
         {
+            _selectionView.Close();
+            
             // TODO: 버리기 횟수 0되면 못 버리게
             _model.TryReduceDiscardRemainCount();
             _ = DiscardAndDrawAsync();
@@ -521,13 +523,6 @@ namespace Cardevil.Cards.InStage.Presenter
                 // UpdateUI();
             }
         }
-        
-        // 플레이어 턴이면서 카드 값 선택이 바뀔 때.
-        // Card.onselectEnded에서 호출
-        private void OnSelectValueEnd(Card _)
-        {
-            UpdateUI();
-        }
 
         private void OnValueSelectionButtonTapped(Card card)
         {
@@ -544,7 +539,6 @@ namespace Cardevil.Cards.InStage.Presenter
                 CardKind.Move => !d.DirectionSelectState.TrySelect(values.dir),
                 _ => throw new ArgumentOutOfRangeException()
             };
-            
             if (error)
                 LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
             

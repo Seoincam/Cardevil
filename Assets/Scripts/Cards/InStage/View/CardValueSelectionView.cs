@@ -1,7 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.Visual;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
@@ -18,6 +17,7 @@ namespace Cardevil.Cards.InStage.View
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
         // TODO 카드가 버려지면 닫히기
+        // TODO 애니메이션 처리
         
         public event Action<Card, (int, Direction)> ValueSelected;
         
@@ -31,16 +31,15 @@ namespace Cardevil.Cards.InStage.View
         
         private Image _bar;
         private RectTransform _rect;
+        
         private readonly List<RectTransform> _slots = new();
         private readonly List<CardVisualLightUI> _visuals = new();
         private readonly List<Tween> _tweens = new();
+        private CancellationTokenSource _animCts;
         
         private Card _cardCache;
-        private CardKind _kind;
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
-
-        private CancellationTokenSource _animCts;
 
         public void Init()
         {
@@ -60,14 +59,9 @@ namespace Cardevil.Cards.InStage.View
         private void Open(Card card)
         {
             Clear();
-            
-            _animCts?.Cancel();
-            _animCts?.Dispose();
-            _animCts = null;
 
             _cardCache = card;
             var cardData = card.Data;
-            _kind = cardData.Kind;
             
             // 구성
             int count = cardData.Kind switch
@@ -91,6 +85,9 @@ namespace Cardevil.Cards.InStage.View
 
         public void Close()
         {
+            if (!gameObject.activeSelf)
+                return;
+            
             _animCts?.Cancel();
             _animCts?.Dispose();
             _animCts = null;
@@ -131,22 +128,22 @@ namespace Cardevil.Cards.InStage.View
             try
             {
                 ct.ThrowIfCancellationRequested();
-                
+
                 // 외관 초기화
                 _bar.color -= new Color(0, 0, 0, _bar.color.a);
                 foreach (var visual in _visuals)
                     visual.Rect.localScale = Vector3.zero;
-            
+
                 // 애니메이션 처리
                 var dur = .4f;
                 var dur2 = .2f;
                 var interval = .06f;
                 Tween tween;
-            
+
                 tween = _bar.DOFade(1f, dur);
                 _tweens.Add(tween);
                 await tween.ToUniTask(cancellationToken: ct);
-            
+
                 foreach (var visual in _visuals)
                 {
                     ct.ThrowIfCancellationRequested();
@@ -158,7 +155,11 @@ namespace Cardevil.Cards.InStage.View
             }
             catch (OperationCanceledException)
             {
-  
+            }
+            finally
+            {
+                _animCts?.Dispose();
+                _animCts = null;
             }
         } 
         
