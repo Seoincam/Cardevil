@@ -288,7 +288,6 @@ namespace Cardevil.Cards.InStage.Presenter
             else return;
             
             HandChanged?.Invoke();
-            UpdateHandRankingText();
             UpdateUI();
         }
 
@@ -488,6 +487,11 @@ namespace Cardevil.Cards.InStage.Presenter
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
             var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
             _view.UpdateUI(viewState);
+            
+            if (!_model.CanUseCard)
+                _evaluationPresenter.ClearHandRankingText();
+            else
+                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
         }
 
         #region nested
@@ -524,10 +528,7 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
 
-        private void OnValueSelectionButtonTapped(Card card)
-        {
-            _selectionView.Toggle(card);
-        }
+        private void OnValueSelectionButtonTapped(Card card) => _selectionView.Toggle(card);
 
         private void OnValueSelected(Card card, (int num, Direction dir) values)
         {
@@ -543,15 +544,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
             
             card.UpdateVisual();
-            UpdateHandRankingText();
-        }
-
-        private void UpdateHandRankingText()
-        {
-            if (!_model.CanUseCard)
-                _evaluationPresenter.ClearHandRankingText();
-            else
-                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
+            UpdateUI();
         }
     }
 }
