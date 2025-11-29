@@ -9,6 +9,7 @@ using Cardevil.Utils;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Utils.Directions;
 using System.Linq;
 using System.Threading;
 using UnityEngine.UIElements;
@@ -24,6 +25,7 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
+        private CardValueSelectionView _selectionView;
         
         private CardVisualSettingSO _visualSetting;
         
@@ -121,6 +123,18 @@ namespace Cardevil.Cards.InStage.Presenter
             
             CardDeckVisual.Instance.PointerUp += _deckRemainView.Open;
             
+            // Value Selection View 생성
+            var valueSelectionViews = Object.FindObjectsByType<CardValueSelectionView>(FindObjectsSortMode.None);
+            if (views is { Length: > 0}) _selectionView = valueSelectionViews[0];
+            else
+            {
+                const string path = "UI/CardUI/ValueSelectionView";
+                GameObject go = Managers.Resource.Instantiate(path, canvas);
+                _selectionView = go.GetComponent<CardValueSelectionView>();
+            }
+            _selectionView.Init();
+            _selectionView.ValueSelected += OnValueSelected;
+            
             await _view.EnterHandBarAsync();
             
             // Update Async 구성
@@ -170,8 +184,6 @@ namespace Cardevil.Cards.InStage.Presenter
             Managers.Resource.Destroy(_view.gameObject);
         }
         
-        #region Wire
-
         private void WireCard(Card card)
         {
             card.AddDragStart(OnDragStarted);
@@ -180,7 +192,7 @@ namespace Cardevil.Cards.InStage.Presenter
             card.AddPointerDown(OnPointerDown);
             card.AddPointerUp(OnPointerUp);
             
-            // card.ValueSelectionEnded += OnSelectValueEnd;
+            card.AddSelectionButtonTapped(OnValueSelectionButtonTapped);
         }
         
         private void UnwireCard(Card card)
@@ -191,10 +203,8 @@ namespace Cardevil.Cards.InStage.Presenter
             card.RemovePointerDown(OnPointerDown);
             card.RemovePointerUp(OnPointerUp);
 
-            // card.ValueSelectionEnded -= OnSelectValueEnd;
+            card.RemoveSelectionButtonTapped(OnValueSelectionButtonTapped);
         }
-
-        #endregion
         
         #region ITurnPlayerInput
 
@@ -259,41 +269,21 @@ namespace Cardevil.Cards.InStage.Presenter
             if (args.Time - _state.pointerDownTime > _visualSetting.ClickDetectThreshold) return;
             _state.activateCard = null;
             
-            // 좌클릭 처리
-            if (args.Button == MouseButton.LeftMouse)
+            if (_model.Selection.Contains(card))
             {
-                if (_model.Selection.Contains(card))
-                {
-                    _model.Deselect(card);
-                    card.SetSelect(false);
-                }
-                else if (_model.Selection.Count < 4)
-                {
-                    _model.Select(card);
-                    card.SetSelect(true);
-                }
-                else return;
-                
-                HandChanged?.Invoke();
-                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
-                UpdateUI();
+                _model.Deselect(card);
+                card.SetSelect(false);
             }
+            else if (_model.Selection.Count < 4)
+            {
+                _model.Select(card);
+                card.SetSelect(true);
+            }
+            else return;
             
-            // 우클릭 처리
-            // TODO: 우클릭 관련 로직 추후 '전환 버튼'으로 이동
-            else if (args.Button == MouseButton.RightMouse)
-            {
-                // if (!card.Data.CanOpenSelection) return;
-                
-                var selectContainers = Object.FindObjectsByType<SelectContainer>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-                if (selectContainers == null || selectContainers.Length == 0) { LogEx.LogError("Select Container가 씬에 존재하지 않음"); return; }
-                var container = selectContainers[0];
-                
-                container.OpenSelection(card);
-            }
+            HandChanged?.Invoke();
+            UpdateUI();
         }
-        
-
 
         #endregion
         
@@ -362,6 +352,8 @@ namespace Cardevil.Cards.InStage.Presenter
         private void Use()
         {
             _state.canInteract = false;
+            _selectionView.Close();
+            
             UpdateUI();
             _evaluationPresenter.ConfigureSequence(_model.SortedSelection);
             _ = UseAsync();
@@ -369,6 +361,8 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void Discard()
         {
+            _selectionView.Close();
+            
             // TODO: 버리기 횟수 0되면 못 버리게
             _model.TryReduceDiscardRemainCount();
             _ = DiscardAndDrawAsync();
@@ -487,6 +481,11 @@ namespace Cardevil.Cards.InStage.Presenter
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
             var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
             _view.UpdateUI(viewState);
+            
+            if (!_model.CanUseCard)
+                _evaluationPresenter.ClearHandRankingText();
+            else
+                _evaluationPresenter.UpdateHandRankingText(_model.Selection);
         }
 
         #region nested
@@ -522,11 +521,23 @@ namespace Cardevil.Cards.InStage.Presenter
                 // UpdateUI();
             }
         }
-        
-        // 플레이어 턴이면서 카드 값 선택이 바뀔 때.
-        // Card.onselectEnded에서 호출
-        private void OnSelectValueEnd(Card _)
+
+        private void OnValueSelectionButtonTapped(Card card) => _selectionView.Toggle(card);
+
+        private void OnValueSelected(Card card, (int num, Direction dir) values)
         {
+            var d = card.Data;
+
+            bool error = d.Kind switch
+            {
+                CardKind.Attack => !d.NumberSelectState.TrySelect(values.num),
+                CardKind.Move => !d.DirectionSelectState.TrySelect(values.dir),
+                _ => throw new ArgumentOutOfRangeException()
+            };
+            if (error)
+                LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
+            
+            card.UpdateVisual();
             UpdateUI();
         }
     }

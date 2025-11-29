@@ -311,7 +311,10 @@ namespace Cardevil.Cards.InStage.Model
             if (c.Data.Kind != CardKind.Attack)
                 return int.MinValue;
 
-            return c.Data.NumberSelectState.Selectables.Count;
+            var n = c.Data.NumberSelectState;
+            if (n.FinalValue.HasValue)
+                return 1;
+            return n.Selectables.Count;
         }
 
         private static int NumberColorOrder(Card c)
