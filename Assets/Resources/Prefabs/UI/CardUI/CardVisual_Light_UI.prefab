@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hover: 1
-  hoverScale: 1.05
+  hoverScale: 1.2
   press: 1
   pressedScale: 0.95
   duration: 0.1

@@ -16,18 +16,18 @@ namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
-        // TODO 카드가 버려지면 닫히기
         // TODO 애니메이션 처리
-        
-        public event Action<Card, (int, Direction)> ValueSelected;
+
+        [SerializeField] private Vector2 openPosition = new(0, -125);
         
         private const float CardScale = .6f;
         private const string SlotPath = "Cards/Slot";
-        private readonly Vector2 _position = new Vector2(0, -125);
         private readonly Dictionary<int, float> _frameWidths = new()
         {
             {2, 391}, {3, 542}, {4, 691}, {9, 1300}
         };
+        
+        public event Action<Card, (int, Direction)> ValueSelected;
         
         private Image _bar;
         private RectTransform _rect;
@@ -75,7 +75,7 @@ namespace Cardevil.Cards.InStage.View
             ConfigureSlots(count);
             ConfigureCards(cardData, count);
 
-            _rect.anchoredPosition = _position;
+            _rect.anchoredPosition = openPosition;
             gameObject.SetActive(true);
             
             // 애니메이션
