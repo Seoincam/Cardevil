@@ -35,11 +35,10 @@ namespace Cardevil.Cards.InStage.View
         private readonly List<RectTransform> _slots = new();
         private CardVisualSettingSO _visualSetting;
         private Transform _cardVisualTransform;
+        private CardDeckVisual _deckVisual;
 
         private UniTask _ticketAnim = UniTask.CompletedTask;
         private Tween _ticketTween;
-
-        public CardDeckVisual DeckVisual { get; private set; }
         
         private void OnValidate()
         {
@@ -65,7 +64,7 @@ namespace Cardevil.Cards.InStage.View
             _visualSetting = visualSetting;
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
             if (deckVisuals == null || deckVisuals.Length == 0) { LogEx.LogError("씬 내에 Deck Visual이 존재하지 않음!"); return; }
-            DeckVisual = deckVisuals[0];
+            _deckVisual = deckVisuals[0];
 
             string t = "Card Visual Transform";
             _cardVisualTransform = GameObject.Find(t).transform;
@@ -113,7 +112,7 @@ namespace Cardevil.Cards.InStage.View
             await togglePreviewButton.transform.DOScale(1f, .2f);
             
             _cardVisualTransform.SetAsLastSibling();
-            DeckVisual.transform.SetAsLastSibling();
+            _deckVisual.transform.SetAsLastSibling();
         }
 
         /// <summary>

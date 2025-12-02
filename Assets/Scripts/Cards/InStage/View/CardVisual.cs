@@ -221,11 +221,11 @@ namespace Cardevil.Cards.InStage.View
         public void AnimateRerollDraw()
         {
             _deckVisual.OnInteraction();
-            transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
-                .SetEase(visualSetting.RerollDrawEase);
-            
             visualBase.TryFlipBackImmediate();
             visualBase.TryFlipFrontAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            
+            transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
+                .SetEase(visualSetting.RerollDrawEase);
         }
 
         public void AnimateRerollDiscard()
