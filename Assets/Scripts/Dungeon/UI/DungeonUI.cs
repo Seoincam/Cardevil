@@ -57,13 +57,28 @@ namespace Cardevil.Dungeon.UI
 
         public void Initialize()
         {
-            LogEx.Log("Initializing Dungeon UI...");
+            LogEx.Log("[DungeonUI] Phase 1 - Setting up UI references...");
             /*
-             * 던전 UI 초기화
+             * 던전 UI 초기화 - 1단계: 참조 설정
              */
             foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
                 chapterUI.Initialize(this);
+            }
+        }
+        
+        /// <summary>
+        /// 던전 생성 후 호출되어야 하는 2단계 초기화
+        /// </summary>
+        public void InitializeAfterDungeonCreated()
+        {
+            LogEx.Log("[DungeonUI] Phase 2 - Initializing with dungeon data...");
+            /*
+             * 던전 UI 초기화 - 2단계: 던전 데이터 기반 초기화
+             */
+            foreach (DungeonChapterUI chapterUI in _dungeonChapters)
+            {
+                chapterUI.InitializeAfterDungeonCreated();
             }
         }
         

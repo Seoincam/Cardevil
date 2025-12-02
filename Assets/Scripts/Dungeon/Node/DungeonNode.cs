@@ -15,12 +15,15 @@ namespace Cardevil.Dungeon
     public class DungeonNode : ISerializationCallbackReceiver
     {
         [SerializeReference, VisibleOnly] private Dungeon dungeon;
-        [SerializeField, VisibleOnly] private int nodeId;
+        [FormerlySerializedAs("nodeId")] [SerializeField, VisibleOnly] private int nodeInternalId;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodeTypes type;
         [FormerlySerializedAs("preset")] [SerializeField, VisibleOnly] private DungeonNodeBehaviour behaviour;
         [SerializeField, VisibleOnly] private NodeState state = NodeState.Locked;
 
+        public event Action<NodeState> OnStateChanged;
+        
+        
         public Dungeon Dungeon
         {
             get => dungeon;
@@ -28,8 +31,8 @@ namespace Cardevil.Dungeon
         }
         public int NodeId
         {
-            get => nodeId;
-            set => nodeId = value;
+            get => nodeInternalId;
+            set => nodeInternalId = value;
         }
         public int Floor 
         {
@@ -50,7 +53,11 @@ namespace Cardevil.Dungeon
         public NodeState State 
         {
             get => state;
-            set => state = value;
+            set
+            {
+                state = value;
+                OnStateChanged?.Invoke(state);
+            }
         }
         
         [field:SerializeField] public bool IsBranchStart { get; set; } = false;

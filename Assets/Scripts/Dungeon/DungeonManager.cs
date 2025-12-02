@@ -1,7 +1,6 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Dungeon.Build;
-using Cardevil.Dungeon.DungeonFactories;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
 using System;
@@ -54,14 +53,12 @@ namespace Cardevil.Dungeon
                 return dungeonUI;
             }
         }
-        public int CurrentDungeonIndex
+        public int CurrentDungeonId
         {
             get => currentDungeonIndex;
-            // set => currentDungeonIndex = value;
         }
 
-        public DungeonConfigurationSO CurrentDungeonConfiguration => dungeonConfigurations[currentDungeonIndex];
-        public Dungeon CurrentDungeon => GetDungeon(currentDungeonIndex);
+        public Dungeon CurrentDungeon => GetDungeonById(currentDungeonIndex);
         public DungeonNode CurrentNode => currentNode;
         public DungeonNode PreviousNode => previousNode;
 
@@ -72,13 +69,23 @@ namespace Cardevil.Dungeon
 
             // TODO : DungeonConfig 로드
             
-            // UI 기반으로 던전 생성
+            // 1단계: UI 참조 초기화 (InitRef 호출을 위해)
+            UI?.Initialize();
+            
+            // 2단계: UI 기반으로 던전 생성
             CreateDungeons();
             
-            // 첫 번째 던전으로 초기화
+            // 3단계: 던전이 생성된 후 UI 초기화 완료 (라인 연결 등)
+            UI?.InitializeAfterDungeonCreated();
+            
+            // 4단계: 던전 ID 1로 초기화
             if (dungeons.Count > 0)
             {
-                SetCurrentDungeon(0);
+                SetCurrentDungeonById(1);
+                // 첫 노드 사용 가능 상태로 설정
+                var rootNode = CurrentDungeon?.RootNode;
+                LogEx.Log($"Root Node ID: {rootNode?.NodeId}");
+                rootNode!.State = NodeState.Available;
             }
             else
             {
@@ -123,18 +130,19 @@ namespace Cardevil.Dungeon
         }
 
         /// <summary>
-        /// 현재 던전을 인덱스로 설정
+        /// 현재 던전을 ID로 설정
         /// </summary>
-        public void SetCurrentDungeon(int index)
+        public void SetCurrentDungeonById(int dungeonId)
         {
-            if (index < 0 || index >= dungeons.Count)
+            var dungeon = GetDungeonById(dungeonId);
+            if (dungeon == null)
             {
-                Debug.LogError($"[DungeonManager] Invalid dungeon index: {index}");
+                LogEx.LogError($"Invalid dungeon ID: {dungeonId}");
                 return;
             }
-            currentDungeonIndex = index;
-            Debug.Log($"[DungeonManager] Set current dungeon to index {index}, ID: {CurrentDungeon?.DungeonId}");
-            UI?.UpdateShowingDungeon(CurrentDungeon.DungeonId);
+            currentDungeonIndex = dungeonId;
+            LogEx.Log($"Set current dungeon to ID: {dungeonId}");
+            UI?.UpdateShowingDungeon(dungeonId);
         }
         
         public void EnterNode(DungeonNode node)
@@ -154,7 +162,7 @@ namespace Cardevil.Dungeon
                     specialNodeManager.ClearSpecialNode(currentNode);
                 }
 
-                currentNode.Behaviour.OnExit(new NodeExitInfo() { IsCleared = true });
+                currentNode.Behaviour.OnExit(currentNode, new NodeExitInfo() { IsCleared = true });
                 currentNode.State = NodeState.Completed;
                 Events.RaiseNodeExited(currentNode);
                 
@@ -194,7 +202,7 @@ namespace Cardevil.Dungeon
             // 프리셋 실행
             if (node.Behaviour != null)
             {
-                node.Behaviour.OnEnter();
+                node.Behaviour.OnEnter(node);
             }
             else
             {
@@ -236,7 +244,7 @@ namespace Cardevil.Dungeon
             
             LogEx.Log($"Exiting node: {node.NodeId}");
             
-            node.Behaviour.OnExit(exitInfo);
+            node.Behaviour.OnExit(node, exitInfo);
             
             if (exitInfo.IsCleared)
             {
@@ -331,16 +339,14 @@ namespace Cardevil.Dungeon
             
             LogEx.Log($"Loaded progress for dungeon {progress.dungeonId}");
         }
-        
-        // ============================================
-        // Console Commands (디버그용)
-        // ============================================
+
+        #region Console Commands
         
         /// <summary>
-        /// 콘솔 명령어: 현재 던전을 인덱스로 설정
+        /// 콘솔 명령어: 현재 던전을 ID로 설정
         /// </summary>
-        [ConsoleCommand("dungeonSetCurrent", "Sets the current dungeon by index.", "dungeonSetCurrent <index>", new string[]{"0","1","2"})]
-        public static void SetCurrentDungeonCommand(int idx)
+        [ConsoleCommand("dungeonSetCurrent", "Sets the current dungeon by ID.", "dungeonSetCurrent <dungeonId>", new []{"1","2","3"})]
+        public static void SetCurrentDungeonCommand(int dungeonId)
         {
             DungeonManager dm = Managers.Dungeon;
             if (dm == null)
@@ -349,14 +355,15 @@ namespace Cardevil.Dungeon
                 return;
             }
             
-            if (idx < 0 || idx >= dm.dungeons.Count)
+            var dungeon = dm.GetDungeonById(dungeonId);
+            if (dungeon == null)
             {
-                Console.MessageError($"Invalid dungeon index {idx}. Valid range: 0-{dm.dungeons.Count - 1}");
+                Console.MessageError($"Invalid dungeon ID {dungeonId}.");
                 return;
             }
             
-            dm.SetCurrentDungeon(idx);
-            Console.Message($"Current dungeon set to index {idx} (ID: {dm.CurrentDungeon?.DungeonId}).");
+            dm.SetCurrentDungeonById(dungeonId);
+            Console.Message($"Current dungeon set to ID {dungeonId}.");
         }
 
         /// <summary>
@@ -381,5 +388,24 @@ namespace Cardevil.Dungeon
             dm.ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
             Console.Message($"Current dungeon node (ID: {dm.PreviousNode?.NodeId}) cleared.");
         }
+        
+        [ConsoleCommand("dungeonPrintDebugInfo", "Prints debug information about all dungeons.", "dungeonPrintDebugInfo")]
+        public static void PrintDungeonDebugInfo()
+        {
+            DungeonManager dm = Managers.Dungeon;
+            if (dm == null)
+            {
+                Console.MessageError("DungeonManager not found in Managers.");
+                return;
+            }
+
+            for (int i = 0; i < dm.dungeons.Count; i++)
+            {
+                var dungeon = dm.dungeons[i];
+                Console.Message($"Dungeon Index: {i}, ID: {dungeon.DungeonId}");
+                Console.Message(dungeon.GetDebugString());
+            }
+        }
+        #endregion
     }
 }

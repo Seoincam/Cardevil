@@ -18,7 +18,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private Animator nodeAnimator;
         [SerializeField] private Image nodeImage;
         [SerializeField] private TextMeshProUGUI nodeText;
-        [SerializeField] private Image hoverImage;
+        [FormerlySerializedAs("hoverImage")] [SerializeField] private Image overlayImage;
         [Space]
         [Header("External References")]
         [SerializeField] private DungeonUI dungeonUI;
@@ -40,7 +40,16 @@ namespace Cardevil.Dungeon.UI
             get => dungeonNode;
             set
             {
+                if(dungeonNode != null)
+                {
+                    dungeonNode.OnStateChanged -= OnDungeonNodeStateChanged;
+                }
                 dungeonNode = value;
+                if(dungeonNode != null)
+                {
+                    dungeonNode.OnStateChanged += OnDungeonNodeStateChanged;
+                    UpdateView();
+                }
             }
         }
         
@@ -88,6 +97,12 @@ namespace Cardevil.Dungeon.UI
                 Debug.LogWarning($"[DungeonNodeUI] Cannot click node - dungeonNode is null on {name}");
                 return;
             }
+            // 들어갈 수 있는 경우에만
+            if (dungeonNode.State != NodeState.Available)
+            {
+                Debug.LogWarning($"[DungeonNodeUI] Cannot enter node {dungeonNode.NodeId} - state is {dungeonNode.State}");
+                return;
+            }
             
             Debug.Log($"Clicked on node {dungeonNode.NodeId}");
             Managers.Dungeon.EnterNode(dungeonNode);
@@ -105,32 +120,69 @@ namespace Cardevil.Dungeon.UI
                 setting = DungeonNodeSettingSO.Default;
             }
         }
+        
+        private void OnDungeonNodeStateChanged(NodeState newState)
+        {
+            UpdateView();
+        }
 
         public void UpdateView()
         {
-            DungeonNodeSettingSO.SpriteSet spriteSet = setting.NodeTypeToSpriteSet[dungeonNode.Type];
+            if (dungeonNode == null)
+            {
+                Debug.LogWarning($"[DungeonNodeUI] UpdateView called but dungeonNode is null on {name}");
+                return;
+            }
+            
+            Debug.Log($"[DungeonNodeUI] UpdateView - Node {dungeonNode.NodeId}, State: {dungeonNode.State}, GameObject active: {gameObject.activeInHierarchy}");
+            
+            DungeonNodeSettingSO.SpriteSet spriteSet = setting.GetSpriteSet(dungeonNode.Type);
             switch (dungeonNode.State)
             {
                 case NodeState.Locked:
                     nodeImage.sprite = spriteSet.Inactive;
                     nodeText.text = "";
                     _button.interactable = false;
+                    _button.gameObject.SetActive(false);
+                    Debug.Log($"[DungeonNodeUI] Node {dungeonNode.NodeId} - Button set to INACTIVE (Locked)");
+                    SetOverlaySprite(null);
                     break;
                 case NodeState.Available:
                     nodeImage.sprite = spriteSet.Active;
                     _button.interactable = true;
+                    _button.gameObject.SetActive(true);
+                    Debug.Log($"[DungeonNodeUI] Node {dungeonNode.NodeId} - Button set to ACTIVE (Available)");
+                    SetOverlaySprite(null);
                     // nodeText.text = dungeonNode.NodeId.ToString();
                     break;
                 case NodeState.Current:
                     nodeImage.sprite = spriteSet.Active;
-                    _button.interactable = true;
+                    _button.interactable = false;
+                    _button.gameObject.SetActive(true);
+                    Debug.Log($"[DungeonNodeUI] Node {dungeonNode.NodeId} - Button set to ACTIVE but not interactable (Current)");
+                    SetOverlaySprite(null);
                     break;
                 case NodeState.Completed:
-                    nodeImage.sprite = spriteSet.Inactive;
+                    nodeImage.sprite = spriteSet.Completed;
                     nodeText.text = "";
                     _button.interactable = false;
+                    _button.gameObject.SetActive(true);
+                    Debug.Log($"[DungeonNodeUI] Node {dungeonNode.NodeId} - Button set to ACTIVE but not interactable (Completed)");
+                    SetOverlaySprite(spriteSet.CompletedOverlay);
+                    
                     break;
             }
+        }
+
+        private void SetOverlaySprite(Sprite sprite)
+        {
+            if(sprite == null)
+            {
+                overlayImage.gameObject.SetActive(false);
+                return;
+            }
+            overlayImage.gameObject.SetActive(true);
+            overlayImage.sprite = sprite;
         }
     }
 }

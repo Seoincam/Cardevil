@@ -36,11 +36,7 @@ namespace Cardevil.Dungeon.UI
             {
                 if (_dungeonUICanvas == null)
                 {
-                    _dungeonUICanvas = GetComponentInParent<Canvas>();
-                    if (_dungeonUICanvas == null)
-                    {
-                        Debug.LogError("DungeonUICamera: No Canvas component found in parent GameObjects.");
-                    }
+                    _dungeonUICanvas = FindAnyObjectByType<DungeonCanvas>(FindObjectsInactive.Include)?.GetComponent<Canvas>();
                 }
                 return _dungeonUICanvas;
             }

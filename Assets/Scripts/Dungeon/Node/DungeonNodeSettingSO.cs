@@ -58,15 +58,42 @@ namespace Cardevil.Dungeon
             }
         }
         
+        [System.Serializable]
         public struct SpriteSet
         {
             public Sprite Inactive;
             public Sprite Active;
             public Sprite Completed;
+            public Sprite CompletedOverlay;
         }
         [SerializeField] private SerializableDict<DungeonNodeTypes, SpriteSet> nodeTypeToSpriteSet = new SerializableDict<DungeonNodeTypes, SpriteSet>();
         
         public IReadOnlyDictionary<DungeonNodeTypes, SpriteSet> NodeTypeToSpriteSet => nodeTypeToSpriteSet;
+        
+        public SpriteSet GetSpriteSet(DungeonNodeTypes type)
+        {
+            if (nodeTypeToSpriteSet.TryGetValue(type, out var spriteSet))
+            {
+                return spriteSet;
+            }
+            else
+            {
+                return NodeTypeToSpriteSet[DungeonNodeTypes.None];
+            }
+        }
+        
+        public Sprite GetSprite(DungeonNodeTypes type, NodeState state)
+        {
+            var spriteSet = GetSpriteSet(type);
+            return state switch
+            {
+                NodeState.Locked => spriteSet.Inactive,
+                NodeState.Available => spriteSet.Active,
+                NodeState.Current => spriteSet.Active,
+                NodeState.Completed => spriteSet.Completed,
+                _ => spriteSet.Inactive,
+            };
+        }
         
     }
 }
