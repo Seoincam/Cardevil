@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d6161a9f7a042868152997352a0a005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openPosition: {x: 0, y: -125}
+  setting: {fileID: 11400000, guid: 07961251864594bc1825cd1c46d2ab71, type: 2}
 --- !u!114 &4690176199855387997
 MonoBehaviour:
   m_ObjectHideFlags: 0

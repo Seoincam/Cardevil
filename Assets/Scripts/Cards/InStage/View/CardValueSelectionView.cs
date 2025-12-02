@@ -1,6 +1,7 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
@@ -16,22 +17,11 @@ namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
-        // TODO 애니메이션 처리
 
-        [SerializeField] private Vector2 openPosition = new(0, -125);
+        [SerializeField] private ValueSelectionViewAnimSetting setting;
         
         private const float CardScale = .6f;
         private const string SlotPath = "Cards/Slot";
-        private readonly Dictionary<int, float> _frameWidths = new()
-        {
-            {2, 391}, {3, 542}, {4, 691}, {9, 1300}
-        };
-        
-        /// <summary>
-        /// 값 선택 완료 이벤트.
-        /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
-        /// </summary>
-        public event Action<Card, (int, Direction)> ValueSelected;
         
         private Image _bar;
         private RectTransform _rect;
@@ -43,6 +33,12 @@ namespace Cardevil.Cards.InStage.View
         private Card _cardCache;
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
+        
+        /// <summary>
+        /// 값 선택 완료 이벤트.
+        /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
+        /// </summary>
+        public event Action<Card, (int, Direction)> ValueSelected;
 
         /// <summary>
         /// 선택 UI 초기화.
@@ -87,7 +83,7 @@ namespace Cardevil.Cards.InStage.View
             ConfigureSlots(count);
             ConfigureCards(cardData, count);
 
-            _rect.anchoredPosition = openPosition;
+            _rect.anchoredPosition = setting.openPosition;
             gameObject.SetActive(true);
             
             // 애니메이션
@@ -147,12 +143,8 @@ namespace Cardevil.Cards.InStage.View
                 visual.CanvasGroup.alpha = 0;
 
             // 애니메이션 처리
-            var dur = .4f;
-            var dur2 = .2f;
-            var interval = .06f;
-            
             bool fadeCanceled = await _bar
-                .DOFade(1f, dur)
+                .DOFade(1f, setting.barFadeInDuration)
                 .ToUniTask(cancellationToken: ct)
                 .SuppressCancellationThrow();
             
@@ -161,10 +153,10 @@ namespace Cardevil.Cards.InStage.View
 
             foreach (var visual in _visuals)
             {
-                AnimateCard(visual, dur2, ct).Forget();
+                AnimateCard(visual, setting.cardFadeInUpDuration, ct).Forget();
                 
                 bool delayCanceled = await UniTask
-                    .Delay(TimeSpan.FromSeconds(interval), cancellationToken: ct)
+                    .Delay(TimeSpan.FromSeconds(setting.cardInterval), cancellationToken: ct)
                     .SuppressCancellationThrow();
                 
                 if (delayCanceled)
@@ -189,7 +181,7 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         private void ConfigureFrame(int slotCount)
         {
-            if (!_frameWidths.TryGetValue(slotCount, out var width))
+            if (!setting.frameWidths.TryGetValue(slotCount, out var width))
             {
                 LogEx.LogWarning("지정되지 않은 선택 가능 개수: " + slotCount);
                 width = slotCount * 140f;
