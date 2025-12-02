@@ -32,6 +32,7 @@ namespace Cardevil.Cards.InStage.View
         
         private CanvasGroup _canvasGroup;
         private bool _isVisible;
+        private bool _changedWhenNotVisible;
         private bool _isClicked;
         private Tween _tween;
 
@@ -73,6 +74,12 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void OnDeckChanged()
         {
+            if (!_isVisible)
+            {
+                _changedWhenNotVisible = true;
+                return;
+            }
+            
             int red = 10, green = 10, blue = 10, black = 10, arrow = 10;
             
             foreach (var handCard in _model.Hand)
@@ -91,10 +98,7 @@ namespace Cardevil.Cards.InStage.View
             
             void DecreaseCountById(int id, ref int red, ref int green, ref int blue, ref int black, ref int arrow)
             {
-                if (_isVisible)
-                    cardVisuals[id].SetStateAsync(false).Forget();
-                else 
-                    cardVisuals[id].SetStateImmediate(false);
+                cardVisuals[id].SetStateAsync(false).Forget();
                 
                 var group = id / 10;
                 switch (group)
@@ -111,6 +115,9 @@ namespace Cardevil.Cards.InStage.View
         public void Open()
         {
             _isVisible = true;
+            if (_changedWhenNotVisible)
+                OnDeckChanged();
+            
             gameObject.SetActive(true);
 
             _openAnimCts?.Cancel();
@@ -127,6 +134,7 @@ namespace Cardevil.Cards.InStage.View
             _openAnimCts = null;
             
             _isVisible = false;
+            _changedWhenNotVisible = false;
             gameObject.SetActive(false);
         }
 
