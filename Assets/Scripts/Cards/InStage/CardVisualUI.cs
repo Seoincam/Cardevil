@@ -8,9 +8,11 @@ using DG.Tweening;
 using System;
 using System.Threading;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class CardVisualUI : MonoBehaviour, IPointerClickHandler, IClearable
     {
         [Header("SO")]
@@ -19,18 +21,30 @@ namespace Cardevil.Cards.InStage
         [Header("Visual")] 
         [SerializeField] private CardVisualController visualController;
         [SerializeField] private CardVisualBase visualBase;
+        [SerializeField] private Image cover; 
 
         public event Action OnClicked;
+        public CanvasGroup CanvasGroup { get; private set; }
+        public RectTransform Rect { get; private set; }
         
         private bool _state = true;
-        private Tween _backgroundTween, _numberTween;
-        
-        private readonly Color _darkColor = new(0.2f, 0.2f, 0.2f);
+        private Tween _coverTween;
+
+        private readonly Color _noColor = new(0, 0, 0, 0);
+        private readonly Color _darkColor = new(0, 0, 0, .8f);
+
+        private void Awake()
+        {
+            CanvasGroup = GetComponent<CanvasGroup>();
+            Rect = GetComponent<RectTransform>();
+        }
 
         public void Init(CardData data)
         {
             Clear();
             visualController.Init(data);
+            SetStateImmediate(true);
+            
         }
         
         public void Clear()
@@ -58,10 +72,8 @@ namespace Cardevil.Cards.InStage
         {
             if (value == _state) return;
             _state = value;
-            
-            var color = value ? Color.white : _darkColor;
-            // frontBackground.color = color;
-            // frontNumber.color = color;
+
+            cover.color = value ? _noColor : _darkColor;
         }
 
         /// <summary>
@@ -73,27 +85,13 @@ namespace Cardevil.Cards.InStage
             if (value == _state) return;
             _state = value;
             
-            // 이전 트윈 정리
-            _backgroundTween?.Kill();
-            _numberTween?.Kill();
-            
-            var color = value ? Color.white : _darkColor;
+            _coverTween?.Kill();
             float dur = .5f;
 
-            // _backgroundTween = frontBackground
-            //     .DOColor(color, dur)
-            //     .SetRecyclable(true)
-            //     .SetLink(gameObject);
-            //
-            // _numberTween = frontNumber
-            //     .DOColor(color, dur)
-            //     .SetRecyclable(true)
-            //     .SetLink(gameObject);
-
-            await UniTask.WhenAll(
-                _backgroundTween.AwaitForComplete().AttachExternalCancellation(ct),
-                _numberTween.AwaitForComplete().AttachExternalCancellation(ct)
-            );
+            await cover.DOColor(value ? _noColor : _darkColor, dur)
+                .SetRecyclable(true)
+                .SetLink(gameObject)
+                .WithCancellation(ct);
         }
     }
 }

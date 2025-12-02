@@ -120,11 +120,8 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             _deckRemainView.Init(_library, _model);
             DeckChanged += _deckRemainView.OnDeckChanged;
-
-            CardDeckVisual.Instance.PointerEnter += _deckRemainView.OnPointerEnterAtDeck;
-            CardDeckVisual.Instance.PointerExit += _deckRemainView.OnPointerExitAtDeck;
-            CardDeckVisual.Instance.PointerUp += _deckRemainView.OnPointerClickAtDeck;
-            CardDeckVisual.Instance.transform.SetAsLastSibling();
+            
+            CardDeckVisual.Instance.PointerUp += _deckRemainView.Open;
             
             // Value Selection View 생성
             var valueSelectionViews = Object.FindObjectsByType<CardValueSelectionView>(FindObjectsSortMode.None);
@@ -168,9 +165,7 @@ namespace Cardevil.Cards.InStage.Presenter
             // Update Async 정지
             _updateCts.Cancel();
             
-            CardDeckVisual.Instance.PointerEnter -= _deckRemainView.OnPointerEnterAtDeck;
-            CardDeckVisual.Instance.PointerExit -= _deckRemainView.OnPointerExitAtDeck;
-            CardDeckVisual.Instance.PointerUp -= _deckRemainView.OnPointerClickAtDeck;
+            CardDeckVisual.Instance.PointerUp -= _deckRemainView.Open;
             
             await _view.ExitHandBarAsync();
         }
@@ -188,7 +183,6 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.Clear();
             Managers.Resource.Destroy(_view.gameObject);
         }
-
         
         private void WireCard(Card card)
         {
