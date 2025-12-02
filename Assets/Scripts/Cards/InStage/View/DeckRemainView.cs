@@ -153,78 +153,70 @@ namespace Cardevil.Cards.InStage.View
 
         private async UniTaskVoid PlayAnimationAsync(CancellationToken ct)
         {
-            try
+            foreach (var card in cardVisuals)
             {
-                foreach (var card in cardVisuals)
-                {
-                    card.CanvasGroup.alpha = 0;
+                card.CanvasGroup.alpha = 0;
 
-                    if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
-                    {
-                        float randomScale = Random.Range(0.3f, 1.0f);
-                        card.Rect.localScale = Vector3.one * CardScale * randomScale;
-                    }
-                    else
-                    {
-                        card.Rect.anchoredPosition += Vector2.up * setting.startY;
-                    }
+                if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
+                {
+                    float randomScale = Random.Range(0.3f, 1.0f);
+                    card.Rect.localScale = Vector3.one * CardScale * randomScale;
                 }
-
-                await UniTask.Delay(TimeSpan.FromSeconds(setting.startInterval), cancellationToken: ct);
-                ct.ThrowIfCancellationRequested();
-
-                for (int i = 0; i < cardVisuals.Length; i++)
+                else
                 {
-                    int row = i / 5;
-                    int col = i % 10;
-                    float d = (col * setting.angle + row) * setting.delay;
-
-                    AnimateCard(cardVisuals[i], d, ct).Forget();
+                    card.Rect.anchoredPosition += Vector2.up * setting.startY;
                 }
             }
-            catch (OperationCanceledException e)
+
+            bool completed = await UniTask
+                .Delay(TimeSpan.FromSeconds(setting.startInterval), cancellationToken: ct)
+                .SuppressCancellationThrow();
+            
+            if (!completed)
+                return;
+            
+            for (int i = 0; i < cardVisuals.Length; i++)
             {
+                int row = i / 5;
+                int col = i % 10;
+                float d = (col * setting.angle + row) * setting.delay;
+
+                AnimateCard(cardVisuals[i], d, ct).Forget();
             }
         }
 
         private async UniTaskVoid AnimateCard(CardVisualUI card, float d, CancellationToken ct)
         {
-            try
+            bool completed = await UniTask
+                .Delay(TimeSpan.FromSeconds(d), cancellationToken: ct)
+                .SuppressCancellationThrow();
+                
+            if (!completed)
+                return;
+
+            var seq = DOTween.Sequence();
+
+            if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(d), cancellationToken: ct);
-                ct.ThrowIfCancellationRequested();
+                card.Rect.localScale = Vector3.one * CardScale * .3f;
+                card.CanvasGroup.alpha = 0f;
 
-                var seq = DOTween.Sequence();
-
-                if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
-                {
-                    card.Rect.localScale = Vector3.one * CardScale * .3f;
-                    card.CanvasGroup.alpha = 0f;
-
-                    seq.Append(card.CanvasGroup.DOFade(1f, setting.duration * .5f))
-                        .Join(card.Rect.DOScale(CardScale * 1.05f, setting.duration * .5f).SetEase(Ease.OutBack))
-                        .Append(card.Rect.DOScale(CardScale, setting.duration * .2f).SetEase(Ease.OutQuad));
-                }
-
-                else if (setting.animType == DeckRemainViewAnimSetting.AnimType.FadeInUp)
-                {
-                    var originalPos = card.Rect.anchoredPosition;
-                    card.Rect.anchoredPosition = originalPos + new Vector2(0, -setting.startY);
-                    card.CanvasGroup.alpha = 0f;
-
-                    seq.Append(card.CanvasGroup.DOFade(1f, setting.duration))
-                        .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic));
-                }
-
-                await seq.ToUniTask(cancellationToken: ct);
+                seq.Append(card.CanvasGroup.DOFade(1f, setting.duration * .5f))
+                    .Join(card.Rect.DOScale(CardScale * 1.05f, setting.duration * .5f).SetEase(Ease.OutBack))
+                    .Append(card.Rect.DOScale(CardScale, setting.duration * .2f).SetEase(Ease.OutQuad));
             }
-            catch (OperationCanceledException)
+
+            else if (setting.animType == DeckRemainViewAnimSetting.AnimType.FadeInUp)
             {
+                var originalPos = card.Rect.anchoredPosition;
+                card.Rect.anchoredPosition = originalPos + new Vector2(0, -setting.startY);
+                card.CanvasGroup.alpha = 0f;
+
+                seq.Append(card.CanvasGroup.DOFade(1f, setting.duration))
+                    .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic));
             }
-            catch (Exception e)
-            {
-                LogEx.LogError($"Animate Card Failed: {e.Message}");
-            }
+
+            await seq.ToUniTask(cancellationToken: ct);
         }
     }
 }
