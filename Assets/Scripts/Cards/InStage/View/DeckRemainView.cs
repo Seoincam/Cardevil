@@ -6,6 +6,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -33,6 +34,8 @@ namespace Cardevil.Cards.InStage.View
         private bool _isVisible;
         private bool _isClicked;
         private Tween _tween;
+
+        private CancellationTokenSource _openAnimCts;
 
         private const float CardScale = .48f;
 
@@ -111,11 +114,20 @@ namespace Cardevil.Cards.InStage.View
         {
             _isVisible = true;
             gameObject.SetActive(true);
-            PlayAnimationAsync().Forget();
+
+            _openAnimCts?.Cancel();
+            _openAnimCts?.Dispose();
+            _openAnimCts ??= new CancellationTokenSource();
+            
+            PlayAnimationAsync(_openAnimCts.Token).Forget();
         }
 
         private void Close()
         {
+            _openAnimCts?.Cancel();
+            _openAnimCts?.Dispose();
+            _openAnimCts = null;
+            
             _isVisible = false;
             gameObject.SetActive(false);
         }
@@ -139,61 +151,79 @@ namespace Cardevil.Cards.InStage.View
             cardVisualUI.Init(data);
         }
 
-        private async UniTaskVoid PlayAnimationAsync()
+        private async UniTaskVoid PlayAnimationAsync(CancellationToken ct)
         {
-            foreach (var card in cardVisuals)
+            try
             {
-                card.CanvasGroup.alpha = 0;
+                foreach (var card in cardVisuals)
+                {
+                    card.CanvasGroup.alpha = 0;
 
-                if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
-                {
-                    float randomScale = Random.Range(0.3f, 1.0f);
-                    card.Rect.localScale = Vector3.one * CardScale * randomScale;
+                    if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
+                    {
+                        float randomScale = Random.Range(0.3f, 1.0f);
+                        card.Rect.localScale = Vector3.one * CardScale * randomScale;
+                    }
+                    else
+                    {
+                        card.Rect.anchoredPosition += Vector2.up * setting.startY;
+                    }
                 }
-                else
+
+                await UniTask.Delay(TimeSpan.FromSeconds(setting.startInterval), cancellationToken: ct);
+                ct.ThrowIfCancellationRequested();
+
+                for (int i = 0; i < cardVisuals.Length; i++)
                 {
-                    card.Rect.anchoredPosition += Vector2.up * setting.startY;   
+                    int row = i / 5;
+                    int col = i % 10;
+                    float d = (col * setting.angle + row) * setting.delay;
+
+                    AnimateCard(cardVisuals[i], d, ct).Forget();
                 }
             }
-
-            await UniTask.Delay(TimeSpan.FromSeconds(setting.startInterval));
-
-            for (int i = 0; i < cardVisuals.Length; i++)
+            catch (OperationCanceledException e)
             {
-                int row = i / 5;
-                int col = i % 10;
-                float d = (col * setting.angle + row) * setting.delay;
-                
-                AnimateCard(cardVisuals[i], d).Forget();
             }
         }
 
-        private async UniTaskVoid AnimateCard(CardVisualUI card, float d)
+        private async UniTaskVoid AnimateCard(CardVisualUI card, float d, CancellationToken ct)
         {
-            LogEx.Log("wait start");
-            await UniTask.Delay(TimeSpan.FromSeconds(d));
-            LogEx.Log("Wait end");
-            
-            var seq = DOTween.Sequence();
-            
-            if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
+            try
             {
-                card.Rect.localScale = Vector3.one * CardScale * .3f;
-                card.CanvasGroup.alpha = 0f;
+                await UniTask.Delay(TimeSpan.FromSeconds(d), cancellationToken: ct);
+                ct.ThrowIfCancellationRequested();
 
-                seq.Append(card.CanvasGroup.DOFade(1f, setting.duration * .5f))
-                    .Join(card.Rect.DOScale(CardScale * 1.05f, setting.duration * .5f).SetEase(Ease.OutBack))
-                    .Append(card.Rect.DOScale(CardScale, setting.duration * .2f).SetEase(Ease.OutQuad));
+                var seq = DOTween.Sequence();
+
+                if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
+                {
+                    card.Rect.localScale = Vector3.one * CardScale * .3f;
+                    card.CanvasGroup.alpha = 0f;
+
+                    seq.Append(card.CanvasGroup.DOFade(1f, setting.duration * .5f))
+                        .Join(card.Rect.DOScale(CardScale * 1.05f, setting.duration * .5f).SetEase(Ease.OutBack))
+                        .Append(card.Rect.DOScale(CardScale, setting.duration * .2f).SetEase(Ease.OutQuad));
+                }
+
+                else if (setting.animType == DeckRemainViewAnimSetting.AnimType.FadeInUp)
+                {
+                    var originalPos = card.Rect.anchoredPosition;
+                    card.Rect.anchoredPosition = originalPos + new Vector2(0, -setting.startY);
+                    card.CanvasGroup.alpha = 0f;
+
+                    seq.Append(card.CanvasGroup.DOFade(1f, setting.duration))
+                        .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic));
+                }
+
+                await seq.ToUniTask(cancellationToken: ct);
             }
-            
-            else if (setting.animType == DeckRemainViewAnimSetting.AnimType.FadeInUp)
+            catch (OperationCanceledException)
             {
-                var originalPos = card.Rect.anchoredPosition;
-                card.Rect.anchoredPosition = originalPos + new Vector2(0, -setting.startY);
-                card.CanvasGroup.alpha = 0f;
-                
-                seq.Append(card.CanvasGroup.DOFade(1f, setting.duration))
-                    .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic));
+            }
+            catch (Exception e)
+            {
+                LogEx.LogError($"Animate Card Failed: {e.Message}");
             }
         }
     }
