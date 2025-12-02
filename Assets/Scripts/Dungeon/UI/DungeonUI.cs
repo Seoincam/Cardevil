@@ -78,7 +78,7 @@ namespace Cardevil.Dungeon.UI
             
             foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
-                chapterUI.gameObject.SetActive(true);
+                chapterUI.gameObject.SetActive(chapterUI == toShow);
             }
             
             Camera.MoveTo(toShow.transform.position).OnComplete(() =>
@@ -89,6 +89,7 @@ namespace Cardevil.Dungeon.UI
                 }
             });
         }
+
 
 
 

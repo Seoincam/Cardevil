@@ -20,7 +20,7 @@ namespace Cardevil.Dungeon.UI
 
         [SerializeField] private int cursor = 0;
         public int DungeonId => dungeonId;
-        public Dungeon Dungeon => Managers.Dungeon.GetDungeon(dungeonId);
+        public Dungeon Dungeon => Managers.Dungeon.GetDungeonById(dungeonId);
 
 
         private void Awake()
@@ -39,7 +39,7 @@ namespace Cardevil.Dungeon.UI
         {
             LogEx.Log($"Initializing DungeonChapterUI for Dungeon ID: {dungeonId}");
             this.dungeonUI = dungeonUI;
-            Dungeon dungeon = Managers.Dungeon.GetDungeon(dungeonId);
+            Dungeon dungeon = Managers.Dungeon.GetDungeonById(dungeonId);
             if (dungeon == null)
             {
                 LogEx.LogError($"Dungeon with ID {dungeonId} not found.");
@@ -62,16 +62,17 @@ namespace Cardevil.Dungeon.UI
                 nodeUi.InitializeLine();
             }
         }
-        
+
         public DungeonNodeUI GetNodeUI(int nodeId)
         {
             foreach (DungeonNodeUI nodeUi in nodeUis)
             {
-                if (nodeUi.DungeonId == nodeId)
+                if (nodeUi.DungeonNode != null && nodeUi.DungeonNode.NodeId == nodeId)
                 {
                     return nodeUi;
                 }
             }
+            Debug.LogWarning($"No DungeonNodeUI found for node ID {nodeId} in dungeon {dungeonId}");
             return null;
         }
     }

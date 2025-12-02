@@ -1,4 +1,4 @@
-﻿namespace Cardevil.Dungeon.Core
+﻿namespace Cardevil.Dungeon
 {
     public struct NodeExitInfo
     {

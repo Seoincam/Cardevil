@@ -49,10 +49,16 @@ namespace Cardevil.Dungeon.UI
             this.dungeonUI = dungeonUI;
             this.dungeonChapterUI = chapterUI;
         }
-        
+
 
         public void InitializeLine()
         {
+            if (dungeonNode == null)
+            {
+                Debug.LogWarning($"[DungeonNodeUI] Cannot initialize lines - dungeonNode is null on {name}");
+                return;
+            }
+
             foreach (DungeonNode dungeonNodeNext in dungeonNode.NextNodes)
             {
                 DungeonNodeUI nextNodeUI = dungeonChapterUI.GetNodeUI(dungeonNodeNext.NodeId);
@@ -63,7 +69,6 @@ namespace Cardevil.Dungeon.UI
                 }
                 
                 Debug.Log($"Init Node lines : {name} -> {nextNodeUI.name}");
-                
             }
         }
 
@@ -78,6 +83,12 @@ namespace Cardevil.Dungeon.UI
 
         public void OnClickButton()
         {
+            if (dungeonNode == null)
+            {
+                Debug.LogWarning($"[DungeonNodeUI] Cannot click node - dungeonNode is null on {name}");
+                return;
+            }
+            
             Debug.Log($"Clicked on node {dungeonNode.NodeId}");
             Managers.Dungeon.EnterNode(dungeonNode);
         }
@@ -100,21 +111,21 @@ namespace Cardevil.Dungeon.UI
             DungeonNodeSettingSO.SpriteSet spriteSet = setting.NodeTypeToSpriteSet[dungeonNode.Type];
             switch (dungeonNode.State)
             {
-                case DungeonNode.NodeState.None:
-                case DungeonNode.NodeState.InActive:
+                case NodeState.Locked:
                     nodeImage.sprite = spriteSet.Inactive;
                     nodeText.text = "";
                     _button.interactable = false;
                     break;
-                case DungeonNode.NodeState.Active:
+                case NodeState.Available:
                     nodeImage.sprite = spriteSet.Active;
                     _button.interactable = true;
                     // nodeText.text = dungeonNode.NodeId.ToString();
                     break;
-                case DungeonNode.NodeState.Cleared:
+                case NodeState.Current:
+                    nodeImage.sprite = spriteSet.Active;
+                    _button.interactable = true;
                     break;
-                case DungeonNode.NodeState.Hide:
-                    LogEx.LogWarning("Hide 상태는 개발중입니다.");
+                case NodeState.Completed:
                     nodeImage.sprite = spriteSet.Inactive;
                     nodeText.text = "";
                     _button.interactable = false;

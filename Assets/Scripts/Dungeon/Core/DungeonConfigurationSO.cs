@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Cardevil.Dungeon
 {
@@ -11,10 +10,7 @@ namespace Cardevil.Dungeon
         [SerializeField] private int dungeonId;
         [SerializeField] private List<DungeonNodeBehaviour> nodePresets = new List<DungeonNodeBehaviour>();
 
-
         public int DungeonId => dungeonId;
-
-
-        // Additional properties can be added as needed
+        public List<DungeonNodeBehaviour> NodePresets => nodePresets;
     }
 }

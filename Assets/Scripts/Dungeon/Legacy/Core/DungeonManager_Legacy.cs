@@ -14,7 +14,7 @@ using Object = UnityEngine.Object;
 namespace Cardevil.Dungeon.Core
 {
     [Serializable]
-    public class DungeonManager
+    public class DungeonManagerLegacy
     {
         [SerializeField] private List<DungeonConfigurationSO> dungeonConfigurations = new List<DungeonConfigurationSO>();
         
@@ -187,21 +187,15 @@ namespace Cardevil.Dungeon.Core
                 Console.MessageError($"Dungeon with index {idx} does not exist.");
                 return;
             }
-            dm.CurrentDungeonIndex = idx;
+            // dm.CurrentDungeonIndex = idx;
             Console.Message($"Current dungeon set to index {idx}.");
         }
 
-        [ConsoleCommand("dungeonClearCurrentNode", "Clears the current dungeon node.", "dungeonClearCurrentNode")]
+        [ConsoleCommand("dungeonClearCurrentNodeLegacy", "Clears the current dungeon node (Legacy).", "dungeonClearCurrentNodeLegacy")]
         public static void ClearCurrentNode()
         {
-            DungeonManager dm = Managers.Dungeon;
-            if (dm.CurrentNode == null)
-            {
-                Console.MessageError("No current dungeon node to clear.");
-                return;
-            }
-            dm.ExitCurrentNode(new NodeExitInfo(){IsCleared = true});
-            Console.Message($"Current dungeon node cleared.");
+            // Legacy 메서드는 사용하지 않음 - 메인 DungeonManager 사용 권장
+            Console.MessageError("This is a legacy command. Please use the main DungeonManager instead.");
         }
     }
 }

@@ -10,6 +10,10 @@ using UnityEditor;
 #endif
 namespace Cardevil.Dungeon.Build
 {
+    /// <summary>
+    /// Unity Editor에서 UI 기반으로 던전을 빌드하는 헬퍼 클래스
+    /// BFS 알고리즘을 사용하여 노드를 순회하고, Branch를 마킹합니다.
+    /// </summary>
     public class DungeonBuildHelperUI : MonoBehaviour
     {
         public DungeonNodeUIDataComponent rootNode;
@@ -207,6 +211,19 @@ public void ReconnectAllNodesByHierarchy()
         public Dungeon BuildDungeon()
         {
             Dungeon dungeon = new Dungeon();
+            
+            // DungeonId 설정
+            var chapterUI = GetComponent<DungeonChapterUI>();
+            if (chapterUI != null)
+            {
+                dungeon.dungeonId = chapterUI.DungeonId;
+            }
+            else
+            {
+                Debug.LogWarning("[DungeonBuildHelper] No DungeonChapterUI found. DungeonId will be -1.");
+                dungeon.dungeonId = -1;
+            }
+            
             List<DungeonNode> nodes = new List<DungeonNode>();
 
             /*
@@ -269,12 +286,17 @@ public void ReconnectAllNodesByHierarchy()
             var root = dungeon.GetNode(rootNode.nodeId);
             dungeon.RootNode = root;
 
+            /*
+             * 3. Branch 마킹
+             */
             Queue<DungeonNode> queue = new Queue<DungeonNode>();
-            bool isInBranch = false;
+            HashSet<DungeonNode> visitedForMarking = new HashSet<DungeonNode>();
 
             void MarkBranchStartAndEnd()
             {
                 queue.Enqueue(root);
+                visitedForMarking.Add(root);
+                
                 while (queue.Count > 0)
                 {
                     DungeonNode currentNode = queue.Dequeue();
@@ -291,15 +313,23 @@ public void ReconnectAllNodesByHierarchy()
                     }
                     foreach (var next in currentNode.NextNodes)
                     {
-                        queue.Enqueue(next);
+                        if (!visitedForMarking.Contains(next))
+                        {
+                            visitedForMarking.Add(next);
+                            queue.Enqueue(next);
+                        }
                     }
                 }
             }
             
-            void MarkInBranch(DungeonNode node)
+            void MarkInBranch(DungeonNode node, HashSet<DungeonNode> visited)
             {
                 if (node == null) return;
+                if (visited.Contains(node)) return; // 순환 참조 방지
                 if (node.IsInBranch) return; // 이미 방문한 노드면 종료
+                
+                visited.Add(node);
+                
                 if (node.IsBranchEnd)
                 {
                     node.IsInBranch = true;
@@ -308,7 +338,7 @@ public void ReconnectAllNodesByHierarchy()
                 node.IsInBranch = true;
                 foreach (var next in node.NextNodes)
                 {
-                    MarkInBranch(next);
+                    MarkInBranch(next, visited);
                 } 
             }
             
@@ -319,12 +349,16 @@ public void ReconnectAllNodesByHierarchy()
                 {
                     foreach (var next in node.NextNodes)
                     {
-                        MarkInBranch(next);
+                        HashSet<DungeonNode> branchVisited = new HashSet<DungeonNode>();
+                        MarkInBranch(next, branchVisited);
                     }
                 }
             }
 
-
+            /*
+             * 4. 던전 초기화
+             */
+            dungeon.Initialize();
             
             return dungeon;
         }

@@ -11,6 +11,19 @@ namespace Cardevil.Dungeon.UI
         
         [SerializeField] private Color lineColor = Color.white;
         [SerializeField] private Image lineImage;
+        
+        private void Awake()
+        {
+            if (lineImage == null)
+            {
+                lineImage = GetComponent<Image>();
+                if (lineImage == null)
+                {
+                    // 없어도 추가하지 않음
+                }
+            }
+        }
+        
         public Vector3 StartPos
         {
             get => startPos;
@@ -34,9 +47,30 @@ namespace Cardevil.Dungeon.UI
         {
             Vector3 direction = endPos - startPos;
             float distance = direction.magnitude;
+            
+            if (distance < 0.01f)
+            {
+                Debug.LogWarning($"[LineUI] Line distance too small on {name}");
+                return;
+            }
+            
             transform.position = startPos + direction / 2;
             transform.up = direction.normalized;
             transform.localScale = new Vector3(transform.localScale.x, distance / 2, transform.localScale.z);
+            
+            if (lineImage != null)
+            {
+                lineImage.color = lineColor;
+            }
+        }
+        
+        public void SetColor(Color color)
+        {
+            lineColor = color;
+            if (lineImage != null)
+            {
+                lineImage.color = lineColor;
+            }
         }
     }
 }

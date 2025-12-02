@@ -8,7 +8,6 @@ using Cardevil.Systems;
 using Database;
 using UnityEngine;
 using Cardevil.DataStructure;
-using Cardevil.Dungeon.Core;
 using Cardevil.Relics;
 
 public class Managers : MonoBehaviour

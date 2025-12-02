@@ -1,9 +1,8 @@
 ﻿using Cardevil.Dungeon;
-using Cardevil.Dungeon.Core;
 using Cardevil.Utils;
 using UnityEngine;
 
-namespace Cardevil.Dugeon.NodePresets
+namespace Cardevil.Dungeon.NodePresets
 {
     public class MobNodeBehaviour : DungeonNodeBehaviour
     {
@@ -15,8 +14,6 @@ namespace Cardevil.Dugeon.NodePresets
         public override void OnExit(NodeExitInfo exitInfo)
         {
             LogEx.Log("Exiting Mob Node");
-            
-            
         }
     }
 }

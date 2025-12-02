@@ -12,7 +12,6 @@
         MiniBoss,
         FinalBoss,
         BlackMarket,
-        
-        
+        Shop
     }
 }

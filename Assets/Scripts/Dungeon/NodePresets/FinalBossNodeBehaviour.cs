@@ -1,19 +1,19 @@
 ﻿using Cardevil.Dungeon;
-using Cardevil.Dungeon.Core;
+using Cardevil.Utils;
 using UnityEngine;
 
-namespace Cardevil.Dugeon.NodePresets
+namespace Cardevil.Dungeon.NodePresets
 {
     public class FinalBossNodeBehaviour : DungeonNodeBehaviour
     {
         public override void OnEnter()
         {
-            Debug.Log("Final Boss Node Entered");
+            LogEx.Log("Entering Final Boss Node: Fight the final boss.");
         }
 
         public override void OnExit(NodeExitInfo exitInfo)
         {
-            Debug.Log("Final Boss Node Exited");
+            LogEx.Log("Exiting Final Boss Node.");
         }
     }
 }

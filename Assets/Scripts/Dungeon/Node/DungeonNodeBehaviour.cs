@@ -1,5 +1,4 @@
-﻿using Cardevil.Dungeon.Core;
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Cardevil.Dungeon
@@ -7,7 +6,7 @@ namespace Cardevil.Dungeon
     /// <summary>
     /// 노드의 실행 로직을 담당하는 클래스.
     /// 현재로썬 기능이 없음
-    /// </summary
+    /// </summary>
     [Serializable]
     public abstract class DungeonNodeBehaviour : ScriptableObject
     {

@@ -23,6 +23,9 @@ namespace Cardevil.Dungeon.UI
         
         [Header("Debug")]
         [SerializeField] public bool showDebugLines = true;
+        [SerializeField] private float debugLineWidth = 1f;
+        [SerializeField] private Color debugLineStartColor = Color.green;
+        [SerializeField] private Color debugLineEndColor = Color.green;
         private LineRenderer lineRenderer;
         
         private void Awake()
@@ -65,14 +68,14 @@ namespace Cardevil.Dungeon.UI
                         if (lineRenderer == null)
                         {
                             lineRenderer = gameObject.AddComponent<LineRenderer>();
-                            lineRenderer.startWidth = 1f;
-                            lineRenderer.endWidth = 1f;
+                            lineRenderer.startWidth = debugLineWidth;
+                            lineRenderer.endWidth = debugLineWidth;
                             lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
                             lineRenderer.positionCount = 0;
                             lineRenderer.useWorldSpace = true;
                             lineRenderer.loop = false;
-                            lineRenderer.startColor = Color.green;
-                            lineRenderer.endColor = Color.green;
+                            lineRenderer.startColor = debugLineStartColor;
+                            lineRenderer.endColor = debugLineEndColor;
                         }
                     }
 
