@@ -38,7 +38,6 @@ namespace Cardevil.Cards.InStage.View
         
         private readonly List<RectTransform> _slots = new();
         private readonly List<CardVisualLightUI> _visuals = new();
-        private readonly List<Tween> _tweens = new();
         private CancellationTokenSource _animCts;
         
         private Card _cardCache;
@@ -93,7 +92,7 @@ namespace Cardevil.Cards.InStage.View
             
             // 애니메이션
             _animCts = new CancellationTokenSource();
-            DoAnim(_animCts.Token).Forget();
+            PlayAnimateAsync(_animCts.Token).Forget();
         }
 
         /// <summary>
@@ -108,9 +107,6 @@ namespace Cardevil.Cards.InStage.View
             _animCts?.Cancel();
             _animCts?.Dispose();
             _animCts = null;
-            
-            foreach(var tween in _tweens)
-                tween?.Kill();
             
             gameObject.SetActive(false);
             Clear();
@@ -130,7 +126,6 @@ namespace Cardevil.Cards.InStage.View
             }
             
             _visuals.Clear();
-            _tweens.Clear();
             _cardCache = null;
         }
 
@@ -144,45 +139,40 @@ namespace Cardevil.Cards.InStage.View
             Close();
         }
 
-        private async UniTaskVoid DoAnim(CancellationToken ct)
+        private async UniTaskVoid PlayAnimateAsync(CancellationToken ct)
         {
-            try
+            // 외관 초기화
+            _bar.color -= new Color(0, 0, 0, _bar.color.a);
+            foreach (var visual in _visuals)
+                visual.CanvasGroup.alpha = 0;
+
+            // 애니메이션 처리
+            var dur = .4f;
+            var dur2 = .2f;
+            var interval = .06f;
+            
+            bool fadeCanceled = await _bar
+                .DOFade(1f, dur)
+                .ToUniTask(cancellationToken: ct)
+                .SuppressCancellationThrow();
+            
+            if (fadeCanceled)
+                return;
+
+            foreach (var visual in _visuals)
             {
-                ct.ThrowIfCancellationRequested();
-
-                // 외관 초기화
-                _bar.color -= new Color(0, 0, 0, _bar.color.a);
-                foreach (var visual in _visuals)
-                    visual.CanvasGroup.alpha = 0;
-
-                // 애니메이션 처리
-                var dur = .4f;
-                var dur2 = .2f;
-                var interval = .06f;
-                Tween tween;
-
-                tween = _bar.DOFade(1f, dur);
-                _tweens.Add(tween);
-                await tween.ToUniTask(cancellationToken: ct);
-
-                foreach (var visual in _visuals)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    DoCardAnim(visual, dur2, ct).Forget();
-                    await UniTask.Delay(TimeSpan.FromSeconds(interval), cancellationToken: ct);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            finally
-            {
-                _animCts?.Dispose();
-                _animCts = null;
+                AnimateCard(visual, dur2, ct).Forget();
+                
+                bool delayCanceled = await UniTask
+                    .Delay(TimeSpan.FromSeconds(interval), cancellationToken: ct)
+                    .SuppressCancellationThrow();
+                
+                if (delayCanceled)
+                    return;
             }
         }
 
-        private async UniTaskVoid DoCardAnim(CardVisualLightUI card, float dur, CancellationToken ct)
+        private async UniTaskVoid AnimateCard(CardVisualLightUI card, float dur, CancellationToken ct)
         {
             var originalPos = card.Rect.anchoredPosition;
             card.Rect.anchoredPosition = originalPos + new Vector2(0, -20);
@@ -190,7 +180,8 @@ namespace Cardevil.Cards.InStage.View
             await DOTween.Sequence()
                 .Join(card.CanvasGroup.DOFade(1f, dur))
                 .Join(card.Rect.DOAnchorPos(originalPos, dur))
-                .ToUniTask(cancellationToken: ct);
+                .ToUniTask(cancellationToken: ct)
+                .SuppressCancellationThrow();
         }
         
         /// <summary>

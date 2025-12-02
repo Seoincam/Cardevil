@@ -62,8 +62,6 @@ namespace Cardevil.Cards.InStage.View
             closeButton.onClick.AddListener(Close);
             
             _canvasGroup = GetComponent<CanvasGroup>();
-            // _canvasGroup.interactable = false;
-            // _canvasGroup.blocksRaycasts = false;
             
             _isVisible = false;
             gameObject.SetActive(false);
@@ -168,11 +166,11 @@ namespace Cardevil.Cards.InStage.View
                 }
             }
 
-            bool completed = await UniTask
+            bool delayCanceled = await UniTask
                 .Delay(TimeSpan.FromSeconds(setting.startInterval), cancellationToken: ct)
                 .SuppressCancellationThrow();
             
-            if (!completed)
+            if (delayCanceled)
                 return;
             
             for (int i = 0; i < cardVisuals.Length; i++)
@@ -187,13 +185,18 @@ namespace Cardevil.Cards.InStage.View
 
         private async UniTaskVoid AnimateCard(CardVisualUI card, float d, CancellationToken ct)
         {
-            bool completed = await UniTask
+            bool delayCanceled = await UniTask
                 .Delay(TimeSpan.FromSeconds(d), cancellationToken: ct)
                 .SuppressCancellationThrow();
                 
-            if (!completed)
+            if (delayCanceled)
                 return;
+            
+            // 이전 트윈 정리
+            card.Rect.DOKill();
+            card.CanvasGroup.DOKill();
 
+            // 애니메이션 설정
             var seq = DOTween.Sequence();
 
             if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
@@ -205,7 +208,6 @@ namespace Cardevil.Cards.InStage.View
                     .Join(card.Rect.DOScale(CardScale * 1.05f, setting.duration * .5f).SetEase(Ease.OutBack))
                     .Append(card.Rect.DOScale(CardScale, setting.duration * .2f).SetEase(Ease.OutQuad));
             }
-
             else if (setting.animType == DeckRemainViewAnimSetting.AnimType.FadeInUp)
             {
                 var originalPos = card.Rect.anchoredPosition;
@@ -216,7 +218,9 @@ namespace Cardevil.Cards.InStage.View
                     .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic));
             }
 
-            await seq.ToUniTask(cancellationToken: ct);
+            await seq
+                .ToUniTask(cancellationToken: ct)
+                .SuppressCancellationThrow();
         }
     }
 }
