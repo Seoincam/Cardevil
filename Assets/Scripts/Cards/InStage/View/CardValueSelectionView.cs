@@ -153,7 +153,7 @@ namespace Cardevil.Cards.InStage.View
                 // 외관 초기화
                 _bar.color -= new Color(0, 0, 0, _bar.color.a);
                 foreach (var visual in _visuals)
-                    visual.Rect.localScale = Vector3.zero;
+                    visual.CanvasGroup.alpha = 0;
 
                 // 애니메이션 처리
                 var dur = .4f;
@@ -168,9 +168,7 @@ namespace Cardevil.Cards.InStage.View
                 foreach (var visual in _visuals)
                 {
                     ct.ThrowIfCancellationRequested();
-                    tween = visual.Rect.DOScale(CardScale, dur2)
-                        .SetEase(Ease.OutBack);
-                    _tweens.Add(tween);
+                    DoCardAnim(visual, dur2, ct).Forget();
                     await UniTask.Delay(TimeSpan.FromSeconds(interval), cancellationToken: ct);
                 }
             }
@@ -182,7 +180,18 @@ namespace Cardevil.Cards.InStage.View
                 _animCts?.Dispose();
                 _animCts = null;
             }
-        } 
+        }
+
+        private async UniTaskVoid DoCardAnim(CardVisualLightUI card, float dur, CancellationToken ct)
+        {
+            var originalPos = card.Rect.anchoredPosition;
+            card.Rect.anchoredPosition = originalPos + new Vector2(0, -20);
+
+            await DOTween.Sequence()
+                .Join(card.CanvasGroup.DOFade(1f, dur))
+                .Join(card.Rect.DOAnchorPos(originalPos, dur))
+                .ToUniTask(cancellationToken: ct);
+        }
         
         /// <summary>
         /// <see cref="_bar"/> 크기를 조정.

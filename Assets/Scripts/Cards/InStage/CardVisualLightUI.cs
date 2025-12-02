@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class CardVisualLightUI : MonoBehaviour
     {
         public event Action<(int, Direction)> Selected;
@@ -17,6 +18,7 @@ namespace Cardevil.Cards.InStage
         private (CardColor color, int numValue, Direction dirValue) _values;
         private bool _initialized;
 
+        public CanvasGroup CanvasGroup { get; private set; }
         public RectTransform Rect { get; private set; }
 
         public void Init(float scale, CardColor color, int numberValue)
@@ -42,6 +44,7 @@ namespace Cardevil.Cards.InStage
                 _button = GetComponentInChildren<Button>();
                 _base = GetComponentInChildren<CardVisualBaseLight>();
                 Rect = GetComponent<RectTransform>();
+                CanvasGroup = GetComponent<CanvasGroup>();
                 
                 _initialized = true;
             }
