@@ -57,7 +57,7 @@ namespace Cardevil.Dungeon.UI
 
         public void Initialize()
         {
-            LogEx.Log("[DungeonUI] Phase 1 - Setting up UI references...");
+            LogEx.Log("DungeonUI Initialize Phase 1: Setting up UI references...");
             /*
              * 던전 UI 초기화 - 1단계: 참조 설정
              */
@@ -72,7 +72,7 @@ namespace Cardevil.Dungeon.UI
         /// </summary>
         public void InitializeAfterDungeonCreated()
         {
-            LogEx.Log("[DungeonUI] Phase 2 - Initializing with dungeon data...");
+            LogEx.Log("DungeonUI Initialize Phase 2: Initializing with dungeon data...");
             /*
              * 던전 UI 초기화 - 2단계: 던전 데이터 기반 초기화
              */
@@ -84,16 +84,22 @@ namespace Cardevil.Dungeon.UI
         
         public void UpdateShowingDungeon(int id)
         {
+            LogEx.Log($"DungeonUI UpdateShowingDungeon: 던전 ID {id} 표시 시작");
+            
             var toShow = _dungeonChapters.Find(chapter => chapter.DungeonId == id);
             if (toShow == null)
             {
-                LogEx.LogError($"[DungeonUI] No DungeonChapterUI found for dungeon ID {id}");
+                LogEx.LogError($"DungeonUI UpdateShowingDungeon: No DungeonChapterUI found for dungeon ID {id}");
                 return;
             }
             
+            LogEx.Log($"DungeonUI UpdateShowingDungeon: 표시할 ChapterUI는 Dungeon ID {toShow.DungeonId}, GameObject={toShow.name}");
+            
             foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
-                chapterUI.gameObject.SetActive(chapterUI == toShow);
+                bool shouldActivate = chapterUI == toShow;
+                LogEx.Log($"  ChapterUI GameObject={chapterUI.name}, DungeonID={chapterUI.DungeonId}, SetActive({shouldActivate})");
+                chapterUI.gameObject.SetActive(shouldActivate);
             }
             
             Camera.MoveTo(toShow.transform.position).OnComplete(() =>

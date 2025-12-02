@@ -3,7 +3,9 @@ using Cardevil.DebugConsole;
 using Cardevil.Dungeon.Build;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
@@ -81,17 +83,38 @@ namespace Cardevil.Dungeon
             // 4단계: 던전 ID 1로 초기화
             if (dungeons.Count > 0)
             {
+                LogEx.Log($"DungeonManager Init: 총 {dungeons.Count}개 던전 생성됨");
+                foreach (var d in dungeons)
+                {
+                    LogEx.Log($"  던전 ID={d.DungeonId}, RootNode={(d.RootNode != null ? $"ID {d.RootNode.NodeId}" : "null")}");
+                }
+                
+                // 먼저 Root 노드를 Available로 변경 (ChapterUI가 비활성화되기 전에!)
+                var dungeon = GetDungeonById(1);
+                LogEx.Log($"DungeonManager Init: GetDungeonById(1) 결과={(dungeon != null ? $"던전 ID {dungeon.DungeonId}" : "null")}");
+                
+                if (dungeon?.RootNode != null)
+                {
+                    LogEx.Log($"DungeonManager Init: Root 노드 ID={dungeon.RootNode.NodeId}, State={dungeon.RootNode.State}");
+                    dungeon.RootNode.State = NodeState.Available;
+                    LogEx.Log($"DungeonManager Init: Root 노드 State를 Available로 변경 완료");
+                }
+                else
+                {
+                    LogEx.LogError($"DungeonManager Init: Root 노드가 null! dungeon={dungeon}, RootNode={dungeon?.RootNode}");
+                }
+                
+                // 그 다음 현재 던전 설정 (다른 ChapterUI 비활성화)
+                LogEx.Log($"DungeonManager Init: SetCurrentDungeonById(1) 호출");
                 SetCurrentDungeonById(1);
-                // 첫 노드 사용 가능 상태로 설정
-                var rootNode = CurrentDungeon?.RootNode;
-                LogEx.Log($"Root Node ID: {rootNode?.NodeId}");
-                rootNode!.State = NodeState.Available;
             }
             else
             {
-                Debug.LogWarning("[DungeonManager] No dungeons created during initialization.");
+                Debug.LogWarning("DungeonManager Init: No dungeons created during initialization.");
                 currentDungeonIndex = -1;
             }
+            
+
         }
 
         private void CreateDungeons()

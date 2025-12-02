@@ -1,4 +1,4 @@
-﻿﻿using Cardevil.Attributes;
+﻿using Cardevil.Attributes;
  using Cardevil.Utils;
  using System;
 using System.Collections.Generic;
@@ -55,7 +55,9 @@ namespace Cardevil.Dungeon
             get => state;
             set
             {
+                var oldState = state;
                 state = value;
+                Debug.Log($"DungeonNode {NodeId} State change: {oldState} -> {state}");
                 OnStateChanged?.Invoke(state);
             }
         }
