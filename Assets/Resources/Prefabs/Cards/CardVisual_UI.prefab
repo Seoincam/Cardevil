@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 765696218159893490}
   - component: {fileID: 8720322775708924232}
+  - component: {fileID: 193974602721328021}
   m_Layer: 5
   m_Name: CardVisual_UI
   m_TagString: Untagged
@@ -54,6 +55,18 @@ MonoBehaviour:
   visualController: {fileID: 4918036901264800748}
   visualBase: {fileID: 6785220822936213894}
   cover: {fileID: 4388674649303686482}
+--- !u!225 &193974602721328021
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1058478893342844353}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1539936036938805813
 GameObject:
   m_ObjectHideFlags: 0

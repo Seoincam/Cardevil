@@ -1,20 +1,29 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Cards.ScriptableObjects;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Cardevil.Cards.InStage.View
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class DeckRemainView : UI_Popup
-    {
-        [Header("SO")]
-        [SerializeField] private CardVisualSettingSO visualSO;
+    {        
+        public enum AnimType { Type1, Type2 }
+
+        [Header("Anim Setting")]
+        public AnimType animType;          // 애니메이션 모드(type1,2,3)
+        public int delay;                // 카드 간 딜레이(ms)
+        public float duration;           // 개별 카드 애니메이션 시간
+        public float angle;              // 딜레이 계산에 쓰는 기울기
+        public float startY;             // 시작 Y offset
+        public float startOpacity;       // 시작 투명도
 
         [Header("Summary Area")] 
         [SerializeField] private SerializableDictionary<string, TextMeshProUGUI> countTexts;
@@ -30,6 +39,8 @@ namespace Cardevil.Cards.InStage.View
         private bool _isVisible;
         private bool _isClicked;
         private Tween _tween;
+
+        private const float CardScale = .48f;
 
         public void Init(IReadOnlyCardLibrary library, IReadOnlyStageCardsModel model)
         {
@@ -106,6 +117,7 @@ namespace Cardevil.Cards.InStage.View
         {
             _isVisible = true;
             gameObject.SetActive(true);
+            PlayAnimationAsync().Forget();
         }
 
         private void Close()
@@ -131,6 +143,58 @@ namespace Cardevil.Cards.InStage.View
 
             var data = _library.GetCardDataById(index);
             cardVisualUI.Init(data);
+        }
+
+        private async UniTaskVoid PlayAnimationAsync()
+        {
+            foreach (var card in cardVisuals)
+            {
+                card.CanvasGroup.alpha = 0;
+ 
+                float randomScale = Random.Range(0.3f, 1.0f);
+                card.Rect.localScale = Vector3.one * CardScale * randomScale;
+                card.Rect.anchoredPosition += Vector2.up * startY;
+            }
+
+            await UniTask.Delay(TimeSpan.FromSeconds(1f));
+
+            for (int i = 0; i < cardVisuals.Length; i++)
+            {
+                int row = i / 5;
+                int col = i % 10;
+                float d = (col * angle + row) * delay / 1000f;
+                AnimateCard(cardVisuals[i], d).Forget();
+            }
+        }
+
+        private async UniTaskVoid AnimateCard(CardVisualUI card, float d)
+        {
+            await UniTask.Delay(TimeSpan.FromSeconds(d));
+
+            var seq = DOTween.Sequence();
+            
+            // Pop
+            if (animType == AnimType.Type1)
+            {
+                card.Rect.localScale = Vector3.one * CardScale * .3f;
+                card.CanvasGroup.alpha = 0f;
+
+                seq
+                    .Append(card.CanvasGroup.DOFade(1f, duration * .5f))
+                    .Join(card.Rect.DOScale(CardScale * 1.05f, duration * .5f).SetEase(Ease.OutBack))
+                    .Append(card.Rect.DOScale(CardScale, duration * .2f).SetEase(Ease.OutQuad));
+            }
+            
+            // fade in up
+            else if (animType == AnimType.Type2)
+            {
+                var originalPos = card.Rect.anchoredPosition;
+                card.Rect.anchoredPosition = originalPos + new Vector2(0, -startY);
+                card.CanvasGroup.alpha = 0f;
+                seq
+                    .Append(card.CanvasGroup.DOFade(1f, duration))
+                    .Join(card.Rect.DOAnchorPos(originalPos, duration).SetEase(Ease.OutCubic));
+            }
         }
     }
 }

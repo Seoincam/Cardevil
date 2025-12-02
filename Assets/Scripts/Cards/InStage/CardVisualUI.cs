@@ -12,6 +12,7 @@ using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class CardVisualUI : MonoBehaviour, IPointerClickHandler, IClearable
     {
         [Header("SO")]
@@ -23,6 +24,8 @@ namespace Cardevil.Cards.InStage
         [SerializeField] private Image cover; 
 
         public event Action OnClicked;
+        public CanvasGroup CanvasGroup { get; private set; }
+        public RectTransform Rect { get; private set; }
         
         private bool _state = true;
         private Tween _coverTween;
@@ -30,11 +33,18 @@ namespace Cardevil.Cards.InStage
         private readonly Color _noColor = new(0, 0, 0, 0);
         private readonly Color _darkColor = new(0, 0, 0, .8f);
 
+        private void Awake()
+        {
+            CanvasGroup = GetComponent<CanvasGroup>();
+            Rect = GetComponent<RectTransform>();
+        }
+
         public void Init(CardData data)
         {
             Clear();
             visualController.Init(data);
             SetStateImmediate(true);
+            
         }
         
         public void Clear()
