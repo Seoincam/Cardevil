@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DeckRemainViewAnimSetting
   m_EditorClassIdentifier: 
   animType: 1
-  delay: 0.03
-  duration: 0.3
+  delay: 0.02
+  duration: 0.28
   angle: 0.8
-  startY: 15
-  startInterval: 0.15
+  startY: 20
+  startInterval: 0.04

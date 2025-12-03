@@ -28,7 +28,7 @@ namespace Cardevil.Cards.Visual
         [Header("Enhancement")] 
         [SerializeField] private List<Image> enhancementFrames;
         
-        private bool _isFront = false;
+        private bool _isFront = true;
         
         public RectTransform CardFrontGroup => cardFrontGroup;
         public RectTransform CardBackGroup => cardBackGroup;
@@ -62,7 +62,6 @@ namespace Cardevil.Cards.Visual
 
         public void TryFlipFrontAnim(float duration, Ease ease = Ease.Unset)
         {
-            if (_isFront) return;
             DOTween.Sequence()
                 .Append(cardBackGroup.DOLocalRotate(new Vector3(0, 90, 0), duration * .5f).SetEase(ease))
                 .Append(cardFrontGroup.DOLocalRotate(Vector3.zero, duration * .5f).SetEase(ease))
@@ -70,14 +69,12 @@ namespace Cardevil.Cards.Visual
         }
         public void TryFlipFrontImmediate()
         {
-            if (_isFront) return;
             FlipFront();
             _isFront = true;
         }
 
         public void TryFlipBackAnim(float duration, Ease ease = Ease.Unset)
         {
-            if (!_isFront) return;
             DOTween.Sequence()
                 .Append(cardFrontGroup.DOLocalRotate(new Vector3(0, 90, 0), duration * .5f).SetEase(ease))
                 .Append(cardBackGroup.DOLocalRotate(Vector3.zero, duration * .5f).SetEase(ease))
@@ -85,7 +82,6 @@ namespace Cardevil.Cards.Visual
         }
         public void TryFlipBackImmediate()
         {
-            if (!_isFront) return;
             FlipBack();
             _isFront = false;
         }

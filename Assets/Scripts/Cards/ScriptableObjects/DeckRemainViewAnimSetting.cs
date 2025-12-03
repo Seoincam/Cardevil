@@ -10,10 +10,10 @@ namespace Cardevil.Cards.ScriptableObjects
         [Tooltip("애니메이션 모드")] 
         public AnimType animType;
         
-        [Tooltip("카드 간 딜레이(sec)"), Range(0, .5f)] 
+        [Tooltip("카드 간 딜레이(sec)"), Range(0, .15f)] 
         public float delay = .05f;
 
-        [Tooltip("개별 카드 애니메이션 시간(sec)"), Range(0, 1)] 
+        [Tooltip("개별 카드 애니메이션 시간(sec)"), Range(0, .6f)] 
         public float duration = .4f;
         
         
@@ -23,7 +23,7 @@ namespace Cardevil.Cards.ScriptableObjects
         [Tooltip("시작 Y offset"), Min(0f)]
         public float startY;
         
-        [Tooltip("패널 열리고 대기 시간"), Range(0, 1.5f)]
+        [Tooltip("패널 열리고 대기 시간"), Range(0, 1f)]
         public float startInterval = .15f;
     }
 }
