@@ -16,5 +16,5 @@ MonoBehaviour:
   delay: 0.02
   duration: 0.28
   angle: 0.8
-  startY: 15
-  startInterval: 0.15
+  startY: 20
+  startInterval: 0.04

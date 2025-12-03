@@ -26,4 +26,4 @@ MonoBehaviour:
       Value: 1300
   barFadeInDuration: 0.4
   cardFadeInUpDuration: 0.2
-  cardInterval: 0.04
+  cardInterval: 0.0325

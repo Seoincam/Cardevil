@@ -159,20 +159,8 @@ namespace Cardevil.Cards.InStage.View
 
         private async UniTaskVoid PlayAnimationAsync(CancellationToken ct)
         {
-            foreach (var card in cardVisuals)
-            {
-                card.CanvasGroup.alpha = 0;
-
-                if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
-                {
-                    float randomScale = Random.Range(0.3f, 1.0f);
-                    card.Rect.localScale = Vector3.one * CardScale * randomScale;
-                }
-                else
-                {
-                    card.Rect.anchoredPosition += Vector2.up * setting.startY;
-                }
-            }
+            foreach (var visual in cardVisuals)
+                visual.CanvasGroup.alpha = 0;
 
             bool delayCanceled = await UniTask
                 .Delay(TimeSpan.FromSeconds(setting.startInterval), cancellationToken: ct)
@@ -191,44 +179,31 @@ namespace Cardevil.Cards.InStage.View
             }
         }
 
-        private async UniTaskVoid AnimateCard(CardVisualUI card, float d, CancellationToken ct)
+        private async UniTaskVoid AnimateCard(CardVisualUI card, float startDelay, CancellationToken ct)
         {
+            var originalPos = card.Rect.anchoredPosition;
+            card.Rect.anchoredPosition -= Vector2.up * setting.startY;
+            
+            // 대기
             bool delayCanceled = await UniTask
-                .Delay(TimeSpan.FromSeconds(d), cancellationToken: ct)
+                .Delay(TimeSpan.FromSeconds(startDelay), cancellationToken: ct)
                 .SuppressCancellationThrow();
                 
             if (delayCanceled)
                 return;
             
-            // 이전 트윈 정리
+            // 애니메이션
             card.Rect.DOKill();
             card.CanvasGroup.DOKill();
 
-            // 애니메이션 설정
-            var seq = DOTween.Sequence();
-
-            if (setting.animType == DeckRemainViewAnimSetting.AnimType.Pop)
-            {
-                card.Rect.localScale = Vector3.one * CardScale * .3f;
-                card.CanvasGroup.alpha = 0f;
-
-                seq.Append(card.CanvasGroup.DOFade(1f, setting.duration * .5f))
-                    .Join(card.Rect.DOScale(CardScale * 1.05f, setting.duration * .5f).SetEase(Ease.OutBack))
-                    .Append(card.Rect.DOScale(CardScale, setting.duration * .2f).SetEase(Ease.OutQuad));
-            }
-            else if (setting.animType == DeckRemainViewAnimSetting.AnimType.FadeInUp)
-            {
-                var originalPos = card.Rect.anchoredPosition;
-                card.Rect.anchoredPosition = originalPos + new Vector2(0, -setting.startY);
-                card.CanvasGroup.alpha = 0f;
-
-                seq.Append(card.CanvasGroup.DOFade(1f, setting.duration))
-                    .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic));
-            }
-
-            await seq
+            bool animCanceled = await DOTween.Sequence()
+                .Join(card.CanvasGroup.DOFade(1f, setting.duration))
+                .Join(card.Rect.DOAnchorPos(originalPos, setting.duration).SetEase(Ease.OutCubic))
                 .ToUniTask(cancellationToken: ct)
                 .SuppressCancellationThrow();
+
+            if (animCanceled)
+                card.Rect.anchoredPosition = originalPos;
         }
     }
 }
