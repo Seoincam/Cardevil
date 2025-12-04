@@ -92,12 +92,12 @@ public class GameManager : ISaveLoad
  
     }
     
-    public void EnterStage(string roomId)
+    public void EnterStage(string stageId)
     {
-        _enemySpawner.ConfigStageMobData(roomId);
+        _enemySpawner.ConfigStageMobData(stageId);
         if (!_enemySpawner.TrySpawn(out var enemy))
         {
-            LogEx.LogError($"Failed to spawn Enemy. room Id: {roomId}");
+            LogEx.LogError($"Failed to spawn Enemy. room Id: {stageId}");
             return;
         }
 
