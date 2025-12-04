@@ -1,6 +1,7 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Visual.Handler;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private Button closeButton;
         
         [Header("Cards Area")]
-        [SerializeField] private CardVisualUI[] cardVisuals;
+        [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
         
         private IReadOnlyCardLibrary _library;
         private IReadOnlyStageCardsModel _model;
@@ -179,7 +180,7 @@ namespace Cardevil.Cards.InStage.View
             }
         }
 
-        private async UniTaskVoid AnimateCard(CardVisualUI card, float startDelay, CancellationToken ct)
+        private async UniTaskVoid AnimateCard(CardVisualDeckRemainView card, float startDelay, CancellationToken ct)
         {
             var originalPos = card.Rect.anchoredPosition;
             card.Rect.anchoredPosition -= Vector2.up * setting.startY;

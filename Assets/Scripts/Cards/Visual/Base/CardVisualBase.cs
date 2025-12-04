@@ -1,3 +1,4 @@
+using Cardevil.Cards.Visual.Base;
 using Cardevil.DataStructure.Serializables;
 using DG.Tweening;
 using System;
@@ -5,9 +6,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.Visual
+namespace Cardevil.Cards.Visual.Base
 {
-    public class CardVisualBase : MonoBehaviour
+    public class CardVisualBase : CardVisualCore
     {
         [Header("SO")] 
         [SerializeField] private CardVisualAnimSetting animSetting;
@@ -21,26 +22,32 @@ namespace Cardevil.Cards.Visual
         [SerializeField] private RectTransform selMidBackground;
         [SerializeField] private RectTransform selBotBackground;
 
-        [Header("Default")]
-        [SerializeField] private Image innerFrame;
-        [SerializeField] private Image number;
-
         [Header("Enhancement")] 
         [SerializeField] private List<Image> enhancementFrames;
         
-        private bool _isFront = true;
+        [Serializable]
+        public class SelectionGroup
+        {
+            [SerializeField] private int count;
+            [SerializeField] private GameObject numberGroup;
+            [SerializeField] private SerializableDictionary<Position, Image> numberMap;
+            
+            // getter
+            public int Count => count;
+            public GameObject NumberGroup => numberGroup;
+            public IReadOnlyDictionary<Position, Image> NumberMap => numberMap;
+        }
         
-        public RectTransform CardFrontGroup => cardFrontGroup;
-        public RectTransform CardBackGroup => cardBackGroup;
+        public enum Position
+        {
+            Top, Middle, Bottom
+        }
+        
+        private bool _isFront = true;
         
         public RectTransform SelMidBackground => selMidBackground;
         public RectTransform SelBotBackground => selBotBackground;
         
-        public Image InnerFrame => innerFrame;
-        public Image Number => number;
-        
-        public IReadOnlyList<Image> EnhancementFrames => enhancementFrames;
-
         public SelectionGroup GetSelectionGroup(int count)
         {
             foreach (var group in selectionGroups)
@@ -51,13 +58,6 @@ namespace Cardevil.Cards.Visual
             }
 
             return null;
-        }
-        
-        public RectTransform Rect { get; private set; }
-
-        private void Awake()
-        {
-            Rect = GetComponent<RectTransform>();
         }
 
         public void TryFlipFrontAnim(float duration, Ease ease = Ease.Unset)
@@ -104,21 +104,7 @@ namespace Cardevil.Cards.Visual
          * 이런 식으로 만들 수 있게 해야겠음.
          * 값 선택, 강화창 등에서 쓸 수 있게.
          */
-
         
-        [Serializable]
-        public class SelectionGroup
-        {
-            [SerializeField] private int count;
-            [SerializeField] private GameObject numberGroup;
-            [SerializeField] private SerializableDictionary<Position, Image> numberMap;
-            
-            // getter
-            public int Count => count;
-            public GameObject NumberGroup => numberGroup;
-            public IReadOnlyDictionary<Position, Image> NumberMap => numberMap;
-        }
-
         public struct BackgroundPos
         {
             public static BackgroundPos MidSetting => new BackgroundPos(160, -125, 45, 0);
@@ -132,11 +118,6 @@ namespace Cardevil.Cards.Visual
                 initPos = new Vector2(initX, initY);
                 finalPos = new Vector2(finalX, finalY);
             }
-        }
-        
-        public enum Position
-        {
-            Top, Middle, Bottom
         }
     }
 

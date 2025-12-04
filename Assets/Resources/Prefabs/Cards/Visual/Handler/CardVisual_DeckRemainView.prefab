@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 765696218159893490}
-  - component: {fileID: 8720322775708924232}
   - component: {fileID: 193974602721328021}
+  - component: {fileID: 8720322775708924232}
   m_Layer: 5
-  m_Name: CardVisual_UI
+  m_Name: CardVisual_DeckRemainView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39,22 +39,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 180, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8720322775708924232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1058478893342844353}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c56a3842994648459a44d596abf5e90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
-  visualController: {fileID: 4918036901264800748}
-  visualBase: {fileID: 6785220822936213894}
-  cover: {fileID: 4388674649303686482}
 --- !u!225 &193974602721328021
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -67,6 +51,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8720322775708924232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1058478893342844353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c56a3842994648459a44d596abf5e90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualController: {fileID: 4918036901264800748}
+  visualBase: {fileID: 6785220822936213894}
+  cover: {fileID: 4388674649303686482}
+  visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
 --- !u!1 &1539936036938805813
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +152,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4627923435394325943, guid: 3aa5d2ba467274871b70c891d1a63bdb, type: 3}
       propertyPath: m_Name
-      value: CardVisualOriginal
+      value: CardVisualBase
       objectReference: {fileID: 0}
     - target: {fileID: 4905869576256811905, guid: 3aa5d2ba467274871b70c891d1a63bdb, type: 3}
       propertyPath: m_Pivot.x

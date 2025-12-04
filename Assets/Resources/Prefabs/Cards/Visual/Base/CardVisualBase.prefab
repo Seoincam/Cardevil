@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 1101585110491434529}
   - component: {fileID: 5085115953041580762}
   m_Layer: 5
-  m_Name: Small Number
+  m_Name: Small Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -589,6 +589,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e44185a60574bbaac2a7aaa99b14145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  innerFrame: {fileID: 7758025542399416117}
+  mainValue: {fileID: 566944155178206559}
+  smallValue: {fileID: 5085115953041580762}
   animSetting: {fileID: 0}
   cardFrontGroup: {fileID: 2902432938298084927}
   cardBackGroup: {fileID: 5964001764712778089}
@@ -615,9 +618,6 @@ MonoBehaviour:
         Value: {fileID: 6553024332033013242}
   selMidBackground: {fileID: 4369941407860613882}
   selBotBackground: {fileID: 2224684308151309347}
-  innerFrame: {fileID: 7758025542399416117}
-  number: {fileID: 566944155178206559}
-  smallNumber: {fileID: 5085115953041580762}
   enhancementFrames:
   - {fileID: 2622694233588831660}
   - {fileID: 736602562011721313}
@@ -633,7 +633,7 @@ GameObject:
   - component: {fileID: 5681844902266401639}
   - component: {fileID: 566944155178206559}
   m_Layer: 5
-  m_Name: Number
+  m_Name: Main Value
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

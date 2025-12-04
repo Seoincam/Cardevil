@@ -10,6 +10,7 @@ using UnityEngine;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
+using Cardevil.Cards.Visual.Base;
 using Cysharp.Threading.Tasks;
 using UnityEngine.Events;
 using UnityEngine.UI;

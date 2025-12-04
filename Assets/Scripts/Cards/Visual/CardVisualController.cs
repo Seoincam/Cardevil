@@ -1,5 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Visual.Base;
 using Cardevil.Cards.Visual.StateMachine;
 using Cysharp.Threading.Tasks;
 using System;
