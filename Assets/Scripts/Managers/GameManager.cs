@@ -14,7 +14,6 @@ using Cardevil.Ingame.Player;
 public class GameManager : ISaveLoad
 {
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
-    [FormerlySerializedAs("enemy")] [SerializeField] public Enemy _enemy;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
 
@@ -41,17 +40,7 @@ public class GameManager : ISaveLoad
         }
     }
 
-    public Enemy Enemy
-    {
-        get
-        {
-            return _enemy;
-        }
-        set
-        {
-            _enemy = value;
-        }
-    }
+    public ITurnEnemy Enemy => _turn.Enemy;
     public PlayerCharacter Player
     {
         get
@@ -101,8 +90,7 @@ public class GameManager : ISaveLoad
             return;
         }
 
-        _enemy = enemy;
-        _turn.Register(Managers.Card.BuildFlow(), _player, _enemy);
+        _turn.Register(Managers.Card.BuildFlow(), _player, enemy);
         _turn.StartLoop();
     }
     

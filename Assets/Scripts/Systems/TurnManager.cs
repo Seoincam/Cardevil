@@ -10,6 +10,7 @@ namespace Cardevil.Systems
     public class TurnManager: IClearable
     {
         public int TurnOrder { get; private set; }
+        public ITurnEnemy Enemy => _enemy;
         
         private CancellationTokenSource _cts;
         private UniTask _loopTask;
