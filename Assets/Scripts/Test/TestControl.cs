@@ -73,15 +73,9 @@ namespace Cardevil.Test
             {
                 if (GUILayout.Button("Enter Stage"))
                 {
-                    Managers.Game.StageStart();
+                    Managers.Game.EnterStage("Test");
                 }
             }
-        }
-
-        [ContextMenu("Stop Turn Loop")]
-        public void StopTurn()
-        {
-            _ = Managers.Turn.StopLoopAsync();
         }
 
         #endregion

@@ -20,12 +20,12 @@ public class GameManager : ISaveLoad
 {
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
     [FormerlySerializedAs("enemy")] [SerializeField] public Enemy _enemy;
-    [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
-    [SerializeField] public DatabaseManager _database;
-    [SerializeField] public EnemySpawner _enemySpawner;
 
+    private readonly TurnManager _turn = new();
+    private EnemySpawner _enemySpawner;
+    
     public Field Field
     {
         get
@@ -68,20 +68,8 @@ public class GameManager : ISaveLoad
             _player = value;
         }
     }
-    
-    public int TurnOrder
-    {
-        get { return _turnOrder; }
-        set
-        {
-            if (value < 0)
-            {
-                Debug.LogError("TurnOrder cannot be negative.");
-                return;
-            }
-            _turnOrder = value;
-        }
-    }
+
+    public int TurnOrder => _turn.TurnOrder;
     
     public PlayerStatus PlayerStatus
     {
@@ -91,23 +79,6 @@ public class GameManager : ISaveLoad
         }
     }
     
-    
-    
-    public void Clear()
-    {
- 
-     }
-
-    //게임 상태를 나눠서 상태에 따라 스크립트들이 돌아가게 함
-    public enum GameState
-    {
-        Pause,
-        Combat,
-        NonCombat
-    }
-    public GameState currentState;
-
-
     public void Init()
     {
         
@@ -116,7 +87,35 @@ public class GameManager : ISaveLoad
         // 혹시 모르는 Reference 문제를 방지하기 위해 this로 등록 후 Save, Load에서 처리
         SaveLoadManager saveLoadManager = Managers.SaveLoad;
         saveLoadManager.Register(this);
-        
+
+        _enemySpawner = new EnemySpawner();
+    }
+    
+    public void Clear()
+    {
+ 
+    }
+
+    /*
+     * 던전 매니저에게 스테이지 입장 요청 받음 (string roomId)
+     * TurnManager에 Enemy, Card, Player 등 등록.
+     * Enemy에 소환해야함 Managers.GameManager._enemySpawner
+     * TurnManager.StartLoop
+     */
+
+    
+    public void EnterStage(string roomId)
+    {
+        _enemySpawner.ConfigStageMobData(roomId);
+        if (!_enemySpawner.TrySpawn(out var enemy))
+        {
+            LogEx.LogError($"Failed to spawn enemy. room Id: {roomId}");
+            return;
+        }
+
+        _enemy = enemy;
+        _turn.Init(Managers.Card.BuildFlow(), _player, _enemy);
+        _turn.StartLoop();
     }
     
     //플레이어 죽을 때 실행시킬 함수
@@ -147,25 +146,6 @@ public class GameManager : ISaveLoad
         _playerStatus.BroadcastInitialStatus();
     }
     
-    private async UniTask LoadPlayerData()
-    {
-        await UniTask.WaitUntil(() => Managers.Database.IsInitialized);
-        GameStart();
-    }
-
-    public void StageStart()
-    {
-        TurnOrder = 0;
-        Managers.Card.OnEnterStage();
-        Managers.Turn.Init(
-            Player.GetComponent<ITurnPlayerMove>(),
-            Player.GetComponent<ITurnPlayerAction>(),
-            Enemy.GetComponent<ITurnEnemy>()
-            );
-
-        Managers.Turn.StartLoop();
-    }
-
     public void Save(GameSave currentSave)
     {
         _playerStatus.Save(currentSave);
@@ -175,5 +155,11 @@ public class GameManager : ISaveLoad
     {
         _playerStatus.Load(currentSave);
         
+    }
+    
+    private async UniTask LoadPlayerData()
+    {
+        await UniTask.WaitUntil(() => Managers.Database.IsInitialized);
+        GameStart();
     }
 }

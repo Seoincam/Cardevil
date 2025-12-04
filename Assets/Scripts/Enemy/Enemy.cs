@@ -88,7 +88,6 @@ namespace Cardevil.InGame.Enemy
         {
             field = Managers.Game.Field;
             currentAttackStyle = AttackStyle.UnKnown;
-            Managers.Game.Enemy = this;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
 
@@ -503,7 +502,7 @@ namespace Cardevil.InGame.Enemy
                 if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
                 {
                     // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                    if (player is ITurnPlayerAction action)
+                    if (player is ITurnPlayer action)
                     {
                         action.PlayerGetDamage(damage);
                         successAttack = true;
@@ -525,7 +524,7 @@ namespace Cardevil.InGame.Enemy
                 {
                     if (entity.TryGetComponent<PlayerCharacter>(out var player))
                     {
-                        if (player is ITurnPlayerAction action)
+                        if (player is ITurnPlayer action)
                         {
                             action.PlayerGetDamage(damage);
                             successAttack = true;
@@ -546,7 +545,7 @@ namespace Cardevil.InGame.Enemy
                     {
                         if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayerAction action)
+                            if (player is ITurnPlayer action)
                             {
                                 action.PlayerGetDamage(damage);
                                 successAttack = true;
@@ -571,7 +570,7 @@ namespace Cardevil.InGame.Enemy
                 {
                     if (entity.TryGetComponent<PlayerCharacter>(out var player))
                     {
-                        if (player is ITurnPlayerAction action)
+                        if (player is ITurnPlayer action)
                         {
                             action.PlayerGetDamage(damage);
                             successAttack = true;
@@ -594,7 +593,7 @@ namespace Cardevil.InGame.Enemy
                     {
                         if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayerAction action)
+                            if (player is ITurnPlayer action)
                             {
                                 action.PlayerGetDamage(damage);
                                 successAttack = true;
@@ -651,7 +650,7 @@ namespace Cardevil.InGame.Enemy
                     {
                         if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayerAction action)
+                            if (player is ITurnPlayer action)
                             {
                                 action.PlayerGetDamage(damage);
                                 successAttack = true;
@@ -677,7 +676,7 @@ namespace Cardevil.InGame.Enemy
                 {
                     if (entity.TryGetComponent<PlayerCharacter>(out var player))
                     {
-                        if (player is ITurnPlayerAction action)
+                        if (player is ITurnPlayer action)
                         {
                             action.PlayerGetDamage(damage);
                             successAttack = true;
@@ -699,7 +698,7 @@ namespace Cardevil.InGame.Enemy
                     {
                         if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayerAction action)
+                            if (player is ITurnPlayer action)
                             {
                                 action.PlayerGetDamage(damage);
                                 successAttack = true;
@@ -724,7 +723,7 @@ namespace Cardevil.InGame.Enemy
                 {
                     if (entity.TryGetComponent<PlayerCharacter>(out var player))
                     {
-                        if (player is ITurnPlayerAction action)
+                        if (player is ITurnPlayer action)
                         {
                             action.PlayerGetDamage(damage);
                             successAttack = true;
@@ -746,7 +745,7 @@ namespace Cardevil.InGame.Enemy
                     {
                         if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayerAction action)
+                            if (player is ITurnPlayer action)
                             {
                                 action.PlayerGetDamage(damage);
                                 successAttack = true;
@@ -786,7 +785,7 @@ namespace Cardevil.InGame.Enemy
                     {
                         if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayerAction action)
+                            if (player is ITurnPlayer action)
                             {
                                 action.PlayerGetDamage(damage);
                                 successAttack = true;
@@ -1267,7 +1266,7 @@ namespace Cardevil.InGame.Enemy
                 if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
                 {
                     // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                    if (player is ITurnPlayerAction action)
+                    if (player is ITurnPlayer action)
                     {
                         action.PlayerGetDamage(damage);
                     }
@@ -1292,7 +1291,7 @@ namespace Cardevil.InGame.Enemy
                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
                     {
                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                        if (player is ITurnPlayerAction action)
+                        if (player is ITurnPlayer action)
                         {
                             action.PlayerGetDamage(damage);
                             successAttack = true;
@@ -1321,7 +1320,7 @@ namespace Cardevil.InGame.Enemy
                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
                     {
                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                        if (player is ITurnPlayerAction action)
+                        if (player is ITurnPlayer action)
                         {
                             action.PlayerGetDamage(damage);
                             successAttack = true;

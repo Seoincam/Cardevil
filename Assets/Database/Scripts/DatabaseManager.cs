@@ -56,7 +56,6 @@ namespace Database
         private void Awake()
         {
             DontDestroyOnLoad(gameObject);
-            Managers.Game._database = this;
         }
 
         [ContextMenu("Clear Database")]
