@@ -41,6 +41,7 @@ public class GameManager : ISaveLoad
     }
 
     public ITurnEnemy Enemy => _turn.Enemy;
+    
     public PlayerCharacter Player
     {
         get
@@ -81,8 +82,22 @@ public class GameManager : ISaveLoad
  
     }
     
+    /// <summary>
+    /// 전투 스테이지에 진입합니다.
+    /// </summary>
+    /// <param name="stageId">Map에서 선택된 지점의 Id.</param>
     public void EnterStage(string stageId)
     {
+        /*
+         * TODO:
+         * 0. 지금까지 데이터 Save
+         * 1. 스테이지 외 UI 가리기
+         * 2. 스테이지 초기화
+         * 3. 스테이지 구성 (완)
+         */
+        
+        
+        // 3. 스테이지 구성
         _enemySpawner.ConfigStageMobData(stageId);
         if (!_enemySpawner.TrySpawn(out var enemy))
         {

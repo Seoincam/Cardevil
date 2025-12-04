@@ -102,16 +102,28 @@ namespace Cardevil.Systems
         UniTask WaitUserInput();
     }
 
+    public interface ITurnPlayer : ITurnPlayerAction, ITurnPlayerMove
+    {
+    }
+
     /// <summary>
     /// 플레이어의 행동을 정의하는 인터페이스.
     /// TurnManager가 호출.
     /// </summary>
-    public interface ITurnPlayer
+    public interface ITurnPlayerAction
     {
         bool IsDead { get; }
         UniTask TurnAttack();
-        UniTask TurnMove();
         void PlayerGetDamage(float amount);
+    }
+
+    /// <summary>
+    /// 플레이어의 움직임을 정의하는 인터페이스.
+    /// TurnManager가 호출.
+    /// </summary>
+    public interface ITurnPlayerMove
+    {
+        UniTask TurnMove();
     }
 
     /// <summary>
