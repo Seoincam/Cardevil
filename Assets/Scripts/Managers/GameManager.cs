@@ -1,21 +1,16 @@
 using Cardevil.Ingame;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Cardevil.Ingame.Field;
-using Cardevil.Ingame.Entities;
 using Cardevil.InGame.Enemy;
 using Cardevil.Save;
 using UnityEngine.Serialization;
 using Cardevil.Systems;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
-using Unity.VisualScripting;
-using Database;
 using Cardevil.Enemy;
 using Cardevil.Ingame.Player;
 
-[Serializable]
+[System.Serializable]
 public class GameManager : ISaveLoad
 {
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
@@ -32,7 +27,7 @@ public class GameManager : ISaveLoad
         {
             if (_field == null)
             {
-                _field = GameObject.FindAnyObjectByType<Field>();
+                _field = Object.FindAnyObjectByType<Field>();
                 if (_field == null)
                 {
                     Debug.LogError("Field not found in the scene.");
@@ -89,32 +84,25 @@ public class GameManager : ISaveLoad
         saveLoadManager.Register(this);
 
         _enemySpawner = new EnemySpawner();
+        _turn.Init(_enemySpawner);
     }
     
     public void Clear()
     {
  
     }
-
-    /*
-     * 던전 매니저에게 스테이지 입장 요청 받음 (string roomId)
-     * TurnManager에 Enemy, Card, Player 등 등록.
-     * Enemy에 소환해야함 Managers.GameManager._enemySpawner
-     * TurnManager.StartLoop
-     */
-
     
     public void EnterStage(string roomId)
     {
         _enemySpawner.ConfigStageMobData(roomId);
         if (!_enemySpawner.TrySpawn(out var enemy))
         {
-            LogEx.LogError($"Failed to spawn enemy. room Id: {roomId}");
+            LogEx.LogError($"Failed to spawn Enemy. room Id: {roomId}");
             return;
         }
 
         _enemy = enemy;
-        _turn.Init(Managers.Card.BuildFlow(), _player, _enemy);
+        _turn.Register(Managers.Card.BuildFlow(), _player, _enemy);
         _turn.StartLoop();
     }
     

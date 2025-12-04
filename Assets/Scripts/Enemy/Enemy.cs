@@ -96,6 +96,11 @@ namespace Cardevil.InGame.Enemy
         private void Awake()
         {
         }
+        
+        public async UniTask Replace()
+        {
+            throw new NotImplementedException("아직 Enemy 교체가 구현되지 않음.");
+        }
 
         #region 족보공격 구현
 
@@ -813,6 +818,7 @@ namespace Cardevil.InGame.Enemy
             }
             return false;
         }
+
         public async UniTask TurnAttack() //인터페이스
         {
             await UniTask.Delay(1200);

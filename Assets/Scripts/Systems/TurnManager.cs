@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
 using Cardevil.Core;
+using Cardevil.Enemy;
 using Cardevil.Utils;
 
 namespace Cardevil.Systems
@@ -17,6 +18,8 @@ namespace Cardevil.Systems
         private ITurnPlayer _player;
         private ITurnEnemy _enemy;
 
+        private EnemySpawner _spawner;
+
 
         public void Clear()
         {
@@ -26,8 +29,13 @@ namespace Cardevil.Systems
             _player = null;
             _enemy = null;
         }
+
+        public void Init(EnemySpawner spawner)
+        {
+            _spawner = spawner;
+        }
         
-        public void Init(ITurnCardFlow cardFlow, ITurnPlayer player, ITurnEnemy enemy)
+        public void Register(ITurnCardFlow cardFlow, ITurnPlayer player, ITurnEnemy enemy)
         {
             Clear();
 
@@ -113,8 +121,11 @@ namespace Cardevil.Systems
 
                     if (_enemy.IsDead)
                     {
-                        // TODO: 스테이지 클리어
-                        break;
+                        if (!_spawner.TrySpawn(out var spawned))
+                            break;
+
+                        await _enemy.Replace();
+                        _enemy = spawned;
                     }
 
                     await _enemy.TurnAttack();
