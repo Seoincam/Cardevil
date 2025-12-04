@@ -37,7 +37,7 @@ namespace Cardevil.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!_button.interactable || !hover)
+            if (!hover)
                 return;
             SetScale(_baseScale * hoverScale);
         }
@@ -51,14 +51,14 @@ namespace Cardevil.UI
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (!_button.interactable || !press)
+            if (!press)
                 return;
             SetScale(_baseScale * pressedScale);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (!_button.interactable || !press)
+            if (!press)
                 return;
             SetScale(_baseScale * hoverScale);
         }
