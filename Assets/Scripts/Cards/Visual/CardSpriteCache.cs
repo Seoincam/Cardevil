@@ -9,10 +9,10 @@ namespace Cardevil.Cards.Visual
 {
     public static class CardSpriteCache
     {
-        private static SpriteAtlas _atlas; private static bool _isInitialized;
-
+        private static SpriteAtlas _atlas; 
+        private static bool _isInitialized;
+        
         private const string AtlasPath = "Arts/CardAtlas";
-        private const string CloneSuffix = "(Clone)";
 
         private static bool TryInitialize()
         {
@@ -36,21 +36,37 @@ namespace Cardevil.Cards.Visual
             var s = $"Card_Single_Number_{color}_{number}";
             return GetSprite(s);
         }
+
+        public static Sprite GetSmallNumber(CardColor color, int number)
+        {
+            var s = $"Card_Number_{color}_Small_{number}";
+            return GetSprite(s);
+        }
+        
         public static Sprite GetQuestionMark(CardColor color)
         {
             var s = $"Card_Number_{color}_Q";
             return GetSprite(s);
         }
+
         public static Sprite GetStar(CardColor color)
         {
             var s = $"Card_Single_Number_{color}_Star";
             return GetSprite(s);
         }
+        
+        public static Sprite GetSmallStar(CardColor color)
+        {
+            var s = $"Card_Number_{color}_Small_Star";
+            return GetSprite(s);
+        }
+        
         public static Sprite GetInnerFrame(CardColor color)
         {
             var s = $"Card_Frame_{color}";
             return GetSprite(s);
         }
+        
         public static Sprite GetEnhancementFrame(CardColor color, int level)
         {
             var s = $"Card_Enhancement_{color}_{level}";
@@ -63,21 +79,25 @@ namespace Cardevil.Cards.Visual
             var s = $"Card_Direction_Frame_{dir}";
             return GetSprite(s);
         }
+        
         public static Sprite GetInnerFrame(DirectionFlag flag)
         {
             var s = $"Card_Direction_Frame_{flag.ToCustomString()}";
             return GetSprite(s);
         }
+        
         public static Sprite GetArrow(Direction dir)
         {
             var s = $"Card_Direction_Icon_{dir}";
             return GetSprite(s);
         }
+        
         public static Sprite GetArrow(DirectionFlag flag)
         {
             var s = $"Card_Direction_Icon_{flag.ToCustomString()}";
             return GetSprite(s);
         }
+        
         
         private static Sprite GetSprite(string key)
         {
@@ -85,13 +105,6 @@ namespace Cardevil.Cards.Visual
                 return null;
             
             return _atlas.GetSprite(key);
-        }
-
-        private static string NormalizeSpriteName(string rawName)
-        {
-            if (rawName.EndsWith(CloneSuffix))
-                rawName = rawName[..^CloneSuffix.Length];
-            return rawName.Trim('"', ' ');
         }
     }
 }

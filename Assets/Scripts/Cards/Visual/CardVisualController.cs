@@ -1,5 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Visual.Base;
 using Cardevil.Cards.Visual.StateMachine;
 using Cysharp.Threading.Tasks;
 using System;
@@ -48,19 +49,22 @@ namespace Cardevil.Cards.Visual
         {
             Sprite innerFrame = CardSpriteCache.GetInnerFrame(data.Color);
             List<Sprite> sprites = new();
+            Sprite small = null;
 
             var n = data.NumberSelectState;
             
             if (n.FinalValue.HasValue)
             {
                 sprites.Add(CardSpriteCache.GetNumber(data.Color, n.FinalValue.Value));
-                return new CardVisualSpriteSet(innerFrame, sprites);
+                small = CardSpriteCache.GetSmallNumber(data.Color, n.FinalValue.Value);
+                return new CardVisualSpriteSet(innerFrame, sprites, small);
             }
 
             // 오망성인 경우 따로 분류
             if (n.Selectables.Count == 9)
             {
                 sprites.Add(CardSpriteCache.GetStar(data.Color));
+                small = CardSpriteCache.GetSmallStar(data.Color);
             }
             else
             {
@@ -72,7 +76,7 @@ namespace Cardevil.Cards.Visual
                 }
             }
             
-            return new CardVisualSpriteSet(innerFrame, sprites);
+            return new CardVisualSpriteSet(innerFrame, sprites, small);
         }
 
         private CardVisualSpriteSet UpdateMoveData(CardData data)
