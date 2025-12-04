@@ -17,18 +17,37 @@ namespace Cardevil.Cards.Visual.StateMachine
         // 숫자가 크기가 커지며 나타남
         public async UniTask OnEnter(CardVisualSpriteSet spriteSet)
         {
+            _visual.SmallNumber.gameObject.SetActive(false);
+            
             _visual.InnerFrame.sprite = spriteSet.innerFrame;
             _visual.Number.sprite = spriteSet.sprites[0];
-            
             _visual.Number.gameObject.SetActive(true);
-            await _visual.Number.rectTransform.DOScale(1f, .5f);
+            
+            var seq = DOTween.Sequence()
+                .Join(_visual.Number.rectTransform.DOScale(1f, .5f));
+
+            if (spriteSet.small)
+            {
+                _visual.SmallNumber.sprite = spriteSet.small;
+                _visual.SmallNumber.gameObject.SetActive(true);
+                seq.Join(_visual.SmallNumber.DOFade(1f, .5f));
+            }
+
+            await seq;
         }
 
         // 숫자가 크기가 작아지며 사라짐
         public async UniTask OnExit()
         {
-            await _visual.Number.rectTransform.DOScale(0f, .5f);
+            var seq = DOTween.Sequence()
+                .Join(_visual.Number.rectTransform.DOScale(0f, .5f));
+            if (_visual.SmallNumber.gameObject.activeSelf)
+                seq.Join(_visual.SmallNumber.DOFade(0f, .5f));
+
+            await seq;
+
             _visual.Number.gameObject.SetActive(false);
+            _visual.SmallNumber.gameObject.SetActive(false);
         }
 
         public async UniTask SetPhase(VisualPhase phase)
