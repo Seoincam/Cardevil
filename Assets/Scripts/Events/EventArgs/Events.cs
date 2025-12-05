@@ -1,11 +1,11 @@
-﻿using Cardevil.Events.Core;
+﻿using Cardevil.Events.ExecEvents;
 
 namespace Cardevil.Events
 {
     /// <summary>
     /// 플레이어의 체력 변화 이벤트 인자.
     /// </summary>
-    public class PlayerHealthChangeArgs : EventArgs<PlayerHealthChangeArgs>
+    public class PlayerHealthChangeArgs : ExecEventArgs<PlayerHealthChangeArgs>
     {
         /// <summary>
         /// 단순히 체력 변화 이벤트를 방송만 할 때 true로 설정.
@@ -28,6 +28,8 @@ namespace Cardevil.Events
 
         public override void Clear()
         {
+            base.Clear();
+            IsJustBroadcast = false;
             OldHealth = 0;
             NewHealth = 0;
             ModifiedHealth = 0;
@@ -37,7 +39,7 @@ namespace Cardevil.Events
     /// <summary>
     /// 플레이어의 방어막 변화 이벤트 인자.
     /// </summary>
-    public class PlayerShieldChangeArgs : EventArgs<PlayerShieldChangeArgs>
+    public class PlayerShieldChangeArgs : ExecEventArgs<PlayerShieldChangeArgs>
     {
         public int OldShield { get; private set; }
         public int NewShield { get; private set; }
@@ -56,6 +58,7 @@ namespace Cardevil.Events
 
         public override void Clear()
         {
+            base.Clear();
             OldShield = 0;
             NewShield = 0;
             ModifiedShield = 0;
@@ -65,7 +68,7 @@ namespace Cardevil.Events
     /// <summary>
     /// 시작 카드 뽑기권 개수 변화 이벤트 인자.
     /// </summary>
-    public class RerollTicketChangeArgs : EventArgs<RerollTicketChangeArgs>
+    public class RerollTicketChangeArgs : ExecEventArgs<RerollTicketChangeArgs>
     {
         public int OldTicket { get; private set; }
         public int NewTicket { get; private set; }
@@ -84,6 +87,7 @@ namespace Cardevil.Events
 
         public override void Clear()
         {
+            base.Clear();
             OldTicket = 0;
             NewTicket = 0;
             ModifiedTicket = 0;
