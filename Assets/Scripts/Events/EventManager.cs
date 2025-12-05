@@ -1,53 +1,33 @@
-﻿using Cardevil.Core;
-using Cardevil.Events;
+﻿using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 
 namespace Cardevil.Manager
 {
     
     /// <summary>
-    /// 이벤트 채널을 관리하는 클래스
+    /// 이벤트 채널을 관리하는 유틸리티 클래스
+    /// ExecEventBus 시스템을 사용하므로 각 이벤트는 정적으로 관리됩니다.
     /// </summary>
-    public class EventManager : IClearable
+    /// <remarks>
+    /// 이벤트 등록/해제는 다음과 같이 수행합니다:
+    /// - 동적 핸들러: ExecEventBus&lt;PlayerHealthChangeArgs&gt;.RegisterDynamic(handler)
+    /// - 정적 핸들러: ExecEventBus&lt;PlayerHealthChangeArgs&gt;.RegisterStatic(priority, handler)
+    /// - 이벤트 호출: await ExecEventBus&lt;PlayerHealthChangeArgs&gt;.InvokeMerged(args)
+    /// 
+    /// 이 클래스는 더 이상 인스턴스를 필요로 하지 않으며, 
+    /// ExecEventBus를 직접 사용하는 것을 권장합니다.
+    /// </remarks>
+    public static class EventManager
     {
-        private readonly PriorityEvent<PlayerHealthChangeArgs> _playerHealthChangeEvent = new ();
-        private readonly PriorityEvent<PlayerShieldChangeArgs> _playerShieldChangeEvent = new ();
-        private readonly PriorityEvent<RerollTicketChangeArgs> _rerollTicketChangeEvent = new();
-        
         /// <summary>
-        /// 플레이어의 체력 변화 이벤트
+        /// 모든 플레이어 관련 ExecEventBus 핸들러를 정리합니다.
         /// </summary>
-        /// <code>
-        /// 우선순위
-        /// -1 :
-        /// 0 : 기본 이벤트
-        /// 10 : UI 업데이트 이벤트
-        /// </code>
-        public PriorityEvent<PlayerHealthChangeArgs> PlayerHealthChangeEvent => _playerHealthChangeEvent;
-        
-        /// <summary>
-        /// 플레이어의 방어막 변화 이벤트
-        /// </summary>
-        /// <code>
-        /// 우선순위
-        /// 미정
-        /// </code>
-        public PriorityEvent<PlayerShieldChangeArgs> PlayerShieldChangeEvent => _playerShieldChangeEvent;
-
-        /// <summary>
-        /// 시작 카드 뽑기권 변화 이벤트
-        /// </summary>
-        /// <code>
-        /// 우선순위
-        /// 0 : 기본 이벤트
-        /// 1 : UI 업데이트 이벤트  
-        /// </code>
-        public PriorityEvent<RerollTicketChangeArgs> RerollTicketChangeEvent => _rerollTicketChangeEvent;
-
-        public void Clear()
+        public static void ClearAllPlayerEvents()
         {
-            _playerHealthChangeEvent.Clear();
-            _playerShieldChangeEvent.Clear();
-            _rerollTicketChangeEvent.Clear();
+            ExecEventBus<PlayerHealthChangeArgs>.ClearAllHandlers();
+            ExecEventBus<PlayerShieldChangeArgs>.ClearAllHandlers();
+            ExecEventBus<RerollTicketChangeArgs>.ClearAllHandlers();
         }
     }
 }
+

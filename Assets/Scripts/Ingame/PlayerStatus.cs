@@ -1,9 +1,11 @@
-using Cardevil.Core;
+﻿using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Save;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
@@ -42,7 +44,7 @@ namespace Cardevil.Ingame
                 using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
                 {
                     args.Init(_currentHP, value);
-                    Managers.Event.PlayerHealthChangeEvent.Invoke(args);
+                    ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
                     _currentHP = args.ModifiedHealth;
                 }
             }
@@ -61,7 +63,7 @@ namespace Cardevil.Ingame
                 using(PlayerShieldChangeArgs args = PlayerShieldChangeArgs.Get())
                 {
                     args.Init(_shield, value);
-                    Managers.Event.PlayerShieldChangeEvent.Invoke(args);
+                    ExecEventBus<PlayerShieldChangeArgs>.InvokeMerged(args).Forget();
                     _shield = args.ModifiedShield;
                 }
             }
@@ -82,7 +84,7 @@ namespace Cardevil.Ingame
                 using (RerollTicketChangeArgs args = RerollTicketChangeArgs.Get())
                 {
                     args.Init(_rerollTicket, value);
-                    Managers.Event.RerollTicketChangeEvent.Invoke(args);
+                    ExecEventBus<RerollTicketChangeArgs>.InvokeMerged(args).Forget();
                     _rerollTicket = args.ModifiedTicket;
                 }
             }
@@ -149,7 +151,7 @@ namespace Cardevil.Ingame
                 using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
                 {
                     args.Init(_currentHP, hp);
-                    Managers.Event.PlayerHealthChangeEvent.Invoke(args);
+                    ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
                     _currentHP = args.NewHealth;
                 }
             }
@@ -165,7 +167,7 @@ namespace Cardevil.Ingame
             {
                 args.Init(_currentHP, _currentHP);
                 args.IsJustBroadcast = true;
-                Managers.Event.PlayerHealthChangeEvent.Invoke(args);
+                ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
             }
         }
 
