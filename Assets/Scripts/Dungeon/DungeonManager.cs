@@ -3,6 +3,8 @@ using Cardevil.DebugConsole;
 using Cardevil.Dungeon.Build;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
+using Cardevil.Events.ExecEvents;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,19 +26,9 @@ namespace Cardevil.Dungeon
         private int currentDungeonIndex = -1;
         private SpecialNodeManager specialNodeManager;
         
-        // 이벤트 시스템
-        [NonSerialized] private DungeonEvents events;
-        public DungeonEvents Events
-        {
-            get
-            {
-                if (events == null)
-                {
-                    events = new DungeonEvents();
-                }
-                return events;
-            }
-        }
+        // ExecEventBus를 사용하므로 Events 인스턴스는 제거됨
+        // 이벤트 구독: ExecEventBus<NodeEnteredEventArgs>.RegisterDynamic/RegisterStatic
+        // 이벤트 발생: ExecEventBus<NodeEnteredEventArgs>.InvokeMerged(args).Forget()
 
         public DungeonUI UI
         {
@@ -168,9 +160,14 @@ namespace Cardevil.Dungeon
                     specialNodeManager.ClearSpecialNode(currentNode);
                 }
 
-                currentNode.Behaviour.OnExit(currentNode, new NodeExitInfo() { IsCleared = true });
+                var exitInfo = new NodeExitInfo() { IsCleared = true };
+                currentNode.Behaviour.OnExit(currentNode, exitInfo);
                 currentNode.State = NodeState.Completed;
-                Events.RaiseNodeExited(currentNode);
+                
+                // 이벤트 발생
+                using var exitArgs = NodeExitedEventArgs.Get();
+                exitArgs.Init(currentNode, exitInfo);
+                ExecEventBus<NodeExitedEventArgs>.InvokeMerged(exitArgs).Forget();
                 
                 // 이전 노드로 저장
                 previousNode = currentNode;
@@ -210,7 +207,9 @@ namespace Cardevil.Dungeon
             }
             
             // 이벤트 발생
-            Events.RaiseNodeEntered(node);
+            using var enterArgs = NodeEnteredEventArgs.Get();
+            enterArgs.Init(node);
+            ExecEventBus<NodeEnteredEventArgs>.InvokeMerged(enterArgs).Forget();
         }
         
         /// <summary>
@@ -253,7 +252,10 @@ namespace Cardevil.Dungeon
             previousNode = node;
             currentNode = null;
             
-            Events.RaiseNodeExited(node);
+            // 이벤트 발생
+            using var args = NodeExitedEventArgs.Get();
+            args.Init(node, exitInfo);
+            ExecEventBus<NodeExitedEventArgs>.InvokeMerged(args).Forget();
         }
         
         /// <summary>

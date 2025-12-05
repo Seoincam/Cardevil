@@ -1,11 +1,11 @@
-using System;
+using Cardevil.Events.ExecEvents;
 
 namespace Cardevil.Dungeon
 {
     /// <summary>
-    /// 던전 관련 이벤트를 관리하는 클래스
+    /// 노드에 진입했을 때 발생하는 이벤트 인자
     /// </summary>
-    public class DungeonEvents
+    public class NodeEnteredEventArgs : ExecEventArgs<NodeEnteredEventArgs>
     {
         /// <summary>
         /// 노드에 진입했을 때 발생하는 이벤트
