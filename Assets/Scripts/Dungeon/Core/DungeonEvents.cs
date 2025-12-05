@@ -7,56 +7,58 @@ namespace Cardevil.Dungeon
     /// </summary>
     public class NodeEnteredEventArgs : ExecEventArgs<NodeEnteredEventArgs>
     {
-        /// <summary>
-        /// 노드에 진입했을 때 발생하는 이벤트
-        /// </summary>
-        public event Action<DungeonNode> OnNodeEntered;
-        
-        /// <summary>
-        /// 노드에서 나갈 때 발생하는 이벤트
-        /// </summary>
-        public event Action<DungeonNode> OnNodeExited;
-        
-        /// <summary>
-        /// 던전을 완료했을 때 발생하는 이벤트
-        /// </summary>
-        public event Action<Dungeon> OnDungeonCompleted;
-        
-        /// <summary>
-        /// 던전이 초기화되었을 때 발생하는 이벤트
-        /// </summary>
-        public event Action<Dungeon> OnDungeonInitialized;
-        
-        /// <summary>
-        /// 노드 진입 이벤트 호출
-        /// </summary>
-        public void RaiseNodeEntered(DungeonNode node)
+        public DungeonNode Node { get; private set; }
+
+        public void Init(DungeonNode node)
         {
-            OnNodeEntered?.Invoke(node);
+            Node = node;
         }
-        
-        /// <summary>
-        /// 노드 이탈 이벤트 호출
-        /// </summary>
-        public void RaiseNodeExited(DungeonNode node)
+
+        public override void Clear()
         {
-            OnNodeExited?.Invoke(node);
+            base.Clear();
+            Node = null;
         }
-        
-        /// <summary>
-        /// 던전 완료 이벤트 호출
-        /// </summary>
-        public void RaiseDungeonCompleted(Dungeon dungeon)
+    }
+
+    /// <summary>
+    /// 노드에서 나갈 때 발생하는 이벤트 인자
+    /// </summary>
+    public class NodeExitedEventArgs : ExecEventArgs<NodeExitedEventArgs>
+    {
+        public DungeonNode Node { get; private set; }
+        public NodeExitInfo ExitInfo { get; private set; }
+
+        public void Init(DungeonNode node, NodeExitInfo exitInfo)
         {
-            OnDungeonCompleted?.Invoke(dungeon);
+            Node = node;
+            ExitInfo = exitInfo;
         }
-        
-        /// <summary>
-        /// 던전 초기화 이벤트 호출
-        /// </summary>
-        public void RaiseDungeonInitialized(Dungeon dungeon)
+
+        public override void Clear()
         {
-            OnDungeonInitialized?.Invoke(dungeon);
+            base.Clear();
+            Node = null;
+            ExitInfo = default;
+        }
+    }
+
+    /// <summary>
+    /// 던전을 완료했을 때 발생하는 이벤트 인자
+    /// </summary>
+    public class DungeonCompletedEventArgs : ExecEventArgs<DungeonCompletedEventArgs>
+    {
+        public Dungeon Dungeon { get; private set; }
+
+        public void Init(Dungeon dungeon)
+        {
+            Dungeon = dungeon;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            Dungeon = null;
         }
     }
 }
