@@ -1,4 +1,5 @@
 ﻿using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -66,7 +67,7 @@ namespace Cardevil.Dungeon
             public Sprite Completed;
             public Sprite CompletedOverlay;
         }
-        [SerializeField] private SerializableDict<DungeonNodeTypes, SpriteSet> nodeTypeToSpriteSet = new SerializableDict<DungeonNodeTypes, SpriteSet>();
+        [SerializeField] private SerializableDictionary<DungeonNodeTypes, SpriteSet> nodeTypeToSpriteSet = new SerializableDictionary<DungeonNodeTypes, SpriteSet>();
         
         public IReadOnlyDictionary<DungeonNodeTypes, SpriteSet> NodeTypeToSpriteSet => nodeTypeToSpriteSet;
         
