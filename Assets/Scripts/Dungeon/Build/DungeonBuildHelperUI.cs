@@ -18,7 +18,6 @@ namespace Cardevil.Dungeon.Build
     {
         public DungeonNodeUIDataComponent rootNode;
         public int startNodeId = 1;
-        public bool showLineRenderer = true;
         [SerializeField] private ContainerNode nodeContainer;
         
         [ContextMenu("Reset Node IDs")]
@@ -79,24 +78,24 @@ namespace Cardevil.Dungeon.Build
         /// 계층 구조를 기반으로 모든 노드들을 연결합니다.
         /// 고맙다 제미나이야
         /// </summary>
-[ContextMenu("Connect All Nodes By Hierarchy")]
-public void ReconnectAllNodesByHierarchy()
-{
-    // 이전과 동일한 노드 연결 헬퍼 함수
-    void Connect(DungeonNodeUIDataComponent prev, DungeonNodeUIDataComponent next)
-    {
-        if (prev == null || next == null) return;
-
-        if (!prev.nextNodes.Contains(next))
+        [ContextMenu("Connect All Nodes By Hierarchy")]
+        public void ReconnectAllNodesByHierarchy()
         {
-            prev.nextNodes.Add(next);
-        }
+            // 이전과 동일한 노드 연결 헬퍼 함수
+            void Connect(DungeonNodeUIDataComponent prev, DungeonNodeUIDataComponent next)
+            {
+                if (prev == null || next == null) return;
 
-        if (!next.prevNodes.Contains(prev))
-        {
-            next.prevNodes.Add(prev);
-        }
-    }
+                if (!prev.nextNodes.Contains(next))
+                {
+                    prev.nextNodes.Add(next);
+                }
+
+                if (!next.prevNodes.Contains(prev))
+                {
+                    next.prevNodes.Add(prev);
+                }
+            }
 
     /*
      * 재귀적으로 계층 구조를 탐색하여 노드를 연결합니다.
@@ -361,20 +360,6 @@ public void ReconnectAllNodesByHierarchy()
             dungeon.Initialize();
             
             return dungeon;
-        }
-
-        private void OnValidate()
-        {
-            if (showLineRenderer)
-            {
-                foreach (var node in this)
-                {
-                    if (node == null) continue;
-                    
-                    node.showDebugLines = true;
-                    node.OnValidate();
-                }
-            }
         }
         
 

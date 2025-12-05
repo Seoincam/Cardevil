@@ -1,4 +1,5 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using DG.Tweening;
 using System;
@@ -15,8 +16,13 @@ namespace Cardevil.Dungeon.UI
     public class DungeonUI : MonoBehaviour
     {
         [SerializeField, VisibleOnly] private Canvas _dungeonUICanvas = null;
+        [SerializeField, VisibleOnly] private RectTransform _rectTransform = null;
         [SerializeField] private List<DungeonChapterUI> _dungeonChapters = new List<DungeonChapterUI>();
         [SerializeField] DungeonUICamera _dungeonUICamera = null;
+        [SerializeField] private Ease _moveEase = Ease.InOutSine;
+        
+        [SerializeField,VisibleOnly] private int currentDungeonId = -1;
+        
         public Canvas Canvas
         {
             get
@@ -44,10 +50,26 @@ namespace Cardevil.Dungeon.UI
                 return _dungeonUICamera;
             }
         }
+        
+        public float Width => _rectTransform.rect.width;
+        public float Height => _rectTransform.rect.height;
 
         private void Reset()
         {
             _dungeonUICanvas = GetComponentInParent<Canvas>();      
+            _rectTransform = GetComponent<RectTransform>();
+        }
+
+        private void Awake()
+        {
+            if (_dungeonUICanvas == null)
+            {
+                _dungeonUICanvas = GetComponentInParent<Canvas>();
+            }
+            if (_rectTransform == null)
+            {
+                _rectTransform = GetComponent<RectTransform>();
+            }
         }
 
         public void Initialize()
@@ -56,6 +78,8 @@ namespace Cardevil.Dungeon.UI
             {
                 chapterUI.Initialize(this);
             }
+
+            currentDungeonId = 1;
         }
         
         public void InitializeAfterDungeonCreated()
@@ -68,19 +92,31 @@ namespace Cardevil.Dungeon.UI
         
         public void UpdateShowingDungeon(int id)
         {
+            var fromUI = _dungeonChapters.Find(chapter => chapter.DungeonId == currentDungeonId);
             var toShow = _dungeonChapters.Find(chapter => chapter.DungeonId == id);
             if (toShow == null)
             {
                 LogEx.LogError($"No DungeonChapterUI found for dungeon ID {id}");
                 return;
             }
+            currentDungeonId = id;
             
-            foreach (DungeonChapterUI chapterUI in _dungeonChapters)
-            {
-                chapterUI.gameObject.SetActive(chapterUI == toShow);
-            }
+            //현재와 다음 던전을 활성화
+            fromUI.gameObject.SetActive(true);
+            toShow.gameObject.SetActive(true);
             
-            Camera.MoveTo(toShow.transform.position).OnComplete(() =>
+            // Camera.MoveTo(toShow.transform.position).OnComplete(() =>
+            // {
+            //     foreach (DungeonChapterUI chapterUI in _dungeonChapters)
+            //     {
+            //         chapterUI.gameObject.SetActive(chapterUI == toShow);
+            //     }
+            // });
+            
+            // 카메라가 아니라 던전 UI 자체를 이동시키는 방식으로 변경
+            float posY = GetPosY(_dungeonChapters.IndexOf(toShow));
+            _rectTransform.DOKill();
+            _rectTransform.DOAnchorPosY(posY, 0.5f).SetEase(DG.Tweening.Ease.InOutSine).OnComplete(() =>
             {
                 foreach (DungeonChapterUI chapterUI in _dungeonChapters)
                 {
@@ -88,12 +124,30 @@ namespace Cardevil.Dungeon.UI
                 }
             });
         }
+        
+        private float GetPosY(int currentChapterIndex)
+        {
+            float posY = 0f + currentChapterIndex * Height;
+            return posY;
+        }
 
 
 
         public void UpdateAll()
         {
             
+        }
+
+        [ConsoleCommand("dungeonUI.ShowDungeon", "Show a specific dungeon UI by its ID.", "dungeonUI.ShowDungeon <dungeonId>", new []{"1", "2", "3"})]
+        private static void Console_ShowDungeon(int dungeonId)
+        {
+            var dungeonUI = Object.FindAnyObjectByType<DungeonUI>();
+            if (dungeonUI == null)
+            {
+                LogEx.LogError("No DungeonUI instance found in the scene.");
+                return;
+            }
+            dungeonUI.UpdateShowingDungeon(dungeonId);
         }
     }
 }
