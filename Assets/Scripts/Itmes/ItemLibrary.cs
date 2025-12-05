@@ -11,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using Console = Cardevil.DebugConsole.Console;
 using MessageType = Cardevil.DebugConsole.MessageType;
+using ReflectionUtil = Database.ReflectionUtil;
 
 namespace Cardevil.Item
 {

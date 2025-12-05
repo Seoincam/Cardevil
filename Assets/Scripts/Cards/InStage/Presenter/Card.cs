@@ -4,19 +4,21 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
 using DG.Tweening;
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
     [RequireComponent(typeof(Poolable))]
-    public class Card : MonoBehaviour, IEvaluateVisual, IClearable,
+    public class Card : MonoBehaviour, IClearable,
                         IDragHandler, IBeginDragHandler, IEndDragHandler, 
                         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
@@ -30,12 +32,12 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private event Action DragStart, DragEnd;
         private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
+        private event Action<Card> SelectionButtonTapped;
         
         private Poolable _poolable;
         private IReadOnlyStageCardsModel _model;
 
-        #region Property
-
+        public IEvaluateVisual EvaluateVisual => visual;
         public CardData Data => data;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
@@ -51,10 +53,39 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
 
-        #endregion
-        
-        #region Unity Event
+        /// <summary>
+        /// 카드 데이터 및 비주얼 초기화.
+        /// 지정된 <see cref="CardData"/>와 <see cref="CardVisualSpriteSet"/>을 기반으로
+        /// 카드 오브젝트 생성 및 비주얼 요소 설정.
+        /// </summary>
+        /// <param name="cardData">카드 데이터 객체</param>
+        /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
+        public void Init(CardData cardData, IReadOnlyStageCardsModel model)
+        {
+            data = cardData;
+            _model = model;
+            
+            // Card Visual
+            var visualHandler = GameObject.Find("Card Visual Transform");
+            if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
 
+            var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
+            visual = go.GetComponent<CardVisual>();
+            visual.Init(this, model);
+            if (data.CanOpenSelection)
+                visual.BindSelectionButton(OnValueSelectionTapped);
+            
+            WireVisual(visual);
+        }
+
+        public void Clear()
+        {
+            state = new CardState();
+            visual = null;
+        }
+
+        public void UpdateVisual() => visual.UpdateVisual();
+        
         private void Awake()
         {
             Clear();
@@ -79,40 +110,10 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
 
-        #endregion
-
-        #region Initialization
-
-        /// <summary>
-        /// 카드 데이터 및 비주얼 초기화.
-        /// 지정된 <see cref="CardData"/>와 <see cref="CardVisualSpriteSet"/>을 기반으로
-        /// 카드 오브젝트 생성 및 비주얼 요소 설정.
-        /// </summary>
-        /// <param name="cardData">카드 데이터 객체</param>
-        /// <param name="visualSpriteSet">비주얼 스프라이트 세트</param>
-        /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
-        public void Init(CardData cardData, CardVisualSpriteSet visualSpriteSet, IReadOnlyStageCardsModel model)
+        private void OnValueSelectionTapped()
         {
-            data = cardData;
-            _model = model;
-            
-            // Card Visual
-            var visualHandler = GameObject.Find("Card Visual Transform");
-            if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
-
-            var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
-            visual = go.GetComponent<CardVisual>();
-            visual.Init(this, visualSpriteSet, model);
-            WireVisual(visual);
+            SelectionButtonTapped?.Invoke(this);
         }
-
-        public void Clear()
-        {
-            state = new CardState();
-            visual = null;
-        }
-
-        #endregion
         
         #region Reroll
 
@@ -225,9 +226,8 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             visual.ExecuteEvaluationAction();
         }
-
-        #region Wire
-
+        
+        // Wire By StageCardsPresenter
         public void AddDragStart(Action h) => DragStart += h;
         public void RemoveDragStart(Action h) => DragStart -= h;
         
@@ -240,6 +240,10 @@ namespace Cardevil.Cards.InStage.Presenter
         public void AddPointerUp(Action<Card, CardPointerArgs> h) => PointerUp += h;
         public void RemovePointerUp(Action<Card, CardPointerArgs> h) => PointerUp -= h;
         
+        public void AddSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped += h;
+        public void RemoveSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped -= h;
+        
+        // Wire CardVisual
         private void WireVisual(CardVisual cardVisual)
         {
             if (!cardVisual) return;
@@ -250,7 +254,6 @@ namespace Cardevil.Cards.InStage.Presenter
             PointerDown += cardVisual.OnPointerDown;
             PointerUp += cardVisual.OnPointerUp;
         }
-
         private void UnwireVisual(CardVisual cardVisual)
         {
             if (!cardVisual) return;
@@ -262,7 +265,6 @@ namespace Cardevil.Cards.InStage.Presenter
             PointerUp -= cardVisual.OnPointerUp;
         }
         
-        #endregion
 
         #region Pointer Event Interfaces
 
@@ -285,21 +287,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 if (!CanInteraction)
                     return;
 
-                PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
-            }
-            
-            // TODO: 나중에 그래픽 나오면 우클릭 말고 전환 그래픽 클릭으로 변경하기
-            else if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                PointerDown?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
-                
-                // TODO: 값 선택가능한가?
-                if (true)
-                    return;
-            
-                // TODO: 실행자 수정
-                // _handBar.selectContainer.OpenSelection(this);
-                // ValueSelectionStarted?.Invoke(this);
+                PointerDown?.Invoke(this, new CardPointerArgs(Time.time));
             }
         }
 
@@ -342,11 +330,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!CanInteraction)
                 return;
             
-            if (eventData.button == PointerEventData.InputButton.Left)
-                PointerUp?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.LeftMouse));
-            // TODO: 나중에 그래픽 나오면 우클릭 말고 전환 그래픽 클릭으로 변경하기
-            else if (eventData.button == PointerEventData.InputButton.Right)
-                PointerUp?.Invoke(this, new CardPointerArgs(Time.time, MouseButton.RightMouse));
+            PointerUp?.Invoke(this, new CardPointerArgs(Time.time));
         }
 
         #endregion

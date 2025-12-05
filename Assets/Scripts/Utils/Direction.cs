@@ -29,6 +29,9 @@ namespace Cardevil.Utils.Directions
         Right = 1 << 1,
         Down = 1 << 2,
         Left = 1 << 3,
+        
+        UpDown = Up | Down,
+        LeftRight = Left | Right,
         All = Up | Right | Down | Left
     }
     
@@ -45,6 +48,11 @@ namespace Cardevil.Utils.Directions
                 Direction.Left => TileVector.Left,
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
+        }
+
+        public static Vector2Int ToVector2Int(this Direction direction)
+        {
+            return direction.ToTileVector().ToVector2Int();
         }
         public static DirectionFlag ToDirectionFlag(this Direction direction)
         {
@@ -94,8 +102,16 @@ namespace Cardevil.Utils.Directions
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
-        
 
-        
+        public static string ToCustomString(this DirectionFlag directionFlag)
+        {
+            return directionFlag switch
+            {
+                DirectionFlag.UpDown => "UpDown",
+                DirectionFlag.LeftRight => "LeftRight",
+                DirectionFlag.All => "All",
+                _ => directionFlag.ToString()
+            };
+        }
     }
 }

@@ -7,15 +7,17 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class RelicData    {
+    public partial class RelicData: IDBData {
 
         /// <summary> 게임상 이름 </summary>
         public string DisplayName;
         /// <summary> 게임상 설명 </summary>
         public string DisplayDescription;
+        /// <summary> 유물 등급 </summary>
+        public Cardevil.Relics.RelicRarity Rarity;
         /// <summary> ID </summary>
         public string RelicId;
-        /// <summary> 레벨. 같은 ID 유물을 대체. </summary>
+        /// <summary> 레벨 </summary>
         public int Level;
         /// <summary> 효과 ID </summary>
         public List<string> EffectIds;

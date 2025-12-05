@@ -1,0 +1,41 @@
+{
+  "name": "CustomClassTest",
+  "varNames": [
+    "stringVar",
+    "integerVar",
+    "fullEnumList",
+    "shortEnumList",
+    "CustomClass",
+    "CustomClassList",
+    "ListList"
+  ],
+  "types": [
+    "string",
+    "int",
+    "List<Enum<Define.SlotRewardType>>",
+    "Enum<SlotRewardType>",
+    "Class<DBSampleEntryClassJson>",
+    "List<Class<DBSampleEntryClassJson>>",
+    "List<List<int>>"
+  ],
+  "comments": [
+    "문자열",
+    "숫자",
+    "풀네임 enum리스트",
+    "짧은 이름 enum 리스트",
+    "커스텀 클래스",
+    "커스텀 클래스 리스트",
+    "2차원 리스트"
+  ],
+  "data": [
+    [
+      "1.1",
+      "1",
+      "1001",
+      "1",
+      "{\n  \"a\": 10,\n  \"b\": 20,\n  \"c\": \"Hello World\"\n}",
+      "{\n  \"a\": 10,\n  \"b\": 20,\n  \"c\": \"Hello World\"\n},{\n  \"a\": 22,\n  \"b\": 56,\n  \"c\": \"sssrld\"\n},",
+      "[\n[2,3,3],\n[2,3,1,2]\n]"
+    ]
+  ]
+}

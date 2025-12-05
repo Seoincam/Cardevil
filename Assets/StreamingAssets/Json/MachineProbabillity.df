@@ -1,0 +1,37 @@
+{
+  "name": "MachineProbabillity",
+  "varNames": [
+    "MachineLevel",
+    "RankProbabillity"
+  ],
+  "types": [
+    "int",
+    "List<int>"
+  ],
+  "comments": [
+    "머신레벨",
+    "랭크가중치"
+  ],
+  "data": [
+    [
+      "1",
+      "[\r\n  85,\r\n  10,\r\n  4,\r\n  1\r\n]"
+    ],
+    [
+      "2",
+      "[\r\n  77,\r\n  15,\r\n  6,\r\n  2\r\n]"
+    ],
+    [
+      "3",
+      "[\r\n  63,\r\n  25,\r\n  9,\r\n  3\r\n]"
+    ],
+    [
+      "4",
+      "[\r\n  41,\r\n  40,\r\n  14,\r\n  5\r\n]"
+    ],
+    [
+      "5",
+      "[\r\n  37,\r\n  35,\r\n  20,\r\n  8\r\n]"
+    ]
+  ]
+}

@@ -44,9 +44,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 542490d92125404da4d9b18c7a84e6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testDungeonNodePreset: {fileID: 0}
+  testSerializableDictionary:
+    defaultKey: 
+    _items:
+    - Key: One
+      Value: 1
+    - Key: Two
+      Value: 2
+    - Key: Three
+      Value: 3
+  testSerializableReferenceDictionary:
+    defaultKey: 
+    _items:
+    - Key: IntValue
+      Value:
+        rid: 1000
+    - Key: StringValue
+      Value:
+        rid: 1001
+    - Key: FloatValue
+      Value:
+        rid: 1002
   setHp: 3
   poolables: []
   resourcePoolableName: TestPoolable
   poolableType: 1
-  testAudioResource: {fileID: 8300000, guid: 691a78d7b9efbf644b4779a34429dbff, type: 3}
-  testAudioResourcePath: Dev/music_jingle/Pizzicato jingles/jingles_PIZZI04
+  testAudioResource: {fileID: 0}
+  testAudioResourcePath: Sounds/Dev/music_jingle/Pizzicato jingles/jingles_PIZZI04
+  references:
+    version: 2
+    RefIds:
+    - rid: 1000
+      type: {class: Int32, ns: System, asm: mscorlib}
+      data: 
+    - rid: 1001
+      type: {class: String, ns: System, asm: mscorlib}
+      data: 
+    - rid: 1002
+      type: {class: Single, ns: System, asm: mscorlib}
+      data: 

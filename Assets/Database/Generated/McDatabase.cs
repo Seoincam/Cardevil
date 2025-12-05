@@ -9,14 +9,20 @@ namespace Database
     [Serializable]
     public class McDatabase
     {
-        public List<Example> ExampleList = new List<Example>();
+        public List<CustomClassTest> CustomClassTestList = new List<CustomClassTest>();
+        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
+        public List<RoomData> RoomDataList = new List<RoomData>();
+        public List<Heal> HealList = new List<Heal>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
         public List<MachineProbabillity> MachineProbabillityList = new List<MachineProbabillity>();
         public List<RelicData> RelicDataList = new List<RelicData>();
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
         public readonly List<string> ClassNames = new List<string> {
-            "Example",
+            "CustomClassTest",
+            "BaseMobBossData",
+            "RoomData",
+            "Heal",
             "HandRankingData",
             "MachineReward",
             "MachineProbabillity",
@@ -30,13 +36,6 @@ namespace Database
             if (typeof(T) == null) return null;
             switch (typeof(T).Name)
             {
-                case "Example":
-                    foreach (var instance in ExampleList)
-                    {
-                        if (instance.name == name)
-                            return instance as T;
-                    }
-                    break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 타입: {typeof(T).Name}");
                     return null;
@@ -58,7 +57,10 @@ namespace Database
 
         public void ClearAll()
         {
-            ExampleList.Clear();
+            CustomClassTestList.Clear();
+            BaseMobBossDataList.Clear();
+            RoomDataList.Clear();
+            HealList.Clear();
             HandRankingDataList.Clear();
             MachineRewardList.Clear();
             MachineProbabillityList.Clear();
@@ -88,8 +90,17 @@ namespace Database
             {
                 switch (df.name)
                 {
-                    case "Example":
-                        ExampleList = CreateInstance<Example>(df);
+                    case "CustomClassTest":
+                        CustomClassTestList = CreateInstance<CustomClassTest>(df);
+                        break;
+                    case "BaseMobBossData":
+                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
+                        break;
+                    case "RoomData":
+                        RoomDataList = CreateInstance<RoomData>(df);
+                        break;
+                    case "Heal":
+                        HealList = CreateInstance<Heal>(df);
                         break;
                     case "HandRankingData":
                         HandRankingDataList = CreateInstance<HandRankingData>(df);
@@ -118,9 +129,21 @@ namespace Database
         {
             switch (className)
             {
-                case "Example":
-                    var newExampleItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Example>>(json);
-                    ExampleList.AddRange(newExampleItems);
+                case "CustomClassTest":
+                    var newCustomClassTestItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CustomClassTest>>(json);
+                    CustomClassTestList.AddRange(newCustomClassTestItems);
+                    break;
+                case "BaseMobBossData":
+                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
+                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
+                    break;
+                case "RoomData":
+                    var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
+                    RoomDataList.AddRange(newRoomDataItems);
+                    break;
+                case "Heal":
+                    var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
+                    HealList.AddRange(newHealItems);
                     break;
                 case "HandRankingData":
                     var newHandRankingDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<HandRankingData>>(json);
@@ -153,8 +176,14 @@ namespace Database
         {
             switch (className)
             {
-                case "Example":
-                    return typeof(Example);
+                case "CustomClassTest":
+                    return typeof(CustomClassTest);
+                case "BaseMobBossData":
+                    return typeof(BaseMobBossData);
+                case "RoomData":
+                    return typeof(RoomData);
+                case "Heal":
+                    return typeof(Heal);
                 case "HandRankingData":
                     return typeof(HandRankingData);
                 case "MachineReward":

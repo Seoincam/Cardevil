@@ -12,17 +12,19 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using Database;
+using Cardevil.Enemy;
+using Cardevil.Ingame.Player;
 
 [Serializable]
 public class GameManager : ISaveLoad
 {
     [FormerlySerializedAs("field")] [SerializeField] private Field _field;
-    [FormerlySerializedAs("enemy")] [SerializeField] private Enemy _enemy;
+    [FormerlySerializedAs("enemy")] [SerializeField] public Enemy _enemy;
     [FormerlySerializedAs("turnOrder")] public int _turnOrder = 0;
     [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
     [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
     [SerializeField] public DatabaseManager _database;
-    
+    [SerializeField] public EnemySpawner _enemySpawner;
 
     public Field Field
     {
@@ -120,7 +122,12 @@ public class GameManager : ISaveLoad
     //플레이어 죽을 때 실행시킬 함수
     public void PlayerDied()
     {
+        if (PlayerStatus.canRevive)
+        {
+            //부활하기
+            Managers.Game.PlayerStatus.CurrentHp = 1;
 
+        }
     }
     
     public void GameStart()
@@ -149,7 +156,6 @@ public class GameManager : ISaveLoad
     public void StageStart()
     {
         TurnOrder = 0;
-        Managers.Relic.Init();
         Managers.Card.OnEnterStage();
         Managers.Turn.Init(
             Player.GetComponent<ITurnPlayerMove>(),

@@ -49,6 +49,8 @@ MonoBehaviour:
   _isInitialized: 0
   _isOpen: 0
   _useAutoComplete: 1
+  autoScrollToBottomOnNewMessage: 1
+  autoScrollToBottomOnNewPrint: 1
   _toggleConsoleAction:
     m_Name: Toggle Console
     m_Type: 0
@@ -64,6 +66,57 @@ MonoBehaviour:
       m_Processors: 
       m_Groups: 
       m_Action: Toggle Console
+      m_Flags: 0
+    m_Flags: 0
+  _ctrlAction:
+    m_Name: Ctrl
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 46dd8971-620f-4c1c-9a77-e8db75bc7913
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: 7acf4c4b-042e-4757-afef-3d9fd8450686
+      m_Path: <Keyboard>/ctrl
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Ctrl
+      m_Flags: 0
+    m_Flags: 0
+  _sizeUpAction:
+    m_Name: Size Up
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 36cc373b-43bd-42d8-80cc-caed5f7bbd9e
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: be4dd86d-1022-4cb2-8e9d-2ffeb53f55d0
+      m_Path: <Keyboard>/equals
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Size Up
+      m_Flags: 0
+    m_Flags: 0
+  _sizeDownAction:
+    m_Name: Size Down
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 1dffd75a-8689-4bd6-a950-3c7c82ab1447
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: bfa4f9a4-5eb3-42f3-9741-50f1fdfb6e0b
+      m_Path: <Keyboard>/minus
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Size Down
       m_Flags: 0
     m_Flags: 0
   minSize: {x: 360, y: 200}

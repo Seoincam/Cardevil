@@ -1,6 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.Modifiers;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace Cardevil.Cards.Data.Enhancement
     public class EnhancementDataLibrary
     {
         // <Id, Data>
-        [SerializeField, VisibleOnly] private SerializableDict<Guid, EnhancementData> table = new();
+        [SerializeField, VisibleOnly] private SerializableDictionary<Guid, EnhancementData> table = new();
         private Dictionary<EnhancementData, Guid> _reverseTable = new();
         
         public IReadOnlyDictionary<Guid, EnhancementData> Table => table;

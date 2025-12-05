@@ -4,6 +4,7 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.DataStructure;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using JetBrains.Annotations;
 using System;
@@ -25,13 +26,6 @@ namespace Cardevil.Cards.Data
         CardData GetCardDataById(int id);
         
         /// <summary>
-        /// 해당 id의 <see cref="CardVisualSpriteSet"/>을 반환.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        CardVisualSpriteSet GetVisualSpriteSetById(int id);
-        
-        /// <summary>
         /// 해당 id의 <see cref="IReadOnlyCardDataPipeline"/>을 반환.
         /// </summary>
         IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
@@ -41,26 +35,17 @@ namespace Cardevil.Cards.Data
     public class CardLibrary : IClearable, IReadOnlyCardLibrary
     {
         // <id, data>
-        [SerializeField, VisibleOnly] private SerializableDict<int, CardDataPipeline> pipelineMap = new();
+        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
         
         // 파이프라인을 바탕으로 생성된 데이터들.
         // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
-        [SerializeField, VisibleOnly] private SerializableDict<int, CardData> dataMap = new();
-        [SerializeField, VisibleOnly] private SerializableDict<int, CardVisualSpriteSet> visualSpriteSetMap = new();   
+        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardData> dataMap = new();
         
         private EnhancementDataLibrary _enhancementDataLibrary;
-        private CardVisualSpriteFactorySO _visualSpriteFactory;
         
         public void Init(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
-            
-            _visualSpriteFactory = Resources.Load<CardVisualSpriteFactorySO>("ScriptableObjects/Cards/CardVisualSpritesFactory");
-            if (!_visualSpriteFactory)
-            {
-                LogEx.LogError("No CardVisualSpriteFactorySO found");
-                return;
-            }
             
             Clear();
         }
@@ -127,9 +112,9 @@ namespace Cardevil.Cards.Data
                 dataMap[id] = cardData;
             
             // Card Visual Sprite Set
-            var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
-            if (spriteSet != null)
-                visualSpriteSetMap[id] = spriteSet;
+            // var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
+            // if (spriteSet != null)
+            //     visualSpriteSetMap[id] = spriteSet;
         }
 
         private bool ValidateId(int id)
@@ -149,7 +134,7 @@ namespace Cardevil.Cards.Data
         {
             get
             {
-                if (pipelineMap.Count != dataMap.Count || dataMap.Count != visualSpriteSetMap.Count)
+                if (pipelineMap.Count != dataMap.Count)
                 {
                     LogEx.LogError("Incorrect number of maps!");
                     return 0;
@@ -171,20 +156,6 @@ namespace Cardevil.Cards.Data
             }
 
             return data;
-        }
-
-        public CardVisualSpriteSet GetVisualSpriteSetById(int id)
-        {
-            if (!ValidateId(id))
-                return null;
-
-            if (!visualSpriteSetMap.TryGetValue(id, out var spriteSet))
-            {
-                LogEx.LogError($"Cannot find CardVisualSpriteSet. Id: {id}");
-                return null;
-            }
-
-            return spriteSet;
         }
 
         public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);
