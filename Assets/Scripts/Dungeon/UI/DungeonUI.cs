@@ -50,32 +50,16 @@ namespace Cardevil.Dungeon.UI
             _dungeonUICanvas = GetComponentInParent<Canvas>();      
         }
 
-        private void Awake()
-        {
-            
-        }
-
         public void Initialize()
         {
-            LogEx.Log("DungeonUI Initialize Phase 1: Setting up UI references...");
-            /*
-             * 던전 UI 초기화 - 1단계: 참조 설정
-             */
             foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
                 chapterUI.Initialize(this);
             }
         }
         
-        /// <summary>
-        /// 던전 생성 후 호출되어야 하는 2단계 초기화
-        /// </summary>
         public void InitializeAfterDungeonCreated()
         {
-            LogEx.Log("DungeonUI Initialize Phase 2: Initializing with dungeon data...");
-            /*
-             * 던전 UI 초기화 - 2단계: 던전 데이터 기반 초기화
-             */
             foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
                 chapterUI.InitializeAfterDungeonCreated();
@@ -84,22 +68,16 @@ namespace Cardevil.Dungeon.UI
         
         public void UpdateShowingDungeon(int id)
         {
-            LogEx.Log($"DungeonUI UpdateShowingDungeon: 던전 ID {id} 표시 시작");
-            
             var toShow = _dungeonChapters.Find(chapter => chapter.DungeonId == id);
             if (toShow == null)
             {
-                LogEx.LogError($"DungeonUI UpdateShowingDungeon: No DungeonChapterUI found for dungeon ID {id}");
+                LogEx.LogError($"No DungeonChapterUI found for dungeon ID {id}");
                 return;
             }
             
-            LogEx.Log($"DungeonUI UpdateShowingDungeon: 표시할 ChapterUI는 Dungeon ID {toShow.DungeonId}, GameObject={toShow.name}");
-            
             foreach (DungeonChapterUI chapterUI in _dungeonChapters)
             {
-                bool shouldActivate = chapterUI == toShow;
-                LogEx.Log($"  ChapterUI GameObject={chapterUI.name}, DungeonID={chapterUI.DungeonId}, SetActive({shouldActivate})");
-                chapterUI.gameObject.SetActive(shouldActivate);
+                chapterUI.gameObject.SetActive(chapterUI == toShow);
             }
             
             Camera.MoveTo(toShow.transform.position).OnComplete(() =>
@@ -110,7 +88,6 @@ namespace Cardevil.Dungeon.UI
                 }
             });
         }
-
 
 
 

@@ -3,9 +3,7 @@ using Cardevil.DebugConsole;
 using Cardevil.Dungeon.Build;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
-using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
@@ -19,7 +17,7 @@ namespace Cardevil.Dungeon
         [SerializeField] private List<DungeonConfigurationSO> dungeonConfigurations = new List<DungeonConfigurationSO>();
         
         [SerializeReference] private List<Dungeon> dungeons = new List<Dungeon>();
-        [SerializeField] private DungeonUI dungeonUI = null;
+        [SerializeField] private DungeonUI dungeonUI;
         [SerializeField, VisibleOnly] private DungeonNode currentNode;
         [SerializeField, VisibleOnly] private DungeonNode previousNode;
         [SerializeField, VisibleOnly] private DungeonProgress currentProgress;
@@ -49,7 +47,7 @@ namespace Cardevil.Dungeon
                     dungeonUI = Object.FindAnyObjectByType<DungeonUI>(FindObjectsInactive.Include);
                     if (dungeonUI == null)
                     {
-                        Debug.LogError("No DungeonUI found in the scene.");
+                        LogEx.LogError("No DungeonUI found in the scene");
                     }
                 }
                 return dungeonUI;
@@ -83,51 +81,34 @@ namespace Cardevil.Dungeon
             // 4단계: 던전 ID 1로 초기화
             if (dungeons.Count > 0)
             {
-                LogEx.Log($"DungeonManager Init: 총 {dungeons.Count}개 던전 생성됨");
-                foreach (var d in dungeons)
-                {
-                    LogEx.Log($"  던전 ID={d.DungeonId}, RootNode={(d.RootNode != null ? $"ID {d.RootNode.NodeId}" : "null")}");
-                }
-                
-                // 먼저 Root 노드를 Available로 변경 (ChapterUI가 비활성화되기 전에!)
+                // 먼저 Root 노드를 Available로 변경
                 var dungeon = GetDungeonById(1);
-                LogEx.Log($"DungeonManager Init: GetDungeonById(1) 결과={(dungeon != null ? $"던전 ID {dungeon.DungeonId}" : "null")}");
-                
                 if (dungeon?.RootNode != null)
                 {
-                    LogEx.Log($"DungeonManager Init: Root 노드 ID={dungeon.RootNode.NodeId}, State={dungeon.RootNode.State}");
                     dungeon.RootNode.State = NodeState.Available;
-                    LogEx.Log($"DungeonManager Init: Root 노드 State를 Available로 변경 완료");
                 }
                 else
                 {
-                    LogEx.LogError($"DungeonManager Init: Root 노드가 null! dungeon={dungeon}, RootNode={dungeon?.RootNode}");
+                    LogEx.LogError($"Root 노드가 null");
                 }
                 
-                // 그 다음 현재 던전 설정 (다른 ChapterUI 비활성화)
-                LogEx.Log($"DungeonManager Init: SetCurrentDungeonById(1) 호출");
                 SetCurrentDungeonById(1);
             }
             else
             {
-                Debug.LogWarning("DungeonManager Init: No dungeons created during initialization.");
+                LogEx.LogWarning("No dungeons created during initialization");
                 currentDungeonIndex = -1;
             }
-            
-
         }
 
         private void CreateDungeons()
         {
             dungeons.Clear();
-            Debug.Log("[DungeonManager] Creating dungeons from UI...");
             var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>();
             foreach (DungeonBuildHelperUI buildHelper in buildHelpers)
             {
                 Dungeon dungeon = buildHelper.BuildDungeon();
                 dungeons.Add(dungeon);
-                Debug.Log($"[DungeonManager] Dungeon {dungeon.DungeonId} created with {dungeon.Nodes.Count} nodes.");
-                Debug.Log(dungeon.GetDebugString());
             }
         }
 
@@ -140,7 +121,7 @@ namespace Cardevil.Dungeon
                     return dungeon;
                 }
             }
-            Debug.LogWarning($"[DungeonManager] Dungeon with ID {id} not found");
+            LogEx.LogWarning($"Dungeon with ID {id} not found");
             return null;
         }
 
@@ -164,15 +145,17 @@ namespace Cardevil.Dungeon
                 return;
             }
             currentDungeonIndex = dungeonId;
-            LogEx.Log($"Set current dungeon to ID: {dungeonId}");
             UI?.UpdateShowingDungeon(dungeonId);
         }
         
+        /// <summary>
+        /// 노드에 진입합니다
+        /// </summary>
         public void EnterNode(DungeonNode node)
         {
             if (node == null)
             {
-                Debug.LogWarning("[DungeonManager] No dungeon node provided.");
+                LogEx.LogWarning("Node is null");
                 return;
             }
             
@@ -220,16 +203,10 @@ namespace Cardevil.Dungeon
                 }
             }
             
-            LogEx.Log($"Entering node: {node.NodeId}");
-            
             // 프리셋 실행
             if (node.Behaviour != null)
             {
                 node.Behaviour.OnEnter(node);
-            }
-            else
-            {
-                LogEx.LogWarning($"No preset assigned to node {node.NodeId}.");
             }
             
             // 이벤트 발생
@@ -243,29 +220,28 @@ namespace Cardevil.Dungeon
         {
             if (currentNode == null)
             {
-                LogEx.LogWarning("No current dungeon node to exit.");
+                LogEx.LogWarning("No current dungeon node to exit");
                 return;
             }
+            
             ExitNode(currentNode, exitInfo);
         }
         
         /// <summary>
-        /// 특정 노드에서 나가기
+        /// 노드에서 나가기
         /// </summary>
         public void ExitNode(DungeonNode node, NodeExitInfo exitInfo)
         {
             if (node == null)
             {
-                LogEx.LogWarning("No dungeon node provided.");
+                LogEx.LogWarning("Node is null");
                 return;
             }
             if (node.Behaviour == null)
             {
-                LogEx.LogWarning($"No behaviour assigned to node {node.NodeId}.");
+                LogEx.LogWarning($"No behaviour assigned to node {node.NodeId}");
                 return;
             }
-            
-            LogEx.Log($"Exiting node: {node.NodeId}");
             
             node.Behaviour.OnExit(node, exitInfo);
             
@@ -287,17 +263,15 @@ namespace Cardevil.Dungeon
         {
             if (currentNode == null)
             {
-                LogEx.LogWarning("No current dungeon node to enable blackmarket.");
+                LogEx.LogWarning("No current dungeon node to enable blackmarket");
                 return;
             }
-            LogEx.Log($"Enabling blackmarket on node: {currentNode.NodeId}");
             
             // 암시장 생성 시도
             if (specialNodeManager.TryCreateSpecialNode(currentNode, out var specialNode))
             {
                 CurrentDungeon.Nodes.Add(specialNode);
                 specialNode.Dungeon = CurrentDungeon;
-                LogEx.Log($"Blackmarket node created after node {currentNode.NodeId}");
             }
         }
         
@@ -309,7 +283,7 @@ namespace Cardevil.Dungeon
             var dungeon = GetDungeonById(dungeonId);
             if (dungeon == null)
             {
-                LogEx.LogError($"[DungeonManager] Cannot start progress for dungeon {dungeonId} - not found");
+                LogEx.LogError($"Cannot start progress for dungeon {dungeonId} - not found");
                 return;
             }
             
@@ -320,8 +294,6 @@ namespace Cardevil.Dungeon
             {
                 dungeon.RootNode.State = NodeState.Available;
             }
-            
-            LogEx.Log($"[DungeonManager] Started new progress for dungeon {dungeonId}");
         }
         
         /// <summary>
@@ -331,7 +303,7 @@ namespace Cardevil.Dungeon
         {
             if (progress == null)
             {
-                LogEx.LogWarning("[DungeonManager] Cannot load null progress");
+                LogEx.LogWarning("Cannot load null progress");
                 return;
             }
             
@@ -339,7 +311,7 @@ namespace Cardevil.Dungeon
             var dungeon = GetDungeonById(progress.dungeonId);
             if (dungeon == null)
             {
-                LogEx.LogError($"[DungeonManager] Cannot load progress - dungeon {progress.dungeonId} not found");
+                LogEx.LogError($"Cannot load progress - dungeon {progress.dungeonId} not found");
                 return;
             }
             
@@ -359,8 +331,6 @@ namespace Cardevil.Dungeon
             {
                 progressNode.State = NodeState.Current;
             }
-            
-            LogEx.Log($"Loaded progress for dungeon {progress.dungeonId}");
         }
 
         #region Console Commands
@@ -432,3 +402,4 @@ namespace Cardevil.Dungeon
         #endregion
     }
 }
+

@@ -37,35 +37,26 @@ namespace Cardevil.Dungeon.UI
 
         public void Initialize(DungeonUI dungeonUI)
         {
-            LogEx.Log($"[DungeonChapterUI] Phase 1 - Setting up references for Dungeon ID: {dungeonId}");
             this.dungeonUI = dungeonUI;
             
-            // 노드 UI 받아오기
             var allChildren = GetComponentsInChildren<DungeonNodeUI>(true);
             nodeUis = new List<DungeonNodeUI>(allChildren);
             
-            // 모든 노드에 참조만 설정 (던전 데이터는 아직 없음)
             foreach (DungeonNodeUI nodeUi in nodeUis)
             {
                 nodeUi.InitRef(dungeonUI, this);
             }
         }
 
-        /// <summary>
-        /// 던전이 생성된 후 호출되어야 하는 2단계 초기화
-        /// </summary>
         public void InitializeAfterDungeonCreated()
         {
-            LogEx.Log($"[DungeonChapterUI] Phase 2 - Initializing with dungeon data for Dungeon ID: {dungeonId}");
-            
             Dungeon dungeon = Managers.Dungeon.GetDungeonById(dungeonId);
             if (dungeon == null)
             {
-                LogEx.LogError($"Dungeon with ID {dungeonId} not found.");
+                LogEx.LogError($"Dungeon with ID {dungeonId} not found");
                 return;
             }
 
-            // 라인 초기화 (던전 노드 데이터 필요)
             foreach (DungeonNodeUI nodeUi in nodeUis)
             {
                 nodeUi.InitializeLine();

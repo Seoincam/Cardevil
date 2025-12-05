@@ -55,9 +55,7 @@ namespace Cardevil.Dungeon
             get => state;
             set
             {
-                var oldState = state;
                 state = value;
-                Debug.Log($"DungeonNode {NodeId} State change: {oldState} -> {state}");
                 OnStateChanged?.Invoke(state);
             }
         }
