@@ -1,4 +1,4 @@
-﻿using Cardevil.Core;
+using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
@@ -26,6 +26,7 @@ namespace Cardevil.Ingame
         [SerializeField] private int _discardHand = 3;
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
         [SerializeField] public int gold;
+        [SerializeField] public int _slotMachineLevel = 1;
 
         public bool canRevive = false;
 

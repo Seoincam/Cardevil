@@ -40,7 +40,6 @@ public class ItemManager
             currentProb += probFloatList[i];
             if (randomFloat < currentProb)
             {
-                Debug.Log($"출력해야하는 index :{i}");
                 tmpItem = GetRandomTypeItem(i);
                 break;
             }
@@ -77,7 +76,6 @@ public class ItemManager
         MachineReward selectedItem = null;
         foreach (var item in filteredList)
         {
-            Debug.Log($"foreach문 도는중 현재 item : {item.ItemName.ToString()}");
             randomValue -= item.ItemProbability;
             if (randomValue <= 0)
             {

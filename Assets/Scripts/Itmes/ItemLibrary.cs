@@ -1,4 +1,4 @@
-﻿using Cardevil.DebugConsole;
+using Cardevil.DebugConsole;
 using Cardevil.Pools;
 using Cardevil.Utils;
 using Database;
@@ -77,9 +77,10 @@ namespace Cardevil.Item
             // {클래스이름: 클래스} 형태로 기본 등록
             DefaultRegisterAll();
         }
-        
-        
+
+#if UNITY_EDITOR
         [MenuItem("Cardevil/Item Library/Print All Items")]
+#endif
         public static void PrintAllItems()
         {
             if (_instance == null)
