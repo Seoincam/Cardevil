@@ -88,7 +88,7 @@ public class Slot : MonoBehaviour
 
         if (findItem == null) return; // 예외처리
 
-        DatabaseManager database = Managers.Game._database;
+        DatabaseManager database = Managers.Database;
 
         // 이미지 로딩
         if (Managers.Database.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
