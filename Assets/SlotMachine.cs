@@ -27,7 +27,7 @@ namespace Cardevil.InGame.SlotMachine
         public float spacing = 10f;
 
         [Header("비율을 계산할 수치 데이터")]
-        public List<float> values = new List<float> { 75, 50, 125, 250 };
+        public List<int> values = new List<int> { 75, 50, 125, 250 };
 
         [Header("크기를 조절할 UI 이미지들")]
         public List<Image> boxImages;
@@ -46,7 +46,6 @@ namespace Cardevil.InGame.SlotMachine
 
         void Start()
         {
-            UpdateLayout();
             Init();
         }
 
@@ -93,7 +92,9 @@ namespace Cardevil.InGame.SlotMachine
             // machineLevel을 통한 probalityList받기
             probalityList = Managers.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
 
-            Debug.Log($"Final Probability List: {probalityList[0]}");
+            // 레이아웃 업데이트
+            UpdateLayout();
+
         }
 
 
@@ -182,6 +183,7 @@ namespace Cardevil.InGame.SlotMachine
             // 유효성 검사
             if (boxImages == null || boxImages.Count == 0 || values.Count == 0) return;
 
+            values = probalityList.ToList();
             RectTransform containerRect = probabilityPanel.GetComponent<RectTransform>();
             float containerWidth = containerRect.rect.width;
 
@@ -249,6 +251,8 @@ namespace Cardevil.InGame.SlotMachine
        
             //리스트받기
             probalityList = Managers.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
+            // 레이아웃 업데이트
+            UpdateLayout();
 
         }
         private void OnSelectClicked(PointerEventData eventData) { }

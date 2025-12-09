@@ -1649,6 +1649,8 @@ MonoBehaviour:
   - {fileID: 6439011055925519365}
   - {fileID: 3345945537099242829}
   - {fileID: 5430484232658010112}
+  dropTiming: 0.8
+  zoomInTime: 1
 --- !u!1 &6818492369088566773
 GameObject:
   m_ObjectHideFlags: 0
