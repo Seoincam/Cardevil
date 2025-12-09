@@ -1,8 +1,10 @@
 ﻿using Cardevil.Attributes;
 using System.Collections.Generic;
 using Cardevil.Dungeon;
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Object = UnityEngine.Object;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -64,10 +66,10 @@ namespace Cardevil.Dungeon.UI
 
 #if UNITY_EDITOR
         [Header("기즈모 설정")]
-        private bool showGizmos = true;
-        private Color gizmoLineColor = Color.green;
-        private float gizmoNodeSize = 3f;
-        private float gizmoSelectedNodeSize = 5f;
+        [NonSerialized] private bool showGizmos = true;
+        [NonSerialized] private Color gizmoLineColor = Color.green;
+        [NonSerialized] private float gizmoNodeSize = 1.2f;
+        [NonSerialized] private float gizmoSelectedNodeSize = 1.5f;
         
         private void OnDrawGizmos()
         {
@@ -89,13 +91,20 @@ namespace Cardevil.Dungeon.UI
 
             // BuildHelper가 선택되어 있으면 개별 노드의 Selected Gizmo를 그리지 않음
             var selectedObjects = UnityEditor.Selection.objects;
+            bool isThis = false;
             foreach (var obj in selectedObjects)
             {
+                if (obj == this.gameObject)
+                {
+                    isThis = true;
+                    break;
+                }
                 if (obj is GameObject go && go.GetComponent<Cardevil.Dungeon.Build.DungeonBuildHelperUI>() != null)
                 {
-                    return; // BuildHelper가 선택되어 있으면 개별 노드 선택 표시 안함
+                    return;
                 }
             }
+            if (!isThis) return;
 
 
             // 선택된 노드를 노란색으로 강조
@@ -107,7 +116,7 @@ namespace Cardevil.Dungeon.UI
             {
                 if (nextNode == null) continue;
                 
-                Gizmos.color = Color.green;
+                Gizmos.color = Color.cyan;
                 Gizmos.DrawWireSphere(nextNode.transform.position, gizmoNodeSize);
                 
                 // 강조된 연결선
@@ -135,12 +144,17 @@ namespace Cardevil.Dungeon.UI
             
             if (thick)
             {
-                // 굵은 선 효과
-                for (int i = -1; i <= 1; i++)
-                {
-                    Vector3 offset = new Vector3(i * 0.3f, 0, 0);
-                    Gizmos.DrawLine(from + offset, to + offset);
-                }
+                // 굵은 선 효과는 큐브로
+
+                Vector3 direction = (to - from).normalized;
+                float distance = Vector3.Distance(from, to);
+                float thickness = 0.2f;
+                Vector3 center = (from + to) / 2;
+                Quaternion rotation = Quaternion.LookRotation(direction);
+                Vector3 scale = new Vector3(thickness, thickness, distance);
+                Gizmos.matrix = Matrix4x4.TRS(center, rotation, scale);
+                Gizmos.DrawCube(Vector3.zero, Vector3.one);
+                Gizmos.matrix = Matrix4x4.identity;
             }
             else
             {

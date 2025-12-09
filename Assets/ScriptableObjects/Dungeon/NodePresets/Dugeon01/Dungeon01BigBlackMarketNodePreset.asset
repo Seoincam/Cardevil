@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9973ce580264e89be51d10be3e3e66e, type: 3}
-  m_Name: BigBlackMarketNodePreset
+  m_Name: Dungeon01BigBlackMarketNodePreset
   m_EditorClassIdentifier: 
   displayName: "\uC554\uC2DC\uC7A5"
   nodeType: 6
@@ -22,3 +22,4 @@ MonoBehaviour:
   textColor: {r: 1, g: 1, b: 1, a: 1}
   _appearChance: 1
   _alwaysAppear: 1
+  _showWhenNotAppeared: 1

@@ -26,6 +26,10 @@ namespace Cardevil.Dungeon
         /// </summary>
         [SerializeField] public List<int> visitedNodeIds = new List<int>();
         
+        /// <summary>
+        /// 지나친 노드 ID 목록 (선택 가능했지만 선택하지 않은 노드들)
+        /// </summary>
+        [SerializeField] public List<int> passedNodeIds = new List<int>();
 
         /// <summary>
         /// 던전 완료 여부
@@ -37,6 +41,7 @@ namespace Cardevil.Dungeon
             dungeonId = -1;
             currentNodeId = -1;
             visitedNodeIds = new List<int>();
+            passedNodeIds = new List<int>();
             isCompleted = false;
         }
         
@@ -45,6 +50,7 @@ namespace Cardevil.Dungeon
             this.dungeonId = dungeonId;
             this.currentNodeId = currentNodeId;
             visitedNodeIds = new List<int>();
+            passedNodeIds = new List<int>();
             isCompleted = false;
         }
         
@@ -66,6 +72,25 @@ namespace Cardevil.Dungeon
         public bool HasVisited(int nodeId)
         {
             return visitedNodeIds.Contains(nodeId);
+        }
+        
+        /// <summary>
+        /// 노드를 지나침으로 기록 (선택 가능했지만 선택하지 않은 노드)
+        /// </summary>
+        public void PassNode(int nodeId)
+        {
+            if (!passedNodeIds.Contains(nodeId))
+            {
+                passedNodeIds.Add(nodeId);
+            }
+        }
+        
+        /// <summary>
+        /// 노드 지나침 여부 확인
+        /// </summary>
+        public bool HasPassed(int nodeId)
+        {
+            return passedNodeIds.Contains(nodeId);
         }
     }
 }

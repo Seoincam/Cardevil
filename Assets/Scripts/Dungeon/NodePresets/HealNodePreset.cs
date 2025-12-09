@@ -7,6 +7,9 @@ namespace Cardevil.Dungeon.NodePresets
     [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Heal_Inactive.png")]
     public class HealNodePreset : DungeonNodePreset
     {
+
+        public override bool RequiresClearToProgress => false;
+        
         public override void OnEnter(DungeonNode node)
         {
             LogEx.Log($"회복 노드 진입 (ID: {node.NodeId}, 층: {node.Floor}): 플레이어가 회복합니다.");

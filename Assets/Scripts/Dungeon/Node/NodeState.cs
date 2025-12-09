@@ -20,6 +20,14 @@ namespace Cardevil.Dungeon
         /// <summary>
         /// 완료됨 - 이미 클리어한 노드
         /// </summary>
-        Completed
+        Completed,
+        /// <summary>
+        /// 숨겨진 상태 - UI에 표시되지 않음
+        /// </summary>
+        Hidden,
+        /// <summary>
+        /// 지나친 상태 - 선택할 수 있었지만, 현재는 선택할 수 없음
+        /// </summary>
+        Passed,
     }
 }

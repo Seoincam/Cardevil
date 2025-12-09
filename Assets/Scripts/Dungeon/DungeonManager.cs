@@ -1,6 +1,7 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Dungeon.Build;
+using Cardevil.Dungeon.NodePresets;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
 using Cardevil.Events.ExecEvents;
@@ -8,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
 using Object = UnityEngine.Object;
 
@@ -22,14 +24,17 @@ namespace Cardevil.Dungeon
         [SerializeField] private DungeonUI dungeonUI;
         [SerializeField, VisibleOnly] private DungeonNode currentNode;
         [SerializeField, VisibleOnly] private DungeonNode previousNode;
-        [SerializeField, VisibleOnly] private DungeonProgress currentProgress;
+        [SerializeReference, VisibleOnly] private DungeonProgress currentProgress;
+        [SerializeReference, VisibleOnly] private List<DungeonProgress> savedProgresses = new List<DungeonProgress>();
         private int currentDungeonIndex = -1;
-
+        
         [Header("Debug")]
-        [SerializeField] bool instantClear = false;
+        [SerializeField] bool doInstantClear = false;
         
         private bool _canGoNext = true;
-        
+
+
+        public bool DoInstantClear => true; // doInstantClear;
         public bool CanGoNext
         {
             get => _canGoNext;
@@ -80,20 +85,10 @@ namespace Cardevil.Dungeon
             UI?.InitializeAfterDungeonCreated();
             
             // 4단계: 던전 ID 1로 초기화
+            savedProgresses.Clear();
             if (dungeons.Count > 0)
             {
-                // 먼저 Root 노드를 Available로 변경
-                var dungeon = GetDungeonById(1);
-                if (dungeon?.RootNode != null)
-                {
-                    dungeon.RootNode.State = NodeState.Available;
-                }
-                else
-                {
-                    LogEx.LogError($"Root 노드가 null");
-                }
-                
-                SetCurrentDungeonById(1);
+                StartDungeonById(1);             
             }
             else
             {
@@ -133,6 +128,26 @@ namespace Cardevil.Dungeon
         {
             return GetDungeon(dungeonId);
         }
+        
+        public int GetNextDungeonId(int dungeonDungeonId)
+        {
+            return dungeonDungeonId + 1;
+        }
+        
+        public void StartDungeonById(int dungeonId)
+        {
+            SetCurrentDungeonById(dungeonId);
+            var dungeon = GetDungeonById(dungeonId);
+            if (dungeon?.RootNode != null)
+            {
+                dungeon.RootNode.State = NodeState.Available;
+            }
+            else
+            {
+                LogEx.LogError($"Root 노드가 null");
+            }
+            StartNewProgress(dungeonId);
+        }
 
         /// <summary>
         /// 현재 던전을 ID로 설정
@@ -167,63 +182,51 @@ namespace Cardevil.Dungeon
             }
             
             // 이전 노드 Exit 처리
-            if (currentNode != null && currentNode.Preset != null)
+            if (currentNode != null)
             {
+                // 클리어가 필요한 노드를 클리어하지 않고 나가려는 경우 차단
+                if (currentNode.RequiresClearToProgress && currentNode.State != NodeState.Completed)
+                {
+                    LogEx.LogWarning($"[DungeonManager] 노드 {currentNode.NodeId}는 클리어가 필요합니다. 다음 노드로 이동할 수 없습니다.");
+                    return;
+                }
 
-                var exitInfo = new NodeExitInfo() { IsCleared = true };
-                currentNode.Preset.OnExit(currentNode, exitInfo);
-                currentNode.State = NodeState.Completed;
-                
-                // 이벤트 발생
-                using var exitArgs = NodeExitedEventArgs.Get();
-                exitArgs.Init(currentNode, exitInfo);
-                ExecEventBus<NodeExitedEventArgs>.InvokeMerged(exitArgs).Forget();
+                if (currentNode.Preset != null)
+                {
+                    var exitInfo = new NodeExitInfo() { IsCleared = true };
+                    currentNode.Preset.OnExit(currentNode, exitInfo);
+                    
+                    // 이미 Completed 상태가 아닐 때만 변경
+                    if (currentNode.State != NodeState.Completed)
+                    {
+                        currentNode.State = NodeState.Completed;
+                    }
+                    
+                    // 이벤트 발생
+                    using var exitArgs = NodeExitedEventArgs.Get();
+                    exitArgs.Init(currentNode, exitInfo);
+                    ExecEventBus<NodeExitedEventArgs>.InvokeMerged(exitArgs).Forget();
+                }
                 
                 // 이전 노드로 저장
                 previousNode = currentNode;
-
-
             }
             
             // 새 노드 Enter 처리
             currentNode = node;
             currentNode.State = NodeState.Current;
             
+            // 이전 노드의 다른 선택지들을 Passed 상태로 변경
+            if (previousNode != null)
+            {
+                MarkUnselectedNodesAsPassed(previousNode, node);
+            }
+            
             // 진행 상태 업데이트
             if (currentProgress != null)
             {
                 currentProgress.VisitNode(node.NodeId);
             }
-            
-            // 다음 노드들을 사용 가능 상태로 변경 (블랙마켓 확률 체크 포함)
-            foreach (var nextNode in currentNode.NextNodes)
-            {
-                if (nextNode.State == NodeState.Locked)
-                {
-                    // 블랙마켓 노드인 경우 확률 체크
-                    if (nextNode.Type == DungeonNodeTypes.BlackMarket)
-                    {
-                        bool appeared = nextNode.CheckBlackMarketAppearance();
-                        if (appeared)
-                        {
-                            nextNode.State = NodeState.Available;
-                        }
-                        else
-                        {
-                            // 블랙마켓이 나타나지 않으면 UI에서 숨김 처리
-                            // UI 업데이트는 DungeonUI에서 처리
-                            LogEx.Log($"[DungeonManager] 블랙마켓 노드 {nextNode.NodeId} 숨김 처리");
-                        }
-                    }
-                    else
-                    {
-                        nextNode.State = NodeState.Available;
-                    }
-                }
-            }
-            
-            // UI에 블랙마켓 상태 업데이트 요청
-            UI?.UpdateBlackMarketVisibility(currentNode);
             
             // 프리셋 실행
             if (node.Preset != null)
@@ -235,7 +238,13 @@ namespace Cardevil.Dungeon
             using var enterArgs = NodeEnteredEventArgs.Get();
             enterArgs.Init(node);
             ExecEventBus<NodeEnteredEventArgs>.InvokeMerged(enterArgs).Forget();
+            
+            if (DoInstantClear)
+            {
+                ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
+            }
         }
+        
         
         /// <summary>
         /// 현재 노드에서 나가기
@@ -272,15 +281,108 @@ namespace Cardevil.Dungeon
             if (exitInfo.IsCleared)
             {
                 node.State = NodeState.Completed;
+                
+                ActivateNextNodes(node);
             }
             
             previousNode = node;
-            currentNode = null;
+            
+            // RequiresClearToProgress가 false인 노드는 currentNode를 유지
+            if (!node.RequiresClearToProgress || exitInfo.IsCleared)
+            {
+                currentNode = null;
+            }
             
             // 이벤트 발생
             using var args = NodeExitedEventArgs.Get();
             args.Init(node, exitInfo);
             ExecEventBus<NodeExitedEventArgs>.InvokeMerged(args).Forget();
+        }
+        
+        /// <summary>
+        /// 클리어한 노드의 다음 노드들을 활성화합니다
+        /// </summary>
+        private void ActivateNextNodes(DungeonNode clearedNode)
+        {
+            foreach (var nextNode in clearedNode.NextNodes)
+            {
+                if (nextNode.State == NodeState.Locked)
+                {
+                    // 블랙마켓 노드 처리
+                    if (nextNode.Type == DungeonNodeTypes.BlackMarket && nextNode.Preset is BlackMarketNodePreset blackMarketPreset)
+                    {
+                        bool appeared = blackMarketPreset.ShouldAppear();
+                        
+                        void SetAvailableNexts()
+                        {
+                            foreach (var afterBlackMarketNode in nextNode.NextNodes)
+                            {
+                                if (afterBlackMarketNode.State == NodeState.Locked)
+                                {
+                                    afterBlackMarketNode.State = NodeState.Available;
+                                }
+                            } 
+                        }
+                        if (blackMarketPreset.AutoConnectNextNodes)
+                        {
+                            SetAvailableNexts();
+                        }
+                        
+                        if (appeared)
+                        {
+                            nextNode.State = NodeState.Available;
+                            LogEx.Log($"[DungeonManager] 블랙마켓 노드 {nextNode.NodeId} 활성화");
+                        }
+                        else
+                        {
+                            nextNode.State = NodeState.Hidden;
+                            SetAvailableNexts();
+                            LogEx.Log($"[DungeonManager] 블랙마켓 노드 {nextNode.NodeId} 숨김 처리");
+                        }
+                    }
+                    else
+                    {
+                        nextNode.State = NodeState.Available;
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// 선택하지 않은 노드들을 Passed 상태로 변경합니다
+        /// </summary>
+        /// <param name="fromNode">출발한 노드 (이전 노드)</param>
+        /// <param name="selectedNode">선택한 노드 (현재 노드)</param>
+        private void MarkUnselectedNodesAsPassed(DungeonNode fromNode, DungeonNode selectedNode)
+        {
+            if (fromNode == null || selectedNode == null) return;
+            
+            // 이전 노드의 다음 노드들 중 선택하지 않은 노드들을 Passed로 변경
+            foreach (var nextNode in fromNode.NextNodes)
+            {
+                if (nextNode.NodeId == selectedNode.NodeId) continue;
+                
+                // 암시장이 나타나지 않은 경우는 무시 
+                if (nextNode.Type == DungeonNodeTypes.BlackMarket && nextNode.State == NodeState.Locked)
+                {
+                    LogEx.Log($"[DungeonManager] 암시장 노드 {nextNode.NodeId}는 나타나지 않아 무시");
+                    continue;
+                }
+                
+                // Available 상태인 노드만 Passed로 변경
+                if (nextNode.State == NodeState.Available)
+                {
+                    nextNode.State = NodeState.Passed;
+                    
+                    // Progress에 기록
+                    if (currentProgress != null)
+                    {
+                        currentProgress.PassNode(nextNode.NodeId);
+                    }
+                    
+                    LogEx.Log($"[DungeonManager] 노드 {nextNode.NodeId}를 Passed 상태로 변경");
+                }
+            }
         }
         
         /// <summary>
@@ -310,6 +412,7 @@ namespace Cardevil.Dungeon
             }
             
             currentProgress = new DungeonProgress(dungeonId, dungeon.RootNode.NodeId);
+            savedProgresses.Add(currentProgress);
             
             // 루트 노드를 사용 가능 상태로 설정
             if (dungeon.RootNode != null)
@@ -344,6 +447,16 @@ namespace Cardevil.Dungeon
                 if (node != null)
                 {
                     node.State = NodeState.Completed;
+                }
+            }
+            
+            // 지나친 노드들을 Passed 상태로 설정
+            foreach (int nodeId in progress.passedNodeIds)
+            {
+                var node = dungeon.GetNode(nodeId);
+                if (node != null)
+                {
+                    node.State = NodeState.Passed;
                 }
             }
             
@@ -422,6 +535,8 @@ namespace Cardevil.Dungeon
             }
         }
         #endregion
+
+
     }
 }
 

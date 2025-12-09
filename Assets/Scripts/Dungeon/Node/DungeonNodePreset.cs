@@ -47,6 +47,11 @@ namespace Cardevil.Dungeon
         public Color TextColor => textColor;
 
         /// <summary>
+        /// 이 노드가 다음 노드로 이동하기 전에 클리어가 필요한지 여부
+        /// </summary>
+        public virtual bool RequiresClearToProgress => true;
+
+        /// <summary>
         /// 노드에 진입할 때 호출됩니다.
         /// </summary>
         /// <param name="node">진입한 노드</param>
@@ -62,9 +67,13 @@ namespace Cardevil.Dungeon
             
         }
         
-        public virtual Sprite GetNodeBackgroundSprite()
+        public virtual Sprite GetNodeBackgroundSprite(NodeState state)
         {
-            return lockedSprite;
+            return state switch
+            {
+                NodeState.Hidden => null,
+                _ => lockedSprite
+            };
         }
         
         /// <summary>
@@ -78,6 +87,8 @@ namespace Cardevil.Dungeon
                 NodeState.Available => activeSprite,
                 NodeState.Current => activeSprite,
                 NodeState.Completed => completedSprite,
+                NodeState.Passed => null,
+                NodeState.Hidden => null,
                 _ => lockedSprite
             };
         }
@@ -91,51 +102,38 @@ namespace Cardevil.Dungeon
         {
             if (nodeUI == null) return;
             
-            void SetImageSpriteAndColor(Image image, Sprite sprite, Color color)
-            {
-                if (sprite != null)
-                {
-                    image.sprite = sprite;
-                    image.color = color;
-                    image.SetNativeSize();
-                }
-                else
-                {
-                    image.sprite = null;
-                    image.color = Color.clear;
-                }
-            }
+
             
-            if (nodeUI.BackgroundImage != null)
+            if (nodeUI.BackgroundImage)
             {
-                Sprite bgSprite = GetNodeBackgroundSprite();
+                Sprite bgSprite = GetNodeBackgroundSprite(state);
                 SetImageSpriteAndColor(nodeUI.BackgroundImage, bgSprite, nodeColor);
             }
             
-            if (nodeUI.NodeImage != null)
+            if (nodeUI.NodeImage)
             {
                 Sprite stateSprite = GetNodeSpriteForState(state);
                 SetImageSpriteAndColor(nodeUI.NodeImage, stateSprite, nodeColor);
             }
 
-            // 텍스트 설정
-            if (nodeUI.NodeText != null)
-            {
-                if (state == NodeState.Locked || state == NodeState.Completed)
-                {
-                    nodeUI.NodeText.text = "";
-                }
-                else
-                {
-                    nodeUI.NodeText.text = string.IsNullOrEmpty(displayName) ? name : displayName;
-                    nodeUI.NodeText.color = textColor;
-                }
-            }
+            // // 텍스트 설정
+            // if (nodeUI.NodeText)
+            // {
+            //     if (state == NodeState.Locked || state == NodeState.Completed)
+            //     {
+            //         nodeUI.NodeText.text = "";
+            //     }
+            //     else
+            //     {
+            //         nodeUI.NodeText.text = string.IsNullOrEmpty(displayName) ? name : displayName;
+            //         nodeUI.NodeText.color = textColor;
+            //     }
+            // }
             
             // 오버레이 설정
-            if (nodeUI.OverlayImage != null)
+            if (nodeUI.OverlayImage)
             {
-                if (state == NodeState.Completed && completedOverlaySprite != null)
+                if (state == NodeState.Completed && completedOverlaySprite)
                 {
                     nodeUI.OverlayImage.gameObject.SetActive(true);
                     nodeUI.OverlayImage.sprite = completedOverlaySprite;
@@ -145,6 +143,21 @@ namespace Cardevil.Dungeon
                 {
                     nodeUI.OverlayImage.gameObject.SetActive(false);
                 }
+            }
+        }
+        
+        protected void SetImageSpriteAndColor(Image image, Sprite sprite, Color color)
+        {
+            if (sprite != null)
+            {
+                image.sprite = sprite;
+                image.color = color;
+                image.SetNativeSize();
+            }
+            else
+            {
+                image.sprite = null;
+                image.color = Color.clear;
             }
         }
     }

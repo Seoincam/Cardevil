@@ -59,7 +59,9 @@ namespace Cardevil.Dungeon
             get => state;
             set
             {
+                LogEx.Log($"[Node {NodeId}] State changed: {state} → {value}\n");
                 state = value;
+                
                 OnStateChanged?.Invoke(state);
             }
         }
@@ -70,6 +72,18 @@ namespace Cardevil.Dungeon
         [field:NonSerialized] public List<DungeonNode> PreviousNodes { get; private set; } = new List<DungeonNode>();
         [field:NonSerialized] public List<DungeonNode> NextNodes { get; private set; } = new List<DungeonNode>();
         [NonSerialized] public List<DungeonNode> OriginNextNodes; // 암시장 같은 특별 노드에서 원래의 다음 노드들을 저장하기 위함
+
+        /// <summary>
+        /// 다음 노드로 이동하기 위해 클리어가 필요한지 여부
+        /// </summary>
+        public bool RequiresClearToProgress
+        {
+            get
+            {
+                if (Preset == null) return false;
+                return Preset.RequiresClearToProgress;
+            }
+        }
 
         private DungeonNode()
         {
@@ -91,56 +105,14 @@ namespace Cardevil.Dungeon
         }
 
         /// <summary>
-        /// 던전 빌드 후에 실행 - 필요한 초기화 로직 수행
+        /// 던전 빌드 후에 실행
         /// </summary>
         public void Initialize()
         {
             // 노드 상태 초기화
             state = NodeState.Locked;
-            _isBlackMarketHidden = false;
             
             Debug.Log($"[DungeonNode] Node {NodeId} initialized. Type: {Type}, NextNodes: {NextNodes.Count}, PrevNodes: {PreviousNodes.Count}");
-        }
-        
-        private bool _isBlackMarketHidden;
-        
-        /// <summary>
-        /// 이 블랙마켓 노드가 숨겨졌는지 여부
-        /// </summary>
-        public bool IsBlackMarketHidden => _isBlackMarketHidden;
-        
-        /// <summary>
-        /// 블랙마켓 노드의 출현 여부를 결정합니다.
-        /// 블랙마켓 타입이 아니면 항상 true를 반환합니다.
-        /// </summary>
-        /// <returns>블랙마켓이 나타나면 true, 숨겨지면 false</returns>
-        public bool CheckBlackMarketAppearance()
-        {
-            if (Type != DungeonNodeTypes.BlackMarket)
-            {
-                return true; // 블랙마켓이 아니면 항상 나타남
-            }
-            
-            // BlackMarketNodePreset으로 캐스팅하여 확률 체크
-            if (Preset is NodePresets.BlackMarketNodePreset blackMarketPreset)
-            {
-                bool shouldAppear = blackMarketPreset.ShouldAppear();
-                _isBlackMarketHidden = !shouldAppear;
-                
-                if (shouldAppear)
-                {
-                    LogEx.Log($"[DungeonNode] 블랙마켓 노드 {NodeId}가 나타남!");
-                }
-                else
-                {
-                    LogEx.Log($"[DungeonNode] 블랙마켓 노드 {NodeId}가 나타나지 않음.");
-                }
-                
-                return shouldAppear;
-            }
-            
-            // Preset이 없거나 BlackMarketNodePreset이 아니면 나타남
-            return true;
         }
         
         /// <summary>
@@ -207,5 +179,6 @@ namespace Cardevil.Dungeon
             if (PreviousNodes == null) PreviousNodes = new List<DungeonNode>();
             if (NextNodes == null) NextNodes = new List<DungeonNode>();
         }
+
     }
 }

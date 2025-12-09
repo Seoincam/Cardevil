@@ -7,6 +7,8 @@ namespace Cardevil.Dungeon.NodePresets
     [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Middle_Boss_Inactive.png")]
     public class MiniBossNodePreset : DungeonNodePreset
     {
+        public override bool RequiresClearToProgress => true;
+        
         public override void OnEnter(DungeonNode node)
         {
             LogEx.Log($"중간 보스 노드 진입 (ID: {node.NodeId}, 층: {node.Floor}): 중간 보스와의 전투가 시작됩니다.");

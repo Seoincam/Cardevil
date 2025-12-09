@@ -7,6 +7,8 @@ namespace Cardevil.Dungeon.NodePresets
     [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Random_Inactive.png")]
     public class DevNodePreset : DungeonNodePreset
     {
+        public override bool RequiresClearToProgress => false;
+        
         public override void OnEnter(DungeonNode node)
         {
             LogEx.Log($"Dev 노드 진입 (ID: {node.NodeId}, 층: {node.Floor})");

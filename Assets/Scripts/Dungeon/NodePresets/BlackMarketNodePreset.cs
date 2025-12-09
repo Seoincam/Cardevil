@@ -1,5 +1,7 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Dungeon.UI;
+using Cardevil.Utils;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Dungeon.NodePresets
 {
@@ -15,8 +17,17 @@ namespace Cardevil.Dungeon.NodePresets
         [Tooltip("암시장 출현 확률 (0.0 ~ 1.0). 1.0이면 반드시 출현")]
         [SerializeField, Range(0f, 1f)] private float _appearChance = 0.5f;
         
+        [FormerlySerializedAs("_alwaysAppear")]
         [Tooltip("true이면 확률 무시하고 반드시 출현")]
-        [SerializeField] private bool _alwaysAppear;
+        [SerializeField] private bool alwaysAppear;
+        
+        [FormerlySerializedAs("_autoConnectNextNodes")]
+        [Tooltip("다음 노드를 자동으로 연결할 것인지(암시장이 스킵 가능한지)")]
+        [SerializeField] private bool autoConnectNextNodes = true;
+        
+        [FormerlySerializedAs("_showWhenNotAppeared")]
+        [Tooltip("비출현 상태이더라도 표시할 것인지")]
+        [SerializeField] private bool showWhenNotAppeared = false;
         
         /// <summary>
         /// 암시장 출현 확률 (0.0 ~ 1.0)
@@ -26,16 +37,24 @@ namespace Cardevil.Dungeon.NodePresets
         /// <summary>
         /// 반드시 출현하는 암시장인지 여부
         /// </summary>
-        public bool AlwaysAppear => _alwaysAppear;
+        public bool AlwaysAppear => alwaysAppear;
+        
+        /// <summary>
+        /// 다음 노드를 자동으로 연결할 것인지 여부
+        /// </summary>
+        public bool AutoConnectNextNodes => autoConnectNextNodes;
         
         /// <summary>
         /// 암시장이 나타나야 하는지 확률 체크
         /// </summary>
         public bool ShouldAppear()
         {
-            if (_alwaysAppear) return true;
+            if (alwaysAppear) return true;
             return Random.value < _appearChance;
         }
+        
+        
+        public override bool RequiresClearToProgress => false;
         
         public override void OnEnter(DungeonNode node)
         {
@@ -45,6 +64,79 @@ namespace Cardevil.Dungeon.NodePresets
         public override void OnExit(DungeonNode node, NodeExitInfo exitInfo)
         {
             LogEx.Log($"암시장 노드 탈출 (ID: {node.NodeId}): 암시장 거래를 마쳤습니다.");
+        }
+
+
+        /// <summary>
+        /// 암시장의 UI를 그립니다.
+        /// </summary>
+        /// <param name="nodeUI"></param>
+        /// <param name="state"></param>
+        public override void DrawNodeUI(DungeonNodeUI nodeUI, NodeState state)
+        {
+            if (nodeUI == null) return;
+            #if UNITY_EDITOR
+            if(state == NodeState.Locked && !showWhenNotAppeared && Application.isPlaying)
+            {
+                nodeUI.Hide();
+                return;
+            }
+            else
+            {
+                nodeUI.Show();
+            }
+            #else
+            if(state == NodeState.Locked && !_showWhenNotAppeared)
+            {
+                nodeUI.Hide()
+                return;
+            }
+            else
+            {
+                nodeUI.Show();
+            }
+            
+#endif
+            if (nodeUI.BackgroundImage)
+            {
+                Sprite bgSprite = GetNodeBackgroundSprite(state);
+                SetImageSpriteAndColor(nodeUI.BackgroundImage, bgSprite, nodeColor);
+            }
+            
+            if (nodeUI.NodeImage)
+            {
+                Sprite stateSprite = GetNodeSpriteForState(state);
+                SetImageSpriteAndColor(nodeUI.NodeImage, stateSprite, nodeColor);
+            }
+
+            // // 텍스트 설정
+            // if (nodeUI.NodeText)
+            // {
+            //     if (state == NodeState.Locked || state == NodeState.Completed)
+            //     {
+            //         nodeUI.NodeText.text = "";
+            //     }
+            //     else
+            //     {
+            //         nodeUI.NodeText.text = string.IsNullOrEmpty(displayName) ? name : displayName;
+            //         nodeUI.NodeText.color = textColor;
+            //     }
+            // }
+            
+            // 오버레이 설정
+            if (nodeUI.OverlayImage)
+            {
+                if (state == NodeState.Completed && completedOverlaySprite != null)
+                {
+                    nodeUI.OverlayImage.gameObject.SetActive(true);
+                    nodeUI.OverlayImage.sprite = completedOverlaySprite;
+                    nodeUI.NodeImage.SetNativeSize();
+                }
+                else
+                {
+                    nodeUI.OverlayImage.gameObject.SetActive(false);
+                }
+            }
         }
     }
 }

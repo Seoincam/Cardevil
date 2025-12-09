@@ -30,7 +30,6 @@ namespace Cardevil.Dungeon.UI
         
 
         private LineRenderer lineRenderer;
-        private bool _isHidden; // 블랙마켓이 나타나지 않아서 숨겨진 상태
         
         // UI 컴포넌트 접근용 프로퍼티
         public Button NodeButton => _button;
@@ -41,7 +40,6 @@ namespace Cardevil.Dungeon.UI
         public Animator NodeAnimator => nodeAnimator;
         
         public int DungeonId => dungeonChapterUI.DungeonId;
-        public bool IsHidden => _isHidden;
 
         public DungeonNode DungeonNode
         {
@@ -93,14 +91,6 @@ namespace Cardevil.Dungeon.UI
             }
         }
 
-        private void OnEnable()
-        {
-            if (_button != null && !_button.gameObject.activeSelf && !_isHidden)
-            {
-                _button.gameObject.SetActive(true);
-            }
-        }
-
         private void Start()
         {
             if (dungeonNode != null)
@@ -139,13 +129,17 @@ namespace Cardevil.Dungeon.UI
             UpdateView();
         }
         
-        /// <summary>
-        /// 블랙마켓이 나타나지 않아서 이 노드를 숨깁니다.
-        /// </summary>
-        public void HideAsBlackMarketNotAppeared()
+        public void Hide()
         {
-            _isHidden = true;
-            gameObject.SetActive(false);
+            if (_button != null)
+            {
+                _button.gameObject.SetActive(false);
+            }
+
+            if (overlayImage != null)
+            {
+                overlayImage.gameObject.SetActive(false);
+            }
         }
         
         /// <summary>
@@ -153,9 +147,11 @@ namespace Cardevil.Dungeon.UI
         /// </summary>
         public void Show()
         {
-            _isHidden = false;
-            gameObject.SetActive(true);
-            UpdateView();
+            if (_button != null)
+            {
+                _button.gameObject.SetActive(true);
+            }
+            
         }
 
         /// <summary>
@@ -166,12 +162,6 @@ namespace Cardevil.Dungeon.UI
             if (dungeonNode == null)
             {
                 LogEx.LogWarning($"dungeonNode is null");
-                return;
-            }
-            
-            // 숨겨진 노드는 업데이트하지 않음
-            if (_isHidden)
-            {
                 return;
             }
             
@@ -201,20 +191,45 @@ namespace Cardevil.Dungeon.UI
             {
                 case NodeState.Locked:
                     _button.interactable = false;
-                    _button.gameObject.SetActive(false);
+                    // _button.gameObject.SetActive(false);
                     break;
                 case NodeState.Available:
                     _button.interactable = true;
-                    _button.gameObject.SetActive(true);
+                    // _button.gameObject.SetActive(true);
                     break;
                 case NodeState.Current:
                     _button.interactable = false;
-                    _button.gameObject.SetActive(true);
+                    // _button.gameObject.SetActive(true);
                     break;
                 case NodeState.Completed:
                     _button.interactable = false;
-                    _button.gameObject.SetActive(true);
+                    // _button.gameObject.SetActive(true);
                     break;
+                case NodeState.Passed:
+                    _button.interactable = false;
+                    // _button.gameObject.SetActive(false);
+                    break;
+                case NodeState.Hidden:
+                    _button.interactable = false;
+                    // _button.gameObject.SetActive(false);
+                    break;
+            }
+        }
+        
+        
+        [ContextMenu("Print Node Info")]
+        public void PrintNodeInfo()
+        {
+            Debug.Log(ToString());
+            Debug.Log("Previous Nodes:");
+            foreach (var prev in dungeonNode.PreviousNodes)
+            {
+                Debug.Log($"  - NodeId: {prev.NodeId}");
+            }
+            Debug.Log("Next Nodes:");
+            foreach (var next in dungeonNode.NextNodes)
+            {
+                Debug.Log($"  - NodeId: {next.NodeId}");
             }
         }
         
