@@ -2,6 +2,7 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Visual.Handler;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
@@ -27,7 +28,7 @@ namespace Cardevil.Cards.InStage.View
         private RectTransform _rect;
         
         private readonly List<RectTransform> _slots = new();
-        private readonly List<CardVisualLightUI> _visuals = new();
+        private readonly List<CardVisualValueSelectionView> _visuals = new();
         private CancellationTokenSource _animCts;
         
         private Card _cardCache;
@@ -164,7 +165,7 @@ namespace Cardevil.Cards.InStage.View
             }
         }
 
-        private async UniTaskVoid AnimateCard(CardVisualLightUI card, float dur, CancellationToken ct)
+        private async UniTaskVoid AnimateCard(CardVisualValueSelectionView card, float dur, CancellationToken ct)
         {
             var originalPos = card.Rect.anchoredPosition;
             card.Rect.anchoredPosition = originalPos + new Vector2(0, -20);
@@ -215,12 +216,12 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         private void ConfigureCards(CardData data, int count)
         {
-            const string path = "UI/CardUI/CardVisual_Light_UI";
+            const string path = "Cards/Visual/Handler/CardVisual_ValueSelectionView";
 
             for (int i = 0; i < count; i++)
             {
                 var go = Managers.Resource.Instantiate(path, _slots[i]);
-                var visual = go.GetComponent<CardVisualLightUI>();
+                var visual = go.GetComponent<CardVisualValueSelectionView>();
                 visual.Selected += OnValueSelected;
 
                 if (data.Kind == CardKind.Attack)

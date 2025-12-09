@@ -26,7 +26,6 @@ public class Managers : MonoBehaviour
     JsonManager _json = new JsonManager();
     [SerializeField] SoundManager _sound = new SoundManager();
     ExecutionManager _execution = new ExecutionManager();
-    EventManager _event = new EventManager();
     [SerializeField] CardManager _card = new CardManager();
     ItemManager _item = new ItemManager();
     [SerializeField] RelicManager _relic = new RelicManager();
@@ -41,7 +40,6 @@ public class Managers : MonoBehaviour
     public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }
-    public static EventManager Event { get { return Instance._event; } }
     public static CardManager Card { get { return Instance._card; } }
     public static ItemManager Item { get { return Instance._item; } }
     public static RelicManager Relic {get { return Instance._relic; }}
@@ -105,6 +103,7 @@ public class Managers : MonoBehaviour
         Sound.Clear();
         Pool.Clear();
         Game.Clear();
+        
     }
     
     

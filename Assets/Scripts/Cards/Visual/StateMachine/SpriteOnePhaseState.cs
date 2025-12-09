@@ -1,3 +1,4 @@
+using Cardevil.Cards.Visual.Base;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -17,18 +18,37 @@ namespace Cardevil.Cards.Visual.StateMachine
         // 숫자가 크기가 커지며 나타남
         public async UniTask OnEnter(CardVisualSpriteSet spriteSet)
         {
-            _visual.InnerFrame.sprite = spriteSet.innerFrame;
-            _visual.Number.sprite = spriteSet.sprites[0];
+            _visual.SmallValue.gameObject.SetActive(false);
             
-            _visual.Number.gameObject.SetActive(true);
-            await _visual.Number.rectTransform.DOScale(1f, .5f);
+            _visual.InnerFrame.sprite = spriteSet.innerFrame;
+            _visual.MainValue.sprite = spriteSet.sprites[0];
+            _visual.MainValue.gameObject.SetActive(true);
+            
+            var seq = DOTween.Sequence()
+                .Join(_visual.MainValue.rectTransform.DOScale(1f, .5f));
+
+            if (spriteSet.small)
+            {
+                _visual.SmallValue.sprite = spriteSet.small;
+                _visual.SmallValue.gameObject.SetActive(true);
+                seq.Join(_visual.SmallValue.DOFade(1f, .5f));
+            }
+
+            await seq;
         }
 
         // 숫자가 크기가 작아지며 사라짐
         public async UniTask OnExit()
         {
-            await _visual.Number.rectTransform.DOScale(0f, .5f);
-            _visual.Number.gameObject.SetActive(false);
+            var seq = DOTween.Sequence()
+                .Join(_visual.MainValue.rectTransform.DOScale(0f, .5f));
+            if (_visual.SmallValue.gameObject.activeSelf)
+                seq.Join(_visual.SmallValue.DOFade(0f, .5f));
+
+            await seq;
+
+            _visual.MainValue.gameObject.SetActive(false);
+            _visual.SmallValue.gameObject.SetActive(false);
         }
 
         public async UniTask SetPhase(VisualPhase phase)

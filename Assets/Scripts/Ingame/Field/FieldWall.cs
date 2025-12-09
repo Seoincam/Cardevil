@@ -1,5 +1,6 @@
 using Cardevil.Events;
-using System;
+using Cardevil.Events.ExecEvents;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
@@ -7,17 +8,19 @@ namespace Cardevil.Ingame.Field
     public class FieldWall : MonoBehaviour
     {
         [SerializeField] private GameObject[] _walls;
+        
         private void OnEnable()
         {
-            Managers.Event.PlayerHealthChangeEvent.AddListener(OnPlayerHealthChanged,10);
+            ExecEventBus<PlayerHealthChangeArgs>.RegisterStatic(10, OnPlayerHealthChanged);
         }
+        
         private void OnDisable()
         {
-            Managers.Event.PlayerHealthChangeEvent.RemoveListener(OnPlayerHealthChanged,10);
+            ExecEventBus<PlayerHealthChangeArgs>.UnregisterStatic(OnPlayerHealthChanged);
         }
         
         
-        public void OnPlayerHealthChanged(PlayerHealthChangeArgs args)
+        private async UniTask OnPlayerHealthChanged(PlayerHealthChangeArgs args)
         {
             for (int i = 0; i < _walls.Length; i++)
             {
@@ -27,6 +30,7 @@ namespace Cardevil.Ingame.Field
                     _walls[i].SetActive(isActive);
                 }
             }
+            await UniTask.CompletedTask;
         }
 
     }

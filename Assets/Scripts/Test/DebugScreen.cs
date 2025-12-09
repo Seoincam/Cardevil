@@ -1,4 +1,5 @@
 ﻿using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using TMPro;
 using UnityEngine;
 
@@ -29,12 +30,13 @@ namespace Cardevil.Test
         private void OnEnable()
         {
             // 이벤트 리스너 등록
-            Managers.Event.PlayerHealthChangeEvent.AddListener(OnPlayerHealthChanged);
+            ExecEventBus<PlayerHealthChangeArgs>.RegisterDynamic(OnPlayerHealthChanged);
         }
+        
         private void OnDisable()
         {
             // 이벤트 리스너 제거
-            Managers.Event.PlayerHealthChangeEvent.RemoveListener(OnPlayerHealthChanged);
+            ExecEventBus<PlayerHealthChangeArgs>.UnregisterDynamic(OnPlayerHealthChanged);
         }
 
         public void Update()
@@ -46,7 +48,7 @@ namespace Cardevil.Test
         }
 
 
-        private void OnPlayerHealthChanged(PlayerHealthChangeArgs args)
+        private void OnPlayerHealthChanged(ExecQueue<PlayerHealthChangeArgs> queue, PlayerHealthChangeArgs args)
         {
             // 플레이어의 체력이 변경되었을 때 디버그 화면에 표시
             var playerHealthText = Get<TextMeshProUGUI>(TextNames.PlayerHealth);
