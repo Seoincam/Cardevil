@@ -16,10 +16,9 @@ namespace Cardevil.Dungeon
     public class DungeonNode : ISerializationCallbackReceiver
     {
         [SerializeReference, VisibleOnly] private Dungeon dungeon;
-        [FormerlySerializedAs("nodeId")] [SerializeField, VisibleOnly] private int nodeInternalId;
+        [SerializeField, VisibleOnly] private int nodeInternalId;
         [SerializeField, VisibleOnly] private int floor;
-        [SerializeField, VisibleOnly] private DungeonNodeTypes type;
-        [FormerlySerializedAs("preset")] [FormerlySerializedAs("behaviour")] [SerializeField, VisibleOnly] private DungeonNodePreset preset;
+        [SerializeField, VisibleOnly] private DungeonNodePreset preset;
         [SerializeField, VisibleOnly] private NodeState state = NodeState.Locked;
 
         public event Action<NodeState> OnStateChanged;
@@ -40,11 +39,12 @@ namespace Cardevil.Dungeon
             get => floor;
             set => floor = value;
         }
-        public DungeonNodeTypes Type 
-        {
-            get => type;
-            set => type = value;
-        }
+        
+        /// <summary>
+        /// 노드의 타입. Preset에서 가져옵니다.
+        /// </summary>
+        public DungeonNodeTypes Type => preset != null ? preset.NodeType : DungeonNodeTypes.None;
+        
         public DungeonNodePreset Preset 
         {
             get => preset;
@@ -78,13 +78,12 @@ namespace Cardevil.Dungeon
 
         public static DungeonNode CreateVoid()
         {
-            return new DungeonNode(-1, -1, DungeonNodeTypes.None, null);
+            return new DungeonNode(-1, -1, null);
         }
-        public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodePreset preset)
+        public DungeonNode(int nodeId, int floor, DungeonNodePreset preset)
         {
             NodeId = nodeId;
             Floor = floor;
-            Type = type;
             Preset = preset;
             PreviousNodes = new List<DungeonNode>();
             NextNodes = new List<DungeonNode>();

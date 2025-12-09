@@ -235,7 +235,6 @@ namespace Cardevil.Dungeon.Build
                 DungeonNode dungeonNode = new DungeonNode(
                     node.nodeId,
                     node.nodeFloor,
-                    node.nodeType,
                     node.nodePreset
                 );
                 nodes.Add(dungeonNode);

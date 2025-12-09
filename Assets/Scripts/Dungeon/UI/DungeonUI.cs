@@ -1,4 +1,4 @@
-﻿﻿using Cardevil.Attributes;
+﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using DG.Tweening;

@@ -1,4 +1,5 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.Dungeon.UI;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -79,54 +80,53 @@ namespace Cardevil.Dungeon
         /// <summary>
         /// 노드 UI를 그립니다. 상태에 따라 적절한 스프라이트와 텍스트를 설정합니다.
         /// </summary>
-        /// <param name="nodeImage">노드 배경 이미지</param>
-        /// <param name="nodeText">노드 텍스트</param>
-        /// <param name="overlayImage">오버레이 이미지 (옵션)</param>
+        /// <param name="nodeUI">노드 UI 컴포넌트</param>
         /// <param name="state">현재 노드 상태</param>
-        public virtual void DrawNodeUI(Image nodeImage, TextMeshProUGUI nodeText, Image overlayImage, NodeState state)
+        public virtual void DrawNodeUI(DungeonNodeUI nodeUI, NodeState state)
         {
+            if (nodeUI == null) return;
+            
             // 스프라이트 설정
-            if (nodeImage != null)
+            if (nodeUI.NodeImage != null)
             {
                 Sprite sprite = GetSpriteForState(state);
                 if (sprite != null)
                 {
-                    nodeImage.sprite = sprite;
-                    nodeImage.color = nodeColor;
+                    nodeUI.NodeImage.sprite = sprite;
+                    nodeUI.NodeImage.color = nodeColor;
                 }
                 else
                 {
-                    nodeImage.sprite = null;
-                    nodeImage.color = Color.clear;
+                    nodeUI.NodeImage.sprite = null;
+                    nodeUI.NodeImage.color = Color.clear;
                 }
-                
             }
 
-            // 텍스트 설정 (있는 경우)
-            if (nodeText != null)
+            // 텍스트 설정
+            if (nodeUI.NodeText != null)
             {
                 if (state == NodeState.Locked || state == NodeState.Completed)
                 {
-                    nodeText.text = "";
+                    nodeUI.NodeText.text = "";
                 }
                 else
                 {
-                    nodeText.text = string.IsNullOrEmpty(displayName) ? name : displayName;
-                    nodeText.color = textColor;
+                    nodeUI.NodeText.text = string.IsNullOrEmpty(displayName) ? name : displayName;
+                    nodeUI.NodeText.color = textColor;
                 }
             }
             
             // 오버레이 설정
-            if (overlayImage != null)
+            if (nodeUI.OverlayImage != null)
             {
                 if (state == NodeState.Completed && completedOverlaySprite != null)
                 {
-                    overlayImage.gameObject.SetActive(true);
-                    overlayImage.sprite = completedOverlaySprite;
+                    nodeUI.OverlayImage.gameObject.SetActive(true);
+                    nodeUI.OverlayImage.sprite = completedOverlaySprite;
                 }
                 else
                 {
-                    overlayImage.gameObject.SetActive(false);
+                    nodeUI.OverlayImage.gameObject.SetActive(false);
                 }
             }
         }

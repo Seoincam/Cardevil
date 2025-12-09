@@ -23,6 +23,7 @@ namespace Cardevil.Dungeon.Editor
             public string ActiveSpriteName;
             public string InactiveSpriteName;
             public string CompletedSpriteName;
+            public string CompletedOverlaySpriteName;
             public Color NodeColor = Color.white;
             public Color TextColor = Color.white;
         }
@@ -44,13 +45,26 @@ namespace Cardevil.Dungeon.Editor
         {
             _presetConfigs.Clear();
             
+            // Dev
+            _presetConfigs[DungeonNodeTypes.None] = new PresetConfig
+            {
+                DisplayName = "개발용 노드",
+                ActiveSpriteName = "Dev_active",
+                InactiveSpriteName = "Dev_Inactive",
+                CompletedSpriteName = "Dev_active",
+                CompletedOverlaySpriteName = "After_Kill_S",
+                NodeColor = Color.magenta,
+                TextColor = Color.white
+            };
+            
             // Mob
             _presetConfigs[DungeonNodeTypes.Mob] = new PresetConfig
             {
                 DisplayName = "몬스터",
                 ActiveSpriteName = "Mob_active",
                 InactiveSpriteName = "Mob_Inactive",
-                CompletedSpriteName = "After_Kill_M",
+                CompletedSpriteName = "Mob_active",
+                CompletedOverlaySpriteName = "After_Kill_S",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };
@@ -61,7 +75,8 @@ namespace Cardevil.Dungeon.Editor
                 DisplayName = "회복",
                 ActiveSpriteName = "Heal_active",
                 InactiveSpriteName = "Heal_Inactive",
-                CompletedSpriteName = "After_Kill_S",
+                CompletedSpriteName = "Heal_active",
+                CompletedOverlaySpriteName = "After_Kill_S",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };
@@ -72,7 +87,8 @@ namespace Cardevil.Dungeon.Editor
                 DisplayName = "랜덤",
                 ActiveSpriteName = "Random_active",
                 InactiveSpriteName = "Random_Inactive",
-                CompletedSpriteName = "After_Kill_S",
+                CompletedSpriteName = "Random_active",
+                CompletedOverlaySpriteName = "After_Kill_S",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };
@@ -83,7 +99,8 @@ namespace Cardevil.Dungeon.Editor
                 DisplayName = "중간 보스",
                 ActiveSpriteName = "Middle_Boss_active",
                 InactiveSpriteName = "Middle_Boss_Inactive",
-                CompletedSpriteName = "After_Kill_L",
+                CompletedSpriteName = "Middle_Boss_active",
+                CompletedOverlaySpriteName = "After_Kill_M",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };
@@ -94,7 +111,8 @@ namespace Cardevil.Dungeon.Editor
                 DisplayName = "최종 보스",
                 ActiveSpriteName = "Main_Boss_active",
                 InactiveSpriteName = "Main_Boss_Inactive",
-                CompletedSpriteName = "After_Kill_L",
+                CompletedSpriteName = "Main_Boss_active",
+                CompletedOverlaySpriteName = "After_Kill_L",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };
@@ -105,7 +123,8 @@ namespace Cardevil.Dungeon.Editor
                 DisplayName = "암시장",
                 ActiveSpriteName = "Black_Market_active",
                 InactiveSpriteName = "Black_Market_Inactive",
-                CompletedSpriteName = "After_Kill_S",
+                CompletedSpriteName = "Black_Market_active",
+                CompletedOverlaySpriteName = "After_Kill_S",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };
@@ -116,7 +135,8 @@ namespace Cardevil.Dungeon.Editor
                 DisplayName = "상점",
                 ActiveSpriteName = "Shop_active",
                 InactiveSpriteName = "Shop_Inactive",
-                CompletedSpriteName = "After_Kill_S",
+                CompletedSpriteName = "Shop_active",
+                CompletedOverlaySpriteName = "After_Kill_S",
                 NodeColor = Color.white,
                 TextColor = Color.white
             };

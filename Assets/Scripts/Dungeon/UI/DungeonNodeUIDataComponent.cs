@@ -53,6 +53,11 @@ namespace Cardevil.Dungeon.UI
             if (nodePreset != null)
             {
                 nodeType = nodePreset.NodeType;
+                var ui = GetComponent<DungeonNodeUI>();
+                if (ui != null)
+                {
+                    nodePreset.DrawNodeUI(ui, NodeState.Locked);
+                }
             }
             else
             {

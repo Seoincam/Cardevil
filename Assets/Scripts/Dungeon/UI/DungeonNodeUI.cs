@@ -34,6 +34,12 @@ namespace Cardevil.Dungeon.UI
         private LineRenderer lineRenderer;
         private bool _isHidden; // 블랙마켓이 나타나지 않아서 숨겨진 상태
         
+        // UI 컴포넌트 접근용 프로퍼티
+        public Image NodeImage => nodeImage;
+        public TextMeshProUGUI NodeText => nodeText;
+        public Image OverlayImage => overlayImage;
+        public Animator NodeAnimator => nodeAnimator;
+        
         public int DungeonId => dungeonChapterUI.DungeonId;
         public bool IsHidden => _isHidden;
 
@@ -172,7 +178,7 @@ namespace Cardevil.Dungeon.UI
             // Preset이 있으면 Preset이 직접 UI를 그림
             if (dungeonNode.Preset != null)
             {
-                dungeonNode.Preset.DrawNodeUI(nodeImage, nodeText, overlayImage, dungeonNode.State);
+                dungeonNode.Preset.DrawNodeUI(this, dungeonNode.State);
             }
             else
             {

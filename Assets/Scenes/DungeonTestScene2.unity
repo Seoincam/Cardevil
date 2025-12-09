@@ -2801,7 +2801,6 @@ MonoBehaviour:
         rid: -2
       nodeInternalId: 0
       floor: 0
-      type: 0
       preset: {fileID: 0}
       state: 0
       <IsBranchStart>k__BackingField: 0
@@ -2812,7 +2811,6 @@ MonoBehaviour:
         rid: -2
       nodeInternalId: 0
       floor: 0
-      type: 0
       preset: {fileID: 0}
       state: 0
       <IsBranchStart>k__BackingField: 0
@@ -3044,6 +3042,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonUI
       objectReference: {fileID: 0}
+    - target: {fileID: 5606902175268957030, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3125,7 +3127,9 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5407418592406539763, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+    - {fileID: 8195264965521146848, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}

@@ -1,4 +1,4 @@
-﻿﻿using Cardevil.Utils;
+﻿using Cardevil.Utils;
 using UnityEngine;
 
 namespace Cardevil.Dungeon.NodePresets
