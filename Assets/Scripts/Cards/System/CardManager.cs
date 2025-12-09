@@ -80,22 +80,6 @@ namespace Cardevil.Cards.System
             
             _evaluationResultsModel.Clear();
         }
-
-        /// <summary>
-        /// 스테이지 진입 시 호출.  
-        /// 모델을 현재 덱으로 초기화.
-        /// </summary>
-        public void OnEnterStage()
-        {
-            Clear();
-            
-            // TODO: 나중에 어떤식으로 할지 기획 나오면 제대로 분리해야함
-            // var deckRemains =
-            //     Object.FindObjectsByType<DeckRemain>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            // if (deckRemains == null || deckRemains.Length == 0) { LogEx.LogError("Deck Remain이 씬내에 존재하지 않음!"); return; }
-            // var deckRemain = deckRemains[0];
-            // deckRemain.Init(_stageCards);
-        }
        
         public ILockable GetCard()
         {

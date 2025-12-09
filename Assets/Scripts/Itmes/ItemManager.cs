@@ -57,10 +57,9 @@ public class ItemManager
         Define.RareType thisRare = (Define.RareType)index;
   
 
-        DatabaseManager database = Managers.Game._database;
 
         // 이것들을 json에서 가져오기.
-        List<MachineReward> filteredList = database.Database.MachineRewardList
+        List<MachineReward> filteredList = Managers.Database.Database.MachineRewardList
                                 .Where(item => item.Rank == thisRare)
                                 .ToList();
 

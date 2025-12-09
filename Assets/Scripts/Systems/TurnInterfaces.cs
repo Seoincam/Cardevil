@@ -102,6 +102,10 @@ namespace Cardevil.Systems
         UniTask WaitUserInput();
     }
 
+    public interface ITurnPlayer : ITurnPlayerAction, ITurnPlayerMove
+    {
+    }
+
     /// <summary>
     /// 플레이어의 행동을 정의하는 인터페이스.
     /// TurnManager가 호출.
@@ -136,5 +140,12 @@ namespace Cardevil.Systems
         /// 공격들중에 공격까지 남은 턴이 0이 있는것이 있나 됐나 확인.
         /// </summary>
         bool CheckAttack();
+
+        /// <summary>
+        /// Enemy가 죽은 후, 다음 Enemy로 교체.
+        /// 실제 교체는 <c>EnemySpawner</c>가 수행.
+        /// 교체 애니메이션, 기존 Enemy Despawn 등을 수행함.
+        /// </summary>
+        UniTask Replace();
     }
 }
