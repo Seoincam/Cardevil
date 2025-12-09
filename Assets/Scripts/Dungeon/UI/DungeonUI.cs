@@ -1,4 +1,4 @@
-﻿using Cardevil.Attributes;
+﻿﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using DG.Tweening;
@@ -131,7 +131,31 @@ namespace Cardevil.Dungeon.UI
             return posY;
         }
 
-
+        /// <summary>
+        /// 현재 노드의 다음 노드들 중 블랙마켓의 가시성을 업데이트합니다.
+        /// 블랙마켓이 나타나지 않으면 해당 노드 UI를 숨깁니다.
+        /// </summary>
+        /// <param name="currentNode">현재 노드</param>
+        public void UpdateBlackMarketVisibility(DungeonNode currentNode)
+        {
+            if (currentNode == null) return;
+            
+            var chapterUI = _dungeonChapters.Find(c => c.DungeonId == currentDungeonId);
+            if (chapterUI == null) return;
+            
+            foreach (var nextNode in currentNode.NextNodes)
+            {
+                if (nextNode.Type == DungeonNodeTypes.BlackMarket && nextNode.IsBlackMarketHidden)
+                {
+                    var nodeUI = chapterUI.GetNodeUI(nextNode.NodeId);
+                    if (nodeUI != null)
+                    {
+                        nodeUI.HideAsBlackMarketNotAppeared();
+                        LogEx.Log($"[DungeonUI] 블랙마켓 노드 UI {nextNode.NodeId} 숨김");
+                    }
+                }
+            }
+        }
 
         public void UpdateAll()
         {

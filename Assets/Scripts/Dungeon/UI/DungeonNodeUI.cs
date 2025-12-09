@@ -21,17 +21,21 @@ namespace Cardevil.Dungeon.UI
         [Header("External References")]
         [SerializeField] private DungeonUI dungeonUI;
         [SerializeField] private DungeonChapterUI dungeonChapterUI;
-        [Header("Settings")]
-        [SerializeField] private DungeonNodeSettingSO setting;
         [Header("Dungeon Node Info")]
         [SerializeReference,VisibleOnly] private DungeonNode dungeonNode;
         [Space]
         [Header("Variables")]
         [SerializeField] private int nodeId = -1;
+        
+        [Header("숨겨진 노드 설정")]
+        [Tooltip("블랙마켓이 나타나지 않았을 때 숨길지 여부")]
+        [SerializeField] private bool hideWhenBlackMarketHidden = true;
 
         private LineRenderer lineRenderer;
+        private bool _isHidden; // 블랙마켓이 나타나지 않아서 숨겨진 상태
         
         public int DungeonId => dungeonChapterUI.DungeonId;
+        public bool IsHidden => _isHidden;
 
         public DungeonNode DungeonNode
         {
@@ -81,16 +85,11 @@ namespace Cardevil.Dungeon.UI
                 _button.gameObject.SetActive(true);
                 _button.onClick.AddListener(OnClickButton);
             }
-            
-            if (setting == null)
-            {
-                setting = DungeonNodeSettingSO.Default;
-            }
         }
 
         private void OnEnable()
         {
-            if (_button != null && !_button.gameObject.activeSelf)
+            if (_button != null && !_button.gameObject.activeSelf && !_isHidden)
             {
                 _button.gameObject.SetActive(true);
             }
@@ -125,24 +124,37 @@ namespace Cardevil.Dungeon.UI
             }
         }
 
-        private void Reset()
-        {
-            setting = DungeonNodeSettingSO.Default;
-        }
-
         private void OnValidate()
         {
-            if (setting == null)
-            {
-                setting = DungeonNodeSettingSO.Default;
-            }
         }
         
         private void OnDungeonNodeStateChanged(NodeState newState)
         {
             UpdateView();
         }
+        
+        /// <summary>
+        /// 블랙마켓이 나타나지 않아서 이 노드를 숨깁니다.
+        /// </summary>
+        public void HideAsBlackMarketNotAppeared()
+        {
+            _isHidden = true;
+            gameObject.SetActive(false);
+        }
+        
+        /// <summary>
+        /// 숨겨진 노드를 다시 표시합니다.
+        /// </summary>
+        public void Show()
+        {
+            _isHidden = false;
+            gameObject.SetActive(true);
+            UpdateView();
+        }
 
+        /// <summary>
+        /// 노드 UI를 업데이트합니다. Preset이 직접 UI를 그립니다.
+        /// </summary>
         public void UpdateView()
         {
             if (dungeonNode == null)
@@ -151,35 +163,52 @@ namespace Cardevil.Dungeon.UI
                 return;
             }
             
-            DungeonNodeSettingSO.SpriteSet spriteSet = setting.GetSpriteSet(dungeonNode.Type);
-            switch (dungeonNode.State)
+            // 숨겨진 노드는 업데이트하지 않음
+            if (_isHidden)
+            {
+                return;
+            }
+            
+            // Preset이 있으면 Preset이 직접 UI를 그림
+            if (dungeonNode.Preset != null)
+            {
+                dungeonNode.Preset.DrawNodeUI(nodeImage, nodeText, overlayImage, dungeonNode.State);
+            }
+            else
+            {
+                // Preset이 없으면 기본 처리
+                LogEx.LogWarning($"Node {dungeonNode.NodeId}에 Preset이 없습니다.");
+            }
+            
+            // 상태에 따른 버튼 활성화/비활성화 처리
+            UpdateButtonState(dungeonNode.State);
+        }
+        
+        /// <summary>
+        /// 상태에 따라 버튼 활성화/비활성화를 처리합니다.
+        /// </summary>
+        private void UpdateButtonState(NodeState state)
+        {
+            if (_button == null) return;
+            
+            switch (state)
             {
                 case NodeState.Locked:
-                    nodeImage.sprite = spriteSet.Inactive;
-                    nodeText.text = "";
                     _button.interactable = false;
                     _button.gameObject.SetActive(false);
-                    SetOverlaySprite(null);
                     break;
                 case NodeState.Available:
-                    nodeImage.sprite = spriteSet.Active;
                     _button.interactable = true;
                     _button.gameObject.SetActive(true);
                     ForceEnableButtonNextFrame().Forget();
-                    SetOverlaySprite(null);
                     break;
                 case NodeState.Current:
-                    nodeImage.sprite = spriteSet.Active;
                     _button.interactable = false;
                     _button.gameObject.SetActive(true);
-                    SetOverlaySprite(null);
                     break;
                 case NodeState.Completed:
-                    nodeImage.sprite = spriteSet.Completed;
-                    nodeText.text = "";
                     _button.interactable = false;
                     _button.gameObject.SetActive(true);
-                    SetOverlaySprite(spriteSet.CompletedOverlay);
                     break;
             }
         }
@@ -188,21 +217,10 @@ namespace Cardevil.Dungeon.UI
         {
             await UniTask.Yield();
             
-            if (_button != null && !_button.gameObject.activeSelf && dungeonNode?.State == NodeState.Available)
+            if (_button != null && !_button.gameObject.activeSelf && dungeonNode?.State == NodeState.Available && !_isHidden)
             {
                 _button.gameObject.SetActive(true);
             }
-        }
-
-        private void SetOverlaySprite(Sprite sprite)
-        {
-            if(sprite == null)
-            {
-                overlayImage.gameObject.SetActive(false);
-                return;
-            }
-            overlayImage.gameObject.SetActive(true);
-            overlayImage.sprite = sprite;
         }
     }
 }

@@ -8,9 +8,9 @@ namespace Cardevil.Dungeon
     {
         [Header("Dungeon Configuration")]
         [SerializeField] private int dungeonId;
-        [SerializeField] private List<DungeonNodeBehaviour> nodePresets = new List<DungeonNodeBehaviour>();
+        [SerializeField] private List<DungeonNodePreset> nodePresets = new List<DungeonNodePreset>();
 
         public int DungeonId => dungeonId;
-        public List<DungeonNodeBehaviour> NodePresets => nodePresets;
+        public List<DungeonNodePreset> NodePresets => nodePresets;
     }
 }

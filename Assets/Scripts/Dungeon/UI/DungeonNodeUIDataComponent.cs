@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using TMPro;
-
+﻿using System.Collections.Generic;
+using Cardevil.Dungeon;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,7 +14,7 @@ namespace Cardevil.Dungeon.UI
         public int nodeId;
         public int nodeFloor;
         public DungeonNodeTypes nodeType;
-        [FormerlySerializedAs("nodePreset")] public DungeonNodeBehaviour nodeBehaviour;
+        [FormerlySerializedAs("nodeBehaviour")] public DungeonNodePreset nodePreset;
 
         public List<DungeonNodeUIDataComponent> nextNodes = new List<DungeonNodeUIDataComponent>();
         public List<DungeonNodeUIDataComponent> prevNodes = new List<DungeonNodeUIDataComponent>();

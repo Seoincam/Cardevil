@@ -24,7 +24,7 @@ namespace Cardevil.Dungeon
         [SerializeField, VisibleOnly] private DungeonNode previousNode;
         [SerializeField, VisibleOnly] private DungeonProgress currentProgress;
         private int currentDungeonIndex = -1;
-        private SpecialNodeManager specialNodeManager;
+
         
         private bool _canGoNext = true;
         
@@ -65,7 +65,6 @@ namespace Cardevil.Dungeon
         
         public void Init()
         {
-            specialNodeManager = new SpecialNodeManager();
 
             // TODO : DungeonConfig 로드
             
@@ -166,16 +165,11 @@ namespace Cardevil.Dungeon
             }
             
             // 이전 노드 Exit 처리
-            if (currentNode != null && currentNode.Behaviour != null)
+            if (currentNode != null && currentNode.Preset != null)
             {
-                // 이전 노드가 특별 노드였다면, 원래 경로로 복원
-                if (currentNode.OriginNextNodes != null)
-                {
-                    specialNodeManager.ClearSpecialNode(currentNode);
-                }
 
                 var exitInfo = new NodeExitInfo() { IsCleared = true };
-                currentNode.Behaviour.OnExit(currentNode, exitInfo);
+                currentNode.Preset.OnExit(currentNode, exitInfo);
                 currentNode.State = NodeState.Completed;
                 
                 // 이벤트 발생
@@ -186,13 +180,7 @@ namespace Cardevil.Dungeon
                 // 이전 노드로 저장
                 previousNode = currentNode;
 
-                // 암시장 생성 시도
-                if (specialNodeManager.TryCreateSpecialNode(currentNode, out var specialNode))
-                {
-                    // 특별 노드가 생성되면, 던전의 노드 리스트에 임시로 추가
-                    CurrentDungeon.Nodes.Add(specialNode);
-                    specialNode.Dungeon = CurrentDungeon;
-                }
+
             }
             
             // 새 노드 Enter 처리
@@ -205,19 +193,40 @@ namespace Cardevil.Dungeon
                 currentProgress.VisitNode(node.NodeId);
             }
             
-            // 다음 노드들을 사용 가능 상태로 변경
+            // 다음 노드들을 사용 가능 상태로 변경 (블랙마켓 확률 체크 포함)
             foreach (var nextNode in currentNode.NextNodes)
             {
                 if (nextNode.State == NodeState.Locked)
                 {
-                    nextNode.State = NodeState.Available;
+                    // 블랙마켓 노드인 경우 확률 체크
+                    if (nextNode.Type == DungeonNodeTypes.BlackMarket)
+                    {
+                        bool appeared = nextNode.CheckBlackMarketAppearance();
+                        if (appeared)
+                        {
+                            nextNode.State = NodeState.Available;
+                        }
+                        else
+                        {
+                            // 블랙마켓이 나타나지 않으면 UI에서 숨김 처리
+                            // UI 업데이트는 DungeonUI에서 처리
+                            LogEx.Log($"[DungeonManager] 블랙마켓 노드 {nextNode.NodeId} 숨김 처리");
+                        }
+                    }
+                    else
+                    {
+                        nextNode.State = NodeState.Available;
+                    }
                 }
             }
             
+            // UI에 블랙마켓 상태 업데이트 요청
+            UI?.UpdateBlackMarketVisibility(currentNode);
+            
             // 프리셋 실행
-            if (node.Behaviour != null)
+            if (node.Preset != null)
             {
-                node.Behaviour.OnEnter(node);
+                node.Preset.OnEnter(node);
             }
             
             // 이벤트 발생
@@ -250,13 +259,13 @@ namespace Cardevil.Dungeon
                 LogEx.LogWarning("Node is null");
                 return;
             }
-            if (node.Behaviour == null)
+            if (node.Preset == null)
             {
-                LogEx.LogWarning($"No behaviour assigned to node {node.NodeId}");
+                LogEx.LogWarning($"No preset assigned to node {node.NodeId}");
                 return;
             }
             
-            node.Behaviour.OnExit(node, exitInfo);
+            node.Preset.OnExit(node, exitInfo);
             
             if (exitInfo.IsCleared)
             {
@@ -283,12 +292,7 @@ namespace Cardevil.Dungeon
                 return;
             }
             
-            // 암시장 생성 시도
-            if (specialNodeManager.TryCreateSpecialNode(currentNode, out var specialNode))
-            {
-                CurrentDungeon.Nodes.Add(specialNode);
-                specialNode.Dungeon = CurrentDungeon;
-            }
+
         }
         
         /// <summary>

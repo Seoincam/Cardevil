@@ -26,10 +26,6 @@ namespace Cardevil.Dungeon
         /// </summary>
         [SerializeField] public List<int> visitedNodeIds = new List<int>();
         
-        /// <summary>
-        /// 마지막 플레이 시간
-        /// </summary>
-        [SerializeField] public string lastPlayTime;
 
         /// <summary>
         /// 던전 완료 여부
@@ -41,7 +37,6 @@ namespace Cardevil.Dungeon
             dungeonId = -1;
             currentNodeId = -1;
             visitedNodeIds = new List<int>();
-            lastPlayTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             isCompleted = false;
         }
         
@@ -50,7 +45,6 @@ namespace Cardevil.Dungeon
             this.dungeonId = dungeonId;
             this.currentNodeId = currentNodeId;
             visitedNodeIds = new List<int>();
-            lastPlayTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             isCompleted = false;
         }
         
@@ -64,7 +58,6 @@ namespace Cardevil.Dungeon
                 visitedNodeIds.Add(nodeId);
             }
             currentNodeId = nodeId;
-            lastPlayTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         }
         
         /// <summary>

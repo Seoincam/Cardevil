@@ -1,6 +1,7 @@
 ﻿using Cardevil.Attributes;
- using Cardevil.Utils;
- using System;
+using Cardevil.Dungeon.NodePresets;
+using Cardevil.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -18,7 +19,7 @@ namespace Cardevil.Dungeon
         [FormerlySerializedAs("nodeId")] [SerializeField, VisibleOnly] private int nodeInternalId;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodeTypes type;
-        [FormerlySerializedAs("preset")] [SerializeField, VisibleOnly] private DungeonNodeBehaviour behaviour;
+        [FormerlySerializedAs("preset")] [FormerlySerializedAs("behaviour")] [SerializeField, VisibleOnly] private DungeonNodePreset preset;
         [SerializeField, VisibleOnly] private NodeState state = NodeState.Locked;
 
         public event Action<NodeState> OnStateChanged;
@@ -44,11 +45,14 @@ namespace Cardevil.Dungeon
             get => type;
             set => type = value;
         }
-        public DungeonNodeBehaviour Behaviour 
+        public DungeonNodePreset Preset 
         {
-            get => behaviour;
-            set => behaviour = value;
+            get => preset;
+            set => preset = value;
         }
+        
+        [Obsolete("Use Preset instead")]
+        public DungeonNodePreset Behaviour => preset;
         
         public NodeState State 
         {
@@ -76,12 +80,12 @@ namespace Cardevil.Dungeon
         {
             return new DungeonNode(-1, -1, DungeonNodeTypes.None, null);
         }
-        public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodeBehaviour behaviour)
+        public DungeonNode(int nodeId, int floor, DungeonNodeTypes type, DungeonNodePreset preset)
         {
             NodeId = nodeId;
             Floor = floor;
             Type = type;
-            Behaviour = behaviour;
+            Preset = preset;
             PreviousNodes = new List<DungeonNode>();
             NextNodes = new List<DungeonNode>();
             state = NodeState.Locked;
@@ -94,9 +98,50 @@ namespace Cardevil.Dungeon
         {
             // 노드 상태 초기화
             state = NodeState.Locked;
-            
+            _isBlackMarketHidden = false;
             
             Debug.Log($"[DungeonNode] Node {NodeId} initialized. Type: {Type}, NextNodes: {NextNodes.Count}, PrevNodes: {PreviousNodes.Count}");
+        }
+        
+        private bool _isBlackMarketHidden;
+        
+        /// <summary>
+        /// 이 블랙마켓 노드가 숨겨졌는지 여부
+        /// </summary>
+        public bool IsBlackMarketHidden => _isBlackMarketHidden;
+        
+        /// <summary>
+        /// 블랙마켓 노드의 출현 여부를 결정합니다.
+        /// 블랙마켓 타입이 아니면 항상 true를 반환합니다.
+        /// </summary>
+        /// <returns>블랙마켓이 나타나면 true, 숨겨지면 false</returns>
+        public bool CheckBlackMarketAppearance()
+        {
+            if (Type != DungeonNodeTypes.BlackMarket)
+            {
+                return true; // 블랙마켓이 아니면 항상 나타남
+            }
+            
+            // BlackMarketNodePreset으로 캐스팅하여 확률 체크
+            if (Preset is NodePresets.BlackMarketNodePreset blackMarketPreset)
+            {
+                bool shouldAppear = blackMarketPreset.ShouldAppear();
+                _isBlackMarketHidden = !shouldAppear;
+                
+                if (shouldAppear)
+                {
+                    LogEx.Log($"[DungeonNode] 블랙마켓 노드 {NodeId}가 나타남!");
+                }
+                else
+                {
+                    LogEx.Log($"[DungeonNode] 블랙마켓 노드 {NodeId}가 나타나지 않음.");
+                }
+                
+                return shouldAppear;
+            }
+            
+            // Preset이 없거나 BlackMarketNodePreset이 아니면 나타남
+            return true;
         }
         
         /// <summary>
@@ -141,9 +186,9 @@ namespace Cardevil.Dungeon
         
         public override string ToString()
         {
-            if (Behaviour != null)
+            if (Preset != null)
             {
-                return $"NodeId: {NodeId}, Floor: {Floor}, Type: {Type}, Preset: {Behaviour.GetType().Name}";
+                return $"NodeId: {NodeId}, Floor: {Floor}, Type: {Type}, Preset: {Preset.GetType().Name}";
             }
             else
             {
