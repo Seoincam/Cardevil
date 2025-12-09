@@ -28,7 +28,7 @@ namespace Cardevil.Dungeon.Editor
             public Color TextColor = Color.white;
         }
 
-        [MenuItem("Tools/Cardevil/Generate Dungeon Node Presets")]
+        [MenuItem("Cardevil/Generate Dungeon Node Presets")]
         public static void ShowWindow()
         {
             var window = GetWindow<DungeonNodePresetGenerator>("노드 Preset 생성기");

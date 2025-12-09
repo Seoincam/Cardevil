@@ -21,4 +21,6 @@ MonoBehaviour:
   nodeColor: {r: 1, g: 1, b: 1, a: 1}
   textColor: {r: 1, g: 1, b: 1, a: 1}
   _appearChance: 0.5
-  _alwaysAppear: 0
+  alwaysAppear: 0
+  autoConnectNextNodes: 0
+  showWhenNotAppeared: 0

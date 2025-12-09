@@ -23,7 +23,7 @@ namespace Cardevil.Dungeon.NodePresets
         
         [FormerlySerializedAs("_autoConnectNextNodes")]
         [Tooltip("다음 노드를 자동으로 연결할 것인지(암시장이 스킵 가능한지)")]
-        [SerializeField] private bool autoConnectNextNodes = true;
+        [SerializeField] private bool autoConnectNextNodes = false;
         
         [FormerlySerializedAs("_showWhenNotAppeared")]
         [Tooltip("비출현 상태이더라도 표시할 것인지")]

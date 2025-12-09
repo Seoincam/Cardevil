@@ -38,8 +38,13 @@ namespace Cardevil.Dungeon.Build
             while (queue.Count > 0)
             {
                 DungeonNodeUIDataComponent currentNode = queue.Dequeue();
-                currentNode.nodeId = currentId++;
+                currentNode.nodeId = currentId;
                 currentNode.OnValidate();
+                
+                // 노드 이름을 NodeUI_01 형식으로 변경
+                currentNode.gameObject.name = $"NodeUI_{currentId:D2}";
+                
+                currentId++;
                 
                 foreach (var nextNode in currentNode.nextNodes)
                 {
@@ -51,6 +56,7 @@ namespace Cardevil.Dungeon.Build
                 }
                 #if UNITY_EDITOR
                 PrefabUtility.RecordPrefabInstancePropertyModifications(currentNode);
+                EditorUtility.SetDirty(currentNode.gameObject);
                 #endif
             }
 
