@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cardevil.Attributes;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -14,8 +15,9 @@ namespace Cardevil.Dungeon
     public abstract class DungeonNodePreset : ScriptableObject
     {
         [Header("노드 설정")]
-        [SerializeField] protected int count = 1;
         [SerializeField] protected string displayName;
+        [SerializeField] protected DungeonNodeTypes nodeType;
+        
         
         [Header("상태별 스프라이트")]
         [Tooltip("잠김 상태 스프라이트")]
@@ -33,8 +35,9 @@ namespace Cardevil.Dungeon
         [SerializeField] protected Color textColor = Color.white;
         
         // 프로퍼티
-        public int Count => count;
         public string DisplayName => displayName;
+        
+        public DungeonNodeTypes NodeType => nodeType;
         public Sprite LockedSprite => lockedSprite;
         public Sprite ActiveSprite => activeSprite;
         public Sprite CompletedSprite => completedSprite;

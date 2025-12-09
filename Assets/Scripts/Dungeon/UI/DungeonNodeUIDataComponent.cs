@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Cardevil.Attributes;
+using System.Collections.Generic;
 using Cardevil.Dungeon;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -13,8 +14,8 @@ namespace Cardevil.Dungeon.UI
     {
         public int nodeId;
         public int nodeFloor;
-        public DungeonNodeTypes nodeType;
-        [FormerlySerializedAs("nodeBehaviour")] public DungeonNodePreset nodePreset;
+        [VisibleOnly] public DungeonNodeTypes nodeType;
+        public DungeonNodePreset nodePreset;
 
         public List<DungeonNodeUIDataComponent> nextNodes = new List<DungeonNodeUIDataComponent>();
         public List<DungeonNodeUIDataComponent> prevNodes = new List<DungeonNodeUIDataComponent>();
@@ -49,19 +50,17 @@ namespace Cardevil.Dungeon.UI
 
         public void OnValidate()
         {
+            if (nodePreset != null)
+            {
+                nodeType = nodePreset.NodeType;
+            }
+            else
+            {
+                nodeType = DungeonNodeTypes.None;
+            }
+            
             if (enabled)
             {
-                // name = $"NodeUI_{nodeId}";
-                // if(prevNodeType != nodeType)
-                // {
-                //     TextMeshProUGUI text = GetComponentInChildren<TextMeshProUGUI>();
-                //     prevNodeType = nodeType;
-                //     if (text != null)
-                //     {
-                //         text.text = $"{nodeType}";
-                //     }
-                // }
-
                 foreach (DungeonNodeUIDataComponent nxt in nextNodes)
                 {
                     if (nxt == null) continue;
@@ -72,54 +71,6 @@ namespace Cardevil.Dungeon.UI
 
                     nxt.prevNodes.Add(this);
                 }
-
-
-                //     if (showDebugLines)
-                //     {
-                //         if (lineRenderer == null)
-                //         {
-                //             lineRenderer = GetComponent<LineRenderer>();
-                //             if (lineRenderer == null)
-                //             {
-                //                 lineRenderer = gameObject.AddComponent<LineRenderer>();
-                //                 lineRenderer.startWidth = debugLineWidth;
-                //                 lineRenderer.endWidth = debugLineWidth;
-                //                 lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-                //                 lineRenderer.positionCount = 0;
-                //                 lineRenderer.useWorldSpace = true;
-                //                 lineRenderer.loop = false;
-                //                 lineRenderer.startColor = debugLineStartColor;
-                //                 lineRenderer.endColor = debugLineEndColor;
-                //             }
-                //         }
-                //
-                //         List<Vector3> linePositions = new List<Vector3>();
-                //         foreach (var nextNode in nextNodes)
-                //         {
-                //             if (nextNode != null)
-                //             {
-                //                 linePositions.Add(transform.position);
-                //                 linePositions.Add(nextNode.transform.position);
-                //             }
-                //         }
-                //
-                //         lineRenderer.positionCount = linePositions.Count;
-                //         lineRenderer.SetPositions(linePositions.ToArray());
-                //     }
-                //     else
-                //     {
-                //         if (lineRenderer != null)
-                //         {
-                //             DestroyImmediate(lineRenderer);
-                //             lineRenderer = null;
-                //         }
-                //     }
-                //     #if UNITY_EDITOR
-                //     PrefabUtility.RecordPrefabInstancePropertyModifications(this);
-                //     #endif
-                //    
-                //    
-                // }
             }
         }
     }
