@@ -26,6 +26,14 @@ namespace Cardevil.Dungeon
         private int currentDungeonIndex = -1;
         private SpecialNodeManager specialNodeManager;
         
+        private bool _canGoNext = true;
+        
+        public bool CanGoNext
+        {
+            get => _canGoNext;
+            set => _canGoNext = value;
+        }
+        
         // ExecEventBus를 사용하므로 Events 인스턴스는 제거됨
         // 이벤트 구독: ExecEventBus<NodeEnteredEventArgs>.RegisterDynamic/RegisterStatic
         // 이벤트 발생: ExecEventBus<NodeEnteredEventArgs>.InvokeMerged(args).Forget()
@@ -148,6 +156,12 @@ namespace Cardevil.Dungeon
             if (node == null)
             {
                 LogEx.LogWarning("Node is null");
+                return;
+            }
+
+            if (!CanGoNext)
+            {
+                LogEx.Log("Cannot enter next node right now.");
                 return;
             }
             
