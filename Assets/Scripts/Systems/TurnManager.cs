@@ -2,41 +2,49 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
 using Cardevil.Core;
+using Cardevil.Enemy;
 using Cardevil.Utils;
 
 namespace Cardevil.Systems
 {
     public class TurnManager: IClearable
-    {   
+    {
+        public int TurnOrder { get; private set; }
+        public ITurnEnemy Enemy => _enemy;
+        
         private CancellationTokenSource _cts;
         private UniTask _loopTask;
 
         private ITurnCardFlow _cardFlow;
-        private ITurnPlayerMove _playerMove;
-        private ITurnPlayerAction _playerAction;
+        private ITurnPlayer _player;
         private ITurnEnemy _enemy;
+
+        private EnemySpawner _spawner;
 
 
         public void Clear()
         {
             StopLoopAsync().Forget();
+            TurnOrder = 0;
             _cardFlow = null;
-            _playerMove = null;
-            _playerAction = null;
+            _player = null;
             _enemy = null;
         }
+
+        public void Init(EnemySpawner spawner)
+        {
+            _spawner = spawner;
+        }
         
-        public void Init(ITurnPlayerMove playerMove, ITurnPlayerAction playerAction, ITurnEnemy enemy)
+        public void Register(ITurnCardFlow cardFlow, ITurnPlayer player, ITurnEnemy enemy)
         {
             Clear();
 
-            _cardFlow = Managers.Card.BuildFlow();
-            _playerMove = playerMove ?? throw new ArgumentNullException(nameof(playerMove));
-            _playerAction = playerAction ?? throw new ArgumentNullException(nameof(playerAction));
+            _cardFlow = cardFlow ?? throw new ArgumentNullException(nameof(cardFlow));
+            _player = player ?? throw new ArgumentNullException(nameof(player));
             _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
         }
-
-
+        
         /// <summary>
         /// 스테이지 입장 시 턴 루프 시작. 외부 토큰과 링크.
         /// </summary>
@@ -99,6 +107,7 @@ namespace Cardevil.Systems
                 await _cardFlow.EnterHandPhase();
                 while (!token.IsCancellationRequested)
                 {
+                    TurnOrder++;
                     await _cardFlow.StageCards.DrawCard();
                     if (_cardFlow.StageCards.IsNoCard)
                     {
@@ -108,18 +117,21 @@ namespace Cardevil.Systems
 
                     await _cardFlow.StageCards.WaitUserInput();
 
-                    await _playerMove.TurnMove();
-                    await _playerAction.TurnAttack();
+                    await _player.TurnMove();
+                    await _player.TurnAttack();
 
                     if (_enemy.IsDead)
                     {
-                        // TODO: 스테이지 클리어
-                        break;
+                        if (!_spawner.TrySpawn(out var spawned))
+                            break;
+
+                        await _enemy.Replace();
+                        _enemy = spawned;
                     }
 
                     await _enemy.TurnAttack();
 
-                    if (_playerAction.IsDead)
+                    if (_player.IsDead)
                     {
                         Managers.Game.PlayerDied();
                         break;

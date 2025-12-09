@@ -85,14 +85,13 @@ public class Slot : MonoBehaviour
 
     public void SetData(Item findItem)
     {
+
         if (findItem == null) return; // 예외처리
 
         DatabaseManager database = Managers.Game._database;
 
-
-        // Debug.Log("이미지 로딩중입니다");
         // 이미지 로딩
-        if (database.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
+        if (Managers.Database.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
         {
             // 성공! 찾은 스프라이트를 Image 컴포넌트에 적용
             itemIconImage.sprite = loadedSprite;

@@ -21,7 +21,7 @@ namespace Cardevil.Ingame.Player
     /// <summary>
     /// 플레이어 캐릭터 클래스
     /// </summary>
-    public class PlayerCharacter : MonoBehaviour, IPlayerControl, ITurnPlayerAction, ITurnPlayerMove
+    public class PlayerCharacter : MonoBehaviour, IPlayerControl, ITurnPlayer
     {
         [Header("Debug")]
         [SerializeField] protected bool _isDebugMode = false;
@@ -221,7 +221,7 @@ namespace Cardevil.Ingame.Player
             return Entity.Tile.j;
         }
 
-        #region ITurnPlayerAction, ITurnPlayerMove 구현
+        #region ITurnPlayerAction 구현
         public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
         public async UniTask TurnAttack()
         {
