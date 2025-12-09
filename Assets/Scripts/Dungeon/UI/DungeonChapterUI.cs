@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cardevil.Utils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -6,6 +7,9 @@ using UnityEditor;
 #endif
 namespace Cardevil.Dungeon.UI
 {
+    /// <summary>
+    /// 던전 챕터 UI 클래스
+    /// </summary>
     public class DungeonChapterUI : MonoBehaviour
     {
         [SerializeField] private int dungeonId = -1;
@@ -13,10 +17,9 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private DungeonUI dungeonUI;
         [SerializeField] private DungeonNodeUI nodeUiPrefab;
         [SerializeField] private List<DungeonNodeUI> nodeUis = new List<DungeonNodeUI>();
-
-        [SerializeField] private int cursor = 0;
+        
         public int DungeonId => dungeonId;
-        public Dungeon Dungeon => Managers.Dungeon.GetDungeon(dungeonId);
+        public Dungeon Dungeon => Managers.Dungeon.GetDungeonById(dungeonId);
 
 
         private void Awake()
@@ -30,34 +33,45 @@ namespace Cardevil.Dungeon.UI
                 }
             }
         }
-        
 
-        [ContextMenu("Create Node UI")]
-        public void CreateNodeUI()
+        public void Initialize(DungeonUI dungeonUI)
         {
-            if (nodeUiPrefab == null)
+            this.dungeonUI = dungeonUI;
+            
+            var allChildren = GetComponentsInChildren<DungeonNodeUI>(true);
+            nodeUis = new List<DungeonNodeUI>(allChildren);
+            
+            foreach (DungeonNodeUI nodeUi in nodeUis)
             {
-                Debug.LogError("Node UI Prefab is not assigned.");
+                nodeUi.InitRef(dungeonUI, this);
+            }
+        }
+
+        public void InitializeAfterDungeonCreated()
+        {
+            Dungeon dungeon = Managers.Dungeon.GetDungeonById(dungeonId);
+            if (dungeon == null)
+            {
+                LogEx.LogError($"Dungeon with ID {dungeonId} not found");
                 return;
             }
 
-            DungeonNodeUI newNodeUI = Instantiate(nodeUiPrefab, transform);
-            newNodeUI.InitRef(dungeonUI, this);
-            newNodeUI.transform.position = nodeUis[^1].transform.position + new Vector3(100, -100, 0);
-            nodeUis.Add(newNodeUI);
-            newNodeUI.name = $"NodeUI_{nodeUis.Count}";
+            foreach (DungeonNodeUI nodeUi in nodeUis)
+            {
+                nodeUi.InitializeLine();
+            }
         }
-        
-        
+
         public DungeonNodeUI GetNodeUI(int nodeId)
         {
             foreach (DungeonNodeUI nodeUi in nodeUis)
             {
-                if (nodeUi.DungeonId == dungeonId)
+                if (nodeUi.DungeonNode != null && nodeUi.DungeonNode.NodeId == nodeId)
                 {
                     return nodeUi;
                 }
             }
+            Debug.LogWarning($"No DungeonNodeUI found for node ID {nodeId} in dungeon {dungeonId}");
             return null;
         }
     }

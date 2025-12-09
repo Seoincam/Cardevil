@@ -326,7 +326,6 @@ namespace Cardevil.DataStructure.Serializables
                         EditorGUI.BeginProperty(valRect, GUIContent.none, val);
                         EditorGUIUtility.labelWidth = Mathf.Min(90f, valRect.width * 0.18f);
                         EditorGUI.PropertyField(valRect, val, new GUIContent("Value"), true);
-                        EditorGUI.LabelField(valRect, "Value: not serializable");
                         EditorGUI.EndProperty();
                     }
                     else

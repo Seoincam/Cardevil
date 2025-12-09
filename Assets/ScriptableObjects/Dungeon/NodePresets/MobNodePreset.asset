@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56a39441801544d9b5ecc744671ac53b, type: 3}
+  m_Name: MobNodePreset
+  m_EditorClassIdentifier: 
+  displayName: "\uBAAC\uC2A4\uD130"
+  nodeType: 1
+  lockedSprite: {fileID: 21300000, guid: 873b171411c96ea4d8853a02bbe52862, type: 3}
+  activeSprite: {fileID: 21300000, guid: a69c79d881253d3419971a94643019e1, type: 3}
+  completedSprite: {fileID: 21300000, guid: 0554a5fdb94701c4886c04ca8dda291f, type: 3}
+  completedOverlaySprite: {fileID: 0}
+  nodeColor: {r: 1, g: 1, b: 1, a: 1}
+  textColor: {r: 1, g: 1, b: 1, a: 1}
