@@ -119,11 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &217680120 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1754273413225031785, guid: 733076530058e9748bf83287f479c890, type: 3}
-  m_PrefabInstance: {fileID: 2235320918855483248}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &401468740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2878,6 +2873,7 @@ MonoBehaviour:
         _variableContainer:
           variables: []
         gold: 0
+        _slotMachineLevel: 1
         canRevive: 0
   _sound:
     root: {fileID: 0}
@@ -2930,10 +2926,8 @@ MonoBehaviour:
       <IsInBranch>k__BackingField: 0
       <IsBranchEnd>k__BackingField: 0
     currentProgress:
-      dungeonId: -1
-      currentNodeId: -1
-      visitedNodeIds: 
-      isCompleted: 0
+      rid: -2
+    savedProgresses: []
     doInstantClear: 0
   _database: {fileID: 683164373}
   references:
@@ -3157,14 +3151,154 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 704753097}
     m_Modifications:
+    - target: {fileID: 606522882648045673, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 660114609555819353, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 923573278909616301, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1175809918076092548, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1256524957486200264, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1310750160403465949, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Name
       value: DungeonUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1499951251659088638, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1552854002645198406, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1595331991558286621, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1618570471583705392, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1941118428811575291, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2450178926401875429, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2678174236965994213, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2901790308362844371, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2959657807999903860, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3120705211552949579, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3400954614440758408, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656263796901810859, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3817950304343824906, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4301539573648226197, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4389585113162589626, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4871021748497453051, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5761979160934173693, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5952858347851649158, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6269760133801645402, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6284777964271917487, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6381100028795192706, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6968790620197212550, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: _rectTransform
+      value: 
+      objectReference: {fileID: 1400307603}
+    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: _dungeonUICanvas
+      value: 
+      objectReference: {fileID: 704753096}
+    - target: {fileID: 7846719808526560038, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7997639657910955538, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8010972492192415196, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8074815344686766208, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: rootNode
       value: 
       objectReference: {fileID: 716483652}
+    - target: {fileID: 8254593270685930084, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8593894599735480946, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8868788453987565721, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3244,6 +3378,14 @@ PrefabInstance:
     - target: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9030899717729878403, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9070749364067903760, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nextNodes.Array.size
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3759,8 +3901,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9653861b3ad55b40866ec016a54af8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyContainer: {fileID: 217680120}
-  isInit: 0
 --- !u!4 &2004960192
 Transform:
   m_ObjectHideFlags: 0

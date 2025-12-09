@@ -15,8 +15,8 @@ namespace Cardevil.Dungeon.UI
     /// </summary>
     public class DungeonUI : MonoBehaviour
     {
-        [SerializeField, VisibleOnly] private Canvas _dungeonUICanvas = null;
-        [SerializeField, VisibleOnly] private RectTransform _rectTransform = null;
+        [SerializeField] private Canvas _dungeonUICanvas = null;
+        [SerializeField] private RectTransform _rectTransform = null;
         [SerializeField] private List<DungeonChapterUI> _dungeonChapters = new List<DungeonChapterUI>();
         [SerializeField] DungeonUICamera _dungeonUICamera = null;
         [SerializeField] private Ease _moveEase = Ease.InOutSine;
