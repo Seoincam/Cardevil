@@ -1,14 +1,18 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Database.DataReader;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Database
 {
+
     public class AutomaticWatcher
     {
+#if UNITY_EDITOR
         public string Path { get; private set; }
         public string Extension { get; }
         private string TempPrefix = null;
@@ -141,5 +145,7 @@ namespace Database
                 AssetDatabase.Refresh();
             };
         }
+#endif
     }
+
 }
