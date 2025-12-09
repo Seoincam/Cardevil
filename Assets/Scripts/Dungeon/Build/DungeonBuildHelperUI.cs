@@ -274,6 +274,25 @@ namespace Cardevil.Dungeon.Build
             }
             Debug.Log("Node texts have been updated to their types.");
         }
+        
+        public void ClearNodeTexts()
+        {
+            foreach (var node in this)
+            {
+                if (node == null) continue;
+                
+                if (node.GetComponentInChildren<TMPro.TextMeshProUGUI>() is { } text)
+                {
+#if UNITY_EDITOR
+                    text.text = "";
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(text);
+#else
+                    text.text = "";
+#endif
+                }
+            }
+            Debug.Log("Node texts have been cleared.");
+        }
 
         public Dungeon BuildDungeon()
         {
@@ -505,5 +524,6 @@ namespace Cardevil.Dungeon.Build
             Gizmos.DrawLine(from, to);
         }
 #endif
+
     }
 }

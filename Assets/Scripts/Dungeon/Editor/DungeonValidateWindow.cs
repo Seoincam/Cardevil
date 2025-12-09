@@ -16,6 +16,7 @@ namespace Cardevil.Dungeon.Editor
         private Vector2 scrollPosition;
         private List<DungeonBuildHelperUI> buildHelpers = new List<DungeonBuildHelperUI>();
         private bool[] foldouts;
+        private bool[] graphFoldouts;
         private static bool autoValidateOnPlay;
 
         [MenuItem("Cardevil/Dungeon Validate Window")]
@@ -95,7 +96,14 @@ namespace Cardevil.Dungeon.Editor
             }
             
             // foldout 배열 초기화
-            foldouts = new bool[buildHelpers.Count];
+            if (foldouts == null || foldouts.Length != buildHelpers.Count)
+            {
+                foldouts = new bool[buildHelpers.Count];
+            }
+            if (graphFoldouts == null || graphFoldouts.Length != buildHelpers.Count)
+            {
+                graphFoldouts = new bool[buildHelpers.Count];
+            }
         }
 
         private void OnGUI()
@@ -159,6 +167,13 @@ namespace Cardevil.Dungeon.Editor
             {
                 var helper = buildHelpers[i];
                 if (helper == null) continue;
+
+                // 배열 길이 확인
+                if (foldouts == null || i >= foldouts.Length || graphFoldouts == null || i >= graphFoldouts.Length)
+                {
+                    RefreshDungeonList();
+                    if (foldouts == null || graphFoldouts == null) continue;
+                }
 
                 var chapterUI = helper.GetComponent<DungeonChapterUI>();
                 string dungeonName = chapterUI != null 
@@ -228,7 +243,35 @@ namespace Cardevil.Dungeon.Editor
                         helper.SetNodeTextsToType();
                         EditorUtility.SetDirty(helper);
                     }
+                    if (GUILayout.Button("노드 텍스트 지우기"))
+                    {
+                        Undo.RecordObject(helper, "Clear Node Texts");
+                        helper.ClearNodeTexts();
+                        EditorUtility.SetDirty(helper);
+                    }
                     EditorGUILayout.EndHorizontal();
+
+                    EditorGUILayout.Space(10);
+                    
+                    // 노드 그래프 시각화
+                    EditorGUILayout.BeginVertical("box");
+                    graphFoldouts[i] = EditorGUILayout.Foldout(graphFoldouts[i], "노드 그래프 (계층 구조)", true);
+                    
+                    if (graphFoldouts[i])
+                    {
+                        EditorGUILayout.Space(5);
+                        
+                        if (helper.rootNode != null)
+                        {
+                            DrawNodeGraphStack(helper.rootNode);
+                        }
+                        else
+                        {
+                            EditorGUILayout.HelpBox("루트 노드가 설정되지 않았습니다.", MessageType.Warning);
+                        }
+                    }
+                    
+                    EditorGUILayout.EndVertical();
 
                     EditorGUI.indentLevel--;
                 }
@@ -262,6 +305,241 @@ namespace Cardevil.Dungeon.Editor
                 }
             }
             GUI.backgroundColor = Color.white;
+        }
+        
+        // ... (기존 변수 및 초기화 코드는 그대로 유지) ...
+
+        // [수정됨] 기존 DrawNodeGraphStack 대신 이 메서드와 헬퍼들을 사용하세요.
+        
+        /// <summary>
+        /// 메인 노드 그래프 그리기 진입점
+        /// </summary>
+        private void DrawNodeGraphStack(DungeonNodeUIDataComponent rootNode)
+        {
+            if (rootNode == null) return;
+            
+            // 무한 루프 방지용 방문 기록
+            HashSet<DungeonNodeUIDataComponent> globalVisited = new HashSet<DungeonNodeUIDataComponent>();
+            
+            // 메인 루트 그리기 시작
+            DrawRecursive(rootNode, 0, globalVisited, null);
+        }
+
+        /// <summary>
+        /// 재귀적으로 노드를 그립니다. (분기 발생 시 합류 지점을 찾아 처리)
+        /// </summary>
+        /// <param name="node">현재 그릴 노드</param>
+        /// <param name="indent">들여쓰기 레벨</param>
+        /// <param name="visited">방문 기록</param>
+        /// <param name="stopNode">그리기 중단 지점 (분기 내부에서 합류점 도달 시 멈춤)</param>
+        private void DrawRecursive(DungeonNodeUIDataComponent node, int indent, HashSet<DungeonNodeUIDataComponent> visited, DungeonNodeUIDataComponent stopNode)
+        {
+            if (node == null) return;
+            
+            // 합류 지점(StopNode)에 도달했으면 그리기 중단 (분기 종료)
+            if (stopNode != null && node == stopNode) return;
+
+            // 이미 방문한 노드 체크 (루프 방지)
+            if (visited.Contains(node))
+            {
+                DrawNodeLine(node, indent, "↺ (Loop)", Color.red);
+                return;
+            }
+            visited.Add(node);
+
+            // 다음 노드 정보 확인
+            var nextNodes = node.nextNodes;
+            bool hasNext = nextNodes != null && nextNodes.Count > 0;
+            bool isBranching = hasNext && nextNodes.Count > 1;
+
+            // --- 1. 현재 노드 그리기 ---
+            string prefix;
+            if (indent == 0 && stopNode == null) prefix = "● "; // 전체 시작
+            else if (stopNode != null) // 분기 내부일 때
+            {
+                // 분기 내부 로직: 다음 노드가 StopNode라면 '마지막' 처리
+                bool isLastInBranch = !hasNext || (hasNext && nextNodes[0] == stopNode);
+                prefix = isLastInBranch ? "└ " : "● "; 
+            }
+            else // 메인 줄기일 때
+            {
+                prefix = hasNext ? "├─ " : "└─ ";
+            }
+
+            DrawNodeLine(node, indent, prefix, GetNodeTypeColor(node.nodeType));
+
+            // --- 2. 다음 단계 진행 ---
+            if (!hasNext) return;
+
+            if (isBranching)
+            {
+                // A. 분기 발생 (Branch Split)
+                
+                // 1. 합류 지점(Merge Node) 찾기
+                // 모든 분기가 결국 어디서 만나는지 계산합니다.
+                DungeonNodeUIDataComponent mergeNode = FindMergeNode(nextNodes);
+
+                // 2. 각 분기 그리기
+                for (int i = 0; i < nextNodes.Count; i++)
+                {
+                    var branchStartNode = nextNodes[i];
+                    
+                    // 분기 헤더 표시 (┌─ 분기 N)
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Space((indent + 1) * 20); // 부모보다 한 칸 더 들여쓰기
+                    GUI.color = new Color(1f, 0.8f, 0.3f); // 주황색
+                    GUILayout.Label($"┌─ 분기 {i + 1}", EditorStyles.boldLabel);
+                    GUI.color = Color.white;
+                    EditorGUILayout.EndHorizontal();
+
+                    // 분기 내부 그리기 (stopNode를 mergeNode로 설정)
+                    // 들여쓰기는 헤더보다 한 칸 더(indent + 2) 들어갑니다.
+                    DrawRecursive(branchStartNode, indent + 2, visited, mergeNode);
+                }
+
+                // 3. 합류 지점부터 메인 줄기 다시 그리기 (Resume Main Line)
+                if (mergeNode != null)
+                {
+                    // 합류 지점은 다시 원래의 들여쓰기(indent)로 돌아와서 그립니다.
+                    // visited에서 제거하지 않음 (한 번만 그려야 하므로)
+                    // 하지만 DrawRecursive 호출을 위해 임시로 visited 체크를 우회해야 할 수도 있으나,
+                    // 로직상 mergeNode는 아직 방문 안 함(StopNode 때문에).
+                    
+                    DrawRecursive(mergeNode, indent, visited, stopNode);
+                }
+            }
+            else
+            {
+                // B. 직선 진행 (Linear)
+                // 단순히 다음 노드로 재귀 호출
+                DrawRecursive(nextNodes[0], indent, visited, stopNode);
+            }
+        }
+
+        /// <summary>
+        /// 노드 한 줄을 그리는 UI 헬퍼
+        /// </summary>
+        private void DrawNodeLine(DungeonNodeUIDataComponent node, int indent, string prefix, Color color)
+        {
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(indent * 20); // 들여쓰기
+
+            string label = $"{prefix}[ID:{node.nodeId}] {node.nodeType}";
+            
+            GUI.color = color;
+            if (GUILayout.Button(label, EditorStyles.label, GUILayout.ExpandWidth(false)))
+            {
+                Selection.activeGameObject = node.gameObject;
+                EditorGUIUtility.PingObject(node.gameObject);
+            }
+            GUI.color = Color.white;
+
+            EditorGUILayout.EndHorizontal();
+        }
+
+        /// <summary>
+        /// 여러 분기가 공통으로 도달하는 첫 번째 합류 노드(Merge Node)를 찾습니다.
+        /// </summary>
+        private DungeonNodeUIDataComponent FindMergeNode(List<DungeonNodeUIDataComponent> branchStarts)
+        {
+            if (branchStarts == null || branchStarts.Count < 2) return null;
+
+            // 첫 번째 분기의 모든 후손 노드를 수집 (HashSet)
+            HashSet<DungeonNodeUIDataComponent> candidates = GetReachableNodes(branchStarts[0]);
+
+            // 나머지 분기들의 후손 노드와 교집합(Intersect) 계산
+            for (int i = 1; i < branchStarts.Count; i++)
+            {
+                HashSet<DungeonNodeUIDataComponent> currentBranchNodes = GetReachableNodes(branchStarts[i]);
+                candidates.IntersectWith(currentBranchNodes);
+            }
+
+            // 교집합이 없다면 합류하지 않음
+            if (candidates.Count == 0) return null;
+
+            // 교집합 후보들 중 "가장 가까운" 노드를 찾아야 함.
+            // BFS를 통해 가장 먼저 만나는 후보가 합류점입니다.
+            Queue<DungeonNodeUIDataComponent> queue = new Queue<DungeonNodeUIDataComponent>();
+            HashSet<DungeonNodeUIDataComponent> bfsVisited = new HashSet<DungeonNodeUIDataComponent>();
+            
+            // 모든 분기 시작점을 큐에 넣고 시작
+            foreach (var start in branchStarts)
+            {
+                queue.Enqueue(start);
+                bfsVisited.Add(start);
+            }
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+
+                // 현재 노드가 교집합 후보군에 있다면, 이것이 첫 번째 합류점(Merge Node)
+                if (candidates.Contains(current))
+                {
+                    return current;
+                }
+
+                if (current.nextNodes != null)
+                {
+                    foreach (var next in current.nextNodes)
+                    {
+                        if (next != null && !bfsVisited.Contains(next))
+                        {
+                            bfsVisited.Add(next);
+                            queue.Enqueue(next);
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 특정 노드로부터 도달 가능한 모든 노드를 반환 (DFS)
+        /// </summary>
+        private HashSet<DungeonNodeUIDataComponent> GetReachableNodes(DungeonNodeUIDataComponent startNode)
+        {
+            HashSet<DungeonNodeUIDataComponent> results = new HashSet<DungeonNodeUIDataComponent>();
+            Stack<DungeonNodeUIDataComponent> stack = new Stack<DungeonNodeUIDataComponent>();
+            
+            if (startNode != null) stack.Push(startNode);
+
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                if (results.Contains(current)) continue;
+                
+                results.Add(current);
+
+                if (current.nextNodes != null)
+                {
+                    foreach (var next in current.nextNodes)
+                    {
+                        if (next != null) stack.Push(next);
+                    }
+                }
+            }
+            return results;
+        }
+        
+        /// <summary>
+        /// 노드 타입에 따른 색상 반환
+        /// </summary>
+        private Color GetNodeTypeColor(DungeonNodeTypes nodeType)
+        {
+            return nodeType switch
+            {
+                DungeonNodeTypes.None => Color.grey,                     // 회색
+                DungeonNodeTypes.Mob => new Color(1f, 0.5f, 0.5f),       // 연한 빨강
+                DungeonNodeTypes.MiniBoss => new Color(1f, 0.3f, 0.3f),  // 빨강
+                DungeonNodeTypes.FinalBoss => new Color(1f, 0f, 0f),     // 진한 빨강
+                DungeonNodeTypes.Heal => new Color(0.5f, 1f, 1f),        // 하늘색
+                DungeonNodeTypes.Random => new Color(0.8f, 0.8f, 0.8f),  // 회색
+                DungeonNodeTypes.BlackMarket => new Color(1f, 0.8f, 0.3f),// 주황
+                DungeonNodeTypes.Shop => new Color(1f, 1f, 0.5f),        // 노랑
+                _ => Color.white
+            };
         }
     }
 }
