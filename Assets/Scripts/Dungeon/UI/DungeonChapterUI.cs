@@ -17,8 +17,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private DungeonUI dungeonUI;
         [SerializeField] private DungeonNodeUI nodeUiPrefab;
         [SerializeField] private List<DungeonNodeUI> nodeUis = new List<DungeonNodeUI>();
-
-        [SerializeField] private int cursor = 0;
+        
         public int DungeonId => dungeonId;
         public Dungeon Dungeon => Managers.Dungeon.GetDungeonById(dungeonId);
 

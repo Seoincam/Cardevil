@@ -25,6 +25,8 @@ namespace Cardevil.Dungeon
         [SerializeField, VisibleOnly] private DungeonProgress currentProgress;
         private int currentDungeonIndex = -1;
 
+        [Header("Debug")]
+        [SerializeField] bool instantClear = false;
         
         private bool _canGoNext = true;
         

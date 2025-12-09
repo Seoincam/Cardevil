@@ -62,14 +62,19 @@ namespace Cardevil.Dungeon
             
         }
         
+        public virtual Sprite GetNodeBackgroundSprite()
+        {
+            return lockedSprite;
+        }
+        
         /// <summary>
         /// 노드의 상태에 따라 적절한 스프라이트를 반환합니다.
         /// </summary>
-        public virtual Sprite GetSpriteForState(NodeState state)
+        public virtual Sprite GetNodeSpriteForState(NodeState state)
         {
             return state switch
             {
-                NodeState.Locked => lockedSprite,
+                NodeState.Locked => null,
                 NodeState.Available => activeSprite,
                 NodeState.Current => activeSprite,
                 NodeState.Completed => completedSprite,
@@ -86,20 +91,31 @@ namespace Cardevil.Dungeon
         {
             if (nodeUI == null) return;
             
-            // 스프라이트 설정
-            if (nodeUI.NodeImage != null)
+            void SetImageSpriteAndColor(Image image, Sprite sprite, Color color)
             {
-                Sprite sprite = GetSpriteForState(state);
                 if (sprite != null)
                 {
-                    nodeUI.NodeImage.sprite = sprite;
-                    nodeUI.NodeImage.color = nodeColor;
+                    image.sprite = sprite;
+                    image.color = color;
+                    image.SetNativeSize();
                 }
                 else
                 {
-                    nodeUI.NodeImage.sprite = null;
-                    nodeUI.NodeImage.color = Color.clear;
+                    image.sprite = null;
+                    image.color = Color.clear;
                 }
+            }
+            
+            if (nodeUI.BackgroundImage != null)
+            {
+                Sprite bgSprite = GetNodeBackgroundSprite();
+                SetImageSpriteAndColor(nodeUI.BackgroundImage, bgSprite, nodeColor);
+            }
+            
+            if (nodeUI.NodeImage != null)
+            {
+                Sprite stateSprite = GetNodeSpriteForState(state);
+                SetImageSpriteAndColor(nodeUI.NodeImage, stateSprite, nodeColor);
             }
 
             // 텍스트 설정
@@ -123,6 +139,7 @@ namespace Cardevil.Dungeon
                 {
                     nodeUI.OverlayImage.gameObject.SetActive(true);
                     nodeUI.OverlayImage.sprite = completedOverlaySprite;
+                    nodeUI.NodeImage.SetNativeSize();
                 }
                 else
                 {

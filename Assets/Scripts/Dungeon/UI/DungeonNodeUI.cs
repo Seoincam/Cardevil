@@ -14,6 +14,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private Button _button;
         [Header("Visual References")]
         [SerializeField] private Animator nodeAnimator;
+        [SerializeField] private Image backgroundImage;
         [SerializeField] private Image nodeImage;
         [SerializeField] private TextMeshProUGUI nodeText;
         [FormerlySerializedAs("hoverImage")] [SerializeField] private Image overlayImage;
@@ -27,14 +28,13 @@ namespace Cardevil.Dungeon.UI
         [Header("Variables")]
         [SerializeField] private int nodeId = -1;
         
-        [Header("숨겨진 노드 설정")]
-        [Tooltip("블랙마켓이 나타나지 않았을 때 숨길지 여부")]
-        [SerializeField] private bool hideWhenBlackMarketHidden = true;
 
         private LineRenderer lineRenderer;
         private bool _isHidden; // 블랙마켓이 나타나지 않아서 숨겨진 상태
         
         // UI 컴포넌트 접근용 프로퍼티
+        public Button NodeButton => _button;
+        public Image BackgroundImage => backgroundImage;
         public Image NodeImage => nodeImage;
         public TextMeshProUGUI NodeText => nodeText;
         public Image OverlayImage => overlayImage;

@@ -65,7 +65,6 @@ namespace Cardevil.Dungeon.Build
                 if (node == null) continue;
                 
                 node.nextNodes.Clear();
-                node.prevNodes.Clear();
                 node.OnValidate();
                 #if UNITY_EDITOR
                 if(Application.isPlaying) continue;
@@ -74,6 +73,46 @@ namespace Cardevil.Dungeon.Build
             }
             Debug.Log("All node connections have been cleared.");
         }
+
+        [ContextMenu("Print All Node Connections")]
+        public void PrintAllNodeConnections()
+        {
+            Debug.Log("=== All Node Connections ===");
+            int totalNodes = 0;
+            int nodesWithConnections = 0;
+            int totalConnections = 0;
+
+            foreach (var node in this)
+            {
+                if (node == null) continue;
+                totalNodes++;
+                
+                if (node.nextNodes.Count > 0)
+                {
+                    nodesWithConnections++;
+                    totalConnections += node.nextNodes.Count;
+                    
+                    Debug.Log($"Node {node.nodeId} ({node.nodeType}) -> {node.nextNodes.Count} connections:");
+                    foreach (var next in node.nextNodes)
+                    {
+                        if (next != null)
+                        {
+                            Debug.Log($"  -> Node {next.nodeId} ({next.nodeType})");
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"  -> NULL");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"Node {node.nodeId} ({node.nodeType}) has NO connections");
+                }
+            }
+            
+            Debug.Log($"=== Summary: {totalNodes} nodes total, {nodesWithConnections} have connections, {totalConnections} total connections ===");
+        }
         /// <summary>
         /// 계층 구조를 기반으로 모든 노드들을 연결합니다.
         /// 고맙다 제미나이야
@@ -81,7 +120,21 @@ namespace Cardevil.Dungeon.Build
         [ContextMenu("Connect All Nodes By Hierarchy")]
         public void ReconnectAllNodesByHierarchy()
         {
-            // 이전과 동일한 노드 연결 헬퍼 함수
+            if (nodeContainer == null)
+            {
+                Debug.LogError("NodeContainer is not assigned!");
+                return;
+            }
+
+            // 1. 먼저 모든 연결 초기화
+            Debug.Log("=== Clearing all existing connections ===");
+            foreach (var node in this)
+            {
+                if (node == null) continue;
+                node.nextNodes.Clear();
+            }
+
+            // 노드 연결 헬퍼 함수 (nextNodes만 사용)
             void Connect(DungeonNodeUIDataComponent prev, DungeonNodeUIDataComponent next)
             {
                 if (prev == null || next == null) return;
@@ -90,12 +143,9 @@ namespace Cardevil.Dungeon.Build
                 {
                     prev.nextNodes.Add(next);
                 }
-
-                if (!next.prevNodes.Contains(prev))
-                {
-                    next.prevNodes.Add(prev);
-                }
             }
+
+            // ...existing code...
 
     /*
      * 재귀적으로 계층 구조를 탐색하여 노드를 연결합니다.
@@ -167,12 +217,21 @@ namespace Cardevil.Dungeon.Build
     }
     
     // 최상위 노드 컨테이너에서부터 빈 '이전 노드 리스트'와 함께 연결을 시작합니다.
+    Debug.Log("=== Starting hierarchy-based connection ===");
     StartConnecting(nodeContainer, new List<DungeonNodeUIDataComponent>());
 
     // 모든 노드에 변경사항을 적용합니다.
+    int connectedCount = 0;
+    int totalConnections = 0;
     foreach (var node in this)
     {
         if (node == null) continue;
+        
+        if (node.nextNodes.Count > 0)
+        {
+            connectedCount++;
+            totalConnections += node.nextNodes.Count;
+        }
         
         node.OnValidate();
         #if UNITY_EDITOR
@@ -180,6 +239,9 @@ namespace Cardevil.Dungeon.Build
         UnityEditor.PrefabUtility.RecordPrefabInstancePropertyModifications(node);
         #endif
     }
+    
+    Debug.Log($"=== Connection Complete: {connectedCount} nodes connected with {totalConnections} total connections ===");
+    PrintAllNodeConnections();
 }
         
         [ContextMenu("Set Node Texts to Type")]
@@ -244,7 +306,7 @@ namespace Cardevil.Dungeon.Build
             dungeon.Nodes = nodes;
 
             /*
-             * 2. 노드 간 연결 설정
+             * 2. 노드 간 연결 설정 (nextNodes만 사용하여 양방향 연결 생성)
              */
             foreach (var dataNode in this)
             {
@@ -262,22 +324,19 @@ namespace Cardevil.Dungeon.Build
                         Debug.LogError($"No DungeonNode found for next node ID {nextDataNode.nodeId}");
                         continue;
                     }
+                    
+                    // Floor 업데이트
                     nextDungeonNode.Floor = Math.Max(currentDungeonNode.Floor + 1, nextDungeonNode.Floor);
-                    currentDungeonNode.NextNodes.Add(nextDungeonNode);
-                }
-
-                foreach (var prevDataNode in dataNode.prevNodes)
-                {
-                    if (prevDataNode == null) continue;
-
-                    DungeonNode prevDungeonNode = dungeon.GetNode(prevDataNode.nodeId);
-                    if (prevDungeonNode == null)
+                    
+                    // 양방향 연결 생성
+                    if (!currentDungeonNode.NextNodes.Contains(nextDungeonNode))
                     {
-                        Debug.LogError($"No DungeonNode found for previous node ID {prevDataNode.nodeId}");
-                        continue;
+                        currentDungeonNode.NextNodes.Add(nextDungeonNode);
                     }
-
-                    currentDungeonNode.PreviousNodes.Add(prevDungeonNode);
+                    if (!nextDungeonNode.PreviousNodes.Contains(currentDungeonNode))
+                    {
+                        nextDungeonNode.PreviousNodes.Add(currentDungeonNode);
+                    }
                 }
             }
 
@@ -374,5 +433,71 @@ namespace Cardevil.Dungeon.Build
                 yield return node;
             }
         }
+
+#if UNITY_EDITOR
+        [Header("기즈모 설정")]
+        private bool showGizmos = true;
+        private Color gizmoNodeColor = Color.white;
+        private Color gizmoConnectionColor = new Color(0.5f, 1f, 0.5f, 0.8f);
+        private float gizmoNodeSize = 3f;
+
+        private void OnDrawGizmos()
+        {
+            var allNodes = nodeContainer.GetComponentsInChildren<DungeonNodeUIDataComponent>();
+
+            foreach (var node in allNodes)
+            {
+                // 노드 ID 표시 (Handles 사용)
+                Handles.Label(node.transform.position + Vector3.up * 1.25f, 
+                    $"ID: {node.nodeId}\n{node.nodeType}", 
+                    new GUIStyle() 
+                    { 
+                        normal = new GUIStyleState() {
+                            textColor = Color.white
+                        },
+                        alignment = TextAnchor.MiddleCenter,
+                        fontSize = 18
+                    });
+            }
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!showGizmos || nodeContainer == null) return;
+
+            var allNodes = nodeContainer.GetComponentsInChildren<DungeonNodeUIDataComponent>();
+            
+            // 모든 연결선 먼저 그리기
+            foreach (var node in allNodes)
+            {
+                if (node == null) continue;
+                
+                foreach (var nextNode in node.nextNodes)
+                {
+                    if (nextNode == null) continue;
+                    
+                    DrawConnectionLine(node.transform.position, nextNode.transform.position, gizmoConnectionColor);
+                }
+            }
+            
+            // 그 다음 노드들을 와이어 스피어로 표시
+            foreach (var node in allNodes)
+            {
+                if (node == null) continue;
+                
+                // 노드 위치 표시
+                Gizmos.color = gizmoNodeColor;
+                Gizmos.DrawWireSphere(node.transform.position, gizmoNodeSize);
+                
+
+            }
+        }
+
+        private void DrawConnectionLine(Vector3 from, Vector3 to, Color color)
+        {
+            Gizmos.color = color;
+            Gizmos.DrawLine(from, to);
+        }
+#endif
     }
 }
