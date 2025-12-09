@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Cardevil.Dungeon.NodePresets
 {
     [CreateAssetMenu(fileName = "FinalBossNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Final Boss", order = 5)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Main_Boss_Inactive.png")]
     public class FinalBossNodePreset : DungeonNodePreset
     {
         public override void OnEnter(DungeonNode node)

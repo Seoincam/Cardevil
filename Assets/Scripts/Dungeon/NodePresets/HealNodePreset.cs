@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Cardevil.Dungeon.NodePresets
 {
     [CreateAssetMenu(fileName = "HealNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Heal", order = 2)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Heal_Inactive.png")]
     public class HealNodePreset : DungeonNodePreset
     {
         public override void OnEnter(DungeonNode node)

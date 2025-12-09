@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Cardevil.Dungeon.NodePresets
 {
     [CreateAssetMenu(fileName = "ShopNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Shop", order = 8)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Shop_Inactive.png")]
     public class ShopNodePreset : DungeonNodePreset
     {
         public override void OnEnter(DungeonNode node)

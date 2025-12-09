@@ -206,7 +206,6 @@ namespace Cardevil.Dungeon.UI
                 case NodeState.Available:
                     _button.interactable = true;
                     _button.gameObject.SetActive(true);
-                    ForceEnableButtonNextFrame().Forget();
                     break;
                 case NodeState.Current:
                     _button.interactable = false;
@@ -218,16 +217,7 @@ namespace Cardevil.Dungeon.UI
                     break;
             }
         }
-
-        private async UniTaskVoid ForceEnableButtonNextFrame()
-        {
-            await UniTask.Yield();
-            
-            if (_button != null && !_button.gameObject.activeSelf && dungeonNode?.State == NodeState.Available && !_isHidden)
-            {
-                _button.gameObject.SetActive(true);
-            }
-        }
+        
     }
 }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Cardevil.Dungeon.NodePresets
 {
     [CreateAssetMenu(fileName = "RandomNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Random", order = 3)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Random_Inactive.png")]
     public class RandomNodePreset : DungeonNodePreset
     {
         public override void OnEnter(DungeonNode node)

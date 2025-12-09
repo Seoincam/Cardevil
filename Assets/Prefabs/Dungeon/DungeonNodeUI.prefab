@@ -64,13 +64,13 @@ MonoBehaviour:
   nodeAnimator: {fileID: 0}
   nodeImage: {fileID: 793158431501647124}
   nodeText: {fileID: 3100736379799477314}
-  overlayImage: {fileID: 793158431501647124}
+  overlayImage: {fileID: 8661052105713097334}
   dungeonUI: {fileID: 0}
   dungeonChapterUI: {fileID: 0}
-  setting: {fileID: 11400000, guid: 516ed434d1415e4488c03bd1965ef73a, type: 2}
   dungeonNode:
     rid: -2
   nodeId: -1
+  hideWhenBlackMarketHidden: 1
   references:
     version: 2
     RefIds:
@@ -90,8 +90,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeId: 1
   nodeFloor: 0
-  nodeType: 1
-  nodeBehaviour: {fileID: 0}
+  nodeType: 0
+  nodePreset: {fileID: 0}
   nextNodes:
   - {fileID: 0}
   prevNodes: []

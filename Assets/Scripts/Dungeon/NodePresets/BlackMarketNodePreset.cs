@@ -8,6 +8,7 @@ namespace Cardevil.Dungeon.NodePresets
     /// 던전에 미리 배치되지만, 확률에 따라 나타나거나 숨겨집니다.
     /// </summary>
     [CreateAssetMenu(fileName = "BlackMarketNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Black Market", order = 7)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Black_Market_Inactive.png")]
     public class BlackMarketNodePreset : DungeonNodePreset
     {
         [Header("암시장 설정")]

@@ -4,6 +4,7 @@ using UnityEngine;
 namespace Cardevil.Dungeon.NodePresets
 {
     [CreateAssetMenu(fileName = "MiniBossNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Mini Boss", order = 4)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Middle_Boss_Inactive.png")]
     public class MiniBossNodePreset : DungeonNodePreset
     {
         public override void OnEnter(DungeonNode node)

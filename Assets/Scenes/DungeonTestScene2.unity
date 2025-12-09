@@ -3038,14 +3038,38 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 704753097}
     m_Modifications:
+    - target: {fileID: 761915253121996963, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodeType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 761915253121996963, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodePreset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45ef5eea9913c674bbfaa32254bf7cf9, type: 2}
+    - target: {fileID: 1281200981532983134, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1310750160403465949, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Name
       value: DungeonUI
       objectReference: {fileID: 0}
-    - target: {fileID: 5606902175268957030, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_Enabled
+    - target: {fileID: 3257603193984150486, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodeType
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3257603193984150486, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodePreset
+      value: 
+      objectReference: {fileID: 11400000, guid: c44157bd9922f7448a5ee68c9cf51ebf, type: 2}
+    - target: {fileID: 3484476462466878574, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodeType
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3484476462466878574, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: nodePreset
+      value: 
+      objectReference: {fileID: 11400000, guid: 45ef5eea9913c674bbfaa32254bf7cf9, type: 2}
     - target: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3127,9 +3151,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5407418592406539763, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-    - {fileID: 8195264965521146848, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
