@@ -89,11 +89,17 @@ namespace Cardevil.Dungeon
                 if (sprite != null)
                 {
                     nodeImage.sprite = sprite;
+                    nodeImage.color = nodeColor;
                 }
-                nodeImage.color = nodeColor;
+                else
+                {
+                    nodeImage.sprite = null;
+                    nodeImage.color = Color.clear;
+                }
+                
             }
 
-            // 텍스트 설정 (잠김/완료 상태에서는 텍스트 숨김)
+            // 텍스트 설정 (있는 경우)
             if (nodeText != null)
             {
                 if (state == NodeState.Locked || state == NodeState.Completed)
