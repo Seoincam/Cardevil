@@ -6,7 +6,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Managers.Game.Enemy.delayAttackByRelic = 2;
+            // Managers.Game.Enemy.delayAttackByRelic = 2;
         }
     }
 }
