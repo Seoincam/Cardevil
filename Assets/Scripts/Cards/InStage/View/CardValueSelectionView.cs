@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Presenter;
@@ -18,14 +19,42 @@ namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
-
+        [SerializeField] private Image bar;
+        [SerializeField] private PointerAreaTrigger valueChangeArea;
+        
+        [Header("SO")]
         [SerializeField] private ValueSelectionViewAnimSetting setting;
+
+        [Header("State")] 
+        [SerializeField, VisibleOnly] private bool isInDropArea;
+        [SerializeField, VisibleOnly] private bool isDropped;
+
+        /// <summary>
+        /// 드래그 중, 카드(포인터)가 Drop Area 내에 있는가?
+        /// </summary>
+        public bool IsInDropArea
+        {
+            get => isInDropArea;
+            private set => isInDropArea = value;
+        }
+
+        /// <summary>
+        /// Drop Area 내에 Drop을 했나?
+        /// </summary>
+        public bool IsDropped
+        {
+            get => isDropped;
+            private set => isDropped = value;
+        }
+        
+        /// <summary>
+        /// 값 선택 완료 이벤트.
+        /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
+        /// </summary>
+        public event Action<Card, (int, Direction)> ValueSelected;
         
         private const float CardScale = .6f;
         private const string SlotPath = "Cards/Slot";
-        
-        private Image _bar;
-        private RectTransform _rect;
         
         private readonly List<RectTransform> _slots = new();
         private readonly List<CardVisualValueSelectionView> _visuals = new();
@@ -35,11 +64,7 @@ namespace Cardevil.Cards.InStage.View
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
         
-        /// <summary>
-        /// 값 선택 완료 이벤트.
-        /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
-        /// </summary>
-        public event Action<Card, (int, Direction)> ValueSelected;
+        
 
         /// <summary>
         /// 선택 UI 초기화.
@@ -47,9 +72,11 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void Init()
         {
-            _bar = GetComponent<Image>();
-            _rect = GetComponent<RectTransform>();
-            gameObject.SetActive(false);
+            bar.gameObject.SetActive(false);
+            valueChangeArea.gameObject.SetActive(false);
+            
+            valueChangeArea.PointerEntered  += OnPointerEnterInArea;
+            valueChangeArea.PointerExited += OnPointerExitInArea;
         }
 
         /// <summary>
@@ -67,6 +94,7 @@ namespace Cardevil.Cards.InStage.View
         
         private void Open(Card card)
         {
+            Close();
             Clear();
 
             _cardCache = card;
@@ -84,8 +112,8 @@ namespace Cardevil.Cards.InStage.View
             ConfigureSlots(count);
             ConfigureCards(cardData, count);
 
-            _rect.anchoredPosition = setting.openPosition;
-            gameObject.SetActive(true);
+            bar.rectTransform.anchoredPosition = setting.openPosition;
+            bar.gameObject.SetActive(true);
             
             // 애니메이션
             _animCts = new CancellationTokenSource();
@@ -98,14 +126,15 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void Close()
         {
-            if (!gameObject.activeSelf)
+            if (!bar.gameObject.activeSelf)
                 return;
             
             _animCts?.Cancel();
             _animCts?.Dispose();
             _animCts = null;
             
-            gameObject.SetActive(false);
+            bar.gameObject.SetActive(false);
+            
             Clear();
         }
         
@@ -133,18 +162,24 @@ namespace Cardevil.Cards.InStage.View
         private void OnValueSelected((int, Direction) values)
         {
             ValueSelected?.Invoke(_cardCache, values);
+            
+            _draggedCard = null;
+            IsDropped = false;
+            IsInDropArea = false;
+            
             Close();
+            valueChangeArea.gameObject.SetActive(false);
         }
 
         private async UniTaskVoid PlayAnimateAsync(CancellationToken ct)
         {
             // 외관 초기화
-            _bar.color -= new Color(0, 0, 0, _bar.color.a);
+            bar.color -= new Color(0, 0, 0, bar.color.a);
             foreach (var visual in _visuals)
                 visual.CanvasGroup.alpha = 0;
 
             // 애니메이션 처리
-            bool fadeCanceled = await _bar
+            bool fadeCanceled = await bar
                 .DOFade(1f, setting.barFadeInDuration)
                 .ToUniTask(cancellationToken: ct)
                 .SuppressCancellationThrow();
@@ -178,7 +213,7 @@ namespace Cardevil.Cards.InStage.View
         }
         
         /// <summary>
-        /// <see cref="_bar"/> 크기를 조정.
+        /// <see cref="bar"/> 크기를 조정.
         /// </summary>
         private void ConfigureFrame(int slotCount)
         {
@@ -188,7 +223,7 @@ namespace Cardevil.Cards.InStage.View
                 width = slotCount * 140f;
             }
 
-            _rect.sizeDelta = new Vector2(width, _rect.rect.height);
+            bar.rectTransform.sizeDelta = new Vector2(width, bar.rectTransform.rect.height);
         }
 
         /// <summary>
@@ -199,7 +234,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate(SlotPath, _rect).GetComponent<RectTransform>();
+                var slot = Managers.Resource.Instantiate(SlotPath, bar.rectTransform).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -237,6 +272,66 @@ namespace Cardevil.Cards.InStage.View
                 
                 _visuals.Add(visual);
             }
+        }
+
+
+        private Card _draggedCard;
+        
+        public void OnDragStarted(Card card)
+        {
+            if (!card.Data.CanOpenSelection)
+                return;
+            
+            _draggedCard = card;
+            valueChangeArea.gameObject.SetActive(true);
+        }
+
+        public void OnDragEnded()
+        {
+            if (IsInDropArea)
+            {
+                IsDropped = true;
+                
+                SetRaycastTarget(true);
+                _draggedCard.transform.SetParent(transform);
+                _draggedCard.UpdatePosition();
+                return;
+            }
+            
+            _draggedCard = null;
+            valueChangeArea.gameObject.SetActive(false);
+        }
+
+        
+        private void OnPointerEnterInArea()
+        {
+            if (isDropped)
+                return;
+            if (!_draggedCard)
+                return;
+            
+            IsInDropArea = true;
+            Open(_draggedCard);
+            SetRaycastTarget(false);
+        }
+
+        private void OnPointerExitInArea()
+        {
+            if (!_draggedCard)
+                return;
+            if (IsDropped)
+                return;
+            
+            IsInDropArea = false;
+            Close();
+        }
+        
+        
+        private void SetRaycastTarget(bool value)
+        {
+            bar.raycastTarget = value;
+            foreach (var visual in _visuals)
+                visual.CanvasGroup.blocksRaycasts = value;
         }
     }
 }

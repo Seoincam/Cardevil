@@ -214,6 +214,7 @@ GameObject:
   - component: {fileID: 8908656850551813195}
   - component: {fileID: 3447927028540560087}
   - component: {fileID: 6764046506722428086}
+  - component: {fileID: 3176970404710986135}
   m_Layer: 5
   m_Name: Sort By Number Button
   m_TagString: Untagged
@@ -322,6 +323,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3176970404710986135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2301498138881667798}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.15
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1
 --- !u!1 &3070737912306519204
 GameObject:
   m_ObjectHideFlags: 0
@@ -470,6 +488,7 @@ GameObject:
   - component: {fileID: 4595689584131531303}
   - component: {fileID: 3787483773903167530}
   - component: {fileID: 1476084883192207692}
+  - component: {fileID: 5435749143009795046}
   m_Layer: 5
   m_Name: Discard Button
   m_TagString: Untagged
@@ -494,9 +513,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -225, y: 85}
+  m_AnchoredPosition: {x: -327.5, y: 135}
   m_SizeDelta: {x: 205, y: 100}
-  m_Pivot: {x: 1, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4595689584131531303
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -579,6 +598,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5435749143009795046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5621235997313883646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.15
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1
 --- !u!1 &5931655203838201288
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,6 +689,7 @@ GameObject:
   - component: {fileID: 3414237830784809593}
   - component: {fileID: 6698471213361954692}
   - component: {fileID: 4741687040072746640}
+  - component: {fileID: 2684963679247182980}
   m_Layer: 5
   m_Name: Use Button
   m_TagString: Untagged
@@ -676,9 +713,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 275, y: 85}
+  m_AnchoredPosition: {x: 377.5, y: 135}
   m_SizeDelta: {x: 205, y: 100}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3414237830784809593
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -761,6 +798,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2684963679247182980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6118775049320083557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.15
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1
 --- !u!1 &7086777688030738913
 GameObject:
   m_ObjectHideFlags: 0
@@ -963,6 +1017,7 @@ GameObject:
   - component: {fileID: 1340064093146454}
   - component: {fileID: 2367376858586379755}
   - component: {fileID: 2151398239739421251}
+  - component: {fileID: 2971579988641184735}
   m_Layer: 5
   m_Name: Sort By Icon Button
   m_TagString: Untagged
@@ -1071,3 +1126,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2971579988641184735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8410614917866595514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.15
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1

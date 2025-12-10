@@ -108,7 +108,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
             _handChanged += _view.OnHandChanged;
             
-            _view.HandArea.PointerEntered += OnEnterArea;
+            _view.HandArea.PointerEntered += OnEnterAreaWhileHolding;
             _view.HandArea.PointerExited += OnExitAreaWhileDragging;
             
             // 2. Deck Remain View 생성 및 DeckVisual에 바인딩
@@ -271,12 +271,20 @@ namespace Cardevil.Cards.InStage.Presenter
         private void OnDragEnded()
         {
             if (_holding.isHolding)
+            {
+                if (_selectionView.IsInDropArea)
+                    return;
                 ReleaseHoldingCard(_holding.originalIndex);
+            }
             
+            EndDrag();
+        }
+        
+        private void EndDrag()
+        {
             _state.draggedCard = null;
-            
-            foreach (var card in _model.Hand) 
-                card.SetAnyCardDragged(false);
+            foreach (var handCard in _model.Hand) 
+                handCard.SetAnyCardDragged(false);
             
             UpdateUI();
         }
@@ -353,6 +361,14 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
 
+        private void Swap(int index)
+        {
+            _model.TryGetIndex(_state.draggedCard, out int i);
+            
+            _model.Swap(_state.draggedCard, index);
+            _handChanged?.Invoke();
+        }
+        
         private int GetIndexByPosition(Card dragged)
         {
             var draggedX = dragged.transform.position.x;
@@ -369,49 +385,42 @@ namespace Cardevil.Cards.InStage.Presenter
 
             return _model.Hand.Count;
         }
-
-        private void Swap(int index)
-        {
-            Card swapped = _model.GetHandCard(index);
-            _model.TryGetIndex(_state.draggedCard, out int i);
-            
-            _model.Swap(_state.draggedCard, index);
-            _handChanged?.Invoke();
-        }
         
         private void OnExitAreaWhileDragging()
         {
+            if (_selectionView.IsDropped)
+                return;
+            
             var card = _state.draggedCard;
             if (!card)
                 return;
             LogEx.Log("OnExitArea");
 
             _holding.isHolding = true;
-            _model.HoldForDrag(card);
+            _model.Hold(card);
             _view.HoldCardOutsideBar(card);
             
             _handChanged?.Invoke();
         }
 
-        private void OnEnterArea()
+        private void OnEnterAreaWhileHolding()
         {
+            if (_selectionView.IsDropped)
+                return;
+            
             var card = _state.draggedCard;
             if (!card || !_holding.isHolding)
                 return;
             LogEx.Log("OnEnterArea");
-
-            _holding.isHolding = false;
-            var index = GetIndexByPosition(card);
-            _model.EndHoldForDrag(index);
             
-            _handChanged?.Invoke();
+            var index = GetIndexByPosition(card);
+            ReleaseHoldingCard(index);
         }
 
         private void ReleaseHoldingCard(int index)
         {
-            _model.EndHoldForDrag(index);
-            _holding = (false, -1);
-            
+            _model.EndHold(index);
+            _holding.isHolding = false;
             _handChanged?.Invoke();
         }
 
@@ -523,14 +532,12 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _model.SortByNumber();
             _handChanged?.Invoke();
-            UpdateUI();
         }
 
         private void SortByIcon()
         {
             _model.SortByIcon();
             _handChanged?.Invoke();
-            UpdateUI();
         }
         
         // UI
@@ -587,6 +594,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void OnValueSelected(Card card, (int num, Direction dir) values)
         {
+            // 모델 데이터 변경
             var d = card.Data;
 
             bool error = d.Kind switch
@@ -599,7 +607,10 @@ namespace Cardevil.Cards.InStage.Presenter
                 LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
             
             card.UpdateVisual();
-            UpdateUI();
+            
+            // 홀딩 카드 릴리즈
+            ReleaseHoldingCard(_holding.originalIndex);
+            EndDrag();
         }
     }
 }
