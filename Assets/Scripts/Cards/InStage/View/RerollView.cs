@@ -40,6 +40,8 @@ namespace Cardevil.Cards.InStage.View
         private UniTask _ticketAnim = UniTask.CompletedTask;
         private Tween _ticketTween;
 
+        private const string SlotPath = "UI/CardUI/Slot";
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -169,7 +171,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
+                var slot = Managers.Resource.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 

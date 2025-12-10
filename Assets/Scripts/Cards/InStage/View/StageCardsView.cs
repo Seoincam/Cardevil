@@ -35,6 +35,7 @@ namespace Cardevil.Cards.InStage.View
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
 
         private float _widthFactor = 130;
+        private const string SlotPath = "UI/CardUI/Slot";
         
 #if UNITY_EDITOR
         private void OnValidate()
@@ -157,7 +158,8 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
+                // Managers.Resource.Instantiate(SlotPath, visualRoot);
+                var slot = Managers.Resource.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -166,6 +168,7 @@ namespace Cardevil.Cards.InStage.View
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
                 Managers.Resource.Destroy(last.gameObject);
+                // TODO: 풀링한다면 VisualRoot Slot도 저장해놔야함.
             }
         }
 

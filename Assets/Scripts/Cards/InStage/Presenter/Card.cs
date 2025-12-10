@@ -43,6 +43,7 @@ namespace Cardevil.Cards.InStage.Presenter
         public CardData Data => data;
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
+        public int HandIndex => state.handIndex;
         
         private bool CanInteraction
         {
@@ -209,14 +210,14 @@ namespace Cardevil.Cards.InStage.Presenter
             PointerExited?.Invoke();
         }
 
+
         /// <summary>
-        /// <see cref="StageCardsPresenter"/>의
-        /// <c>_handChanged</c>를 구독.
         /// <see cref="CardVisual"/>의 시각적 index를 업데이트.
         /// </summary>
-        public void OnHandChanged()
+        public void UpdateVisualIndex(int index)
         {
-            visual?.UpdateVisualIndex();
+            state.handIndex = index;
+            visual?.UpdateVisualIndex(index);
         }
         
         #endregion
@@ -336,6 +337,7 @@ namespace Cardevil.Cards.InStage.Presenter
         [Serializable]
         private struct CardState
         {
+            public int handIndex;
             public bool isSelected, isDragging, isDiscarded, isReroll;
             public bool isAnyCardDragged; // HandBar에서 드래그되고 있는 카드가 있나?
             public float pointerDownTime, pointerUpTime;

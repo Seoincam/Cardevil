@@ -153,7 +153,7 @@ namespace Cardevil.Cards.InStage.View
             var c = visualSetting.Curve;
 
             int total = Mathf.Max(1, _model.Hand.Count - 1); // 0 나눗셈 방지
-            float factor = (float)_state.handIndex / total;
+            float factor = (float)parentCard.HandIndex / total;
             
             _delta.curveYOffset = c.positioning.Evaluate(factor) * c.positioningInfluence * total;
             _delta.curveRotationOffset = c.rotation.Evaluate(factor);
@@ -283,16 +283,7 @@ namespace Cardevil.Cards.InStage.View
         
         #region Visual Index
 
-        public void UpdateVisualIndex()
-        {
-            if (_model.TryGetIndex(parentCard, out int index))
-            {
-                _state.handIndex = index;
-                // TODO: 현재 SetSiblingIndex을 업데이트 할 때 마지막 visual이 제대로 업데이트 되지 않는 문제가 발생.
-                // 마지막 visual일 시 더 큰 값으로 업데이트하는 등의 수정이 필요할 듯
-                transform.SetSiblingIndex(index);
-            }
-        }
+        public void UpdateVisualIndex(int index) => transform.SetSiblingIndex(index);
 
         #endregion
         
@@ -323,7 +314,6 @@ namespace Cardevil.Cards.InStage.View
         [Serializable]
         private struct VisualState
         {
-            public int handIndex;
             public bool isInitialized;
             public bool isDiscarded;
         }

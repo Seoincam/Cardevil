@@ -54,7 +54,7 @@ namespace Cardevil.Cards.InStage.View
         public event Action<Card, (int, Direction)> ValueSelected;
         
         private const float CardScale = .6f;
-        private const string SlotPath = "Cards/Slot";
+        private const string SlotPath = "UI/CardUI/Slot";
         
         private readonly List<RectTransform> _slots = new();
         private readonly List<CardVisualValueSelectionView> _visuals = new();

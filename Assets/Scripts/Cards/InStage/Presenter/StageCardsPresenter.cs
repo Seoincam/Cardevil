@@ -96,6 +96,9 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             Transform canvas = GameObject.Find("CardCanvas").transform;
             
+            // 0. 이벤트 구독
+            _handChanged += AlignVisualIndex;
+            
             // 1. View 생성
             var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
             if (views is { Length: > 0 }) _view = views[0];
@@ -140,7 +143,6 @@ namespace Cardevil.Cards.InStage.Presenter
             foreach (var card in _model.Hand)
             {
                 WireCard(card);
-                _handChanged += card.OnHandChanged;
                 card.SetRerollState(false);
                 _handChanged?.Invoke();
             }
@@ -197,8 +199,6 @@ namespace Cardevil.Cards.InStage.Presenter
         private void WireCard(Card card)
         {
             // StageCardsPresenter
-            _handChanged += card.OnHandChanged;
-            
             card.DragStart += OnDragStarted;
             card.DragEnd += OnDragEnded;
             
@@ -213,8 +213,6 @@ namespace Cardevil.Cards.InStage.Presenter
         private void UnwireCard(Card card)
         {
             // StageCardsPresenter
-            _handChanged -= card.OnHandChanged;
-            
             card.DragStart -= OnDragStarted;
             card.DragEnd -= OnDragEnded;
             
@@ -534,6 +532,16 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             _model.SortByIcon();
             _handChanged?.Invoke();
+        }
+        
+        private void AlignVisualIndex()
+        {
+            var hand = _model.Hand;
+            for (int i = 0; i < hand.Count; i++)
+            {
+                var card = hand[i];
+                card.UpdateVisualIndex(i);
+            }
         }
         
         // UI
