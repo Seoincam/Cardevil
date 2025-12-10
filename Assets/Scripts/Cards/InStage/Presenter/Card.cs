@@ -38,6 +38,7 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private IReadOnlyStageCardsModel _model;
 
+        public CanvasGroup VisualCanvasGroup => visual.CanvasGroup;
         public IEvaluateVisual EvaluateVisual => visual;
         public CardData Data => data;
         public bool IsDragging => state.isDragging;

@@ -33,6 +33,8 @@ namespace Cardevil.Cards.InStage.View
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
         [SerializeField] private CardEvaluationAnimSO animSo;
+        
+        public CanvasGroup CanvasGroup { get; private set; }
 
         private Poolable _poolable;
         private CardDeckVisual _deckVisual;
@@ -49,6 +51,7 @@ namespace Cardevil.Cards.InStage.View
 
             _poolable = GetComponent<Poolable>();
             _poolable.OnRelease += Clear;
+            CanvasGroup = GetComponent<CanvasGroup>();
         }
         
         public void Init(Card parentCard, IReadOnlyStageCardsModel model)

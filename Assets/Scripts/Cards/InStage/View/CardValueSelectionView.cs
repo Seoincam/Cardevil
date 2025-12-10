@@ -63,7 +63,7 @@ namespace Cardevil.Cards.InStage.View
         private Card _draggedCard;
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
-        
+        private Tween _draggedCardFadeTween;
         
 
         /// <summary>
@@ -147,6 +147,7 @@ namespace Cardevil.Cards.InStage.View
         private void OnValueSelected((int, Direction) values)
         {
             ValueSelected?.Invoke(_draggedCard, values);
+            FadeDraggedCard(true);
             
             _draggedCard = null;
             IsDropped = false;
@@ -293,6 +294,8 @@ namespace Cardevil.Cards.InStage.View
             if (!_draggedCard)
                 return;
             
+            FadeDraggedCard(false);
+            
             IsInDropArea = true;
             Open(_draggedCard);
             SetRaycastTarget(false);
@@ -305,10 +308,20 @@ namespace Cardevil.Cards.InStage.View
             if (IsDropped)
                 return;
             
+            FadeDraggedCard(true);
+            
             IsInDropArea = false;
             Close();
         }
-        
+
+        private void FadeDraggedCard(bool fadeIn)
+        {
+            var targetAlpha = fadeIn ? 1f : 0f;
+            
+            _draggedCardFadeTween?.Kill();
+            _draggedCardFadeTween = _draggedCard.VisualCanvasGroup.DOFade(targetAlpha, setting.draggedCardFadeDuration)
+                .SetEase(setting.draggedCardFadeEase);
+        }
         
         private void SetRaycastTarget(bool value)
         {
