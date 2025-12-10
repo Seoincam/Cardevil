@@ -98,7 +98,12 @@ namespace Cardevil.Cards.ScriptableObjects
 
         [Header("- Curve")]
         [SerializeField] private CurveParameters _curve;
-        [Space(25)]
+
+        [Header("- Hover")] 
+        public float hoverScale;
+        public float hoverScaleTweenDuration = .15f;
+        public Ease hoverEase = Ease.OutBack;
+        [Space(25)] 
 
 
 

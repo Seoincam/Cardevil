@@ -28,13 +28,13 @@ namespace Cardevil.Cards.InStage.Presenter
         [SerializeField, VisibleOnly] private CardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
         [SerializeField, VisibleOnly] private CardState state;
+        
+        public event Action PointerEntered, PointerExited, DragEnd;
+        public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
+        public event Action<Card> DragStart, SelectionButtonTapped;
 
         private Poolable _poolable;
         private Image _image;
-        
-        private event Action DragEnd;
-        private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
-        private event Action<Card> DragStart, SelectionButtonTapped;
         
         private IReadOnlyStageCardsModel _model;
 
@@ -212,6 +212,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             state.isAnyCardDragged = value;
             _image.raycastTarget = !value;
+            PointerExited?.Invoke();
         }
 
         /// <summary>
@@ -231,22 +232,6 @@ namespace Cardevil.Cards.InStage.Presenter
             visual.ExecuteEvaluationAction();
         }
         
-        // Wire By StageCardsPresenter
-        public void AddDragStart(Action<Card> h) => DragStart += h;
-        public void RemoveDragStart(Action<Card> h) => DragStart -= h;
-        
-        public void AddDragEnd(Action h) => DragEnd += h;
-        public void RemoveDragEnd(Action h) => DragEnd -= h;
-
-        public void AddPointerDown(Action<Card, CardPointerArgs> h) => PointerDown += h;
-        public void RemovePointerDown(Action<Card, CardPointerArgs> h) => PointerDown -= h;
-
-        public void AddPointerUp(Action<Card, CardPointerArgs> h) => PointerUp += h;
-        public void RemovePointerUp(Action<Card, CardPointerArgs> h) => PointerUp -= h;
-        
-        public void AddSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped += h;
-        public void RemoveSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped -= h;
-        
         // Wire CardVisual
         private void WireVisual(CardVisual cardVisual)
         {
@@ -257,6 +242,9 @@ namespace Cardevil.Cards.InStage.Presenter
 
             PointerDown += cardVisual.OnPointerDown;
             PointerUp += cardVisual.OnPointerUp;
+            
+            PointerEntered += cardVisual.OnPointerEnter;
+            PointerExited += cardVisual.OnPointerExit;
         }
         private void UnwireVisual(CardVisual cardVisual)
         {
@@ -267,6 +255,9 @@ namespace Cardevil.Cards.InStage.Presenter
             
             PointerDown -= cardVisual.OnPointerDown;
             PointerUp -= cardVisual.OnPointerUp;
+            
+            PointerEntered -= cardVisual.OnPointerEnter;
+            PointerExited -= cardVisual.OnPointerExit;
         }
         
 
@@ -276,12 +267,16 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             if (!CanInteraction)
                 return;
+            
+            PointerEntered?.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (!CanInteraction)
                 return;
+            
+            PointerExited?.Invoke();
         }
 
         public void OnPointerDown(PointerEventData eventData)

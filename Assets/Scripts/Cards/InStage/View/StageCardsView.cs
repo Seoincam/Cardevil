@@ -201,3 +201,9 @@ namespace Cardevil.Cards.InStage.View
         }
     }
 }
+
+/*
+ * DOPunchRotation(Vector3.forward * hoverPunchAngle, hoverTransition, 20, 1)
+ *     [SerializeField] private float hoverPunchAngle = 5;
+    [SerializeField] private float hoverTransition = .15f;
+ */

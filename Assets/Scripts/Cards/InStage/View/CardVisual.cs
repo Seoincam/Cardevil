@@ -41,6 +41,8 @@ namespace Cardevil.Cards.InStage.View
         private VisualTransformDelta _delta;
         private VisualState _state;
 
+        private Tween _hoverScaleTween;
+
         private void Awake()
         {
             // _delta.shadowOriginPosition = shadowTransform.localPosition;
@@ -213,6 +215,20 @@ namespace Cardevil.Cards.InStage.View
                 .SetEase(visualSetting.SelectScaleEase);
 
             // shadowTransform.localPosition = _delta.shadowOriginPosition;
+        }
+        
+        public void OnPointerEnter()
+        {
+            _hoverScaleTween?.Kill();
+            _hoverScaleTween = objectsRect.DOScale(visualSetting.hoverScale, visualSetting.hoverScaleTweenDuration)
+                .SetEase(visualSetting.hoverEase);
+        }
+
+        public void OnPointerExit()
+        {
+            _hoverScaleTween?.Kill();
+            _hoverScaleTween = objectsRect.DOScale(1f, visualSetting.hoverScaleTweenDuration)
+                .SetEase(visualSetting.hoverEase);
         }
         
         #endregion
