@@ -23,6 +23,8 @@ namespace Cardevil.Cards.InStage.Model
         private List<CardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
+
+        private (bool selected, Card card) _dragged;
         
         #region IReadOnlyStageCardsModel
         
@@ -124,6 +126,29 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         public Card GetHandCard(int index) => _hand[index];
+
+        
+        public void HoldForDrag(Card card)
+        {
+            bool selected = _selection.Contains(card);
+            _selection.Remove(card);
+            _hand.Remove(card);
+            
+            _dragged = (selected, card);
+        }
+
+        public void EndHoldForDrag(int index)
+        {
+            if (!_dragged.card)
+                return;
+
+            _hand.Insert(index, _dragged.card);
+            if (_dragged.selected)
+                Select(_dragged.card);
+            
+            _dragged.card = null;
+        }
+        
         
         /// <summary>
         /// 카드를 선택 집합에 추가.

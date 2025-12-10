@@ -43,7 +43,7 @@ MonoBehaviour:
   _drawEase: 17
   _discardDuration: 0.25
   _discardEase: 22
-  _followSpeed: 9
+  _followSpeed: 12.5
   _rotationAmount: 0.2
   _rotationSpeed: 5
   _tiltSpeed: 20

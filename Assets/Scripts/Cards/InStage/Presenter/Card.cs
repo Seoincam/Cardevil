@@ -11,9 +11,8 @@ using Cardevil.Utils;
 using DG.Tweening;
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
@@ -29,12 +28,14 @@ namespace Cardevil.Cards.InStage.Presenter
         [SerializeField, VisibleOnly] private CardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
         [SerializeField, VisibleOnly] private CardState state;
-        
-        private event Action DragStart, DragEnd;
-        private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
-        private event Action<Card> SelectionButtonTapped;
-        
+
         private Poolable _poolable;
+        private Image _image;
+        
+        private event Action DragEnd;
+        private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
+        private event Action<Card> DragStart, SelectionButtonTapped;
+        
         private IReadOnlyStageCardsModel _model;
 
         public IEvaluateVisual EvaluateVisual => visual;
@@ -64,6 +65,8 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             data = cardData;
             _model = model;
+            
+            _image = GetComponent<Image>();
             
             // Card Visual
             var visualHandler = GameObject.Find("Card Visual Transform");
@@ -208,6 +211,7 @@ namespace Cardevil.Cards.InStage.Presenter
         public void SetAnyCardDragged(bool value)
         {
             state.isAnyCardDragged = value;
+            _image.raycastTarget = !value;
         }
 
         /// <summary>
@@ -228,8 +232,8 @@ namespace Cardevil.Cards.InStage.Presenter
         }
         
         // Wire By StageCardsPresenter
-        public void AddDragStart(Action h) => DragStart += h;
-        public void RemoveDragStart(Action h) => DragStart -= h;
+        public void AddDragStart(Action<Card> h) => DragStart += h;
+        public void RemoveDragStart(Action<Card> h) => DragStart -= h;
         
         public void AddDragEnd(Action h) => DragEnd += h;
         public void RemoveDragEnd(Action h) => DragEnd -= h;
@@ -299,7 +303,8 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!CanInteraction)
                 return;
 
-            DragStart?.Invoke();
+            DragStart?.Invoke(this);
+            _image.raycastTarget = false;
             state.isDragging = true;
         }
 
@@ -316,6 +321,8 @@ namespace Cardevil.Cards.InStage.Presenter
                 return;
 
             DragEnd?.Invoke();
+            _image.raycastTarget = true;
+            
             transform.DOLocalMove(
                     endValue: state.isSelected
                         ? new Vector3(0, visualSetting.SelectOffset, 0)

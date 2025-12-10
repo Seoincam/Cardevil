@@ -189,7 +189,7 @@ namespace Cardevil.Cards.InStage.View
         
         #region Pointer Event Handler
         
-        public void OnDragStart()
+        public void OnDragStart(Card _)
         {
             // _canvas.overrideSorting = true;
         }
