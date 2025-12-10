@@ -31,7 +31,7 @@ namespace Cardevil.Cards.InStage.Presenter
         
         public event Action PointerEntered, PointerExited, DragEnd;
         public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
-        public event Action<Card> DragStart, SelectionButtonTapped;
+        public event Action<Card> DragStart;
 
         private Poolable _poolable;
         private Image _image;
@@ -75,8 +75,6 @@ namespace Cardevil.Cards.InStage.Presenter
             var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
             visual.Init(this, model);
-            if (data.CanOpenSelection)
-                visual.BindSelectionButton(OnValueSelectionTapped);
             
             WireVisual(visual);
         }
@@ -111,11 +109,6 @@ namespace Cardevil.Cards.InStage.Presenter
 
                 transform.Translate(velocity * Time.deltaTime);
             }
-        }
-
-        private void OnValueSelectionTapped()
-        {
-            SelectionButtonTapped?.Invoke(this);
         }
         
         #region Reroll

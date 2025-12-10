@@ -28,7 +28,7 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private CardVisualBase visualBase;
         [Space]
         [SerializeField] private RectTransform objectsRect;
-        [SerializeField] private Button selectionButton;
+        [SerializeField] private GameObject changeImage;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
@@ -61,6 +61,7 @@ namespace Cardevil.Cards.InStage.View
             // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             
             visualController.Init(parentCard.Data);
+            changeImage.SetActive(parentCard.Data.CanOpenSelection);
             visualBase.TryFlipBackImmediate();
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
@@ -72,24 +73,14 @@ namespace Cardevil.Cards.InStage.View
             _state.isInitialized = true;
         }
 
-        public void BindSelectionButton(UnityAction onTapped)
-        {
-            selectionButton.gameObject.SetActive(true);
-            selectionButton.onClick.AddListener(onTapped);
-        }
+
         
         public void Clear()
         {
             parentCard = null;
 
-            // frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            // backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            // shakeObject.localEulerAngles = Vector3.zero;
-
             // _canvas.overrideSorting = false;
-            
-            selectionButton.gameObject.SetActive(false);
-            selectionButton.onClick.RemoveAllListeners();
+
             _state.isDiscarded = false;
             _state.isInitialized = false;
         }

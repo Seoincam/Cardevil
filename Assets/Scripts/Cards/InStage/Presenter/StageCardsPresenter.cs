@@ -204,8 +204,6 @@ namespace Cardevil.Cards.InStage.Presenter
             
             card.PointerDown += OnPointerDown;
             card.PointerUp += OnPointerUp;
-
-            card.SelectionButtonTapped += OnValueSelectionButtonTapped;
             
             // CardValueSelectionView
             card.DragStart += _selectionView.OnDragStarted;
@@ -222,8 +220,6 @@ namespace Cardevil.Cards.InStage.Presenter
             
             card.PointerDown -= OnPointerDown;
             card.PointerUp -= OnPointerUp;
-
-            card.SelectionButtonTapped -= OnValueSelectionButtonTapped;
             
             // CardValueSelectionView
             card.DragStart -= _selectionView.OnDragStarted;
@@ -589,9 +585,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 // UpdateUI();
             }
         }
-
-        private void OnValueSelectionButtonTapped(Card card) => _selectionView.Toggle(card);
-
+        
         private void OnValueSelected(Card card, (int num, Direction dir) values)
         {
             // 모델 데이터 변경

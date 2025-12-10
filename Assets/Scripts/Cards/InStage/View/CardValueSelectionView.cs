@@ -60,7 +60,7 @@ namespace Cardevil.Cards.InStage.View
         private readonly List<CardVisualValueSelectionView> _visuals = new();
         private CancellationTokenSource _animCts;
         
-        private Card _cardCache;
+        private Card _draggedCard;
         private (CardColor, int) _attackValue;
         private Direction _moveValue;
         
@@ -78,26 +78,12 @@ namespace Cardevil.Cards.InStage.View
             valueChangeArea.PointerEntered  += OnPointerEnterInArea;
             valueChangeArea.PointerExited += OnPointerExitInArea;
         }
-
-        /// <summary>
-        /// 선택 UI 토글.
-        /// 동일 카드 입력 시 닫기 처리, 다른 카드 입력 시 선택 UI 열기.
-        /// </summary>
-        /// <param name="card">선택 UI 표시 대상 카드</param>
-        public void Toggle(Card card)
-        {
-            if (card == _cardCache)
-                Close();
-            else 
-                Open(card);
-        }
         
         private void Open(Card card)
         {
             Close();
             Clear();
 
-            _cardCache = card;
             var cardData = card.Data;
             
             // 구성
@@ -152,7 +138,6 @@ namespace Cardevil.Cards.InStage.View
             }
             
             _visuals.Clear();
-            _cardCache = null;
         }
 
         /// <summary>
@@ -161,7 +146,7 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         private void OnValueSelected((int, Direction) values)
         {
-            ValueSelected?.Invoke(_cardCache, values);
+            ValueSelected?.Invoke(_draggedCard, values);
             
             _draggedCard = null;
             IsDropped = false;
@@ -273,9 +258,7 @@ namespace Cardevil.Cards.InStage.View
                 _visuals.Add(visual);
             }
         }
-
-
-        private Card _draggedCard;
+        
         
         public void OnDragStarted(Card card)
         {
