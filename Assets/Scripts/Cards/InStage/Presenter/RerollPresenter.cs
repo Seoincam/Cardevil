@@ -9,6 +9,7 @@ using UnityEngine;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Core.Bootstrap;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
@@ -105,7 +106,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.ConfigureSlots(maxHand);
             _view.BindButtonEvents(DoReroll, EndReroll);
             
-            Managers.Game.PlayerStatus.RerollTicket = 5; // 임시
+            Bootstrapper.Instance.Game.PlayerStatus.RerollTicket = 5; // 임시
             await _view.EnterRerollAsync();
         }
         
@@ -143,9 +144,9 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private void DoReroll()
         {
-            var old = Managers.Game.PlayerStatus.RerollTicket;
-            Managers.Game.PlayerStatus.RerollTicket--;
-            _ = _view.AnimateTicketChangeAsync(old, Managers.Game.PlayerStatus.RerollTicket);
+            var old = Bootstrapper.Instance.Game.PlayerStatus.RerollTicket;
+            Bootstrapper.Instance.Game.PlayerStatus.RerollTicket--;
+            _ = _view.AnimateTicketChangeAsync(old, Bootstrapper.Instance.Game.PlayerStatus.RerollTicket);
             _ = RerollAsync();
         }
 
@@ -186,7 +187,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 }
 
                 // 리롤권 소진시 자동 종료
-                if (Managers.Game.PlayerStatus.RerollTicket <= 0)
+                if (Bootstrapper.Instance.Game.PlayerStatus.RerollTicket <= 0)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(autoEnd));
                     EndReroll();

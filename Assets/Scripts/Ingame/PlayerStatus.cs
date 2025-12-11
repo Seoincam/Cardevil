@@ -1,4 +1,5 @@
 using Cardevil.Core;
+using Cardevil.Core.Bootstrap;
 using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
@@ -218,8 +219,8 @@ namespace Cardevil.Ingame
                 DebugConsole.Console.MessageWarning("Heal amount cannot be negative.");
                 return;
             }
-            Managers.Game.PlayerStatus.Heal(amount);
-            DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+            Bootstrapper.Instance.Game.PlayerStatus.Heal(amount);
+            DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {Bootstrapper.Instance.Game.PlayerStatus.CurrentHp}/{Bootstrapper.Instance.Game.PlayerStatus.MaxHp}");
         }
 
         [ConsoleCommand("deal", "Deal damage to the player by a specified amount.", "deal [int: amount]", new []{"0","1","2","3"})]
@@ -243,8 +244,8 @@ namespace Cardevil.Ingame
                 DebugConsole.Console.MessageWarning("Damage amount cannot be negative.");
                 return;
             }
-            int actualDamage = Managers.Game.PlayerStatus.TakeDamage(amount);
-            DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+            int actualDamage = Bootstrapper.Instance.Game.PlayerStatus.TakeDamage(amount);
+            DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {Bootstrapper.Instance.Game.PlayerStatus.CurrentHp}/{Bootstrapper.Instance.Game.PlayerStatus.MaxHp}");
         }
 
         [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다.","sethp <int: amount> [bool: broadcast (optional, default: true)]", new []{"0","1","2","3"})]
@@ -259,15 +260,15 @@ namespace Cardevil.Ingame
             if(args.Length == 1)
             {
                 int hp = CommandHelper.ParseArgument<int>(args[0]);
-                Managers.Game.PlayerStatus.ForceSetCurrentHp(hp, true);
-                DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+                Bootstrapper.Instance.Game.PlayerStatus.ForceSetCurrentHp(hp, true);
+                DebugConsole.Console.MessageInfo($"Set player HP to {Bootstrapper.Instance.Game.PlayerStatus.CurrentHp}/{Bootstrapper.Instance.Game.PlayerStatus.MaxHp}");
             }
             else
             {
                 int hp = CommandHelper.ParseArgument<int>(args[0]);
                 bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
-                Managers.Game.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
-                DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+                Bootstrapper.Instance.Game.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
+                DebugConsole.Console.MessageInfo($"Set player HP to {Bootstrapper.Instance.Game.PlayerStatus.CurrentHp}/{Bootstrapper.Instance.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
             }
         }
 

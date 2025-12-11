@@ -3,7 +3,6 @@
     public enum Scenes
     {
         Bootstrap,
-        Managers,
         Title,
         GamePlay
     }

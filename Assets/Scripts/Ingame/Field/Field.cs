@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cardevil.Attributes;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using UnityEngine;
@@ -85,7 +86,7 @@ namespace Cardevil.Ingame.Field
 
         private void Awake()
         {
-            Managers.Game.Field = this; // 시작될때 매니저에 등록
+            Bootstrapper.Instance.Game.Field = this; // 시작될때 매니저에 등록
             if (fieldConfiguration == null)
             {
                 LogEx.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");

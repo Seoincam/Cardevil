@@ -1,4 +1,5 @@
-﻿using Cardevil.DataStructure.Serializables;
+﻿using Cardevil.Core.Bootstrap;
+using Cardevil.DataStructure.Serializables;
 using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;
@@ -74,7 +75,7 @@ namespace Cardevil.Test
             {
                 if (GUILayout.Button("Enter Stage"))
                 {
-                    Managers.Game.EnterStage("Test");
+                    Bootstrapper.Instance.Game.EnterStage("Test");
                 }
             }
         }
@@ -89,9 +90,9 @@ namespace Cardevil.Test
         public void SetPlayerHp()
         {
             // 플레이어의 HP를 설정하는 테스트
-            if (Managers.Game.PlayerStatus != null)
+            if (Bootstrapper.Instance.Game.PlayerStatus != null)
             {
-                Managers.Game.PlayerStatus.CurrentHp = setHp;
+                Bootstrapper.Instance.Game.PlayerStatus.CurrentHp = setHp;
                 Debug.Log($"플레이어의 HP를 {setHp}로 설정했습니다.");
             }
             else
@@ -103,17 +104,17 @@ namespace Cardevil.Test
         
         public void PlayerGUI()
         {
-            if (Managers.Game.PlayerStatus != null)
+            if (Bootstrapper.Instance.Game.PlayerStatus != null)
             {
-                GUILayout.Label($"Player HP: {Managers.Game.PlayerStatus.CurrentHp}");
+                GUILayout.Label($"Player HP: {Bootstrapper.Instance.Game.PlayerStatus.CurrentHp}");
                 if (GUILayout.Button("Increase Player HP"))
                 {
-                    Managers.Game.PlayerStatus.CurrentHp++;
+                    Bootstrapper.Instance.Game.PlayerStatus.CurrentHp++;
                     Debug.Log("플레이어의 HP를 증가시켰습니다.");
                 }
                 if (GUILayout.Button("Decrease Player HP"))
                 {
-                    Managers.Game.PlayerStatus.CurrentHp--;
+                    Bootstrapper.Instance.Game.PlayerStatus.CurrentHp--;
                     Debug.Log("플레이어의 HP를 감소시켰습니다.");
                 }
             }
@@ -195,7 +196,7 @@ namespace Cardevil.Test
             // SoundManager를 통해 사운드를 재생하는 테스트
             if (testAudioResource != null)
             {
-                Managers.Sound.Play(testAudioResource);
+                // Managers.Sound.Play(testAudioResource);
                 Debug.Log("테스트 사운드를 재생했습니다.");
             }
         }
@@ -205,7 +206,7 @@ namespace Cardevil.Test
             // SoundManager를 통해 사운드를 재생하는 테스트
             if (!string.IsNullOrEmpty(testAudioResourcePath))
             {
-                Managers.Sound.Play(testAudioResourcePath);
+                // Managers.Sound.Play(testAudioResourcePath);
                 Debug.Log("테스트 사운드를 재생했습니다.");
             }
             else
@@ -220,7 +221,7 @@ namespace Cardevil.Test
             AudioClip clip = Managers.Resource.Load<AudioClip>(testAudioResourcePath);
             if (clip != null)
             {
-                Managers.Sound.Play(clip);
+                // Managers.Sound.Play(clip);
                 Debug.Log("테스트 사운드를 재생했습니다.");
             }
             else

@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using UnityEngine;
 
 namespace Cardevil.Relics
@@ -6,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Managers.Game.PlayerStatus.gold += Random.Range(18,24);
+            Bootstrapper.Instance.Game.PlayerStatus.gold += Random.Range(18,24);
         }
     }
 }

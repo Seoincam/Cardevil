@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,8 +26,8 @@ public class MainGame : BaseScene   // MainGame Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BaseScene Å
         Init();
 
         // Managers.UI.ShowPopUpUI<S1_PopUp>();
-        Managers.Sound.Play("Sounds/BGM/Main_Bgm",Define.Sound.BGM);
-        Managers.Game.GameStart();
+        // Managers.Sound.Play("Sounds/BGM/Main_Bgm",Define.Sound.BGM);
+        Bootstrapper.Instance.Game.GameStart();
     }
     public void Option()
     {

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GamePlay
   m_EditorClassIdentifier: 
   sceneAsset: {fileID: 102900000, guid: 4f41cdc9efb5f4ee6aa613bd6d9a4969, type: 3}
-  sceneEnum: 3
+  sceneEnum: 2
   sceneName: GamePlay

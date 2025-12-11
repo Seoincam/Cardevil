@@ -46,6 +46,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5090514070268501704}
   - component: {fileID: 9149373502049407843}
+  - component: {fileID: 2370924021656243185}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -85,6 +86,25 @@ MonoBehaviour:
   name: 
   maxHealth: 0
   _currentHealth: 0
+--- !u!114 &2370924021656243185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754273413225031785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87c30e820d0e37b4e83d784b7fa39b68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hpBar: {fileID: 0}
+  HP: 100
+  attackCreateTurnOrder: 0
+  attackCreateCycle: 3
+  isAttackSuccess: 0
+  isPlayerAttack: 1
+  delayAttackByRelic: 0
 --- !u!1 &2606874335021637752
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,82 +1,48 @@
-using Cardevil.Attributes;
-using Cardevil.Manager;
-using Cardevil.SceneManagement;
-using Cardevil.Utils;
+using Cardevil.Save;
+using Cardevil.Sound;
+using Cysharp.Threading.Tasks;
+using Database;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace Cardevil.Core.Bootstrap
 {
     public class Bootstrapper : MonoBehaviour
     {
-        /*
-         * [ 초기화 해야할 것 ]
-         * - DB
-         * - Save Load
-         */
+        public static Bootstrapper Instance { get; private set; }
+        
+        [field: SerializeField] public DatabaseManager Database { get; private set; }
+        [field: SerializeField] public GameManager Game { get; private set; }
+        [field: SerializeField] public SaveLoadManager SaveLoad { get; private set; }
+        [field: SerializeField] public SoundManager Sound { get; private set; }
 
         [Header("References")] 
-        [SerializeField] private EventSystem eventSystem; 
-        [SerializeField] private Slider progressBar;
-        
-        [Header("Loading")]
-        [SerializeField, VisibleOnly] private int totalLoading;
-        [SerializeField, VisibleOnly] private int loaded;
-        
-        [Header("Progress")]
+        [SerializeField] private EventSystem eventSystem;
 
-        [SerializeField, VisibleOnly] private float progress;
-        
-        private float Progress
+        private CancellationTokenSource _cts;
+
+        private void Awake()
         {
-            get => progress;
-            set
+            if (Instance)
             {
-                progress = Mathf.Clamp(value, 0, 1);
-                progressBar.value = progress;
+                Destroy(gameObject);
+                return;
             }
-        }
 
-        private int Loaded
-        {
-            get => loaded;
-            set
-            {
-                loaded = value;
-                Progress = (float)loaded / totalLoading;
-            }
-        }
-
-        private async void Awake()
-        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
             DontDestroyOnLoad(eventSystem);
             
-            progressBar.value = 0f;
-            
-            // TODO: 씬 이름 등 따로 관리하기
-            await SceneLoader.LoadSceneAsync(Scenes.Managers, LoadSceneMode.Additive);
-            
-            var managersScene = SceneManager.GetSceneByName("Managers");
-            var managers = managersScene.GetRootGameObjects();
-            totalLoading = managers.Length;
+            _cts = new CancellationTokenSource();
+            BootstrapFlow.RunAsync(this, 4, _cts.Token).Forget();
+        }
 
-            foreach (var root in managers)
-            {
-                if (root.TryGetComponent<IManager>(out var manager))
-                {
-                    await manager.InitializeAsync();
-                }
-                    
-                Loaded++;
-            }
-            LogEx.Log("All Managers loaded.");
-            
-            // TODO: UI/Stage 씬 로드
-            await SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Additive);
-            SceneLoader.SetActiveScene(Scenes.Title);
-            await SceneLoader.UnloadSceneAsync(Scenes.Bootstrap);
+        private void OnDestroy()
+        {
+            _cts?.Cancel();
+            _cts?.Dispose();
+            _cts = null;
         }
     }
 }

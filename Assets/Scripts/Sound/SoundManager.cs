@@ -76,8 +76,8 @@ namespace Cardevil.Sound
 
             if (_defaultSoundEffectAudioConfiguration == null)
             {
-                _defaultSoundEffectAudioConfiguration =
-                    Managers.Resource.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
+                // _defaultSoundEffectAudioConfiguration =
+                //     Managers.Resource.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
             }
 
             // 믹서 그룹 초기화

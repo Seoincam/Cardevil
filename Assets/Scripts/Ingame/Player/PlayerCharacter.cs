@@ -1,4 +1,5 @@
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core.Bootstrap;
 using Cardevil.DebugConsole;
 using Cardevil.Events.AsyncPriorityEvent;
 using Cardevil.Events.Core;
@@ -42,8 +43,8 @@ namespace Cardevil.Ingame.Player
         }
 
         public Entity Entity => _entity;
-        public Field.Field Field => Managers.Game.Field;
-        public PlayerStatus PlayerStatus => Managers.Game.PlayerStatus;
+        public Field.Field Field => Bootstrapper.Instance.Game.Field;
+        public PlayerStatus PlayerStatus => Bootstrapper.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
         {
@@ -63,7 +64,7 @@ namespace Cardevil.Ingame.Player
                     return;
                 }
                 _entity.Init(_initialTile);
-                Managers.Game.Player = this; // 게임 매니저에 플레이어 설정
+                Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
         }
 
@@ -222,7 +223,7 @@ namespace Cardevil.Ingame.Player
         }
 
         #region ITurnPlayerAction 구현
-        public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
+        public bool IsDead => Bootstrapper.Instance.Game.PlayerStatus.CurrentHp <= 0;
         public async UniTask TurnAttack()
         {
             LogEx.Log("Player Attacks!");
@@ -233,7 +234,7 @@ namespace Cardevil.Ingame.Player
             LogEx.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
             void DealDamageToEnemies()
             {
-                Managers.Game.Enemy.GetDamage(result.TotalDamage);
+                Bootstrapper.Instance.Game.Enemy.GetDamage(result.TotalDamage);
             }
             DealDamageToEnemies();
             PlayerVisual.PlayAttackAnimation();

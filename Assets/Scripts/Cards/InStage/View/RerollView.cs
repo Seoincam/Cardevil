@@ -1,6 +1,7 @@
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -106,7 +107,7 @@ namespace Cardevil.Cards.InStage.View
             togglePreviewButton.transform.localScale = Vector3.zero;
             
             await image.DOColor(color, 1f);
-            await AnimateTicketChangeAsync(0, Managers.Game.PlayerStatus.RerollTicket); 
+            await AnimateTicketChangeAsync(0, Bootstrapper.Instance.Game.PlayerStatus.RerollTicket); 
             await doButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await endButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await togglePreviewButton.transform.DOScale(1f, .2f);

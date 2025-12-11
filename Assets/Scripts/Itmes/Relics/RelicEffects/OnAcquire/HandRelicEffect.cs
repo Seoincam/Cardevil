@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using UnityEngine;
 using Cardevil.Relics;
 
@@ -7,7 +8,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Managers.Game.PlayerStatus.MaxHand = 7;
+            Bootstrapper.Instance.Game.PlayerStatus.MaxHand = 7;
         }
     }
 }

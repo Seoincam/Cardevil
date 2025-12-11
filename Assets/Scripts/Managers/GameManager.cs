@@ -72,8 +72,8 @@ public class GameManager : ISaveLoad
         // 세이브에 등록
         // 각 요소를 직접 등록할 수 있지만,
         // 혹시 모르는 Reference 문제를 방지하기 위해 this로 등록 후 Save, Load에서 처리
-        SaveLoadManager saveLoadManager = Managers.SaveLoad;
-        saveLoadManager.Register(this);
+        // SaveLoadManager saveLoadManager = Managers.SaveLoad;
+        // saveLoadManager.Register(this);
 
         _enemySpawner = new EnemySpawner();
         _turn.Init(_enemySpawner);
@@ -117,7 +117,7 @@ public class GameManager : ISaveLoad
         if (PlayerStatus.canRevive)
         {
             //부활하기
-            Managers.Game.PlayerStatus.CurrentHp = 1;
+            PlayerStatus.CurrentHp = 1;
 
         }
     }

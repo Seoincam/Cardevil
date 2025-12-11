@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
 using Cardevil.Core;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Enemy;
 using Cardevil.Utils;
 
@@ -133,7 +134,7 @@ namespace Cardevil.Systems
 
                     if (_player.IsDead)
                     {
-                        Managers.Game.PlayerDied();
+                        Bootstrapper.Instance.Game.PlayerDied();
                         break;
                     }
                 }

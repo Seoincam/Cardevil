@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using Cardevil.Ingame.Field;
 using System;
 using System.Collections.Generic;
@@ -86,7 +87,7 @@ namespace Cardevil.InGame.Enemy
         }
         private void Start()
         {
-            field = Managers.Game.Field;
+            field = Bootstrapper.Instance.Game.Field;
             currentAttackStyle = AttackStyle.UnKnown;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
@@ -116,8 +117,8 @@ namespace Cardevil.InGame.Enemy
 
             if (attack.isPlayerAttack)
             {
-                attack.attackPointNumber_x = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                attack.attackPointNumber_y = Managers.Game.Player.GetPlayerLineNumberVertical();
+                attack.attackPointNumber_x = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                attack.attackPointNumber_y = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
             }
             else
             {
@@ -140,8 +141,8 @@ namespace Cardevil.InGame.Enemy
 
             if (attack.isPlayerAttack)
             {
-                int px = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                int py = Managers.Game.Player.GetPlayerLineNumberVertical();
+                int px = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                int py = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
                 attack.attackPointNumber_x = px;
                 attack.attackPointNumber_y = py;
 
@@ -192,8 +193,8 @@ namespace Cardevil.InGame.Enemy
 
             if (attack.isPlayerAttack)
             {
-                attack.attackPointNumber_x = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                attack.attackPointNumber_y = Managers.Game.Player.GetPlayerLineNumberVertical();
+                attack.attackPointNumber_x = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                attack.attackPointNumber_y = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
 
                 // pick two distinct random tiles excluding player's tile
                 int count = 0;
@@ -261,13 +262,13 @@ namespace Cardevil.InGame.Enemy
                 horizontal = (UnityEngine.Random.value > 0.5f);
                 if (horizontal)
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                    attack.attackLineNumber = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
                     attack.currentAttackStyle = AttackStyle.AttackHorizontal;
                     AttackNoticeSign_Horizontal(attack.attackLineNumber);
                 }
                 else
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                    attack.attackLineNumber = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
                     attack.currentAttackStyle = AttackStyle.AttackVertical;
                     AttackNoticeSign_Vertical(attack.attackLineNumber);
                 }
@@ -309,21 +310,21 @@ namespace Cardevil.InGame.Enemy
             {
                 if (horizontal)
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                    attack.attackLineNumber = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
                     attack.currentAttackStyle = AttackStyle.AttackHorizontal;
                     AttackNoticeSign_Horizontal(attack.attackLineNumber);
                 }
                 else
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                    attack.attackLineNumber = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
                     attack.currentAttackStyle = AttackStyle.AttackVertical;
                     AttackNoticeSign_Vertical(attack.attackLineNumber);
                 }
 
                 // random extra tile excluding player's tile
                 int rx, ry;
-                int px = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                int py = Managers.Game.Player.GetPlayerLineNumberVertical();
+                int px = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                int py = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
                 do
                 {
                     rx = UnityEngine.Random.Range(0, 3);
@@ -370,8 +371,8 @@ namespace Cardevil.InGame.Enemy
             int px, py;
             if (attack.isPlayerAttack)
             {
-                px = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                py = Managers.Game.Player.GetPlayerLineNumberVertical();
+                px = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                py = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
             }
             else
             {
@@ -429,8 +430,8 @@ namespace Cardevil.InGame.Enemy
             int cx, cy;
             if (attack.isPlayerAttack)
             {
-                cx = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                cy = Managers.Game.Player.GetPlayerLineNumberVertical();
+                cx = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                cy = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
             }
             else
             {
@@ -1052,7 +1053,7 @@ namespace Cardevil.InGame.Enemy
             {
 
                 //플레이어의 가로 위치
-                attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                attack.attackLineNumber = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
                 //공격위치표시
                 AttackNoticeSign_Horizontal(attack.attackLineNumber);
 
@@ -1060,7 +1061,7 @@ namespace Cardevil.InGame.Enemy
             else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
             {
                 //플레이어의 세로 위치
-                attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                attack.attackLineNumber = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
                 //공격위치표시
                 AttackNoticeSign_Vertical(attack.attackLineNumber);
             }

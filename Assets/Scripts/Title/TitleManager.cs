@@ -34,9 +34,8 @@ namespace Cardevil.Title
         {
             async UniTask EnterGameAsync()
             {
-                await SceneLoader.LoadSceneAsync(Scenes.GamePlay, LoadSceneMode.Additive);
+                await SceneLoader.LoadSceneAsync(Scenes.GamePlay, LoadSceneMode.Single);
                 SceneLoader.SetActiveScene(Scenes.GamePlay);
-                await SceneLoader.UnloadSceneAsync(Scenes.Title);
             }
             
             EnterGameAsync().Forget();
