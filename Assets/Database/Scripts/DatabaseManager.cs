@@ -25,7 +25,7 @@ namespace Database
     /// <summary>
     /// 플레이타임에 로드하는 클래스
     /// </summary>
-    public class DatabaseManager : MonoBehaviour, IManager
+    public class DatabaseManager : MonoBehaviour
     {
        
 
@@ -53,17 +53,6 @@ namespace Database
         
         public McDatabase Database => mcDatabase;
         public bool IsInitialized => isInitialized;
-        
-        public static DatabaseManager Instance { get; private set; }
-
-        private void Awake()
-        {
-            // DontDestroyOnLoad(gameObject);
-            if (Instance)
-                Destroy(gameObject);
-            else
-                Instance = this;
-        }
         
         public async UniTask InitializeAsync()
         {

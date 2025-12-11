@@ -67,17 +67,12 @@ namespace Cardevil.Test
         public void StageGUI()
         {
             GUILayout.Label("Stage Menu");
-            if (!DatabaseManager.Instance.IsInitialized)
+
+            if (GUILayout.Button("Enter Stage"))
             {
-                GUILayout.Label("데이터베이스가 초기화되지 않았습니다.");
+                Bootstrapper.Instance.Game.EnterStage("Test");
             }
-            else
-            {
-                if (GUILayout.Button("Enter Stage"))
-                {
-                    Bootstrapper.Instance.Game.EnterStage("Test");
-                }
-            }
+            
         }
 
         #endregion

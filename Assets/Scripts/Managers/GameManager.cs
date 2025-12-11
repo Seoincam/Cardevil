@@ -124,15 +124,6 @@ public class GameManager : ISaveLoad
     
     public void GameStart()
     {
-        if (DatabaseManager.Instance.IsInitialized == false)
-        {
-            // Debug.LogWarning("[GameManager] Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
-            // Debug.LogWarning("[GameManager] Database 초기화를 기다립니다...");
-            LogEx.LogWarning("Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
-            LogEx.LogWarning("Database 초기화를 기다립니다...");
-            LoadPlayerData().Forget();
-            return;
-        }
         // Debug.Log("[GameManager] Database가 초기화 되었습니다. GameStart 실행.");
         LogEx.Log("Database가 초기화 되었습니다. GameStart 실행.");
         _playerStatus = new PlayerStatus();
@@ -148,11 +139,5 @@ public class GameManager : ISaveLoad
     {
         _playerStatus.Load(currentSave);
         
-    }
-    
-    private async UniTask LoadPlayerData()
-    {
-        await UniTask.WaitUntil(() => DatabaseManager.Instance.IsInitialized);
-        GameStart();
     }
 }

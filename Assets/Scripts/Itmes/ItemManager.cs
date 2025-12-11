@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using UnityEngine;
 using Cardevil.Item;
 using Cardevil.Item.gold;
@@ -59,7 +60,7 @@ public class ItemManager
 
 
         // 이것들을 json에서 가져오기.
-        List<MachineReward> filteredList = DatabaseManager.Instance.Database.MachineRewardList
+        List<MachineReward> filteredList = Bootstrapper.Instance.Database.Database.MachineRewardList
                                 .Where(item => item.Rank == thisRare)
                                 .ToList();
 

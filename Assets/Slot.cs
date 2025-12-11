@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using UnityEngine;
 using DG.Tweening;
 using Cardevil.Item;
@@ -89,7 +90,7 @@ public class Slot : MonoBehaviour
         if (findItem == null) return; // 예외처리
         
         // 이미지 로딩
-        if (DatabaseManager.Instance.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
+        if (Bootstrapper.Instance.Database.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
         {
             // 성공! 찾은 스프라이트를 Image 컴포넌트에 적용
             itemIconImage.sprite = loadedSprite;

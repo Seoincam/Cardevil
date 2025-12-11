@@ -90,9 +90,9 @@ namespace Cardevil.InGame.SlotMachine
 
             }
             // 슬롯머신 레벨 index 벗어남 처리
-            slotMachineLevel = Math.Min(Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel, DatabaseManager.Instance.Database.MachineProbabillityList.Count);
+            slotMachineLevel = Math.Min(Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel, Bootstrapper.Instance.Database.Database.MachineProbabillityList.Count);
             // machineLevel을 통한 probalityList받기
-            probalityList = DatabaseManager.Instance.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
+            probalityList = Bootstrapper.Instance.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
 
             // 레이아웃 업데이트
             UpdateLayout();
@@ -247,12 +247,12 @@ namespace Cardevil.InGame.SlotMachine
             */
 
             // 상승 및 인덱스 조절
-            Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel = Math.Min(Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel+1, DatabaseManager.Instance.Database.MachineProbabillityList.Count);
+            Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel = Math.Min(Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel+1, Bootstrapper.Instance.Database.Database.MachineProbabillityList.Count);
             //동기화
             slotMachineLevel = Bootstrapper.Instance.Game.PlayerStatus._slotMachineLevel;
        
             //리스트받기
-            probalityList = DatabaseManager.Instance.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
+            probalityList = Bootstrapper.Instance.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
             // 레이아웃 업데이트
             UpdateLayout();
 
