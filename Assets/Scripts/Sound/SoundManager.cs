@@ -2,6 +2,7 @@ using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Pools;
+using Cardevil.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -357,13 +358,13 @@ namespace Cardevil.Sound
             AudioResource audioResource = null;
             if (type == Define.Sound.BGM)
             {
-                audioResource = Managers.Resource.Load<AudioClip>(path);
+                audioResource = AssetUtil.Load<AudioClip>(path);
             }
             else
             {
                 if (_cachedAudioClips.TryGetValue(path, out audioResource) == false)
                 {
-                    audioResource = Managers.Resource.Load<AudioClip>(path);
+                    audioResource = AssetUtil.Load<AudioClip>(path);
                     _cachedAudioClips.Add(path, audioResource);
                 }
             }

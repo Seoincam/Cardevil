@@ -1,6 +1,7 @@
 using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
+using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -43,7 +44,7 @@ namespace Cardevil.Pools
                 _RootTransform.SetParent(null);
             }
             
-            PoolableFactoryContainerSO container = Managers.Resource.Load<PoolableFactoryContainerSO>("ScriptableObjects/PoolableFactoryContainer");
+            PoolableFactoryContainerSO container = AssetUtil.Load<PoolableFactoryContainerSO>("ScriptableObjects/PoolableFactoryContainer");
             if (container == null)
             {
                 Debug.LogError("PoolableFactoryContainerSO not found. Cannot initialize pools.");

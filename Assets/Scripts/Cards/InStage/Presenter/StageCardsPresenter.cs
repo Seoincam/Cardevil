@@ -93,7 +93,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (views is { Length: > 0 }) _view = views[0];
             else
             {
-                GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
             _view.ConfigureSlots(_model.MaxHand);
@@ -115,7 +115,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
             else
             {
-                GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/DeckRemainView", canvas);
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
             _deckRemainView.Init(_library, _model);
@@ -129,7 +129,7 @@ namespace Cardevil.Cards.InStage.Presenter
             else
             {
                 const string path = "UI/CardUI/ValueSelectionView";
-                GameObject go = Managers.Resource.Instantiate(path, canvas);
+                GameObject go = AssetUtil.Instantiate(path, canvas);
                 _selectionView = go.GetComponent<CardValueSelectionView>();
             }
             _selectionView.Init();
@@ -181,7 +181,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
             if (!_view) return;
             _view.Clear();
-            Managers.Resource.Destroy(_view.gameObject);
+            AssetUtil.Destroy(_view.gameObject);
         }
         
         private void WireCard(Card card)
@@ -438,7 +438,7 @@ namespace Cardevil.Cards.InStage.Presenter
             var cardData = _model.PopCard();
             if (cardData == null) return null;
 
-            var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
+            var card = AssetUtil.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, _model);
 
             // 이벤트 구독

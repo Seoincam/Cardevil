@@ -69,7 +69,7 @@ namespace Cardevil.Cards.InStage.Presenter
             var visualHandler = GameObject.Find("Card Visual Transform");
             if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
 
-            var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
+            var go = AssetUtil.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
             visual.Init(this, model);
             if (data.CanOpenSelection)
@@ -146,7 +146,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             state.isReroll = true;
             visual.AnimateRerollDiscard();
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
 
         #endregion
@@ -172,7 +172,7 @@ namespace Cardevil.Cards.InStage.Presenter
             UnwireVisual(visual);
             visual.Discard();
             
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
 
         #endregion

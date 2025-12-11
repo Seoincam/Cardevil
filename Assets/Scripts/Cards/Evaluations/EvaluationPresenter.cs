@@ -69,7 +69,7 @@ namespace Cardevil.Cards.Evaluations
             }
             
             string path = "UI/CardUI/Evaluation View";
-            var go = Managers.Resource.Instantiate(path, canvas).gameObject;
+            var go = AssetUtil.Instantiate(path, canvas).gameObject;
             if (!go)
             {
                 LogEx.LogError($"Evaluation UI Animator가 존재하지 않음! path: {path}");

@@ -81,7 +81,7 @@ namespace Cardevil.Cards.InStage.View
         {
             foreach (var slot in _slots)
             {
-                if (slot) Managers.Resource.Destroy(slot.gameObject);
+                if (slot) AssetUtil.Destroy(slot.gameObject);
             }
             _slots.Clear();
             
@@ -168,7 +168,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -176,7 +176,7 @@ namespace Cardevil.Cards.InStage.View
             {
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
-                Managers.Resource.Destroy(last.gameObject);
+                AssetUtil.Destroy(last.gameObject);
             }
         }
         

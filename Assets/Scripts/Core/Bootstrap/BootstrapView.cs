@@ -1,10 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Manager;
-using Cardevil.SceneManagement;
-using Cardevil.Utils;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Cardevil.Core.Bootstrap

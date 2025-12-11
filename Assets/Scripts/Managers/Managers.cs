@@ -18,7 +18,6 @@ public class Managers : MonoBehaviour
 
 
     UI_Manager _ui = new UI_Manager();
-    ResourceManager _resource = new ResourceManager();
     [SerializeField] PoolManager _pool = new PoolManager();
     JsonManager _json = new JsonManager();
     ExecutionManager _execution = new ExecutionManager();
@@ -28,7 +27,6 @@ public class Managers : MonoBehaviour
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
     
     public static UI_Manager UI { get { return Instance._ui; } }
-    public static ResourceManager Resource { get { return Instance._resource; } }
     public static PoolManager Pool { get { return Instance._pool; } }
     public static JsonManager Json {  get { return Instance._json; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }

@@ -98,7 +98,7 @@ namespace Cardevil.Cards.InStage.Presenter
             else
             {
                 Transform canvas = GameObject.Find("CardCanvas").transform;
-                GameObject go = Managers.Resource.Instantiate("UI/CardUI/RerollView", canvas);
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/RerollView", canvas);
                 _view = go.GetComponent<RerollView>();
             }
             
@@ -132,7 +132,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
             if (!_view) return;
             _view.Clear();
-            Managers.Resource.Destroy(_view.gameObject);
+            AssetUtil.Destroy(_view.gameObject);
         }
         
         // ITurnRerollInput
@@ -208,7 +208,7 @@ namespace Cardevil.Cards.InStage.Presenter
             var cardData = _model.PopCard();
             if (cardData == null) return null;
             
-            var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
+            var card = AssetUtil.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, _model);
             card.SetRerollState(true);
 

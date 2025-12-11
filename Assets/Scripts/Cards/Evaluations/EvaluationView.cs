@@ -188,7 +188,7 @@ namespace Cardevil.Cards.Evaluations
                 return SubPool.Dequeue();
             
             const string path = "UI/CardUI/Evaluation View Sub";
-            var go = Managers.Resource.Instantiate(path, transform);
+            var go = AssetUtil.Instantiate(path, transform);
             if (!go)
             {
                 LogEx.LogError($"Can't find Evaluation View Sub: {path}");

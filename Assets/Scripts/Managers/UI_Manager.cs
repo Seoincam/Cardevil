@@ -61,7 +61,7 @@ public class UI_Manager
         {
             name = typeof(T).Name;
         }
-        GameObject go = Managers.Resource.Instantiate($"UI/{name}");
+        GameObject go = AssetUtil.Instantiate($"UI/{name}");
         T anyUI = Util.GetOrAddComponent<T>(go);
         return anyUI;
     }
@@ -71,7 +71,7 @@ public class UI_Manager
         {
             name = typeof(T).Name;
         }
-        GameObject go = Managers.Resource.Instantiate($"UI/PopUP/{name}");
+        GameObject go = AssetUtil.Instantiate($"UI/PopUP/{name}");
         T popUp = Util.GetOrAddComponent<T>(go);
         _popUpStack.Push(popUp);
         go.transform.SetParent(Root.transform);
@@ -83,7 +83,7 @@ public class UI_Manager
         {
             name = typeof(T).Name;
         }
-        GameObject go = Managers.Resource.Instantiate($"UI/Scene/{name}");
+        GameObject go = AssetUtil.Instantiate($"UI/Scene/{name}");
         T sceneUI = Util.GetOrAddComponent<T>(go);
         _sceneUI = sceneUI;
         go.transform.SetParent(Root.transform);
@@ -98,7 +98,7 @@ public class UI_Manager
         }
         UI_Popup popUP = _popUpStack.Pop();
         Debug.Log($"ClosePopUpUI : {popUP}");
-        Managers.Resource.Destroy(popUP.gameObject);
+        AssetUtil.Destroy(popUP.gameObject);
         popUP = null;
 
         _order--;

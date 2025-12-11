@@ -135,7 +135,7 @@ namespace Cardevil.Test
         public void GetTestPoolableFromResource()
         {
             // PoolableFactorySO를 통해 Poolable 객체를 가져오는 테스트
-            var poolable = Managers.Resource.Instantiate(resourcePoolableName, transform).GetComponent<Cardevil.Pools.Poolable>();
+            var poolable = AssetUtil.Instantiate(resourcePoolableName, transform).GetComponent<Cardevil.Pools.Poolable>();
             if (poolable != null)
             {
                 Debug.Log("Poolable 객체를 성공적으로 가져왔습니다.");
@@ -218,7 +218,7 @@ namespace Cardevil.Test
         [ContextMenu("Play Test Sound by hardcoded resource")]
         public void PlayTestSoundByHardcodedResource()
         {
-            AudioClip clip = Managers.Resource.Load<AudioClip>(testAudioResourcePath);
+            AudioClip clip = AssetUtil.Load<AudioClip>(testAudioResourcePath);
             if (clip != null)
             {
                 // Managers.Sound.Play(clip);
