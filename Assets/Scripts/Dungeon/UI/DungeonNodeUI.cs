@@ -1,4 +1,5 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.Manager;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -113,7 +114,7 @@ namespace Cardevil.Dungeon.UI
                 return;
             }
             
-            var dungeonManager = Managers.Dungeon;
+            var dungeonManager = WorldRoot.Instance.Dungeon;
             if (dungeonManager != null)
             {
                 dungeonManager.EnterNode(dungeonNode);

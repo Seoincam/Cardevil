@@ -258,7 +258,7 @@ namespace Cardevil.Pools
             else
             {
                 Debug.LogError(
-                    $"Requested type {typeof(T)} does not match the poolable type {poolable.GetType()} from pool {type}");
+                    $"Requested type {typeof(T)} do`es not match the poolable type {poolable.GetType()} from pool {type}");
                 return null;
             }
         }

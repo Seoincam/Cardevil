@@ -1,4 +1,5 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Manager;
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private List<DungeonNodeUI> nodeUis = new List<DungeonNodeUI>();
         
         public int DungeonId => dungeonId;
-        public Dungeon Dungeon => Managers.Dungeon.GetDungeonById(dungeonId);
+        public Dungeon Dungeon => WorldRoot.Instance.Dungeon.GetDungeonById(dungeonId);
 
 
         private void Awake()
@@ -49,7 +50,7 @@ namespace Cardevil.Dungeon.UI
 
         public void InitializeAfterDungeonCreated()
         {
-            Dungeon dungeon = Managers.Dungeon.GetDungeonById(dungeonId);
+            Dungeon dungeon = WorldRoot.Instance.Dungeon.GetDungeonById(dungeonId);
             if (dungeon == null)
             {
                 LogEx.LogError($"Dungeon with ID {dungeonId} not found");

@@ -4,6 +4,7 @@
     {
         Bootstrap,
         Title,
-        GamePlay
+        GamePlay,
+        World
     }
 }

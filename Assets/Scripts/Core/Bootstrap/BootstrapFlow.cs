@@ -42,7 +42,7 @@ namespace Cardevil.Core.Bootstrap
              */
             Loaded++;
             
-            ctx.Sound.Init();                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            ctx.Sound.Init(ctx.transform);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             Loaded++;
 
             await SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Single);

@@ -57,12 +57,13 @@ namespace Cardevil.Sound
         }
 
 
-        public void Init()
+        public void Init(Transform parent)
         {
             GameObject root = GameObject.Find("@Sound");
             if (root == null)
             {
                 root = new GameObject { name = "@Sound" };
+                root.transform.parent = parent;
                 Object.DontDestroyOnLoad(root);
             }
 

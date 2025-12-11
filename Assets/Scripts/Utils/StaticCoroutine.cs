@@ -24,6 +24,9 @@ public class StaticCoroutine : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void OnLoad()
     {
+        // !! 만약 사용해야된다면 return 주석처리 해야함.
+        return;
+        
         if (instance == null)
         {
             GameObject go = new GameObject("StaticCoroutine");
