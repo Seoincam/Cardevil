@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Database;
 using Database.Generated;
+using Unity.Android.Gradle.Manifest;
 
 public class ItemManager
 {
@@ -58,7 +59,7 @@ public class ItemManager
 
 
         // 이것들을 json에서 가져오기.
-        List<MachineReward> filteredList = Managers.Database.Database.MachineRewardList
+        List<MachineReward> filteredList = DatabaseManager.Instance.Database.MachineRewardList
                                 .Where(item => item.Rank == thisRare)
                                 .ToList();
 

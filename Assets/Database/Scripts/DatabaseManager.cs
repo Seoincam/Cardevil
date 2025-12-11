@@ -46,18 +46,23 @@ namespace Database
         /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
         /// </summary>
         [field: SerializeField] public SerializableDictionary<string, Sprite> SpriteCache { get; private set; } = new();
-
-
+        
         public event Action OnInitialized;
         public string FinalLocalPath => Path.Combine(Application.persistentDataPath, localJsonPath);
         public string FinalStreamingAssetPath => Path.Combine(Application.streamingAssetsPath, streamingAssetPath);
-
+        
         public McDatabase Database => mcDatabase;
         public bool IsInitialized => isInitialized;
+        
+        public static DatabaseManager Instance { get; private set; }
 
         private void Awake()
         {
             // DontDestroyOnLoad(gameObject);
+            if (Instance)
+                Destroy(gameObject);
+            else
+                Instance = this;
         }
         
         public async UniTask InitializeAsync()

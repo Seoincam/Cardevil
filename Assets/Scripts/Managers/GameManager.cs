@@ -10,6 +10,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Cardevil.Enemy;
 using Cardevil.Ingame.Player;
+using Database;
 
 [System.Serializable]
 public class GameManager : ISaveLoad
@@ -123,7 +124,7 @@ public class GameManager : ISaveLoad
     
     public void GameStart()
     {
-        if (Managers.Database.IsInitialized == false)
+        if (DatabaseManager.Instance.IsInitialized == false)
         {
             // Debug.LogWarning("[GameManager] Database가 초기화 되지 않았으므로 GameStart를 실행할 수 없습니다.");
             // Debug.LogWarning("[GameManager] Database 초기화를 기다립니다...");
@@ -151,7 +152,7 @@ public class GameManager : ISaveLoad
     
     private async UniTask LoadPlayerData()
     {
-        await UniTask.WaitUntil(() => Managers.Database.IsInitialized);
+        await UniTask.WaitUntil(() => DatabaseManager.Instance.IsInitialized);
         GameStart();
     }
 }

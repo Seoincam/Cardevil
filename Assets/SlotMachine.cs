@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using Cardevil.Item;
 using DG.Tweening;
 using Cysharp.Threading.Tasks;
+using Database;
 using System;
 
 namespace Cardevil.InGame.SlotMachine
@@ -88,9 +89,9 @@ namespace Cardevil.InGame.SlotMachine
 
             }
             // 슬롯머신 레벨 index 벗어남 처리
-            slotMachineLevel = Math.Min(Managers.Game.PlayerStatus._slotMachineLevel, Managers.Database.Database.MachineProbabillityList.Count);
+            slotMachineLevel = Math.Min(Managers.Game.PlayerStatus._slotMachineLevel, DatabaseManager.Instance.Database.MachineProbabillityList.Count);
             // machineLevel을 통한 probalityList받기
-            probalityList = Managers.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
+            probalityList = DatabaseManager.Instance.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
 
             // 레이아웃 업데이트
             UpdateLayout();
@@ -245,12 +246,12 @@ namespace Cardevil.InGame.SlotMachine
             */
 
             // 상승 및 인덱스 조절
-            Managers.Game.PlayerStatus._slotMachineLevel = Math.Min(Managers.Game.PlayerStatus._slotMachineLevel+1, Managers.Database.Database.MachineProbabillityList.Count);
+            Managers.Game.PlayerStatus._slotMachineLevel = Math.Min(Managers.Game.PlayerStatus._slotMachineLevel+1, DatabaseManager.Instance.Database.MachineProbabillityList.Count);
             //동기화
             slotMachineLevel = Managers.Game.PlayerStatus._slotMachineLevel;
        
             //리스트받기
-            probalityList = Managers.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
+            probalityList = DatabaseManager.Instance.Database.MachineProbabillityList[slotMachineLevel - 1].RankProbabillity.ToArray();
             // 레이아웃 업데이트
             UpdateLayout();
 

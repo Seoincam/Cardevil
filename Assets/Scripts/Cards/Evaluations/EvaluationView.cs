@@ -3,6 +3,7 @@ using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
+using Database;
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +73,7 @@ namespace Cardevil.Cards.Evaluations
                 return;
             }
 
-            var data = Managers.Database.Database.HandRankingDataList
+            var data = DatabaseManager.Instance.Database.HandRankingDataList
                 .FirstOrDefault(i => i.Ranking == ranking);
             if (data == null) { LogEx.LogError($"Can't find HandRanking Data: {ranking}"); return; }
 

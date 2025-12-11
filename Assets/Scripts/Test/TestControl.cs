@@ -3,6 +3,7 @@ using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;
 using Cardevil.Utils;
+using Database;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -65,7 +66,7 @@ namespace Cardevil.Test
         public void StageGUI()
         {
             GUILayout.Label("Stage Menu");
-            if (!Managers.Database.IsInitialized)
+            if (!DatabaseManager.Instance.IsInitialized)
             {
                 GUILayout.Label("데이터베이스가 초기화되지 않았습니다.");
             }

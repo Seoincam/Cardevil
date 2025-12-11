@@ -29,7 +29,6 @@ public class Managers : MonoBehaviour
     ItemManager _item = new ItemManager();
     [SerializeField] RelicManager _relic = new RelicManager();
     [SerializeField] DungeonManager _dungeon = new DungeonManager();
-    [SerializeField] DatabaseManager _database;
     public static GameManager Game { get { return Instance._game; } }
     public static UI_Manager UI { get { return Instance._ui; } }
     public static ResourceManager Resource { get { return Instance._resource; } }
@@ -42,7 +41,6 @@ public class Managers : MonoBehaviour
     public static ItemManager Item { get { return Instance._item; } }
     public static RelicManager Relic {get { return Instance._relic; }}
     public static DungeonManager Dungeon { get { return Instance._dungeon; } }
-    public static DatabaseManager Database { get { return Instance._database; } }
 
     
     void Start()
@@ -80,18 +78,6 @@ public class Managers : MonoBehaviour
             s_instance._item.Init();
             s_instance._relic.Init();
             s_instance._game.Init();
-
-            if (s_instance._database == null)
-            {
-                s_instance._database = FindAnyObjectByType<DatabaseManager>();
-                if (s_instance._database == null)
-                {
-                    GameObject obj = new GameObject("@DatabaseManager");
-                    s_instance._database = obj.AddComponent<DatabaseManager>();
-                }
-            }
-            
-            s_instance._database.Initialize();
         }
     }
 

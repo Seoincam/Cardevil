@@ -2,6 +2,7 @@ using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Items.Relics.Factory;
 using Cardevil.Utils;
+using Database;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,24 +44,22 @@ namespace Cardevil.Relics
                 _allByRarity[r] = new List<Relic>();
                 _ownedByRarityCache[r] = new List<OwnedRelic>();
             }
-            
-            Managers.Database.OnInitialized += () =>
+
+            foreach (Relic relic in RelicFactory.MakeRelicInstances())
             {
-                foreach (Relic relic in RelicFactory.MakeRelicInstances())
-                {
-                    all.Add(relic);
-                    _allById[(relic.Id, relic.Level)] = relic;
-                    _allByRarity[relic.Rarity].Add(relic);
-                }
-                
-                // TODO: 세이브-로드 로직 작성하며 다시 수정하기.
-                // 기본 유물 획득
-                foreach (var relic in all)
-                {
-                    if (relic.Rarity == RelicRarity.DefaultRelic && relic.Level == 0)
-                        Acquire(relic);
-                }
-            };
+                all.Add(relic);
+                _allById[(relic.Id, relic.Level)] = relic;
+                _allByRarity[relic.Rarity].Add(relic);
+            }
+            
+            // TODO: 세이브-로드 로직 작성하며 다시 수정하기.
+            // 기본 유물 획득
+            foreach (var relic in all)
+            {
+                if (relic.Rarity == RelicRarity.DefaultRelic && relic.Level == 0)
+                    Acquire(relic);
+            }
+            
         }
 
         /// <summary>

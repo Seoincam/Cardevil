@@ -5,6 +5,7 @@ using Cardevil.Relics.OnEvaluation;
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Utils;
+using Database;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -63,7 +64,7 @@ namespace Cardevil.Cards.Evaluations
             // 족보
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(attackCards, out var inRankCards);
             // TODO: db 접근 처음에 일괄적으로 하도록 바꾸기
-            var data = Managers.Database.Database.HandRankingDataList
+            var data = DatabaseManager.Instance.Database.HandRankingDataList
                 .FirstOrDefault(d => d.Ranking == handRanking);
             if (data == null)
                 LogEx.LogWarning($"Database에 족보 데이터가 존재하지 않음! : {handRanking}");

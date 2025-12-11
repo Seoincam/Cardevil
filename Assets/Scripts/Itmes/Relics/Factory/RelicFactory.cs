@@ -1,6 +1,7 @@
 using Cardevil.Relics;
 using Cardevil.Relics.OnEvaluation;
 using Cardevil.Utils;
+using Database;
 using Database.Generated;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace Cardevil.Items.Relics.Factory
         public static List<Relic> MakeRelicInstances()
         {
             // DB 검증
-            var db = Managers.Database.Database;
+            var db = DatabaseManager.Instance.Database;
             var list = db.RelicDataList;
             if (list == null || list.Count == 0)
             {
@@ -122,7 +123,7 @@ namespace Cardevil.Items.Relics.Factory
         private static Dictionary<string, RelicEffectBase> MakeEffectMap()
         {
             // DB 검증
-            var db = Managers.Database.Database;
+            var db = DatabaseManager.Instance.Database;
             var list = db.RelicEffectOnEvaluationDataList;
             if (list == null || list.Count == 0)
             {

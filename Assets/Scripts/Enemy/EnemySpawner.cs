@@ -1,4 +1,5 @@
 using Cardevil.Utils;
+using Database;
 using UnityEngine;
 using System.Collections.Generic;
 using Database.Generated;
@@ -19,10 +20,10 @@ namespace Cardevil.Enemy
         {
             void Init()
             {
-                var db = Managers.Database;
+                var db = DatabaseManager.Instance.Database;
             
-                var baseMobBossDataList = Managers.Database.Database.BaseMobBossDataList;
-                var roomDataList = Managers.Database.Database.RoomDataList;
+                var baseMobBossDataList = db.BaseMobBossDataList;
+                var roomDataList = db.RoomDataList;
 
                 // 딕셔너리 초기화 (중복 방지)
                 _roomDataDict.Clear();
@@ -34,9 +35,8 @@ namespace Cardevil.Enemy
                 foreach (BaseMobBossData mob in baseMobBossDataList)
                     _mobBossDataDict.TryAdd(mob.MobID, mob);
             }
-            
-            var db = Managers.Database;
-            
+
+            var db = DatabaseManager.Instance;
             if (db.IsInitialized)
                 Init();
             else
