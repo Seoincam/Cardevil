@@ -13,6 +13,8 @@ using System.Text;
 using Cardevil.Scriptable.Cache;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
+using Cardevil.Manager;
+using Cysharp.Threading.Tasks;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
@@ -23,7 +25,7 @@ namespace Database
     /// <summary>
     /// 플레이타임에 로드하는 클래스
     /// </summary>
-    public class DatabaseManager : MonoBehaviour
+    public class DatabaseManager : MonoBehaviour, IManager
     {
        
 
@@ -55,7 +57,13 @@ namespace Database
 
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);
+            // DontDestroyOnLoad(gameObject);
+        }
+        
+        public async UniTask InitializeAsync()
+        {
+            Initialize();
+            await UniTask.WaitUntil(() => isInitialized);
         }
 
         [ContextMenu("Clear Database")]

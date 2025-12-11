@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cardevil.Ingame;
 using UnityEngine;
 using Cardevil.Ingame.Field;
@@ -13,12 +14,12 @@ using Cardevil.Ingame.Player;
 [System.Serializable]
 public class GameManager : ISaveLoad
 {
-    [FormerlySerializedAs("field")] [SerializeField] private Field _field;
-    [FormerlySerializedAs("entity")] [SerializeField] private PlayerCharacter _player; // 임시 플레이어'
-    [SerializeField] private PlayerStatus _playerStatus = new PlayerStatus(); // 플레이어 상태 
+    [SerializeField, VisibleOnly] private Field _field;
+    [SerializeField, VisibleOnly] private PlayerCharacter _player; // 임시 플레이어'
+    [SerializeField, VisibleOnly] private PlayerStatus _playerStatus = new(); // 플레이어 상태 
 
-    private readonly TurnManager _turn = new();
-    private EnemySpawner _enemySpawner;
+    [SerializeField, VisibleOnly] private TurnManager _turn = new();
+    [SerializeField, VisibleOnly] private EnemySpawner _enemySpawner;
     
     public Field Field
     {

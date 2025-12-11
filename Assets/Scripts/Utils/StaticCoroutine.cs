@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Obsolete]
 public class StaticCoroutine : MonoBehaviour
 {
     private static StaticCoroutine instance = null;

@@ -21,7 +21,6 @@ public class Managers : MonoBehaviour
     ResourceManager _resource = new ResourceManager();
     GameManager _game = new GameManager();
     [SerializeField] PoolManager _pool = new PoolManager();
-    SceneManagerEx _scene = new SceneManagerEx();
     [SerializeField]SaveLoadManager _saveload = new SaveLoadManager();
     JsonManager _json = new JsonManager();
     [SerializeField] SoundManager _sound = new SoundManager();
@@ -37,7 +36,6 @@ public class Managers : MonoBehaviour
     public static PoolManager Pool { get { return Instance._pool; } }
     public static SaveLoadManager SaveLoad { get { return Instance._saveload; } } 
     public static JsonManager Json {  get { return Instance._json; } }
-    public static SceneManagerEx Scene { get { return Instance._scene; } }
     public static SoundManager Sound { get { return Instance._sound; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }
     public static CardManager Card { get { return Instance._card; } }
