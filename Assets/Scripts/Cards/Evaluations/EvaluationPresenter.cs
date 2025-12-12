@@ -37,6 +37,9 @@ namespace Cardevil.Cards.Evaluations
         /// 단계별 평가 및 뷰 연출 처리.
         /// </summary>
         UniTask ExcuteSequenceAsync();
+        
+        /// <returns>가장 최근의 평과 결과를 반환.</returns>
+        EvaluationResult GetCurrentEvaluationResult();
     }
     
     public class EvaluationPresenter : IEvaluationPresenter
@@ -135,6 +138,11 @@ namespace Cardevil.Cards.Evaluations
                 .SetDamage((int)Math.Round(totalDamage))
                 .Build();
             _model.Add(result);
+        }
+
+        public EvaluationResult GetCurrentEvaluationResult()
+        {
+            return _model.CurrentResult;
         }
     }
 }

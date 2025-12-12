@@ -167,8 +167,8 @@ MonoBehaviour:
     enhancementDataLibrary:
       table:
         _items: []
-  <Field>k__BackingField: {fileID: 0}
-  <Player>k__BackingField: {fileID: 0}
+  <Field>k__BackingField: {fileID: 401468742}
+  <Player>k__BackingField: {fileID: 1012406964}
 --- !u!1001 &401468740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -235,6 +235,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f201b42e3a474fb29894d465169a0ea6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &401468742 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5331244023950327010, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+  m_PrefabInstance: {fileID: 401468740}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d55c95271aa748aa8171393c070d6aab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &496353166
@@ -562,6 +573,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
+--- !u!114 &1012406964 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
+  m_PrefabInstance: {fileID: 1012406963}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6deb395c76314af39945a7cce34d464a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1252862672
 PrefabInstance:
   m_ObjectHideFlags: 0

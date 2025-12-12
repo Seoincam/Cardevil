@@ -44,8 +44,7 @@ namespace Cardevil.Ingame.Player
         }
 
         public Entity Entity => _entity;
-        // public Field.Field Field => Bootstrapper.Instance.Game.Field;
-        public Field.Field Field => null;
+        public Field.Field Field { get; private set; }
         public PlayerStatus PlayerStatus => Bootstrapper.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
@@ -58,6 +57,27 @@ namespace Cardevil.Ingame.Player
         
         private void Start()
         {
+            if (_initTileManually)
+            {
+                if (_initialTile == null)
+                {
+                    LogEx.LogError("Initial tile is not set. Please assign a tile in the inspector.");
+                    return;
+                }
+                _entity.Init(_initialTile);
+                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
+            }
+        }
+
+        public void Init(Field.Field field)
+        {
+            Field = field;
+            
+            if(_entity == null)
+            {
+                _entity = GetComponent<Entity>();
+            }
+            
             if (_initTileManually)
             {
                 if (_initialTile == null)
@@ -233,12 +253,16 @@ namespace Cardevil.Ingame.Player
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
-            // TODO : 적에 대한 공격 구현
-            int damage = 10;
+
+            var result = ctx.CardFlow.Result;
+            int damage = result.TotalDamage;
+            var handRanking = result.HandRanking;
+
             LogEx.Log($"플레이어 공격 : {damage} 피해. 구현 아직");
             PlayerVisual.PlayAttackAnimation();
-
-            return new AttackResult(ctx.CurrentEnemy, damage);
+            // TODO: 공격 애니메이션도 await하기
+            
+            return new AttackResult(target: ctx.CurrentEnemy, handRanking, damage);
         }
         
         public void TakeDamage(int amount)
@@ -247,18 +271,17 @@ namespace Cardevil.Ingame.Player
             PlayerStatus.TakeDamage((int)amount);
         }
 
-        public async UniTask<Vector2Int> TurnMove()
+        public async UniTask<Vector2Int> TurnMove(IReadOnlyTurnContext ctx)
         {
             LogEx.Log("Player Moves!");
-            // var result = Managers.Card.EvaluationResults.CurrentResult;
+            var result = ctx.CardFlow.Result;
             //TODO 이동 로직 구현
-            foreach (var move in new Direction[] { Direction.Up })
+            foreach (var move in result.Moves)
             {
-                // if (!move.DirectionSelectState.FinalValue.HasValue)
-                //     continue;
-                //
-                // await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
-                await MoveWithAnim(move);
+                if (!move.DirectionSelectState.FinalValue.HasValue)
+                    continue;
+                
+                await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
                 await UniTask.Delay(300);
             }
             LogEx.Log("Player Move Completed!");

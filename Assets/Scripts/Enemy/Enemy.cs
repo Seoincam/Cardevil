@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data;
 using Cardevil.Core.Turn;
 using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
@@ -107,11 +108,16 @@ namespace Cardevil.InGame.Enemy
             LogEx.LogWarning("대윤: 공격 로직이 아직 구현되지 않았습니다.");
             
             var target = ctx.Player;
+            // 이제 플레이어 위치 이렇게 받아오면 됨!
             var playerPosition = ctx.PlayerPosition;
-            int damage = 10;
             
             await UniTask.Delay(1200);
-            return new AttackResult(target, damage);
+            AttackEnemyTurnStart(ctx);
+            
+            // TODO: 필요하다면 족보도 받아오기
+            return _enemyAttackInfo.attackSucess  
+                ? new AttackResult(target, HandRanking.None, (int)damage)
+                : new AttackResult(target, HandRanking.None, 0);
         }
 
         #region 족보공격 구현
@@ -767,26 +773,19 @@ namespace Cardevil.InGame.Enemy
             }
             return false;
         }
-
-        public async UniTask TurnAttack() //인터페이스
-        {
-            await UniTask.Delay(1200);
-
-
-            AttackEnemyTurnStart();
-        }
-        public virtual void AttackEnemyAwake() // 처음으로 호출되었을때
+        
+        public virtual void AttackEnemyAwake(IReadOnlyTurnContext ctx) // 처음으로 호출되었을때
         {
             if (aWakeFirst == true) // 처음에선 랜덤지정
             {
-                CreateAttack(true);
+                CreateAttack(ctx, true);
             }
             aWakeFirst = false;
         }
 
-        public void CreateAttack(bool firstCreate = false)
+        public void CreateAttack(IReadOnlyTurnContext ctx, bool firstCreate = false)
         {
-            Attack tmpAttack = new Attack();
+            Attack tmpAttack = new() { turnCtx = ctx };
 
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨공격인지 설정 
 
@@ -801,18 +800,18 @@ namespace Cardevil.InGame.Enemy
             SetAttack(tmpAttack, isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
-        public void AttackEnemyTurnStart()
+        public void AttackEnemyTurnStart(IReadOnlyTurnContext ctx)
         {
             EnemyTurnClear();
             LogEx.Log("Enemy Turn!!");
-            AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
+            AttackEnemyAwake(ctx); // Enemy Awake시 실행되는 함수
 
             // 우선 시작할때 공격구역 설정하도록 해보기 Test
 
 
             AttackPatternEnemyTurning(); // Enemy가 수행하는 공격들의 TurnOrder 감소 후 공격
 
-            AttackEnemyTurnEnd(); // Enemy 공격의 마무리 단계
+            AttackEnemyTurnEnd(ctx); // Enemy 공격의 마무리 단계
         }
 
 
@@ -898,7 +897,7 @@ namespace Cardevil.InGame.Enemy
             }
             return false;
         }
-        void AttackEnemyTurnEnd()
+        void AttackEnemyTurnEnd(IReadOnlyTurnContext ctx)
         {
             List<Attack> tmpAttacks = new List<Attack>();
             int count = 0;
@@ -921,7 +920,7 @@ namespace Cardevil.InGame.Enemy
             for (int i = 0; i < count; i++) // 지워진 어택 갯수만큼 새로 생성
             {
                 LogEx.Log("지워진 Attack 만큼 새로 생성");
-                CreateAttack();
+                CreateAttack(ctx);
             }
 
             if (orderSettingGo == true)
@@ -1317,7 +1316,7 @@ namespace Cardevil.InGame.Enemy
 
         public void TakeDamage(int amount)
         {
-            throw new NotImplementedException();
+            GetDamage(amount);
         }
 
         #endregion

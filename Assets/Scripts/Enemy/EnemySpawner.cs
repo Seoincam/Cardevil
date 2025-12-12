@@ -71,7 +71,7 @@ namespace Cardevil.Enemy
             }
         }
 
-        public bool TrySpawn(out ITurnEnemy spawned)
+        public bool TrySpawn(out InGame.Enemy.Enemy spawned)
         {
             spawned = null;
             
@@ -79,7 +79,7 @@ namespace Cardevil.Enemy
                 return false;
             
             spawned = SpawnEnemy(mobId);
-            return true;
+            return spawned;
         }
         
         

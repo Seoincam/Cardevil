@@ -18,37 +18,24 @@ namespace Cardevil.Core.Root
         [SerializeField] private EnemySpawner _enemySpawner;
 
         [Header("References")]
-        [field: SerializeField, VisibleOnly] public Field Field { get; private set; }
-        [field: SerializeField, VisibleOnly] public PlayerCharacter Player { get; set; } // 임시 플레이어
+        [field: SerializeField] public Field Field { get; private set; }
+        [field: SerializeField] public PlayerCharacter Player { get; set; } // 임시 플레이어
 
         // public int TurnOrder => _turn.TurnOrder;
         
         private GameFlowManager.StageEnterContext _context;
 
         
-        private void Awake()
+        private async void Awake()
         {
             // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
-            
-            // Reference 
-            Field = FindAnyObjectByType<Field>();
-            if (!Field)
-            {
-                LogEx.LogError("Field not found in the scene.");
-                return;
-            }
-
-            Player = FindAnyObjectByType<PlayerCharacter>();
-            if (!Player)
-            {
-                LogEx.LogError("Player not found in the scene.");
-                return;
-            }
             
             _enemySpawner = new EnemySpawner();
             _turn = new TurnManager();
             
-            InitAsync().Forget();
+            Player.Init(Field);
+            await InitAsync();
+            await EnterStageAsync();
         }
 
         private async UniTask InitAsync()
@@ -60,7 +47,6 @@ namespace Cardevil.Core.Root
             
             
             await Card.InitAsync(cardLibrary);
-            await EnterStageAsync();
         }
 
         /// <summary>
@@ -76,6 +62,7 @@ namespace Cardevil.Core.Root
                 return;
             }
             
+            enemy.Init(Field);
             _turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
             _turn.StartLoop();
         }

@@ -153,7 +153,7 @@ namespace Cardevil.Items.Relics.Factory
                 }
                 catch(Exception ex)
                 {
-                    LogEx.LogError($"Failed to create relic effect. (Id: {spec.EffectId}) : {ex.Message}");
+                    LogEx.LogWarning($"Failed to create relic effect. (Id: {spec.EffectId}) : {ex.Message}");
                 }
 
                 continue;

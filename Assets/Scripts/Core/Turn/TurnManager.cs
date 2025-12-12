@@ -5,6 +5,7 @@ using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Enemy;
 using Cardevil.Utils;
+using UnityEngine;
 
 namespace Cardevil.Core.Turn
 {
@@ -57,7 +58,14 @@ namespace Cardevil.Core.Turn
             // 혹시 돌고 있던 루프가 있으면 안전 종료까지 대기
             await StopLoopAsync();
 
-            _ctx = new TurnContext();
+            _ctx = new TurnContext()
+            {
+                CurrentEnemy = _enemy, 
+                Player = _player, 
+                PlayerPosition = new Vector2Int(1, 1), // TODO: 플레이어 포지션 처음에 제대로 초기화하기
+                CardFlow = _cardFlow
+            };
+            
             _cts = CancellationTokenSource.CreateLinkedTokenSource(external);
             _loopTask = GameLoopAsync(_cts.Token);
         }
@@ -120,10 +128,10 @@ namespace Cardevil.Core.Turn
                     await _cardFlow.WaitUserInput();
                     
                     // 2. 플레이어 이동 + 공격
-                    var playerPosition = await _player.TurnMove();
+                    var playerPosition = await _player.TurnMove(_ctx);
                     _ctx.PlayerPosition = playerPosition;
                     
-                    var playerAttack = await _enemy.TurnAttackAsync(_ctx);
+                    var playerAttack = await _player.TurnAttackAsync(_ctx);
                     playerAttack.Target.TakeDamage(playerAttack.Damage);
 
                     if (_enemy.IsDead)
@@ -131,6 +139,8 @@ namespace Cardevil.Core.Turn
                         if (!_spawner.TrySpawn(out var spawned))
                             break;
 
+                        // TODO: Enemy에 필드를 주입해줘야함.
+                        
                         await _enemy.Replace();
                         _enemy = spawned;
                     }

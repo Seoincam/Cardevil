@@ -10,6 +10,6 @@ namespace Cardevil.Core.Turn.Interfaces
     public interface ITurnPlayer : ITurnActor, ITurnTarget
     {
         /// <returns>이동 후 타일 기준 위치를 반환.</returns>
-        UniTask<Vector2Int> TurnMove();
+        UniTask<Vector2Int> TurnMove(IReadOnlyTurnContext ctx);
     }
 }

@@ -83,5 +83,7 @@ namespace Cardevil.Cards.System
         {
             await _stageCardsPresenter.WaitUserInput();
         }
+
+        public EvaluationResult Result => _evaluationPresenter.GetCurrentEvaluationResult();
     }
 }

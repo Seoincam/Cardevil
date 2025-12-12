@@ -16,6 +16,7 @@ namespace Cardevil.SceneManagement
     public class SceneReference : ScriptableObject
     {
         private static Dictionary<Scenes, SceneReference> sceneReferenceCache = new Dictionary<Scenes, SceneReference>();
+        private static bool _initialized;
         
         public static SceneReference Find(Scenes scene)
         {
@@ -27,15 +28,18 @@ namespace Cardevil.SceneManagement
             return null;
         }
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void InitializeCache()
+        public static void InitializeCache()
         {
+            if (_initialized) return;
+            
             sceneReferenceCache.Clear();
             var sceneReferences = Resources.LoadAll<SceneReference>("");
             foreach (var sceneReference in sceneReferences)
             {
                 sceneReferenceCache.TryAdd(sceneReference.sceneEnum, sceneReference);
             }
+            
+            _initialized = true;
         }
         
         #if UNITY_EDITOR

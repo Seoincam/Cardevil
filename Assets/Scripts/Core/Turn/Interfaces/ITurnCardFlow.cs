@@ -1,8 +1,14 @@
+using Cardevil.Cards.InStage.Model;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Core.Turn.Interfaces
 {
-    public interface ITurnCardFlow
+    public interface IReadOnlyCardFlow
+    {
+        EvaluationResult Result { get; }    
+    }
+    
+    public interface ITurnCardFlow : IReadOnlyCardFlow
     {
         /// <summary>
         /// 리롤 단계 진입 시 호출.
