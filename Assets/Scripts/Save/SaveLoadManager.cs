@@ -1,4 +1,5 @@
 using Cardevil.Ingame;
+using Cardevil.SceneManagement;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace Cardevil.Save
     public class SaveLoadManager
     {
         public string DefaultSaveName = "AutoSave";
-        [SerializeField,Tooltip("예외 씬")] private List<string> _exceptionScenes = new List<string>();
+        [SerializeField, Tooltip("예외 씬")] private List<Scenes> exceptionScenes = new();
         [SerializeField] private GameSave _currentSave = new GameSave();
         [SerializeField] private List<ISaveLoad> _saveLoadObjects = new List<ISaveLoad>();
         
@@ -55,9 +56,9 @@ namespace Cardevil.Save
         public void Init()
         {
             _dataService = new FileDataService(new JsonSerializer());
-            // 어차피 씬로드 없긴함
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            
+            SceneLoader.SceneLoaded -= OnSceneLoaded;
+            SceneLoader.SceneLoaded += OnSceneLoaded;
         }
 
         public bool Register(ISaveLoad saveLoadObj)
@@ -73,9 +74,9 @@ namespace Cardevil.Save
         }
         
         
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnSceneLoaded(Scenes scene, LoadSceneMode mode)
         {
-            if (_exceptionScenes.Contains(scene.name))
+            if (exceptionScenes.Contains(scene))
                 return;
             if (_currentSave != null)
             {
