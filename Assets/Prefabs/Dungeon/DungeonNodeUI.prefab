@@ -146,7 +146,6 @@ MonoBehaviour:
   dungeonNode:
     rid: -2
   nodeId: -1
-  hideWhenBlackMarketHidden: 1
   references:
     version: 2
     RefIds:
@@ -170,11 +169,6 @@ MonoBehaviour:
   nodePreset: {fileID: 0}
   nextNodes:
   - {fileID: 0}
-  showGizmos: 1
-  gizmoLineColor: {r: 0, g: 1, b: 0, a: 1}
-  gizmoNodeSize: 1.2
-  gizmoSelectedNodeSize: 1.2
-  gizmoArrowSize: 10
 --- !u!1 &7196351500468433209
 GameObject:
   m_ObjectHideFlags: 0
@@ -398,6 +392,7 @@ GameObject:
   - component: {fileID: 6964114399070461663}
   - component: {fileID: 793158431501647124}
   - component: {fileID: 7792041594565701174}
+  - component: {fileID: 3162957240155617006}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -508,3 +503,20 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &3162957240155617006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8449139638330096367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 060ab5aada1244d6b4a91dc0ffc129f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hover: 1
+  hoverScale: 1.15
+  press: 1
+  pressedScale: 0.95
+  duration: 0.1

@@ -133,7 +133,7 @@ namespace Cardevil.Test
         public void GetTestPoolableFromPool()
         {
             // PoolManager를 통해 Poolable 객체를 가져오는 테스트
-            Poolable poolable = Managers.Pool.Get(poolableType);
+            Poolable poolable = Bootstrapper.Instance.Pool.Get(poolableType);
             if (poolable != null)
             {
                 Debug.Log("Poolable 객체를 성공적으로 가져왔습니다.");

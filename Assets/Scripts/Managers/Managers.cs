@@ -11,13 +11,11 @@ public class Managers : MonoBehaviour
 
 
     UI_Manager _ui = new UI_Manager();
-    [SerializeField] PoolManager _pool = new PoolManager();
     ExecutionManager _execution = new ExecutionManager();
     ItemManager _item = new ItemManager();
     [SerializeField] RelicManager _relic = new RelicManager();
     
     public static UI_Manager UI { get { return Instance._ui; } }
-    public static PoolManager Pool { get { return Instance._pool; } }
     public static ExecutionManager Execute { get { return Instance._execution; } }
     public static ItemManager Item { get { return Instance._item; } }
     public static RelicManager Relic {get { return Instance._relic; }}
@@ -49,7 +47,6 @@ public class Managers : MonoBehaviour
 
             DontDestroyOnLoad(go);
             s_instance = go.GetComponent<Managers>();
-            s_instance._pool.Init();
             s_instance._execution.Init();
             s_instance._item.Init();
             s_instance._relic.Init();
@@ -59,7 +56,6 @@ public class Managers : MonoBehaviour
     public static void Clear()
     {
         UI.Clear();
-        Pool.Clear();
         
     }
 }

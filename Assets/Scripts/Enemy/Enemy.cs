@@ -95,17 +95,17 @@ namespace Cardevil.InGame.Enemy
         // ITurnEnemy 변경 사항
         public async UniTask Replace()
         {
-            LogEx.LogWarning("대윤: 아직 enemy 교체가 구현되지 않음.");
+            LogEx.LogWarning("<b>대윤</b>: 아직 enemy 교체가 구현되지 않음.");
         }
 
         public async UniTask ShowInitialAttackArea()
         {
-            LogEx.LogWarning("대윤: 첫 공격 표시가 아직 구현되지 않았습니다.");
+            LogEx.LogWarning("<b>대윤</b>: 첫 공격 표시가 아직 구현되지 않았습니다.");
         }
         
         public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
         {
-            LogEx.LogWarning("대윤: 공격 로직이 아직 구현되지 않았습니다.");
+            LogEx.LogWarning("<b>대윤</b>: 공격 로직이 아직 완성되지 않았습니다.");
             
             var target = ctx.Player;
             // 이제 플레이어 위치 이렇게 받아오면 됨!

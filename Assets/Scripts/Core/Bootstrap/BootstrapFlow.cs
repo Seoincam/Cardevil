@@ -58,9 +58,14 @@ namespace Cardevil.Core.Bootstrap
              */
             Loaded++;
             
-            ctx.Sound.Init(ctx.transform);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            // 4. Object Pool
+            ctx.Pool.Init(ctx.transform);
+            
+            // 5. Sound
+            ctx.Sound.Init(ctx.transform, ctx.Pool);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             Loaded++;
             
+            // 6. Flow
             ctx.GameFlow.Init();
             Loaded++;
 

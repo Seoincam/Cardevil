@@ -1,3 +1,4 @@
+using Cardevil.Pools;
 using Cardevil.Save;
 using Cardevil.Sound;
 using Cysharp.Threading.Tasks;
@@ -16,6 +17,7 @@ namespace Cardevil.Core.Bootstrap
         [field: SerializeField] public GameFlowManager GameFlow { get; private set; }
         [field: SerializeField] public SaveLoadManager SaveLoad { get; private set; }
         [field: SerializeField] public SoundManager Sound { get; private set; }
+        [field: SerializeField] public PoolManager Pool { get; private set; }
 
         [Header("References")]
         [SerializeField] private EventSystem eventSystem;

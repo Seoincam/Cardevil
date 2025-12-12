@@ -56,15 +56,15 @@ namespace Cardevil.Sound
             private set => audioMixerGroups[(int)Define.Sound.SFX] = value;
         }
 
+        private PoolManager _pool;
 
-        public void Init(Transform parent)
+        public void Init(Transform parent, PoolManager poolManager)
         {
             GameObject root = GameObject.Find("@Sound");
             if (root == null)
             {
                 root = new GameObject { name = "@Sound" };
                 root.transform.parent = parent;
-                // Object.DontDestroyOnLoad(root);
             }
 
             // 사운드 루트 초기화
@@ -78,8 +78,8 @@ namespace Cardevil.Sound
 
             if (_defaultSoundEffectAudioConfiguration == null)
             {
-                // _defaultSoundEffectAudioConfiguration =
-                //     Managers.Resource.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
+                _defaultSoundEffectAudioConfiguration =
+                    AssetUtil.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
             }
 
             // 믹서 그룹 초기화
@@ -96,6 +96,9 @@ namespace Cardevil.Sound
             SetMasterVolume(savedMasterVolume);
             SetMusicVolume(savedMusicVolume);
             SetSfxVolume(savedSfxVolume);
+            
+            // Pool
+            _pool = poolManager;
         }
 
         public void Clear()
@@ -327,7 +330,7 @@ namespace Cardevil.Sound
             }
             else
             {
-                soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
+                soundEmitter = _pool.Get<SoundEmitter>(Poolables.SoundEmitter);
                 soundEmitter.transform.SetParent(root);
                 soundEmitter.transform.position = Vector3.zero;
                 AudioSource audioSource = soundEmitter.GetComponent<AudioSource>();
@@ -379,7 +382,7 @@ namespace Cardevil.Sound
         }
 
         private SoundEmitter GetSoundEmitter(bool addToList = true){
-            SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
+            SoundEmitter soundEmitter = _pool.Get<SoundEmitter>(Poolables.SoundEmitter);
             soundEmitter.transform.SetParent(root);
             if (addToList)
             {

@@ -36,12 +36,12 @@ namespace Cardevil.Pools
         /// 1. RootTransform이 null일 경우, 새로운 GameObject를 생성하여 RootTransform으로 설정
         /// 2. 등록된 모든 팩토리에 대해 ObjectPool을 생성
         /// </remarks>
-        public void Init()
+        public void Init(Transform parent)
         {
             if (_RootTransform == null)
             {
                 _RootTransform = new GameObject("@Poolable_Root").transform;
-                _RootTransform.SetParent(null);
+                _RootTransform.SetParent(parent);
             }
             
             PoolableFactoryContainerSO container = AssetUtil.Load<PoolableFactoryContainerSO>("ScriptableObjects/PoolableFactoryContainer");

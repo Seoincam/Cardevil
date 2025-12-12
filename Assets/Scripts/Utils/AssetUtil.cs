@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using Cardevil.Pools;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -16,7 +17,7 @@ namespace Cardevil.Utils
                 {
                     name = name.Substring(index + 1);
                 }
-                if (Managers.Pool.TryGetOriginal(name, out Poolable original))
+                if (Bootstrapper.Instance.Pool.TryGetOriginal(name, out Poolable original))
                 {
                     return original.gameObject as T;
                 }
@@ -54,7 +55,7 @@ namespace Cardevil.Utils
 
             if (original.TryGetComponent<Poolable>(out Poolable poolable))
             {
-                return Managers.Pool.GetFromOriginal(poolable, parent).gameObject;
+                return Bootstrapper.Instance.Pool.GetFromOriginal(poolable, parent).gameObject;
             }
 
             GameObject go = Object.Instantiate(original, parent);
