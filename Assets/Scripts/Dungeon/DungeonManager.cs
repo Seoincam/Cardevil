@@ -34,7 +34,7 @@ namespace Cardevil.Dungeon
         private bool _canGoNext = true;
 
 
-        public bool DoInstantClear => true; // doInstantClear;
+        public bool DoInstantClear => doInstantClear;
         public bool CanGoNext
         {
             get => _canGoNext;
