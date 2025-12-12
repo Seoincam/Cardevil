@@ -1,4 +1,5 @@
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Utils;
 using Database;
 using UnityEngine;
@@ -70,7 +71,7 @@ namespace Cardevil.Enemy
             }
         }
 
-        public bool TrySpawn(out InGame.Enemy.Enemy spawned)
+        public bool TrySpawn(out ITurnEnemy spawned)
         {
             spawned = null;
             
@@ -78,7 +79,7 @@ namespace Cardevil.Enemy
                 return false;
             
             spawned = SpawnEnemy(mobId);
-            return spawned;
+            return true;
         }
         
         

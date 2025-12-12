@@ -1,11 +1,12 @@
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.DebugConsole;
 using Cardevil.Events.AsyncPriorityEvent;
 using Cardevil.Events.Core;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Field;
-using Cardevil.Systems;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
@@ -43,7 +44,8 @@ namespace Cardevil.Ingame.Player
         }
 
         public Entity Entity => _entity;
-        public Field.Field Field => Bootstrapper.Instance.Game.Field;
+        // public Field.Field Field => Bootstrapper.Instance.Game.Field;
+        public Field.Field Field => null;
         public PlayerStatus PlayerStatus => Bootstrapper.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
@@ -64,7 +66,7 @@ namespace Cardevil.Ingame.Player
                     return;
                 }
                 _entity.Init(_initialTile);
-                Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
+                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
         }
 
@@ -223,47 +225,46 @@ namespace Cardevil.Ingame.Player
         }
 
         #region ITurnPlayerAction 구현
-        public bool IsDead => Bootstrapper.Instance.Game.PlayerStatus.CurrentHp <= 0;
-        public async UniTask TurnAttack()
+        
+        public bool IsDead { get; }
+
+        public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
         {
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
             // TODO : 적에 대한 공격 구현
-            var result = Managers.Card.EvaluationResults.CurrentResult;
-            LogEx.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
-            void DealDamageToEnemies()
-            {
-                Bootstrapper.Instance.Game.Enemy.GetDamage(result.TotalDamage);
-            }
-            DealDamageToEnemies();
+            int damage = 10;
+            LogEx.Log($"플레이어 공격 : {damage} 피해. 구현 아직");
             PlayerVisual.PlayAttackAnimation();
-      
+
+            return new AttackResult(ctx.CurrentEnemy, damage);
         }
         
-        public void PlayerGetDamage(float amount)
+        public void TakeDamage(int amount)
         {
             LogEx.Log($"Player takes {amount} damage!");
             PlayerStatus.TakeDamage((int)amount);
-            
         }
 
-        public async UniTask TurnMove()
+        public async UniTask<Vector2Int> TurnMove()
         {
             LogEx.Log("Player Moves!");
-            var result = Managers.Card.EvaluationResults.CurrentResult;
+            // var result = Managers.Card.EvaluationResults.CurrentResult;
             //TODO 이동 로직 구현
-            foreach (var move in result.Moves)
+            foreach (var move in new Direction[] { Direction.Up })
             {
-                if (!move.DirectionSelectState.FinalValue.HasValue)
-                    continue;
-
-                await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
+                // if (!move.DirectionSelectState.FinalValue.HasValue)
+                //     continue;
+                //
+                // await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
+                await MoveWithAnim(move);
                 await UniTask.Delay(300);
             }
             LogEx.Log("Player Move Completed!");
+
+            return new Vector2Int(Entity.Tile.i, Entity.Tile.j);
         }
-        
 
         #endregion
 

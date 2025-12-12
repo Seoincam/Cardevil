@@ -1,4 +1,3 @@
-using Cardevil.Systems;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Cards.Data;
@@ -8,6 +7,7 @@ using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.OutStage;
+using Cardevil.Core.Turn.Interfaces;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;

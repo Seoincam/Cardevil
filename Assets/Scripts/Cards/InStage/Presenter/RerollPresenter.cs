@@ -1,7 +1,5 @@
 using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
 using Cardevil.Core;
-using Cardevil.Systems;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
@@ -14,7 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
-    public class RerollPresenter : ITurnRerollInput, IClearable
+    public class RerollPresenter : IClearable
     {
         private IReadOnlyCardLibrary _library;
         

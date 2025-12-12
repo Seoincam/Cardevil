@@ -66,7 +66,7 @@ namespace Cardevil.Ingame.Player
             animEventReceived?.Invoke(eventName);
         }
 
-
+        /*
         [ConsoleCommand("PlayerVisual",
             "손님 플레이어 비주얼 테스트",
             "PlayerVisual <type>(run/idle/attack/hit/rotate)",
@@ -99,6 +99,7 @@ namespace Cardevil.Ingame.Player
                     break;
             }
         }
+        */
         
         public void SetFade(float alpha)
         {

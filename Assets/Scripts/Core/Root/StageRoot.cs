@@ -1,8 +1,8 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.System;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn;
 using Cardevil.Enemy;
-using Cardevil.Systems;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
@@ -21,26 +21,34 @@ namespace Cardevil.Core.Root
         [field: SerializeField, VisibleOnly] public Field Field { get; private set; }
         [field: SerializeField, VisibleOnly] public PlayerCharacter Player { get; set; } // 임시 플레이어
 
-        public ITurnEnemy Enemy => _turn.Enemy;
-        public int TurnOrder => _turn.TurnOrder;
+        // public int TurnOrder => _turn.TurnOrder;
         
         private GameFlowManager.StageEnterContext _context;
 
         
-        private async void Awake()
+        private void Awake()
         {
             // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
             
             // Reference 
-            Field = Object.FindAnyObjectByType<Field>();
+            Field = FindAnyObjectByType<Field>();
             if (!Field)
             {
                 LogEx.LogError("Field not found in the scene.");
                 return;
             }
+
+            Player = FindAnyObjectByType<PlayerCharacter>();
+            if (!Player)
+            {
+                LogEx.LogError("Player not found in the scene.");
+                return;
+            }
             
-            await InitAsync();
+            _enemySpawner = new EnemySpawner();
+            _turn = new TurnManager();
             
+            InitAsync().Forget();
         }
 
         private async UniTask InitAsync()
@@ -49,14 +57,10 @@ namespace Cardevil.Core.Root
             
             var game = Bootstrapper.Instance.Game;
             var cardLibrary = game.CardLibrary;
-
             
-            _enemySpawner = new EnemySpawner();
-            _turn = new TurnManager();
-            _turn.Init(_enemySpawner); // TODO: turn에 spawner를 줘야할지 고민하기
             
             await Card.InitAsync(cardLibrary);
-            
+            await EnterStageAsync();
         }
 
         /// <summary>
@@ -64,6 +68,7 @@ namespace Cardevil.Core.Root
         /// </summary>
         private async UniTask EnterStageAsync()
         {
+            LogEx.Log("EnterStageAsync");
             _enemySpawner.ConfigStageMobData(_context.stageId);
             if (!_enemySpawner.TrySpawn(out var enemy))
             {
@@ -71,7 +76,7 @@ namespace Cardevil.Core.Root
                 return;
             }
             
-            // _turn.Register(Card.BuildFlow(), );
+            _turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
             _turn.StartLoop();
         }
     }

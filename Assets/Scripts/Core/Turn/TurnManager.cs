@@ -1,49 +1,47 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
-using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Enemy;
 using Cardevil.Utils;
 
-namespace Cardevil.Systems
+namespace Cardevil.Core.Turn
 {
     public class TurnManager: IClearable
     {
-        public int TurnOrder { get; private set; }
-        public ITurnEnemy Enemy => _enemy;
-        
         private CancellationTokenSource _cts;
         private UniTask _loopTask;
-
+        
+        /*
+         * 추후 동시에 여러 적과
+         * 싸우는 등의 변화가 있다면,
+         * target을 지정하는 식으로
+         * 쉽게 전환할 수 있음.
+         */
+        
         private ITurnCardFlow _cardFlow;
         private ITurnPlayer _player;
         private ITurnEnemy _enemy;
 
+        private TurnContext _ctx;
         private EnemySpawner _spawner;
 
 
         public void Clear()
         {
             StopLoopAsync().Forget();
-            TurnOrder = 0;
             _cardFlow = null;
-            _player = null;
             _enemy = null;
+            _player = null;
         }
 
-        public void Init(EnemySpawner spawner)
+        public void Init(EnemySpawner spawner, ITurnCardFlow cardFlow, ITurnPlayer player, ITurnEnemy enemy)
         {
             _spawner = spawner;
-        }
-        
-        public void Register(ITurnCardFlow cardFlow, ITurnPlayer player, ITurnEnemy enemy)
-        {
-            Clear();
-
-            _cardFlow = cardFlow ?? throw new ArgumentNullException(nameof(cardFlow));
-            _player = player ?? throw new ArgumentNullException(nameof(player));
-            _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
+            _cardFlow = cardFlow;
+            _player = player;
+            _enemy = enemy;
         }
         
         /// <summary>
@@ -59,6 +57,7 @@ namespace Cardevil.Systems
             // 혹시 돌고 있던 루프가 있으면 안전 종료까지 대기
             await StopLoopAsync();
 
+            _ctx = new TurnContext();
             _cts = CancellationTokenSource.CreateLinkedTokenSource(external);
             _loopTask = GameLoopAsync(_cts.Token);
         }
@@ -92,34 +91,40 @@ namespace Cardevil.Systems
                 _loopTask = default;
             }
         }
-
-
+        
         private async UniTask GameLoopAsync(CancellationToken token)
         {
             try
             {
+                LogEx.Log("Game Loop");
+                
                 // TODO: 적에 대한 설명 표시
-                await _enemy.TurnAttack();
+                await _enemy.ShowInitialAttackArea();
 
                 await _cardFlow.EnterRerollPhase(6);
-                await _cardFlow.Reroll.Reroll();
+                await _cardFlow.Reroll();
                 await _cardFlow.ExitRerollPhase();
-
+                
                 await _cardFlow.EnterHandPhase();
+                
                 while (!token.IsCancellationRequested)
                 {
-                    TurnOrder++;
-                    await _cardFlow.StageCards.DrawCard();
-                    if (_cardFlow.StageCards.IsNoCard)
+                    _ctx.TurnCount++;
+                    await _cardFlow.DrawCard();
+                    if (_cardFlow.IsNoCard)
                     {
                         // TODO: 게임 오버
                         break;
                     }
 
-                    await _cardFlow.StageCards.WaitUserInput();
-
-                    await _player.TurnMove();
-                    await _player.TurnAttack();
+                    await _cardFlow.WaitUserInput();
+                    
+                    // 2. 플레이어 이동 + 공격
+                    var playerPosition = await _player.TurnMove();
+                    _ctx.PlayerPosition = playerPosition;
+                    
+                    var playerAttack = await _enemy.TurnAttackAsync(_ctx);
+                    playerAttack.Target.TakeDamage(playerAttack.Damage);
 
                     if (_enemy.IsDead)
                     {
@@ -130,8 +135,10 @@ namespace Cardevil.Systems
                         _enemy = spawned;
                     }
 
-                    await _enemy.TurnAttack();
-
+                    // 3. 적 공격
+                    var enemyAttack = await _enemy.TurnAttackAsync(_ctx);
+                    enemyAttack.Target.TakeDamage(enemyAttack.Damage);
+                    
                     if (_player.IsDead)
                     {
                         Bootstrapper.Instance.Game.PlayerDied();

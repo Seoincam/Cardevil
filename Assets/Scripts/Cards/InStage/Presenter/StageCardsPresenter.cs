@@ -2,7 +2,6 @@ using Cardevil.Cards.Data;
 using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
-using Cardevil.Systems;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
@@ -17,7 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
-    public class StageCardsPresenter : ITurnPlayerInput, IClearable
+    public class StageCardsPresenter : IClearable
     {
         private IReadOnlyCardLibrary _library;
         private StageCardsModel _model;

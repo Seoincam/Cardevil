@@ -27,7 +27,7 @@ public class MainGame : BaseScene   // MainGame Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ BaseScene Å
 
         // Managers.UI.ShowPopUpUI<S1_PopUp>();
         // Managers.Sound.Play("Sounds/BGM/Main_Bgm",Define.Sound.BGM);
-        Bootstrapper.Instance.Game.GameStart();
+        // Bootstrapper.Instance.Game.GameStart();
     }
     public void Option()
     {

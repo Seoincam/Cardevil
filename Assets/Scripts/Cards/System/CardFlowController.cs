@@ -1,9 +1,9 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Evaluations;
-using Cardevil.Systems;
 using Cysharp.Threading.Tasks;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Core.Turn.Interfaces;
 
 namespace Cardevil.Cards.System
 {
@@ -17,10 +17,7 @@ namespace Cardevil.Cards.System
         private readonly IEvaluationPresenter _evaluationPresenter;
 
         private int _maxHand;
-
-        public ITurnRerollInput Reroll => _rerollPresenter;
-        public ITurnPlayerInput StageCards => _stageCardsPresenter;
-
+        
         public CardFlowController(CardLibrary library,
             StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
             StageCardsPresenter stageCardsPresenter, IEvaluationPresenter evaluationPresenter)
@@ -40,6 +37,11 @@ namespace Cardevil.Cards.System
             
             _rerollPresenter.Init(_library, _stageCardsModel);
             await _rerollPresenter.SetUp(maxHand);
+        }
+
+        public async UniTask Reroll()
+        {
+            await _rerollPresenter.Reroll();
         }
 
         public async UniTask ExitRerollPhase()
@@ -67,6 +69,19 @@ namespace Cardevil.Cards.System
         public void DeactivateHandPhase()
         {
             _stageCardsPresenter.Clear();
+        }
+
+        // TODO: 구현해야함.
+        public bool IsNoCard { get; }
+        
+        public async UniTask DrawCard()
+        {
+            await _stageCardsPresenter.DrawCard();
+        }
+
+        public async UniTask WaitUserInput()
+        {
+            await _stageCardsPresenter.WaitUserInput();
         }
     }
 }

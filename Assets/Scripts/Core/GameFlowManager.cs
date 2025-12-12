@@ -1,6 +1,7 @@
 using Cardevil.Dungeon;
 using Cardevil.Events.ExecEvents;
 using Cardevil.SceneManagement;
+using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -23,11 +24,12 @@ namespace Cardevil.Core
 
         [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "Test" };
 
-        public GameFlowManager()
+        public void Init()
         {
             // TODO: 우선 순위 정하기.
             // 가장 늦은 우선 순위로 하면 될 듯.
             
+            LogEx.Log("GameFlowManager");
             ExecEventBus<NodeEnteredEventArgs>.RegisterStatic(10, RequestEnterStage);
         }
 

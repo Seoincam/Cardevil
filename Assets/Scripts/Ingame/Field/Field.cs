@@ -86,7 +86,6 @@ namespace Cardevil.Ingame.Field
 
         private void Awake()
         {
-            Bootstrapper.Instance.Game.Field = this; // 시작될때 매니저에 등록
             if (fieldConfiguration == null)
             {
                 LogEx.LogError("FieldConfigurationSo is not assigned. Please assign it in the inspector.");

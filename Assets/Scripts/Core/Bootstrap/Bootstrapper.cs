@@ -20,8 +20,8 @@ namespace Cardevil.Core.Bootstrap
         [Header("References")]
         [SerializeField] private EventSystem eventSystem;
         [field: SerializeField] public DatabaseManager Database { get; private set; }
-        
 
+        private int TotalToLoad => 5;
         private CancellationTokenSource _cts;
 
         private void Awake()
@@ -37,7 +37,7 @@ namespace Cardevil.Core.Bootstrap
             DontDestroyOnLoad(eventSystem);
             
             _cts = new CancellationTokenSource();
-            BootstrapFlow.RunAsync(this, 4, _cts.Token).Forget();
+            BootstrapFlow.RunAsync(this, TotalToLoad, _cts.Token).Forget();
         }
 
         private void OnDestroy()

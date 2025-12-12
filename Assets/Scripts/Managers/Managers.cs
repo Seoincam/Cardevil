@@ -1,13 +1,6 @@
-using Cardevil.Cards.System;
-using Cardevil.Dungeon;
 using Cardevil.Manager;
 using Cardevil.Pools;
-using Cardevil.Save;
-using Cardevil.Sound;
-using Cardevil.Systems;
-using Database;
 using UnityEngine;
-using Cardevil.DataStructure;
 using Cardevil.Relics;
 
 public class Managers : MonoBehaviour

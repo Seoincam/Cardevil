@@ -64,7 +64,7 @@ namespace Cardevil.Sound
             {
                 root = new GameObject { name = "@Sound" };
                 root.transform.parent = parent;
-                Object.DontDestroyOnLoad(root);
+                // Object.DontDestroyOnLoad(root);
             }
 
             // 사운드 루트 초기화
