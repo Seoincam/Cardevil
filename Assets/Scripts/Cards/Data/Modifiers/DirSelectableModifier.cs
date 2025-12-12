@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Save;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -41,6 +42,18 @@ namespace Cardevil.Cards.Data.Modifiers
             }
             
             b.AddDirectionSelectable(null);
+        }
+
+        public CardModifierSaveData Serialize()
+        {
+            return new CardModifierSaveData() { type = type, payload = JsonUtility.ToJson(this) };
+
+        }
+
+        public void Deserialize(CardModifierSaveData data)
+        {
+            var loaded = JsonUtility.FromJson<DirSelectableModifier>(data.payload);
+            direction = loaded.direction;
         }
     }
 }

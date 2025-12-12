@@ -12,13 +12,15 @@ namespace Cardevil.Core.Bootstrap
     {
         public static Bootstrapper Instance { get; private set; }
         
-        [field: SerializeField] public DatabaseManager Database { get; private set; }
         [field: SerializeField] public GameManager Game { get; private set; }
+        [field: SerializeField] public GameFlowManager GameFlow { get; private set; }
         [field: SerializeField] public SaveLoadManager SaveLoad { get; private set; }
         [field: SerializeField] public SoundManager Sound { get; private set; }
 
-        [Header("References")] 
+        [Header("References")]
         [SerializeField] private EventSystem eventSystem;
+        [field: SerializeField] public DatabaseManager Database { get; private set; }
+        
 
         private CancellationTokenSource _cts;
 

@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data.Save;
 using Cardevil.Ingame;
 using Cardevil.SceneManagement;
 using System;
@@ -14,18 +15,21 @@ namespace Cardevil.Save
         public string Name;
         public long RawSaveTime;
         public PlayerStatus PlayerStatus;
+        public CardLibrarySaveData CardLibrary;
         
         public GameSave(string name)
         {
             Name = name;
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
+            CardLibrary = new CardLibrarySaveData();
         }
         public GameSave()
         {
             Name = "DefaultSave";
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
+            CardLibrary = new CardLibrarySaveData();
         }
         
         public DateTime SaveTime

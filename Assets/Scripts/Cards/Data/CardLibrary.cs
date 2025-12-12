@@ -1,19 +1,18 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Data.Save;
 using Cardevil.Core;
-using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
+using Cardevil.Save;
 using Cardevil.Utils;
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.Cards.Data
 {
-    public interface IReadOnlyCardLibrary
+    public interface IReadOnlyCardLibrary 
     {
         /// <summary>
         /// Pipeline, data, visualSprite Set의 개수.
@@ -30,26 +29,26 @@ namespace Cardevil.Cards.Data
         /// </summary>
         IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
     }
-    
+
     [Serializable]
-    public class CardLibrary : IClearable, IReadOnlyCardLibrary
+    public class CardLibrary : IClearable, IReadOnlyCardLibrary, ISaveLoad
     {
         // <id, data>
         [SerializeField, VisibleOnly] private SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
-        
+
         // 파이프라인을 바탕으로 생성된 데이터들.
         // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
         [SerializeField, VisibleOnly] private SerializableDictionary<int, CardData> dataMap = new();
-        
+
         private EnhancementDataLibrary _enhancementDataLibrary;
-        
+
         public void Init(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
-            
+
             Clear();
         }
-        
+
         /// <summary>
         /// <see cref="CardDataPipeline"/>을 로드하거나, 기존 세이브가 없을 경우 새로 생성.
         /// <see cref="CardDataPipeline"/>을 바탕으로 <see cref="CardData"/>를 생성.
@@ -58,9 +57,9 @@ namespace Cardevil.Cards.Data
         public void CreateBasePipelines()
         {
             // TODO: 세이브파일 로드 체크 로직 넣어야함.
-            
+
             pipelineMap.CreateBasePipelines(_enhancementDataLibrary);
-            
+
             foreach (int id in pipelineMap.Keys)
                 UpdateMaps(id);
         }
@@ -70,10 +69,10 @@ namespace Cardevil.Cards.Data
             pipelineMap.Clear();
             dataMap.Clear();
         }
-        
+
         public CardDataPipeline GetPipelineById(int id)
         {
-            if (!ValidateId(id)) 
+            if (!ValidateId(id))
                 return null;
 
             if (!pipelineMap.TryGetValue(id, out var pipeline))
@@ -89,13 +88,13 @@ namespace Cardevil.Cards.Data
         {
             if (!ValidateId(id))
                 return null;
-            
+
             if (!dataMap.TryGetValue(id, out var data))
             {
                 LogEx.LogError($"존재하지 않는 id입니다. : {id}");
                 return null;
             }
-            
+
             return data;
         }
 
@@ -110,7 +109,7 @@ namespace Cardevil.Cards.Data
             var cardData = pipelineMap[id].Build();
             if (cardData != null)
                 dataMap[id] = cardData;
-            
+
             // Card Visual Sprite Set
             // var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
             // if (spriteSet != null)
@@ -161,5 +160,31 @@ namespace Cardevil.Cards.Data
         public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);
 
         #endregion
+
+        public void Save(GameSave currentSave)
+        {
+            var saveData = new CardLibrarySaveData { pipelines = new List<CardDataPipelineSaveData>() };
+
+            foreach (var pipeline in pipelineMap.Values)
+                saveData.pipelines.Add(pipeline.Serialize());
+
+            currentSave.CardLibrary = saveData;
+        }
+
+        public void Load(GameSave currentSave)
+        {
+            Clear();
+
+            var saveData = currentSave.CardLibrary;
+            if (saveData?.pipelines == null)
+                return;
+
+            foreach (var p in saveData.pipelines)
+            {
+                var pipeline = CardDataPipeline.FromSaveData(p);
+                pipelineMap[p.id] = pipeline;
+                UpdateMaps(p.id);
+            }
+        }
     }
 }

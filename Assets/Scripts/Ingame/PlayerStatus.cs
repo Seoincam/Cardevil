@@ -1,3 +1,4 @@
+using Cardevil.Cards.Data;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.DataStructure;
@@ -19,18 +20,34 @@ namespace Cardevil.Ingame
     [Serializable]
     public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>
     {
+        // Hp
         [SerializeField] private int _currentHP = 3;
         [SerializeField] private int _maxHP = 3;
         [SerializeField] private int _shield = 0;
-        [SerializeField] private int _rerollTicket = 0;
+        [SerializeField] public bool canRevive = false;
+        
+        // Card
         [SerializeField] private int _maxHand = 6; // TODO: 실제 로직에 연결해야함.
         [SerializeField] private int _discardHand = 3;
-        [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
-        [SerializeField] public int gold;
+        
+        // Current
+        [SerializeField] private int _rerollTicket = 0;
+        [SerializeField] private int _gold;
+        
+        // Slot Machine
         [SerializeField] public int _slotMachineLevel = 1;
+        
+        [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
 
-        public bool canRevive = false;
 
+        /*
+         * TODO: 저장해야할 것
+         * 카드 상태,
+         * 유물 상태,
+         * 아이템 상태
+         */
+        
+        
         /// <summary>
         /// 플레이어의 현재 체력
         /// </summary>
@@ -198,6 +215,8 @@ namespace Cardevil.Ingame
             other.CopyFrom(this);
         }
 
+        #region Console Commands
+        
         [ConsoleCommand("heal", "Heal the player by a specified amount.","heal [int: amount (optional, default: 1)]", new []{"0","1","2","3"})]
         private static void HealCommand(string[] args)
         {
@@ -272,5 +291,6 @@ namespace Cardevil.Ingame
             }
         }
 
+        #endregion
     }
 }

@@ -7,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Bootstrapper.Instance.Game.PlayerStatus.gold += Random.Range(18,24);
+            // Bootstrapper.Instance.Game.PlayerStatus.gold += Random.Range(18,24);
         }
     }
 }

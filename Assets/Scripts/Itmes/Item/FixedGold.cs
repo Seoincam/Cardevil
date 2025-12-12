@@ -43,7 +43,7 @@ namespace Cardevil.Item.gold
         /// <param name="income"></param>
         public void GetGold(int income)
         {
-            Bootstrapper.Instance.Game.PlayerStatus.gold += income;
+            // Bootstrapper.Instance.Game.PlayerStatus.gold += income;
             Debug.Log($"income :{income} 획득");
         }
         

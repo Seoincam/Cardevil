@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4839014720585370412
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1453207169086923862}
+  - component: {fileID: 8408681180270395050}
+  m_Layer: 0
+  m_Name: '@Bootstrapper'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1453207169086923862
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839014720585370412}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 9204910590052670324}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8408681180270395050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4839014720585370412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb74255155e74f1a8babb89c7e98024c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Game>k__BackingField:
+    playerStatus:
+      _currentHP: 3
+      _maxHP: 3
+      _shield: 0
+      canRevive: 0
+      _maxHand: 6
+      _discardHand: 3
+      _rerollTicket: 0
+      _gold: 0
+      _slotMachineLevel: 1
+      _variableContainer:
+        variables: []
+    cardLibrary:
+      pipelineMap:
+        defaultKey: 0
+        _items: []
+      dataMap:
+        defaultKey: 0
+        _items: []
+    _field: {fileID: 0}
+    _player: {fileID: 0}
+  <SaveLoad>k__BackingField:
+    DefaultSaveName: AutoSave
+    exceptionScenes: 
+    _currentSave:
+      Name: DefaultSave
+      RawSaveTime: -8584361555450482788
+      PlayerStatus:
+        _currentHP: 3
+        _maxHP: 3
+        _shield: 0
+        canRevive: 0
+        _maxHand: 6
+        _discardHand: 3
+        _rerollTicket: 0
+        _gold: 0
+        _slotMachineLevel: 1
+        _variableContainer:
+          variables: []
+      CardLibrary:
+        pipelines: []
+  <Sound>k__BackingField:
+    root: {fileID: 0}
+    audioMixer: {fileID: 0}
+    audioMixerGroups: []
+    defaultVolume: 0.75
+    _defaultBackgroundAudioConfiguration: {fileID: 0}
+    _defaultSoundEffectAudioConfiguration: {fileID: 0}
+    _sfxEmitters: []
+    _cachedBackgroundSoundEmitters:
+      defaultKey: 
+      _items: []
+    _currentPlayingBackgroundMusicName: 
+  eventSystem: {fileID: 0}
+  <Database>k__BackingField: {fileID: 1793844106057870302}
+  references:
+    version: 2
+    RefIds: []
+--- !u!1001 &1335614547626975130
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1453207169086923862}
+    m_Modifications:
+    - target: {fileID: 1910975237748545799, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_Name
+      value: '@DBManager'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+--- !u!114 &1793844106057870302 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+  m_PrefabInstance: {fileID: 1335614547626975130}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d383f07d75744cd7b1e58bc9cee3f540, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &9204910590052670324 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7869872345705628910, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+  m_PrefabInstance: {fileID: 1335614547626975130}
+  m_PrefabAsset: {fileID: 0}
