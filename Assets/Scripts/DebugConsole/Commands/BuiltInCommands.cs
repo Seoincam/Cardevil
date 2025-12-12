@@ -149,12 +149,16 @@ namespace Cardevil.DebugConsole.Commands
             });
         }
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void RegisterCommands()
+        private static bool _initialized;
+        
+        public static void RegisterCommands()
         {
+            if (_initialized) return;
+            
             CommandLibrary.RegisterCommand(ping);
             CommandLibrary.RegisterCommand(helpCommand);
             CommandLibrary.RegisterCommand(help2Command);
+            _initialized = true;
         }
     }
 }

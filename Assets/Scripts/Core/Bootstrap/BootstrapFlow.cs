@@ -1,3 +1,6 @@
+using Cardevil.DebugConsole.Commands;
+using Cardevil.Events.ExecEvents;
+using Cardevil.Item;
 using Cardevil.SceneManagement;
 using Cysharp.Threading.Tasks;
 using System;
@@ -25,15 +28,28 @@ namespace Cardevil.Core.Bootstrap
         }
         
         // TODO: ct 사용 및 전파하기
-        public static async UniTask RunAsync(Bootstrapper ctx, int totalToLoadCount, CancellationToken ct)
+        public static async UniTask BootstrapAsync(Bootstrapper ctx, int totalToLoadCount, CancellationToken ct)
         {
             _totalToLoad = totalToLoadCount;
             
+            // TODO: 오래 걸릴 것들은 비동기로 전환하기
+            
+            // 1. Util
+            ExecEventUtil.Initialize();
+            SceneReference.InitializeCache();
+            BuiltInCommands.RegisterCommands();
+            ItemLibrary.Initialize();
+            // TODO: Console도 할 지 고민하기
+
+            Loaded++;
+            
+            // 2. Database
             await ctx.Database.InitializeAsync();
             Loaded++;
          
             // TODO: SaveLoad InitAsync/LoadAsync 만들기
             
+            // 3. Save data
             ctx.Game.Init();
             Loaded++;
             /*

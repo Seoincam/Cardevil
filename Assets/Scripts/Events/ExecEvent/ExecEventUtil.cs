@@ -21,6 +21,8 @@ namespace Cardevil.Events.ExecEvents
         public static IReadOnlyList<Type> EventTypes;
         public static IReadOnlyList<Type> EventBusTypes;
         public static IReadOnlyList<Type> StaticEventBusTypes;
+        
+        private static bool _initialized;
 
         #if UNITY_EDITOR
         public static PlayModeStateChange PlayModeState { get; private set; }
@@ -42,13 +44,15 @@ namespace Cardevil.Events.ExecEvents
         }
         #endif
         
-        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
+        public static void Initialize()
         {
+            if (_initialized) return;
+            
             LogEx.Log("Initializing ExecEventUtil");
             EventTypes = ReflectionUtil.GetTypes(typeof(ExecEventArgs<>));
             EventBusTypes = InitializeAllBus();
             StaticEventBusTypes = InitializeAllStaticBus();
+            _initialized = true;
         }
 
         private static List<Type> InitializeAllBus()

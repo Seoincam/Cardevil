@@ -37,7 +37,7 @@ namespace Cardevil.Core.Bootstrap
             DontDestroyOnLoad(eventSystem);
             
             _cts = new CancellationTokenSource();
-            BootstrapFlow.RunAsync(this, TotalToLoad, _cts.Token).Forget();
+            BootstrapFlow.BootstrapAsync(this, TotalToLoad, _cts.Token).Forget();
         }
 
         private void OnDestroy()
