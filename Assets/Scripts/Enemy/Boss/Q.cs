@@ -27,6 +27,7 @@ namespace Cardevil.InGame.Enemy.Boss
             // 살아 있다면
             // 공격받으면 공격 생성
             // 스트레이트 이상 족보의 공격 받을 시
+            /*
             if (Managers.Card.EvaluationResults.CurrentResult.HandRanking >= HandRanking.Straight)
             {
                 Debug.Log("Q은 Straight이상의 공격을 받았습니다.");
@@ -48,6 +49,7 @@ namespace Cardevil.InGame.Enemy.Boss
             {
                 SetNormalState();
             }
+            */
            
         
             

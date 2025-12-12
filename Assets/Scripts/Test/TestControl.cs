@@ -58,24 +58,11 @@ namespace Cardevil.Test
         private void OnGUI()
         {
             // PlayerGUI();
-            StageGUI();
+            // StageGUI();
         }
 
         #endregion
-
-        #region Turn/Stage
-        public void StageGUI()
-        {
-            GUILayout.Label("Stage Menu");
-
-            if (GUILayout.Button("Enter Stage"))
-            {
-                Bootstrapper.Instance.Game.EnterStage("Test");
-            }
-            
-        }
-
-        #endregion
+        
 
         #region Player
         [Header("Player Test")] 

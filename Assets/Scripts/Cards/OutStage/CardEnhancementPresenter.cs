@@ -99,6 +99,7 @@ namespace Cardevil.Cards.OutStage
 
         #region Command
 
+        /*
         [ConsoleCommand("getPossibleEnhancements", "Log all possible enhancements.", "getPossibleEnhancements [int: ID (0~49])")]
         public static void GetPossibleEnhancementsCommand(string[] args)
         {
@@ -179,6 +180,7 @@ namespace Cardevil.Cards.OutStage
             DebugConsole.Console.Message("Inspector의 Managers.Card.CardLibrary에서 확인할 수 있습니다.");
         }
 
+        */
         #endregion
     }
 }

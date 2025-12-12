@@ -1,4 +1,4 @@
-﻿using Cardevil.Manager;
+﻿using Cardevil.Core.Root;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;

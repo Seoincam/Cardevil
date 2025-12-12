@@ -1,7 +1,7 @@
 using Cardevil.Dungeon;
 using UnityEngine;
 
-namespace Cardevil.Manager
+namespace Cardevil.Core.Root
 {
     public class WorldRoot : MonoBehaviour
     {

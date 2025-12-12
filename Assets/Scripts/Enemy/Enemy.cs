@@ -85,17 +85,13 @@ namespace Cardevil.InGame.Enemy
             }
 
         }
-        private void Start()
+
+        public void Init(Field field)
         {
-            field = Bootstrapper.Instance.Game.Field;
+            this.field = field;
             currentAttackStyle = AttackStyle.UnKnown;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
-
-        }
-
-        private void Awake()
-        {
         }
         
         public async UniTask Replace()
