@@ -1,9 +1,12 @@
 using Cardevil.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
 
+[Obsolete()]
 public abstract class BaseScene : MonoBehaviour
 {
 

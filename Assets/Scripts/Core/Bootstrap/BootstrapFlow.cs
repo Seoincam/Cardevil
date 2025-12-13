@@ -9,9 +9,16 @@ using UnityEngine.SceneManagement;
 
 namespace Cardevil.Core.Bootstrap
 {
+    /// <summary>
+    /// 게임 부트스트랩 흐름 제어.
+    /// 초기화 단계 순차 실행 및 진행률 관리.
+    /// </summary>
     public static class BootstrapFlow
     {
-        // loaded / totalToLoad
+        /// <summary>
+        /// 부트스트랩 진행률 변경 이벤트.
+        /// 로드 완료 개수와 전체 개수 전달.
+        /// </summary>
         public static event Action<int, int> ProgressChanged;
         
         private static int _totalToLoad;
@@ -28,6 +35,14 @@ namespace Cardevil.Core.Bootstrap
         }
         
         // TODO: ct 사용 및 전파하기
+        
+        /// <summary>
+        /// 게임 초기화 비동기 실행.
+        /// 매니저 및 시스템 초기화 후 시작 씬 로드.
+        /// </summary>
+        /// <param name="ctx">부트스트랩 컨텍스트</param>
+        /// <param name="totalToLoadCount">전체 로드 단계 개수</param>
+        /// <param name="ct">취소 토큰</param>
         public static async UniTask BootstrapAsync(Bootstrapper ctx, int totalToLoadCount, CancellationToken ct)
         {
             _totalToLoad = totalToLoadCount;

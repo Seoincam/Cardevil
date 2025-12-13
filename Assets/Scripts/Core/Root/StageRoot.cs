@@ -13,6 +13,10 @@ using UnityEngine;
 
 namespace Cardevil.Core.Root
 {
+    /// <summary>
+    /// 전투 스테이지 루트 컨트롤러.
+    /// 카드, 턴, 적, 필드, 플레이어 초기화 및 전투 흐름 제어.
+    /// </summary>
     public class StageRoot : MonoBehaviour
     {
         [field: SerializeField] public CardManager Card { get; private set; }
@@ -57,7 +61,8 @@ namespace Cardevil.Core.Root
          
         
         /// <summary>
-        /// 전투 스테이지에 진입합니다.
+        /// 전투 스테이지 진입 비동기 처리.
+        /// 스테이지 ID 기반 적 스폰, 필드 및 턴 매니저 구성 후 턴 루프 시작.
         /// </summary>
         private async UniTask EnterStageAsync()
         {
@@ -75,6 +80,11 @@ namespace Cardevil.Core.Root
             turn.StartLoop();
         }
 
+        /// <summary>
+        /// 턴 루프 종료 처리.
+        /// 던전 노드 퇴장 처리 및 스테이지 씬 언로드.
+        /// </summary>
+        /// <param name="ctx">턴 컨텍스트</param>
         private void OnTurnLoopEnded(TurnContext ctx)
         {
             // TODO: 보상창 등 나와야함.

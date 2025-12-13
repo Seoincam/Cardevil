@@ -54,7 +54,6 @@ namespace Cardevil.Save
             return _saveLoadRoots.Remove(saveLoadRoot);
         }
         
-        
         private void OnSceneLoaded(Scenes scene, LoadSceneMode mode)
         {
             if (exceptionScenes.Contains(scene))
@@ -65,6 +64,13 @@ namespace Cardevil.Save
             }
         }
         
+        
+        /// <summary>
+        /// 새로운 세이브 데이터 생성.
+        /// 지정된 슬롯과 이름을 기반으로 세이브 생성 및 초기화 후 저장.
+        /// </summary>
+        /// <param name="slot">세이브 저장 대상 슬롯</param>
+        /// <param name="name">프로필 이름</param>
         public void MakeNewSave(SaveSlot slot, string name)
         {
             var newSave = new GameSave(GetSlotFileName(slot), name);
@@ -76,12 +82,20 @@ namespace Cardevil.Save
             SaveGame();
         }
 
+        /// <summary>
+        /// 슬롯 기반 세이브 로드.
+        /// 지정된 슬롯의 세이브 파일명 계산 후 로드 요청.
+        /// </summary>
         public void LoadGame(SaveSlot slot)
         {
             var fileName = GetSlotFileName(slot);
             LoadGame(fileName);
         }
         
+        /// <summary>
+        /// 슬롯 기반 세이브 삭제.
+        /// 지정된 슬롯의 세이브 존재 여부 확인 후 삭제 수행.
+        /// </summary>
         public void DeleteSave(SaveSlot slot)
         {
             if (!TryGetSave(slot, out var saveData))
@@ -93,12 +107,20 @@ namespace Cardevil.Save
             DeleteSave(saveData.FileName);
         }
         
+        /// <summary>
+        /// 슬롯에 세이브 존재 여부 확인.
+        /// 지정된 슬롯에 대응하는 세이브 파일 존재 검사.
+        /// </summary>
         public bool IsAnySave(SaveSlot slot)
         {
             string fileName = GetSlotFileName(slot);
             return _dataService.SaveExists(fileName);
         }
-
+        
+        /// <summary>
+        /// 슬롯 기반 세이브 데이터 조회.
+        /// 지정된 슬롯에서 세이브 파일 로드 시도.
+        /// </summary>
         public bool TryGetSave(SaveSlot slot, out GameSave saveData)
         {
             saveData = null;
@@ -111,6 +133,11 @@ namespace Cardevil.Save
             return saveData != null;
         }
         
+        /// <summary>
+        /// 슬롯에 대응하는 세이브 파일명 생성.
+        /// 내부 파일 저장용 접두사와 슬롯 인덱스를 조합.
+        /// </summary>
+        /// <returns>생성된 세이브 파일명</returns>
         private string GetSlotFileName(SaveSlot slot)
         {
             return $"{SlotFilePrefix}{(int)slot}";

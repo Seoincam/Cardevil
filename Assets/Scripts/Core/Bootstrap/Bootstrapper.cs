@@ -10,6 +10,10 @@ using UnityEngine.EventSystems;
 
 namespace Cardevil.Core.Bootstrap
 {
+    /// <summary>
+    /// 게임 부트스트랩 진입점.
+    /// 핵심 매니저 초기화 및 전역 접근 제공.
+    /// </summary>
     public class Bootstrapper : MonoBehaviour
     {
         public static Bootstrapper Instance { get; private set; }
