@@ -33,10 +33,10 @@ namespace Cardevil.Save
         
         public void Save(GameSave data, bool overwrite = true)
         {
-            string targetPath = GetFilePath(data.Name);
+            string targetPath = GetFilePath(data.FileName);
             if (File.Exists(targetPath) && !overwrite)
             {
-                throw new InvalidOperationException($"Save file '{data.Name}' already exists and overwrite is set to false.");
+                throw new InvalidOperationException($"Save file '{data.FileName}' already exists and overwrite is set to false.");
             }
             File.WriteAllText(targetPath, _serializer.Serialize(data));
         }

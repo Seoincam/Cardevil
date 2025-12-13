@@ -22,8 +22,6 @@ namespace Cardevil.Cards.System
     [Serializable]
     public class CardManager : IClearable
     {
-        [SerializeField] private EnhancementDataLibrary enhancementDataLibrary = new();
-        
         // Out Stage
         private readonly CardPipelineModifierService _modifierService = new();
         private readonly CardEnhancementPresenter _enhancementPresenter = new();
@@ -58,20 +56,13 @@ namespace Cardevil.Cards.System
         /// 카드 매니저를 초기화.  
         /// 내부 상태를 초기화.
         /// </summary>
-        public async UniTask InitAsync(CardLibrary library)
+        public async UniTask InitAsync(CardLibrary library, EnhancementDataLibrary enhancementData)
         {
             Clear();
             _library = library;
             
-            enhancementDataLibrary.Init(); // TODO: 이건 bootstrapper db로 빼기
-            library.Init(enhancementDataLibrary); 
-            
             _modifierService.Init(library); // TODO: 얘도 빼야할 듯?
-            
-            _enhancementPresenter.Init(library, enhancementDataLibrary, _modifierService);
-            
-            library.CreateBasePipelines(); // TODO: 얘도 빼야함
-            
+            _enhancementPresenter.Init(library, enhancementData, _modifierService);
             _evaluationPresenter.Init(_evaluationResultsModel);
         }
 

@@ -151,7 +151,7 @@ namespace Cardevil.Core.Turn
                     
                     if (_player.IsDead)
                     {
-                        Bootstrapper.Instance.Game.PlayerDied();
+                        // Bootstrapper.Instance.Game.PlayerDied();
                         break;
                     }
                 }

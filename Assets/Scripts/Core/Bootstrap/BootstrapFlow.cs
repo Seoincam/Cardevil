@@ -45,27 +45,23 @@ namespace Cardevil.Core.Bootstrap
             
             // 2. Database
             await ctx.Database.InitializeAsync();
+            ctx.CardEnhancementData.Init();
             Loaded++;
-         
-            // TODO: SaveLoad InitAsync/LoadAsync 만들기
             
             // 3. Save data
-            ctx.Game.Init();
-            Loaded++;
-            /*
-             * TODO: 로드된 세이브 있다면 적용
-             * 없다면 새 게임 진입하게
-             */
+            ctx.SaveLoad.Init();
             Loaded++;
             
             // 4. Object Pool
             ctx.Pool.Init(ctx.transform);
+            Loaded++;
             
             // 5. Sound
             ctx.Sound.Init(ctx.transform, ctx.Pool);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             Loaded++;
             
             // 6. Flow
+            ctx.Game.Init();
             ctx.GameFlow.Init();
             Loaded++;
 

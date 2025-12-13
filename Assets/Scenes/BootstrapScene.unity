@@ -1211,6 +1211,22 @@ PrefabInstance:
       propertyPath: eventSystem
       value: 
       objectReference: {fileID: 1677023911}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: <SaveLoad>k__BackingField.exceptionScenes.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: '<SaveLoad>k__BackingField.exceptionScenes.Array.data[1]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: '<SaveLoad>k__BackingField.exceptionScenes.Array.data[2]'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: '<SaveLoad>k__BackingField.exceptionScenes.Array.data[3]'
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

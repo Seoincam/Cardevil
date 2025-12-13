@@ -168,14 +168,14 @@ namespace Cardevil.Cards.Data
             foreach (var pipeline in pipelineMap.Values)
                 saveData.pipelines.Add(pipeline.Serialize());
 
-            currentSave.CardLibrary = saveData;
+            currentSave.CardLibraryData = saveData;
         }
 
         public void Load(GameSave currentSave)
         {
             Clear();
 
-            var saveData = currentSave.CardLibrary;
+            var saveData = currentSave.CardLibraryData;
             if (saveData?.pipelines == null)
                 return;
 

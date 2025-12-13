@@ -44,9 +44,9 @@ namespace Cardevil.Core.Root
             
             var game = Bootstrapper.Instance.Game;
             var cardLibrary = game.CardLibrary;
+            var enhancementData = Bootstrapper.Instance.CardEnhancementData;
             
-            
-            await Card.InitAsync(cardLibrary);
+            await Card.InitAsync(cardLibrary, enhancementData);
         }
 
         /// <summary>
