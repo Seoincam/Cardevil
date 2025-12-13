@@ -8,22 +8,16 @@ using UnityEngine.SceneManagement;
 
 namespace Cardevil.Core.Root
 {
+    /// <summary>
+    /// 월드 루트 컨트롤러.
+    /// 던전 관리 및 스테이지 진입 흐름 제어.
+    /// </summary>
     public class WorldRoot : MonoBehaviour
     {
-        public static WorldRoot Instance { get; private set; }
-        
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
 
         private void Awake()
         {
-            if (Instance)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            
             Init();
         }
 

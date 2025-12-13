@@ -1,4 +1,5 @@
 ﻿using Cardevil.Attributes;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Root;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -113,8 +114,8 @@ namespace Cardevil.Dungeon.UI
                 LogEx.LogWarning($"Cannot enter node {dungeonNode.NodeId} - state is {dungeonNode.State}");
                 return;
             }
-            
-            var dungeonManager = WorldRoot.Instance.Dungeon;
+
+            var dungeonManager = Bootstrapper.Instance.GameFlow.World.Dungeon;
             if (dungeonManager != null)
             {
                 dungeonManager.EnterNode(dungeonNode);
