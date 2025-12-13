@@ -1,3 +1,4 @@
+using Cardevil.Core.Root;
 using Cardevil.Dungeon;
 using Cardevil.Events.ExecEvents;
 using Cardevil.SceneManagement;
@@ -23,6 +24,10 @@ namespace Cardevil.Core
         }
 
         [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "Test" };
+        
+        [field: SerializeField] public WorldRoot World { get; set; }
+        [field: SerializeField] public StageRoot Stage { get; set; }
+        
 
         public void Init()
         {
@@ -33,11 +38,17 @@ namespace Cardevil.Core
 
         public async UniTask RequestEnterStage(NodeEnteredEventArgs args)
         {
+            LogEx.Log("던전 노드 눌림");
             // TODO: 전투, 회복, 상점 등 분기해야함.
             // TODO: Db에 접근해서 스테이지 데이터 구성.
-            
-            await SceneLoader.LoadSceneAsync(Scenes.GamePlay, LoadSceneMode.Single);
-            
+
+            if (!World)
+            {
+                LogEx.LogError("World is null");
+                return;
+            }
+
+            World.EnterStageAsync(Context).Forget();
         }
     }
 }

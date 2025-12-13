@@ -1,4 +1,6 @@
+using Cardevil.Attributes;
 using Cardevil.Core.Turn.Interfaces;
+using System;
 using UnityEngine;
 
 namespace Cardevil.Core.Turn
@@ -13,13 +15,14 @@ namespace Cardevil.Core.Turn
         int TurnCount { get; }
     }
     
+    [Serializable]
     public class TurnContext : IReadOnlyTurnContext
     {
         public ITurnTarget CurrentEnemy { get; set; }
         public ITurnTarget Player { get; set; }
-        public Vector2Int PlayerPosition { get; set; }
+        [field: SerializeField, VisibleOnly] public Vector2Int PlayerPosition { get; set; }
         public IReadOnlyCardFlow CardFlow { get; set; }
 
-        public int TurnCount { get; set; }
+        [field: SerializeField, VisibleOnly] public int TurnCount { get; set; }
     }
 }

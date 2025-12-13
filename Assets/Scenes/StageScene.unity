@@ -163,10 +163,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bc1da19c34465482c6303fe6955d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <Card>k__BackingField:
-    enhancementDataLibrary:
-      table:
-        _items: []
+  turn:
+    context:
+      <PlayerPosition>k__BackingField: {x: 0, y: 0}
+      <TurnCount>k__BackingField: 0
   <Field>k__BackingField: {fileID: 401468742}
   <Player>k__BackingField: {fileID: 1012406964}
 --- !u!1001 &401468740
@@ -656,7 +656,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Main Camera
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3893278959510792186, guid: 3264d905ebbd8fe459a4e26c51070721, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1196,8 +1197,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 1252862672}
   - {fileID: 563600088}
-  - {fileID: 1538176313}
   - {fileID: 198340543}
+  - {fileID: 1538176313}
   - {fileID: 1736170422}
   - {fileID: 619394802}
   - {fileID: 2868056587839296177}

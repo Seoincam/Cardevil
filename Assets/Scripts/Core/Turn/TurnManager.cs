@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
@@ -9,8 +10,13 @@ using UnityEngine;
 
 namespace Cardevil.Core.Turn
 {
+    [Serializable]
     public class TurnManager: IClearable
     {
+        [SerializeField, VisibleOnly] private TurnContext context;
+
+        public event Action<TurnContext> TurnLoopEnded;
+        
         private CancellationTokenSource _cts;
         private UniTask _loopTask;
         
@@ -24,8 +30,7 @@ namespace Cardevil.Core.Turn
         private ITurnCardFlow _cardFlow;
         private ITurnPlayer _player;
         private ITurnEnemy _enemy;
-
-        private TurnContext _ctx;
+        
         private EnemySpawner _spawner;
 
 
@@ -58,7 +63,7 @@ namespace Cardevil.Core.Turn
             // 혹시 돌고 있던 루프가 있으면 안전 종료까지 대기
             await StopLoopAsync();
 
-            _ctx = new TurnContext()
+            context = new TurnContext()
             {
                 CurrentEnemy = _enemy, 
                 Player = _player, 
@@ -104,8 +109,6 @@ namespace Cardevil.Core.Turn
         {
             try
             {
-                LogEx.Log("Game Loop");
-                
                 // TODO: 적에 대한 설명 표시
                 await _enemy.ShowInitialAttackArea();
 
@@ -117,7 +120,7 @@ namespace Cardevil.Core.Turn
                 
                 while (!token.IsCancellationRequested)
                 {
-                    _ctx.TurnCount++;
+                    context.TurnCount++;
                     await _cardFlow.DrawCard();
                     if (_cardFlow.IsNoCard)
                     {
@@ -128,10 +131,10 @@ namespace Cardevil.Core.Turn
                     await _cardFlow.WaitUserInput();
                     
                     // 2. 플레이어 이동 + 공격
-                    var playerPosition = await _player.TurnMove(_ctx);
-                    _ctx.PlayerPosition = playerPosition;
+                    var playerPosition = await _player.TurnMove(context);
+                    context.PlayerPosition = playerPosition;
                     
-                    var playerAttack = await _player.TurnAttackAsync(_ctx);
+                    var playerAttack = await _player.TurnAttackAsync(context);
                     playerAttack.Target.TakeDamage(playerAttack.Damage);
 
                     if (_enemy.IsDead)
@@ -146,7 +149,7 @@ namespace Cardevil.Core.Turn
                     }
 
                     // 3. 적 공격
-                    var enemyAttack = await _enemy.TurnAttackAsync(_ctx);
+                    var enemyAttack = await _enemy.TurnAttackAsync(context);
                     enemyAttack.Target.TakeDamage(enemyAttack.Damage);
                     
                     if (_player.IsDead)
@@ -166,7 +169,8 @@ namespace Cardevil.Core.Turn
             }
             finally
             {
-                await _cardFlow.ExitHandPhase();
+                TurnLoopEnded?.Invoke(context);
+                // await _cardFlow.ExitHandPhase();
             }
         }
     }

@@ -49,7 +49,7 @@ namespace Cardevil.Cards.Evaluations
             var plusEffects = new List<IRelicEffectOnEvaluation>();
             var mulEffects = new List<IRelicEffectOnEvaluation>();
 
-            
+            /*
             foreach (var owned in Managers.Relic.OwnedRelics)
             foreach (var eff in owned.Relic.Effects)
             {
@@ -61,6 +61,7 @@ namespace Cardevil.Cards.Evaluations
                     default: (onEval.IsPlus ? plusEffects : mulEffects).Add(onEval); break;
                 }
             }
+            */
             
             // 족보
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(attackCards, out var inRankCards);

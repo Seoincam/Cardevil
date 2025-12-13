@@ -4,7 +4,7 @@
     {
         Bootstrap,
         Title,
-        GamePlay,
+        Stage,
         World
     }
 }

@@ -38,6 +38,9 @@ namespace Cardevil.Relics
         /// </summary>
         public void Init()
         {
+            // TODO: Relic 수정
+            return;
+            
             RelicFactory.RegisterAllFactory();
             for (RelicRarity r = 0; r <= RelicRarity.FinBoss; r++)
             {
@@ -202,6 +205,7 @@ namespace Cardevil.Relics
 
         #region ConsoleCommand
 
+        /*
         [ConsoleCommand("getRelic", "Get Relic by relicId and level", "getRelic [string: relicId] [int: level (optional, default: 1)]")]
         private static void GetRelicCommand(string[] args)
         {
@@ -238,6 +242,7 @@ namespace Cardevil.Relics
                 DebugConsole.Console.Message($"Relic acquired by {relicId}");
             }
         }
+        */
 
         #endregion
     }

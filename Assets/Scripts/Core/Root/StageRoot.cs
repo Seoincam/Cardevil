@@ -2,11 +2,13 @@ using Cardevil.Attributes;
 using Cardevil.Cards.System;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
+using Cardevil.Dungeon;
 using Cardevil.Enemy;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Player;
+using Cardevil.SceneManagement;
 using UnityEngine;
 
 namespace Cardevil.Core.Root
@@ -14,12 +16,12 @@ namespace Cardevil.Core.Root
     public class StageRoot : MonoBehaviour
     {
         [field: SerializeField] public CardManager Card { get; private set; }
-        [SerializeField] private TurnManager _turn;
+        [SerializeField] private TurnManager turn;
         [SerializeField] private EnemySpawner _enemySpawner;
 
         [Header("References")]
-        [field: SerializeField] public Field Field { get; private set; }
-        [field: SerializeField] public PlayerCharacter Player { get; set; } // 임시 플레이어
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public PlayerCharacter Player { get; set; } // 임시 플레이어
 
         // public int TurnOrder => _turn.TurnOrder;
         
@@ -28,10 +30,13 @@ namespace Cardevil.Core.Root
         
         private async void Awake()
         {
+            Bootstrapper.Instance.GameFlow.Stage = this;
+            
             // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
             
             _enemySpawner = new EnemySpawner();
-            _turn = new TurnManager();
+            turn = new TurnManager();
+            turn.TurnLoopEnded += OnTurnLoopEnded;
             
             Player.Init(Field);
             await InitAsync();
@@ -49,12 +54,15 @@ namespace Cardevil.Core.Root
             await Card.InitAsync(cardLibrary, enhancementData);
         }
 
+         
+        
         /// <summary>
         /// 전투 스테이지에 진입합니다.
         /// </summary>
         private async UniTask EnterStageAsync()
         {
-            LogEx.Log("EnterStageAsync");
+            // TODO: 얘를 외부에서 호출되도록 해야겠음.
+            
             _enemySpawner.ConfigStageMobData(_context.stageId);
             if (!_enemySpawner.TrySpawn(out var enemy))
             {
@@ -63,8 +71,20 @@ namespace Cardevil.Core.Root
             }
             
             enemy.Init(Field);
-            _turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
-            _turn.StartLoop();
+            turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
+            turn.StartLoop();
+        }
+
+        private void OnTurnLoopEnded(TurnContext ctx)
+        {
+            // TODO: 보상창 등 나와야함.
+            // TODO: 변경사항 세이브 해야함.
+            
+            LogEx.Log("스테이지 종료");
+            
+            var exitInfo = new NodeExitInfo() { IsCleared = true };
+            Bootstrapper.Instance.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
+            SceneLoader.UnloadSceneAsync(Scenes.Stage).Forget();
         }
     }
 }

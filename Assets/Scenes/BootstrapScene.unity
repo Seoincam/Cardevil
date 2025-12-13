@@ -1028,7 +1028,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1685760903}
   - component: {fileID: 1685760902}
-  - component: {fileID: 1685760901}
   - component: {fileID: 1685760904}
   m_Layer: 0
   m_Name: Main Camera
@@ -1037,14 +1036,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1685760901
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1685760900}
-  m_Enabled: 1
 --- !u!20 &1685760902
 Camera:
   m_ObjectHideFlags: 0
@@ -1211,22 +1202,6 @@ PrefabInstance:
       propertyPath: eventSystem
       value: 
       objectReference: {fileID: 1677023911}
-    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
-      propertyPath: <SaveLoad>k__BackingField.exceptionScenes.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
-      propertyPath: '<SaveLoad>k__BackingField.exceptionScenes.Array.data[1]'
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
-      propertyPath: '<SaveLoad>k__BackingField.exceptionScenes.Array.data[2]'
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
-      propertyPath: '<SaveLoad>k__BackingField.exceptionScenes.Array.data[3]'
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
