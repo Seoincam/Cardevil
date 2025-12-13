@@ -1,21 +1,26 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Save;
+using Cardevil.SceneManagement;
+using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Cardevil.Title
 {
     public class TitleView : MonoBehaviour
     {
-        [Header("UI")] [SerializeField] private Button profileButton;
+        [Header("UI")] 
+        [SerializeField] private Button profileButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private GameObject dim;
         [SerializeField] private GameObject profilePanel;
 
         [Space] 
-        [SerializeField] private SerializableDictionary<SaveSlot, ProfileSlot> profileSlots;
+        [SerializeField] private SerializableDictionary<SaveSlot, SlotProfileView> profileSlots;
 
         private SaveLoadManager _saveLoad;
         
@@ -27,6 +32,32 @@ namespace Cardevil.Title
             profileButton.onClick.AddListener(OnProfileClicked);
             closeButton.onClick.AddListener(OnCloseClicked);
         }
+        
+        private void MakeNewSave(SaveSlot slot)
+        {
+            var profile = profileSlots[slot];
+            _saveLoad.MakeNewSave(slot, profile.nameInput.text);
+            UpdateProfile(slot);
+        }
+
+        private void ContinueGame(SaveSlot slot)
+        {
+            if (!_saveLoad.IsAnySave(slot))
+            {
+                LogEx.LogWarning("No save found for slot " + slot);
+                return;
+            }
+            
+            _saveLoad.LoadGame(slot);
+            SceneLoader.LoadSceneAsync(Scenes.World, LoadSceneMode.Single).Forget();
+        }
+
+        private void DeleteSave(SaveSlot slot)
+        {
+            _saveLoad.DeleteSave(slot);
+            UpdateProfile(slot);
+        }
+        
 
         private void OnProfileClicked()
         {
@@ -42,49 +73,26 @@ namespace Cardevil.Title
             dim.SetActive(false);
             profilePanel.SetActive(false);
         }
-
-
-        private void MakeNewGame(SaveSlot slot)
-        {
-            var profile = profileSlots[slot];
-            _saveLoad.NewSaveData(slot, profile.nameInput.text);
-            UpdateProfile(slot);
-        }
-
-        private void ContinueGame(SaveSlot slot)
-        {
-            
-        }
-
-        private void DeleteSave(SaveSlot slot)
-        {
-            _saveLoad.DeleteSaveData(slot);
-            UpdateProfile(slot);
-        }
-
-
+        
+        
         /// <summary>
         /// 프로필 슬롯을 최신 데이터로 갱신.
         /// </summary>
         private void UpdateProfile(SaveSlot slot)
         {
             var profile = profileSlots[slot];
+            profile.RemoveAllButtonListeners();
             
-            profile.deleteButton.onClick.RemoveAllListeners();
-            profile.enterButton.onClick.RemoveAllListeners();
-            profile.nameInput.onValueChanged.RemoveAllListeners();
-            
-            if (!_saveLoad.TryGetSaveData(slot, out var saveData))
+            if (!_saveLoad.TryGetSave(slot, out var saveData))
             {
                 profile.SetDefault();
 
                 var capturedSlot = slot;
-                profile.enterButton.onClick.AddListener(() => MakeNewGame(capturedSlot));
-                
+                profile.enterButton.onClick.AddListener(() => MakeNewSave(capturedSlot));
                 profile.nameInput.onValueChanged.AddListener(profile.OnNameInputChanged);
+                
                 return;
             }
-            
             
             profile.SetData(saveData);
 

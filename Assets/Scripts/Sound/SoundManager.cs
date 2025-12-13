@@ -60,10 +60,10 @@ namespace Cardevil.Sound
 
         public void Init(Transform parent, PoolManager poolManager)
         {
-            GameObject root = GameObject.Find("@Sound");
+            GameObject root = GameObject.Find("@Sound_Root");
             if (root == null)
             {
-                root = new GameObject { name = "@Sound" };
+                root = new GameObject { name = "@Sound_Root" };
                 root.transform.parent = parent;
             }
 
@@ -78,8 +78,7 @@ namespace Cardevil.Sound
 
             if (_defaultSoundEffectAudioConfiguration == null)
             {
-                _defaultSoundEffectAudioConfiguration =
-                    AssetUtil.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
+                _defaultSoundEffectAudioConfiguration = AssetUtil.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
             }
 
             // 믹서 그룹 초기화

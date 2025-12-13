@@ -31,7 +31,7 @@ namespace Cardevil.Cards.Data
     }
 
     [Serializable]
-    public class CardLibrary : IClearable, IReadOnlyCardLibrary, ISaveLoad
+    public class CardLibrary : IClearable, IReadOnlyCardLibrary, ISaveLoad, INewGameInitializable
     {
         // <id, data>
         [SerializeField, VisibleOnly] private SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
@@ -42,26 +42,9 @@ namespace Cardevil.Cards.Data
 
         private EnhancementDataLibrary _enhancementDataLibrary;
 
-        public void Init(EnhancementDataLibrary enhancementDataLibrary)
+        public CardLibrary(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
-
-            Clear();
-        }
-
-        /// <summary>
-        /// <see cref="CardDataPipeline"/>을 로드하거나, 기존 세이브가 없을 경우 새로 생성.
-        /// <see cref="CardDataPipeline"/>을 바탕으로 <see cref="CardData"/>를 생성.
-        /// 주의! 현재 로드 로직 없음.
-        /// </summary>
-        public void CreateBasePipelines()
-        {
-            // TODO: 세이브파일 로드 체크 로직 넣어야함.
-
-            pipelineMap.CreateBasePipelines(_enhancementDataLibrary);
-
-            foreach (int id in pipelineMap.Keys)
-                UpdateMaps(id);
         }
 
         public void Clear()
@@ -100,20 +83,13 @@ namespace Cardevil.Cards.Data
 
         /// <summary>
         /// <see cref="CardDataPipeline"/>을 기반으로
-        /// <see cref="CardData"/>를 갱신합니다.
+        /// <see cref="CardData"/>를 재빌드합니다.
         /// </summary>
-        /// <param name="id"></param>
-        public void UpdateMaps(int id)
+        public void UpdateDataMap(int id)
         {
-            // Card Data
             var cardData = pipelineMap[id].Build();
             if (cardData != null)
                 dataMap[id] = cardData;
-
-            // Card Visual Sprite Set
-            // var spriteSet = dataMap[id].MakeSpriteSet(_visualSpriteFactory);
-            // if (spriteSet != null)
-            //     visualSpriteSetMap[id] = spriteSet;
         }
 
         private bool ValidateId(int id)
@@ -160,7 +136,15 @@ namespace Cardevil.Cards.Data
         public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);
 
         #endregion
+        
+        public void SetUpNewGame(GameSave currentSave)
+        {
+            pipelineMap.CreateBasePipelines(_enhancementDataLibrary);
 
+            foreach (int id in pipelineMap.Keys)
+                UpdateDataMap(id);
+        }
+        
         public void Save(GameSave currentSave)
         {
             var saveData = new CardLibrarySaveData { pipelines = new List<CardDataPipelineSaveData>() };
@@ -183,7 +167,8 @@ namespace Cardevil.Cards.Data
             {
                 var pipeline = CardDataPipeline.FromSaveData(p);
                 pipelineMap[p.id] = pipeline;
-                UpdateMaps(p.id);
+                UpdateDataMap(p.id);
+                
             }
         }
     }

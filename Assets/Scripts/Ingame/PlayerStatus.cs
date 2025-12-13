@@ -1,4 +1,3 @@
-using Cardevil.Cards.Data;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.DataStructure;
@@ -18,31 +17,27 @@ namespace Cardevil.Ingame
     /// 플레이어의 상태를 나타내는 클래스
     /// </summary>
     [Serializable]
-    public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>
+    public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>, INewGameInitializable
     {
         // Hp
-        [SerializeField] private int _currentHP = 3;
-        [SerializeField] private int _maxHP = 3;
-        [SerializeField] private int _shield = 0;
-        [SerializeField] public bool canRevive = false;
+        [SerializeField] private int _currentHP;
+        [SerializeField] private int _maxHP;
+        [SerializeField] private int _shield;
+        [SerializeField] public bool canRevive;
         
         // Card
-        [SerializeField] private int _maxHand = 6; // TODO: 실제 로직에 연결해야함.
-        [SerializeField] private int _discardHand = 3;
+        [SerializeField] private int _maxHand; // TODO: 실제 로직에 연결해야함.
+        [SerializeField] private int _discardHand;
         
         // Current
-        [SerializeField] private int _rerollTicket = 0;
+        [SerializeField] private int _rerollTicket;
         [SerializeField] private int _gold;
-        
-        // Slot Machine
-        [SerializeField] public int _slotMachineLevel = 1;
+        [SerializeField] public int _slotMachineLevel;
         
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
 
-
         /*
-         * TODO: 저장해야할 것
-         * 카드 상태,
+         * TODO: 추가로 저장해야할 것
          * 유물 상태,
          * 아이템 상태
          */
@@ -189,6 +184,26 @@ namespace Cardevil.Ingame
                 ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
             }
         }
+        
+        public void SetUpNewGame(GameSave currentSave)
+        {
+            // TODO: 나중에 SO 등 다른 방법으로 개선
+            
+            // Hp
+            _currentHP = 3;
+            _maxHP = 3;
+            _shield = 0;
+            canRevive = false;
+            
+            // Card
+            _maxHand = 6;
+            _discardHand = 3;
+            
+            // Current
+            _rerollTicket = 0;
+            _gold = 0;
+            _slotMachineLevel = 1;
+        }
 
         public void Save(GameSave currentSave)
         {
@@ -203,10 +218,21 @@ namespace Cardevil.Ingame
 
         public void CopyFrom(PlayerStatus other)
         {
+            // Hp
             _currentHP = other._currentHP;
             _maxHP = other._maxHP;
             _shield = other._shield;
+            canRevive = other.canRevive;
+            
+            // Card
+            _maxHand = other._maxHand;
+            _discardHand = other._discardHand;
+            
+            //Current
             _rerollTicket = other._rerollTicket;
+            _gold = other._gold;
+            _slotMachineLevel = other._slotMachineLevel;
+            
             _variableContainer.CopyFrom(other._variableContainer);
         }
 

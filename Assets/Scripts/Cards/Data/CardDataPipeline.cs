@@ -86,6 +86,9 @@ namespace Cardevil.Cards.Data
 
         public void Deserialize(CardDataPipelineSaveData saveData)
         {
+            id = saveData.id;
+            kind = saveData.kind;
+            
             modifiers.Clear();
             foreach (var modifier in saveData.modifiers)
             {
@@ -95,7 +98,9 @@ namespace Cardevil.Cards.Data
             
             _currentEnhancementId = saveData.currentEnhancementId;
             _nextEnhancementIds.Clear();
-            _nextEnhancementIds.AddRange(saveData.nextEnhancementIds);
+            
+            if (saveData.nextEnhancementIds != null)
+                _nextEnhancementIds.AddRange(saveData.nextEnhancementIds);
         }
 
         public static CardDataPipeline FromSaveData(CardDataPipelineSaveData saveData)

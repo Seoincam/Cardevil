@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Cardevil.Title
 {
     [Serializable]
-    public class ProfileSlot
+    public class SlotProfileView
     {
         public TextMeshProUGUI dateTimeText;
         public TMP_InputField nameInput;
@@ -36,6 +36,13 @@ namespace Cardevil.Title
         {
             // TODO: 이름 유효성 검사 조건 추가
             enterButton.interactable = name.Length is > 0 and <= 10;
+        }
+        
+        public void RemoveAllButtonListeners()
+        {
+            deleteButton.onClick.RemoveAllListeners();
+            enterButton.onClick.RemoveAllListeners();
+            nameInput.onValueChanged.RemoveAllListeners();
         }
     }
 }

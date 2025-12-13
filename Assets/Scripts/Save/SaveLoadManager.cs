@@ -4,7 +4,6 @@ using Cardevil.SceneManagement;
 using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,8 +23,8 @@ namespace Cardevil.Save
         
         [SerializeField] private GameSave _currentSave;
         [SerializeField] private Optional<SaveSlot> _currentSlot;
-        
-        private List<ISaveLoad> _saveLoadObjects = new List<ISaveLoad>();
+
+        private List<ISaveLoadRoot> _saveLoadRoots = new();
         private IDataService _dataService;
         
         public GameSave CurrentSave => _currentSave;
@@ -33,27 +32,74 @@ namespace Cardevil.Save
         
         public string DefaultSaveName = "AutoSave";
         private const string SlotFilePrefix = "SaveSlot_";
-
         
-        public void NewSaveData(SaveSlot slot, string name)
+        
+        public void Init()
         {
-            _currentSlot = new Optional<SaveSlot>(slot);
-            _currentSave = new GameSave(GetSlotFileName(slot), name);
-            _dataService.Save(_currentSave);
+            _dataService = new FileDataService(new JsonSerializer());
+            
+            SceneLoader.SceneLoaded -= OnSceneLoaded;
+            SceneLoader.SceneLoaded += OnSceneLoaded;
         }
 
-        public void DeleteSaveData(SaveSlot slot)
+        public bool Register(ISaveLoadRoot saveLoadRoot)
         {
-            if (!TryGetSaveData(slot, out var saveData))
+            if (_saveLoadRoots.Contains(saveLoadRoot))
+                return false;
+            _saveLoadRoots.Add(saveLoadRoot);
+            return true;
+        }
+        public bool Unregister(ISaveLoadRoot saveLoadRoot)
+        {
+            return _saveLoadRoots.Remove(saveLoadRoot);
+        }
+        
+        
+        private void OnSceneLoaded(Scenes scene, LoadSceneMode mode)
+        {
+            if (exceptionScenes.Contains(scene))
+                return;
+            if (CurrentSave != null)
+            {
+                ApplySaveToGame();
+            }
+        }
+        
+        public void MakeNewSave(SaveSlot slot, string name)
+        {
+            var newSave = new GameSave(GetSlotFileName(slot), name);
+            foreach (var saveRoot in _saveLoadRoots)
+                saveRoot.SetUpNewGame(newSave);
+            
+            _currentSlot = new Optional<SaveSlot>(slot);
+            _currentSave = newSave;
+            SaveGame();
+        }
+
+        public void LoadGame(SaveSlot slot)
+        {
+            var fileName = GetSlotFileName(slot);
+            LoadGame(fileName);
+        }
+        
+        public void DeleteSave(SaveSlot slot)
+        {
+            if (!TryGetSave(slot, out var saveData))
             {
                 LogEx.LogWarning($"{slot}에 세이브 데이터가 존재하지 않음.");
                 return;
             }
 
-            _dataService.Delete(saveData.FileName);
+            DeleteSave(saveData.FileName);
+        }
+        
+        public bool IsAnySave(SaveSlot slot)
+        {
+            string fileName = GetSlotFileName(slot);
+            return _dataService.SaveExists(fileName);
         }
 
-        public bool TryGetSaveData(SaveSlot slot, out GameSave saveData)
+        public bool TryGetSave(SaveSlot slot, out GameSave saveData)
         {
             saveData = null;
             
@@ -71,52 +117,22 @@ namespace Cardevil.Save
         }
         
         
-        public void Init()
-        {
-            _dataService = new FileDataService(new JsonSerializer());
-            
-            SceneLoader.SceneLoaded -= OnSceneLoaded;
-            SceneLoader.SceneLoaded += OnSceneLoaded;
-        }
-
-        public bool Register(ISaveLoad saveLoadObj)
-        {
-            if (_saveLoadObjects.Contains(saveLoadObj))
-                return false;
-            _saveLoadObjects.Add(saveLoadObj);
-            return true;
-        }
-        public bool Unregister(ISaveLoad saveLoadObj)
-        {
-            return _saveLoadObjects.Remove(saveLoadObj);
-        }
-        
-        
-        private void OnSceneLoaded(Scenes scene, LoadSceneMode mode)
-        {
-            if (exceptionScenes.Contains(scene))
-                return;
-            if (CurrentSave != null)
-            {
-                ApplySaveToGame();
-            }
-        }
-        
+        [Obsolete("Pls Use MakeNewSave() instead.")]
         public void NewGame() => NewGame(DefaultSaveName);
+        
+        [Obsolete("Pls Use MakeNewSave() instead.")]
         public void NewGame(string saveName)
         {
             _currentSave = new GameSave
             {
                 Name = saveName,
                 SaveTime = DateTime.Now,
-                PlayerStatus = new PlayerStatus(),
-                CardLibraryData = new CardLibrarySaveData()
+                PlayerStatus = new PlayerStatus()
             };
         }
         
         public void SaveGame()
         {
-
             if (_dataService == null)
             {
                 _dataService = new FileDataService(new JsonSerializer());
@@ -127,23 +143,24 @@ namespace Cardevil.Save
                 throw new InvalidOperationException("No current save to save.");
             }
             _currentSave.SaveTime = DateTime.Now;
-            foreach (var saveLoadObj in _saveLoadObjects)
+            foreach (var saveLoadRoot in _saveLoadRoots)
             {
-                saveLoadObj.Save(_currentSave);
+                saveLoadRoot.Save(_currentSave);
             }
             _dataService.Save(_currentSave, true);
         }
-
-        public void LoadGame(SaveSlot slot)
+        
+        // TODO: 이미 세이브가 적용됐으면 막기
+        public void LoadGame(string name)
         {
-            _currentSave = _dataService.Load(GetSlotFileName(slot));
+            _currentSave = _dataService.Load(name);
             if (_currentSave == null)
             {
-                throw new InvalidOperationException($"Failed to load save 'slot_{(int)slot}'.");
+                throw new InvalidOperationException($"Failed to load save '{name}'.");
             }
             ApplySaveToGame();
         }
-
+        
         
         /// <summary>
         /// 현재 세이브 데이터를 게임에 적용합니다.
@@ -155,14 +172,14 @@ namespace Cardevil.Save
             {
                 throw new InvalidOperationException("No current save to apply.");
             }
-            foreach (var saveLoadObj in _saveLoadObjects)
+            foreach (var saveLoadRoot in _saveLoadRoots)
             {
-                saveLoadObj.Load(_currentSave);
+                saveLoadRoot.Load(_currentSave);
             }
         }
         public void ReloadGame()
         {
-            // LoadGame(_currentSave.Name);
+            LoadGame(_currentSave.FileName);
         }
         
         public void DeleteSave(string name)
@@ -172,9 +189,6 @@ namespace Cardevil.Save
                 throw new InvalidOperationException($"Failed to delete save '{name}'. It may not exist.");
             }
         }
-
-
-        
     }
 }
 
