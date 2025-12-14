@@ -18,6 +18,10 @@ namespace Cardevil.Cards.Data
         IReadOnlyList<Guid> NextEnhancementIds { get; }
     }
     
+    /// <summary>
+    /// 카드 데이터 파이프라인.
+    /// 수정자 및 강화 흐름을 기반으로 카드 데이터 구성.
+    /// </summary>
     [Serializable]
     public class CardDataPipeline : IReadOnlyCardDataPipeline, ICardDataPipelineSaveLoad
     {

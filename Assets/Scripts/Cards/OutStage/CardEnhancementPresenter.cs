@@ -9,18 +9,18 @@ namespace Cardevil.Cards.OutStage
 {
     public class CardEnhancementPresenter
     {
-        private IReadOnlyCardLibrary _library;
+        private IReadOnlyCardStatus _status;
         private EnhancementDataLibrary _enhancementDataLibrary;
         private CardPipelineModifierService _service;
         
-        public void Init(IReadOnlyCardLibrary library, EnhancementDataLibrary enhancementDataLibrary, CardPipelineModifierService service)
+        public CardEnhancementPresenter(IReadOnlyCardStatus status, EnhancementDataLibrary enhancementDataLibrary, CardPipelineModifierService service)
         {
-            if (library == null)
+            if (status == null)
             {
                 LogEx.LogError("card library == null");
                 return;
             }
-            _library = library;
+            _status = status;
 
             if (enhancementDataLibrary == null)
             {
@@ -41,7 +41,7 @@ namespace Cardevil.Cards.OutStage
         {
             possibles = new();
             
-            var pipeline = _library.GetReadOnlyPipelineById(id);
+            var pipeline = _status.GetReadOnlyPipelineById(id);
             if (pipeline == null)
             {
                 LogEx.LogError($"Pipeline을 찾을 수 없음! (id: {id})");
@@ -70,7 +70,7 @@ namespace Cardevil.Cards.OutStage
         private void Enhance(int id, EnhancementData enhancementData)
         {
             var type = enhancementData.Type;
-            var pipeline = _library.GetReadOnlyPipelineById(id);
+            var pipeline = _status.GetReadOnlyPipelineById(id);
             if (pipeline == null)
             {
                 LogEx.LogError($"id({id})에 해당하는 Pipeline이 존재하지 않음.");

@@ -18,7 +18,7 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class StageCardsPresenter : IClearable
     {
-        private IReadOnlyCardLibrary _library;
+        private IReadOnlyCardStatus _status;
         private StageCardsModel _model;
         private IEvaluationPresenter _evaluationPresenter;
         
@@ -41,16 +41,16 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, IEvaluationPresenter evaluationPresenter)
+        public void Init(IReadOnlyCardStatus status, StageCardsModel model, IEvaluationPresenter evaluationPresenter)
         {
             if (_state.isInitialized) return;
 
-            if (library == null)
+            if (status == null)
             {
                 LogEx.LogError("library가 null입니다.");
                 return;
             }
-            _library = library;
+            _status = status;
             
             if (model == null)
             {
@@ -117,7 +117,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 GameObject go = AssetUtil.Instantiate("UI/CardUI/DeckRemainView", canvas);
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
-            _deckRemainView.Init(_library, _model);
+            _deckRemainView.Init(_status, _model);
             DeckChanged += _deckRemainView.OnDeckChanged;
             
             CardDeckVisual.Instance.PointerUp += _deckRemainView.Open;

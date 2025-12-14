@@ -6,17 +6,17 @@ using System.Collections.Generic;
 
 namespace Cardevil.Cards.Data
 {
-    public static class CardLibraryInitializeExtensions
+    public static class CardStatusInitializeExtensions
     {
         /// <summary>
         /// 기본 카드 파이프라인(50개)을 생성하는 확장 메서드.
         /// </summary>
-        public static void CreateBasePipelines(this Dictionary<int, CardDataPipeline> pipelines, EnhancementDataLibrary enhancement)
+        public static void CreateBasePipelines(this CardStatus cardStatus, EnhancementDataLibrary enhancement)
         {
             // 테스트용 플래그
             bool isEnhancement = enhancement != null;
             
-            pipelines.Clear();
+            cardStatus.pipelineMap.Clear();
             int id = 0;
             CardDataPipeline pipeline;
             
@@ -48,7 +48,7 @@ namespace Cardevil.Cards.Data
                         );
                     }
                     
-                    pipelines[id++] = pipeline;
+                    cardStatus.pipelineMap[id++] = pipeline;
                 }
 
                 // 오망성 Number Data
@@ -66,7 +66,7 @@ namespace Cardevil.Cards.Data
                     );
                 }
 
-                pipelines[id++] = pipeline;
+                cardStatus.pipelineMap[id++] = pipeline;
             }
             
             // Move Data 생성
@@ -94,7 +94,7 @@ namespace Cardevil.Cards.Data
                         );
                     }
                     
-                    pipelines[id++] = pipeline;
+                    cardStatus.pipelineMap[id++] = pipeline;
                 }
             }
             
@@ -113,7 +113,7 @@ namespace Cardevil.Cards.Data
                     pipeline.SetCurrentEnhancementId(enhancement.GetId(ModifierType.MoveDirSelectable, 2));
                 }
                 
-                pipelines[id++] = pipeline;
+                cardStatus.pipelineMap[id++] = pipeline;
             }
         }
     }

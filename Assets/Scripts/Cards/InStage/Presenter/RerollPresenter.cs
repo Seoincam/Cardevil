@@ -14,7 +14,7 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class RerollPresenter : IClearable
     {
-        private IReadOnlyCardLibrary _library;
+        private IReadOnlyCardStatus _status;
         
         private StageCardsModel _model;
         private RerollView _view;
@@ -31,16 +31,16 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model)
+        public void Init(IReadOnlyCardStatus status, StageCardsModel model)
         {
             if (_isInitialized) return;
 
-            if (library == null)
+            if (status == null)
             {
                 LogEx.LogError("library is null");
                 return;
             }
-            _library = library;
+            _status = status;
             
             if (model == null)
             {
@@ -76,9 +76,9 @@ namespace Cardevil.Cards.InStage.Presenter
             // Model
             _model.SetUp(maxHand, 3);
 
-            for (int i = 0; i < _library.Count; i++)
+            for (int i = 0; i < _status.Count; i++)
             {
-                var data = _library.GetCardDataById(i);
+                var data = _status.GetCardDataById(i);
                 if (data == null)
                 {
                     LogEx.LogError("data is null");

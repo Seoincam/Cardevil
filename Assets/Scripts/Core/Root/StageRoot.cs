@@ -51,11 +51,8 @@ namespace Cardevil.Core.Root
         {
             _context = Bootstrapper.Instance.GameFlow.Context;
             
-            var game = Bootstrapper.Instance.Game;
-            var cardLibrary = game.CardLibrary;
-            var enhancementData = Bootstrapper.Instance.CardEnhancementData;
-            
-            await Card.InitAsync(cardLibrary, enhancementData);
+            var cardStatus = Bootstrapper.Instance.Game.CardStatus;
+            await Card.InitAsync(cardStatus);
         }
 
          

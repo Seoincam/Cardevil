@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Cardevil.Cards.Data
 {
-    public interface IReadOnlyCardLibrary 
+    public interface IReadOnlyCardStatus 
     {
         /// <summary>
         /// Pipeline, data, visualSprite Set의 개수.
@@ -30,11 +30,15 @@ namespace Cardevil.Cards.Data
         IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
     }
 
+    /// <summary>
+    /// 카드 상태 관리.
+    /// 카드 파이프라인 및 빌드된 카드 데이터 관리, 세이브/로드 및 신규 게임 초기화 처리.
+    /// </summary>
     [Serializable]
-    public class CardLibrary : IClearable, IReadOnlyCardLibrary, ISaveLoad, INewGameInitializable
+    public class CardStatus : IClearable, IReadOnlyCardStatus, ISaveLoad, INewGameInitializable
     {
-        // <id, data>
-        [SerializeField, VisibleOnly] private SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
+        [Tooltip("카드 ID별 데이터 파이프라인 맵."), VisibleOnly]
+        public SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
 
         // 파이프라인을 바탕으로 생성된 데이터들.
         // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
@@ -42,7 +46,7 @@ namespace Cardevil.Cards.Data
 
         private EnhancementDataLibrary _enhancementDataLibrary;
 
-        public CardLibrary(EnhancementDataLibrary enhancementDataLibrary)
+        public CardStatus(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
         }
@@ -103,7 +107,7 @@ namespace Cardevil.Cards.Data
             return true;
         }
 
-        #region IReadOnlyCardLibrary
+        #region IReadOnlyCardStatus
 
         public int Count
         {
@@ -139,7 +143,7 @@ namespace Cardevil.Cards.Data
         
         public void SetUpNewGame(GameSave currentSave)
         {
-            pipelineMap.CreateBasePipelines(_enhancementDataLibrary);
+            this.CreateBasePipelines(_enhancementDataLibrary);
 
             foreach (int id in pipelineMap.Keys)
                 UpdateDataMap(id);
@@ -147,19 +151,19 @@ namespace Cardevil.Cards.Data
         
         public void Save(GameSave currentSave)
         {
-            var saveData = new CardLibrarySaveData { pipelines = new List<CardDataPipelineSaveData>() };
+            var saveData = new CardStatusSaveData { pipelines = new List<CardDataPipelineSaveData>() };
 
             foreach (var pipeline in pipelineMap.Values)
                 saveData.pipelines.Add(pipeline.Serialize());
 
-            currentSave.CardLibraryData = saveData;
+            currentSave.cardStatusData = saveData;
         }
 
         public void Load(GameSave currentSave)
         {
             Clear();
 
-            var saveData = currentSave.CardLibraryData;
+            var saveData = currentSave.cardStatusData;
             if (saveData?.pipelines == null)
                 return;
 

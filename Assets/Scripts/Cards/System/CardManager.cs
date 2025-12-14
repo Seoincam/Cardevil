@@ -22,11 +22,6 @@ namespace Cardevil.Cards.System
     [Serializable]
     public class CardManager : IClearable
     {
-        // Out Stage
-        private readonly CardPipelineModifierService _modifierService = new();
-        private readonly CardEnhancementPresenter _enhancementPresenter = new();
-        
-        // In Stage
         private readonly StageCardsModel _stageCardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
         private readonly StageCardsPresenter _stageCardsPresenter = new();
@@ -40,29 +35,24 @@ namespace Cardevil.Cards.System
 
         #endregion
         
-        public CardEnhancementPresenter EnhancementPresenter => _enhancementPresenter;
-        
         /// <summary>
         /// 카드 단계(리롤, 손패 선택 등)를 관리하는 Flow을 생성.
         /// TurnManager에서 사용.
         /// </summary>
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
-            => new CardFlowController(_library, _stageCardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
+            => new CardFlowController(_status, _stageCardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
 
-        private CardLibrary _library; // TODO: 얘는 없어야함.
+        private IReadOnlyCardStatus _status; // TODO: 얘는 없어야함.
 
         /// <summary>
         /// 카드 매니저를 초기화.  
         /// 내부 상태를 초기화.
         /// </summary>
-        public async UniTask InitAsync(CardLibrary library, EnhancementDataLibrary enhancementData)
+        public async UniTask InitAsync(IReadOnlyCardStatus status)
         {
             Clear();
-            _library = library;
-            
-            _modifierService.Init(library); // TODO: 얘도 빼야할 듯?
-            _enhancementPresenter.Init(library, enhancementData, _modifierService);
+            _status = status;
             _evaluationPresenter.Init(_evaluationResultsModel);
         }
 

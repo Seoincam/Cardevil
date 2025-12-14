@@ -11,7 +11,7 @@ namespace Cardevil.Save
         public string Name;
         public long RawSaveTime;
         public PlayerStatus PlayerStatus;
-        public CardLibrarySaveData CardLibraryData;
+        public CardStatusSaveData cardStatusData;
         
         public GameSave(string fileName, string name)
         {
@@ -19,14 +19,14 @@ namespace Cardevil.Save
             Name = name;
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
-            CardLibraryData = new CardLibrarySaveData();
+            cardStatusData = new CardStatusSaveData();
         }
         public GameSave()
         {
             Name = "DefaultSave";
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
-            CardLibraryData = new CardLibrarySaveData();
+            cardStatusData = new CardStatusSaveData();
         }
         
         public DateTime SaveTime

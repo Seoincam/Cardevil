@@ -28,7 +28,7 @@ namespace Cardevil.Cards.InStage.View
         [Header("Cards Area")]
         [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
         
-        private IReadOnlyCardLibrary _library;
+        private IReadOnlyCardStatus _status;
         private IReadOnlyStageCardsModel _model;
         
         private CanvasGroup _canvasGroup;
@@ -41,9 +41,9 @@ namespace Cardevil.Cards.InStage.View
 
         private const float CardScale = .48f;
 
-        public void Init(IReadOnlyCardLibrary library, IReadOnlyStageCardsModel model)
+        public void Init(IReadOnlyCardStatus status, IReadOnlyStageCardsModel model)
         {
-            _library = library;
+            _status = status;
             _model = model;
 
             if (cardVisuals is not { Length: 50 })
@@ -154,7 +154,7 @@ namespace Cardevil.Cards.InStage.View
                 return;
             }
 
-            var data = _library.GetCardDataById(index);
+            var data = _status.GetCardDataById(index);
             cardVisualUI.Init(data);
         }
 

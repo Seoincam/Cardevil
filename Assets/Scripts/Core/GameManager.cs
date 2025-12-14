@@ -12,32 +12,32 @@ namespace Cardevil.Core
     {
         [Header("State")] 
         [field: SerializeField, VisibleOnly] public PlayerStatus PlayerStatus { get; private set; }
-        [field: SerializeField, VisibleOnly] public CardLibrary CardLibrary { get; private set; }
+        [field: SerializeField, VisibleOnly] public CardStatus CardStatus { get; private set; }
         
         public void Init()
         {
             Bootstrapper.Instance.SaveLoad.Register(this);
             
             PlayerStatus = new PlayerStatus();
-            CardLibrary = new CardLibrary(Bootstrapper.Instance.CardEnhancementData);
+            CardStatus = new CardStatus(Bootstrapper.Instance.CardEnhancementData);
         }
         
         public void SetUpNewGame(GameSave currentSave)
         {
             PlayerStatus.SetUpNewGame(currentSave);
-            CardLibrary.SetUpNewGame(currentSave);
+            CardStatus.SetUpNewGame(currentSave);
         }
         
         public void Save(GameSave currentSave)
         {
             PlayerStatus.Save(currentSave);
-            CardLibrary.Save(currentSave);
+            CardStatus.Save(currentSave);
         }
 
         public void Load(GameSave currentSave)
         {
             PlayerStatus.Load(currentSave);
-            CardLibrary.Load(currentSave);
+            CardStatus.Load(currentSave);
         }
     }
 }

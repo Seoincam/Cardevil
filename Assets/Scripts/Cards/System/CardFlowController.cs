@@ -9,7 +9,7 @@ namespace Cardevil.Cards.System
 {
     public sealed class CardFlowController : ITurnCardFlow
     {
-        private readonly CardLibrary _library;
+        private readonly IReadOnlyCardStatus _status;
         
         private readonly StageCardsModel _stageCardsModel;
         private readonly RerollPresenter _rerollPresenter;
@@ -18,11 +18,11 @@ namespace Cardevil.Cards.System
 
         private int _maxHand;
         
-        public CardFlowController(CardLibrary library,
+        public CardFlowController(IReadOnlyCardStatus status,
             StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
             StageCardsPresenter stageCardsPresenter, IEvaluationPresenter evaluationPresenter)
         {
-            _library = library;
+            _status = status;
             
             _stageCardsModel = stageCardsModel;
             _rerollPresenter = rerollPresenter;
@@ -35,7 +35,7 @@ namespace Cardevil.Cards.System
         {
             _maxHand = maxHand;
             
-            _rerollPresenter.Init(_library, _stageCardsModel);
+            _rerollPresenter.Init(_status, _stageCardsModel);
             await _rerollPresenter.SetUp(maxHand);
         }
 
@@ -56,7 +56,7 @@ namespace Cardevil.Cards.System
 
         public async UniTask EnterHandPhase()
         {
-            _stageCardsPresenter.Init(_library, _stageCardsModel, _evaluationPresenter);
+            _stageCardsPresenter.Init(_status, _stageCardsModel, _evaluationPresenter);
             await _stageCardsPresenter.SetUp();
             DeactivateReroll();
         }
