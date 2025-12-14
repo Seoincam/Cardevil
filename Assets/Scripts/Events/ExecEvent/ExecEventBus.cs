@@ -1,4 +1,5 @@
 ﻿using Cardevil.Utils;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Events.ExecEvents
@@ -92,12 +93,23 @@ namespace Cardevil.Events.ExecEvents
         /// await ExecEventBus&lt;MyEventArgs&gt;.InvokeSequentially(args);
         /// </code>
         /// <param name="args"></param>
-        public static async UniTask InvokeSequentially(TEvent args)
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeSequentially(TEvent args, CancellationToken cancellationToken = default)
         {
             LogEx.Log("Invoking Dynamic Event Bus");
-            await ExecDynamicEventBus<TEvent>.Invoke(args);
+            await ExecDynamicEventBus<TEvent>.Invoke(args, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                LogEx.Log("Sequential Event Bus invocation cancelled.");
+                return;
+            }
+            if (args.BreakChain)
+            {
+                LogEx.Log("Sequential Event Bus invocation chain broken.");
+                return;
+            }
             LogEx.Log("Invoking Static Event Bus");
-            await ExecStaticEventBus<TEvent>.Invoke(args);
+            await ExecStaticEventBus<TEvent>.Invoke(args, cancellationToken);
         }
 
         /// <summary>
@@ -112,7 +124,8 @@ namespace Cardevil.Events.ExecEvents
         /// await ExecEventBus&lt;MyEventArgs&gt;.InvokeMerged(args);
         /// </code>
         /// <param name="args"></param>
-        public static async UniTask InvokeMerged(TEvent args)
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeMerged(TEvent args, CancellationToken cancellationToken = default)
         {
             LogEx.Log("Invoking Merged Event Bus");
             _isMergedExecuting = true;
@@ -129,43 +142,48 @@ namespace Cardevil.Events.ExecEvents
                 // 두 큐를 병합 정렬 방식으로 실행
                 while (dynamicIndex < dynamicQueue.Count && staticIndex < staticQueue.Count)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        LogEx.Log("Merged Event Bus invocation cancelled.");
+                        break;
+                    }
+                    if (args.BreakChain)
+                    {
+                        LogEx.Log("Merged Event Bus invocation chain broken.");
+                        break;
+                    }
+                    
                     var dynamicAction = dynamicQueue[dynamicIndex];
                     var staticAction = staticQueue[staticIndex];
                     
                     if (dynamicAction.CompareTo(staticAction) <= 0)
                     {
-                        LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
-                        await dynamicAction.action.Invoke(args);
+                        // LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
+                        await dynamicAction.action.Invoke(args, cancellationToken);
                         dynamicIndex++;
                     }
                     else
                     {
-                        LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
-                        await staticAction.action.Invoke(args);
+                        // LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
+                        await staticAction.action.Invoke(args, cancellationToken);
                         staticIndex++;
-                    }
-                    
-                    if (args.BreakChain)
-                    {
-                        LogEx.Log("Merged Event Bus chain broken");
-                        break;
                     }
                 }
                 
                 // 남은 동적 작업 실행
-                while (dynamicIndex < dynamicQueue.Count && !args.BreakChain)
+                while (dynamicIndex < dynamicQueue.Count && !cancellationToken.IsCancellationRequested && !args.BreakChain)
                 {
                     var dynamicAction = dynamicQueue[dynamicIndex];
-                    LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
-                    await dynamicAction.action.Invoke(args);
+                    // LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
+                    await dynamicAction.action.Invoke(args, cancellationToken);
                     dynamicIndex++;
                 }
                 // 남은 정적 작업 실행
-                while (staticIndex < staticQueue.Count && !args.BreakChain)
+                while (staticIndex < staticQueue.Count && !cancellationToken.IsCancellationRequested && !args.BreakChain)
                 {
                     var staticAction = staticQueue[staticIndex];
-                    LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
-                    await staticAction.action.Invoke(args);
+                    // LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
+                    await staticAction.action.Invoke(args, cancellationToken);
                     staticIndex++;
                 }
             }

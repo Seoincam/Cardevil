@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.Core;
+using Cardevil.Utils;
 
 namespace Cardevil.Events.ExecEvents
 {
@@ -74,19 +76,31 @@ namespace Cardevil.Events.ExecEvents
         /// await ExecEventBus&lt;MyEventArgs&gt;.Invoke(args);
         /// </code>
         /// <param name="eventArgs"></param>
-        public static async UniTask Invoke(TEvent eventArgs)
+        /// <param name="cancellationToken"></param>
+        public static async UniTask Invoke(TEvent eventArgs, CancellationToken cancellationToken = default)
         {
             _execQueue.Clear();
             _execQueue.SetCapacity(_handlers.Count);
-            if(eventArgs.BreakChain) 
+            if(eventArgs.BreakChain || cancellationToken.IsCancellationRequested)
             {
+                LogEx.Log("Invocation cancelled or chain broken before invocation.");
                 return;
             }
             foreach (var handler in _handlers)
             {
+                if(cancellationToken.IsCancellationRequested)
+                {
+                    LogEx.Log("Invocation cancelled.");
+                    break;
+                }
+                if(eventArgs.BreakChain) 
+                {
+                    LogEx.Log("Invocation chain broken.");
+                    break;
+                }
                 handler.Invoke(_execQueue, eventArgs);
             }
-            await _execQueue.ExecuteAll(eventArgs);
+            await _execQueue.ExecuteAll(eventArgs, cancellationToken);
         }
 
         /// <summary>

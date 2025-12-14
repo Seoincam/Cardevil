@@ -1,6 +1,7 @@
 ﻿using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
 
@@ -11,8 +12,8 @@ using UnityEditor;
 namespace Cardevil.Events.ExecEvents
 {
     public delegate void ExecEventHandler<TEvent>(ExecQueue<TEvent> queue, TEvent eventArgs) where TEvent : ExecEventArgs<TEvent>, new();
-    public delegate UniTask ExecAction<TEvent>(TEvent eventArgs) where TEvent : ExecEventArgs<TEvent>, new();
-    
+    public delegate UniTask ExecAction<TEvent>(TEvent eventArgs, CancellationToken cancellationToken) where TEvent : ExecEventArgs<TEvent>, new();
+
     /// <summary>
     /// 우선순위 실행 이벤트 유틸리티 클래스
     /// </summary>
