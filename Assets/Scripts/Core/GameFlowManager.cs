@@ -6,6 +6,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -36,7 +37,7 @@ namespace Cardevil.Core
             ExecEventBus<NodeEnteredEventArgs>.RegisterStatic(10, RequestEnterStage);
         }
 
-        public async UniTask RequestEnterStage(NodeEnteredEventArgs args)
+        public async UniTask RequestEnterStage(NodeEnteredEventArgs args, CancellationToken ct)
         {
             LogEx.Log("던전 노드 눌림");
             // TODO: 전투, 회복, 상점 등 분기해야함.
@@ -48,7 +49,7 @@ namespace Cardevil.Core
                 return;
             }
 
-            World.EnterStageAsync(Context).Forget();
+            World.EnterStageAsync(Context, ct).Forget();
         }
     }
 }
