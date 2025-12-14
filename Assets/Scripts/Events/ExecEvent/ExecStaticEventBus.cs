@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Events.ExecEvents
@@ -102,9 +103,10 @@ namespace Cardevil.Events.ExecEvents
         /// await ExecStaticEventBus&lt;MyEventArgs&gt;.Invoke(args);
         /// </code>
         /// <param name="eventArgs"></param>
-        public static async UniTask Invoke(TEvent eventArgs)
+        /// <param name="cancellationToken"></param>
+        public static async UniTask Invoke(TEvent eventArgs, CancellationToken cancellationToken = default)
         {
-            await _execQueue.ExecuteAll(eventArgs);
+            await _execQueue.ExecuteAll(eventArgs, cancellationToken);
         }
         
         public static ExecQueue<TEvent> GetExecQueue()

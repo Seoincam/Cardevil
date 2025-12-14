@@ -1,6 +1,7 @@
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
@@ -20,7 +21,7 @@ namespace Cardevil.Ingame.Field
         }
         
         
-        private async UniTask OnPlayerHealthChanged(PlayerHealthChangeArgs args)
+        private async UniTask OnPlayerHealthChanged(PlayerHealthChangeArgs args, CancellationToken cancellationToken)
         {
             for (int i = 0; i < _walls.Length; i++)
             {
