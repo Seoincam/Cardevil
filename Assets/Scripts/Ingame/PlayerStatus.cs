@@ -55,12 +55,12 @@ namespace Cardevil.Ingame
             get => _currentHP;
             set
             {
-                using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
-                {
-                    args.Init(_currentHP, value);
-                    ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
-                    _currentHP = args.ModifiedHealth;
-                }
+                PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
+                
+                args.Init(_currentHP, value);
+                ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _currentHP = args.ModifiedHealth;
+                
             }
         }
         public int MaxHp
@@ -72,14 +72,14 @@ namespace Cardevil.Ingame
         public int Shield
         {
             get => _shield;
-            set 
+            set
             {
-                using(PlayerShieldChangeArgs args = PlayerShieldChangeArgs.Get())
-                {
-                    args.Init(_shield, value);
-                    ExecEventBus<PlayerShieldChangeArgs>.InvokeMerged(args).Forget();
-                    _shield = args.ModifiedShield;
-                }
+                PlayerShieldChangeArgs args = PlayerShieldChangeArgs.Get();
+                
+                args.Init(_shield, value);
+                ExecEventBus<PlayerShieldChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _shield = args.ModifiedShield;
+                
             }
         }
 
@@ -95,12 +95,10 @@ namespace Cardevil.Ingame
             get => _rerollTicket;
             set
             {
-                using (RerollTicketChangeArgs args = RerollTicketChangeArgs.Get())
-                {
-                    args.Init(_rerollTicket, value);
-                    ExecEventBus<RerollTicketChangeArgs>.InvokeMerged(args).Forget();
-                    _rerollTicket = args.ModifiedTicket;
-                }
+                RerollTicketChangeArgs args = RerollTicketChangeArgs.Get();
+                args.Init(_rerollTicket, value);
+                ExecEventBus<RerollTicketChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _rerollTicket = args.ModifiedTicket;
             }
         }
         
@@ -162,12 +160,12 @@ namespace Cardevil.Ingame
         {
             if (broadcast)
             {
-                using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
-                {
-                    args.Init(_currentHP, hp);
-                    ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
-                    _currentHP = args.NewHealth;
-                }
+                PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
+                
+                args.Init(_currentHP, hp);
+                ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _currentHP = args.NewHealth;
+                
             }
             else
             {
@@ -177,12 +175,10 @@ namespace Cardevil.Ingame
         
         public void BroadcastInitialStatus()
         {
-            using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
-            {
-                args.Init(_currentHP, _currentHP);
-                args.IsJustBroadcast = true;
-                ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
-            }
+            PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
+            args.Init(_currentHP, _currentHP);
+            args.IsJustBroadcast = true;
+            ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
         }
         
         public void SetUpNewGame(GameSave currentSave)
