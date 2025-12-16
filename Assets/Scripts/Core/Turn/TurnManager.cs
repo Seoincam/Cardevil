@@ -110,7 +110,7 @@ namespace Cardevil.Core.Turn
             try
             {
                 // TODO: 적에 대한 설명 표시
-                await _enemy.ShowInitialAttackArea();
+                await _enemy.ShowInitialAttackArea(context);
 
                 await _cardFlow.EnterRerollPhase(6);
                 await _cardFlow.Reroll();

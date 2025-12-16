@@ -24,7 +24,7 @@ namespace Cardevil.Core
             // TODO: 성장 계수 등 다른 요소도 넣어야할 듯.
         }
 
-        [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "Test" };
+        [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "1.2" };
         
         [field: SerializeField] public WorldRoot World { get; set; }
         [field: SerializeField] public StageRoot Stage { get; set; }

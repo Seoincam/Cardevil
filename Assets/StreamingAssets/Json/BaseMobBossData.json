@@ -1,8 +1,8 @@
 [
   {
     "MobID": "1001",
-    "MobKorID": "능숙한 사귀꾼",
-    "MobType": "",
+    "MobKorID": "광견",
+    "MobType": "개",
     "BaseHP": 300,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 16,
@@ -17,17 +17,19 @@
     "GimmickName": [
       "\"Gimmick_None\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [],
+    "챕터": "2챕터",
+    "수": "20"
   },
   {
     "MobID": "1002",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "전갈견",
+    "MobType": "개",
     "BaseHP": 350,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
@@ -35,57 +37,340 @@
     ],
     "AttackPlayer": false,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_None\""
     ],
-    "GimmickValue": [
-      1.0,
-      1.0
-    ]
+    "GimmickValue": [],
+    "챕터": "3챕터",
+    "수": "19"
   },
   {
     "MobID": "1003",
-    "MobKorID": "사냥개",
-    "MobType": "개",
-    "BaseHP": 350,
+    "MobKorID": "양면의 패",
+    "MobType": "카드",
+    "BaseHP": 400,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 16,
-    "AttackCycle": 3,
+    "AttackCycle": 4,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4
+      4,
+      5
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Rank_Upgrade\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [
+      0.5
+    ],
+    "챕터": "합계",
+    "수": "56"
   },
   {
     "MobID": "1004",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 350,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
+    "MobKorID": "위선의 패",
+    "MobType": "카드",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4
+      4,
+      5
     ],
-    "AttackPlayer": false,
+    "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Rank_Upgrade\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [
+      0.666
+    ],
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "1005",
-    "MobKorID": "사냥개",
-    "MobType": "개",
+    "MobKorID": "쌍둥이 악마",
+    "MobType": "악마",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Rank_Debuff\""
+    ],
+    "GimmickValue": [
+      0.8
+    ],
+    "챕터": "챕터 나누는 기준",
+    "수": ""
+  },
+  {
+    "MobID": "1006",
+    "MobKorID": "푸른색을 싫어하는 해골",
+    "MobType": "해골",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Flush_Debuff\""
+    ],
+    "GimmickValue": [
+      1.5
+    ],
+    "챕터": "1. 같은 몸 종류는 가능한 다르게",
+    "수": ""
+  },
+  {
+    "MobID": "1007",
+    "MobKorID": "초록색을 싫어하는 해골",
+    "MobType": "해골",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 2,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Flush_Debuff\""
+    ],
+    "GimmickValue": [
+      1.5
+    ],
+    "챕터": "2. 기믹의 난이도에 따라서",
+    "수": ""
+  },
+  {
+    "MobID": "1008",
+    "MobKorID": "붉은색을 싫어하는 해골",
+    "MobType": "해골",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Flush_Debuff\""
+    ],
+    "GimmickValue": [
+      2.0,
+      0.5
+    ],
+    "챕터": "3. 각 챕터 몹 수 비슷하게",
+    "수": ""
+  },
+  {
+    "MobID": "1009",
+    "MobKorID": "검은색을 싫어하는 해골",
+    "MobType": "해골",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Flush_Debuff\""
+    ],
+    "GimmickValue": [
+      2.0,
+      0.5
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "1010",
+    "MobKorID": "속박의 마도서",
+    "MobType": "마도서",
+    "BaseHP": 350,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      5,
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_Lock\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "핸드 정하는 기준",
+    "수": ""
+  },
+  {
+    "MobID": "1011",
+    "MobKorID": "쇠약의 마도서",
+    "MobType": "마도서",
+    "BaseHP": 350,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      5,
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_Lock\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "1. 소속 챕터에 따라서",
+    "수": ""
+  },
+  {
+    "MobID": "1012",
+    "MobKorID": "붉은 양초",
+    "MobType": "양초",
+    "BaseHP": 350,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Penalty\""
+    ],
+    "GimmickValue": [
+      1.0
+    ],
+    "챕터": "2. 기믹에 따라서",
+    "수": ""
+  },
+  {
+    "MobID": "1013",
+    "MobKorID": "푸른 양초",
+    "MobType": "양초",
+    "BaseHP": 300,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Penalty\""
+    ],
+    "GimmickValue": [
+      2.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "1014",
+    "MobKorID": "흡혈 박쥐",
+    "MobType": "박쥐",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_Heal\""
+    ],
+    "GimmickValue": [
+      0.05
+    ],
+    "챕터": "CH1",
+    "수": ""
+  },
+  {
+    "MobID": "1015",
+    "MobKorID": "박쥐",
+    "MobType": "박쥐",
+    "BaseHP": 400,
+    "ChapterFactor": 1.0,
+    "HPGrowFactor": 16,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      5
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_HP_Grow\""
+    ],
+    "GimmickValue": [
+      0.03
+    ],
+    "챕터": "HightCard",
+    "수": "Onepiar"
+  },
+  {
+    "MobID": "1016",
+    "MobKorID": "형 악마",
+    "MobType": "악마",
     "BaseHP": 350,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 16,
@@ -94,221 +379,1041 @@
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4,
       5
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Rank_Debuff\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [
+      0.666
+    ],
+    "챕터": "TwoPair",
+    "수": "Triple"
   },
   {
-    "MobID": "1006",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 200,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 4,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1007",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 400,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1008",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 400,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1009",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1010",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1011",
-    "MobKorID": "",
-    "MobType": "",
+    "MobID": "1017",
+    "MobKorID": "거미",
+    "MobType": "거미",
     "BaseHP": 400,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 16,
     "AttackCycle": 4,
     "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
     "AttackPattern": [
-      4,
-      5
+      5,
+      6
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Cards_Buff\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [
+      1.25,
+      0.75,
+      0.5,
+      0.25
+    ],
+    "챕터": "CH2",
+    "수": ""
   },
   {
-    "MobID": "1012",
-    "MobKorID": "",
-    "MobType": "",
+    "MobID": "2001",
+    "MobKorID": "날쌘 광견",
+    "MobType": "개",
     "BaseHP": 350,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 1,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4
+      7
     ],
     "AttackPlayer": false,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_None\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [],
+    "챕터": "Twopair",
+    "수": "Triple"
   },
   {
-    "MobID": "1013",
-    "MobKorID": "",
-    "MobType": "괴짜",
+    "MobID": "2002",
+    "MobKorID": "혼란스러운 광견",
+    "MobType": "개",
     "BaseHP": 400,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
     "BoolAttackType": false,
-    "AttackWeight": [],
+    "AttackWeight": [
+      0,
+      0,
+      0
+    ],
     "AttackPattern": [
-      4
+      7,
+      8,
+      9
     ],
     "AttackPlayer": false,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_None\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [],
+    "챕터": "Straight",
+    "수": "Flush"
   },
   {
-    "MobID": "1014",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1015",
-    "MobKorID": "",
-    "MobType": "괴짜",
+    "MobID": "2003",
+    "MobKorID": "강인한 광견",
+    "MobType": "개",
     "BaseHP": 400,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 5,
+    "AttackDamage": 2,
+    "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_None\""
+    ],
+    "GimmickValue": [],
+    "챕터": "CH3",
+    "수": ""
+  },
+  {
+    "MobID": "2004",
+    "MobKorID": "삼지창",
+    "MobType": "삼지창",
+    "BaseHP": 400,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_Upgrade\""
+    ],
+    "GimmickValue": [
+      20.0,
+      2.0
+    ],
+    "챕터": "Triple",
+    "수": "Straight"
+  },
+  {
+    "MobID": "2005",
+    "MobKorID": "막강한 족쇄 노예",
+    "MobType": "족쇄 노예",
+    "BaseHP": 400,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      6,
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Damage_Debuff\""
+    ],
+    "GimmickValue": [
+      1.0,
+      0.9
+    ],
+    "챕터": "Flush",
+    "수": "FourCard"
+  },
+  {
+    "MobID": "2006",
+    "MobKorID": "활활 타는 불꽃",
+    "MobType": "불꽃",
+    "BaseHP": 400,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Heal_Current\""
+    ],
+    "GimmickValue": [
+      0.04
+    ],
+    "챕터": "Cardevil",
+    "수": ""
+  },
+  {
+    "MobID": "2007",
+    "MobKorID": "거미",
+    "MobType": "거미",
+    "BaseHP": 450,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      6,
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Cards_Buff\""
+    ],
+    "GimmickValue": [
+      1.5,
+      0.5,
+      0.14
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2008",
+    "MobKorID": "커다란 거울",
+    "MobType": "거울",
+    "BaseHP": 450,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
     ],
     "AttackPlayer": false,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Warp_Block\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2009",
+    "MobKorID": "골렘",
+    "MobType": "골렘",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 2,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      6,
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Stone_Trap\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2010",
+    "MobKorID": "길을 막는 골렘",
+    "MobType": "골렘",
+    "BaseHP": 450,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Stone_Trap\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2011",
+    "MobKorID": "깨진 거울",
+    "MobType": "거울",
+    "BaseHP": 450,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Center_Block\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2012",
+    "MobKorID": "통제의 마도서",
+    "MobType": "마도서",
+    "BaseHP": 450,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_High_Lock\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2013",
+    "MobKorID": "붉은 삼지창",
+    "MobType": "삼지창",
+    "BaseHP": 400,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Damage_Upgrade\""
+    ],
+    "GimmickValue": [
+      0.2,
+      2.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2014",
+    "MobKorID": "억제의 마도서",
+    "MobType": "마도서",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      7,
+      8,
+      9
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Attack_High_Lock\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2015",
+    "MobKorID": "빠른 골렘",
+    "MobType": "골렘",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 2,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Stone_Trap\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2016",
+    "MobKorID": "느린 골렘",
+    "MobType": "골렘",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      6
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Stone_Trap\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2017",
+    "MobKorID": "망가진 거울",
+    "MobType": "거울",
+    "BaseHP": 450,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 2,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      6,
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Center_Block\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2018",
+    "MobKorID": "강한 족쇄 노예",
+    "MobType": "족쇄 노예",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      7,
+      9
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_Damage_Debuff\""
+    ],
+    "GimmickValue": [
+      2.0,
+      0.9
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2019",
+    "MobKorID": "타오르는 불꽃",
+    "MobType": "불꽃",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Heal_Max\""
+    ],
+    "GimmickValue": [
+      0.02
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "2020",
+    "MobKorID": "영원한 불꽃",
+    "MobType": "불꽃",
+    "BaseHP": 500,
+    "ChapterFactor": 1.5,
+    "HPGrowFactor": 18,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Heal_Number\""
+    ],
+    "GimmickValue": [
+      0.5
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3001",
+    "MobKorID": "수상한 광견",
+    "MobType": "개",
+    "BaseHP": 300,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0,
+      0
+    ],
+    "AttackPattern": [
+      8,
+      9,
+      10,
+      11
+    ],
+    "AttackPlayer": false,
+    "GimmickName": [
+      "\"Gimmick_None\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3002",
+    "MobKorID": "사나운 광견",
+    "MobType": "개",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0,
+      0
+    ],
+    "AttackPattern": [
+      7,
+      8,
+      9
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_None\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3003",
+    "MobKorID": "녹색 박쥐",
+    "MobType": "박쥐",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Turn_Heal\""
+    ],
+    "GimmickValue": [
+      0.03
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3004",
+    "MobKorID": "사기꾼의 패",
+    "MobType": "카드",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7,
+      8,
+      9
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Rank_Upgrade\""
+    ],
+    "GimmickValue": [
+      0.666,
+      0.333
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3005",
+    "MobKorID": "흡수하는 미믹",
+    "MobType": "미믹",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Damage_Limit\""
+    ],
+    "GimmickValue": [
+      0.333,
+      0.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3006",
+    "MobKorID": "족쇄 노예",
+    "MobType": "족쇄 노예",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmcik_Positon_Debuff\""
+    ],
+    "GimmickValue": [
+      0.2
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3007",
+    "MobKorID": "반복을 싫어하는 노예",
+    "MobType": "족쇄 노예",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      7,
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Final_Damage_Debuff\""
+    ],
+    "GimmickValue": [
+      0.5
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3008",
+    "MobKorID": "마도서",
+    "MobType": "마도서",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Turn_Lock\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3009",
+    "MobKorID": "제한의 마도서",
+    "MobType": "마도서",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Turn_Lock\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3010",
+    "MobKorID": "거미",
+    "MobType": "거미",
+    "BaseHP": 600,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      7,
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Cards_Buff\""
+    ],
+    "GimmickValue": [
+      1.5,
+      0.5,
+      0.3,
+      0.1
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3011",
+    "MobKorID": "중복을 싫어하는 노예",
+    "MobType": "족쇄 노예",
+    "BaseHP": 600,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmcik_Rank_Positon_Debuff\""
+    ],
+    "GimmickValue": [
+      0.1
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3012",
+    "MobKorID": "악마 형제",
+    "MobType": "악마",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmmick_Rank_Debuff\""
+    ],
+    "GimmickValue": [
+      0.666
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3013",
+    "MobKorID": "순서를 싫어하는 미믹",
+    "MobType": "미믹",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Rank_Shield\""
+    ],
+    "GimmickValue": [
+      0.2
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3014",
+    "MobKorID": "중복을 싫어하는 미믹",
+    "MobType": "미믹",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Rank_Shield\""
+    ],
+    "GimmickValue": [
+      0.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3015",
+    "MobKorID": "흑색 박쥐",
+    "MobType": "박쥐",
+    "BaseHP": 500,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0
+    ],
+    "AttackPattern": [
+      8,
+      11
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Pentagram_Heal\""
+    ],
+    "GimmickValue": [
+      0.05
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3016",
+    "MobKorID": "저지하는 골렘",
+    "MobType": "골렘",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 4,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      7
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Stone_Trap\""
+    ],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3017",
+    "MobKorID": "불꽃",
+    "MobType": "불꽃",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Heal_Max\""
+    ],
+    "GimmickValue": [
+      0.0,
+      1.0,
+      2.0,
+      0.05
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3018",
+    "MobKorID": "잠식하는 불꽃",
+    "MobType": "불꽃",
+    "BaseHP": 550,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0,
+      0
+    ],
+    "AttackPattern": [
+      7,
+      9,
+      10
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Discard_Attack_Upgrade\""
+    ],
+    "GimmickValue": [
+      1.0
+    ],
+    "챕터": "",
+    "수": ""
+  },
+  {
+    "MobID": "3019",
+    "MobKorID": "슬라임",
+    "MobType": "슬라임",
+    "BaseHP": 666,
+    "ChapterFactor": 2.0,
+    "HPGrowFactor": 20,
+    "AttackCycle": 5,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
+    "AttackPattern": [
+      8
+    ],
+    "AttackPlayer": true,
+    "GimmickName": [
+      "\"Gimmick_Shield\""
+    ],
+    "GimmickValue": [
+      30.0
+    ],
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9001",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "SBoss",
+    "MobType": "Boss",
     "BaseHP": 800,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
@@ -316,146 +1421,17 @@
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
+    "AttackPattern": [],
     "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1016",
-    "MobKorID": "",
-    "MobType": "악마",
-    "BaseHP": 400,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1017",
-    "MobKorID": "",
-    "MobType": "악마",
-    "BaseHP": 400,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1018",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1019",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1020",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "1021",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
+    "GimmickName": [],
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9002",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "JBoss",
+    "MobType": "Boss",
     "BaseHP": 1100,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
@@ -464,229 +1440,24 @@
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4,
-      5
+      7,
+      8,
+      9
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_JBoss\""
     ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2001",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 4,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
+    "GimmickValue": [
+      1.0
     ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2002",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2003",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2004",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2005",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2006",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2007",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2008",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2009",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 2,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2010",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9003",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "QBoss",
+    "MobType": "Boss",
     "BaseHP": 1000,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
@@ -695,103 +1466,22 @@
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4,
-      5
+      8
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_QBoss\""
     ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2011",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
+    "GimmickValue": [
+      0.0
     ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2012",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2013",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 2,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "2014",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 500,
-    "ChapterFactor": 1.5,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9004",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "KBoss",
+    "MobType": "Boss",
     "BaseHP": 1500,
     "ChapterFactor": 1.5,
     "HPGrowFactor": 0,
@@ -800,370 +1490,103 @@
     "BoolAttackType": true,
     "AttackWeight": [],
     "AttackPattern": [
-      4,
-      5
+      8
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_KBoss\""
     ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3001",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 2,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3002",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3003",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3004",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3005",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3006",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3007",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3008",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3009",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
+    "GimmickValue": [],
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9005",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "ABoss",
+    "MobType": "Boss",
     "BaseHP": 1800,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3010",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 4,
-    "AttackDamage": 2,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": false,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3011",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 2,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3012",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 2.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
-    "AttackPattern": [
-      4,
-      5
-    ],
-    "AttackPlayer": true,
-    "GimmickName": [
-      "\"Gimmick_Test\""
-    ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "3013",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 550,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
     "BoolAttackType": false,
-    "AttackWeight": [],
+    "AttackWeight": [
+      0,
+      0
+    ],
     "AttackPattern": [
-      4,
-      5
+      8,
+      10
     ],
-    "AttackPlayer": false,
+    "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_ABoss\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [
+      1.0
+    ],
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9006",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "Empty_Boss",
+    "MobType": "Boss",
     "BaseHP": 5000,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
-    "AttackDamage": 1,
-    "BoolAttackType": true,
-    "AttackWeight": [],
+    "AttackDamage": 3,
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0,
+      0
+    ],
     "AttackPattern": [
-      4,
-      5
+      8,
+      10,
+      11
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Empty\""
     ],
-    "GimmickValue": []
+    "GimmickValue": [
+      1.05,
+      6.0
+    ],
+    "챕터": "",
+    "수": ""
   },
   {
     "MobID": "9007",
-    "MobKorID": "",
-    "MobType": "",
+    "MobKorID": "Maker_Boss",
+    "MobType": "Boss",
     "BaseHP": 1500,
     "ChapterFactor": 2.0,
     "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 2,
-    "BoolAttackType": true,
-    "AttackWeight": [],
+    "BoolAttackType": false,
+    "AttackWeight": [
+      0,
+      0,
+      0
+    ],
     "AttackPattern": [
-      4,
-      5
+      8,
+      9,
+      11
     ],
     "AttackPlayer": true,
     "GimmickName": [
-      "\"Gimmick_Test\""
+      "\"Gimmick_Maker\""
     ],
-    "GimmickValue": []
-  },
-  {
-    "MobID": "",
-    "MobKorID": "",
-    "MobType": "",
-    "BaseHP": 0,
-    "ChapterFactor": 0.0,
-    "HPGrowFactor": 0,
-    "AttackCycle": 0,
-    "AttackDamage": 0,
-    "BoolAttackType": false,
-    "AttackWeight": [
-      4,
-      6,
-      4,
-      2
+    "GimmickValue": [
+      1.0
     ],
-    "AttackPattern": [],
-    "AttackPlayer": false,
-    "GimmickName": [],
-    "GimmickValue": []
+    "챕터": "",
+    "수": ""
   }
 ]

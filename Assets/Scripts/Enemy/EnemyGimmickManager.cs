@@ -5,6 +5,7 @@ using Cardevil.InGame.Enemy;
 
 namespace Cardevil.InGame.Enemy
 {
+    // TODO : 사용하지않게되면 삭제
     public class EnemyGimmickManager : MonoBehaviour
     {
         // 이 몬스터가 가진 모든 '활성화된' 기믹 로직(POCO)

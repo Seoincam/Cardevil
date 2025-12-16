@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class BaseMobBossData: IDBData {
+    public partial class BaseMobData: IDBData {
 
         /// <summary> 몹ID </summary>
         public string MobID;

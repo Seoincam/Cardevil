@@ -1,5 +1,5 @@
-﻿using Cardevil.Events.ExecEvents;
-
+using Cardevil.Events.ExecEvents;
+using Cardevil.InGame.Enemy;
 namespace Cardevil.Events
 {
     /// <summary>
@@ -93,4 +93,43 @@ namespace Cardevil.Events
             ModifiedTicket = 0;
         }
     }
+
+    /// <summary>
+    /// Enemy의 체력이 변경되었을때 호출
+    /// </summary>
+    public class EnemyHealthChangeArgs : ExecEventArgs<EnemyHealthChangeArgs>
+    {
+        public float OldHealth { get; private set; }
+        public float NewHealth { get; private set; }
+        public float ModifiedHealth { get; set; }
+        public Cardevil.InGame.Enemy.Enemy Owner;
+
+
+        public void Init(float currentHealth, float newHealth,Cardevil.InGame.Enemy.Enemy owner)
+        {
+            OldHealth = currentHealth;
+            NewHealth = newHealth;
+            ModifiedHealth = newHealth;
+            Owner = owner; 
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            OldHealth = 0;
+            NewHealth = 0;
+            ModifiedHealth = 0;
+            Owner = null;
+        }
+
+    }
+
+    /// <summary>
+    /// Enemy가 공격한 후 호출
+    /// </summary>
+    public class EnemyAttackAfterArgs : ExecEventArgs<EnemyAttackAfterArgs>
+    {
+        public bool isPlayerAttackSuccess;
+    }
+
 }

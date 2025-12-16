@@ -5,9 +5,36 @@
     "fullEnumList": [
       1001
     ],
-    "shortEnumList": "1",
-    "CustomClass": "{\n  \"a\": 10,\n  \"b\": 20.0,\n  \"c\": \"SampleText\",\n}",
-    "CustomClassList": "{\n  \"a\": 10,\n  \"b\": 20.0,\n  \"c\": \"SampleText\",\n},{\n  \"a\": 222,\n  \"b\": 20.4444,\n  \"c\": \"SampleText2\",\n}",
-    "ListList": "[\n[2,3,3],\n[2,3,1,2]\n]"
+    "shortEnumList": 1,
+    "CustomClass": {
+      "a": 10,
+      "b": 20.0,
+      "c": "SampleText"
+    },
+    "CustomClassList": [
+      {
+        "a": 10,
+        "b": 20.0,
+        "c": "SampleText"
+      },
+      {
+        "a": 222,
+        "b": 20.4444,
+        "c": "SampleText2"
+      }
+    ],
+    "ListList": [
+      [
+        2,
+        3,
+        3
+      ],
+      [
+        2,
+        3,
+        1,
+        2
+      ]
+    ]
   }
 ]

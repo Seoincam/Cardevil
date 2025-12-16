@@ -9,6 +9,10 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Utils;
 using UnityEngine.UI;
 using Database.Generated;
+using Cardevil.Events.ExecEvents;
+using Cardevil.Events;
+using Cardevil.Ingame.Entities;
+using Cardevil.Ingame.Player;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -26,15 +30,15 @@ namespace Cardevil.InGame.Enemy
         Straight,
         Flush,
         FourCard,
-        StraightPlush
+        StraightFlush
     }
     public class Enemy : MonoBehaviour, ITurnEnemy
     {
 
         //-----HP UI-----///
         [SerializeField] private Slider hpBar; // Inspector에서 UI Slider를 드래그하여 연결합니다.
-        private float maxHP = 100;
-        private BaseMobBossData baseMobBossData;
+        public float maxHP = 100;
+        public BaseMobBossData baseMobBossData;
 
         private Field field;
         private float damage = 1; // Enemy의 공격력
@@ -51,11 +55,17 @@ namespace Cardevil.InGame.Enemy
         private int settingOrder = 3;
         public int delayAttackByRelic = 0;
 
-        private List<Attack> attackLists = new List<Attack>();
+        public List<Attack> attackLists = new List<Attack>();
 
         private (bool attackSucess, float damage) _enemyAttackInfo;
 
+
         private AttackStyle currentAttackStyle;
+
+        // --------족보 관련----------
+        public int enforcedAttackRanking = 0;
+        public int enforcedAttackDamage = 0;
+
 
         public class Attack
         {
@@ -98,14 +108,15 @@ namespace Cardevil.InGame.Enemy
             LogEx.LogWarning("<b>대윤</b>: 아직 enemy 교체가 구현되지 않음.");
         }
 
-        public async UniTask ShowInitialAttackArea()
+        public async UniTask ShowInitialAttackArea(IReadOnlyTurnContext ctx)
         {
-            LogEx.LogWarning("<b>대윤</b>: 첫 공격 표시가 아직 구현되지 않았습니다.");
+            AttackEnemyTurnStart(ctx);
         }
         
         public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
         {
             LogEx.LogWarning("<b>대윤</b>: 공격 로직이 아직 완성되지 않았습니다.");
+
             
             var target = ctx.Player;
             // 이제 플레이어 위치 이렇게 받아오면 됨!
@@ -116,9 +127,11 @@ namespace Cardevil.InGame.Enemy
             
             // TODO: 필요하다면 족보도 받아오기
             return _enemyAttackInfo.attackSucess  
-                ? new AttackResult(target, HandRanking.None, (int)damage)
+                ? new AttackResult(target, HandRanking.None, (int)damage+enforcedAttackDamage)
                 : new AttackResult(target, HandRanking.None, 0);
         }
+
+
 
         #region 족보공격 구현
 
@@ -484,7 +497,7 @@ namespace Cardevil.InGame.Enemy
         {
             LogEx.Log("SetStraightPlushAttack! (center all except one diagonal)");
 
-            attack.currentAttackStyle = AttackStyle.StraightPlush;
+            attack.currentAttackStyle = AttackStyle.StraightFlush;
 
             // 중앙 고정
             attack.attackPointNumber_x = 1;
@@ -789,15 +802,16 @@ namespace Cardevil.InGame.Enemy
 
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨공격인지 설정 
 
-            tmpAttack.SetAttackCycle(attackCreateCycle);
+            tmpAttack.SetAttackCycle(baseMobBossData.AttackCycle);
 
+            Debug.Log($"{baseMobBossData.MobKorID}의 기믹은 {baseMobBossData.GimmickName.ToString()} , {baseMobBossData.AttackCycle}");
             if (firstCreate)
             {
                 tmpAttack.attackTurnOrder++;
                 tmpAttack.attackTurnOrder += delayAttackByRelic;
 
             }
-            SetAttack(tmpAttack, isPlayerAttack);
+            SetAttack(tmpAttack, baseMobBossData.AttackPlayer);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
         public void AttackEnemyTurnStart(IReadOnlyTurnContext ctx)
@@ -827,7 +841,7 @@ namespace Cardevil.InGame.Enemy
             {
                 attack.attackTurnOrder--; // 모든 Attack 들의 Turn Order 감소
                 LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
-                if (attack.attackTurnOrder == 0) // 0 이라면 공격시행
+                if (attack.attackTurnOrder <= 0) // 0 이라면 공격시행
                 {
                     AttackingCheck(attack);
                     RemoveHighLight(attack);
@@ -849,6 +863,11 @@ namespace Cardevil.InGame.Enemy
                 isAttackSuccess = false;
                 LogEx.Log("Enemy가 공격에 실패했다!");
                 //공격에 실패했음.
+            }
+            // Enemy가 공격 한후Attack
+            using (EnemyAttackAfterArgs args = EnemyAttackAfterArgs.Get())
+            {
+                ExecEventBus<EnemyAttackAfterArgs>.InvokeMerged(args).Forget(); // TODO: Forget을 다른 함수로 바꾸기 feat 승우
             }
         }
 
@@ -877,7 +896,7 @@ namespace Cardevil.InGame.Enemy
                     return (AttackPlush(attack));
                 case AttackStyle.FourCard:
                     return (AttackFourCard(attack));
-                case AttackStyle.StraightPlush:
+                case AttackStyle.StraightFlush:
                     return (AttackStraightPlush(attack));
 
                 default: break;
@@ -914,6 +933,7 @@ namespace Cardevil.InGame.Enemy
                     tmpAttacks.Add(attack); // 공격을 진행하지 않은 Attack만 저장
                 }
             }
+         
 
             attackLists = tmpAttacks; // 어택리스트 재조정
 
@@ -979,7 +999,7 @@ namespace Cardevil.InGame.Enemy
                 case AttackStyle.FourCard:
                     SettingAttackFourCard(attack);
                     break;
-                case AttackStyle.StraightPlush:
+                case AttackStyle.StraightFlush:
                     SettingAttackStraightPlush(attack);
                     break;
                 default:
@@ -1034,7 +1054,10 @@ namespace Cardevil.InGame.Enemy
         AttackStyle GetRandomAttackStyle() // 랜덤으로 어택스타일 받기
         {
             Array values = Enum.GetValues(typeof(AttackStyle));
-            return baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
+            AttackStyle returnAttackStyle = baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
+            // 기믹으로 강화된 어택이 존재한다면
+            returnAttackStyle += enforcedAttackRanking;
+            return returnAttackStyle;
             // return (isPlayerAttack) ? (AttackStyle)values.GetValue(UnityEngine.Random.Range(2, values.Length)) : (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
             // 랜덤값 다르게받기
         }
@@ -1116,7 +1139,7 @@ namespace Cardevil.InGame.Enemy
                     }
                     break;
 
-                case AttackStyle.StraightPlush:
+                case AttackStyle.StraightFlush:
                     // 세팅 시 저장한 excludedCornerIndex를 참조해 그 칸만 스킵하고 나머지 타일의 하이라이트를 끔
                     List<(int x, int y)> cornersSP = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
                     if (attack.excludedCornerIndex >= 0 && attack.excludedCornerIndex < cornersSP.Count)
@@ -1210,23 +1233,23 @@ namespace Cardevil.InGame.Enemy
         void AttackPoint(int pointNumber_x, int poinNumber_y)
         {
             LogEx.LogError("AttackPoint 미구현.");
-            // if (!IsValidPoint(pointNumber_x, poinNumber_y)) return;
-            //
-            // List<Entity> entities =
-            // field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-            //
+            if (!IsValidPoint(pointNumber_x, poinNumber_y)) return;
+            
+             List<Entity> entities =
+             field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+            
             // //Entity중 Player가 있다면
-            // foreach (Entity entity in entities)
-            // {
-            //     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-            //     {
-            //         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-            //         if (player is ITurnPlayer action)
-            //         {
-            //             action.PlayerGetDamage(damage);
-            //         }
-            //     }
-            // }
+             foreach (Entity entity in entities)
+             {
+                 if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                 {
+                     // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                     if (player is ITurnPlayer action)
+                     {
+                        _enemyAttackInfo.attackSucess = true;
+                    }
+                 }
+             }
 
         }
 
@@ -1239,22 +1262,22 @@ namespace Cardevil.InGame.Enemy
             {
                 LogEx.LogError("Attack Vertical 미구현");
                 
-                // List<Entity> entities =
-                // field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-                //
-                // //Entity중 Player가 있다면
-                // foreach (Entity entity in entities)
-                // {
-                //     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                //     {
-                //         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                //         if (player is ITurnPlayer action)
-                //         {
-                //             action.PlayerGetDamage(damage);
-                //             successAttack = true;
-                //         }
-                //     }
-                // }
+                List<Entity> entities =
+                   field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+                
+                //Entity중 Player가 있다면
+                 foreach (Entity entity in entities)
+                 {
+                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                     {
+                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                         if (player is ITurnPlayer action)
+                         {
+                            _enemyAttackInfo.attackSucess = true;
+                            successAttack = true;
+                         }
+                     }
+                 }
 
             }
 
@@ -1266,26 +1289,26 @@ namespace Cardevil.InGame.Enemy
         {
             bool successAttack = false;
             // 가로는 0,1,2 모두
-            // for (int x = 0; x < 3; x++)
-            // {
-            //     List<Entity> entities =
-            //    field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-            //
-            //     //Entity중 Player가 있다면
-            //     foreach (Entity entity in entities)
-            //     {
-            //         if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-            //         {
-            //             // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-            //             if (player is ITurnPlayer action)
-            //             {
-            //                 action.PlayerGetDamage(damage);
-            //                 successAttack = true;
-            //             }
-            //         }
-            //     }
-            //
-            // }
+            for (int x = 0; x < 3; x++)
+            {
+                 List<Entity> entities =
+                field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+            
+                 //Entity중 Player가 있다면
+                 foreach (Entity entity in entities)
+                 {
+                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                     {
+                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                         if (player is ITurnPlayer action)
+                         {
+                            _enemyAttackInfo.attackSucess = true;
+                             successAttack = true;
+                         }
+                     }
+                 }
+            
+             }
             
             LogEx.LogError("Attack Horizontal 미구현.");
             return successAttack;
@@ -1296,10 +1319,10 @@ namespace Cardevil.InGame.Enemy
         #region Player 상호작용 
         public virtual bool GetDamage(float damage)
         {
-            HP -= damage;
-            LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {HP}로 감소하였다!");
+            CurrentHp = HP - damage;
+            LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
             UpdateHPBar();
-            if (HP <= 0)
+            if (CurrentHp <= 0)
             {
                 // 유닛 사망
                 isEnemyDead = true;
@@ -1415,10 +1438,28 @@ namespace Cardevil.InGame.Enemy
         #endregion
 
         #region EnemySpawner 세팅
+
+        public float CurrentHp
+        {
+            get => HP;
+            set
+            {
+                using (EnemyHealthChangeArgs args = EnemyHealthChangeArgs.Get())
+                {
+                    args.Init(HP, value,this);
+                    ExecEventBus<EnemyHealthChangeArgs>.InvokeMerged(args).Forget();
+                    HP = args.ModifiedHealth;
+                }
+            }
+        }
+        /// <summary>
+        /// Enemy 세팅 시작
+        /// </summary>
+        /// <param name="_baseMobBossData"></param>
         public void Setup(BaseMobBossData _baseMobBossData)
         {
             baseMobBossData = _baseMobBossData;
-            Debug.Log($"SetUp! : {_baseMobBossData.MobID}");
+            Debug.Log($"SetUp! : {baseMobBossData.MobKorID} : {_baseMobBossData.MobID}");
 
             if (baseMobBossData.BoolAttackType) // 1 이라면
             {
@@ -1429,6 +1470,10 @@ namespace Cardevil.InGame.Enemy
                 SetPatternRandomBaseWeight();
             }
             isPlayerAttack = baseMobBossData.AttackPlayer;
+
+            //HP 설정
+            maxHP = _baseMobBossData.BaseHP;
+            CurrentHp = maxHP;
 
             SettingGimmick(_baseMobBossData);
 
@@ -1517,6 +1562,7 @@ namespace Cardevil.InGame.Enemy
             }
             #endregion
         
+
     }
     }
 
