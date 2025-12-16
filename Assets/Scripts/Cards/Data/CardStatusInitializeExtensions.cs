@@ -1,5 +1,6 @@
 using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Cards.Data.Modifiers;
+using Cardevil.Cards.Data.Spec;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,16 @@ namespace Cardevil.Cards.Data
     public static class CardStatusInitializeExtensions
     {
         /// <summary>
-        /// 기본 카드 파이프라인(50개)을 생성하는 확장 메서드.
+        /// 기본 카드 스펙(50개)을 생성하는 확장 메서드.
         /// </summary>
-        public static void CreateBasePipelines(this CardStatus cardStatus, EnhancementDataLibrary enhancement)
+        public static void CreateBaseSpec(this CardStatus cardStatus, EnhancementDataLibrary enhancement)
         {
             // 테스트용 플래그
             bool isEnhancement = enhancement != null;
             
-            cardStatus.pipelineMap.Clear();
+            cardStatus.specMap.Clear();
             int id = 0;
-            CardDataPipeline pipeline;
+            CardSpec spec;
             
             // Number Data 생성
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
@@ -28,45 +29,45 @@ namespace Cardevil.Cards.Data
                 // 일반 Number Data (2~10)
                 for (int i = 2; i <= 10; i++)
                 {
-                    pipeline = new CardDataPipeline(CardKind.Attack, id);
+                    spec = new CardSpec(CardKind.Attack, id);
                     
                     // Modifier 추가
-                    pipeline.AddModifier(new ColorModifier(color));
-                    pipeline.AddModifier(new SelectableNumberModifier());
-                    pipeline.AddModifier(new SelectableNumberConfirmModifier(i));
+                    spec.AddModifier(new ColorModifier(color));
+                    spec.AddModifier(new SelectableNumberModifier());
+                    spec.AddModifier(new SelectableNumberConfirmModifier(i));
 
                     if (isEnhancement)
                     {
                         // 강화 상태 설정
-                        pipeline.SetCurrentEnhancementId(Guid.Empty);
+                        spec.SetCurrentEnhancementId(Guid.Empty);
                         
                         // 강화 가능성 추가
-                        pipeline.SetNextEnhancementIds
+                        spec.SetNextEnhancementIds
                         (
                             enhancement.GetId(ModifierType.AttackNumSelectable, 1),
                             enhancement.GetId(ModifierType.AttackDamage, 1)
                         );
                     }
                     
-                    cardStatus.pipelineMap[id++] = pipeline;
+                    cardStatus.specMap[id++] = spec;
                 }
 
                 // 오망성 Number Data
-                pipeline = new CardDataPipeline(CardKind.Attack, id);
-                pipeline.AddModifier(new ColorModifier(color));
+                spec = new CardSpec(CardKind.Attack, id);
+                spec.AddModifier(new ColorModifier(color));
                 for (int i = 0; i < 9; i++) 
-                    pipeline.AddModifier(new SelectableNumberModifier());
+                    spec.AddModifier(new SelectableNumberModifier());
 
                 if (isEnhancement)
                 {
                     // 강화 상태 설정
-                    pipeline.SetCurrentEnhancementId
+                    spec.SetCurrentEnhancementId
                     (
                         enhancement.GetId(ModifierType.AttackNumSelectable, 3)
                     );
                 }
 
-                cardStatus.pipelineMap[id++] = pipeline;
+                cardStatus.specMap[id++] = spec;
             }
             
             // Move Data 생성
@@ -77,43 +78,43 @@ namespace Cardevil.Cards.Data
                 // 일반 Move 
                 for (int i = 0; i < 2; i++)
                 {
-                    pipeline = new  CardDataPipeline(CardKind.Move, id);
+                    spec = new  CardSpec(CardKind.Move, id);
 
                     // Modifier 추가
-                    pipeline.AddModifier(new DirSelectableModifier(direction));
+                    spec.AddModifier(new DirSelectableModifier(direction));
                     
                     if (isEnhancement)
                     {
                         // 강화 상태 설정
-                        pipeline.SetCurrentEnhancementId(Guid.Empty);
+                        spec.SetCurrentEnhancementId(Guid.Empty);
                     
                         // 강화 가능성 추가
-                        pipeline.SetNextEnhancementIds
+                        spec.SetNextEnhancementIds
                         (
                             enhancement.GetId(ModifierType.MoveDirSelectable, 1)
                         );
                     }
                     
-                    cardStatus.pipelineMap[id++] = pipeline;
+                    cardStatus.specMap[id++] = spec;
                 }
             }
             
             // 4방향 선택 가능 Move Data
             for (int i = 0; i < 2; i++)
             {
-                pipeline = new CardDataPipeline(CardKind.Move, id);
+                spec = new CardSpec(CardKind.Move, id);
                 
                 // Modifier 추가
                 for (int j = 0; j < 4; j++)
-                    pipeline.AddModifier(new DirSelectableModifier());
+                    spec.AddModifier(new DirSelectableModifier());
 
                 if (isEnhancement)
                 {
                     // 강화 상태 설정
-                    pipeline.SetCurrentEnhancementId(enhancement.GetId(ModifierType.MoveDirSelectable, 2));
+                    spec.SetCurrentEnhancementId(enhancement.GetId(ModifierType.MoveDirSelectable, 2));
                 }
                 
-                cardStatus.pipelineMap[id++] = pipeline;
+                cardStatus.specMap[id++] = spec;
             }
         }
     }

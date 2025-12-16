@@ -2,6 +2,7 @@ using Cardevil.Attributes;
 using Cardevil.Cards.Data.Enhancement;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Data.Save;
+using Cardevil.Cards.Data.Spec;
 using Cardevil.Core;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Save;
@@ -15,7 +16,7 @@ namespace Cardevil.Cards.Data
     public interface IReadOnlyCardStatus 
     {
         /// <summary>
-        /// Pipeline, data, visualSprite Set의 개수.
+        /// Spec, data 개수.
         /// </summary>
         int Count { get; }
         
@@ -25,23 +26,23 @@ namespace Cardevil.Cards.Data
         CardData GetCardDataById(int id);
         
         /// <summary>
-        /// 해당 id의 <see cref="IReadOnlyCardDataPipeline"/>을 반환.
+        /// 해당 id의 <see cref="IReadOnlyCardSpec"/>을 반환.
         /// </summary>
-        IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id);
+        IReadOnlyCardSpec GetReadOnlySpecById(int id);
     }
 
     /// <summary>
     /// 카드 상태 관리.
-    /// 카드 파이프라인 및 빌드된 카드 데이터 관리, 세이브/로드 및 신규 게임 초기화 처리.
+    /// 카드 스펙 및 빌드된 카드 데이터 관리, 세이브/로드 및 신규 게임 초기화 처리.
     /// </summary>
     [Serializable]
     public class CardStatus : IClearable, IReadOnlyCardStatus, ISaveLoad, INewGameInitializable
     {
-        [Tooltip("카드 ID별 데이터 파이프라인 맵."), VisibleOnly]
-        public SerializableDictionary<int, CardDataPipeline> pipelineMap = new();
+        [Tooltip("카드 ID별 데이터 스펙 맵."), VisibleOnly]
+        public SerializableDictionary<int, CardSpec> specMap = new();
 
-        // 파이프라인을 바탕으로 생성된 데이터들.
-        // 파이프라인에 수정이 있을 때, 해당 Id의 데이터만 갱신함.
+        // 스펙을 바탕으로 생성된 데이터들.
+        // 스펙의 수정이 있을 때, 해당 Id의 데이터만 갱신함.
         [SerializeField, VisibleOnly] private SerializableDictionary<int, CardData> dataMap = new();
 
         private EnhancementDataLibrary _enhancementDataLibrary;
@@ -53,22 +54,22 @@ namespace Cardevil.Cards.Data
 
         public void Clear()
         {
-            pipelineMap.Clear();
+            specMap.Clear();
             dataMap.Clear();
         }
 
-        public CardDataPipeline GetPipelineById(int id)
+        public CardSpec GetSpecById(int id)
         {
             if (!ValidateId(id))
                 return null;
 
-            if (!pipelineMap.TryGetValue(id, out var pipeline))
+            if (!specMap.TryGetValue(id, out var cardSpec))
             {
                 LogEx.LogError($"존재하지 않는 id입니다. : {id}");
                 return null;
             }
 
-            return pipeline;
+            return cardSpec;
         }
 
         public CardData GetDataById(int id)
@@ -86,12 +87,12 @@ namespace Cardevil.Cards.Data
         }
 
         /// <summary>
-        /// <see cref="CardDataPipeline"/>을 기반으로
+        /// <see cref="CardSpec"/>을 기반으로
         /// <see cref="CardData"/>를 재빌드합니다.
         /// </summary>
         public void UpdateDataMap(int id)
         {
-            var cardData = pipelineMap[id].Build();
+            var cardData = specMap[id].Build();
             if (cardData != null)
                 dataMap[id] = cardData;
         }
@@ -113,13 +114,13 @@ namespace Cardevil.Cards.Data
         {
             get
             {
-                if (pipelineMap.Count != dataMap.Count)
+                if (specMap.Count != dataMap.Count)
                 {
                     LogEx.LogError("Incorrect number of maps!");
                     return 0;
                 }
 
-                return pipelineMap.Count;
+                return specMap.Count;
             }
         }
 
@@ -137,24 +138,24 @@ namespace Cardevil.Cards.Data
             return data;
         }
 
-        public IReadOnlyCardDataPipeline GetReadOnlyPipelineById(int id) => GetPipelineById(id);
+        public IReadOnlyCardSpec GetReadOnlySpecById(int id) => GetSpecById(id);
 
         #endregion
         
         public void SetUpNewGame(GameSave currentSave)
         {
-            this.CreateBasePipelines(_enhancementDataLibrary);
+            this.CreateBaseSpec(_enhancementDataLibrary);
 
-            foreach (int id in pipelineMap.Keys)
+            foreach (int id in specMap.Keys)
                 UpdateDataMap(id);
         }
         
         public void Save(GameSave currentSave)
         {
-            var saveData = new CardStatusSaveData { pipelines = new List<CardDataPipelineSaveData>() };
+            var saveData = new CardStatusSaveData { specList = new List<CardSpecSaveData>() };
 
-            foreach (var pipeline in pipelineMap.Values)
-                saveData.pipelines.Add(pipeline.Serialize());
+            foreach (var cardSpec in specMap.Values)
+                saveData.specList.Add(cardSpec.Serialize());
 
             currentSave.cardStatusData = saveData;
         }
@@ -164,13 +165,13 @@ namespace Cardevil.Cards.Data
             Clear();
 
             var saveData = currentSave.cardStatusData;
-            if (saveData?.pipelines == null)
+            if (saveData?.specList == null)
                 return;
 
-            foreach (var p in saveData.pipelines)
+            foreach (var p in saveData.specList)
             {
-                var pipeline = CardDataPipeline.FromSaveData(p);
-                pipelineMap[p.id] = pipeline;
+                var cardSpec = CardSpec.FromSaveData(p);
+                specMap[p.id] = cardSpec;
                 UpdateDataMap(p.id);
                 
             }

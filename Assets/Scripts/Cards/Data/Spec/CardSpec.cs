@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.Data.Spec
 {
-    public interface IReadOnlyCardDataPipeline
+    public interface IReadOnlyCardSpec
     {
         int Id { get; }
         CardKind Kind { get; }
@@ -19,11 +19,11 @@ namespace Cardevil.Cards.Data
     }
     
     /// <summary>
-    /// 카드 데이터 파이프라인.
+    /// 카드 데이터 스펙.
     /// 수정자 및 강화 흐름을 기반으로 카드 데이터 구성.
     /// </summary>
     [Serializable]
-    public class CardDataPipeline : IReadOnlyCardDataPipeline, ICardDataPipelineSaveLoad
+    public class CardSpec : IReadOnlyCardSpec, ICardSpecSaveLoad
     {
         [SerializeField, VisibleOnly] private int id;
         [SerializeField, VisibleOnly] private CardKind kind;
@@ -32,7 +32,7 @@ namespace Cardevil.Cards.Data
         private Guid _currentEnhancementId;
         private readonly List<Guid> _nextEnhancementIds = new();
 
-        #region IReadOnlyCardDataPipeline Members (getter)
+        #region IReadOnlyCardSpec Members (getter)
 
         public int Id => id;
         public CardKind Kind => kind;
@@ -43,7 +43,7 @@ namespace Cardevil.Cards.Data
 
         #endregion
         
-        public CardDataPipeline(CardKind kind, int id)
+        public CardSpec(CardKind kind, int id)
         {
             this.kind = kind;
             this.id = id;
@@ -72,10 +72,10 @@ namespace Cardevil.Cards.Data
             _nextEnhancementIds.Clear();
         }
 
-        public CardDataPipelineSaveData Serialize()
+        public CardSpecSaveData Serialize()
         {
             // TODO: GUID 체크
-            return new CardDataPipelineSaveData()
+            return new CardSpecSaveData()
             {
                 id = id,
                 kind = kind,
@@ -88,30 +88,30 @@ namespace Cardevil.Cards.Data
             };
         }
 
-        public void Deserialize(CardDataPipelineSaveData saveData)
+        public void Deserialize(CardSpecSaveData saveSpecSaveData)
         {
-            id = saveData.id;
-            kind = saveData.kind;
+            id = saveSpecSaveData.id;
+            kind = saveSpecSaveData.kind;
             
             modifiers.Clear();
-            foreach (var modifier in saveData.modifiers)
+            foreach (var modifier in saveSpecSaveData.modifiers)
             {
                 var mod = ModifierFactory.Create(modifier);
                 modifiers.Add(mod);
             }
             
-            _currentEnhancementId = saveData.currentEnhancementId;
+            _currentEnhancementId = saveSpecSaveData.currentEnhancementId;
             _nextEnhancementIds.Clear();
             
-            if (saveData.nextEnhancementIds != null)
-                _nextEnhancementIds.AddRange(saveData.nextEnhancementIds);
+            if (saveSpecSaveData.nextEnhancementIds != null)
+                _nextEnhancementIds.AddRange(saveSpecSaveData.nextEnhancementIds);
         }
 
-        public static CardDataPipeline FromSaveData(CardDataPipelineSaveData saveData)
+        public static CardSpec FromSaveData(CardSpecSaveData saveSpecSaveData)
         {
-            var pipeline = new CardDataPipeline(CardKind.Attack, -1);
-            pipeline.Deserialize(saveData);
-            return pipeline;
+            var cardSpec = new CardSpec(CardKind.Attack, -1);
+            cardSpec.Deserialize(saveSpecSaveData);
+            return cardSpec;
         }
     }
 }
