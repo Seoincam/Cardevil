@@ -103,9 +103,11 @@ namespace Cardevil.InGame.Enemy
             LogEx.LogWarning("<b>대윤</b>: 첫 공격 표시가 아직 구현되지 않았습니다.");
         }
         
-        public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
+        public async UniTask<AttackResult> TurnAttackAsync()
         {
             LogEx.LogWarning("<b>대윤</b>: 공격 로직이 아직 완성되지 않았습니다.");
+
+            var ctx = TurnManager.Context;
             
             var target = ctx.Player;
             // 이제 플레이어 위치 이렇게 받아오면 됨!

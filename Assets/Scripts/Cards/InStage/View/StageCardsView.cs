@@ -1,9 +1,12 @@
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -64,6 +67,8 @@ namespace Cardevil.Cards.InStage.View
         /// <returns>애니메이션 완료 후 완료되는 <see cref="UniTask"/></returns>
         public async UniTask EnterHandBarAsync()
         {
+            Initialize();
+            
             useButton.transform.localScale = Vector3.zero;
             discardButton.transform.localScale = Vector3.zero;
             sortByNumberButton.transform.localScale = Vector3.zero;
@@ -74,6 +79,24 @@ namespace Cardevil.Cards.InStage.View
             await sortByIconButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await sortByNumberButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
         }
+
+        private void Initialize()
+        {
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.First, OnDiscardChanged);
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.Last, OnDiscardChanged);
+            ExecEventBus<CardDeckChangeArgs>.RegisterStatic(int.MaxValue, OnDeckChanged);
+        }
+
+        private async UniTask OnDiscardChanged(CardDiscardChangeArgs eventArgs, CancellationToken cancellationToken)
+        {
+            discardCountText.text = eventArgs.ModifiedDiscard.ToString();
+        }
+
+        private async UniTask OnDeckChanged(CardDeckChangeArgs eventArgs, CancellationToken cancellationToken)
+        {
+            deckCountText.text = $"{eventArgs.NewDeck} / 50";
+        }
+
 
         public async UniTask ExitHandBarAsync()
         {
@@ -117,9 +140,6 @@ namespace Cardevil.Cards.InStage.View
                     sortByNumberButton.interactable = state.CanSort;
                     sortByIconButton.interactable = state.CanSort;
                 }
-
-                if (prev.RemainingCards != state.RemainingCards) deckCountText.text = $"{state.RemainingCards}/50";
-                if (prev.RemainingDiscards != state.RemainingDiscards) discardCountText.text = $"{state.RemainingDiscards}";
             }
             else 
             {
@@ -127,9 +147,6 @@ namespace Cardevil.Cards.InStage.View
                 discardButton.interactable = state.CanDiscard;
                 sortByNumberButton.interactable = state.CanSort;
                 sortByIconButton.interactable = state.CanSort;
-                
-                deckCountText.text = $"{state.RemainingCards}/50";
-                discardCountText.text = $"{state.RemainingDiscards}";
             }
             _lastState = state;
         }

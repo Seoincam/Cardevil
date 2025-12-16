@@ -8,10 +8,11 @@ using Cardevil.Utils;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils.Directions;
 using System.Linq;
 using System.Threading;
-using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
@@ -363,7 +364,14 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Close();
             
             // TODO: 버리기 횟수 0되면 못 버리게
+
+            var current = _model.DiscardRemain;
             _model.TryReduceDiscardRemainCount();
+
+            var args = CardDiscardChangeArgs.Get();
+            args.Init(current, _model.DiscardRemain);
+            ExecEventBus<CardDiscardChangeArgs>.InvokeMergedAndDispose(args).Forget();
+            
             _ = DiscardAndDrawAsync();
         }
 
@@ -407,7 +415,13 @@ namespace Cardevil.Cards.InStage.Presenter
             for (int i = 0; i < count; i++)
             {
                 // 슬롯 활성화
+                var currentDeckCount = _model.Deck.Count;
                 var card = Spawn();
+
+                var args = CardDeckChangeArgs.Get();
+                args.Init(currentDeckCount, _model.Deck.Count);
+                ExecEventBus<CardDeckChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                
                 _view.SetSlotActive(true, indexFactor + i, _model.Hand.Count);
                 card.DoDraw();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
@@ -478,7 +492,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!_view) return;
             var canUse = CanInput && _model.CanUseCard && !_state.draggedCard;
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
-            var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
+            var viewState = new StageCardsViewState(canUse, canDiscard, true);
             _view.UpdateUI(viewState);
             
             if (!_model.CanUseCard)

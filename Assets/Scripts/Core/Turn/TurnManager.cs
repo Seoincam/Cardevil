@@ -15,6 +15,8 @@ namespace Cardevil.Core.Turn
     {
         [SerializeField, VisibleOnly] private TurnContext context;
 
+        public static IReadOnlyTurnContext Context { get; private set; }
+        
         public event Action<TurnContext> TurnLoopEnded;
         
         private CancellationTokenSource _cts;
@@ -70,6 +72,7 @@ namespace Cardevil.Core.Turn
                 PlayerPosition = new Vector2Int(1, 1), // TODO: 플레이어 포지션 처음에 제대로 초기화하기
                 CardFlow = _cardFlow
             };
+            Context = context;
             
             _cts = CancellationTokenSource.CreateLinkedTokenSource(external);
             _loopTask = GameLoopAsync(_cts.Token);
@@ -131,10 +134,10 @@ namespace Cardevil.Core.Turn
                     await _cardFlow.WaitUserInput();
                     
                     // 2. 플레이어 이동 + 공격
-                    var playerPosition = await _player.TurnMove(context);
+                    var playerPosition = await _player.TurnMove();
                     context.PlayerPosition = playerPosition;
                     
-                    var playerAttack = await _player.TurnAttackAsync(context);
+                    var playerAttack = await _player.TurnAttackAsync();
                     playerAttack.Target.TakeDamage(playerAttack.Damage);
 
                     if (_enemy.IsDead)
@@ -149,7 +152,7 @@ namespace Cardevil.Core.Turn
                     }
 
                     // 3. 적 공격
-                    var enemyAttack = await _enemy.TurnAttackAsync(context);
+                    var enemyAttack = await _enemy.TurnAttackAsync();
                     enemyAttack.Target.TakeDamage(enemyAttack.Damage);
                     
                     if (_player.IsDead)

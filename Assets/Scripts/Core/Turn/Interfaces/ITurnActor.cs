@@ -8,6 +8,6 @@ namespace Cardevil.Core.Turn.Interfaces
     /// </summary>
     public interface ITurnActor
     {
-        UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx);
+        UniTask<AttackResult> TurnAttackAsync();
     }
 }
