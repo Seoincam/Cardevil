@@ -1,4 +1,5 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Core.Bootstrap;
+using Cardevil.Utils;
 using UnityEngine;
 
 namespace Cardevil.Dungeon.NodePresets
@@ -19,7 +20,7 @@ namespace Cardevil.Dungeon.NodePresets
         {
             LogEx.Log($"최종 보스 노드 탈출 (ID: {node.NodeId}): 보스를 격파했습니다!");
             // 다음 던전으로 이동
-            DungeonManager dm = Managers.Dungeon;
+            DungeonManager dm = Bootstrapper.Instance.GameFlow.World.Dungeon;
             int nextDungeonId = dm.GetNextDungeonId(node.Dungeon.DungeonId);
             if (nextDungeonId != -1)
             {

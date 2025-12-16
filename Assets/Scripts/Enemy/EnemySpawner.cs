@@ -1,4 +1,7 @@
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Utils;
+using Database;
 using UnityEngine;
 using System.Collections.Generic;
 using Database.Generated;
@@ -17,30 +20,20 @@ namespace Cardevil.Enemy
         
         public EnemySpawner()
         {
-            void Init()
-            {
-                var db = Managers.Database;
-            
-                var baseMobBossDataList = Managers.Database.Database.BaseMobBossDataList;
-                var roomDataList = Managers.Database.Database.RoomDataList;
+            var db = Bootstrapper.Instance.Database.Database;
+        
+            var baseMobBossDataList = db.BaseMobBossDataList;
+            var roomDataList = db.RoomDataList;
 
-                // 딕셔너리 초기화 (중복 방지)
-                _roomDataDict.Clear();
-                foreach (RoomData room in roomDataList)
-                    _roomDataDict.TryAdd(room.RoomID, room);
+            // 딕셔너리 초기화 (중복 방지)
+            _roomDataDict.Clear();
+            foreach (RoomData room in roomDataList)
+                _roomDataDict.TryAdd(room.RoomID, room);
 
-                // 몹/보스 데이터로 딕셔너리 빌드
-                _mobBossDataDict.Clear();
-                foreach (BaseMobBossData mob in baseMobBossDataList)
-                    _mobBossDataDict.TryAdd(mob.MobID, mob);
-            }
-            
-            var db = Managers.Database;
-            
-            if (db.IsInitialized)
-                Init();
-            else
-                db.OnInitialized += Init;
+            // 몹/보스 데이터로 딕셔너리 빌드
+            _mobBossDataDict.Clear();
+            foreach (BaseMobBossData mob in baseMobBossDataList)
+                _mobBossDataDict.TryAdd(mob.MobID, mob);
         }
         
         /// <summary>

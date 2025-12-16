@@ -289,7 +289,7 @@ namespace Cardevil.Cards.InStage.View
         private void Destroy()
         {
             DOTween.Kill(transform);
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
         
         public void ExecuteEvaluationAction()

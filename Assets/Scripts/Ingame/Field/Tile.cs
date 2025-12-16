@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cardevil.Attributes;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Ingame.Entities;
 using Cardevil.Pools;
 using Cardevil.Utils;
@@ -134,7 +135,7 @@ namespace Cardevil.Ingame.Field
 
         public TileHighlight Highlight(Define.HighlightType highlightType)
         {
-            TileHighlight highlightObject = Managers.Pool.Get<TileHighlight>(Poolables.TileHighlight);
+            TileHighlight highlightObject = Bootstrapper.Instance.Pool.Get<TileHighlight>(Poolables.TileHighlight);
             if (highlightObject == null)
             {
                 Debug.LogError("Failed to get TileHighlight from pool.");
@@ -160,7 +161,7 @@ namespace Cardevil.Ingame.Field
             {
                 if (_highlightObjects[i] != null && _highlightObjects[i].HighlightType == highlightType)
                 {
-                    Managers.Pool.Release(_highlightObjects[i].Poolable);
+                    Bootstrapper.Instance.Pool.Release(_highlightObjects[i].Poolable);
                     _highlightObjects.RemoveAt(i);
                     if (removeAll == false)
                     {

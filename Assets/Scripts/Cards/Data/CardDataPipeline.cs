@@ -1,7 +1,9 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.Modifiers;
+using Cardevil.Cards.Data.Save;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.Cards.Data
@@ -16,8 +18,12 @@ namespace Cardevil.Cards.Data
         IReadOnlyList<Guid> NextEnhancementIds { get; }
     }
     
+    /// <summary>
+    /// 카드 데이터 파이프라인.
+    /// 수정자 및 강화 흐름을 기반으로 카드 데이터 구성.
+    /// </summary>
     [Serializable]
-    public class CardDataPipeline : IReadOnlyCardDataPipeline
+    public class CardDataPipeline : IReadOnlyCardDataPipeline, ICardDataPipelineSaveLoad
     {
         [SerializeField, VisibleOnly] private int id;
         [SerializeField, VisibleOnly] private CardKind kind;
@@ -64,6 +70,48 @@ namespace Cardevil.Cards.Data
         public void ClearNextEnhancementIds()
         {
             _nextEnhancementIds.Clear();
+        }
+
+        public CardDataPipelineSaveData Serialize()
+        {
+            // TODO: GUID 체크
+            return new CardDataPipelineSaveData()
+            {
+                id = id,
+                kind = kind,
+                
+                // TODO: 필요하다면 Linq 제거하기
+                modifiers = modifiers.Select(m => m.Serialize()).ToList(),
+                
+                currentEnhancementId = _currentEnhancementId,
+                nextEnhancementIds = _nextEnhancementIds
+            };
+        }
+
+        public void Deserialize(CardDataPipelineSaveData saveData)
+        {
+            id = saveData.id;
+            kind = saveData.kind;
+            
+            modifiers.Clear();
+            foreach (var modifier in saveData.modifiers)
+            {
+                var mod = ModifierFactory.Create(modifier);
+                modifiers.Add(mod);
+            }
+            
+            _currentEnhancementId = saveData.currentEnhancementId;
+            _nextEnhancementIds.Clear();
+            
+            if (saveData.nextEnhancementIds != null)
+                _nextEnhancementIds.AddRange(saveData.nextEnhancementIds);
+        }
+
+        public static CardDataPipeline FromSaveData(CardDataPipelineSaveData saveData)
+        {
+            var pipeline = new CardDataPipeline(CardKind.Attack, -1);
+            pipeline.Deserialize(saveData);
+            return pipeline;
         }
     }
 }

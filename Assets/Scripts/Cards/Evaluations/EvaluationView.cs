@@ -1,8 +1,10 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
+using Database;
 using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +74,7 @@ namespace Cardevil.Cards.Evaluations
                 return;
             }
 
-            var data = Managers.Database.Database.HandRankingDataList
+            var data = Bootstrapper.Instance.Database.Database.HandRankingDataList
                 .FirstOrDefault(i => i.Ranking == ranking);
             if (data == null) { LogEx.LogError($"Can't find HandRanking Data: {ranking}"); return; }
 
@@ -187,7 +189,7 @@ namespace Cardevil.Cards.Evaluations
                 return SubPool.Dequeue();
             
             const string path = "UI/CardUI/Evaluation View Sub";
-            var go = Managers.Resource.Instantiate(path, transform);
+            var go = AssetUtil.Instantiate(path, transform);
             if (!go)
             {
                 LogEx.LogError($"Can't find Evaluation View Sub: {path}");

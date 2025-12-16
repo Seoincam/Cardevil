@@ -2,6 +2,7 @@ using Cardevil.Attributes;
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Core.Bootstrap;
 using System;
 using UnityEngine;
 
@@ -20,7 +21,7 @@ namespace Cardevil.Relics.OnEvaluation
         public bool IsPlus => isPlus;
         
         public bool CanTrigger(HandRanking currentHandRanking, IReadOnlyEvaluationResultsModel resultModel)
-            => Managers.Game.PlayerStatus.CurrentHp == triggerHp;
+            => Bootstrapper.Instance.Game.PlayerStatus.CurrentHp == triggerHp;
 
         public EvaluationStep MakeEvaluationStep()
         {

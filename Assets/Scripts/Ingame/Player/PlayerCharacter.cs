@@ -1,10 +1,12 @@
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.DebugConsole;
 using Cardevil.Events.AsyncPriorityEvent;
 using Cardevil.Events.Core;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Field;
-using Cardevil.Systems;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
@@ -42,8 +44,8 @@ namespace Cardevil.Ingame.Player
         }
 
         public Entity Entity => _entity;
-        public Field.Field Field => Managers.Game.Field;
-        public PlayerStatus PlayerStatus => Managers.Game.PlayerStatus;
+        public Field.Field Field { get; private set; }
+        public PlayerStatus PlayerStatus => Bootstrapper.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
         {
@@ -63,7 +65,28 @@ namespace Cardevil.Ingame.Player
                     return;
                 }
                 _entity.Init(_initialTile);
-                Managers.Game.Player = this; // 게임 매니저에 플레이어 설정
+                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
+            }
+        }
+
+        public void Init(Field.Field field)
+        {
+            Field = field;
+            
+            if(_entity == null)
+            {
+                _entity = GetComponent<Entity>();
+            }
+            
+            if (_initTileManually)
+            {
+                if (_initialTile == null)
+                {
+                    LogEx.LogError("Initial tile is not set. Please assign a tile in the inspector.");
+                    return;
+                }
+                _entity.Init(_initialTile);
+                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
         }
 
@@ -222,47 +245,49 @@ namespace Cardevil.Ingame.Player
         }
 
         #region ITurnPlayerAction 구현
-        public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
-        public async UniTask TurnAttack()
+        
+        public bool IsDead { get; }
+
+        public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
         {
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
-            // TODO : 적에 대한 공격 구현
-            var result = Managers.Card.EvaluationResults.CurrentResult;
-            LogEx.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
-            void DealDamageToEnemies()
-            {
-                Managers.Game.Enemy.GetDamage(result.TotalDamage);
-            }
-            DealDamageToEnemies();
+
+            var result = ctx.CardFlow.Result;
+            int damage = result.TotalDamage;
+            var handRanking = result.HandRanking;
+
+            LogEx.Log($"플레이어 공격 : {damage} 피해. 구현 아직");
             PlayerVisual.PlayAttackAnimation();
-      
+            // TODO: 공격 애니메이션도 await하기
+            
+            return new AttackResult(target: ctx.CurrentEnemy, handRanking, damage);
         }
         
-        public void PlayerGetDamage(float amount)
+        public void TakeDamage(int amount)
         {
             LogEx.Log($"Player takes {amount} damage!");
             PlayerStatus.TakeDamage((int)amount);
-            
         }
 
-        public async UniTask TurnMove()
+        public async UniTask<Vector2Int> TurnMove(IReadOnlyTurnContext ctx)
         {
             LogEx.Log("Player Moves!");
-            var result = Managers.Card.EvaluationResults.CurrentResult;
+            var result = ctx.CardFlow.Result;
             //TODO 이동 로직 구현
             foreach (var move in result.Moves)
             {
                 if (!move.DirectionSelectState.FinalValue.HasValue)
                     continue;
-
+                
                 await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
                 await UniTask.Delay(300);
             }
             LogEx.Log("Player Move Completed!");
+
+            return new Vector2Int(Entity.Tile.i, Entity.Tile.j);
         }
-        
 
         #endregion
 

@@ -6,16 +6,16 @@ namespace Cardevil.Cards.Data
 {
     public class CardPipelineModifierService
     {
-        private CardLibrary _library;
+        private CardStatus _status;
         
-        public void Init(CardLibrary library)
+        public CardPipelineModifierService(CardStatus status)
         {
-            _library = library;
+            _status = status;
         }
 
         public void Enhance(int pipelineId, Guid enhancementId, ModifierType type, int count, Guid nextEnhancementId)
         {
-            var pipeline = _library.GetPipelineById(pipelineId);
+            var pipeline = _status.GetPipelineById(pipelineId);
             
             for (int i = 0; i < count; i++)
             {
@@ -49,7 +49,7 @@ namespace Cardevil.Cards.Data
                 pipeline.SetCurrentEnhancementId(nextEnhancementId);
             
             // 데이터 갱신
-            _library.UpdateMaps(pipelineId);
+            _status.UpdateDataMap(pipelineId);
         }
     }
 }

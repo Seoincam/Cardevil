@@ -119,7 +119,7 @@ namespace Cardevil.Cards.InStage.View
             for (int i = _visuals.Count - 1; i >= 0; i--)
             {
                 _visuals[i].Selected -= OnValueSelected;
-                Managers.Resource.Destroy(_visuals[i].gameObject);
+                AssetUtil.Destroy(_visuals[i].gameObject);
             }
             
             _visuals.Clear();
@@ -199,7 +199,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate(SlotPath, _rect).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(SlotPath, _rect).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -207,7 +207,7 @@ namespace Cardevil.Cards.InStage.View
             {
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
-                Managers.Resource.Destroy(last.gameObject);
+                AssetUtil.Destroy(last.gameObject);
             }
         }
 
@@ -220,7 +220,7 @@ namespace Cardevil.Cards.InStage.View
 
             for (int i = 0; i < count; i++)
             {
-                var go = Managers.Resource.Instantiate(path, _slots[i]);
+                var go = AssetUtil.Instantiate(path, _slots[i]);
                 var visual = go.GetComponent<CardVisualValueSelectionView>();
                 visual.Selected += OnValueSelected;
 

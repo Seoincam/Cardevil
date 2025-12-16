@@ -34,7 +34,7 @@ namespace Cardevil.Dungeon
         private bool _canGoNext = true;
 
 
-        public bool DoInstantClear => true; // doInstantClear;
+        public bool DoInstantClear => doInstantClear;
         public bool CanGoNext
         {
             get => _canGoNext;
@@ -469,7 +469,7 @@ namespace Cardevil.Dungeon
         }
 
         #region Console Commands
-        
+        /*
         /// <summary>
         /// 콘솔 명령어: 현재 던전을 ID로 설정
         /// </summary>
@@ -534,6 +534,7 @@ namespace Cardevil.Dungeon
                 Console.Message(dungeon.GetDebugString());
             }
         }
+        */
         #endregion
 
 
