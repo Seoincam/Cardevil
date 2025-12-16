@@ -37,7 +37,7 @@ namespace Cardevil.Cards.InStage.View
         private Poolable _poolable;
         private CardDeckVisual _deckVisual;
 
-        private IReadOnlyStageCardsModel _model;
+        private IReadOnlyCardsModel _model;
         private VisualTransformDelta _delta;
         private VisualState _state;
 
@@ -49,7 +49,7 @@ namespace Cardevil.Cards.InStage.View
             _poolable.OnRelease += Clear;
         }
         
-        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
+        public void Init(Card parentCard, IReadOnlyCardsModel model)
         {
             if (_state.isInitialized) return;
             

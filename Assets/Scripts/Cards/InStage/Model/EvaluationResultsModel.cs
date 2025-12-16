@@ -75,12 +75,19 @@ namespace Cardevil.Cards.InStage.Model
     public sealed class EvaluationResult
     {
         [SerializeField, VisibleOnly] private int totalDamage;
+        [SerializeField, VisibleOnly] private List<CardData> attacks;
         [SerializeField, VisibleOnly] private List<CardData> moves;
         [SerializeField, VisibleOnly] private HandRanking handRanking;
 
         public int TotalDamage => totalDamage;
+        public IReadOnlyList<CardData> Attacks => attacks;
         public IReadOnlyList<CardData> Moves => moves;
         public HandRanking HandRanking => handRanking;
+        
+        /// <summary>
+        /// 사용한 카드 장수. 
+        /// </summary>
+        public int CardsCount => attacks.Count + moves.Count;
 
         #region Builder
 
@@ -89,12 +96,18 @@ namespace Cardevil.Cards.InStage.Model
         public sealed class Builder
         {
             private int _totalDamage;
+            private List<CardData> _attacks;
             private List<CardData> _moves;
             private HandRanking _handRanking;
 
             public Builder SetDamage(int damage)
             {
                 _totalDamage += damage;
+                return this;
+            }
+            public Builder SetAttacks(List<CardData> attacks)
+            {
+                _attacks = attacks;
                 return this;
             }
             public Builder SetMoves(List<CardData> moves)
@@ -108,12 +121,13 @@ namespace Cardevil.Cards.InStage.Model
                 return this;
             }
 
-            public EvaluationResult Build() => new(_totalDamage, _moves, _handRanking);
+            public EvaluationResult Build() => new(_totalDamage, _attacks, _moves, _handRanking);
         }
 
-        public EvaluationResult(int totalDamage, List<CardData> moves, HandRanking handRanking)
+        public EvaluationResult(int totalDamage, List<CardData> attacks, List<CardData> moves, HandRanking handRanking)
         {
             this.totalDamage = totalDamage;
+            this.attacks = attacks;
             this.moves = moves;
             this.handRanking = handRanking;
         }

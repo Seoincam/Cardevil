@@ -16,7 +16,7 @@ namespace Cardevil.Cards.InStage.Presenter
     {
         private IReadOnlyCardStatus _status;
         
-        private StageCardsModel _model;
+        private CardsModel _model;
         private RerollView _view;
         private CardVisualSettingSO _visualSetting;
         
@@ -31,7 +31,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardStatus status, StageCardsModel model)
+        public void Init(IReadOnlyCardStatus status, CardsModel model)
         {
             if (_isInitialized) return;
 

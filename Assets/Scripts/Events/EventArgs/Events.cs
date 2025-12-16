@@ -1,4 +1,8 @@
-﻿using Cardevil.Events.ExecEvents;
+﻿using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Events.ExecEvents;
+using System;
+using System.Collections.Generic;
 
 namespace Cardevil.Events
 {
@@ -99,22 +103,35 @@ namespace Cardevil.Events
     /// </summary>
     public class CardDeckChangeArgs : ExecEventArgs<CardDeckChangeArgs>
     {
-        public int OldDeck { get; private set; }
-        public int NewDeck { get; private set; }
+        public enum Order
+        {
+            UIUpdate = int.MinValue,
+        }
         
+        public static CardDeckChangeArgs Get(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
+        {
+            var args = Get();
+            args.Init(currentDeckCount, newDeckCount, newModel);
+            return args;
+        }
+        
+        public int OldDeckCount { get; private set; }
+        public int NewDeckCount { get; private set; }
+        public IReadOnlyCardsModel NewModel { get; private set; }
         // 남은 덱 카드 개수는 이벤트로 변화주지 않음.
 
-        public void Init(int currentDeck, int newDeck)
+        private void Init(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
         {
-            OldDeck = currentDeck;
-            NewDeck = newDeck;
+            OldDeckCount = currentDeckCount;
+            NewDeckCount = newDeckCount;
+            NewModel = newModel;
         }
 
         public override void Clear()
         {
             base.Clear();
-            OldDeck = 0;
-            NewDeck = 0;
+            OldDeckCount = 0;
+            NewDeckCount = 0;
         }
     }
 
@@ -123,6 +140,13 @@ namespace Cardevil.Events
     /// </summary>
     public class CardDiscardChangeArgs : ExecEventArgs<CardDiscardChangeArgs>
     {
+        public static CardDiscardChangeArgs Get(int currentDiscard, int newDiscard)
+        {
+            var args = Get();
+            args.Init(currentDiscard, newDiscard);
+            return args;
+        }
+        
         public enum Order
         {
             First = int.MinValue,
@@ -137,7 +161,7 @@ namespace Cardevil.Events
         /// </summary>
         public int ModifiedDiscard { get; set; }
 
-        public void Init(int currentDiscard, int newDiscard)
+        private void Init(int currentDiscard, int newDiscard)
         {
             OldDiscard = currentDiscard;
             NewDiscard = newDiscard;

@@ -65,8 +65,11 @@ namespace Cardevil.Cards.InStage.View
         /// HandBar UI를 화면에 등장시키는 애니메이션을 실행합니다.  
         /// </summary>
         /// <returns>애니메이션 완료 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask EnterHandBarAsync()
+        public async UniTask EnterHandBarAsync(int deckCount, int discardCount)
         {
+            deckCountText.text = $"{deckCount} / 50";
+            discardCountText.text = discardCount.ToString();
+            
             Initialize();
             
             useButton.transform.localScale = Vector3.zero;
@@ -94,7 +97,7 @@ namespace Cardevil.Cards.InStage.View
 
         private async UniTask OnDeckChanged(CardDeckChangeArgs eventArgs, CancellationToken cancellationToken)
         {
-            deckCountText.text = $"{eventArgs.NewDeck} / 50";
+            deckCountText.text = $"{eventArgs.NewDeckCount} / 50";
         }
 
 

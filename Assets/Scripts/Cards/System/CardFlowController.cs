@@ -2,6 +2,7 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Evaluations;
 using Cysharp.Threading.Tasks;
 using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core.Turn.Interfaces;
 
@@ -11,7 +12,7 @@ namespace Cardevil.Cards.System
     {
         private readonly IReadOnlyCardStatus _status;
         
-        private readonly StageCardsModel _stageCardsModel;
+        private readonly CardsModel _cardsModel;
         private readonly RerollPresenter _rerollPresenter;
         private readonly StageCardsPresenter _stageCardsPresenter;
         private readonly IEvaluationPresenter _evaluationPresenter;
@@ -19,12 +20,12 @@ namespace Cardevil.Cards.System
         private int _maxHand;
         
         public CardFlowController(IReadOnlyCardStatus status,
-            StageCardsModel stageCardsModel, RerollPresenter rerollPresenter,
+            CardsModel cardsModel, RerollPresenter rerollPresenter,
             StageCardsPresenter stageCardsPresenter, IEvaluationPresenter evaluationPresenter)
         {
             _status = status;
             
-            _stageCardsModel = stageCardsModel;
+            _cardsModel = cardsModel;
             _rerollPresenter = rerollPresenter;
             _stageCardsPresenter = stageCardsPresenter;
             
@@ -35,7 +36,7 @@ namespace Cardevil.Cards.System
         {
             _maxHand = maxHand;
             
-            _rerollPresenter.Init(_status, _stageCardsModel);
+            _rerollPresenter.Init(_status, _cardsModel);
             await _rerollPresenter.SetUp(maxHand);
         }
 
@@ -56,7 +57,7 @@ namespace Cardevil.Cards.System
 
         public async UniTask EnterHandPhase()
         {
-            _stageCardsPresenter.Init(_status, _stageCardsModel, _evaluationPresenter);
+            _stageCardsPresenter.Init(_status, _cardsModel, _evaluationPresenter);
             await _stageCardsPresenter.SetUp();
             DeactivateReroll();
         }
@@ -72,7 +73,7 @@ namespace Cardevil.Cards.System
         }
 
         // TODO: 구현해야함.
-        public bool IsNoCard { get; }
+        public bool IsNoCard => _cardsModel.Deck.Count == 0;
         
         public async UniTask DrawCard()
         {
@@ -85,5 +86,9 @@ namespace Cardevil.Cards.System
         }
 
         public EvaluationResult Result => _evaluationPresenter.GetCurrentEvaluationResult();
+        
+        public IReadOnlyEvaluationResultsModel ResultsModel => _evaluationPresenter.ResultsModel;
+
+        public IReadOnlyCardsModel CardsModel => _cardsModel;
     }
 }
