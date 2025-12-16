@@ -103,6 +103,12 @@ namespace Cardevil.Events.ExecEvents
             await _execQueue.ExecuteAll(eventArgs, cancellationToken);
         }
 
+        public static async UniTask InvokeAndDispose(TEvent eventArgs,  CancellationToken cancellationToken = default)
+        {
+            await Invoke(eventArgs, cancellationToken);
+            eventArgs.Dispose();
+        }
+        
         /// <summary>
         /// 모든 핸들러를 Invoke한 후, 해당 큐를 반환합니다.
         /// </summary>
@@ -118,6 +124,8 @@ namespace Cardevil.Events.ExecEvents
             _execQueue.SortByPriority();
             return _execQueue;
         }
+        
+        
 
 
 
