@@ -16,7 +16,7 @@ namespace Cardevil.Core.Bootstrap
         private void Awake()
         {
             progressBar.value = 0f;
-            BootstrapFlow.ProgressChanged += OnProgressChanged;
+            Bootstrapper.ProgressChanged += OnProgressChanged;
         }
 
         private void OnProgressChanged(int loaded, int totalToLoad)

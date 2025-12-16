@@ -2,15 +2,15 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Utils;
 using System;
 
-namespace Cardevil.Cards.Data
+namespace Cardevil.Cards.Data.Spec
 {
-    public static class CardDataPipelineExtensions
+    public static class CardSpecExtensions
     {
-        public static CardData Build(this IReadOnlyCardDataPipeline pipeline)
+        public static CardData Build(this IReadOnlyCardSpec spec)
         {
-            var builder = CardData.CreateBuilder(pipeline.Id, pipeline.Kind);
+            var builder = CardData.CreateBuilder(spec.Id, spec.Kind);
             
-            foreach (var modifier in pipeline.Modifiers)
+            foreach (var modifier in spec.Modifiers)
                 modifier.Apply(builder);
             
             try
@@ -22,7 +22,7 @@ namespace Cardevil.Cards.Data
             }
             catch (Exception ex)
             {
-                LogEx.LogError($"유효하지 않은 Card Data 생성이 시도됨. ({pipeline.Id}): {ex.Message}");
+                LogEx.LogError($"유효하지 않은 Card Data 생성이 시도됨. ({spec.Id}): {ex.Message}");
             }
 
             return null;

@@ -7,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Bootstrapper.Instance.Game.PlayerStatus.DiscardCard += 1;
+            CardevilCore.Instance.Game.PlayerStatus.DiscardCard += 1;
         }
     }
 }

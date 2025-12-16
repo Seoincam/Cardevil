@@ -4,18 +4,18 @@ using Unity.VisualScripting;
 
 namespace Cardevil.Cards.Data
 {
-    public class CardPipelineModifierService
+    public class CardSpecModifierService
     {
         private CardStatus _status;
         
-        public CardPipelineModifierService(CardStatus status)
+        public CardSpecModifierService(CardStatus status)
         {
             _status = status;
         }
 
-        public void Enhance(int pipelineId, Guid enhancementId, ModifierType type, int count, Guid nextEnhancementId)
+        public void Enhance(int specId, Guid enhancementId, ModifierType type, int count, Guid nextEnhancementId)
         {
-            var pipeline = _status.GetPipelineById(pipelineId);
+            var cardSpec = _status.GetSpecById(specId);
             
             for (int i = 0; i < count; i++)
             {
@@ -23,15 +23,15 @@ namespace Cardevil.Cards.Data
                 switch (type)
                 {
                     case ModifierType.AttackNumSelectable:
-                        pipeline.AddModifier(new SelectableNumberModifier());
+                        cardSpec.AddModifier(new SelectableNumberModifier());
                         break;
                     
                     case ModifierType.AttackDamage:
-                        pipeline.AddModifier(new DamageModifier());
+                        cardSpec.AddModifier(new DamageModifier());
                         break;
                     
                     case ModifierType.MoveDirSelectable:
-                        pipeline.AddModifier(new DirSelectableModifier());
+                        cardSpec.AddModifier(new DirSelectableModifier());
                         break;
                     
                     default:
@@ -40,16 +40,16 @@ namespace Cardevil.Cards.Data
             }
             
             // 현재 강화 단계로 갱신
-            pipeline.SetCurrentEnhancementId(enhancementId);
+            cardSpec.SetCurrentEnhancementId(enhancementId);
             
             // 가능한 다음 강화 단계 업데이트
             if (nextEnhancementId == Guid.Empty)
-                pipeline.ClearNextEnhancementIds();
+                cardSpec.ClearNextEnhancementIds();
             else 
-                pipeline.SetCurrentEnhancementId(nextEnhancementId);
+                cardSpec.SetCurrentEnhancementId(nextEnhancementId);
             
             // 데이터 갱신
-            _status.UpdateDataMap(pipelineId);
+            _status.UpdateDataMap(specId);
         }
     }
 }

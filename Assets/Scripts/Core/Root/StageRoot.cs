@@ -34,7 +34,7 @@ namespace Cardevil.Core.Root
         
         private async void Awake()
         {
-            Bootstrapper.Instance.GameFlow.Stage = this;
+            CardevilCore.Instance.GameFlow.Stage = this;
             
             // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
             
@@ -49,9 +49,9 @@ namespace Cardevil.Core.Root
 
         private async UniTask InitAsync()
         {
-            _context = Bootstrapper.Instance.GameFlow.Context;
+            _context = CardevilCore.Instance.GameFlow.Context;
             
-            var cardStatus = Bootstrapper.Instance.Game.CardStatus;
+            var cardStatus = CardevilCore.Instance.Game.CardStatus;
             await Card.InitAsync(cardStatus);
         }
 
@@ -90,7 +90,7 @@ namespace Cardevil.Core.Root
             LogEx.Log("스테이지 종료");
             
             var exitInfo = new NodeExitInfo() { IsCleared = true };
-            Bootstrapper.Instance.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
+            CardevilCore.Instance.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
             SceneLoader.UnloadSceneAsync(Scenes.Stage).Forget();
         }
     }

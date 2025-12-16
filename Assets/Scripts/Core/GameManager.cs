@@ -16,10 +16,10 @@ namespace Cardevil.Core
         
         public void Init()
         {
-            Bootstrapper.Instance.SaveLoad.Register(this);
+            CardevilCore.Instance.SaveLoad.Register(this);
             
             PlayerStatus = new PlayerStatus();
-            CardStatus = new CardStatus(Bootstrapper.Instance.CardEnhancementData);
+            CardStatus = new CardStatus(CardevilCore.Instance.CardEnhancementData);
         }
         
         public void SetUpNewGame(GameSave currentSave)

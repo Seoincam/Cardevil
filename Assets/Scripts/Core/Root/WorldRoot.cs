@@ -18,7 +18,7 @@ namespace Cardevil.Core.Root
     {
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
 
-        private CardPipelineModifierService _cardModifierService;
+        private CardSpecModifierService _cardModifierService;
         private CardEnhancementPresenter _cardEnhancementPresenter;
 
         private void Awake()
@@ -33,14 +33,14 @@ namespace Cardevil.Core.Root
         /// </summary>
         public void Init()
         {
-            Bootstrapper.Instance.GameFlow.World = this;
+            CardevilCore.Instance.GameFlow.World = this;
             
             Dungeon = new DungeonManager();
             Dungeon.Init();
 
-            var cardStatus = Bootstrapper.Instance.Game.CardStatus;
-            _cardModifierService = new CardPipelineModifierService(cardStatus);
-            var enhancementData = Bootstrapper.Instance.CardEnhancementData;
+            var cardStatus = CardevilCore.Instance.Game.CardStatus;
+            _cardModifierService = new CardSpecModifierService(cardStatus);
+            var enhancementData = CardevilCore.Instance.CardEnhancementData;
             _cardEnhancementPresenter = new CardEnhancementPresenter(cardStatus, enhancementData, _cardModifierService);
         }
 

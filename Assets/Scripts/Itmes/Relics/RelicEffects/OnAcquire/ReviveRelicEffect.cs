@@ -7,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Bootstrapper.Instance.Game.PlayerStatus.canRevive = true;
+            CardevilCore.Instance.Game.PlayerStatus.canRevive = true;
         }
        
     }

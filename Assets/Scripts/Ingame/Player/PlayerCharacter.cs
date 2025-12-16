@@ -45,7 +45,7 @@ namespace Cardevil.Ingame.Player
 
         public Entity Entity => _entity;
         public Field.Field Field { get; private set; }
-        public PlayerStatus PlayerStatus => Bootstrapper.Instance.Game.PlayerStatus;
+        public PlayerStatus PlayerStatus => CardevilCore.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
         {

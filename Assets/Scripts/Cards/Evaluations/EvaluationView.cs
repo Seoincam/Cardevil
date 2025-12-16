@@ -74,7 +74,7 @@ namespace Cardevil.Cards.Evaluations
                 return;
             }
 
-            var data = Bootstrapper.Instance.Database.Database.HandRankingDataList
+            var data = CardevilCore.Instance.Database.Database.HandRankingDataList
                 .FirstOrDefault(i => i.Ranking == ranking);
             if (data == null) { LogEx.LogError($"Can't find HandRanking Data: {ranking}"); return; }
 

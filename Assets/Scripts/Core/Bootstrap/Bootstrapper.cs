@@ -1,61 +1,86 @@
-using Cardevil.Cards.Data.Enhancement;
-using Cardevil.Pools;
-using Cardevil.Save;
-using Cardevil.Sound;
+using Cardevil.DebugConsole.Commands;
+using Cardevil.Events.ExecEvents;
+using Cardevil.Item;
+using Cardevil.SceneManagement;
 using Cysharp.Threading.Tasks;
-using Database;
+using System;
 using System.Threading;
-using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 namespace Cardevil.Core.Bootstrap
 {
     /// <summary>
-    /// 게임 부트스트랩 진입점.
-    /// 핵심 매니저 초기화 및 전역 접근 제공.
+    /// 게임 부트스트랩 흐름 제어.
+    /// 초기화 단계 순차 실행 및 진행률 관리.
     /// </summary>
-    public class Bootstrapper : MonoBehaviour
+    public static class Bootstrapper
     {
-        public static Bootstrapper Instance { get; private set; }
+        /// <summary>
+        /// 부트스트랩 진행률 변경 이벤트.
+        /// 로드 완료 개수와 전체 개수 전달.
+        /// </summary>
+        public static event Action<int, int> ProgressChanged;
         
-        [field: SerializeField] public GameManager Game { get; private set; }
-        [field: SerializeField] public GameFlowManager GameFlow { get; private set; }
-        [field: SerializeField] public SaveLoadManager SaveLoad { get; private set; }
-        [field: SerializeField] public SoundManager Sound { get; private set; }
-        [field: SerializeField] public PoolManager Pool { get; private set; }
+        private static int _totalToLoad;
+        private static int _loaded;
         
-        [field: SerializeField] public EnhancementDataLibrary CardEnhancementData { get; private set; } 
-
-        [Header("References")]
-        [SerializeField] private EventSystem eventSystem;
-        [field: SerializeField] public DatabaseManager Database { get; private set; }
-        
-        
-
-        private int TotalToLoad => 5;
-        private CancellationTokenSource _cts;
-
-        private void Awake()
+        private static int Loaded
         {
-            if (Instance)
+            get => _loaded;
+            set
             {
-                Destroy(gameObject);
-                return;
+                _loaded = value;
+                ProgressChanged?.Invoke(_totalToLoad, value);
             }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-            DontDestroyOnLoad(eventSystem);
-            
-            _cts = new CancellationTokenSource();
-            BootstrapFlow.BootstrapAsync(this, TotalToLoad, _cts.Token).Forget();
         }
-
-        private void OnDestroy()
+        
+        // TODO: ct 사용 및 전파하기
+        
+        /// <summary>
+        /// 게임 초기화 비동기 실행.
+        /// 매니저 및 시스템 초기화 후 시작 씬 로드.
+        /// </summary>
+        /// <param name="ctx">부트스트랩 컨텍스트</param>
+        /// <param name="totalToLoadCount">전체 로드 단계 개수</param>
+        /// <param name="ct">취소 토큰</param>
+        public static async UniTask BootstrapAsync(CardevilCore ctx, int totalToLoadCount, CancellationToken ct)
         {
-            _cts?.Cancel();
-            _cts?.Dispose();
-            _cts = null;
+            _totalToLoad = totalToLoadCount;
+            
+            // TODO: 오래 걸릴 것들은 비동기로 전환하기
+            
+            // 1. Util
+            ExecEventUtil.Initialize();
+            SceneReference.InitializeCache();
+            BuiltInCommands.RegisterCommands();
+            ItemLibrary.Initialize();
+            // TODO: Console도 할 지 고민하기
+
+            Loaded++;
+            
+            // 2. Database
+            await ctx.Database.InitializeAsync();
+            ctx.CardEnhancementData.Init();
+            Loaded++;
+            
+            // 3. Save data
+            ctx.SaveLoad.Init();
+            Loaded++;
+            
+            // 4. Object Pool
+            ctx.Pool.Init(ctx.transform);
+            Loaded++;
+            
+            // 5. Sound
+            ctx.Sound.Init(ctx.transform, ctx.Pool);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            Loaded++;
+            
+            // 6. Flow
+            ctx.Game.Init();
+            ctx.GameFlow.Init();
+            Loaded++;
+
+            await SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Single);
         }
     }
 }

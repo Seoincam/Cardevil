@@ -135,7 +135,7 @@ namespace Cardevil.Ingame.Field
 
         public TileHighlight Highlight(Define.HighlightType highlightType)
         {
-            TileHighlight highlightObject = Bootstrapper.Instance.Pool.Get<TileHighlight>(Poolables.TileHighlight);
+            TileHighlight highlightObject = CardevilCore.Instance.Pool.Get<TileHighlight>(Poolables.TileHighlight);
             if (highlightObject == null)
             {
                 Debug.LogError("Failed to get TileHighlight from pool.");
@@ -161,7 +161,7 @@ namespace Cardevil.Ingame.Field
             {
                 if (_highlightObjects[i] != null && _highlightObjects[i].HighlightType == highlightType)
                 {
-                    Bootstrapper.Instance.Pool.Release(_highlightObjects[i].Poolable);
+                    CardevilCore.Instance.Pool.Release(_highlightObjects[i].Poolable);
                     _highlightObjects.RemoveAt(i);
                     if (removeAll == false)
                     {

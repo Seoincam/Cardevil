@@ -27,7 +27,7 @@ namespace Cardevil.Title
 
         private void Awake()
         {
-            _saveLoad = Bootstrapper.Instance.SaveLoad;
+            _saveLoad = CardevilCore.Instance.SaveLoad;
             
             profileButton.onClick.AddListener(OnProfileClicked);
             closeButton.onClick.AddListener(OnCloseClicked);
