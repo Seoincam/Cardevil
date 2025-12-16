@@ -109,6 +109,12 @@ namespace Cardevil.Events.ExecEvents
             await _execQueue.ExecuteAll(eventArgs, cancellationToken);
         }
         
+        public static async UniTask InvokeAndDispose(TEvent eventArgs, CancellationToken cancellationToken = default)
+        {
+            await _execQueue.ExecuteAll(eventArgs, cancellationToken);
+            eventArgs.Dispose();
+        }
+        
         public static ExecQueue<TEvent> GetExecQueue()
         {
             return _execQueue;

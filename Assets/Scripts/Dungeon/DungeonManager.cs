@@ -203,9 +203,9 @@ namespace Cardevil.Dungeon
                     }
                     
                     // 이벤트 발생
-                    using var exitArgs = NodeExitedEventArgs.Get();
+                    var exitArgs = NodeExitedEventArgs.Get();
                     exitArgs.Init(currentNode, exitInfo);
-                    ExecEventBus<NodeExitedEventArgs>.InvokeMerged(exitArgs).Forget();
+                    ExecEventBus<NodeExitedEventArgs>.InvokeMergedAndDispose(exitArgs).Forget();
                 }
                 
                 // 이전 노드로 저장
@@ -235,9 +235,9 @@ namespace Cardevil.Dungeon
             }
             
             // 이벤트 발생
-            using var enterArgs = NodeEnteredEventArgs.Get();
+            var enterArgs = NodeEnteredEventArgs.Get();
             enterArgs.Init(node);
-            ExecEventBus<NodeEnteredEventArgs>.InvokeMerged(enterArgs).Forget();
+            ExecEventBus<NodeEnteredEventArgs>.InvokeMergedAndDispose(enterArgs).Forget();
             
             if (DoInstantClear)
             {
@@ -294,9 +294,9 @@ namespace Cardevil.Dungeon
             }
             
             // 이벤트 발생
-            using var args = NodeExitedEventArgs.Get();
+            var args = NodeExitedEventArgs.Get();
             args.Init(node, exitInfo);
-            ExecEventBus<NodeExitedEventArgs>.InvokeMerged(args).Forget();
+            ExecEventBus<NodeExitedEventArgs>.InvokeMergedAndDispose(args).Forget();
         }
         
         /// <summary>

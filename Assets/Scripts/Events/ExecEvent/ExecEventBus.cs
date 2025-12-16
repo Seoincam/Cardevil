@@ -86,7 +86,8 @@ namespace Cardevil.Events.ExecEvents
         }
         
         /// <summary>
-        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출합니다.
+        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출합니다. <br/>
+        /// Forget을 사용할 경우 대신 <see cref="InvokeSequentially(TEvent, CancellationToken)"/>를 사용하세요.
         /// </summary>
         /// <code>
         /// using var args = new MyEventArgs { ... };
@@ -114,7 +115,8 @@ namespace Cardevil.Events.ExecEvents
 
         /// <summary>
         /// 동적 이벤트와 정적 이벤트를 병합하여 우선순위에 따라 호출합니다.
-        /// 두 큐를 병합 정렬(merge sort) 방식으로 실행합니다.
+        /// 두 큐를 병합 정렬(merge sort) 방식으로 실행합니다. <br/>
+        /// Forget을 사용할 경우 대신 <see cref="InvokeMerged(TEvent, CancellationToken)"/>를 사용하세요.
         /// </summary>
         /// <remarks>
         /// 같은 우선순위일 경우, 동적 이벤트가 먼저 실행됩니다.
@@ -193,6 +195,29 @@ namespace Cardevil.Events.ExecEvents
             }
             
             LogEx.Log("Merged Event Bus Invocation Complete");
+        }
+
+        /// <summary>
+        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출하고, 인자를 Dispose합니다.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeSequentiallyAndDispose(TEvent args, CancellationToken cancellationToken = default)
+        {
+            await InvokeSequentially(args, cancellationToken);
+            args.Dispose();
+            
+        }
+        
+        /// <summary>
+        /// 동적 이벤트와 정적 이벤트를 병합하여 우선순위에 따라 호출하고, 인자를 Dispose합니다.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeMergedAndDispose(TEvent args, CancellationToken cancellationToken = default)
+        {
+            await InvokeMerged(args, cancellationToken);
+            args.Dispose();
         }
     }
 }
