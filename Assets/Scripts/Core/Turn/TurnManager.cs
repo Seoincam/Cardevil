@@ -7,6 +7,8 @@ using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Enemy;
 using Cardevil.Utils;
 using UnityEngine;
+using Cardevil.Events.ExecEvents;
+using Cardevil.Events;
 
 namespace Cardevil.Core.Turn
 {
@@ -157,6 +159,9 @@ namespace Cardevil.Core.Turn
                         // Bootstrapper.Instance.Game.PlayerDied();
                         break;
                     }
+
+                    // Enemy Turn이 끝났을때 전파
+                    await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get());
                 }
             }
             catch (OperationCanceledException)

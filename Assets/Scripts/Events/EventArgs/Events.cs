@@ -132,4 +132,11 @@ namespace Cardevil.Events
         public bool isPlayerAttackSuccess;
     }
 
+    /// <summary>
+    /// Enemy Turn까지 모두 종료된 후 호출
+    /// </summary>
+    public class EnemyTurnEndArgs : ExecEventArgs<EnemyTurnEndArgs>
+    {
+
+    }
 }

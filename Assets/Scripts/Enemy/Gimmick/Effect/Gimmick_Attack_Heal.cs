@@ -29,7 +29,7 @@ namespace Cardevil.InGame.Enemy
                 // 최대체력의 5% 회복
 
                 _targetEnemy.CurrentHp += _targetEnemy.maxHP * _targetEnemy.baseMobBossData.GimmickValue[0];
-                Debug.Log($"{_targetEnemy.name} : 공격에 성공하여 체력을 {_targetEnemy.CurrentHp} 만큼 회복하였습니다 ");
+                Debug.Log($"{_targetEnemy.name} : 공격에 성공하여 체력을 { _targetEnemy.maxHP * _targetEnemy.baseMobBossData.GimmickValue[0]} 만큼 회복하였습니다 ");
 
             }
         }
