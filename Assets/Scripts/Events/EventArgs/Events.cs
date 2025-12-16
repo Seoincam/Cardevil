@@ -1,4 +1,8 @@
-﻿using Cardevil.Events.ExecEvents;
+﻿using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Events.ExecEvents;
+using System;
+using System.Collections.Generic;
 
 namespace Cardevil.Events
 {
@@ -91,6 +95,85 @@ namespace Cardevil.Events
             OldTicket = 0;
             NewTicket = 0;
             ModifiedTicket = 0;
+        }
+    }
+
+    /// <summary>
+    /// 덱 카드 개수 변화 이벤트 인자.
+    /// </summary>
+    public class CardDeckChangeArgs : ExecEventArgs<CardDeckChangeArgs>
+    {
+        public enum Order
+        {
+            UIUpdate = int.MinValue,
+        }
+        
+        public static CardDeckChangeArgs Get(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
+        {
+            var args = Get();
+            args.Init(currentDeckCount, newDeckCount, newModel);
+            return args;
+        }
+        
+        public int OldDeckCount { get; private set; }
+        public int NewDeckCount { get; private set; }
+        public IReadOnlyCardsModel NewModel { get; private set; }
+        // 남은 덱 카드 개수는 이벤트로 변화주지 않음.
+
+        private void Init(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
+        {
+            OldDeckCount = currentDeckCount;
+            NewDeckCount = newDeckCount;
+            NewModel = newModel;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            OldDeckCount = 0;
+            NewDeckCount = 0;
+        }
+    }
+
+    /// <summary>
+    /// 카드 버리기 횟수 변화 이벤트 인자.
+    /// </summary>
+    public class CardDiscardChangeArgs : ExecEventArgs<CardDiscardChangeArgs>
+    {
+        public static CardDiscardChangeArgs Get(int currentDiscard, int newDiscard)
+        {
+            var args = Get();
+            args.Init(currentDiscard, newDiscard);
+            return args;
+        }
+        
+        public enum Order
+        {
+            First = int.MinValue,
+            Last = int.MaxValue
+        }
+        
+        public int OldDiscard { get; private set; }
+        public int NewDiscard { get; private set; }
+        
+        /// <summary>
+        /// 이벤트 진행으로 인해 수정된 카드 버리기 횟수. 최종적으로 해당 개수로 카드 버리기 횟수가 설정됨.
+        /// </summary>
+        public int ModifiedDiscard { get; set; }
+
+        private void Init(int currentDiscard, int newDiscard)
+        {
+            OldDiscard = currentDiscard;
+            NewDiscard = newDiscard;
+            ModifiedDiscard = newDiscard;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            OldDiscard = 0;
+            NewDiscard = 0;
+            ModifiedDiscard = 0;
         }
     }
 }
