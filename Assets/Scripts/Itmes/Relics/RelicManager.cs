@@ -2,6 +2,7 @@ using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Items.Relics.Factory;
 using Cardevil.Utils;
+using Database;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,30 +38,31 @@ namespace Cardevil.Relics
         /// </summary>
         public void Init()
         {
+            // TODO: Relic 수정
+            return;
+            
             RelicFactory.RegisterAllFactory();
             for (RelicRarity r = 0; r <= RelicRarity.FinBoss; r++)
             {
                 _allByRarity[r] = new List<Relic>();
                 _ownedByRarityCache[r] = new List<OwnedRelic>();
             }
-            
-            Managers.Database.OnInitialized += () =>
+
+            foreach (Relic relic in RelicFactory.MakeRelicInstances())
             {
-                foreach (Relic relic in RelicFactory.MakeRelicInstances())
-                {
-                    all.Add(relic);
-                    _allById[(relic.Id, relic.Level)] = relic;
-                    _allByRarity[relic.Rarity].Add(relic);
-                }
-                
-                // TODO: 세이브-로드 로직 작성하며 다시 수정하기.
-                // 기본 유물 획득
-                foreach (var relic in all)
-                {
-                    if (relic.Rarity == RelicRarity.DefaultRelic && relic.Level == 0)
-                        Acquire(relic);
-                }
-            };
+                all.Add(relic);
+                _allById[(relic.Id, relic.Level)] = relic;
+                _allByRarity[relic.Rarity].Add(relic);
+            }
+            
+            // TODO: 세이브-로드 로직 작성하며 다시 수정하기.
+            // 기본 유물 획득
+            foreach (var relic in all)
+            {
+                if (relic.Rarity == RelicRarity.DefaultRelic && relic.Level == 0)
+                    Acquire(relic);
+            }
+            
         }
 
         /// <summary>
@@ -203,6 +205,7 @@ namespace Cardevil.Relics
 
         #region ConsoleCommand
 
+        /*
         [ConsoleCommand("getRelic", "Get Relic by relicId and level", "getRelic [string: relicId] [int: level (optional, default: 1)]")]
         private static void GetRelicCommand(string[] args)
         {
@@ -239,6 +242,7 @@ namespace Cardevil.Relics
                 DebugConsole.Console.Message($"Relic acquired by {relicId}");
             }
         }
+        */
 
         #endregion
     }

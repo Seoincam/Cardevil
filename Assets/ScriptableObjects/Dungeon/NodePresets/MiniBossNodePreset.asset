@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 66f4dd1fc2af4f4ab251028ff08f83ad, type: 3}
+  m_Name: MiniBossNodePreset
+  m_EditorClassIdentifier: 
+  displayName: "\uC911\uAC04 \uBCF4\uC2A4"
+  nodeType: 4
+  lockedSprite: {fileID: 21300000, guid: 58b742374b5e76c4f8f0788180643446, type: 3}
+  activeSprite: {fileID: 21300000, guid: be262a32926993b4eafe17cab8c50bf4, type: 3}
+  completedSprite: {fileID: 21300000, guid: 11d59d0f1d46b714399b898a10b22ba3, type: 3}
+  completedOverlaySprite: {fileID: 0}
+  nodeColor: {r: 1, g: 1, b: 1, a: 1}
+  textColor: {r: 1, g: 1, b: 1, a: 1}

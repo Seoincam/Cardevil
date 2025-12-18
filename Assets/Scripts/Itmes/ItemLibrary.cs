@@ -36,9 +36,12 @@ namespace Cardevil.Item
             }
         }
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static bool _initialized;
+        
         public static void Initialize()
         {
+            if (_initialized) return;
+            
             if (_instance == null)
             {
                 _instance = new ItemLibrary();
@@ -76,6 +79,8 @@ namespace Cardevil.Item
             
             // {클래스이름: 클래스} 형태로 기본 등록
             DefaultRegisterAll();
+            
+            _initialized = true;
         }
 
 #if UNITY_EDITOR

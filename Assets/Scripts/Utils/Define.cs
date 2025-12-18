@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -67,6 +68,8 @@ public class Define
         Click,
         End
     }
+    
+    [Obsolete("Pls Use Scenes instead.")]
     public enum Scene
     {
         Unknown,

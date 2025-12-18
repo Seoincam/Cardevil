@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd59489d632048b0bbd9b3d73a0515e5, type: 3}
+  m_Name: DefaultDungeonNodeSetting
+  m_EditorClassIdentifier: 
+  nodeTypeToSpriteSet:
+    defaultKey: 8
+    _items:
+    - Key: 0
+      Value:
+        Inactive: {fileID: 21300000, guid: 873b171411c96ea4d8853a02bbe52862, type: 3}
+        Active: {fileID: 21300000, guid: e69a0bc7bd4b0a84fa87281372cc3487, type: 3}
+        Completed: {fileID: 21300000, guid: 0554a5fdb94701c4886c04ca8dda291f, type: 3}
+        CompletedOverlay: {fileID: 21300000, guid: ff28f2a4b4a42fb4b86ae6fe4a82509d, type: 3}
+    - Key: 2
+      Value:
+        Inactive: {fileID: 21300000, guid: 873b171411c96ea4d8853a02bbe52862, type: 3}
+        Active: {fileID: 21300000, guid: a69c79d881253d3419971a94643019e1, type: 3}
+        Completed: {fileID: 21300000, guid: 0554a5fdb94701c4886c04ca8dda291f, type: 3}
+        CompletedOverlay: {fileID: 21300000, guid: ff28f2a4b4a42fb4b86ae6fe4a82509d, type: 3}
+    - Key: 3
+      Value:
+        Inactive: {fileID: 21300000, guid: c782d8e2d5aaee848abb449da4d87cd4, type: 3}
+        Active: {fileID: 21300000, guid: fc503695cc166984c9750bdbc1234060, type: 3}
+        Completed: {fileID: 0}
+        CompletedOverlay: {fileID: 0}
+    - Key: 10
+      Value:
+        Inactive: {fileID: 21300000, guid: 63a0cc8ed456cc64aa1f49780a02a0f2, type: 3}
+        Active: {fileID: 21300000, guid: c467c816247fec24aae23d6d91c4ab09, type: 3}
+        Completed: {fileID: 0}
+        CompletedOverlay: {fileID: 0}
+    - Key: 9
+      Value:
+        Inactive: {fileID: 21300000, guid: 0d9e7e29cd2e5bd4c84f441e6051d0f3, type: 3}
+        Active: {fileID: 21300000, guid: c97d2e52efe42bb4bac602cf22dec12b, type: 3}
+        Completed: {fileID: 0}
+        CompletedOverlay: {fileID: 0}
+    - Key: 7
+      Value:
+        Inactive: {fileID: 21300000, guid: 58b742374b5e76c4f8f0788180643446, type: 3}
+        Active: {fileID: 21300000, guid: be262a32926993b4eafe17cab8c50bf4, type: 3}
+        Completed: {fileID: 0}
+        CompletedOverlay: {fileID: 0}
+    - Key: 8
+      Value:
+        Inactive: {fileID: 21300000, guid: 8ae441c7b94fe3245beafcf3045625ad, type: 3}
+        Active: {fileID: 21300000, guid: 8ae441c7b94fe3245beafcf3045625ad, type: 3}
+        Completed: {fileID: 0}
+        CompletedOverlay: {fileID: 0}

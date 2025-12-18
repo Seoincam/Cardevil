@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
+[Obsolete]
 public class JsonManager
 {
     public void Save<T>(T data, string name = null)

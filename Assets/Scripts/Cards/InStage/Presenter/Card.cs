@@ -36,7 +36,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private Poolable _poolable;
         private Image _image;
         
-        private IReadOnlyStageCardsModel _model;
+        private IReadOnlyCardsModel _model;
 
         public CanvasGroup VisualCanvasGroup => visual.CanvasGroup;
         public IEvaluateVisual EvaluateVisual => visual;
@@ -63,7 +63,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         /// <param name="cardData">카드 데이터 객체</param>
         /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
-        public void Init(CardData cardData, IReadOnlyStageCardsModel model)
+        public void Init(CardData cardData, IReadOnlyCardsModel model)
         {
             data = cardData;
             _model = model;
@@ -74,7 +74,7 @@ namespace Cardevil.Cards.InStage.Presenter
             var visualHandler = GameObject.Find("Card Visual Transform");
             if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
 
-            var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
+            var go = AssetUtil.Instantiate("Cards/CardVisual", visualHandler.transform);
             visual = go.GetComponent<CardVisual>();
             visual.Init(this, model);
             
@@ -144,7 +144,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             state.isReroll = true;
             visual.AnimateRerollDiscard();
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
 
         #endregion
@@ -170,7 +170,7 @@ namespace Cardevil.Cards.InStage.Presenter
             UnwireVisual(visual);
             visual.Discard();
             
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
 
         #endregion

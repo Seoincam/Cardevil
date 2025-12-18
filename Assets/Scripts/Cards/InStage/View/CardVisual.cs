@@ -39,7 +39,7 @@ namespace Cardevil.Cards.InStage.View
         private Poolable _poolable;
         private CardDeckVisual _deckVisual;
 
-        private IReadOnlyStageCardsModel _model;
+        private IReadOnlyCardsModel _model;
         private VisualTransformDelta _delta;
         private VisualState _state;
 
@@ -54,7 +54,7 @@ namespace Cardevil.Cards.InStage.View
             CanvasGroup = GetComponent<CanvasGroup>();
         }
         
-        public void Init(Card parentCard, IReadOnlyStageCardsModel model)
+        public void Init(Card parentCard, IReadOnlyCardsModel model)
         {
             if (_state.isInitialized) return;
             
@@ -290,7 +290,7 @@ namespace Cardevil.Cards.InStage.View
         private void Destroy()
         {
             DOTween.Kill(transform);
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
         
         public void ExecuteEvaluationAction()

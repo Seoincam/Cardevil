@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using UnityEngine;
 
 namespace Cardevil.Relics
@@ -6,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Managers.Game.PlayerStatus.DiscardCard += 1;
+            CardevilCore.Instance.Game.PlayerStatus.DiscardCard += 1;
         }
     }
 }

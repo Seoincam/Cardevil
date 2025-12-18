@@ -1,10 +1,13 @@
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -29,7 +32,7 @@ namespace Cardevil.Cards.InStage.View
         
         public PointerAreaTrigger HandArea => handArea;
         
-        private IReadOnlyStageCardsModel _model;
+        private IReadOnlyCardsModel _model;
 
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
@@ -49,7 +52,7 @@ namespace Cardevil.Cards.InStage.View
         }
 #endif
 
-        public void Init(IReadOnlyStageCardsModel model)
+        public void Init(IReadOnlyCardsModel model)
         {
             _model = model;
             ConfigureSlots(model.MaxHand);
@@ -64,7 +67,7 @@ namespace Cardevil.Cards.InStage.View
             _lastState = null;
             foreach (var slot in _slots)
             {
-                if (slot) Managers.Resource.Destroy(slot.gameObject);
+                if (slot) AssetUtil.Destroy(slot.gameObject);
             }
             _slots.Clear();
             
@@ -78,8 +81,13 @@ namespace Cardevil.Cards.InStage.View
         /// HandBar UI를 화면에 등장시키는 애니메이션을 실행합니다.  
         /// </summary>
         /// <returns>애니메이션 완료 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask EnterHandBarAsync()
+        public async UniTask EnterHandBarAsync(int deckCount, int discardCount)
         {
+            deckCountText.text = $"{deckCount} / 50";
+            discardCountText.text = discardCount.ToString();
+            
+            Initialize();
+            
             useButton.transform.localScale = Vector3.zero;
             discardButton.transform.localScale = Vector3.zero;
             sortByNumberButton.transform.localScale = Vector3.zero;
@@ -90,6 +98,24 @@ namespace Cardevil.Cards.InStage.View
             await sortByIconButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await sortByNumberButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
         }
+
+        private void Initialize()
+        {
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.First, OnDiscardChanged);
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.Last, OnDiscardChanged);
+            ExecEventBus<CardDeckChangeArgs>.RegisterStatic(int.MaxValue, OnDeckChanged);
+        }
+
+        private async UniTask OnDiscardChanged(CardDiscardChangeArgs eventArgs, CancellationToken cancellationToken)
+        {
+            discardCountText.text = eventArgs.ModifiedDiscard.ToString();
+        }
+
+        private async UniTask OnDeckChanged(CardDeckChangeArgs eventArgs, CancellationToken cancellationToken)
+        {
+            deckCountText.text = $"{eventArgs.NewDeckCount} / 50";
+        }
+
 
         public async UniTask ExitHandBarAsync()
         {
@@ -133,9 +159,6 @@ namespace Cardevil.Cards.InStage.View
                     sortByNumberButton.interactable = state.CanSort;
                     sortByIconButton.interactable = state.CanSort;
                 }
-
-                if (prev.RemainingCards != state.RemainingCards) deckCountText.text = $"{state.RemainingCards}/50";
-                if (prev.RemainingDiscards != state.RemainingDiscards) discardCountText.text = $"{state.RemainingDiscards}";
             }
             else 
             {
@@ -143,9 +166,6 @@ namespace Cardevil.Cards.InStage.View
                 discardButton.interactable = state.CanDiscard;
                 sortByNumberButton.interactable = state.CanSort;
                 sortByIconButton.interactable = state.CanSort;
-                
-                deckCountText.text = $"{state.RemainingCards}/50";
-                discardCountText.text = $"{state.RemainingDiscards}";
             }
             _lastState = state;
         }
@@ -158,8 +178,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                // Managers.Resource.Instantiate(SlotPath, visualRoot);
-                var slot = Managers.Resource.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -167,8 +186,7 @@ namespace Cardevil.Cards.InStage.View
             {
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
-                Managers.Resource.Destroy(last.gameObject);
-                // TODO: 풀링한다면 VisualRoot Slot도 저장해놔야함.
+                AssetUtil.Destroy(last.gameObject);
             }
         }
 

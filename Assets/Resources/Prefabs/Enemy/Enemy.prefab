@@ -46,7 +46,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5090514070268501704}
   - component: {fileID: 9149373502049407843}
-  - component: {fileID: -8541774367827859310}
+  - component: {fileID: 2370924021656243185}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -86,7 +86,7 @@ MonoBehaviour:
   name: 
   maxHealth: 0
   _currentHealth: 0
---- !u!114 &-8541774367827859310
+--- !u!114 &2370924021656243185
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

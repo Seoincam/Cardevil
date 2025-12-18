@@ -1,4 +1,3 @@
-using Cardevil.Systems;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Cards.Data;
@@ -8,6 +7,8 @@ using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.OutStage;
+using Cardevil.Core.Turn.Interfaces;
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
@@ -21,15 +22,7 @@ namespace Cardevil.Cards.System
     [Serializable]
     public class CardManager : IClearable
     {
-        [SerializeField] private CardLibrary cardLibrary = new();
-        [SerializeField] private EnhancementDataLibrary enhancementDataLibrary = new();
-        
-        // Out Stage
-        private readonly CardPipelineModifierService _modifierService = new();
-        private readonly CardEnhancementPresenter _enhancementPresenter = new();
-        
-        // In Stage
-        private readonly StageCardsModel _stageCardsModel = new();
+        private readonly CardsModel _cardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
         private readonly StageCardsPresenter _stageCardsPresenter = new();
 
@@ -42,39 +35,30 @@ namespace Cardevil.Cards.System
 
         #endregion
         
-        public CardEnhancementPresenter EnhancementPresenter => _enhancementPresenter;
-        
         /// <summary>
         /// 카드 단계(리롤, 손패 선택 등)를 관리하는 Flow을 생성.
         /// TurnManager에서 사용.
         /// </summary>
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
-            => new CardFlowController(cardLibrary, _stageCardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
-        
+            => new CardFlowController(_status, _cardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
+
+        private IReadOnlyCardStatus _status; // TODO: 얘는 없어야함.
+
         /// <summary>
         /// 카드 매니저를 초기화.  
-        /// 내부 상태를 초기화, 기본 덱 데이터를 생성.
+        /// 내부 상태를 초기화.
         /// </summary>
-        public void Init()
+        public async UniTask InitAsync(IReadOnlyCardStatus status)
         {
             Clear();
-            
-            // Data
-            cardLibrary.Init(enhancementDataLibrary);
-            enhancementDataLibrary.Init();
-
-            _modifierService.Init(cardLibrary);
-            _enhancementPresenter.Init(cardLibrary, enhancementDataLibrary, _modifierService);
-            
-            cardLibrary.CreateBasePipelines();
-            
+            _status = status;
             _evaluationPresenter.Init(_evaluationResultsModel);
         }
 
         public void Clear()
         {
-            _stageCardsModel.Clear();
+            _cardsModel.Clear();
             _rerollPresenter.Clear();
             _stageCardsPresenter.Clear();
             

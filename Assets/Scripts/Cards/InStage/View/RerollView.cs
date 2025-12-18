@@ -1,6 +1,7 @@
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -84,7 +85,7 @@ namespace Cardevil.Cards.InStage.View
         {
             foreach (var slot in _slots)
             {
-                if (slot) Managers.Resource.Destroy(slot.gameObject);
+                if (slot) AssetUtil.Destroy(slot.gameObject);
             }
             _slots.Clear();
             
@@ -110,7 +111,7 @@ namespace Cardevil.Cards.InStage.View
             togglePreviewButton.transform.localScale = Vector3.zero;
             
             await image.DOColor(color, 1f);
-            await AnimateTicketChangeAsync(0, Managers.Game.PlayerStatus.RerollTicket); 
+            await AnimateTicketChangeAsync(0, CardevilCore.Instance.Game.PlayerStatus.RerollTicket); 
             await doButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await endButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await togglePreviewButton.transform.DOScale(1f, .2f);
@@ -171,7 +172,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -179,7 +180,7 @@ namespace Cardevil.Cards.InStage.View
             {
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
-                Managers.Resource.Destroy(last.gameObject);
+                AssetUtil.Destroy(last.gameObject);
             }
         }
         

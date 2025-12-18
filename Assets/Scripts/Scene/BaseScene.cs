@@ -1,8 +1,12 @@
+using Cardevil.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Object = UnityEngine.Object;
 
+[Obsolete()]
 public abstract class BaseScene : MonoBehaviour
 {
 
@@ -17,7 +21,7 @@ public abstract class BaseScene : MonoBehaviour
         Object obj = GameObject.FindObjectOfType(typeof(EventSystem));
         if (obj == null)
         {
-            Managers.Resource.Instantiate("UI/EventSystem").name = "@EventSystem";
+            AssetUtil.Instantiate("UI/EventSystem").name = "@EventSystem";
         }
     }
     public abstract void Clear();

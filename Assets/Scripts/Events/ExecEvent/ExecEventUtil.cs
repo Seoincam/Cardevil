@@ -1,6 +1,7 @@
 ﻿using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
 
@@ -11,8 +12,8 @@ using UnityEditor;
 namespace Cardevil.Events.ExecEvents
 {
     public delegate void ExecEventHandler<TEvent>(ExecQueue<TEvent> queue, TEvent eventArgs) where TEvent : ExecEventArgs<TEvent>, new();
-    public delegate UniTask ExecAction<TEvent>(TEvent eventArgs) where TEvent : ExecEventArgs<TEvent>, new();
-    
+    public delegate UniTask ExecAction<TEvent>(TEvent eventArgs, CancellationToken cancellationToken) where TEvent : ExecEventArgs<TEvent>, new();
+
     /// <summary>
     /// 우선순위 실행 이벤트 유틸리티 클래스
     /// </summary>
@@ -21,6 +22,8 @@ namespace Cardevil.Events.ExecEvents
         public static IReadOnlyList<Type> EventTypes;
         public static IReadOnlyList<Type> EventBusTypes;
         public static IReadOnlyList<Type> StaticEventBusTypes;
+        
+        private static bool _initialized;
 
         #if UNITY_EDITOR
         public static PlayModeStateChange PlayModeState { get; private set; }
@@ -42,13 +45,15 @@ namespace Cardevil.Events.ExecEvents
         }
         #endif
         
-        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
+        public static void Initialize()
         {
+            if (_initialized) return;
+            
             LogEx.Log("Initializing ExecEventUtil");
             EventTypes = ReflectionUtil.GetTypes(typeof(ExecEventArgs<>));
             EventBusTypes = InitializeAllBus();
             StaticEventBusTypes = InitializeAllStaticBus();
+            _initialized = true;
         }
 
         private static List<Type> InitializeAllBus()

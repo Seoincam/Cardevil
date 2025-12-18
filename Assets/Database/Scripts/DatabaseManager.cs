@@ -13,6 +13,8 @@ using System.Text;
 using Cardevil.Scriptable.Cache;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
+using Cardevil.Manager;
+using Cysharp.Threading.Tasks;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;
 using UnityEditor;
@@ -44,18 +46,18 @@ namespace Database
         /// 로드된 스프라이트를 관리하는 캐시. Key: 이미지 URL, Value: 로드된 Sprite
         /// </summary>
         [field: SerializeField] public SerializableDictionary<string, Sprite> SpriteCache { get; private set; } = new();
-
-
+        
         public event Action OnInitialized;
         public string FinalLocalPath => Path.Combine(Application.persistentDataPath, localJsonPath);
         public string FinalStreamingAssetPath => Path.Combine(Application.streamingAssetsPath, streamingAssetPath);
-
+        
         public McDatabase Database => mcDatabase;
         public bool IsInitialized => isInitialized;
-
-        private void Awake()
+        
+        public async UniTask InitializeAsync()
         {
-            DontDestroyOnLoad(gameObject);
+            Initialize();
+            await UniTask.WaitUntil(() => isInitialized);
         }
 
         [ContextMenu("Clear Database")]

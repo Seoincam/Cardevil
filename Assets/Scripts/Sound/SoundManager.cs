@@ -2,6 +2,7 @@ using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Pools;
+using Cardevil.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -55,14 +56,15 @@ namespace Cardevil.Sound
             private set => audioMixerGroups[(int)Define.Sound.SFX] = value;
         }
 
+        private PoolManager _pool;
 
-        public void Init()
+        public void Init(Transform parent, PoolManager poolManager)
         {
-            GameObject root = GameObject.Find("@Sound");
+            GameObject root = GameObject.Find("@Sound_Root");
             if (root == null)
             {
-                root = new GameObject { name = "@Sound" };
-                Object.DontDestroyOnLoad(root);
+                root = new GameObject { name = "@Sound_Root" };
+                root.transform.parent = parent;
             }
 
             // 사운드 루트 초기화
@@ -76,8 +78,7 @@ namespace Cardevil.Sound
 
             if (_defaultSoundEffectAudioConfiguration == null)
             {
-                _defaultSoundEffectAudioConfiguration =
-                    Managers.Resource.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
+                _defaultSoundEffectAudioConfiguration = AssetUtil.Load<AudioConfigurationSO>("Audio/DefaultSfxConfig");
             }
 
             // 믹서 그룹 초기화
@@ -94,6 +95,9 @@ namespace Cardevil.Sound
             SetMasterVolume(savedMasterVolume);
             SetMusicVolume(savedMusicVolume);
             SetSfxVolume(savedSfxVolume);
+            
+            // Pool
+            _pool = poolManager;
         }
 
         public void Clear()
@@ -325,7 +329,7 @@ namespace Cardevil.Sound
             }
             else
             {
-                soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
+                soundEmitter = _pool.Get<SoundEmitter>(Poolables.SoundEmitter);
                 soundEmitter.transform.SetParent(root);
                 soundEmitter.transform.position = Vector3.zero;
                 AudioSource audioSource = soundEmitter.GetComponent<AudioSource>();
@@ -357,13 +361,13 @@ namespace Cardevil.Sound
             AudioResource audioResource = null;
             if (type == Define.Sound.BGM)
             {
-                audioResource = Managers.Resource.Load<AudioClip>(path);
+                audioResource = AssetUtil.Load<AudioClip>(path);
             }
             else
             {
                 if (_cachedAudioClips.TryGetValue(path, out audioResource) == false)
                 {
-                    audioResource = Managers.Resource.Load<AudioClip>(path);
+                    audioResource = AssetUtil.Load<AudioClip>(path);
                     _cachedAudioClips.Add(path, audioResource);
                 }
             }
@@ -377,7 +381,7 @@ namespace Cardevil.Sound
         }
 
         private SoundEmitter GetSoundEmitter(bool addToList = true){
-            SoundEmitter soundEmitter = Managers.Pool.Get<SoundEmitter>(Poolables.SoundEmitter);
+            SoundEmitter soundEmitter = _pool.Get<SoundEmitter>(Poolables.SoundEmitter);
             soundEmitter.transform.SetParent(root);
             if (addToList)
             {

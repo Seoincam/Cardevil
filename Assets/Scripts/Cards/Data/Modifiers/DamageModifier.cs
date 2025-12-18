@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Data.Save;
 using System;
 using UnityEngine;
 
@@ -28,6 +29,17 @@ namespace Cardevil.Cards.Data.Modifiers
         public void Apply(CardData.Builder b)
         {
             b.AddDamageMultiplier(damage);
+        }
+
+        public CardModifierSaveData Serialize()
+        {
+            return new CardModifierSaveData() { type = type, payload = JsonUtility.ToJson(this) };
+        }
+
+        public void Deserialize(CardModifierSaveData data)
+        {
+            var loaded = JsonUtility.FromJson<DamageModifier>(data.payload);
+            damage = loaded.damage;
         }
     }
 }

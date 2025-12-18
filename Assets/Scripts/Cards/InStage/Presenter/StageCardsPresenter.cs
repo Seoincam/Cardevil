@@ -2,13 +2,14 @@ using Cardevil.Cards.Data;
 using UnityEngine;
 using System;
 using Cysharp.Threading.Tasks;
-using Cardevil.Systems;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils.Directions;
 using System.Linq;
 using System.Threading;
@@ -16,11 +17,11 @@ using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
-    public class StageCardsPresenter : ITurnPlayerInput, IClearable
+    public class StageCardsPresenter : IClearable
     {
         // Model
-        private IReadOnlyCardLibrary _library;
-        private StageCardsModel _model;
+        private IReadOnlyCardStatus _status;
+        private CardsModel _model;
         
         // View
         private StageCardsView _view;
@@ -50,16 +51,16 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model, IEvaluationPresenter evaluationPresenter)
+        public void Init(IReadOnlyCardStatus status, CardsModel model, IEvaluationPresenter evaluationPresenter)
         {
             if (_state.isInitialized) return;
 
-            if (library == null)
+            if (status == null)
             {
                 LogEx.LogError("library가 null입니다.");
                 return;
             }
-            _library = library;
+            _status = status;
             
             if (model == null)
             {
@@ -104,7 +105,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (views is { Length: > 0 }) _view = views[0];
             else
             {
-                GameObject go = Managers.Resource.Instantiate("UI/CardUI/StageCardsView", canvas);
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
             _view.Init(_model);
@@ -119,10 +120,10 @@ namespace Cardevil.Cards.InStage.Presenter
             if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
             else
             {
-                GameObject go = Managers.Resource.Instantiate("UI/CardUI/DeckRemainView", canvas);
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/DeckRemainView", canvas);
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
-            _deckRemainView.Init(_library, _model);
+            _deckRemainView.Init(_status, _model);
             _deckChanged += _deckRemainView.OnDeckChanged;
             
             CardDeckVisual.Instance.PointerUp += _deckRemainView.Open;
@@ -133,7 +134,7 @@ namespace Cardevil.Cards.InStage.Presenter
             else
             {
                 const string path = "UI/CardUI/ValueSelectionView";
-                GameObject go = Managers.Resource.Instantiate(path, canvas);
+                GameObject go = AssetUtil.Instantiate(path, canvas);
                 _selectionView = go.GetComponent<CardValueSelectionView>();
             }
             _selectionView.Init();
@@ -147,7 +148,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 _handChanged?.Invoke();
             }
             
-            await _view.EnterHandBarAsync();
+            await _view.EnterHandBarAsync(_model.Deck.Count, _model.DiscardRemain);
             
             // 5. Update Async 구성
             _updateCts.Cancel();
@@ -193,7 +194,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
             if (!_view) return;
             _view.Clear();
-            Managers.Resource.Destroy(_view.gameObject);
+            AssetUtil.Destroy(_view.gameObject);
         }
         
         private void WireCard(Card card)
@@ -437,6 +438,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Close();
             
             // TODO: 버리기 횟수 0되면 못 버리게
+
             _model.TryReduceDiscardRemainCount();
             _ = DiscardAndDrawAsync();
         }
@@ -478,6 +480,7 @@ namespace Cardevil.Cards.InStage.Presenter
             {
                 var card = Spawn();
                 _handChanged?.Invoke();
+                
                 card.DoDraw();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }
@@ -506,7 +509,7 @@ namespace Cardevil.Cards.InStage.Presenter
             var cardData = _model.PopCard();
             if (cardData == null) return null;
 
-            var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
+            var card = AssetUtil.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, _model);
 
             // 이벤트 구독
@@ -551,7 +554,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!_view) return;
             var canUse = CanInput && _model.CanUseCard && !_state.draggedCard;
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
-            var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
+            var viewState = new StageCardsViewState(canUse, canDiscard, true);
             _view.UpdateUI(viewState);
             
             if (!_model.CanUseCard)

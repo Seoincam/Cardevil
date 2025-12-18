@@ -1,13 +1,11 @@
+using Cardevil.Cards.Data;
+using Cardevil.Core.Turn;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Cardevil.Systems;
-using System.Collections;
 using Cysharp.Threading.Tasks;
-using System.Threading;
-using Cardevil.Ingame.Entities;
-using Cardevil.Ingame.Player;
 using Cardevil.Utils;
 using UnityEngine.UI;
 using Database.Generated;
@@ -55,7 +53,7 @@ namespace Cardevil.InGame.Enemy
 
         private List<Attack> attackLists = new List<Attack>();
 
-
+        private (bool attackSucess, float damage) _enemyAttackInfo;
 
         private AttackStyle currentAttackStyle;
 
@@ -71,6 +69,7 @@ namespace Cardevil.InGame.Enemy
             public int[] attackPointNumberExtra_x;
             public int[] attackPointNumberExtra_y;
             public bool isPlayerAttack = true;
+            public IReadOnlyTurnContext turnCtx;
 
             // 추가: StraightPlush 등에서 "제외한 코너"를 기억하기 위한 필드
             // -1 이면 아직 설정되지 않음
@@ -84,22 +83,43 @@ namespace Cardevil.InGame.Enemy
             }
 
         }
-        private void Start()
+
+        public void Init(Field field)
         {
-            field = Managers.Game.Field;
+            this.field = field;
             currentAttackStyle = AttackStyle.UnKnown;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
-
-        }
-
-        private void Awake()
-        {
         }
         
+        // ITurnEnemy 변경 사항
         public async UniTask Replace()
         {
-            throw new NotImplementedException("아직 Enemy 교체가 구현되지 않음.");
+            LogEx.LogWarning("<b>대윤</b>: 아직 enemy 교체가 구현되지 않음.");
+        }
+
+        public async UniTask ShowInitialAttackArea()
+        {
+            LogEx.LogWarning("<b>대윤</b>: 첫 공격 표시가 아직 구현되지 않았습니다.");
+        }
+        
+        public async UniTask<AttackResult> TurnAttackAsync()
+        {
+            LogEx.LogWarning("<b>대윤</b>: 공격 로직이 아직 완성되지 않았습니다.");
+
+            var ctx = TurnManager.Context;
+            
+            var target = ctx.Player;
+            // 이제 플레이어 위치 이렇게 받아오면 됨!
+            var playerPosition = ctx.PlayerPosition;
+            
+            await UniTask.Delay(1200);
+            AttackEnemyTurnStart(ctx);
+            
+            // TODO: 필요하다면 족보도 받아오기
+            return _enemyAttackInfo.attackSucess  
+                ? new AttackResult(target, HandRanking.None, (int)damage)
+                : new AttackResult(target, HandRanking.None, 0);
         }
 
         #region 족보공격 구현
@@ -116,8 +136,8 @@ namespace Cardevil.InGame.Enemy
 
             if (attack.isPlayerAttack)
             {
-                attack.attackPointNumber_x = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                attack.attackPointNumber_y = Managers.Game.Player.GetPlayerLineNumberVertical();
+                // attack.attackPointNumber_x = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberHorizontal();
+                // attack.attackPointNumber_y = Bootstrapper.Instance.Game.Player.GetPlayerLineNumberVertical();
             }
             else
             {
@@ -140,10 +160,8 @@ namespace Cardevil.InGame.Enemy
 
             if (attack.isPlayerAttack)
             {
-                int px = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                int py = Managers.Game.Player.GetPlayerLineNumberVertical();
-                attack.attackPointNumber_x = px;
-                attack.attackPointNumber_y = py;
+                attack.attackPointNumber_x = (int)attack.turnCtx.PlayerPosition.x;
+                attack.attackPointNumber_y = (int)attack.turnCtx.PlayerPosition.y;
 
                 // pick a random tile different from player's tile
                 int rx, ry;
@@ -192,8 +210,8 @@ namespace Cardevil.InGame.Enemy
 
             if (attack.isPlayerAttack)
             {
-                attack.attackPointNumber_x = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                attack.attackPointNumber_y = Managers.Game.Player.GetPlayerLineNumberVertical();
+                attack.attackPointNumber_x = (int)attack.turnCtx.PlayerPosition.x;
+                attack.attackPointNumber_y = (int)attack.turnCtx.PlayerPosition.y;
 
                 // pick two distinct random tiles excluding player's tile
                 int count = 0;
@@ -261,13 +279,14 @@ namespace Cardevil.InGame.Enemy
                 horizontal = (UnityEngine.Random.value > 0.5f);
                 if (horizontal)
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                    attack.attackLineNumber = (int)attack.turnCtx.PlayerPosition.x;
+                    
                     attack.currentAttackStyle = AttackStyle.AttackHorizontal;
                     AttackNoticeSign_Horizontal(attack.attackLineNumber);
                 }
                 else
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                    attack.attackLineNumber = (int)attack.turnCtx.PlayerPosition.y;
                     attack.currentAttackStyle = AttackStyle.AttackVertical;
                     AttackNoticeSign_Vertical(attack.attackLineNumber);
                 }
@@ -309,21 +328,21 @@ namespace Cardevil.InGame.Enemy
             {
                 if (horizontal)
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                    attack.attackLineNumber = (int)attack.turnCtx.PlayerPosition.x;;
                     attack.currentAttackStyle = AttackStyle.AttackHorizontal;
                     AttackNoticeSign_Horizontal(attack.attackLineNumber);
                 }
                 else
                 {
-                    attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                    attack.attackLineNumber = (int)attack.turnCtx.PlayerPosition.y;
                     attack.currentAttackStyle = AttackStyle.AttackVertical;
                     AttackNoticeSign_Vertical(attack.attackLineNumber);
                 }
 
                 // random extra tile excluding player's tile
                 int rx, ry;
-                int px = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                int py = Managers.Game.Player.GetPlayerLineNumberVertical();
+                int px = (int)attack.turnCtx.PlayerPosition.x;
+                int py = (int)attack.turnCtx.PlayerPosition.y;
                 do
                 {
                     rx = UnityEngine.Random.Range(0, 3);
@@ -370,8 +389,8 @@ namespace Cardevil.InGame.Enemy
             int px, py;
             if (attack.isPlayerAttack)
             {
-                px = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                py = Managers.Game.Player.GetPlayerLineNumberVertical();
+                px = (int)attack.turnCtx.PlayerPosition.x;;
+                py = (int)attack.turnCtx.PlayerPosition.y;
             }
             else
             {
@@ -429,8 +448,8 @@ namespace Cardevil.InGame.Enemy
             int cx, cy;
             if (attack.isPlayerAttack)
             {
-                cx = Managers.Game.Player.GetPlayerLineNumberHorizontal();
-                cy = Managers.Game.Player.GetPlayerLineNumberVertical();
+                cx = (int)attack.turnCtx.PlayerPosition.x;
+                cy = (int)attack.turnCtx.PlayerPosition.y;
             }
             else
             {
@@ -497,25 +516,19 @@ namespace Cardevil.InGame.Enemy
         {
             bool successAttack = false;
 
-            if (!IsValidPoint(attack.attackPointNumber_x, attack.attackPointNumber_y)) return false;
-
-            List<Entity> entities =
-            field[attack.attackPointNumber_x][attack.attackPointNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-            //Entity중 Player가 있다면
-            foreach (Entity entity in entities)
+            if (IsValidPoint(attack.attackPointNumber_x, attack.attackPointNumber_y))
             {
-                if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
                 {
-                    // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                    if (player is ITurnPlayer action)
+                    if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                        attack.turnCtx.PlayerPosition)
                     {
-                        action.PlayerGetDamage(damage);
+                        _enemyAttackInfo = (true, damage);
                         successAttack = true;
                     }
                 }
             }
+            
             return successAttack;
-
         }
         private bool AttackOnePare(Attack attack)
         {
@@ -524,17 +537,11 @@ namespace Cardevil.InGame.Enemy
             // main
             if (IsValidPoint(attack.attackPointNumber_x, attack.attackPointNumber_y))
             {
-                var entitiesMain = field[attack.attackPointNumber_x][attack.attackPointNumber_y].GetEntities();
-                foreach (Entity entity in entitiesMain)
+                if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                    attack.turnCtx.PlayerPosition)
                 {
-                    if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                    {
-                        if (player is ITurnPlayer action)
-                        {
-                            action.PlayerGetDamage(damage);
-                            successAttack = true;
-                        }
-                    }
+                    _enemyAttackInfo = (true, damage);
+                    successAttack = true;
                 }
             }
 
@@ -545,17 +552,10 @@ namespace Cardevil.InGame.Enemy
                 int ey = attack.attackPointNumberExtra_y[0];
                 if (IsValidPoint(ex, ey))
                 {
-                    var entitiesExtra = field[ex][ey].GetEntities();
-                    foreach (Entity entity in entitiesExtra)
+                    if (new Vector2Int(ex, ey) == attack.turnCtx.PlayerPosition)
                     {
-                        if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                        {
-                            if (player is ITurnPlayer action)
-                            {
-                                action.PlayerGetDamage(damage);
-                                successAttack = true;
-                            }
-                        }
+                        _enemyAttackInfo = (true, damage);
+                        successAttack = true;
                     }
                 }
             }
@@ -570,17 +570,11 @@ namespace Cardevil.InGame.Enemy
             // main
             if (IsValidPoint(attack.attackPointNumber_x, attack.attackPointNumber_y))
             {
-                var entitiesMain = field[attack.attackPointNumber_x][attack.attackPointNumber_y].GetEntities();
-                foreach (Entity entity in entitiesMain)
+                if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                    attack.turnCtx.PlayerPosition)
                 {
-                    if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                    {
-                        if (player is ITurnPlayer action)
-                        {
-                            action.PlayerGetDamage(damage);
-                            successAttack = true;
-                        }
-                    }
+                    _enemyAttackInfo = (true, damage);
+                    successAttack = true;
                 }
             }
 
@@ -592,15 +586,13 @@ namespace Cardevil.InGame.Enemy
                 {
                     int ex = attack.attackPointNumberExtra_x[i];
                     int ey = attack.attackPointNumberExtra_y[i];
-                    if (!IsValidPoint(ex, ey)) continue;
-                    var entitiesExtra = field[ex][ey].GetEntities();
-                    foreach (Entity entity in entitiesExtra)
+                    if (IsValidPoint(ex, ey))
                     {
-                        if (entity.TryGetComponent<PlayerCharacter>(out var player))
                         {
-                            if (player is ITurnPlayer action)
+                            if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                                attack.turnCtx.PlayerPosition)
                             {
-                                action.PlayerGetDamage(damage);
+                                _enemyAttackInfo = (true, damage);
                                 successAttack = true;
                             }
                         }
@@ -650,17 +642,10 @@ namespace Cardevil.InGame.Enemy
                 int ey = attack.attackPointNumberExtra_y[0];
                 if (IsValidPoint(ex, ey))
                 {
-                    var entities = field[ex][ey].GetEntities();
-                    foreach (Entity entity in entities)
+                    if (new Vector2Int(ex, ey) == attack.turnCtx.PlayerPosition)
                     {
-                        if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                        {
-                            if (player is ITurnPlayer action)
-                            {
-                                action.PlayerGetDamage(damage);
-                                successAttack = true;
-                            }
-                        }
+                        _enemyAttackInfo = (true, damage);
+                        successAttack = true;
                     }
                 }
             }
@@ -676,17 +661,11 @@ namespace Cardevil.InGame.Enemy
             // center
             if (IsValidPoint(attack.attackPointNumber_x, attack.attackPointNumber_y))
             {
-                var ents = field[attack.attackPointNumber_x][attack.attackPointNumber_y].GetEntities();
-                foreach (Entity entity in ents)
+                if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                    attack.turnCtx.PlayerPosition)
                 {
-                    if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                    {
-                        if (player is ITurnPlayer action)
-                        {
-                            action.PlayerGetDamage(damage);
-                            successAttack = true;
-                        }
-                    }
+                    _enemyAttackInfo = (true, damage);
+                    successAttack = true;
                 }
             }
 
@@ -697,17 +676,12 @@ namespace Cardevil.InGame.Enemy
                 {
                     int ex = attack.attackPointNumberExtra_x[i];
                     int ey = attack.attackPointNumberExtra_y[i];
-                    if (!IsValidPoint(ex, ey)) continue;
-                    var ents2 = field[ex][ey].GetEntities();
-                    foreach (Entity entity in ents2)
+                    if (IsValidPoint(ex, ey))
                     {
-                        if (entity.TryGetComponent<PlayerCharacter>(out var player))
+                        if (new Vector2Int(ex, ey) == attack.turnCtx.PlayerPosition)
                         {
-                            if (player is ITurnPlayer action)
-                            {
-                                action.PlayerGetDamage(damage);
-                                successAttack = true;
-                            }
+                            _enemyAttackInfo = (true, damage);
+                            successAttack = true;
                         }
                     }
                 }
@@ -723,17 +697,11 @@ namespace Cardevil.InGame.Enemy
             // center
             if (IsValidPoint(attack.attackPointNumber_x, attack.attackPointNumber_y))
             {
-                var ents = field[attack.attackPointNumber_x][attack.attackPointNumber_y].GetEntities();
-                foreach (Entity entity in ents)
+                if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                    attack.turnCtx.PlayerPosition)
                 {
-                    if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                    {
-                        if (player is ITurnPlayer action)
-                        {
-                            action.PlayerGetDamage(damage);
-                            successAttack = true;
-                        }
-                    }
+                    _enemyAttackInfo = (true, damage);
+                    successAttack = true;
                 }
             }
 
@@ -744,17 +712,13 @@ namespace Cardevil.InGame.Enemy
                 {
                     int ex = attack.attackPointNumberExtra_x[i];
                     int ey = attack.attackPointNumberExtra_y[i];
-                    if (!IsValidPoint(ex, ey)) continue;
-                    var ents2 = field[ex][ey].GetEntities();
-                    foreach (Entity entity in ents2)
+                    if (IsValidPoint(ex, ey))
                     {
-                        if (entity.TryGetComponent<PlayerCharacter>(out var player))
+                        if (new Vector2Int(attack.attackPointNumber_x, attack.attackPointNumber_y) ==
+                            attack.turnCtx.PlayerPosition)
                         {
-                            if (player is ITurnPlayer action)
-                            {
-                                action.PlayerGetDamage(damage);
-                                successAttack = true;
-                            }
+                            _enemyAttackInfo = (true, damage);
+                            successAttack = true;
                         }
                     }
                 }
@@ -785,17 +749,10 @@ namespace Cardevil.InGame.Enemy
                 {
                     if (x == excludedX && y == excludedY) continue;
 
-                    var entities = field[x][y].GetEntities();
-                    foreach (Entity entity in entities)
+                    if (new Vector2Int(x, y) == attack.turnCtx.PlayerPosition)
                     {
-                        if (entity.TryGetComponent<PlayerCharacter>(out var player))
-                        {
-                            if (player is ITurnPlayer action)
-                            {
-                                action.PlayerGetDamage(damage);
-                                successAttack = true;
-                            }
-                        }
+                        _enemyAttackInfo = (true, damage);
+                        successAttack = true;
                     }
                 }
             }
@@ -818,26 +775,19 @@ namespace Cardevil.InGame.Enemy
             }
             return false;
         }
-
-        public async UniTask TurnAttack() //인터페이스
-        {
-            await UniTask.Delay(1200);
-
-
-            AttackEnemyTurnStart();
-        }
-        public virtual void AttackEnemyAwake() // 처음으로 호출되었을때
+        
+        public virtual void AttackEnemyAwake(IReadOnlyTurnContext ctx) // 처음으로 호출되었을때
         {
             if (aWakeFirst == true) // 처음에선 랜덤지정
             {
-                CreateAttack(true);
+                CreateAttack(ctx, true);
             }
             aWakeFirst = false;
         }
 
-        public void CreateAttack(bool firstCreate = false)
+        public void CreateAttack(IReadOnlyTurnContext ctx, bool firstCreate = false)
         {
-            Attack tmpAttack = new Attack();
+            Attack tmpAttack = new() { turnCtx = ctx };
 
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨공격인지 설정 
 
@@ -852,18 +802,18 @@ namespace Cardevil.InGame.Enemy
             SetAttack(tmpAttack, isPlayerAttack);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
-        public void AttackEnemyTurnStart()
+        public void AttackEnemyTurnStart(IReadOnlyTurnContext ctx)
         {
             EnemyTurnClear();
             LogEx.Log("Enemy Turn!!");
-            AttackEnemyAwake(); // Enemy Awake시 실행되는 함수
+            AttackEnemyAwake(ctx); // Enemy Awake시 실행되는 함수
 
             // 우선 시작할때 공격구역 설정하도록 해보기 Test
 
 
             AttackPatternEnemyTurning(); // Enemy가 수행하는 공격들의 TurnOrder 감소 후 공격
 
-            AttackEnemyTurnEnd(); // Enemy 공격의 마무리 단계
+            AttackEnemyTurnEnd(ctx); // Enemy 공격의 마무리 단계
         }
 
 
@@ -949,7 +899,7 @@ namespace Cardevil.InGame.Enemy
             }
             return false;
         }
-        void AttackEnemyTurnEnd()
+        void AttackEnemyTurnEnd(IReadOnlyTurnContext ctx)
         {
             List<Attack> tmpAttacks = new List<Attack>();
             int count = 0;
@@ -972,7 +922,7 @@ namespace Cardevil.InGame.Enemy
             for (int i = 0; i < count; i++) // 지워진 어택 갯수만큼 새로 생성
             {
                 LogEx.Log("지워진 Attack 만큼 새로 생성");
-                CreateAttack();
+                CreateAttack(ctx);
             }
 
             if (orderSettingGo == true)
@@ -1052,7 +1002,7 @@ namespace Cardevil.InGame.Enemy
             {
 
                 //플레이어의 가로 위치
-                attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberHorizontal();
+                attack.attackLineNumber = attack.turnCtx.PlayerPosition.x;
                 //공격위치표시
                 AttackNoticeSign_Horizontal(attack.attackLineNumber);
 
@@ -1060,7 +1010,7 @@ namespace Cardevil.InGame.Enemy
             else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
             {
                 //플레이어의 세로 위치
-                attack.attackLineNumber = Managers.Game.Player.GetPlayerLineNumberVertical();
+                attack.attackLineNumber = attack.turnCtx.PlayerPosition.y;
                 //공격위치표시
                 AttackNoticeSign_Vertical(attack.attackLineNumber);
             }
@@ -1261,23 +1211,24 @@ namespace Cardevil.InGame.Enemy
         // 실질적인 공격 후 데미지 주기
         void AttackPoint(int pointNumber_x, int poinNumber_y)
         {
-            if (!IsValidPoint(pointNumber_x, poinNumber_y)) return;
-
-            List<Entity> entities =
-            field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-
-            //Entity중 Player가 있다면
-            foreach (Entity entity in entities)
-            {
-                if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                {
-                    // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                    if (player is ITurnPlayer action)
-                    {
-                        action.PlayerGetDamage(damage);
-                    }
-                }
-            }
+            LogEx.LogError("AttackPoint 미구현.");
+            // if (!IsValidPoint(pointNumber_x, poinNumber_y)) return;
+            //
+            // List<Entity> entities =
+            // field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+            //
+            // //Entity중 Player가 있다면
+            // foreach (Entity entity in entities)
+            // {
+            //     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+            //     {
+            //         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+            //         if (player is ITurnPlayer action)
+            //         {
+            //             action.PlayerGetDamage(damage);
+            //         }
+            //     }
+            // }
 
         }
 
@@ -1288,22 +1239,24 @@ namespace Cardevil.InGame.Enemy
             // 가로는 0,1,2 모두
             for (int x = 0; x < 3; x++)
             {
-                List<Entity> entities =
-                field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-
-                //Entity중 Player가 있다면
-                foreach (Entity entity in entities)
-                {
-                    if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                    {
-                        // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                        if (player is ITurnPlayer action)
-                        {
-                            action.PlayerGetDamage(damage);
-                            successAttack = true;
-                        }
-                    }
-                }
+                LogEx.LogError("Attack Vertical 미구현");
+                
+                // List<Entity> entities =
+                // field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+                //
+                // //Entity중 Player가 있다면
+                // foreach (Entity entity in entities)
+                // {
+                //     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                //     {
+                //         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                //         if (player is ITurnPlayer action)
+                //         {
+                //             action.PlayerGetDamage(damage);
+                //             successAttack = true;
+                //         }
+                //     }
+                // }
 
             }
 
@@ -1315,26 +1268,28 @@ namespace Cardevil.InGame.Enemy
         {
             bool successAttack = false;
             // 가로는 0,1,2 모두
-            for (int x = 0; x < 3; x++)
-            {
-                List<Entity> entities =
-               field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-
-                //Entity중 Player가 있다면
-                foreach (Entity entity in entities)
-                {
-                    if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                    {
-                        // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                        if (player is ITurnPlayer action)
-                        {
-                            action.PlayerGetDamage(damage);
-                            successAttack = true;
-                        }
-                    }
-                }
-
-            }
+            // for (int x = 0; x < 3; x++)
+            // {
+            //     List<Entity> entities =
+            //    field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+            //
+            //     //Entity중 Player가 있다면
+            //     foreach (Entity entity in entities)
+            //     {
+            //         if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+            //         {
+            //             // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+            //             if (player is ITurnPlayer action)
+            //             {
+            //                 action.PlayerGetDamage(damage);
+            //                 successAttack = true;
+            //             }
+            //         }
+            //     }
+            //
+            // }
+            
+            LogEx.LogError("Attack Horizontal 미구현.");
             return successAttack;
         }
         #endregion
@@ -1361,6 +1316,10 @@ namespace Cardevil.InGame.Enemy
             get { return isEnemyDead; }
         }
 
+        public void TakeDamage(int amount)
+        {
+            GetDamage(amount);
+        }
 
         #endregion
 
@@ -1559,6 +1518,7 @@ namespace Cardevil.InGame.Enemy
                 // --- 구현 종료 ---
             }
             #endregion
-        }
+        
+    }
     }
 
