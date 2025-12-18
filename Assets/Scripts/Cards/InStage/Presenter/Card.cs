@@ -8,6 +8,7 @@ using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using UnityEngine;
@@ -86,8 +87,11 @@ namespace Cardevil.Cards.InStage.Presenter
             state = new CardState();
             visual = null;
         }
-
-        public void UpdateVisual() => visual.UpdateVisual();
+        
+        public async UniTask UpdateVisual()
+        {
+            await visual.UpdateVisual(Data);
+        } 
         
         private void Awake()
         {

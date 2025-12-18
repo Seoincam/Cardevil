@@ -2,38 +2,19 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Visual.Base;
 using Cardevil.Cards.Visual.StateMachine;
-using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.Cards.Visual
+namespace Cardevil.Cards.Visual.Controller
 {
-    [RequireComponent(typeof(CardVisualBase))]
-    public class CardVisualController : MonoBehaviour
+    public abstract class CardVisualControllerBase : MonoBehaviour
     {
-        private CardVisualBase _visual;
-        private CardVisualPhaseStateMachine _fsm;
+        protected CardVisualBase visual;
 
-        public void Init(CardData data)
-        {
-            _visual = GetComponent<CardVisualBase>();
-
-            var spriteSet = ConfigureSpriteSet(data);
-            var phase = (VisualPhase)spriteSet.sprites.Count;
-            
-            _fsm ??= new CardVisualPhaseStateMachine(_visual, spriteSet);
-            _fsm.InitPhase(spriteSet).Forget();
-        }
-
-        public async UniTask UpdateData(CardData data)
-        {
-            var spriteSet = ConfigureSpriteSet(data);
-
-            await _fsm.SetPhase(spriteSet);
-        }
-
-        private CardVisualSpriteSet ConfigureSpriteSet(CardData data)
+        public abstract void Init(CardVisualBase visualBase, CardData data);
+        
+        protected CardVisualSpriteSet ConfigureSpriteSet(CardData data)
         {
             return data.Kind switch
             {

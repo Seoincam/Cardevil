@@ -611,7 +611,12 @@ namespace Cardevil.Cards.InStage.Presenter
             if (error)
                 LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
             
-            card.UpdateVisual();
+            ChangeCardAsync(card).Forget();
+        }
+
+        private async UniTaskVoid ChangeCardAsync(Card card)
+        {
+            await card.UpdateVisual();
             
             // 홀딩 카드 릴리즈
             ReleaseHoldingCard(_holding.originalIndex);

@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
@@ -12,8 +13,6 @@ using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
 using Cardevil.Cards.Visual.Base;
 using Cysharp.Threading.Tasks;
-using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
 {
@@ -23,8 +22,8 @@ namespace Cardevil.Cards.InStage.View
         [Header("Card")]
         [SerializeField, VisibleOnly] private Card parentCard;
 
-        [Header("Visual")] 
-        [SerializeField] private CardVisualController visualController;
+        [Header("Visual")]
+        [SerializeField] private InGameCardVisualController controller;
         [SerializeField] private CardVisualBase visualBase;
         [Space]
         [SerializeField] private RectTransform objectsRect;
@@ -63,7 +62,7 @@ namespace Cardevil.Cards.InStage.View
             
             // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             
-            visualController.Init(parentCard.Data);
+            controller.Init(visualBase, parentCard.Data);
             changeImage.SetActive(parentCard.Data.CanOpenSelection);
             visualBase.TryFlipBackImmediate();
             
@@ -88,9 +87,15 @@ namespace Cardevil.Cards.InStage.View
             _state.isInitialized = false;
         }
 
-        public void UpdateVisual()
+        public async UniTask UpdateVisual(CardData data)
         {
-            visualController.UpdateData(parentCard.Data).Forget();
+            var dur = .25f;
+            
+            await visualBase.FlipBackAsync(dur);
+            controller.UpdateVisual(data);
+            await visualBase.FlipFrontAsync(dur);
+            await visualBase.FlipBackAsync(dur);
+            await visualBase.FlipFrontAsync(dur);
         }
         
         private void Update()
@@ -233,7 +238,7 @@ namespace Cardevil.Cards.InStage.View
         {
             _deckVisual.OnInteraction();
             visualBase.TryFlipBackImmediate();
-            visualBase.TryFlipFrontAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            visualBase.FlipFrontAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase).Forget();
             
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                 .SetEase(visualSetting.RerollDrawEase);
@@ -247,7 +252,7 @@ namespace Cardevil.Cards.InStage.View
                 .SetEase(visualSetting.RerollDiscardEase);
             
             visualBase.TryFlipFrontImmediate();
-            visualBase.TryFlipBackAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            visualBase.FlipBackAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase).Forget();
 
             tween.OnComplete(() =>
             {
@@ -268,7 +273,7 @@ namespace Cardevil.Cards.InStage.View
             _deckVisual.OnInteraction();
             
             visualBase.TryFlipBackImmediate();
-            visualBase.TryFlipFrontAnim(visualSetting.DrawFlipDuration, visualSetting.FlipEase);
+            visualBase.FlipFrontAsync(visualSetting.DrawFlipDuration, visualSetting.FlipEase).Forget();
         }
 
         public void Discard()
@@ -281,11 +286,7 @@ namespace Cardevil.Cards.InStage.View
             tween.OnComplete(Destroy);
         }
         
-        #region Visual Index
-
         public void UpdateVisualIndex(int index) => transform.SetSiblingIndex(index);
-
-        #endregion
         
         private void Destroy()
         {

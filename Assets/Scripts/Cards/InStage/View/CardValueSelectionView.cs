@@ -147,7 +147,7 @@ namespace Cardevil.Cards.InStage.View
         private void OnValueSelected((int, Direction) values)
         {
             ValueSelected?.Invoke(_draggedCard, values);
-            FadeDraggedCard(true);
+            // FadeDraggedCard(true);
             
             _draggedCard = null;
             IsDropped = false;
@@ -294,7 +294,7 @@ namespace Cardevil.Cards.InStage.View
             if (!_draggedCard)
                 return;
             
-            FadeDraggedCard(false);
+            // FadeDraggedCard(false);
             
             IsInDropArea = true;
             Open(_draggedCard);
@@ -308,7 +308,7 @@ namespace Cardevil.Cards.InStage.View
             if (IsDropped)
                 return;
             
-            FadeDraggedCard(true);
+            // FadeDraggedCard(true);
             
             IsInDropArea = false;
             Close();
