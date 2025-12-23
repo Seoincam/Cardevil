@@ -92,9 +92,10 @@ namespace Cardevil.Cards.InStage.View
         {
             await visualBase.FlipBackAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
             controller.UpdateVisual(data);
+            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.VisualChangeBackInterval));
+            
             await visualBase.FlipFrontAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
-            // await visualBase.FlipBackAsync(dur);
-            // await visualBase.FlipFrontAsync(dur);
+            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.VisualChangeFrontInterval));
         }
         
         private void Update()
@@ -172,6 +173,7 @@ namespace Cardevil.Cards.InStage.View
         {
             if (_state.isDiscarded) return;
             if (parentCard.IsReroll) return;
+            if (parentCard.HoldingInValueSelection) return;
 
             var c = visualSetting.Curve;
             
