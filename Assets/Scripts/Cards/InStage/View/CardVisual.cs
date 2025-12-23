@@ -13,6 +13,7 @@ using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
 using Cardevil.Cards.Visual.Base;
 using Cysharp.Threading.Tasks;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
 {
@@ -27,7 +28,7 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private CardVisualBase visualBase;
         [Space]
         [SerializeField] private RectTransform objectsRect;
-        [SerializeField] private GameObject changeImage;
+        [SerializeField] private Image changeImage;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
@@ -63,7 +64,7 @@ namespace Cardevil.Cards.InStage.View
             // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             
             controller.Init(visualBase, parentCard.Data);
-            changeImage.SetActive(parentCard.Data.CanOpenSelection);
+            changeImage.gameObject.SetActive(parentCard.Data.CanOpenSelection);
             visualBase.TryFlipBackImmediate();
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
@@ -89,13 +90,11 @@ namespace Cardevil.Cards.InStage.View
 
         public async UniTask UpdateVisual(CardData data)
         {
-            var dur = .25f;
-            
-            await visualBase.FlipBackAsync(dur);
+            await visualBase.FlipBackAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
             controller.UpdateVisual(data);
-            await visualBase.FlipFrontAsync(dur);
-            await visualBase.FlipBackAsync(dur);
-            await visualBase.FlipFrontAsync(dur);
+            await visualBase.FlipFrontAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            // await visualBase.FlipBackAsync(dur);
+            // await visualBase.FlipFrontAsync(dur);
         }
         
         private void Update()
@@ -301,6 +300,13 @@ namespace Cardevil.Cards.InStage.View
                     .SetEase(animSo.cardScaleEase)
                     .SetLoops(2, LoopType.Yoyo));
         }
+
+        public void FadeChangeImage(bool active)
+        {
+            changeImage.DOKill();
+            changeImage.DOFade(active ? 1f : 0f, .2f).SetEase(Ease.InCirc);
+        }
+        
 
         private struct VisualTransformDelta
         {

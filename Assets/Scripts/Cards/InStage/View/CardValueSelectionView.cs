@@ -19,34 +19,21 @@ namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
+        [Header("State")] 
+        [field: SerializeField, VisibleOnly, Tooltip("드래그 중, 카드(포인터)가 Drop Area 내에 있는가?")] 
+        public bool IsInDropArea { get; private set; }
+        
+        [field: SerializeField, VisibleOnly, Tooltip("Drop Area 내에 Drop을 했나?")] 
+        public bool IsDropped { get; private set; }
+        
+        [Header("References")]
         [SerializeField] private Image bar;
         [SerializeField] private PointerAreaTrigger valueChangeArea;
         
         [Header("SO")]
         [SerializeField] private ValueSelectionViewAnimSetting setting;
 
-        [Header("State")] 
-        [SerializeField, VisibleOnly] private bool isInDropArea;
-        [SerializeField, VisibleOnly] private bool isDropped;
 
-        /// <summary>
-        /// 드래그 중, 카드(포인터)가 Drop Area 내에 있는가?
-        /// </summary>
-        public bool IsInDropArea
-        {
-            get => isInDropArea;
-            private set => isInDropArea = value;
-        }
-
-        /// <summary>
-        /// Drop Area 내에 Drop을 했나?
-        /// </summary>
-        public bool IsDropped
-        {
-            get => isDropped;
-            private set => isDropped = value;
-        }
-        
         /// <summary>
         /// 값 선택 완료 이벤트.
         /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
@@ -279,6 +266,7 @@ namespace Cardevil.Cards.InStage.View
                 SetRaycastTarget(true);
                 _draggedCard.transform.SetParent(transform);
                 _draggedCard.UpdatePosition();
+                _draggedCard.FadeChangeImage(false);
                 return;
             }
             
@@ -289,7 +277,7 @@ namespace Cardevil.Cards.InStage.View
         
         private void OnPointerEnterInArea()
         {
-            if (isDropped)
+            if (IsDropped)
                 return;
             if (!_draggedCard)
                 return;

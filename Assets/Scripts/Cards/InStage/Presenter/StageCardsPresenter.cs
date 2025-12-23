@@ -619,6 +619,7 @@ namespace Cardevil.Cards.InStage.Presenter
             await card.UpdateVisual();
             
             // 홀딩 카드 릴리즈
+            card.FadeChangeImage(true);
             ReleaseHoldingCard(_holding.originalIndex);
             EndDrag();
         }

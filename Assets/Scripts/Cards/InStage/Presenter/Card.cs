@@ -28,7 +28,17 @@ namespace Cardevil.Cards.InStage.Presenter
         [Header("Card")]
         [SerializeField, VisibleOnly] private CardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
+        
         [SerializeField, VisibleOnly] private CardState state;
+        [Serializable]
+        private struct CardState
+        {
+            public int handIndex;
+            public bool isSelected, isDragging, isDiscarded, isReroll;
+            public bool isAnyCardDragged; // HandBar에서 드래그되고 있는 카드가 있나?
+            public float pointerDownTime, pointerUpTime;
+        }
+
         
         public event Action PointerEntered, PointerExited, DragEnd;
         public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
@@ -37,11 +47,10 @@ namespace Cardevil.Cards.InStage.Presenter
         private Poolable _poolable;
         private Image _image;
         
-        private IReadOnlyCardsModel _model;
-
         public CanvasGroup VisualCanvasGroup => visual.CanvasGroup;
         public IEvaluateVisual EvaluateVisual => visual;
         public CardData Data => data;
+        
         public bool IsDragging => state.isDragging;
         public bool IsReroll => state.isReroll;
         public int HandIndex => state.handIndex;
@@ -67,7 +76,6 @@ namespace Cardevil.Cards.InStage.Presenter
         public void Init(CardData cardData, IReadOnlyCardsModel model)
         {
             data = cardData;
-            _model = model;
             
             _image = GetComponent<Image>();
             
@@ -335,18 +343,10 @@ namespace Cardevil.Cards.InStage.Presenter
         }
 
         #endregion
-
-        #region Nested
         
-        [Serializable]
-        private struct CardState
+        public void FadeChangeImage(bool active)
         {
-            public int handIndex;
-            public bool isSelected, isDragging, isDiscarded, isReroll;
-            public bool isAnyCardDragged; // HandBar에서 드래그되고 있는 카드가 있나?
-            public float pointerDownTime, pointerUpTime;
+            visual.FadeChangeImage(active);
         }
-
-        #endregion
     }
 }

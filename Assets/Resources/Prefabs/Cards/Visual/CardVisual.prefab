@@ -142,7 +142,7 @@ MonoBehaviour:
   controller: {fileID: 2009659924881735625}
   visualBase: {fileID: 3075103807123323649}
   objectsRect: {fileID: 7450842584052836136}
-  changeImage: {fileID: 2064608430817227335}
+  changeImage: {fileID: 5065728439457240364}
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   animSo: {fileID: 11400000, guid: 86cca5790825e4f938459e939ac90ea1, type: 2}
 --- !u!225 &153748235676292451
