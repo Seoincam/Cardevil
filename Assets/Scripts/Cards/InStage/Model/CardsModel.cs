@@ -300,7 +300,7 @@ namespace Cardevil.Cards.InStage.Model
         {
             if (_deck.Count == 0)
             {
-                Debug.LogError("Card Data가 없음.");
+                LogEx.LogWarning("Card Data가 없음.");
                 return null;
             }
 
@@ -308,7 +308,6 @@ namespace Cardevil.Cards.InStage.Model
             var cardData = _deck[0];
             _deck.RemoveAt(0);
             // cardData.OnDraw();
-            
             
             var args = CardDeckChangeArgs.Get(_deck.Count + 1, _deck.Count, this);
             ExecEventBus<CardDeckChangeArgs>.InvokeMergedAndDispose(args).Forget();
