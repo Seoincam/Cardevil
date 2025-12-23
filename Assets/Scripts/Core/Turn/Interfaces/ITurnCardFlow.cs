@@ -69,7 +69,7 @@ namespace Cardevil.Core.Turn.Interfaces
         void DeactivateHandPhase();
         
         /// <summary>
-        /// 덱에 카드가 없는지 여부를 반환.
+        /// 모든 카드를 다 썼는지 여부.
         /// </summary>
         bool IsNoCard { get; }
         

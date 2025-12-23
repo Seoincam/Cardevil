@@ -480,6 +480,8 @@ namespace Cardevil.Cards.InStage.Presenter
             for (int i = 0; i < count; i++)
             {
                 var card = Spawn();
+                if (!card) continue;
+                
                 _handChanged?.Invoke();
                 
                 card.DoDraw();
