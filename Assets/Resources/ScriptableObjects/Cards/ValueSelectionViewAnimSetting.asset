@@ -27,3 +27,5 @@ MonoBehaviour:
   barFadeInDuration: 0.4
   cardFadeInUpDuration: 0.2
   cardInterval: 0.0325
+  draggedCardFadeDuration: 0.2
+  draggedCardFadeEase: 8

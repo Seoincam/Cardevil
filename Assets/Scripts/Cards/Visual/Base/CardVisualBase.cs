@@ -1,5 +1,7 @@
 using Cardevil.Cards.Visual.Base;
+using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.DataStructure.Serializables;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
@@ -48,11 +50,11 @@ namespace Cardevil.Cards.Visual.Base
         public RectTransform SelMidBackground => selMidBackground;
         public RectTransform SelBotBackground => selBotBackground;
         
-        public SelectionGroup GetSelectionGroup(int count)
+        public SelectionGroup GetSelectionGroup(VisualPhase phase)
         {
             foreach (var group in selectionGroups)
             {
-                if (group.Count != count)
+                if (group.Count != (int)phase)
                     continue;
                 return group;
             }
@@ -60,9 +62,9 @@ namespace Cardevil.Cards.Visual.Base
             return null;
         }
 
-        public void TryFlipFrontAnim(float duration, Ease ease = Ease.Unset)
+        public async UniTask FlipFrontAsync(float duration, Ease ease = Ease.Unset)
         {
-            DOTween.Sequence()
+            await DOTween.Sequence()
                 .Append(cardBackGroup.DOLocalRotate(new Vector3(0, 90, 0), duration * .5f).SetEase(ease))
                 .Append(cardFrontGroup.DOLocalRotate(Vector3.zero, duration * .5f).SetEase(ease))
                 .OnComplete(() => { _isFront = true; });
@@ -73,9 +75,9 @@ namespace Cardevil.Cards.Visual.Base
             _isFront = true;
         }
 
-        public void TryFlipBackAnim(float duration, Ease ease = Ease.Unset)
+        public async UniTask FlipBackAsync(float duration, Ease ease = Ease.Unset)
         {
-            DOTween.Sequence()
+            await DOTween.Sequence()
                 .Append(cardFrontGroup.DOLocalRotate(new Vector3(0, 90, 0), duration * .5f).SetEase(ease))
                 .Append(cardBackGroup.DOLocalRotate(Vector3.zero, duration * .5f).SetEase(ease))
                 .OnComplete(() => {  _isFront = false; });

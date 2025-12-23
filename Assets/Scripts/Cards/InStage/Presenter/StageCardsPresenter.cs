@@ -19,23 +19,32 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class StageCardsPresenter : IClearable
     {
+        // Model
         private IReadOnlyCardStatus _status;
         private CardsModel _model;
-        private IEvaluationPresenter _evaluationPresenter;
         
+        // View
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
         private CardValueSelectionView _selectionView;
         
+        // Presenter
+        private IEvaluationPresenter _evaluationPresenter;
+        
+        // SO
         private CardVisualSettingSO _visualSetting;
         
+        // event
+        private Action _handChanged;
+        private Action _deckChanged;
+        
+        
         private StageCardsPresenterState _state;
+        private bool CanInput => _state is { isSwapping: false, canInteract: true };
         private CancellationTokenSource _updateCts = new(); // UpdateAsync에 사용
         
-        private event Action HandChanged;
-        private event Action DeckChanged;
+        private (bool isHolding, int originalIndex) _holding;
         
-        private bool CanInput => _state is { isSwapping: false, canInteract: true };
         
         /// <summary>
         /// StageCardsPresenter 초기화.  
@@ -88,7 +97,10 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             Transform canvas = GameObject.Find("CardCanvas").transform;
             
-            // View 생성
+            // 0. 이벤트 구독
+            _handChanged += AlignVisualIndex;
+            
+            // 1. View 생성
             var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
             if (views is { Length: > 0 }) _view = views[0];
             else
@@ -96,21 +108,14 @@ namespace Cardevil.Cards.InStage.Presenter
                 GameObject go = AssetUtil.Instantiate("UI/CardUI/StageCardsView", canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
-            _view.ConfigureSlots(_model.MaxHand);
+            _view.Init(_model);
             _view.BindButtonEvents(Use, Discard, SortByNumber, SortByIcon);
+            _handChanged += _view.OnHandChanged;
             
-            // 현재 생성된 카드 모두 HandBar 슬롯으로 이동
-            foreach (var card in _model.Hand)
-            {
-                WireCard(card);
-                HandChanged += card.OnHandChanged;
-                card.SetRerollState(false);
-                _model.TryGetIndex(card, out int index);
-                _view.SetCardToSlot(card, index);
-            }
-            HandChanged?.Invoke();
+            _view.HandArea.PointerEntered += OnEnterAreaWhileHolding;
+            _view.HandArea.PointerExited += OnExitAreaWhileDragging;
             
-            // Deck Remain View 생성 및 DeckVisual에 바인딩
+            // 2. Deck Remain View 생성 및 DeckVisual에 바인딩
             var deckRemainViews = Object.FindObjectsByType<DeckRemainView>(FindObjectsSortMode.None);
             if (views is {Length: > 0}) _deckRemainView = deckRemainViews[0];
             else
@@ -119,11 +124,11 @@ namespace Cardevil.Cards.InStage.Presenter
                 _deckRemainView = go.GetComponent<DeckRemainView>();
             }
             _deckRemainView.Init(_status, _model);
-            DeckChanged += _deckRemainView.OnDeckChanged;
+            _deckChanged += _deckRemainView.OnDeckChanged;
             
             CardDeckVisual.Instance.PointerUp += _deckRemainView.Open;
             
-            // Value Selection View 생성
+            // 3. Value Selection View 생성
             var valueSelectionViews = Object.FindObjectsByType<CardValueSelectionView>(FindObjectsSortMode.None);
             if (views is { Length: > 0}) _selectionView = valueSelectionViews[0];
             else
@@ -135,9 +140,17 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Init();
             _selectionView.ValueSelected += OnValueSelected;
             
+            // 4. 현재 생성된 카드 모두 HandBar 슬롯으로 이동
+            foreach (var card in _model.Hand)
+            {
+                WireCard(card);
+                card.SetRerollState(false);
+                _handChanged?.Invoke();
+            }
+            
             await _view.EnterHandBarAsync(_model.Deck.Count, _model.DiscardRemain);
             
-            // Update Async 구성
+            // 5. Update Async 구성
             _updateCts.Cancel();
             _updateCts = new();
             UpdateAsync(_updateCts.Token).Forget();
@@ -186,24 +199,30 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private void WireCard(Card card)
         {
-            card.AddDragStart(OnDragStarted);
-            card.AddDragEnd(OnDragEnded);
+            // StageCardsPresenter
+            card.DragStart += OnDragStarted;
+            card.DragEnd += OnDragEnded;
             
-            card.AddPointerDown(OnPointerDown);
-            card.AddPointerUp(OnPointerUp);
+            card.PointerDown += OnPointerDown;
+            card.PointerUp += OnPointerUp;
             
-            card.AddSelectionButtonTapped(OnValueSelectionButtonTapped);
+            // CardValueSelectionView
+            card.DragStart += _selectionView.OnDragStarted;
+            card.DragEnd += _selectionView.OnDragEnded;
         }
         
         private void UnwireCard(Card card)
         {
-            card.RemoveDragStart(OnDragStarted);
-            card.RemoveDragEnd(OnDragEnded);
+            // StageCardsPresenter
+            card.DragStart -= OnDragStarted;
+            card.DragEnd -= OnDragEnded;
             
-            card.RemovePointerDown(OnPointerDown);
-            card.RemovePointerUp(OnPointerUp);
-
-            card.RemoveSelectionButtonTapped(OnValueSelectionButtonTapped);
+            card.PointerDown -= OnPointerDown;
+            card.PointerUp -= OnPointerUp;
+            
+            // CardValueSelectionView
+            card.DragStart -= _selectionView.OnDragStarted;
+            card.DragEnd -= _selectionView.OnDragEnded;
         }
         
         #region ITurnPlayerInput
@@ -233,20 +252,35 @@ namespace Cardevil.Cards.InStage.Presenter
         
         #region Card Events
         
-        private void OnDragStarted()
+        private void OnDragStarted(Card card)
         {
-            _state.draggedCard = _state.activateCard;
             _state.activateCard = null;
+            _state.draggedCard = card;
+            _model.TryGetIndex(card, out _holding.originalIndex);
             
-            foreach (var card in _model.Hand) card.SetAnyCardDragged(true);
+            foreach (var handCard in _model.Hand) 
+                handCard.SetAnyCardDragged(true);
             UpdateUI();
         }
 
         private void OnDragEnded()
         {
-            _state.draggedCard = null;
+            if (_holding.isHolding)
+            {
+                if (_selectionView.IsInDropArea)
+                    return;
+                ReleaseHoldingCard(_holding.originalIndex);
+            }
             
-            foreach (var card in _model.Hand) card.SetAnyCardDragged(false);
+            EndDrag();
+        }
+        
+        private void EndDrag()
+        {
+            _state.draggedCard = null;
+            foreach (var handCard in _model.Hand) 
+                handCard.SetAnyCardDragged(false);
+            
             UpdateUI();
         }
         
@@ -281,13 +315,13 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             else return;
             
-            HandChanged?.Invoke();
+            _handChanged?.Invoke();
             UpdateUI();
         }
 
         #endregion
         
-        #region Swap
+        #region Swap/Hold
 
         private void DetectSwap()
         {
@@ -324,27 +358,67 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void Swap(int index)
         {
-            Card swapped = _model.GetHandCard(index);
             _model.TryGetIndex(_state.draggedCard, out int i);
             
             _model.Swap(_state.draggedCard, index);
-            HandChanged?.Invoke();
-            _view.SetCardToSlot(swapped, i);
-            _view.SetCardToSlot(_state.draggedCard, index);
+            _handChanged?.Invoke();
         }
-
-        #endregion
-
-        #region Slot
-
-        private void UpdateSlots()
+        
+        private int GetIndexByPosition(Card dragged)
         {
-            foreach (var card in _model.Hand)
+            var draggedX = dragged.transform.position.x;
+            
+            for (int i = 0; i < _model.Hand.Count - 1; i++)
             {
-                if (!_model.TryGetIndex(card, out var index)) continue;
-                _view.SetCardToSlot(card, index);
-            }          
+                if (draggedX < _model.Hand[i].transform.position.x)
+                    return i;
+                
+                if (_model.GetHandCard(i).transform.position.x < draggedX &&
+                    _model.GetHandCard(i + 1).transform.position.x > draggedX)
+                    return i + 1;
+            }
+
+            return _model.Hand.Count;
         }
+        
+        private void OnExitAreaWhileDragging()
+        {
+            if (_selectionView.IsDropped)
+                return;
+            
+            var card = _state.draggedCard;
+            if (!card)
+                return;
+            LogEx.Log("OnExitArea");
+
+            _holding.isHolding = true;
+            _model.Hold(card);
+            _view.HoldCardOutsideBar(card);
+            
+            _handChanged?.Invoke();
+        }
+
+        private void OnEnterAreaWhileHolding()
+        {
+            if (_selectionView.IsDropped)
+                return;
+            
+            var card = _state.draggedCard;
+            if (!card || !_holding.isHolding)
+                return;
+            LogEx.Log("OnEnterArea");
+            
+            var index = GetIndexByPosition(card);
+            ReleaseHoldingCard(index);
+        }
+
+        private void ReleaseHoldingCard(int index)
+        {
+            _model.EndHold(index);
+            _holding.isHolding = false;
+            _handChanged?.Invoke();
+        }
+
         #endregion
 
         #region Use/Draw/Discard
@@ -386,17 +460,13 @@ namespace Cardevil.Cards.InStage.Presenter
                 
                 UnwireCard(card);
                 _model.Discard(card);
-                HandChanged?.Invoke();
+                _handChanged?.Invoke();
                 card.DoDiscard();
-                
-                // slot 비활성화
-                _view.SetSlotActive(false, index, _model.Hand.Count);
                 
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
             
             _evaluationPresenter.ClearHandRankingText();
-            _view.AlignSlot();
         }
 
         private async UniTask DrawAsync()
@@ -408,11 +478,9 @@ namespace Cardevil.Cards.InStage.Presenter
             int indexFactor = _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
-                // 슬롯 활성화
-                var currentDeckCount = _model.Deck.Count;
                 var card = Spawn();
+                _handChanged?.Invoke();
                 
-                _view.SetSlotActive(true, indexFactor + i, _model.Hand.Count);
                 card.DoDraw();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }
@@ -445,14 +513,12 @@ namespace Cardevil.Cards.InStage.Presenter
             card.Init(cardData, _model);
 
             // 이벤트 구독
-            WireCard(card);
-            HandChanged += card.OnHandChanged;
-
             _model.Draw(card);
-            HandChanged?.Invoke();
-            DeckChanged?.Invoke();
+            WireCard(card);
+            
+            _handChanged?.Invoke();
+            _deckChanged?.Invoke();
             UpdateUI();
-            UpdateSlots();
 
             return card;
         }
@@ -462,17 +528,23 @@ namespace Cardevil.Cards.InStage.Presenter
         private void SortByNumber()
         {
             _model.SortByNumber();
-            HandChanged?.Invoke();
-            UpdateUI();
-            UpdateSlots();
+            _handChanged?.Invoke();
         }
 
         private void SortByIcon()
         {
             _model.SortByIcon();
-            HandChanged?.Invoke();
-            UpdateUI();
-            UpdateSlots();
+            _handChanged?.Invoke();
+        }
+        
+        private void AlignVisualIndex()
+        {
+            var hand = _model.Hand;
+            for (int i = 0; i < hand.Count; i++)
+            {
+                var card = hand[i];
+                card.UpdateVisualIndex(i);
+            }
         }
         
         // UI
@@ -524,11 +596,10 @@ namespace Cardevil.Cards.InStage.Presenter
                 // UpdateUI();
             }
         }
-
-        private void OnValueSelectionButtonTapped(Card card) => _selectionView.Toggle(card);
-
+        
         private void OnValueSelected(Card card, (int num, Direction dir) values)
         {
+            // 모델 데이터 변경
             var d = card.Data;
 
             bool error = d.Kind switch
@@ -540,8 +611,17 @@ namespace Cardevil.Cards.InStage.Presenter
             if (error)
                 LogEx.LogWarning($"잘못된 데이터를 선택했습니다! {d.Id} : {values.num} {values.dir}");
             
-            card.UpdateVisual();
-            UpdateUI();
+            ChangeCardAsync(card).Forget();
+        }
+
+        private async UniTaskVoid ChangeCardAsync(Card card)
+        {
+            await card.UpdateVisual();
+            
+            // 홀딩 카드 릴리즈
+            card.FadeChangeImage(true);
+            ReleaseHoldingCard(_holding.originalIndex);
+            EndDrag();
         }
     }
 }

@@ -29,6 +29,8 @@ namespace Cardevil.Cards.InStage.Model
 
         private int _discardRemain;
         
+        private (bool selected, Card card) _holding;
+        
         #region IReadOnlyStageCardsModel
         
         public int MaxHand { get; private set; }
@@ -139,6 +141,27 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         public Card GetHandCard(int index) => _hand[index];
+        
+        public void Hold(Card card)
+        {
+            bool selected = _selection.Contains(card);
+            _selection.Remove(card);
+            _hand.Remove(card);
+            
+            _holding = (selected, card);
+        }
+
+        public void EndHold(int index)
+        {
+            if (!_holding.card)
+                return;
+
+            _hand.Insert(index, _holding.card);
+            if (_holding.selected)
+                Select(_holding.card);
+            
+            _holding.card = null;
+        }
         
         /// <summary>
         /// 카드를 선택 집합에 추가.
