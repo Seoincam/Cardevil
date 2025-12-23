@@ -1194,6 +1194,46 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: isInitialized
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.RoomDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.RelicDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.MachineRewardList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.BaseMobBossDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.CustomClassTestList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.HandRankingDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.MachineProbabillityList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: <SpriteCache>k__BackingField._items.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: mcDatabase.RelicEffectOnEvaluationDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4839014720585370412, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
       propertyPath: m_Name
       value: '@Bootstrapper'
@@ -1202,6 +1242,10 @@ PrefabInstance:
       propertyPath: eventSystem
       value: 
       objectReference: {fileID: 1677023911}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: <GameFlow>k__BackingField.<Context>k__BackingField.stageId
+      value: 1.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

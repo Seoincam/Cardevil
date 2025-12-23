@@ -115,7 +115,7 @@ namespace Cardevil.InGame.Enemy
         
         public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
         {
-            LogEx.LogWarning("<b>대윤</b>: 공격 로직이 아직 완성되지 않았습니다.");
+            _enemyAttackInfo.attackSucess = false;
 
             
             var target = ctx.Player;
@@ -874,695 +874,682 @@ namespace Cardevil.InGame.Enemy
 
 
         /// <summary>
-        /// 가로세로줄 공격에 성공하면  true
-        /// </summary>
-        /// <param name="attack"></param>
-        /// <returns></returns>
-        public bool AttackGo(Attack attack)
-        {
-            switch (attack.currentAttackStyle)
+            /// 가로세로줄 공격에 성공하면  true
+            /// </summary>
+            /// <param name="attack"></param>
+            /// <returns></returns>
+            public bool AttackGo(Attack attack)
             {
-                case AttackStyle.HighCard:
-                    return (AttackHighCard(attack));
-                case AttackStyle.OnePair:
-                    return (AttackOnePare(attack));
-                case AttackStyle.TwoPair:
-                    return (AttackTwoPare(attack));
-                case AttackStyle.Triple:
-                    return (AttackTriple(attack));
-                case AttackStyle.Straight:
-                    return (AttackStraight(attack));
-                case AttackStyle.Flush:
-                    return (AttackPlush(attack));
-                case AttackStyle.FourCard:
-                    return (AttackFourCard(attack));
-                case AttackStyle.StraightFlush:
-                    return (AttackStraightPlush(attack));
-
-                default: break;
-            }
-
-            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
-            {
-                return (AttackHorizontal(attack.attackLineNumber));
-            }
-            else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
-            {
-                return (AttackVerical(attack.attackLineNumber));
-            }
-            else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
-            {
-                AttackPoint(attack.attackPointNumber_x, attack.attackPointNumber_y);
-            }
-            return false;
-        }
-        void AttackEnemyTurnEnd(IReadOnlyTurnContext ctx)
-        {
-            List<Attack> tmpAttacks = new List<Attack>();
-            int count = 0;
-            foreach (Attack attack in attackLists)
-            {
-                if (attack.attackTurnOrder == 0) // 이미 공격을 했다면
+                switch (attack.currentAttackStyle)
                 {
-                    // 새로운 공격 패턴 지정, 어택사이클 지정
-                    RemoveHighLight(attack);
-                    count++;
+                    case AttackStyle.HighCard:
+                        return (AttackHighCard(attack));
+                    case AttackStyle.OnePair:
+                        return (AttackOnePare(attack));
+                    case AttackStyle.TwoPair:
+                        return (AttackTwoPare(attack));
+                    case AttackStyle.Triple:
+                        return (AttackTriple(attack));
+                    case AttackStyle.Straight:
+                        return (AttackStraight(attack));
+                    case AttackStyle.Flush:
+                        return (AttackPlush(attack));
+                    case AttackStyle.FourCard:
+                        return (AttackFourCard(attack));
+                    case AttackStyle.StraightFlush:
+                        return (AttackStraightPlush(attack));
+
+                    default: break;
+                }
+
+                if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 어택 타입에 따라 행동
+                {
+                    return (AttackHorizontal(attack.attackLineNumber));
+                }
+                else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
+                {
+                    return (AttackVerical(attack.attackLineNumber));
+                }
+                else if (attack.currentAttackStyle == AttackStyle.AttackPoint)
+                {
+                    AttackPoint(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                }
+                return false;
+            }
+            void AttackEnemyTurnEnd(IReadOnlyTurnContext ctx)
+            {
+                List<Attack> tmpAttacks = new List<Attack>();
+                int count = 0;
+                foreach (Attack attack in attackLists)
+                {
+                    if (attack.attackTurnOrder == 0) // 이미 공격을 했다면
+                    {
+                        // 새로운 공격 패턴 지정, 어택사이클 지정
+                        RemoveHighLight(attack);
+                        count++;
+                    }
+                    else
+                    {
+                        tmpAttacks.Add(attack); // 공격을 진행하지 않은 Attack만 저장
+                    }
+                }
+         
+
+                attackLists = tmpAttacks; // 어택리스트 재조정
+
+                for (int i = 0; i < count; i++) // 지워진 어택 갯수만큼 새로 생성
+                {
+                    LogEx.Log("지워진 Attack 만큼 새로 생성");
+                    CreateAttack(ctx);
+                }
+
+                if (orderSettingGo == true)
+                {
+                    SetAllAttackOrderGo();
+                }
+
+
+
+                // 어택의 방식이 단일 공격이라면  콤보라면, 이 지정이 아니라 특별하게 나오는 순서같은게 지정될 수 있다.
+
+                // 플레이어 턴으로 넘기기
+            }
+
+
+            /// <summary>
+            /// true 라면 Player 위치를 받아와서 공격
+            /// </summary>
+            /// <param name="setPlayerAttack"></param>
+            virtual public void SetAttack(Attack attack, bool setPlayerAttack = false)
+            {
+                LogEx.Log(setPlayerAttack);
+
+                // 수정: 원래 있던 조기 return을 제거하고 attack.currentAttackStyle 에 맞게 세팅 함수 호출
+                // (원본의 의도에 맞춰 각 SettingAttack*를 호출하도록 함)
+
+                // set whether attack uses player location or random
+                attack.isPlayerAttack = setPlayerAttack;
+
+                switch (attack.currentAttackStyle)
+                {
+
+                    case AttackStyle.HighCard:
+                        SettingAttackHighCard(attack);
+                        break;
+                    case AttackStyle.OnePair:
+                        SettingAttackOnePare(attack);
+                        break;
+                    case AttackStyle.TwoPair:
+                        SettingAttackTwoPare(attack);
+                        break;
+                    case AttackStyle.Triple:
+                        SettingAttackTriple(attack);
+                        break;
+                    case AttackStyle.Straight:
+                        SettingAttackStraight(attack);
+                        break;
+                    case AttackStyle.Flush:
+                        SettingAttackPlush(attack);
+                        break;
+                    case AttackStyle.FourCard:
+                        SettingAttackFourCard(attack);
+                        break;
+                    case AttackStyle.StraightFlush:
+                        SettingAttackStraightPlush(attack);
+                        break;
+                    default:
+                        // fallback to highcard
+                        SettingAttackHighCard(attack);
+                        break;
+                }
+            }
+            /// <summary>
+            /// 플레이어위치로 공격설정
+            /// </summary>
+            /// <param name="attack"></param>
+            public void SetPlayerAttack(Attack attack)
+            {
+                LogEx.Log("SetPlayerAttack!");
+                // 현재 가로공격인지 세로공격인지 확인
+                if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
+                {
+
+                    //플레이어의 가로 위치
+                    attack.attackLineNumber = attack.turnCtx.PlayerPosition.x;
+                    //공격위치표시
+                    AttackNoticeSign_Horizontal(attack.attackLineNumber);
+
+                }
+                else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
+                {
+                    //플레이어의 세로 위치
+                    attack.attackLineNumber = attack.turnCtx.PlayerPosition.y;
+                    //공격위치표시
+                    AttackNoticeSign_Vertical(attack.attackLineNumber);
+                }
+
+            }
+
+     
+            AttackStyle SetAttackType()
+            {
+                currentAttackStyle = GetRandomAttackStyle(); // 랜덤으로 어택스타일 받기;
+                return currentAttackStyle;
+            }
+
+            int nowAttackPatternIndex = 0;
+            AttackStyle GetRandomAttackStyle() // 랜덤으로 어택스타일 받기
+            {
+                Array values = Enum.GetValues(typeof(AttackStyle));
+                AttackStyle returnAttackStyle = baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
+                // 기믹으로 강화된 어택이 존재한다면
+                returnAttackStyle += enforcedAttackRanking;
+                return returnAttackStyle;
+                // return (isPlayerAttack) ? (AttackStyle)values.GetValue(UnityEngine.Random.Range(2, values.Length)) : (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
+                // 랜덤값 다르게받기
+            }
+
+            #region HighLight관련
+            public void RemoveHighLight(Attack attack)
+            {
+                if (attack == null) return;
+
+                switch (attack.currentAttackStyle)
+                {
+                    case AttackStyle.AttackHorizontal:
+                        RemoveHighLight_Horizontal(attack.attackLineNumber);
+                        break;
+
+                    case AttackStyle.AttackVertical:
+                        RemoveHighLight_Vertical(attack.attackLineNumber);
+                        break;
+
+                    case AttackStyle.AttackPoint:
+                    case AttackStyle.HighCard:
+                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        break;
+
+                    case AttackStyle.OnePair:
+                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        if (attack.attackPointNumberExtra_x != null && attack.attackPointNumberExtra_x.Length > 0)
+                            RemoveHighLight_Point(attack.attackPointNumberExtra_x[0], attack.attackPointNumberExtra_y[0]);
+                        break;
+
+                    case AttackStyle.TwoPair:
+                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        if (attack.attackPointNumberExtra_x != null)
+                        {
+                            for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
+                                RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        }
+                        break;
+
+                    case AttackStyle.Triple:
+                        if (attack.currentAttackStyle == AttackStyle.AttackHorizontal)
+                            RemoveHighLight_Horizontal(attack.attackLineNumber);
+                        else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
+                            RemoveHighLight_Vertical(attack.attackLineNumber);
+                        else
+                            RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        break;
+
+                    case AttackStyle.Straight:
+                        if (attack.currentAttackStyle == AttackStyle.AttackHorizontal)
+                            RemoveHighLight_Horizontal(attack.attackLineNumber);
+                        else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
+                            RemoveHighLight_Vertical(attack.attackLineNumber);
+                        else
+                            RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+
+                        if (attack.attackPointNumberExtra_x != null)
+                        {
+                            for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
+                                RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        }
+                        break;
+
+                    case AttackStyle.Flush:
+                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        if (attack.attackPointNumberExtra_x != null)
+                        {
+                            for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
+                                RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        }
+                        break;
+
+                    case AttackStyle.FourCard:
+                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        if (attack.attackPointNumberExtra_x != null)
+                        {
+                            for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
+                                RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        }
+                        break;
+
+                    case AttackStyle.StraightFlush:
+                        // 세팅 시 저장한 excludedCornerIndex를 참조해 그 칸만 스킵하고 나머지 타일의 하이라이트를 끔
+                        List<(int x, int y)> cornersSP = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
+                        if (attack.excludedCornerIndex >= 0 && attack.excludedCornerIndex < cornersSP.Count)
+                        {
+                            var excludedCorner = cornersSP[attack.excludedCornerIndex];
+                            int excludedX = excludedCorner.x;
+                            int excludedY = excludedCorner.y;
+
+                            for (int x = 0; x < 3; x++)
+                            {
+                                for (int y = 0; y < 3; y++)
+                                {
+                                    if (x == excludedX && y == excludedY) continue;
+                                    field[x][y].Unhightlight(Define.HighlightType.DefaultAttack);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // 안전장치: 만약 저장값이 없다면 전체 해제
+                            for (int x = 0; x < 3; x++)
+                                for (int y = 0; y < 3; y++)
+                                    field[x][y].Unhightlight(Define.HighlightType.DefaultAttack);
+                        }
+                        break;
+
+                    default:
+                        // 안전하게 메인 포인트 + extras 해제
+                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
+                        if (attack.attackPointNumberExtra_x != null)
+                        {
+                            for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
+                                RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        }
+                        break;
+                }
+            }
+
+            public void RemoveHighLight_Horizontal(int lineNumber)
+            {
+                for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
+                {
+                    field[lineNumber][x].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
+                }
+            }
+
+            public void RemoveHighLight_Vertical(int lineNumber)
+            {
+                for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
+                {
+                    field[x][lineNumber].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
+                }
+            }
+            void RemoveHighLight_Point(int pointNumber_x, int pointNumber_y)
+            {
+                if (IsValidPoint(pointNumber_x, pointNumber_y))
+                    field[pointNumber_x][pointNumber_y].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일 하이라이트 off
+            }
+            public void AttackNoticeSign_Point(int pointNumber_x, int pointNumber_y)
+            {
+                if (IsValidPoint(pointNumber_x, pointNumber_y))
+                {
+                    field[pointNumber_x][pointNumber_y].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
+                    currentAttackStyle = AttackStyle.AttackPoint; // 포인트 어택 형태로 저장
+                }
+            }
+
+            public void AttackNoticeSign_Vertical(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
+            {
+
+                for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
+                {
+                    field[x][lineNumber].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
+                }
+                currentAttackStyle = AttackStyle.AttackVertical; // 포인트 어택 형태로 저장
+            }
+
+            public void AttackNoticeSign_Horizontal(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
+            {
+                for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
+                {
+                    field[lineNumber][x].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
+                }
+                currentAttackStyle = AttackStyle.AttackHorizontal; // 포인트 어택 형태로 저장
+            }
+
+
+            #endregion
+
+            // 실질적인 공격 후 데미지 주기
+            void AttackPoint(int pointNumber_x, int poinNumber_y)
+            {
+                LogEx.LogError("AttackPoint 미구현.");
+                if (!IsValidPoint(pointNumber_x, poinNumber_y)) return;
+            
+                 List<Entity> entities =
+                 field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+            
+                // //Entity중 Player가 있다면
+                 foreach (Entity entity in entities)
+                 {
+                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                     {
+                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                         if (player is ITurnPlayer action)
+                         {
+                            _enemyAttackInfo.attackSucess = true;
+                        }
+                     }
+                 }
+
+            }
+
+            bool AttackVerical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
+            {
+                // pointNuber가 이상하다.
+                bool successAttack = false;
+                // 가로는 0,1,2 모두
+                for (int x = 0; x < 3; x++)
+                {
+                    LogEx.LogError("Attack Vertical 미구현");
+                
+                    List<Entity> entities =
+                       field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+                
+                    //Entity중 Player가 있다면
+                     foreach (Entity entity in entities)
+                     {
+                         if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                         {
+                             // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                             if (player is ITurnPlayer action)
+                             {
+                                _enemyAttackInfo.attackSucess = true;
+                                successAttack = true;
+                             }
+                         }
+                     }
+
+                }
+
+                return successAttack;
+            }
+
+
+            bool AttackHorizontal(int pointNumber) // 가로 공격 왼쪽부터 pointNumber 0,1,2
+            {
+                bool successAttack = false;
+                // 가로는 0,1,2 모두
+                for (int x = 0; x < 3; x++)
+                {
+                     List<Entity> entities =
+                    field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
+            
+                     //Entity중 Player가 있다면
+                     foreach (Entity entity in entities)
+                     {
+                         if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
+                         {
+                             // PlayerCharacter가 ITurnPlayerAction을 구현중임.
+                             if (player is ITurnPlayer action)
+                             {
+                                _enemyAttackInfo.attackSucess = true;
+                                 successAttack = true;
+                             }
+                         }
+                     }
+            
+                 }
+            
+                LogEx.LogError("Attack Horizontal 미구현.");
+                return successAttack;
+            }
+            #endregion
+
+
+            #region Player 상호작용 
+            public virtual bool GetDamage(float damage)
+            {
+                CurrentHp = HP - damage;
+                LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
+                UpdateHPBar();
+                if (CurrentHp <= 0)
+                {
+                    // 유닛 사망
+                    isEnemyDead = true;
+                    return true; // 사망시 true 변환 
+                }
+
+                return false; // 아직 살아있다
+            }
+
+            public bool IsDead
+            {
+                get { return isEnemyDead; }
+            }
+
+            public void TakeDamage(int amount)
+            {
+                GetDamage(amount);
+            }
+
+            #endregion
+
+            #region Tool 관련
+
+            private void EnemyTurnClear()
+            {
+                isAttackSuccess = false;
+                orderSettingGo = false;
+                settingOrder = attackCreateCycle;
+            }
+            private void UpdateHPBar()
+            {
+                if (hpBar != null)
+                {
+                    // 현재 HP 값을 0과 1 사이의 값으로 정규화하여 Slider에 반영합니다.
+                    hpBar.value = HP / maxHP;
+                }
+            }
+
+            public void SetAllAttackOrder(int i)
+            {
+                orderSettingGo = true;
+                settingOrder = i;
+            }
+
+            public void SetAllAttackOrderGo()
+            {
+                int i = settingOrder;
+                foreach (Attack attack in attackLists)
+                {
+                    if (i <= attack.attackTurnOrder)
+                    {
+                        attack.attackTurnOrder = i;
+                        LogEx.Log($"attackTurnOrder이 {i}로 조정되었습니다.");
+                    }
+                    else
+                    {
+                        LogEx.Log($"공격 턴오더 {i}가 현재 공격 턴 오더 {attack.attackTurnOrder} 보다 커서 조정되지않았습니다");
+                    }
+                }
+            }
+
+            public void AttackOrderDiscount()
+            {
+                foreach (Attack attack in attackLists)
+                {
+                    if (attack.attackTurnOrder <= 0)
+                    {
+                        attack.attackTurnOrder--;
+                        LogEx.Log("공격턴 추가 감소!");
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Player위치로 공격하게끔
+            /// </summary>
+            public void SetAttackOnPlayer()
+            {
+                isPlayerAttack = true;
+            }
+
+            /// <summary>
+            /// true or false 랜덤 설정
+            /// </summary>
+            public void SetAttackOnPlayerOrRandom()
+            {
+                isPlayerAttack = (UnityEngine.Random.value > 0.5f);
+            }
+
+            public void SetFirstAwake()
+            {
+                aWakeFirst = true;
+            }
+
+            public void TurnClear()
+            {
+                isAttakced = false;
+            }
+            public void IsAttacked(int amount)
+            {
+                isAttakced = true;
+                GetDamage(amount);
+            }
+
+            /// <summary>
+            /// Helper: check bounds inside 3x3 field
+            /// </summary>
+            private bool IsValidPoint(int x, int y)
+            {
+                return (x >= 0 && x < 3 && y >= 0 && y < 3);
+            }
+
+            #endregion
+
+            #region EnemySpawner 세팅
+
+            public float CurrentHp
+            {
+                get => HP;
+                set
+                {
+                    using (EnemyHealthChangeArgs args = EnemyHealthChangeArgs.Get())
+                    {
+                        args.Init(HP, value,this);
+                        ExecEventBus<EnemyHealthChangeArgs>.InvokeMerged(args).Forget();
+                        HP = args.ModifiedHealth;
+                    }
+                }
+            }
+            /// <summary>
+            /// Enemy 세팅 시작
+            /// </summary>
+            /// <param name="_baseMobBossData"></param>
+            public void Setup(BaseMobBossData _baseMobBossData)
+            {
+                baseMobBossData = _baseMobBossData;
+                Debug.Log($"SetUp! : {baseMobBossData.MobKorID} : {_baseMobBossData.MobID}");
+
+                if (baseMobBossData.BoolAttackType) // 1 이라면
+                {
+                    attackCreateCycle = _baseMobBossData.AttackCycle;
                 }
                 else
                 {
-                    tmpAttacks.Add(attack); // 공격을 진행하지 않은 Attack만 저장
+                    SetPatternRandomBaseWeight();
                 }
-            }
-         
+                isPlayerAttack = baseMobBossData.AttackPlayer;
 
-            attackLists = tmpAttacks; // 어택리스트 재조정
+                //HP 설정
+                maxHP = _baseMobBossData.BaseHP;
+                CurrentHp = maxHP;
 
-            for (int i = 0; i < count; i++) // 지워진 어택 갯수만큼 새로 생성
-            {
-                LogEx.Log("지워진 Attack 만큼 새로 생성");
-                CreateAttack(ctx);
-            }
-
-            if (orderSettingGo == true)
-            {
-                SetAllAttackOrderGo();
-            }
-
-
-
-            // 어택의 방식이 단일 공격이라면  콤보라면, 이 지정이 아니라 특별하게 나오는 순서같은게 지정될 수 있다.
-
-            // 플레이어 턴으로 넘기기
-        }
-
-
-        void SetAttackLine() // 어느 라인에 공격할건지 정하기
-        {
-
-        }
-
-        /// <summary>
-        /// true 라면 Player 위치를 받아와서 공격
-        /// </summary>
-        /// <param name="setPlayerAttack"></param>
-        virtual public void SetAttack(Attack attack, bool setPlayerAttack = false)
-        {
-            LogEx.Log(setPlayerAttack);
-
-            // 수정: 원래 있던 조기 return을 제거하고 attack.currentAttackStyle 에 맞게 세팅 함수 호출
-            // (원본의 의도에 맞춰 각 SettingAttack*를 호출하도록 함)
-
-            // set whether attack uses player location or random
-            attack.isPlayerAttack = setPlayerAttack;
-
-            switch (attack.currentAttackStyle)
-            {
-
-                case AttackStyle.HighCard:
-                    SettingAttackHighCard(attack);
-                    break;
-                case AttackStyle.OnePair:
-                    SettingAttackOnePare(attack);
-                    break;
-                case AttackStyle.TwoPair:
-                    SettingAttackTwoPare(attack);
-                    break;
-                case AttackStyle.Triple:
-                    SettingAttackTriple(attack);
-                    break;
-                case AttackStyle.Straight:
-                    SettingAttackStraight(attack);
-                    break;
-                case AttackStyle.Flush:
-                    SettingAttackPlush(attack);
-                    break;
-                case AttackStyle.FourCard:
-                    SettingAttackFourCard(attack);
-                    break;
-                case AttackStyle.StraightFlush:
-                    SettingAttackStraightPlush(attack);
-                    break;
-                default:
-                    // fallback to highcard
-                    SettingAttackHighCard(attack);
-                    break;
-            }
-        }
-        /// <summary>
-        /// 플레이어위치로 공격설정
-        /// </summary>
-        /// <param name="attack"></param>
-        public void SetPlayerAttack(Attack attack)
-        {
-            LogEx.Log("SetPlayerAttack!");
-            // 현재 가로공격인지 세로공격인지 확인
-            if (attack.currentAttackStyle == AttackStyle.AttackHorizontal) // 가로공격
-            {
-
-                //플레이어의 가로 위치
-                attack.attackLineNumber = attack.turnCtx.PlayerPosition.x;
-                //공격위치표시
-                AttackNoticeSign_Horizontal(attack.attackLineNumber);
+                SettingGimmick(_baseMobBossData);
 
             }
-            else if (attack.currentAttackStyle == AttackStyle.AttackVertical) // 세로공격
+            
+            private void SettingGimmick(BaseMobBossData baseMobBossData)
             {
-                //플레이어의 세로 위치
-                attack.attackLineNumber = attack.turnCtx.PlayerPosition.y;
-                //공격위치표시
-                AttackNoticeSign_Vertical(attack.attackLineNumber);
+                // TODO : 여러개 기믹이 존재하는 몹이 있으면 [0]을 수정해야함.
+
+                char trimText = '"';
+                IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
+                igimmick.Apply(this);
             }
-
-        }
-
-        /// <summary>
-        /// 랜덤위치로 공격 설정
-        /// </summary>
-        /// <returns></returns>
-        void SetRandomAttack(Attack attack)
-        {
-            LogEx.Log("SetRandomAttack!");
-            attack.attackLineNumber = UnityEngine.Random.Range(0, 3); // 랜덤으로 위치 지정 (0..2)
-        }
-        AttackStyle SetAttackType()
-        {
-            currentAttackStyle = GetRandomAttackStyle(); // 랜덤으로 어택스타일 받기;
-            return currentAttackStyle;
-        }
-
-        int nowAttackPatternIndex = 0;
-        AttackStyle GetRandomAttackStyle() // 랜덤으로 어택스타일 받기
-        {
-            Array values = Enum.GetValues(typeof(AttackStyle));
-            AttackStyle returnAttackStyle = baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
-            // 기믹으로 강화된 어택이 존재한다면
-            returnAttackStyle += enforcedAttackRanking;
-            return returnAttackStyle;
-            // return (isPlayerAttack) ? (AttackStyle)values.GetValue(UnityEngine.Random.Range(2, values.Length)) : (AttackStyle)values.GetValue(UnityEngine.Random.Range(1, values.Length));
-            // 랜덤값 다르게받기
-        }
-
-        #region HighLight관련
-        public void RemoveHighLight(Attack attack)
-        {
-            if (attack == null) return;
-
-            switch (attack.currentAttackStyle)
+            private void SetPatternRandomBaseWeight()
             {
-                case AttackStyle.AttackHorizontal:
-                    RemoveHighLight_Horizontal(attack.attackLineNumber);
-                    break;
+                List<int> weights = baseMobBossData.AttackWeight;
 
-                case AttackStyle.AttackVertical:
-                    RemoveHighLight_Vertical(attack.attackLineNumber);
-                    break;
+                List<AttackStyle> originalPatterns = baseMobBossData.AttackPattern;
 
-                case AttackStyle.AttackPoint:
-                case AttackStyle.HighCard:
-                    RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    break;
+                Debug.Log("11");
+                // 1. 유효성 검사
+                if (weights == null || originalPatterns == null || weights.Count == 0 || weights.Count != originalPatterns.Count)
+                {
+                    Debug.LogError("Enemy Setup: AttackWeight or AttackPattern data is invalid or mismatched.");
+                    return;
+                }
 
-                case AttackStyle.OnePair:
-                    RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    if (attack.attackPointNumberExtra_x != null && attack.attackPointNumberExtra_x.Length > 0)
-                        RemoveHighLight_Point(attack.attackPointNumberExtra_x[0], attack.attackPointNumberExtra_y[0]);
-                    break;
-
-                case AttackStyle.TwoPair:
-                    RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    if (attack.attackPointNumberExtra_x != null)
+                    // int totalWeight = weights.Sum(); // Linq 사용 시
+                    int totalWeight = 0;
+                    foreach (int w in weights)
                     {
-                        for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
-                            RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        totalWeight += w;
                     }
-                    break;
 
-                case AttackStyle.Triple:
-                    if (attack.currentAttackStyle == AttackStyle.AttackHorizontal)
-                        RemoveHighLight_Horizontal(attack.attackLineNumber);
-                    else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
-                        RemoveHighLight_Vertical(attack.attackLineNumber);
-                    else
-                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    break;
-
-                case AttackStyle.Straight:
-                    if (attack.currentAttackStyle == AttackStyle.AttackHorizontal)
-                        RemoveHighLight_Horizontal(attack.attackLineNumber);
-                    else if (attack.currentAttackStyle == AttackStyle.AttackVertical)
-                        RemoveHighLight_Vertical(attack.attackLineNumber);
-                    else
-                        RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-
-                    if (attack.attackPointNumberExtra_x != null)
+                    // 총 가중치가 0 이하면 로직 실행 불가
+                    if (totalWeight <= 0)
                     {
-                        for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
-                            RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
+                        Debug.LogError("Enemy Setup: Total weight is 0. Cannot generate weighted pattern.");
+                        return;
                     }
-                    break;
+               
 
-                case AttackStyle.Flush:
-                    RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    if (attack.attackPointNumberExtra_x != null)
+                    // 15개의 새로운 패턴을 저장할 리스트 생성
+                    // (만약 originalPatterns가 List<string>이면 여기도 List<string>으로 변경)
+                    List<AttackStyle> newGeneratedPattern = new List<AttackStyle>(15);
+
+                    // 15번 반복하여 패턴 생성
+                    for (int i = 0; i < 15; i++)
                     {
-                        for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
-                            RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
-                    }
-                    break;
+                        // 0 ~ (totalWeight - 1) 사이의 랜덤 값 생성
+                        int randomValue = UnityEngine.Random.Range(0, totalWeight);
 
-                case AttackStyle.FourCard:
-                    RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    if (attack.attackPointNumberExtra_x != null)
-                    {
-                        for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
-                            RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
-                    }
-                    break;
-
-                case AttackStyle.StraightFlush:
-                    // 세팅 시 저장한 excludedCornerIndex를 참조해 그 칸만 스킵하고 나머지 타일의 하이라이트를 끔
-                    List<(int x, int y)> cornersSP = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
-                    if (attack.excludedCornerIndex >= 0 && attack.excludedCornerIndex < cornersSP.Count)
-                    {
-                        var excludedCorner = cornersSP[attack.excludedCornerIndex];
-                        int excludedX = excludedCorner.x;
-                        int excludedY = excludedCorner.y;
-
-                        for (int x = 0; x < 3; x++)
+                        int currentWeightSum = 0;
+                        // 5. 가중치 리스트를 순회하며 랜덤 값이 어느 구간에 속하는지 확인
+                        for (int j = 0; j < weights.Count; j++)
                         {
-                            for (int y = 0; y < 3; y++)
+                            currentWeightSum += weights[j];
+
+                            // 6. 랜덤 값이 현재 가중치 누적 합보다 작으면, 이 패턴(j)을 선택
+                            // 예: weight[5, 2, 3], total=10
+                            // randomValue=0~4 (5개) -> j=0 선택
+                            // randomValue=5~6 (2개) -> j=1 선택
+                            // randomValue=7~9 (3개) -> j=2 선택
+                            if (randomValue < currentWeightSum)
                             {
-                                if (x == excludedX && y == excludedY) continue;
-                                field[x][y].Unhightlight(Define.HighlightType.DefaultAttack);
+                                // 해당 인덱스(j)의 "원본 패턴"을 새 리스트에 추가
+                                newGeneratedPattern.Add(originalPatterns[j]);
+
+                                // 이(i) 번째 패턴을 찾았으므로 j루프 탈출
+                                break;
                             }
                         }
                     }
-                    else
+
+                    // 7. "baseMobBossData에 저장"
+                    // -> 생성된 15개의 패턴 리스트로 기존 AttackPattern 리스트를 덮어씁니다.
+                    baseMobBossData.AttackPattern = newGeneratedPattern;
+
+
+                    Debug.Log("여기 진입 완료");
+                    for(int x=0;x<15;x++)
                     {
-                        // 안전장치: 만약 저장값이 없다면 전체 해제
-                        for (int x = 0; x < 3; x++)
-                            for (int y = 0; y < 3; y++)
-                                field[x][y].Unhightlight(Define.HighlightType.DefaultAttack);
+                        Debug.Log($"패턴 리스트 : {baseMobBossData.AttackPattern[x]}");
                     }
-                    break;
-
-                default:
-                    // 안전하게 메인 포인트 + extras 해제
-                    RemoveHighLight_Point(attack.attackPointNumber_x, attack.attackPointNumber_y);
-                    if (attack.attackPointNumberExtra_x != null)
-                    {
-                        for (int i = 0; i < attack.attackPointNumberExtra_x.Length; i++)
-                            RemoveHighLight_Point(attack.attackPointNumberExtra_x[i], attack.attackPointNumberExtra_y[i]);
-                    }
-                    break;
-            }
-        }
-
-        public void RemoveHighLight_Horizontal(int lineNumber)
-        {
-            for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
-            {
-                field[lineNumber][x].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
-            }
-        }
-
-        public void RemoveHighLight_Vertical(int lineNumber)
-        {
-            for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
-            {
-                field[x][lineNumber].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
-            }
-        }
-        void RemoveHighLight_Point(int pointNumber_x, int pointNumber_y)
-        {
-            if (IsValidPoint(pointNumber_x, pointNumber_y))
-                field[pointNumber_x][pointNumber_y].Unhightlight(Define.HighlightType.DefaultAttack); // 해당 타일 하이라이트 off
-        }
-        public void AttackNoticeSign_Point(int pointNumber_x, int pointNumber_y)
-        {
-            if (IsValidPoint(pointNumber_x, pointNumber_y))
-            {
-                field[pointNumber_x][pointNumber_y].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
-                currentAttackStyle = AttackStyle.AttackPoint; // 포인트 어택 형태로 저장
-            }
-        }
-
-        public void AttackNoticeSign_Vertical(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
-        {
-
-            for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
-            {
-                field[x][lineNumber].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
-            }
-            currentAttackStyle = AttackStyle.AttackVertical; // 포인트 어택 형태로 저장
-        }
-
-        public void AttackNoticeSign_Horizontal(int lineNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
-        {
-            for (int x = 0; x < 3; x++) // 가로 0,1,2 에대해
-            {
-                field[lineNumber][x].Highlight(Define.HighlightType.DefaultAttack); // 해당 타일을 하이라이트하기.
-            }
-            currentAttackStyle = AttackStyle.AttackHorizontal; // 포인트 어택 형태로 저장
-        }
-
-
-        #endregion
-
-        // 실질적인 공격 후 데미지 주기
-        void AttackPoint(int pointNumber_x, int poinNumber_y)
-        {
-            LogEx.LogError("AttackPoint 미구현.");
-            if (!IsValidPoint(pointNumber_x, poinNumber_y)) return;
-            
-             List<Entity> entities =
-             field[pointNumber_x][poinNumber_y].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-            
-            // //Entity중 Player가 있다면
-             foreach (Entity entity in entities)
-             {
-                 if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                 {
-                     // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                     if (player is ITurnPlayer action)
-                     {
-                        _enemyAttackInfo.attackSucess = true;
-                    }
-                 }
-             }
-
-        }
-
-        bool AttackVerical(int pointNumber) // 세로 공격 왼쪽부터 pointNumber 0,1,2
-        {
-            // pointNuber가 이상하다.
-            bool successAttack = false;
-            // 가로는 0,1,2 모두
-            for (int x = 0; x < 3; x++)
-            {
-                LogEx.LogError("Attack Vertical 미구현");
-                
-                List<Entity> entities =
-                   field[x][pointNumber].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-                
-                //Entity중 Player가 있다면
-                 foreach (Entity entity in entities)
-                 {
-                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                     {
-                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                         if (player is ITurnPlayer action)
-                         {
-                            _enemyAttackInfo.attackSucess = true;
-                            successAttack = true;
-                         }
-                     }
-                 }
-
-            }
-
-            return successAttack;
-        }
-
-
-        bool AttackHorizontal(int pointNumber) // 가로 공격 왼쪽부터 pointNumber 0,1,2
-        {
-            bool successAttack = false;
-            // 가로는 0,1,2 모두
-            for (int x = 0; x < 3; x++)
-            {
-                 List<Entity> entities =
-                field[pointNumber][x].GetEntities(); // 찾아보는 타일에 있는 Entity 받아오기
-            
-                 //Entity중 Player가 있다면
-                 foreach (Entity entity in entities)
-                 {
-                     if (entity.TryGetComponent<PlayerCharacter>(out var player)) // 존재하는걸 확인했다면
-                     {
-                         // PlayerCharacter가 ITurnPlayerAction을 구현중임.
-                         if (player is ITurnPlayer action)
-                         {
-                            _enemyAttackInfo.attackSucess = true;
-                             successAttack = true;
-                         }
-                     }
-                 }
-            
-             }
-            
-            LogEx.LogError("Attack Horizontal 미구현.");
-            return successAttack;
-        }
-        #endregion
-
-
-        #region Player 상호작용 
-        public virtual bool GetDamage(float damage)
-        {
-            CurrentHp = HP - damage;
-            LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
-            UpdateHPBar();
-            if (CurrentHp <= 0)
-            {
-                // 유닛 사망
-                isEnemyDead = true;
-                return true; // 사망시 true 변환 
-            }
-
-            return false; // 아직 살아있다
-        }
-
-        public bool IsDead
-        {
-            get { return isEnemyDead; }
-        }
-
-        public void TakeDamage(int amount)
-        {
-            GetDamage(amount);
-        }
-
-        #endregion
-
-        #region Tool 관련
-
-        private void EnemyTurnClear()
-        {
-            isAttackSuccess = false;
-            orderSettingGo = false;
-            settingOrder = attackCreateCycle;
-        }
-        private void UpdateHPBar()
-        {
-            if (hpBar != null)
-            {
-                // 현재 HP 값을 0과 1 사이의 값으로 정규화하여 Slider에 반영합니다.
-                hpBar.value = HP / maxHP;
-            }
-        }
-
-        public void SetAllAttackOrder(int i)
-        {
-            orderSettingGo = true;
-            settingOrder = i;
-        }
-
-        public void SetAllAttackOrderGo()
-        {
-            int i = settingOrder;
-            foreach (Attack attack in attackLists)
-            {
-                if (i <= attack.attackTurnOrder)
-                {
-                    attack.attackTurnOrder = i;
-                    LogEx.Log($"attackTurnOrder이 {i}로 조정되었습니다.");
+                    // --- 구현 종료 ---
                 }
-                else
-                {
-                    LogEx.Log($"공격 턴오더 {i}가 현재 공격 턴 오더 {attack.attackTurnOrder} 보다 커서 조정되지않았습니다");
-                }
-            }
-        }
-
-        public void AttackOrderDiscount()
-        {
-            foreach (Attack attack in attackLists)
-            {
-                if (attack.attackTurnOrder <= 0)
-                {
-                    attack.attackTurnOrder--;
-                    LogEx.Log("공격턴 추가 감소!");
-                }
-            }
-        }
-
-        /// <summary>
-        /// Player위치로 공격하게끔
-        /// </summary>
-        public void SetAttackOnPlayer()
-        {
-            isPlayerAttack = true;
-        }
-
-        /// <summary>
-        /// true or false 랜덤 설정
-        /// </summary>
-        public void SetAttackOnPlayerOrRandom()
-        {
-            isPlayerAttack = (UnityEngine.Random.value > 0.5f);
-        }
-
-        public void SetFirstAwake()
-        {
-            aWakeFirst = true;
-        }
-
-        public void TurnClear()
-        {
-            isAttakced = false;
-        }
-        public void IsAttacked(int amount)
-        {
-            isAttakced = true;
-            GetDamage(amount);
-        }
-
-        /// <summary>
-        /// Helper: check bounds inside 3x3 field
-        /// </summary>
-        private bool IsValidPoint(int x, int y)
-        {
-            return (x >= 0 && x < 3 && y >= 0 && y < 3);
-        }
-
-        #endregion
-
-        #region EnemySpawner 세팅
-
-        public float CurrentHp
-        {
-            get => HP;
-            set
-            {
-                using (EnemyHealthChangeArgs args = EnemyHealthChangeArgs.Get())
-                {
-                    args.Init(HP, value,this);
-                    ExecEventBus<EnemyHealthChangeArgs>.InvokeMerged(args).Forget();
-                    HP = args.ModifiedHealth;
-                }
-            }
-        }
-        /// <summary>
-        /// Enemy 세팅 시작
-        /// </summary>
-        /// <param name="_baseMobBossData"></param>
-        public void Setup(BaseMobBossData _baseMobBossData)
-        {
-            baseMobBossData = _baseMobBossData;
-            Debug.Log($"SetUp! : {baseMobBossData.MobKorID} : {_baseMobBossData.MobID}");
-
-            if (baseMobBossData.BoolAttackType) // 1 이라면
-            {
-                attackCreateCycle = _baseMobBossData.AttackCycle;
-            }
-            else
-            {
-                SetPatternRandomBaseWeight();
-            }
-            isPlayerAttack = baseMobBossData.AttackPlayer;
-
-            //HP 설정
-            maxHP = _baseMobBossData.BaseHP;
-            CurrentHp = maxHP;
-
-            SettingGimmick(_baseMobBossData);
-
-        }
-            
-        private void SettingGimmick(BaseMobBossData baseMobBossData)
-        {
-            // TODO : 여러개 기믹이 존재하는 몹이 있으면 [0]을 수정해야함.
-
-            char trimText = '"';
-            IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
-            igimmick.Apply(this);
-        }
-        private void SetPatternRandomBaseWeight()
-        {
-            List<int> weights = baseMobBossData.AttackWeight;
-
-            List<AttackStyle> originalPatterns = baseMobBossData.AttackPattern;
-
-            Debug.Log("11");
-            // 1. 유효성 검사
-            if (weights == null || originalPatterns == null || weights.Count == 0 || weights.Count != originalPatterns.Count)
-            {
-                Debug.LogError("Enemy Setup: AttackWeight or AttackPattern data is invalid or mismatched.");
-                return;
-            }
-
-                // int totalWeight = weights.Sum(); // Linq 사용 시
-                int totalWeight = 0;
-                foreach (int w in weights)
-                {
-                    totalWeight += w;
-                }
-
-                // 총 가중치가 0 이하면 로직 실행 불가
-                if (totalWeight <= 0)
-                {
-                    Debug.LogError("Enemy Setup: Total weight is 0. Cannot generate weighted pattern.");
-                    return;
-                }
-               
-
-                // 15개의 새로운 패턴을 저장할 리스트 생성
-                // (만약 originalPatterns가 List<string>이면 여기도 List<string>으로 변경)
-                List<AttackStyle> newGeneratedPattern = new List<AttackStyle>(15);
-
-                // 15번 반복하여 패턴 생성
-                for (int i = 0; i < 15; i++)
-                {
-                    // 0 ~ (totalWeight - 1) 사이의 랜덤 값 생성
-                    int randomValue = UnityEngine.Random.Range(0, totalWeight);
-
-                    int currentWeightSum = 0;
-                    // 5. 가중치 리스트를 순회하며 랜덤 값이 어느 구간에 속하는지 확인
-                    for (int j = 0; j < weights.Count; j++)
-                    {
-                        currentWeightSum += weights[j];
-
-                        // 6. 랜덤 값이 현재 가중치 누적 합보다 작으면, 이 패턴(j)을 선택
-                        // 예: weight[5, 2, 3], total=10
-                        // randomValue=0~4 (5개) -> j=0 선택
-                        // randomValue=5~6 (2개) -> j=1 선택
-                        // randomValue=7~9 (3개) -> j=2 선택
-                        if (randomValue < currentWeightSum)
-                        {
-                            // 해당 인덱스(j)의 "원본 패턴"을 새 리스트에 추가
-                            newGeneratedPattern.Add(originalPatterns[j]);
-
-                            // 이(i) 번째 패턴을 찾았으므로 j루프 탈출
-                            break;
-                        }
-                    }
-                }
-
-                // 7. "baseMobBossData에 저장"
-                // -> 생성된 15개의 패턴 리스트로 기존 AttackPattern 리스트를 덮어씁니다.
-                baseMobBossData.AttackPattern = newGeneratedPattern;
-
-
-                Debug.Log("여기 진입 완료");
-                for(int x=0;x<15;x++)
-                {
-                    Debug.Log($"패턴 리스트 : {baseMobBossData.AttackPattern[x]}");
-                }
-                // --- 구현 종료 ---
-            }
-            #endregion
+                #endregion
         
 
-    }
-    }
+        }
+        }
 
