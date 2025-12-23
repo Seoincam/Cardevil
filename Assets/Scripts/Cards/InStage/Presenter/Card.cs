@@ -33,6 +33,7 @@ namespace Cardevil.Cards.InStage.Presenter
         [SerializeField, VisibleOnly] private int handIndex;
         [SerializeField, VisibleOnly] private float pointerDownTime;
         [SerializeField, VisibleOnly] private float pointerUpTime;
+        [SerializeField, VisibleOnly] private State state;
         
         [Flags]
         private enum State
@@ -44,8 +45,8 @@ namespace Cardevil.Cards.InStage.Presenter
             Discarded = 1 << 2,
             Reroll = 1 << 3,
             AnyCardDragged = 1 << 4, // HandBar에서 드래그되고 있는 카드가 있나? 
+            HoldingInValueSelectionArea = 1 << 5 // 카드 교체 중인가?
         }
-        private State _state;
         
         // References
         private Poolable _poolable;
@@ -61,6 +62,12 @@ namespace Cardevil.Cards.InStage.Presenter
 
         public bool IsDragging => Is(State.Dragging);
         public bool IsReroll => Is(State.Reroll);
+        
+        public bool HoldingInValueSelection
+        {
+            get => Is(State.HoldingInValueSelectionArea);
+            set => Set(State.HoldingInValueSelectionArea, value);
+        }
         public int HandIndex => handIndex;
         
         private bool CanInteraction
@@ -75,6 +82,8 @@ namespace Cardevil.Cards.InStage.Presenter
             }
         }
         
+        public void FadeChangeImage(bool active) 
+            => visual.FadeChangeImage(active);
         
         private void Awake()
         {
@@ -110,7 +119,7 @@ namespace Cardevil.Cards.InStage.Presenter
         public void Init(CardData cardData, IReadOnlyCardsModel model)
         {
             data = cardData;
-            _state = State.None;
+            state = State.None;
             
             _image = GetComponent<Image>();
             
@@ -127,7 +136,7 @@ namespace Cardevil.Cards.InStage.Presenter
 
         public void Clear()
         {
-            _state = State.None;
+            state = State.None;
             visual = null;
         }
         
@@ -277,7 +286,6 @@ namespace Cardevil.Cards.InStage.Presenter
             PointerEntered -= cardVisual.OnPointerEnter;
             PointerExited -= cardVisual.OnPointerExit;
         }
-        
 
         #region Pointer Event Interfaces
 
@@ -355,19 +363,14 @@ namespace Cardevil.Cards.InStage.Presenter
 
         #endregion
         
-        public void FadeChangeImage(bool active)
+        private bool Is(State targetState)
         {
-            visual.FadeChangeImage(active);
-        }
-        
-        private bool Is(State state)
-        {
-            return (this._state & state) != 0;
+            return (state & targetState) != 0;
         }
 
-        private void Set(State state, bool value)
+        private void Set(State targetState, bool value)
         {
-            this._state = (this._state &= ~state) | (value ? state : 0);
+            state = (state &= ~targetState) | (value ? targetState : 0);
         }
     }
 }

@@ -25,10 +25,12 @@ namespace Cardevil.Cards.InStage.View
         
         [field: SerializeField, VisibleOnly, Tooltip("Drop Area 내에 Drop을 했나?")] 
         public bool IsDropped { get; private set; }
-        
-        [Header("References")]
+
+        [Header("References")] 
+        [SerializeField] private Button cancelButton;
         [SerializeField] private Image bar;
         [SerializeField] private PointerAreaTrigger valueChangeArea;
+        [SerializeField] private Transform slot;
         
         [Header("SO")]
         [SerializeField] private ValueSelectionViewAnimSetting setting;
@@ -39,6 +41,8 @@ namespace Cardevil.Cards.InStage.View
         /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
         /// </summary>
         public event Action<Card, (int, Direction)> ValueSelected;
+
+        public event Action<Card> Canceled;
         
         private const float CardScale = .6f;
         private const string SlotPath = "UI/CardUI/Slot";
@@ -59,6 +63,8 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void Init()
         {
+            cancelButton.onClick.AddListener(Cancel);
+            cancelButton.gameObject.SetActive(false);
             bar.gameObject.SetActive(false);
             valueChangeArea.gameObject.SetActive(false);
             
@@ -87,6 +93,7 @@ namespace Cardevil.Cards.InStage.View
 
             bar.rectTransform.anchoredPosition = setting.openPosition;
             bar.gameObject.SetActive(true);
+            cancelButton.gameObject.SetActive(true);
             
             // 애니메이션
             _animCts = new CancellationTokenSource();
@@ -107,6 +114,7 @@ namespace Cardevil.Cards.InStage.View
             _animCts = null;
             
             bar.gameObject.SetActive(false);
+            cancelButton.gameObject.SetActive(false);
             
             Clear();
         }
@@ -127,6 +135,19 @@ namespace Cardevil.Cards.InStage.View
             _visuals.Clear();
         }
 
+        private void Cancel()
+        {
+            Canceled?.Invoke(_draggedCard);
+            _draggedCard.HoldingInValueSelection = false;
+            
+            _draggedCard = null;
+            IsDropped = false;
+            IsInDropArea = false;
+            
+            Close();
+            valueChangeArea.gameObject.SetActive(false);
+        }
+
         /// <summary>
         /// 값 선택 시 호출되는 내부 핸들러.
         /// 선택 이벤트 전달 후 UI 닫기.
@@ -134,6 +155,7 @@ namespace Cardevil.Cards.InStage.View
         private void OnValueSelected((int, Direction) values)
         {
             ValueSelected?.Invoke(_draggedCard, values);
+            _draggedCard.HoldingInValueSelection = false;
             // FadeDraggedCard(true);
             
             _draggedCard = null;
@@ -262,11 +284,15 @@ namespace Cardevil.Cards.InStage.View
             if (IsInDropArea)
             {
                 IsDropped = true;
-                
                 SetRaycastTarget(true);
-                _draggedCard.transform.SetParent(transform);
+                
+                _draggedCard.transform.SetParent(slot);
                 _draggedCard.UpdatePosition();
+                _draggedCard.HoldingInValueSelection = true;
+                
                 _draggedCard.FadeChangeImage(false);
+                valueChangeArea.gameObject.SetActive(false);
+                
                 return;
             }
             

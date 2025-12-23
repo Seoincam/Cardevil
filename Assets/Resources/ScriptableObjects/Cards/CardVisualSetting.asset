@@ -38,12 +38,14 @@ MonoBehaviour:
   _moveSpeedLimit: 4000
   _clickDetectThreshold: 0.2
   _flipEase: 4
+  _visualChangeBackInterval: 0.4
+  _visualChangeFrontInterval: 0.25
   _drawFlipDuration: 0.4
   _drawDuration: 0.5
   _drawEase: 17
   _discardDuration: 0.25
   _discardEase: 22
-  _followSpeed: 14
+  _followSpeed: 14.5
   _rotationAmount: 0.2
   _rotationSpeed: 5
   _tiltSpeed: 20

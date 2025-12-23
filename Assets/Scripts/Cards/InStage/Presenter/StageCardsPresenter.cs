@@ -139,6 +139,7 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             _selectionView.Init();
             _selectionView.ValueSelected += OnValueSelected;
+            _selectionView.Canceled += OnValueSelectionCancelled;
             
             // 4. 현재 생성된 카드 모두 HandBar 슬롯으로 이동
             foreach (var card in _model.Hand)
@@ -619,6 +620,13 @@ namespace Cardevil.Cards.InStage.Presenter
             await card.UpdateVisual();
             
             // 홀딩 카드 릴리즈
+            card.FadeChangeImage(true);
+            ReleaseHoldingCard(_holding.originalIndex);
+            EndDrag();
+        }
+
+        private void OnValueSelectionCancelled(Card card)
+        {
             card.FadeChangeImage(true);
             ReleaseHoldingCard(_holding.originalIndex);
             EndDrag();
