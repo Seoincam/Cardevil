@@ -16,7 +16,7 @@ namespace Cardevil.Cards.InStage.Presenter
     {
         private IReadOnlyCardStatus _status;
         
-        private StageCardsModel _model;
+        private CardsModel _model;
         private RerollView _view;
         private CardVisualSettingSO _visualSetting;
         
@@ -31,7 +31,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardStatus status, StageCardsModel model)
+        public void Init(IReadOnlyCardStatus status, CardsModel model)
         {
             if (_isInitialized) return;
 
@@ -104,7 +104,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.ConfigureSlots(maxHand);
             _view.BindButtonEvents(DoReroll, EndReroll);
             
-            Bootstrapper.Instance.Game.PlayerStatus.RerollTicket = 5; // 임시
+            CardevilCore.Instance.Game.PlayerStatus.RerollTicket = 5; // 임시
             await _view.EnterRerollAsync();
         }
         
@@ -142,9 +142,9 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private void DoReroll()
         {
-            var old = Bootstrapper.Instance.Game.PlayerStatus.RerollTicket;
-            Bootstrapper.Instance.Game.PlayerStatus.RerollTicket--;
-            _ = _view.AnimateTicketChangeAsync(old, Bootstrapper.Instance.Game.PlayerStatus.RerollTicket);
+            var old = CardevilCore.Instance.Game.PlayerStatus.RerollTicket;
+            CardevilCore.Instance.Game.PlayerStatus.RerollTicket--;
+            _ = _view.AnimateTicketChangeAsync(old, CardevilCore.Instance.Game.PlayerStatus.RerollTicket);
             _ = RerollAsync();
         }
 
@@ -185,7 +185,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 }
 
                 // 리롤권 소진시 자동 종료
-                if (Bootstrapper.Instance.Game.PlayerStatus.RerollTicket <= 0)
+                if (CardevilCore.Instance.Game.PlayerStatus.RerollTicket <= 0)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(autoEnd));
                     EndReroll();

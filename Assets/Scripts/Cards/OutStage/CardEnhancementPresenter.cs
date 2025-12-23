@@ -11,9 +11,9 @@ namespace Cardevil.Cards.OutStage
     {
         private IReadOnlyCardStatus _status;
         private EnhancementDataLibrary _enhancementDataLibrary;
-        private CardPipelineModifierService _service;
+        private CardSpecModifierService _service;
         
-        public CardEnhancementPresenter(IReadOnlyCardStatus status, EnhancementDataLibrary enhancementDataLibrary, CardPipelineModifierService service)
+        public CardEnhancementPresenter(IReadOnlyCardStatus status, EnhancementDataLibrary enhancementDataLibrary, CardSpecModifierService service)
         {
             if (status == null)
             {
@@ -41,19 +41,19 @@ namespace Cardevil.Cards.OutStage
         {
             possibles = new();
             
-            var pipeline = _status.GetReadOnlyPipelineById(id);
-            if (pipeline == null)
+            var cardSpec = _status.GetReadOnlySpecById(id);
+            if (cardSpec == null)
             {
-                LogEx.LogError($"Pipeline을 찾을 수 없음! (id: {id})");
+                LogEx.LogError($"Spec을 찾을 수 없음! (id: {id})");
                 return false;
             }
 
-            if (pipeline.NextEnhancementIds == null || pipeline.NextEnhancementIds.Count == 0)
+            if (cardSpec.NextEnhancementIds == null || cardSpec.NextEnhancementIds.Count == 0)
             {
                 return false;
             }
 
-            foreach (var guid in pipeline.NextEnhancementIds)
+            foreach (var guid in cardSpec.NextEnhancementIds)
             {
                 var data = _enhancementDataLibrary.GetData(guid);
                 if (data == null)
@@ -70,16 +70,16 @@ namespace Cardevil.Cards.OutStage
         private void Enhance(int id, EnhancementData enhancementData)
         {
             var type = enhancementData.Type;
-            var pipeline = _status.GetReadOnlyPipelineById(id);
-            if (pipeline == null)
+            var cardSpec = _status.GetReadOnlySpecById(id);
+            if (cardSpec == null)
             {
-                LogEx.LogError($"id({id})에 해당하는 Pipeline이 존재하지 않음.");
+                LogEx.LogError($"id({id})에 해당하는 Spec이 존재하지 않음.");
                 return;
             }
             
             // 필요한 Modifier 개수 계산
             int remaining = enhancementData.ModifierCount;
-            foreach (var modifier in pipeline.Modifiers)
+            foreach (var modifier in cardSpec.Modifiers)
             {
                 if (modifier.Type == type)
                     remaining--;

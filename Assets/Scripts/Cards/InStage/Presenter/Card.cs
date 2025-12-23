@@ -35,7 +35,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private event Action<Card> SelectionButtonTapped;
         
         private Poolable _poolable;
-        private IReadOnlyStageCardsModel _model;
+        private IReadOnlyCardsModel _model;
 
         public IEvaluateVisual EvaluateVisual => visual;
         public CardData Data => data;
@@ -60,7 +60,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         /// <param name="cardData">카드 데이터 객체</param>
         /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
-        public void Init(CardData cardData, IReadOnlyStageCardsModel model)
+        public void Init(CardData cardData, IReadOnlyCardsModel model)
         {
             data = cardData;
             _model = model;

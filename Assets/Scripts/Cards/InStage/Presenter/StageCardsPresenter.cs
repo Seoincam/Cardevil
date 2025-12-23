@@ -8,10 +8,11 @@ using Cardevil.Utils;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils.Directions;
 using System.Linq;
 using System.Threading;
-using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
@@ -19,7 +20,7 @@ namespace Cardevil.Cards.InStage.Presenter
     public class StageCardsPresenter : IClearable
     {
         private IReadOnlyCardStatus _status;
-        private StageCardsModel _model;
+        private CardsModel _model;
         private IEvaluationPresenter _evaluationPresenter;
         
         private StageCardsView _view;
@@ -41,7 +42,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardStatus status, StageCardsModel model, IEvaluationPresenter evaluationPresenter)
+        public void Init(IReadOnlyCardStatus status, CardsModel model, IEvaluationPresenter evaluationPresenter)
         {
             if (_state.isInitialized) return;
 
@@ -134,7 +135,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Init();
             _selectionView.ValueSelected += OnValueSelected;
             
-            await _view.EnterHandBarAsync();
+            await _view.EnterHandBarAsync(_model.Deck.Count, _model.DiscardRemain);
             
             // Update Async 구성
             _updateCts.Cancel();
@@ -363,6 +364,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Close();
             
             // TODO: 버리기 횟수 0되면 못 버리게
+
             _model.TryReduceDiscardRemainCount();
             _ = DiscardAndDrawAsync();
         }
@@ -407,7 +409,9 @@ namespace Cardevil.Cards.InStage.Presenter
             for (int i = 0; i < count; i++)
             {
                 // 슬롯 활성화
+                var currentDeckCount = _model.Deck.Count;
                 var card = Spawn();
+                
                 _view.SetSlotActive(true, indexFactor + i, _model.Hand.Count);
                 card.DoDraw();
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
@@ -478,7 +482,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!_view) return;
             var canUse = CanInput && _model.CanUseCard && !_state.draggedCard;
             var canDiscard = CanInput && _model.Selection.Count > 0 && !_state.draggedCard;
-            var viewState = new StageCardsViewState(canUse, canDiscard, true, _model.Deck.Count, _model.DiscardRemain);
+            var viewState = new StageCardsViewState(canUse, canDiscard, true);
             _view.UpdateUI(viewState);
             
             if (!_model.CanUseCard)

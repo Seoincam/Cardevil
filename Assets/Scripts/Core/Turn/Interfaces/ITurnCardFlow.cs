@@ -1,11 +1,25 @@
 using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Core.Turn.Interfaces
 {
     public interface IReadOnlyCardFlow
     {
-        EvaluationResult Result { get; }    
+        /// <summary>
+        /// 가장 최근 카드 사용 결과.
+        /// </summary>
+        EvaluationResult Result { get; }
+        
+        /// <summary>
+        /// 모든 카드 사용 결과를 저장하는 모델.
+        /// </summary>
+        IReadOnlyEvaluationResultsModel ResultsModel { get; }
+        
+        /// <summary>
+        /// 현재 플레이어 카드 정보를 저장하는 모델.
+        /// </summary>
+        IReadOnlyCardsModel CardsModel { get; }
     }
     
     public interface ITurnCardFlow : IReadOnlyCardFlow

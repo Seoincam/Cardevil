@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 1453207169086923862}
   - component: {fileID: 8408681180270395050}
   m_Layer: 0
-  m_Name: '@Bootstrapper'
+  m_Name: '@Cardevil_Core'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

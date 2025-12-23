@@ -1,6 +1,7 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Data.Modifiers;
+using Cardevil.Cards.Data.Spec;
 using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -21,17 +22,17 @@ namespace Cardevil.Cards.Visual
         private void OnEnable()
         {
             // 데이터 생성
-            var pipeline = new CardDataPipeline(CardKind.Attack, 3);
-            pipeline.AddModifier(new ColorModifier(CardColor.Blue));
-            pipeline.AddModifier(new SelectableNumberModifier());
-            pipeline.AddModifier(new SelectableNumberConfirmModifier(2));
-            _selection1 = pipeline.Build();
+            var cardSpec = new CardSpec(CardKind.Attack, 3);
+            cardSpec.AddModifier(new ColorModifier(CardColor.Blue));
+            cardSpec.AddModifier(new SelectableNumberModifier());
+            cardSpec.AddModifier(new SelectableNumberConfirmModifier(2));
+            _selection1 = cardSpec.Build();
             
-            pipeline.AddModifier(new SelectableNumberModifier());
-            _selection2 = pipeline.Build();
+            cardSpec.AddModifier(new SelectableNumberModifier());
+            _selection2 = cardSpec.Build();
             
-            pipeline.AddModifier(new SelectableNumberModifier());
-            _selection3 = pipeline.Build();
+            cardSpec.AddModifier(new SelectableNumberModifier());
+            _selection3 = cardSpec.Build();
             
             // Visual 초기화
             visualController.Init(_selection1);

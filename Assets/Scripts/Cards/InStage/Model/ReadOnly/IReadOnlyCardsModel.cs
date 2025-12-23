@@ -11,11 +11,11 @@ namespace Cardevil.Cards.InStage.Model.ReadOnly
     /// 
     /// <para>
     /// 덱, 버린 패, 손패, 선택된 카드 등의 상태를 외부에서 확인할 때 사용.  
-    /// 이 인터페이스는 <see cref="StageCardsModel"/>의 내부 데이터에 대한  
+    /// 이 인터페이스는 <see cref="CardsModel"/>의 내부 데이터에 대한  
     /// 읽기 전용 접근을 보장.
     /// </para>
     /// </summary>
-    public interface IReadOnlyStageCardsModel
+    public interface IReadOnlyCardsModel
     {
         /// <summary>
         /// 최대 손패 수.

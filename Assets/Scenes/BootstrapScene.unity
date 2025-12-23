@@ -1236,7 +1236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4839014720585370412, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
       propertyPath: m_Name
-      value: '@Bootstrapper'
+      value: '@Cardevil_Core'
       objectReference: {fileID: 0}
     - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
       propertyPath: eventSystem

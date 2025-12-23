@@ -22,7 +22,7 @@ namespace Cardevil.Cards.System
     [Serializable]
     public class CardManager : IClearable
     {
-        private readonly StageCardsModel _stageCardsModel = new();
+        private readonly CardsModel _cardsModel = new();
         private readonly RerollPresenter _rerollPresenter = new();
         private readonly StageCardsPresenter _stageCardsPresenter = new();
 
@@ -41,7 +41,7 @@ namespace Cardevil.Cards.System
         /// </summary>
         /// <returns><see cref="ITurnCardFlow"/> 인터페이스를 구현한 컨트롤러 인스턴스</returns>
         public ITurnCardFlow BuildFlow()
-            => new CardFlowController(_status, _stageCardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
+            => new CardFlowController(_status, _cardsModel, _rerollPresenter, _stageCardsPresenter, _evaluationPresenter);
 
         private IReadOnlyCardStatus _status; // TODO: 얘는 없어야함.
 
@@ -58,7 +58,7 @@ namespace Cardevil.Cards.System
 
         public void Clear()
         {
-            _stageCardsModel.Clear();
+            _cardsModel.Clear();
             _rerollPresenter.Clear();
             _stageCardsPresenter.Clear();
             

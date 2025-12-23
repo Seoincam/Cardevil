@@ -5,11 +5,11 @@ namespace Cardevil.Cards.Data.Save
 {
     /// <summary>
     /// 카드 상태 세이브 데이터.
-    /// 카드 파이프라인 세이브 목록 포함.
+    /// 카드 스펙 세이브 목록 포함.
     /// </summary>
     [Serializable]
     public class CardStatusSaveData
     {
-        public List<CardDataPipelineSaveData> pipelines;
+        public List<CardSpecSaveData> specList;
     }
 }

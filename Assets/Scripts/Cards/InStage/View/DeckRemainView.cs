@@ -29,7 +29,7 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
         
         private IReadOnlyCardStatus _status;
-        private IReadOnlyStageCardsModel _model;
+        private IReadOnlyCardsModel _model;
         
         private CanvasGroup _canvasGroup;
         private bool _isVisible;
@@ -41,7 +41,7 @@ namespace Cardevil.Cards.InStage.View
 
         private const float CardScale = .48f;
 
-        public void Init(IReadOnlyCardStatus status, IReadOnlyStageCardsModel model)
+        public void Init(IReadOnlyCardStatus status, IReadOnlyCardsModel model)
         {
             _status = status;
             _model = model;

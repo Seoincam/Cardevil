@@ -21,7 +21,7 @@ namespace Cardevil.Relics.OnEvaluation
         public bool IsPlus => isPlus;
         
         public bool CanTrigger(HandRanking currentHandRanking, IReadOnlyEvaluationResultsModel resultModel)
-            => Bootstrapper.Instance.Game.PlayerStatus.CurrentHp == triggerHp;
+            => CardevilCore.Instance.Game.PlayerStatus.CurrentHp == triggerHp;
 
         public EvaluationStep MakeEvaluationStep()
         {

@@ -7,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            Bootstrapper.Instance.Game.PlayerStatus.MaxHp += 1;  
+            CardevilCore.Instance.Game.PlayerStatus.MaxHp += 1;  
         }
     }
 }

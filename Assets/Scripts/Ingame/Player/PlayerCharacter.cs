@@ -45,7 +45,7 @@ namespace Cardevil.Ingame.Player
 
         public Entity Entity => _entity;
         public Field.Field Field { get; private set; }
-        public PlayerStatus PlayerStatus => Bootstrapper.Instance.Game.PlayerStatus;
+        public PlayerStatus PlayerStatus => CardevilCore.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         private void Awake()
         {
@@ -248,12 +248,14 @@ namespace Cardevil.Ingame.Player
         
         public bool IsDead { get; }
 
-        public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
+        public async UniTask<AttackResult> TurnAttackAsync()
         {
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
 
+            var ctx = TurnManager.Context;
+            
             var result = ctx.CardFlow.Result;
             int damage = result.TotalDamage;
             var handRanking = result.HandRanking;
@@ -271,9 +273,12 @@ namespace Cardevil.Ingame.Player
             PlayerStatus.TakeDamage((int)amount);
         }
 
-        public async UniTask<Vector2Int> TurnMove(IReadOnlyTurnContext ctx)
+        public async UniTask<Vector2Int> TurnMove()
         {
             LogEx.Log("Player Moves!");
+
+            var ctx = TurnManager.Context;
+            
             var result = ctx.CardFlow.Result;
             //TODO 이동 로직 구현
             foreach (var move in result.Moves)

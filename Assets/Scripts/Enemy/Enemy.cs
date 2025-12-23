@@ -78,10 +78,10 @@ namespace Cardevil.InGame.Enemy
         {
             AttackEnemyTurnStart(ctx);
         }
-
         public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
         {
             _enemyAttackInfo.attackSucess = false;
+
 
 
             var target = ctx.Player;

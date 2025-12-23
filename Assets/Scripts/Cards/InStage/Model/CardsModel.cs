@@ -8,7 +8,10 @@ using Random = UnityEngine.Random;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Cards.InStage.Model
 {
@@ -17,17 +20,29 @@ namespace Cardevil.Cards.InStage.Model
     /// 덱/버린 패/손 패/선택을 관리하고, 정렬/스왑 등 로직을 제공.
     /// </summary>
     [Serializable]
-    public class StageCardsModel : IReadOnlyStageCardsModel, IClearable
+    public class CardsModel : IReadOnlyCardsModel, IClearable
     {
         private List<CardData> _deck = new();
         private List<CardData> _discardPile = new();
         private List<Card> _hand = new();
         private HashSet<Card> _selection = new();
+
+        private int _discardRemain;
         
         #region IReadOnlyStageCardsModel
         
         public int MaxHand { get; private set; }
-        public int DiscardRemain { get; private set; }
+
+        public int DiscardRemain
+        {
+            get => _discardRemain;
+            set
+            {
+                var args = CardDiscardChangeArgs.Get(_discardRemain, value);
+                ExecEventBus<CardDiscardChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _discardRemain = value;
+            }
+        }
         
         public IReadOnlyList<CardData> Deck => _deck;
         public IReadOnlyList<CardData> DiscardPile => _discardPile;
@@ -270,6 +285,10 @@ namespace Cardevil.Cards.InStage.Model
             var cardData = _deck[0];
             _deck.RemoveAt(0);
             // cardData.OnDraw();
+            
+            
+            var args = CardDeckChangeArgs.Get(_deck.Count + 1, _deck.Count, this);
+            ExecEventBus<CardDeckChangeArgs>.InvokeMergedAndDispose(args).Forget();
 
             return cardData;
         }
