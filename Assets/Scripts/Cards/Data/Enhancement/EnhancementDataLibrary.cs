@@ -20,7 +20,6 @@ namespace Cardevil.Cards.Data.Enhancement
 
         public void Init()
         {
-            // TODO: DB 콜백에 등록
             MakeTestData();
         }
         

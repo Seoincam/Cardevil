@@ -22,7 +22,7 @@ namespace Cardevil.Save.Editor
                 EditorGUI.indentLevel++;
 
                 var spDefaultSaveName = property.FindPropertyRelative("DefaultSaveName");
-                var spExceptionScenes = property.FindPropertyRelative("_exceptionScenes");
+                var spExceptionScenes = property.FindPropertyRelative("exceptionScenes");
                 var spCurrentSave     = property.FindPropertyRelative("_currentSave");
 
                 // DefaultSaveName
@@ -93,7 +93,7 @@ namespace Cardevil.Save.Editor
                 return total;
 
             var spDefaultSaveName = property.FindPropertyRelative("DefaultSaveName");
-            var spExceptionScenes = property.FindPropertyRelative("_exceptionScenes");
+            var spExceptionScenes = property.FindPropertyRelative("exceptionScenes");
             var spCurrentSave     = property.FindPropertyRelative("_currentSave");
 
             total += EditorGUI.GetPropertyHeight(spDefaultSaveName, true) + k_VerticalSpacing;

@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Presenter;
@@ -18,28 +19,43 @@ namespace Cardevil.Cards.InStage.View
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
+        [Header("State")] 
+        [field: SerializeField, VisibleOnly, Tooltip("드래그 중, 카드(포인터)가 Drop Area 내에 있는가?")] 
+        public bool IsInDropArea { get; private set; }
+        
+        [field: SerializeField, VisibleOnly, Tooltip("Drop Area 내에 Drop을 했나?")] 
+        public bool IsDropped { get; private set; }
 
+        [Header("References")] 
+        [SerializeField] private Button cancelButton;
+        [SerializeField] private Image bar;
+        [SerializeField] private PointerAreaTrigger valueChangeArea;
+        [SerializeField] private Transform slot;
+        
+        [Header("SO")]
         [SerializeField] private ValueSelectionViewAnimSetting setting;
-        
-        private const float CardScale = .6f;
-        private const string SlotPath = "Cards/Slot";
-        
-        private Image _bar;
-        private RectTransform _rect;
-        
-        private readonly List<RectTransform> _slots = new();
-        private readonly List<CardVisualValueSelectionView> _visuals = new();
-        private CancellationTokenSource _animCts;
-        
-        private Card _cardCache;
-        private (CardColor, int) _attackValue;
-        private Direction _moveValue;
-        
+
+
         /// <summary>
         /// 값 선택 완료 이벤트.
         /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
         /// </summary>
         public event Action<Card, (int, Direction)> ValueSelected;
+
+        public event Action<Card> Canceled;
+        
+        private const float CardScale = .6f;
+        private const string SlotPath = "UI/CardUI/Slot";
+        
+        private readonly List<RectTransform> _slots = new();
+        private readonly List<CardVisualValueSelectionView> _visuals = new();
+        private CancellationTokenSource _animCts;
+        
+        private Card _draggedCard;
+        private (CardColor, int) _attackValue;
+        private Direction _moveValue;
+        private Tween _draggedCardFadeTween;
+        
 
         /// <summary>
         /// 선택 UI 초기화.
@@ -47,29 +63,20 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void Init()
         {
-            _bar = GetComponent<Image>();
-            _rect = GetComponent<RectTransform>();
-            gameObject.SetActive(false);
-        }
-
-        /// <summary>
-        /// 선택 UI 토글.
-        /// 동일 카드 입력 시 닫기 처리, 다른 카드 입력 시 선택 UI 열기.
-        /// </summary>
-        /// <param name="card">선택 UI 표시 대상 카드</param>
-        public void Toggle(Card card)
-        {
-            if (card == _cardCache)
-                Close();
-            else 
-                Open(card);
+            cancelButton.onClick.AddListener(Cancel);
+            cancelButton.gameObject.SetActive(false);
+            bar.gameObject.SetActive(false);
+            valueChangeArea.gameObject.SetActive(false);
+            
+            valueChangeArea.PointerEntered  += OnPointerEnterInArea;
+            valueChangeArea.PointerExited += OnPointerExitInArea;
         }
         
         private void Open(Card card)
         {
+            Close();
             Clear();
 
-            _cardCache = card;
             var cardData = card.Data;
             
             // 구성
@@ -84,8 +91,9 @@ namespace Cardevil.Cards.InStage.View
             ConfigureSlots(count);
             ConfigureCards(cardData, count);
 
-            _rect.anchoredPosition = setting.openPosition;
-            gameObject.SetActive(true);
+            bar.rectTransform.anchoredPosition = setting.openPosition;
+            bar.gameObject.SetActive(true);
+            cancelButton.gameObject.SetActive(true);
             
             // 애니메이션
             _animCts = new CancellationTokenSource();
@@ -98,14 +106,16 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         public void Close()
         {
-            if (!gameObject.activeSelf)
+            if (!bar.gameObject.activeSelf)
                 return;
             
             _animCts?.Cancel();
             _animCts?.Dispose();
             _animCts = null;
             
-            gameObject.SetActive(false);
+            bar.gameObject.SetActive(false);
+            cancelButton.gameObject.SetActive(false);
+            
             Clear();
         }
         
@@ -119,11 +129,23 @@ namespace Cardevil.Cards.InStage.View
             for (int i = _visuals.Count - 1; i >= 0; i--)
             {
                 _visuals[i].Selected -= OnValueSelected;
-                Managers.Resource.Destroy(_visuals[i].gameObject);
+                AssetUtil.Destroy(_visuals[i].gameObject);
             }
             
             _visuals.Clear();
-            _cardCache = null;
+        }
+
+        private void Cancel()
+        {
+            Canceled?.Invoke(_draggedCard);
+            _draggedCard.HoldingInValueSelection = false;
+            
+            _draggedCard = null;
+            IsDropped = false;
+            IsInDropArea = false;
+            
+            Close();
+            valueChangeArea.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -132,19 +154,27 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         private void OnValueSelected((int, Direction) values)
         {
-            ValueSelected?.Invoke(_cardCache, values);
+            ValueSelected?.Invoke(_draggedCard, values);
+            _draggedCard.HoldingInValueSelection = false;
+            // FadeDraggedCard(true);
+            
+            _draggedCard = null;
+            IsDropped = false;
+            IsInDropArea = false;
+            
             Close();
+            valueChangeArea.gameObject.SetActive(false);
         }
 
         private async UniTaskVoid PlayAnimateAsync(CancellationToken ct)
         {
             // 외관 초기화
-            _bar.color -= new Color(0, 0, 0, _bar.color.a);
+            bar.color -= new Color(0, 0, 0, bar.color.a);
             foreach (var visual in _visuals)
                 visual.CanvasGroup.alpha = 0;
 
             // 애니메이션 처리
-            bool fadeCanceled = await _bar
+            bool fadeCanceled = await bar
                 .DOFade(1f, setting.barFadeInDuration)
                 .ToUniTask(cancellationToken: ct)
                 .SuppressCancellationThrow();
@@ -178,7 +208,7 @@ namespace Cardevil.Cards.InStage.View
         }
         
         /// <summary>
-        /// <see cref="_bar"/> 크기를 조정.
+        /// <see cref="bar"/> 크기를 조정.
         /// </summary>
         private void ConfigureFrame(int slotCount)
         {
@@ -188,7 +218,7 @@ namespace Cardevil.Cards.InStage.View
                 width = slotCount * 140f;
             }
 
-            _rect.sizeDelta = new Vector2(width, _rect.rect.height);
+            bar.rectTransform.sizeDelta = new Vector2(width, bar.rectTransform.rect.height);
         }
 
         /// <summary>
@@ -199,7 +229,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate(SlotPath, _rect).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(SlotPath, bar.rectTransform).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -207,7 +237,7 @@ namespace Cardevil.Cards.InStage.View
             {
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
-                Managers.Resource.Destroy(last.gameObject);
+                AssetUtil.Destroy(last.gameObject);
             }
         }
 
@@ -220,7 +250,7 @@ namespace Cardevil.Cards.InStage.View
 
             for (int i = 0; i < count; i++)
             {
-                var go = Managers.Resource.Instantiate(path, _slots[i]);
+                var go = AssetUtil.Instantiate(path, _slots[i]);
                 var visual = go.GetComponent<CardVisualValueSelectionView>();
                 visual.Selected += OnValueSelected;
 
@@ -237,6 +267,81 @@ namespace Cardevil.Cards.InStage.View
                 
                 _visuals.Add(visual);
             }
+        }
+        
+        
+        public void OnDragStarted(Card card)
+        {
+            if (!card.Data.CanOpenSelection)
+                return;
+            
+            _draggedCard = card;
+            valueChangeArea.gameObject.SetActive(true);
+        }
+
+        public void OnDragEnded()
+        {
+            if (IsInDropArea)
+            {
+                IsDropped = true;
+                SetRaycastTarget(true);
+                
+                _draggedCard.transform.SetParent(slot);
+                _draggedCard.UpdatePosition();
+                _draggedCard.HoldingInValueSelection = true;
+                
+                _draggedCard.FadeChangeImage(false);
+                valueChangeArea.gameObject.SetActive(false);
+                
+                return;
+            }
+            
+            _draggedCard = null;
+            valueChangeArea.gameObject.SetActive(false);
+        }
+
+        
+        private void OnPointerEnterInArea()
+        {
+            if (IsDropped)
+                return;
+            if (!_draggedCard)
+                return;
+            
+            // FadeDraggedCard(false);
+            
+            IsInDropArea = true;
+            Open(_draggedCard);
+            SetRaycastTarget(false);
+        }
+
+        private void OnPointerExitInArea()
+        {
+            if (!_draggedCard)
+                return;
+            if (IsDropped)
+                return;
+            
+            // FadeDraggedCard(true);
+            
+            IsInDropArea = false;
+            Close();
+        }
+
+        private void FadeDraggedCard(bool fadeIn)
+        {
+            var targetAlpha = fadeIn ? 1f : 0f;
+            
+            _draggedCardFadeTween?.Kill();
+            _draggedCardFadeTween = _draggedCard.VisualCanvasGroup.DOFade(targetAlpha, setting.draggedCardFadeDuration)
+                .SetEase(setting.draggedCardFadeEase);
+        }
+        
+        private void SetRaycastTarget(bool value)
+        {
+            bar.raycastTarget = value;
+            foreach (var visual in _visuals)
+                visual.CanvasGroup.blocksRaycasts = value;
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine.Pool;
 
 namespace Cardevil.Events.ExecEvents
@@ -260,7 +261,8 @@ namespace Cardevil.Events.ExecEvents
         /// 모든 액션을 우선순위에 따라 실행합니다.
         /// </summary>
         /// <param name="eventArgs"></param>
-        public async UniTask ExecuteAll(TEventArgs eventArgs)
+        /// <param name="cancellationToken"></param>
+        public async UniTask ExecuteAll(TEventArgs eventArgs, CancellationToken cancellationToken = default)
         {
             if (_dirty)
             {
@@ -277,14 +279,19 @@ namespace Cardevil.Events.ExecEvents
                 }
                 foreach (var wrapper in _snapshot)
                 {
-                    LogEx.Log($"({wrapper._primaryPriority})Executing action {wrapper.action}");
-                    await wrapper.action.Invoke(eventArgs);
-                    
-                    if (eventArgs.BreakChain)
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        LogEx.Log($"[ExecQueue<{typeof(TEventArgs).Name}>] Chain broken at action {wrapper.action}");
+                        LogEx.Log($"({wrapper._primaryPriority})Cancelled by token at action {wrapper.action}");
                         break;
                     }
+                    if (eventArgs.BreakChain)
+                    {
+                        LogEx.Log($"({wrapper._primaryPriority}) Chain broken at action {wrapper.action}");
+                        break;
+                    }
+                    
+                    LogEx.Log($"({wrapper._primaryPriority})Executing action {wrapper.action}");
+                    await wrapper.action.Invoke(eventArgs, cancellationToken);
                 }
             }
             finally

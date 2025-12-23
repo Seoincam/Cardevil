@@ -8,12 +8,12 @@ using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.Core;
 using Cardevil.Pools;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
@@ -28,63 +28,62 @@ namespace Cardevil.Cards.InStage.Presenter
         [Header("Card")]
         [SerializeField, VisibleOnly] private CardData data;
         [SerializeField, VisibleOnly] private CardVisual visual;
-        [SerializeField, VisibleOnly] private CardState state;
         
-        private event Action DragStart, DragEnd;
-        private event Action<Card, CardPointerArgs> PointerDown, PointerUp;
-        private event Action<Card> SelectionButtonTapped;
+        [Header("State")]
+        [SerializeField, VisibleOnly] private int handIndex;
+        [SerializeField, VisibleOnly] private float pointerDownTime;
+        [SerializeField, VisibleOnly] private float pointerUpTime;
+        [SerializeField, VisibleOnly] private State state;
         
+        [Flags]
+        private enum State
+        {
+            None = 0,
+            
+            Selected = 1 << 0,
+            Dragging = 1 << 1,
+            Discarded = 1 << 2,
+            Reroll = 1 << 3,
+            AnyCardDragged = 1 << 4, // HandBar에서 드래그되고 있는 카드가 있나? 
+            HoldingInValueSelectionArea = 1 << 5 // 카드 교체 중인가?
+        }
+        
+        // References
         private Poolable _poolable;
-        private IReadOnlyStageCardsModel _model;
-
+        private Image _image;
+        
+        public event Action PointerEntered, PointerExited, DragEnd;
+        public event Action<Card, CardPointerArgs> PointerDown, PointerUp;
+        public event Action<Card> DragStart;
+        
+        public CanvasGroup VisualCanvasGroup => visual.CanvasGroup;
         public IEvaluateVisual EvaluateVisual => visual;
         public CardData Data => data;
-        public bool IsDragging => state.isDragging;
-        public bool IsReroll => state.isReroll;
+
+        public bool IsDragging => Is(State.Dragging);
+        public bool IsReroll => Is(State.Reroll);
+        
+        public bool HoldingInValueSelection
+        {
+            get => Is(State.HoldingInValueSelectionArea);
+            set => Set(State.HoldingInValueSelectionArea, value);
+        }
+        public int HandIndex => handIndex;
         
         private bool CanInteraction
         {
             get
             {
-                if (state.isDiscarded) return false;
-                if (state.isReroll) return false;
-                if (state.isAnyCardDragged && !state.isDragging) return false;
+                if (Is(State.Discarded)) return false;
+                if (Is(State.Reroll)) return false;
+                if (Is(State.AnyCardDragged) && !Is(State.Dragging)) return false;
+                
                 return true;
             }
         }
-
-        /// <summary>
-        /// 카드 데이터 및 비주얼 초기화.
-        /// 지정된 <see cref="CardData"/>와 <see cref="CardVisualSpriteSet"/>을 기반으로
-        /// 카드 오브젝트 생성 및 비주얼 요소 설정.
-        /// </summary>
-        /// <param name="cardData">카드 데이터 객체</param>
-        /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
-        public void Init(CardData cardData, IReadOnlyStageCardsModel model)
-        {
-            data = cardData;
-            _model = model;
-            
-            // Card Visual
-            var visualHandler = GameObject.Find("Card Visual Transform");
-            if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
-
-            var go = Managers.Resource.Instantiate("Cards/CardVisual", visualHandler.transform);
-            visual = go.GetComponent<CardVisual>();
-            visual.Init(this, model);
-            if (data.CanOpenSelection)
-                visual.BindSelectionButton(OnValueSelectionTapped);
-            
-            WireVisual(visual);
-        }
-
-        public void Clear()
-        {
-            state = new CardState();
-            visual = null;
-        }
-
-        public void UpdateVisual() => visual.UpdateVisual();
+        
+        public void FadeChangeImage(bool active) 
+            => visual.FadeChangeImage(active);
         
         private void Awake()
         {
@@ -95,9 +94,9 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private void Update()
         {
-            if (state.isDiscarded) return;
+            if (Is(State.Discarded)) return;
 
-            if (state.isDragging)
+            if (Is(State.Dragging))
             {
                 // var targetPosition = Input.mousePosition - pointerOffset;
                 var targetPosition = Input.mousePosition;
@@ -109,11 +108,42 @@ namespace Cardevil.Cards.InStage.Presenter
                 transform.Translate(velocity * Time.deltaTime);
             }
         }
-
-        private void OnValueSelectionTapped()
+        
+        /// <summary>
+        /// 카드 데이터 및 비주얼 초기화.
+        /// 지정된 <see cref="CardData"/>와 <see cref="CardVisualSpriteSet"/>을 기반으로
+        /// 카드 오브젝트 생성 및 비주얼 요소 설정.
+        /// </summary>
+        /// <param name="cardData">카드 데이터 객체</param>
+        /// <param name="model">스테이지 카드 모델 참조용 읽기 전용 모델</param>
+        public void Init(CardData cardData, IReadOnlyCardsModel model)
         {
-            SelectionButtonTapped?.Invoke(this);
+            data = cardData;
+            state = State.None;
+            
+            _image = GetComponent<Image>();
+            
+            // Card Visual
+            var visualHandler = GameObject.Find("Card Visual Transform");
+            if (!visualHandler) { LogEx.LogError("Visual Handler를 찾을 수 없음."); return; }
+
+            var go = AssetUtil.Instantiate("Cards/CardVisual", visualHandler.transform);
+            visual = go.GetComponent<CardVisual>();
+            visual.Init(this, model);
+            
+            WireVisual(visual);
         }
+
+        public void Clear()
+        {
+            state = State.None;
+            visual = null;
+        }
+        
+        public async UniTask UpdateVisual()
+        {
+            await visual.UpdateVisual(Data);
+        } 
         
         #region Reroll
 
@@ -124,7 +154,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// <param name="value">리롤 상태 값</param>
         public void SetRerollState(bool value)
         {
-            state.isReroll = value;
+            Set(State.Reroll, value);
             if (!value) 
                 visual.EndReroll();
         }
@@ -144,9 +174,9 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         public void DoRerollDiscard()
         {
-            state.isReroll = true;
+            Set(State.Reroll, true);
             visual.AnimateRerollDiscard();
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
 
         #endregion
@@ -167,12 +197,12 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         public void DoDiscard()
         {
-            state.isDiscarded = true;
+            Set(State.Discarded, true);
             
             UnwireVisual(visual);
             visual.Discard();
             
-            Managers.Resource.Destroy(gameObject);
+            AssetUtil.Destroy(gameObject);
         }
 
         #endregion
@@ -185,10 +215,10 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         public void UpdatePosition()
         {
-            if (state.isDragging) return;
+            if (Is(State.Dragging)) return;
 
-            float newY = state.isSelected ? visualSetting.SelectOffset : 0;
-            transform.localPosition = new Vector3(0, newY, 0);
+            float newY = Is(State.Selected) ? visualSetting.SelectOffset : 0f;
+            transform.localPosition = new Vector3(0f, newY, 0f);
         }
         
         /// <summary>
@@ -196,9 +226,9 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         public void SetSelect(bool value)
         {
-            state.isSelected = value;
-            float newY = value ? visualSetting.SelectOffset : 0;
-            transform.localPosition = new Vector3(0, newY, 0);
+            Set(State.Selected, value);
+            float newY = value ? visualSetting.SelectOffset : 0f;
+            transform.localPosition = new Vector3(0f, newY, 0f);
         }
         
         /// <summary>
@@ -207,17 +237,19 @@ namespace Cardevil.Cards.InStage.Presenter
         /// </summary>
         public void SetAnyCardDragged(bool value)
         {
-            state.isAnyCardDragged = value;
+            Set(State.AnyCardDragged, value);
+            _image.raycastTarget = !value;
+            PointerExited?.Invoke();
         }
 
+
         /// <summary>
-        /// <see cref="StageCardsPresenter"/>의
-        /// <c>_handChanged</c>를 구독.
         /// <see cref="CardVisual"/>의 시각적 index를 업데이트.
         /// </summary>
-        public void OnHandChanged()
+        public void UpdateVisualIndex(int index)
         {
-            visual?.UpdateVisualIndex();
+            handIndex = index;
+            visual?.UpdateVisualIndex(index);
         }
         
         #endregion
@@ -226,22 +258,6 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             visual.ExecuteEvaluationAction();
         }
-        
-        // Wire By StageCardsPresenter
-        public void AddDragStart(Action h) => DragStart += h;
-        public void RemoveDragStart(Action h) => DragStart -= h;
-        
-        public void AddDragEnd(Action h) => DragEnd += h;
-        public void RemoveDragEnd(Action h) => DragEnd -= h;
-
-        public void AddPointerDown(Action<Card, CardPointerArgs> h) => PointerDown += h;
-        public void RemovePointerDown(Action<Card, CardPointerArgs> h) => PointerDown -= h;
-
-        public void AddPointerUp(Action<Card, CardPointerArgs> h) => PointerUp += h;
-        public void RemovePointerUp(Action<Card, CardPointerArgs> h) => PointerUp -= h;
-        
-        public void AddSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped += h;
-        public void RemoveSelectionButtonTapped(Action<Card> h) => SelectionButtonTapped -= h;
         
         // Wire CardVisual
         private void WireVisual(CardVisual cardVisual)
@@ -253,6 +269,9 @@ namespace Cardevil.Cards.InStage.Presenter
 
             PointerDown += cardVisual.OnPointerDown;
             PointerUp += cardVisual.OnPointerUp;
+            
+            PointerEntered += cardVisual.OnPointerEnter;
+            PointerExited += cardVisual.OnPointerExit;
         }
         private void UnwireVisual(CardVisual cardVisual)
         {
@@ -263,8 +282,10 @@ namespace Cardevil.Cards.InStage.Presenter
             
             PointerDown -= cardVisual.OnPointerDown;
             PointerUp -= cardVisual.OnPointerUp;
+            
+            PointerEntered -= cardVisual.OnPointerEnter;
+            PointerExited -= cardVisual.OnPointerExit;
         }
-        
 
         #region Pointer Event Interfaces
 
@@ -272,12 +293,16 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             if (!CanInteraction)
                 return;
+            
+            PointerEntered?.Invoke();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (!CanInteraction)
                 return;
+            
+            PointerExited?.Invoke();
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -299,8 +324,9 @@ namespace Cardevil.Cards.InStage.Presenter
             if (!CanInteraction)
                 return;
 
-            DragStart?.Invoke();
-            state.isDragging = true;
+            DragStart?.Invoke(this);
+            _image.raycastTarget = false;
+            Set(State.Dragging, true);
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -316,13 +342,15 @@ namespace Cardevil.Cards.InStage.Presenter
                 return;
 
             DragEnd?.Invoke();
+            _image.raycastTarget = true;
+            
             transform.DOLocalMove(
-                    endValue: state.isSelected
+                    endValue: Is(State.Selected)
                         ? new Vector3(0, visualSetting.SelectOffset, 0)
                         : Vector3.zero,
                     duration: visualSetting.EndDragTweenDuration)
                 .SetEase(Ease.OutBack);
-            state.isDragging = false;
+            Set(State.Dragging, false);
         }
 
         public void OnPointerUp(PointerEventData eventData)
@@ -334,17 +362,15 @@ namespace Cardevil.Cards.InStage.Presenter
         }
 
         #endregion
-
-        #region Nested
         
-        [Serializable]
-        private struct CardState
+        private bool Is(State targetState)
         {
-            public bool isSelected, isDragging, isDiscarded, isReroll;
-            public bool isAnyCardDragged; // HandBar에서 드래그되고 있는 카드가 있나?
-            public float pointerDownTime, pointerUpTime;
+            return (state & targetState) != 0;
         }
 
-        #endregion
+        private void Set(State targetState, bool value)
+        {
+            state = (state &= ~targetState) | (value ? targetState : 0);
+        }
     }
 }

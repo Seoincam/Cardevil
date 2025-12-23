@@ -72,6 +72,8 @@ namespace Cardevil.Cards.ScriptableObjects
         [Header("[ Card Visual ]")]
         [Header("- Flip")]
         [SerializeField] Ease _flipEase = Ease.InOutSine;
+        [SerializeField] private float _visualChangeBackInterval = .3f;
+        [SerializeField] private float _visualChangeFrontInterval = .3f;
 
         [Header("- Draw/Discard")]
         [SerializeField] float _drawFlipDuration = .4f;
@@ -98,7 +100,12 @@ namespace Cardevil.Cards.ScriptableObjects
 
         [Header("- Curve")]
         [SerializeField] private CurveParameters _curve;
-        [Space(25)]
+
+        [Header("- Hover")] 
+        public float hoverScale;
+        public float hoverScaleTweenDuration = .15f;
+        public Ease hoverEase = Ease.OutBack;
+        [Space(25)] 
 
 
 
@@ -149,7 +156,9 @@ namespace Cardevil.Cards.ScriptableObjects
         public float ClickDetectThreshold => _clickDetectThreshold;
         
         public Ease FlipEase => _flipEase;
-        
+        public float VisualChangeBackInterval => _visualChangeBackInterval * SpeedFactor;
+        public float VisualChangeFrontInterval => _visualChangeFrontInterval * SpeedFactor;
+
         public float DrawFlipDuration => _drawFlipDuration * SpeedFactor;
         public float DrawDuration => _drawDuration * SpeedFactor;
         public Ease DrawEase => _drawEase;

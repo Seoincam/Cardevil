@@ -1,4 +1,5 @@
 using Cardevil.DataStructure.Serializables;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Cardevil.Cards.ScriptableObjects
@@ -24,5 +25,9 @@ namespace Cardevil.Cards.ScriptableObjects
 
         [Tooltip("각 카드마다 소환 간격"), Range(0, 0.1f)]
         public float cardInterval = .04f;
+
+        [Space, Header("드래그 카드 페이드 설정")] 
+        public float draggedCardFadeDuration = .2f;
+        public Ease draggedCardFadeEase = Ease.InCubic;
     }
 }

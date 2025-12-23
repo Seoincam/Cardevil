@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using Cardevil.UI;
 using System;
 using UnityEditor;
@@ -30,3 +31,4 @@ namespace Cardevil.UIToolkit
         }
     }
 }
+#endif

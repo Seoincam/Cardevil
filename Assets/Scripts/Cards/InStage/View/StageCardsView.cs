@@ -1,9 +1,13 @@
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,6 +17,9 @@ namespace Cardevil.Cards.InStage.View
 {
     public class StageCardsView: MonoBehaviour, IClearable
     {
+        [SerializeField] private RectTransform bar;
+        [SerializeField] private PointerAreaTrigger handArea;
+        
         [Header("Buttons")]
         [SerializeField] private Button useButton;
         [SerializeField] private Button discardButton;
@@ -23,12 +30,17 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private TextMeshProUGUI deckCountText;
         [SerializeField] private TextMeshProUGUI discardCountText;
         
-        [Header("Transform")]
-        [SerializeField] private RectTransform bar;
+        public PointerAreaTrigger HandArea => handArea;
         
+        private IReadOnlyCardsModel _model;
+
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
+
+        private float _widthFactor = 130;
+        private const string SlotPath = "UI/CardUI/Slot";
         
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (useButton == null) LogEx.LogError("useButton == null");
@@ -37,6 +49,13 @@ namespace Cardevil.Cards.InStage.View
             if (sortByIconButton == null) LogEx.LogError("sortByIconButton == null");
             if (deckCountText == null) LogEx.LogError("deckCountText == null");
             if (discardCountText == null) LogEx.LogError("discardCountText == null");
+        }
+#endif
+
+        public void Init(IReadOnlyCardsModel model)
+        {
+            _model = model;
+            ConfigureSlots(model.MaxHand);
         }
         
         /// <summary>
@@ -48,7 +67,7 @@ namespace Cardevil.Cards.InStage.View
             _lastState = null;
             foreach (var slot in _slots)
             {
-                if (slot) Managers.Resource.Destroy(slot.gameObject);
+                if (slot) AssetUtil.Destroy(slot.gameObject);
             }
             _slots.Clear();
             
@@ -62,8 +81,13 @@ namespace Cardevil.Cards.InStage.View
         /// HandBar UI를 화면에 등장시키는 애니메이션을 실행합니다.  
         /// </summary>
         /// <returns>애니메이션 완료 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask EnterHandBarAsync()
+        public async UniTask EnterHandBarAsync(int deckCount, int discardCount)
         {
+            deckCountText.text = $"{deckCount} / 50";
+            discardCountText.text = discardCount.ToString();
+            
+            Initialize();
+            
             useButton.transform.localScale = Vector3.zero;
             discardButton.transform.localScale = Vector3.zero;
             sortByNumberButton.transform.localScale = Vector3.zero;
@@ -74,6 +98,24 @@ namespace Cardevil.Cards.InStage.View
             await sortByIconButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
             await sortByNumberButton.transform.DOScale(1f, .2f).SetEase(Ease.OutBack);
         }
+
+        private void Initialize()
+        {
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.First, OnDiscardChanged);
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.Last, OnDiscardChanged);
+            ExecEventBus<CardDeckChangeArgs>.RegisterStatic(int.MaxValue, OnDeckChanged);
+        }
+
+        private async UniTask OnDiscardChanged(CardDiscardChangeArgs eventArgs, CancellationToken cancellationToken)
+        {
+            discardCountText.text = eventArgs.ModifiedDiscard.ToString();
+        }
+
+        private async UniTask OnDeckChanged(CardDeckChangeArgs eventArgs, CancellationToken cancellationToken)
+        {
+            deckCountText.text = $"{eventArgs.NewDeckCount} / 50";
+        }
+
 
         public async UniTask ExitHandBarAsync()
         {
@@ -117,9 +159,6 @@ namespace Cardevil.Cards.InStage.View
                     sortByNumberButton.interactable = state.CanSort;
                     sortByIconButton.interactable = state.CanSort;
                 }
-
-                if (prev.RemainingCards != state.RemainingCards) deckCountText.text = $"{state.RemainingCards}/50";
-                if (prev.RemainingDiscards != state.RemainingDiscards) discardCountText.text = $"{state.RemainingDiscards}";
             }
             else 
             {
@@ -127,9 +166,6 @@ namespace Cardevil.Cards.InStage.View
                 discardButton.interactable = state.CanDiscard;
                 sortByNumberButton.interactable = state.CanSort;
                 sortByIconButton.interactable = state.CanSort;
-                
-                deckCountText.text = $"{state.RemainingCards}/50";
-                discardCountText.text = $"{state.RemainingDiscards}";
             }
             _lastState = state;
         }
@@ -138,11 +174,11 @@ namespace Cardevil.Cards.InStage.View
         /// 현재 핸드바의 슬롯 개수를 조정.  
         /// 부족한 슬롯은 새로 생성, 초과한 슬롯은 제거.
         /// </summary>
-        public void ConfigureSlots(int slotCount)
+        private void ConfigureSlots(int slotCount)
         {
             while (_slots.Count < slotCount)
             {
-                var slot = Managers.Resource.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -150,53 +186,45 @@ namespace Cardevil.Cards.InStage.View
             {
                 var last = _slots[^1];
                 _slots.RemoveAt(_slots.Count - 1);
-                Managers.Resource.Destroy(last.gameObject);
+                AssetUtil.Destroy(last.gameObject);
             }
         }
-        
-        /// <summary>
-        /// 지정된 index의 슬롯에 카드를 배치.  
-        /// </summary>
-        public void SetCardToSlot(Card card, int slotIndex)
+
+        public void HoldCardOutsideBar(Card card)
         {
-            card.transform.SetParent(_slots[slotIndex]);
-            card.UpdatePosition();
+            card.transform.SetParent(transform);
         }
 
-        /// <summary>
-        /// 지정한 인덱스의 슬롯 활성화 상태를 설정하고,
-        /// 현재 손패 개수에 따라 bar의 크기를 조정.
-        /// </summary>
-        /// <param name="value">슬롯을 활성화(true) 또는 비활성화(false)할지 여부</param>
-        /// <param name="index">대상 슬롯의 인덱스</param>
-        /// <param name="handCount">현재 손패(슬롯) 개수</param>
-        public void SetSlotActive(bool value, int index, int handCount)
+
+        public void OnHandChanged()
         {
-            _slots[index].gameObject.SetActive(value);
+            var count = _model.Hand.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var slot = _slots[i];
+                
+                slot.gameObject.SetActive(true);
+                _model.Hand[i].transform.SetParent(slot);
+                _model.Hand[i].UpdatePosition();
+            }
+
+            if (count < _model.MaxHand)
+            {
+                for (int i = count; i < _model.MaxHand; i++)
+                {
+                    _slots[i].gameObject.SetActive(false);
+                }
+            }
             
-            var width = 130 * handCount;
+            var width = _widthFactor * _model.Hand.Count;
             var height = 200;
             bar.sizeDelta = new Vector2(width, height);
         }
-
-        /// <summary>
-        /// 슬롯 리스트를 활성화 상태 기준으로 정렬한 뒤,
-        /// 정렬 순서에 맞게 계층 내 형제 순서를 재배치.
-        /// 활성 슬롯은 앞으로, 비활성 슬롯은 뒤로 정렬.
-        /// </summary>
-        public void AlignSlot()
-        {
-            _slots.Sort((a, b) =>
-            {
-                bool aActive = a.gameObject.activeSelf;
-                bool bActive = b.gameObject.activeSelf;
-                return bActive.CompareTo(aActive);
-            });
-
-            for (int i = 0; i < _slots.Count; i++)
-            {
-                _slots[i].transform.SetSiblingIndex(i);
-            }
-        }
     }
 }
+
+/*
+ * DOPunchRotation(Vector3.forward * hoverPunchAngle, hoverTransition, 20, 1)
+ *     [SerializeField] private float hoverPunchAngle = 5;
+    [SerializeField] private float hoverTransition = .15f;
+ */

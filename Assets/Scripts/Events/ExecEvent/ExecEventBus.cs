@@ -1,4 +1,5 @@
 ﻿using Cardevil.Utils;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Events.ExecEvents
@@ -85,24 +86,37 @@ namespace Cardevil.Events.ExecEvents
         }
         
         /// <summary>
-        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출합니다.
+        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출합니다. <br/>
+        /// Forget을 사용할 경우 대신 <see cref="InvokeSequentially(TEvent, CancellationToken)"/>를 사용하세요.
         /// </summary>
         /// <code>
         /// using var args = new MyEventArgs { ... };
         /// await ExecEventBus&lt;MyEventArgs&gt;.InvokeSequentially(args);
         /// </code>
         /// <param name="args"></param>
-        public static async UniTask InvokeSequentially(TEvent args)
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeSequentially(TEvent args, CancellationToken cancellationToken = default)
         {
             LogEx.Log("Invoking Dynamic Event Bus");
-            await ExecDynamicEventBus<TEvent>.Invoke(args);
+            await ExecDynamicEventBus<TEvent>.Invoke(args, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                LogEx.Log("Sequential Event Bus invocation cancelled.");
+                return;
+            }
+            if (args.BreakChain)
+            {
+                LogEx.Log("Sequential Event Bus invocation chain broken.");
+                return;
+            }
             LogEx.Log("Invoking Static Event Bus");
-            await ExecStaticEventBus<TEvent>.Invoke(args);
+            await ExecStaticEventBus<TEvent>.Invoke(args, cancellationToken);
         }
 
         /// <summary>
         /// 동적 이벤트와 정적 이벤트를 병합하여 우선순위에 따라 호출합니다.
-        /// 두 큐를 병합 정렬(merge sort) 방식으로 실행합니다.
+        /// 두 큐를 병합 정렬(merge sort) 방식으로 실행합니다. <br/>
+        /// Forget을 사용할 경우 대신 <see cref="InvokeMerged(TEvent, CancellationToken)"/>를 사용하세요.
         /// </summary>
         /// <remarks>
         /// 같은 우선순위일 경우, 동적 이벤트가 먼저 실행됩니다.
@@ -112,7 +126,8 @@ namespace Cardevil.Events.ExecEvents
         /// await ExecEventBus&lt;MyEventArgs&gt;.InvokeMerged(args);
         /// </code>
         /// <param name="args"></param>
-        public static async UniTask InvokeMerged(TEvent args)
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeMerged(TEvent args, CancellationToken cancellationToken = default)
         {
             LogEx.Log("Invoking Merged Event Bus");
             _isMergedExecuting = true;
@@ -129,43 +144,48 @@ namespace Cardevil.Events.ExecEvents
                 // 두 큐를 병합 정렬 방식으로 실행
                 while (dynamicIndex < dynamicQueue.Count && staticIndex < staticQueue.Count)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        LogEx.Log("Merged Event Bus invocation cancelled.");
+                        break;
+                    }
+                    if (args.BreakChain)
+                    {
+                        LogEx.Log("Merged Event Bus invocation chain broken.");
+                        break;
+                    }
+                    
                     var dynamicAction = dynamicQueue[dynamicIndex];
                     var staticAction = staticQueue[staticIndex];
                     
                     if (dynamicAction.CompareTo(staticAction) <= 0)
                     {
-                        LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
-                        await dynamicAction.action.Invoke(args);
+                        // LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
+                        await dynamicAction.action.Invoke(args, cancellationToken);
                         dynamicIndex++;
                     }
                     else
                     {
-                        LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
-                        await staticAction.action.Invoke(args);
+                        // LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
+                        await staticAction.action.Invoke(args, cancellationToken);
                         staticIndex++;
-                    }
-                    
-                    if (args.BreakChain)
-                    {
-                        LogEx.Log("Merged Event Bus chain broken");
-                        break;
                     }
                 }
                 
                 // 남은 동적 작업 실행
-                while (dynamicIndex < dynamicQueue.Count && !args.BreakChain)
+                while (dynamicIndex < dynamicQueue.Count && !cancellationToken.IsCancellationRequested && !args.BreakChain)
                 {
                     var dynamicAction = dynamicQueue[dynamicIndex];
-                    LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
-                    await dynamicAction.action.Invoke(args);
+                    // LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
+                    await dynamicAction.action.Invoke(args, cancellationToken);
                     dynamicIndex++;
                 }
                 // 남은 정적 작업 실행
-                while (staticIndex < staticQueue.Count && !args.BreakChain)
+                while (staticIndex < staticQueue.Count && !cancellationToken.IsCancellationRequested && !args.BreakChain)
                 {
                     var staticAction = staticQueue[staticIndex];
-                    LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
-                    await staticAction.action.Invoke(args);
+                    // LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
+                    await staticAction.action.Invoke(args, cancellationToken);
                     staticIndex++;
                 }
             }
@@ -175,6 +195,29 @@ namespace Cardevil.Events.ExecEvents
             }
             
             LogEx.Log("Merged Event Bus Invocation Complete");
+        }
+
+        /// <summary>
+        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출하고, 인자를 Dispose합니다.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeSequentiallyAndDispose(TEvent args, CancellationToken cancellationToken = default)
+        {
+            await InvokeSequentially(args, cancellationToken);
+            args.Dispose();
+            
+        }
+        
+        /// <summary>
+        /// 동적 이벤트와 정적 이벤트를 병합하여 우선순위에 따라 호출하고, 인자를 Dispose합니다.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeMergedAndDispose(TEvent args, CancellationToken cancellationToken = default)
+        {
+            await InvokeMerged(args, cancellationToken);
+            args.Dispose();
         }
     }
 }

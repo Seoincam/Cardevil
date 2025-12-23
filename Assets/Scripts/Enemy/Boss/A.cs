@@ -18,7 +18,7 @@ namespace Cardevil.InGame.Enemy.Boss
         public override void AttackingCheck(Attack attack)
         {
             AttackGo(attack);
-            Managers.Card.GetCard().Lock(); // 카드 잠구기
+            // Managers.Card.GetCard().Lock(); // 카드 잠구기
         }
 
     }

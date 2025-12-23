@@ -1,4 +1,5 @@
-﻿using Cardevil.Core;
+using Cardevil.Core;
+using Cardevil.Core.Bootstrap;
 using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
@@ -16,19 +17,32 @@ namespace Cardevil.Ingame
     /// 플레이어의 상태를 나타내는 클래스
     /// </summary>
     [Serializable]
-    public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>
+    public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>, INewGameInitializable
     {
-        [SerializeField] private int _currentHP = 3;
-        [SerializeField] private int _maxHP = 3;
-        [SerializeField] private int _shield = 0;
-        [SerializeField] private int _rerollTicket = 0;
-        [SerializeField] private int _maxHand = 6; // TODO: 실제 로직에 연결해야함.
-        [SerializeField] private int _discardHand = 3;
+        // Hp
+        [SerializeField] private int _currentHP;
+        [SerializeField] private int _maxHP;
+        [SerializeField] private int _shield;
+        [SerializeField] public bool canRevive;
+        
+        // Card
+        [SerializeField] private int _maxHand; // TODO: 실제 로직에 연결해야함.
+        [SerializeField] private int _discardHand;
+        
+        // Current
+        [SerializeField] private int _rerollTicket;
+        [SerializeField] private int _gold;
+        [SerializeField] public int _slotMachineLevel;
+        
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
-        [SerializeField] public int gold;
 
-        public bool canRevive = false;
-
+        /*
+         * TODO: 추가로 저장해야할 것
+         * 유물 상태,
+         * 아이템 상태
+         */
+        
+        
         /// <summary>
         /// 플레이어의 현재 체력
         /// </summary>
@@ -41,12 +55,12 @@ namespace Cardevil.Ingame
             get => _currentHP;
             set
             {
-                using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
-                {
-                    args.Init(_currentHP, value);
-                    ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
-                    _currentHP = args.ModifiedHealth;
-                }
+                PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
+                
+                args.Init(_currentHP, value);
+                ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _currentHP = args.ModifiedHealth;
+                
             }
         }
         public int MaxHp
@@ -58,14 +72,14 @@ namespace Cardevil.Ingame
         public int Shield
         {
             get => _shield;
-            set 
+            set
             {
-                using(PlayerShieldChangeArgs args = PlayerShieldChangeArgs.Get())
-                {
-                    args.Init(_shield, value);
-                    ExecEventBus<PlayerShieldChangeArgs>.InvokeMerged(args).Forget();
-                    _shield = args.ModifiedShield;
-                }
+                PlayerShieldChangeArgs args = PlayerShieldChangeArgs.Get();
+                
+                args.Init(_shield, value);
+                ExecEventBus<PlayerShieldChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _shield = args.ModifiedShield;
+                
             }
         }
 
@@ -81,12 +95,10 @@ namespace Cardevil.Ingame
             get => _rerollTicket;
             set
             {
-                using (RerollTicketChangeArgs args = RerollTicketChangeArgs.Get())
-                {
-                    args.Init(_rerollTicket, value);
-                    ExecEventBus<RerollTicketChangeArgs>.InvokeMerged(args).Forget();
-                    _rerollTicket = args.ModifiedTicket;
-                }
+                RerollTicketChangeArgs args = RerollTicketChangeArgs.Get();
+                args.Init(_rerollTicket, value);
+                ExecEventBus<RerollTicketChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _rerollTicket = args.ModifiedTicket;
             }
         }
         
@@ -148,12 +160,12 @@ namespace Cardevil.Ingame
         {
             if (broadcast)
             {
-                using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
-                {
-                    args.Init(_currentHP, hp);
-                    ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
-                    _currentHP = args.NewHealth;
-                }
+                PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
+                
+                args.Init(_currentHP, hp);
+                ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+                _currentHP = args.NewHealth;
+                
             }
             else
             {
@@ -163,12 +175,30 @@ namespace Cardevil.Ingame
         
         public void BroadcastInitialStatus()
         {
-            using(PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get())
-            {
-                args.Init(_currentHP, _currentHP);
-                args.IsJustBroadcast = true;
-                ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).Forget();
-            }
+            PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
+            args.Init(_currentHP, _currentHP);
+            args.IsJustBroadcast = true;
+            ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+        }
+        
+        public void SetUpNewGame(GameSave currentSave)
+        {
+            // TODO: 나중에 SO 등 다른 방법으로 개선
+            
+            // Hp
+            _currentHP = 3;
+            _maxHP = 3;
+            _shield = 0;
+            canRevive = false;
+            
+            // Card
+            _maxHand = 6;
+            _discardHand = 3;
+            
+            // Current
+            _rerollTicket = 0;
+            _gold = 0;
+            _slotMachineLevel = 1;
         }
 
         public void Save(GameSave currentSave)
@@ -184,10 +214,21 @@ namespace Cardevil.Ingame
 
         public void CopyFrom(PlayerStatus other)
         {
+            // Hp
             _currentHP = other._currentHP;
             _maxHP = other._maxHP;
             _shield = other._shield;
+            canRevive = other.canRevive;
+            
+            // Card
+            _maxHand = other._maxHand;
+            _discardHand = other._discardHand;
+            
+            //Current
             _rerollTicket = other._rerollTicket;
+            _gold = other._gold;
+            _slotMachineLevel = other._slotMachineLevel;
+            
             _variableContainer.CopyFrom(other._variableContainer);
         }
 
@@ -196,6 +237,8 @@ namespace Cardevil.Ingame
             other.CopyFrom(this);
         }
 
+        #region Console Commands
+        
         [ConsoleCommand("heal", "Heal the player by a specified amount.","heal [int: amount (optional, default: 1)]", new []{"0","1","2","3"})]
         private static void HealCommand(string[] args)
         {
@@ -217,8 +260,8 @@ namespace Cardevil.Ingame
                 DebugConsole.Console.MessageWarning("Heal amount cannot be negative.");
                 return;
             }
-            Managers.Game.PlayerStatus.Heal(amount);
-            DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+            CardevilCore.Instance.Game.PlayerStatus.Heal(amount);
+            DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {CardevilCore.Instance.Game.PlayerStatus.CurrentHp}/{CardevilCore.Instance.Game.PlayerStatus.MaxHp}");
         }
 
         [ConsoleCommand("deal", "Deal damage to the player by a specified amount.", "deal [int: amount]", new []{"0","1","2","3"})]
@@ -242,8 +285,8 @@ namespace Cardevil.Ingame
                 DebugConsole.Console.MessageWarning("Damage amount cannot be negative.");
                 return;
             }
-            int actualDamage = Managers.Game.PlayerStatus.TakeDamage(amount);
-            DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+            int actualDamage = CardevilCore.Instance.Game.PlayerStatus.TakeDamage(amount);
+            DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {CardevilCore.Instance.Game.PlayerStatus.CurrentHp}/{CardevilCore.Instance.Game.PlayerStatus.MaxHp}");
         }
 
         [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다.","sethp <int: amount> [bool: broadcast (optional, default: true)]", new []{"0","1","2","3"})]
@@ -258,17 +301,18 @@ namespace Cardevil.Ingame
             if(args.Length == 1)
             {
                 int hp = CommandHelper.ParseArgument<int>(args[0]);
-                Managers.Game.PlayerStatus.ForceSetCurrentHp(hp, true);
-                DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp}");
+                CardevilCore.Instance.Game.PlayerStatus.ForceSetCurrentHp(hp, true);
+                DebugConsole.Console.MessageInfo($"Set player HP to {CardevilCore.Instance.Game.PlayerStatus.CurrentHp}/{CardevilCore.Instance.Game.PlayerStatus.MaxHp}");
             }
             else
             {
                 int hp = CommandHelper.ParseArgument<int>(args[0]);
                 bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
-                Managers.Game.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
-                DebugConsole.Console.MessageInfo($"Set player HP to {Managers.Game.PlayerStatus.CurrentHp}/{Managers.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+                CardevilCore.Instance.Game.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
+                DebugConsole.Console.MessageInfo($"Set player HP to {CardevilCore.Instance.Game.PlayerStatus.CurrentHp}/{CardevilCore.Instance.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
             }
         }
 
+        #endregion
     }
 }
