@@ -97,6 +97,12 @@ namespace Cardevil.InGame.Enemy
                 : new AttackResult(target, HandRanking.None, 0);
         }
 
+        // TODO : Merge 과정에서 수정된 TurnAttackAsync 위에꺼랑 뭐가다른지? 
+        public UniTask<AttackResult> TurnAttackAsync()
+        {
+            throw new NotImplementedException();
+        }
+
 
         #region Attack 관련
 
@@ -271,8 +277,6 @@ namespace Cardevil.InGame.Enemy
 
         #endregion
       
-
-
         #region Player 상호작용 
         public virtual bool GetDamage(float damage)
         {
@@ -553,6 +557,8 @@ namespace Cardevil.InGame.Enemy
             }
             currentAttackStyle = AttackStyle.AttackHorizontal; // 포인트 어택 형태로 저장
         }
+
+     
 
 
         #endregion
