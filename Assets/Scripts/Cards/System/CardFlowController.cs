@@ -73,7 +73,7 @@ namespace Cardevil.Cards.System
         }
 
         // TODO: 구현해야함.
-        public bool IsNoCard => _cardsModel.Deck.Count == 0;
+        public bool IsNoCard => _cardsModel.Hand.Count == 0;
         
         public async UniTask DrawCard()
         {

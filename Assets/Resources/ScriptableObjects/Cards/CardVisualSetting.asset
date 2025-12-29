@@ -38,12 +38,14 @@ MonoBehaviour:
   _moveSpeedLimit: 4000
   _clickDetectThreshold: 0.2
   _flipEase: 4
+  _visualChangeBackInterval: 0.4
+  _visualChangeFrontInterval: 0.25
   _drawFlipDuration: 0.4
   _drawDuration: 0.5
   _drawEase: 17
   _discardDuration: 0.25
   _discardEase: 22
-  _followSpeed: 9
+  _followSpeed: 14.5
   _rotationAmount: 0.2
   _rotationSpeed: 5
   _tiltSpeed: 20
@@ -52,6 +54,9 @@ MonoBehaviour:
   _selectScaleEase: 27
   _shadowOffset: 20
   _curve: {fileID: 11400000, guid: 44adedfce490649ee8efe7aae3c67915, type: 2}
+  hoverScale: 1.15
+  hoverScaleTweenDuration: 0.15
+  hoverEase: 27
   _deckInteractionScale: 1.125
   _deckInteractionDuration: 0.09
   _deckInteractionEase: 31

@@ -40,7 +40,10 @@ namespace Cardevil.Cards.InStage.View
 
         private UniTask _ticketAnim = UniTask.CompletedTask;
         private Tween _ticketTween;
-        
+
+        private const string SlotPath = "UI/CardUI/Slot";
+
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (!doButton) LogEx.LogError("doButton is null");
@@ -51,6 +54,7 @@ namespace Cardevil.Cards.InStage.View
             if (!background) LogEx.LogError("background is null");
             if (!ticketCountPanel) LogEx.LogError("ticketCountPanel is null");
         }
+#endif
 
         /// <summary>
         /// 리롤 UI(View)를 초기화.
@@ -168,7 +172,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = AssetUtil.Instantiate("Cards/Slot", bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 

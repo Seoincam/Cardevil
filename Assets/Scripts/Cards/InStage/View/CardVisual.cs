@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
@@ -12,7 +13,6 @@ using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Cards.Visual;
 using Cardevil.Cards.Visual.Base;
 using Cysharp.Threading.Tasks;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage.View
@@ -23,16 +23,18 @@ namespace Cardevil.Cards.InStage.View
         [Header("Card")]
         [SerializeField, VisibleOnly] private Card parentCard;
 
-        [Header("Visual")] 
-        [SerializeField] private CardVisualController visualController;
+        [Header("Visual")]
+        [SerializeField] private InGameCardVisualController controller;
         [SerializeField] private CardVisualBase visualBase;
         [Space]
         [SerializeField] private RectTransform objectsRect;
-        [SerializeField] private Button selectionButton;
+        [SerializeField] private Image changeImage;
         
         [Header("SO")]
         [SerializeField] private CardVisualSettingSO visualSetting;
         [SerializeField] private CardEvaluationAnimSO animSo;
+        
+        public CanvasGroup CanvasGroup { get; private set; }
 
         private Poolable _poolable;
         private CardDeckVisual _deckVisual;
@@ -41,12 +43,15 @@ namespace Cardevil.Cards.InStage.View
         private VisualTransformDelta _delta;
         private VisualState _state;
 
+        private Tween _hoverScaleTween;
+
         private void Awake()
         {
             // _delta.shadowOriginPosition = shadowTransform.localPosition;
 
             _poolable = GetComponent<Poolable>();
             _poolable.OnRelease += Clear;
+            CanvasGroup = GetComponent<CanvasGroup>();
         }
         
         public void Init(Card parentCard, IReadOnlyCardsModel model)
@@ -58,7 +63,8 @@ namespace Cardevil.Cards.InStage.View
             
             // _canvas.overrideSorting = false; // @PoolableRoot로 갈 때 자동으로 overrideSorting = true가 됨.
             
-            visualController.Init(parentCard.Data);
+            controller.Init(visualBase, parentCard.Data);
+            changeImage.gameObject.SetActive(parentCard.Data.CanOpenSelection);
             visualBase.TryFlipBackImmediate();
             
             var deckVisuals = FindObjectsByType<CardDeckVisual>(FindObjectsSortMode.None);
@@ -70,31 +76,26 @@ namespace Cardevil.Cards.InStage.View
             _state.isInitialized = true;
         }
 
-        public void BindSelectionButton(UnityAction onTapped)
-        {
-            selectionButton.gameObject.SetActive(true);
-            selectionButton.onClick.AddListener(onTapped);
-        }
+
         
         public void Clear()
         {
             parentCard = null;
 
-            // frontImage.rectTransform.rotation = Quaternion.Euler(0f, 90f, 0f);
-            // backImage.rectTransform.rotation = Quaternion.Euler(0f, 0f, 0f);
-            // shakeObject.localEulerAngles = Vector3.zero;
-
             // _canvas.overrideSorting = false;
-            
-            selectionButton.gameObject.SetActive(false);
-            selectionButton.onClick.RemoveAllListeners();
+
             _state.isDiscarded = false;
             _state.isInitialized = false;
         }
 
-        public void UpdateVisual()
+        public async UniTask UpdateVisual(CardData data)
         {
-            visualController.UpdateData(parentCard.Data).Forget();
+            await visualBase.FlipBackAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            controller.UpdateVisual(data);
+            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.VisualChangeBackInterval));
+            
+            await visualBase.FlipFrontAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            await UniTask.Delay(TimeSpan.FromSeconds(visualSetting.VisualChangeFrontInterval));
         }
         
         private void Update()
@@ -157,7 +158,7 @@ namespace Cardevil.Cards.InStage.View
             var c = visualSetting.Curve;
 
             int total = Mathf.Max(1, _model.Hand.Count - 1); // 0 나눗셈 방지
-            float factor = (float)_state.handIndex / total;
+            float factor = (float)parentCard.HandIndex / total;
             
             _delta.curveYOffset = c.positioning.Evaluate(factor) * c.positioningInfluence * total;
             _delta.curveRotationOffset = c.rotation.Evaluate(factor);
@@ -172,6 +173,7 @@ namespace Cardevil.Cards.InStage.View
         {
             if (_state.isDiscarded) return;
             if (parentCard.IsReroll) return;
+            if (parentCard.HoldingInValueSelection) return;
 
             var c = visualSetting.Curve;
             
@@ -189,7 +191,7 @@ namespace Cardevil.Cards.InStage.View
         
         #region Pointer Event Handler
         
-        public void OnDragStart()
+        public void OnDragStart(Card _)
         {
             // _canvas.overrideSorting = true;
         }
@@ -215,6 +217,20 @@ namespace Cardevil.Cards.InStage.View
             // shadowTransform.localPosition = _delta.shadowOriginPosition;
         }
         
+        public void OnPointerEnter()
+        {
+            _hoverScaleTween?.Kill();
+            _hoverScaleTween = objectsRect.DOScale(visualSetting.hoverScale, visualSetting.hoverScaleTweenDuration)
+                .SetEase(visualSetting.hoverEase);
+        }
+
+        public void OnPointerExit()
+        {
+            _hoverScaleTween?.Kill();
+            _hoverScaleTween = objectsRect.DOScale(1f, visualSetting.hoverScaleTweenDuration)
+                .SetEase(visualSetting.hoverEase);
+        }
+        
         #endregion
 
         #region Reroll
@@ -223,7 +239,7 @@ namespace Cardevil.Cards.InStage.View
         {
             _deckVisual.OnInteraction();
             visualBase.TryFlipBackImmediate();
-            visualBase.TryFlipFrontAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            visualBase.FlipFrontAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase).Forget();
             
             transform.DOMove(endValue: parentCard.transform.position, visualSetting.RerollDrawDuration)
                 .SetEase(visualSetting.RerollDrawEase);
@@ -237,7 +253,7 @@ namespace Cardevil.Cards.InStage.View
                 .SetEase(visualSetting.RerollDiscardEase);
             
             visualBase.TryFlipFrontImmediate();
-            visualBase.TryFlipBackAnim(visualSetting.RerollFlipDuration, visualSetting.FlipEase);
+            visualBase.FlipBackAsync(visualSetting.RerollFlipDuration, visualSetting.FlipEase).Forget();
 
             tween.OnComplete(() =>
             {
@@ -258,7 +274,7 @@ namespace Cardevil.Cards.InStage.View
             _deckVisual.OnInteraction();
             
             visualBase.TryFlipBackImmediate();
-            visualBase.TryFlipFrontAnim(visualSetting.DrawFlipDuration, visualSetting.FlipEase);
+            visualBase.FlipFrontAsync(visualSetting.DrawFlipDuration, visualSetting.FlipEase).Forget();
         }
 
         public void Discard()
@@ -271,20 +287,7 @@ namespace Cardevil.Cards.InStage.View
             tween.OnComplete(Destroy);
         }
         
-        #region Visual Index
-
-        public void UpdateVisualIndex()
-        {
-            if (_model.TryGetIndex(parentCard, out int index))
-            {
-                _state.handIndex = index;
-                // TODO: 현재 SetSiblingIndex을 업데이트 할 때 마지막 visual이 제대로 업데이트 되지 않는 문제가 발생.
-                // 마지막 visual일 시 더 큰 값으로 업데이트하는 등의 수정이 필요할 듯
-                transform.SetSiblingIndex(index);
-            }
-        }
-
-        #endregion
+        public void UpdateVisualIndex(int index) => transform.SetSiblingIndex(index);
         
         private void Destroy()
         {
@@ -300,6 +303,13 @@ namespace Cardevil.Cards.InStage.View
                     .SetLoops(2, LoopType.Yoyo));
         }
 
+        public void FadeChangeImage(bool active)
+        {
+            changeImage.DOKill();
+            changeImage.DOFade(active ? 1f : 0f, .2f).SetEase(Ease.InCirc);
+        }
+        
+
         private struct VisualTransformDelta
         {
             public Vector3 movementDelta;
@@ -313,7 +323,6 @@ namespace Cardevil.Cards.InStage.View
         [Serializable]
         private struct VisualState
         {
-            public int handIndex;
             public bool isInitialized;
             public bool isDiscarded;
         }
