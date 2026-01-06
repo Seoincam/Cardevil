@@ -99,8 +99,8 @@ MonoBehaviour:
       _slotMachineLevel: 0
       _variableContainer:
         variables: []
-    <CardLibrary>k__BackingField:
-      pipelineMap:
+    <CardStatus>k__BackingField:
+      specMap:
         defaultKey: 0
         _items: []
       dataMap:
@@ -130,8 +130,8 @@ MonoBehaviour:
         _slotMachineLevel: 1
         _variableContainer:
           variables: []
-      CardLibraryData:
-        pipelines: []
+      cardStatusData:
+        specList: []
     _currentSlot:
       hasValue: 0
       value: 0
@@ -173,6 +173,50 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1453207169086923862}
     m_Modifications:
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: isInitialized
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.RoomDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.RelicDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.MachineRewardList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.BaseMobBossDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.CustomClassTestList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.HandRankingDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.MachineProbabillityList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: <SpriteCache>k__BackingField._items.Array.data[0].Key
+      value: https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: <SpriteCache>k__BackingField._items.Array.data[1].Key
+      value: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
+      objectReference: {fileID: 0}
+    - target: {fileID: 750990558417630276, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
+      propertyPath: mcDatabase.RelicEffectOnEvaluationDataList.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1910975237748545799, guid: 8142fffeb3e5546dc8456ae6983d3c9e, type: 3}
       propertyPath: m_Name
       value: '@DBManager'
