@@ -47,6 +47,7 @@ namespace Cardevil.Ingame.Player
         public Field.Field Field { get; private set; }
         public PlayerStatus PlayerStatus => CardevilCore.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
+        public Transform VisualTransform => _playerVisual.transform;
         private void Awake()
         {
             if(_entity == null)
@@ -107,7 +108,7 @@ namespace Cardevil.Ingame.Player
                         else if (vertical > 0) direction = Direction.Up;
                         else if (vertical < 0) direction = Direction.Down;
                         LogEx.Log($"Moving in direction: {direction}");
-                        MoveWithAnim(direction);
+                        MoveWithAnim(direction).Forget();
                     }
                 }
             }
@@ -155,11 +156,19 @@ namespace Cardevil.Ingame.Player
             Tile originalTile = _entity.CurrentTile;
             _entity.MoveTo(targetTile, false);
             
-            async UniTask MoveTask(Vector3 endPosition)
+            async UniTask MoveTask(Vector3 endPosition, Action<float> Update = null)
             {
                 PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
                 PlayerVisual.IsRunning = true;
                 var tween = transform.DOMove(endPosition, 1f / MoveSpeed).SetEase(Ease.Linear);
+                if (Update != null)
+                {
+                    tween.OnUpdate(() =>
+                    {
+                        float progress = tween.ElapsedPercentage();
+                        Update(progress);
+                    });
+                }
                 await tween.ToUniTask();
                 PlayerVisual.IsRunning = false;
             }
@@ -178,11 +187,14 @@ namespace Cardevil.Ingame.Player
                 Vector3 outPosition = Field.GetTileCenterWorld(originalTile.Coordinate + direction.ToTileVector());
                 Vector3 targetPosition = _entity.CurrentTile.transform.position;
                 outPosition.y = targetPosition.y = startPosition.y; // Y 축은 유지
-                await MoveTask(outPosition);
+                await MoveTask(outPosition, (progress) =>
+                {
+                    PlayerVisual.ShadowFadeAlpha = 1f - Mathf.Clamp01(progress * 2f);
+                });
                 PlayerVisual.IsFalling = true;
-
+                PlayerVisual.ShadowFadeAlpha = 0f;
                 
-                await transform.DOShakePosition(playerCharacterSetting.coyoteTime,
+                await VisualTransform.DOShakePosition(playerCharacterSetting.coyoteTime,
                     strength:playerCharacterSetting.coyoteShakeStrength * new Vector3(1,0,1),
                     vibrato:playerCharacterSetting.coyoteShakeCount,
                     randomness:90,
@@ -192,7 +204,7 @@ namespace Cardevil.Ingame.Player
                 
                 var sequence = DOTween.Sequence();
                 // 떨어지는 시퀀스
-                sequence.Append(transform.DOMoveY(startPosition.y - playerCharacterSetting.fallHeight,
+                sequence.Append(VisualTransform.DOLocalMoveY(- playerCharacterSetting.fallHeight,
                     playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
                 // 떨어지는 페이드아웃
                 float fadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
@@ -200,14 +212,18 @@ namespace Cardevil.Ingame.Player
                 sequence.Insert(fadeoutStartTime,
                     DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,0, playerCharacterSetting.fallDuration-fadeoutStartTime));
                 
-               
                 // 다시 떨어지는 시퀀스
-                sequence.AppendCallback(() => transform.position = targetPosition + Vector3.up * playerCharacterSetting.fallHeight);
-                sequence.Append(transform.DOMoveY(targetPosition.y,
+                sequence.AppendCallback(() =>
+                {
+                    transform.position = targetPosition;
+                    VisualTransform.localPosition = Vector3.up * playerCharacterSetting.fallHeight;
+                });
+                sequence.Append(VisualTransform.DOLocalMoveY(0,
                     playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
                 float fadeinEndTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
                     playerCharacterSetting.fallFadeEndRatio);
                 sequence.Join(DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,1,fadeinEndTime));
+                sequence.Join(DOTween.To(() => PlayerVisual.ShadowFadeAlpha, value => PlayerVisual.ShadowFadeAlpha = value,1,fadeinEndTime));
                 await sequence.ToUniTask();
                 PlayerVisual.IsFalling = false;
             }
