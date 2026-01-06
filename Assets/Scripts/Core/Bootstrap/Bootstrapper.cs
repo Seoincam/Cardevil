@@ -1,6 +1,7 @@
 using Cardevil.DebugConsole.Commands;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Item;
+using Cardevil.Save;
 using Cardevil.SceneManagement;
 using Cysharp.Threading.Tasks;
 using System;
@@ -30,7 +31,7 @@ namespace Cardevil.Core.Bootstrap
             set
             {
                 _loaded = value;
-                ProgressChanged?.Invoke(_totalToLoad, value);
+                ProgressChanged?.Invoke(value, _totalToLoad);
             }
         }
         
@@ -80,7 +81,18 @@ namespace Cardevil.Core.Bootstrap
             ctx.GameFlow.Init();
             Loaded++;
 
-            await SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Single);
+            if (ctx.CanSelectSaveSlot)
+            {
+                SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Single).Forget();    
+            }
+            else
+            {
+                // 개발용으로 세이브 로드 생략하고 항상 새 게임에 진입
+                var slot = SaveSlot.DevSlot;
+                ctx.SaveLoad.MakeNewSave(slot, "DevSave");
+                ctx.SaveLoad.LoadGame(slot);
+                await SceneLoader.LoadSceneAsync(Scenes.World, LoadSceneMode.Single);
+            }
         }
     }
 }
