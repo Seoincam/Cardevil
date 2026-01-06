@@ -39,7 +39,7 @@ namespace Cardevil.InGame.Enemy.Boss
             {
                 // 공격 성공
                 LogEx.Log("King이 공격에 성공했다!");
-                isAttackSuccess = true;
+                _enemyAttackInfo.attackSucess = true;
 
 
                 // King만의 특수 로직 
@@ -48,7 +48,7 @@ namespace Cardevil.InGame.Enemy.Boss
             else
             {
                 // 공격 실패
-                isAttackSuccess = false;
+                _enemyAttackInfo.attackSucess = false;
                 LogEx.Log("King이 공격에 실패했다!");
             }
         }

@@ -197,6 +197,45 @@ namespace Cardevil.Events
         }
     }
 
+
+
+
+    /// <summary>
+    /// 플레이어가 공격 할 때, 호출할 Args
+    /// </summary>
+   public class PlayerAttackArgs : ExecEventArgs<PlayerAttackArgs>
+    {
+        public enum Order
+        {
+            Phase_Base,
+            Phase_Additive,
+            Phase_Multiplicative,
+            Phase_Defense,
+            Phase_Final,
+            Phase_AfterEffect
+
+        }
+
+        // 플레이어가 몹에게 전달하는 데미지
+        public float DamageAmount { get; private set; } 
+
+        
+
+        // 데미지 설정 
+        public void SetValues(float damage)
+        {
+            this.DamageAmount = damage;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            DamageAmount = 0f;
+        }
+
+    }
+
+
     /// <summary>
     /// 카드 버리기 횟수 변화 이벤트 인자.
     /// </summary>

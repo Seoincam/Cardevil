@@ -1,4 +1,4 @@
-﻿using Cardevil.Utils;
+using Cardevil.Utils;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 
@@ -25,6 +25,7 @@ namespace Cardevil.Events.ExecEvents
         {
             ExecDynamicEventBus<TEvent>.Register(handler);
         }
+
         /// <summary>
         /// 동적 핸들러 등록을 해제합니다.
         /// </summary>

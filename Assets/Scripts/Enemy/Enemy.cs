@@ -46,15 +46,15 @@ namespace Cardevil.InGame.Enemy
         public int attackCreateTurnOrder;
         public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?
         private bool aWakeFirst = true;
-        public bool isAttackSuccess = false;
         private bool isEnemyDead = false;
         public bool isPlayerAttack = true;
         private bool orderSettingGo = false;
         private int settingOrder = 3;
         public int delayAttackByRelic = 0;
         public List<Attack> attackLists = new List<Attack>();
-        private (bool attackSucess, float damage) _enemyAttackInfo;
+        public (bool attackSucess, float damage) _enemyAttackInfo;
         private AttackStyle currentAttackStyle;
+        private List<AttackStyle> attackStyles = new List<AttackStyle>(); // Enemy에게 지정된 공격할 AttackStyle
 
         // --------족보 관련----------
         public int enforcedAttackRanking = 0;
@@ -78,29 +78,26 @@ namespace Cardevil.InGame.Enemy
         {
             AttackEnemyTurnStart(ctx);
         }
-        public async UniTask<AttackResult> TurnAttackAsync(IReadOnlyTurnContext ctx)
+       
+        public async UniTask<AttackResult> TurnAttackAsync()
         {
             _enemyAttackInfo.attackSucess = false;
 
-
+            var ctx = TurnManager.Context;
 
             var target = ctx.Player;
             // 이제 플레이어 위치 이렇게 받아오면 됨!
             var playerPosition = ctx.PlayerPosition;
 
-            await UniTask.Delay(1200);
             AttackEnemyTurnStart(ctx);
+
+            await UniTask.Delay(1200);
+           
 
             // TODO: 필요하다면 족보도 받아오기
             return _enemyAttackInfo.attackSucess
                 ? new AttackResult(target, HandRanking.None, (int)damage + enforcedAttackDamage)
                 : new AttackResult(target, HandRanking.None, 0);
-        }
-
-        // TODO : Merge 과정에서 수정된 TurnAttackAsync 위에꺼랑 뭐가다른지? 
-        public UniTask<AttackResult> TurnAttackAsync()
-        {
-            throw new NotImplementedException();
         }
 
 
@@ -197,14 +194,11 @@ namespace Cardevil.InGame.Enemy
             if (HandRankAttackLogic.CheckHit(attack, damage, out var result))
             {
                 LogEx.Log("Enemy가 공격에 성공했다!");
-                isAttackSuccess = true;
-
-                // 실제 데미지 주기 (Player에게)
-                // result.dmg 를 사용하여 플레이어 피격 함수 호출
+                _enemyAttackInfo.attackSucess = true;
             }
             else
             {
-                isAttackSuccess = false;
+                _enemyAttackInfo.attackSucess = false;
                 LogEx.Log("Enemy가 공격에 실패했다!");
             }
 
@@ -258,21 +252,16 @@ namespace Cardevil.InGame.Enemy
         }
 
 
-        AttackStyle SetAttackType()
-        {
-            currentAttackStyle = GetRandomAttackStyle(); // 랜덤으로 어택스타일 받기;
-            return currentAttackStyle;
-        }
 
         int nowAttackPatternIndex = 0;
-        AttackStyle GetRandomAttackStyle() // 랜덤으로 어택스타일 받기
+
+        AttackStyle SetAttackType()
         {
-            Array values = Enum.GetValues(typeof(AttackStyle));
-            AttackStyle returnAttackStyle = baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
+            AttackStyle returnAttackStyle;
+            returnAttackStyle = baseMobBossData.AttackPattern[nowAttackPatternIndex++ % baseMobBossData.AttackPattern.Count];
             // 기믹으로 강화된 어택이 존재한다면
             returnAttackStyle += enforcedAttackRanking;
             return returnAttackStyle;
-            
         }
 
         #endregion
@@ -309,7 +298,7 @@ namespace Cardevil.InGame.Enemy
 
         private void EnemyTurnClear()
         {
-            isAttackSuccess = false;
+            _enemyAttackInfo.attackSucess = false;
             orderSettingGo = false;
             settingOrder = attackCreateCycle;
         }
@@ -412,13 +401,20 @@ namespace Cardevil.InGame.Enemy
             baseMobBossData = _baseMobBossData;
             Debug.Log($"SetUp! : {baseMobBossData.MobKorID} : {_baseMobBossData.MobID}");
 
-            if (baseMobBossData.BoolAttackType) // 1 이라면
+
+            attackCreateCycle = _baseMobBossData.AttackCycle;
+            
+            if(baseMobBossData.BoolAttackType)
             {
-                attackCreateCycle = _baseMobBossData.AttackCycle;
+                attackStyles = baseMobBossData.AttackPattern;
             }
             else
             {
-                SetPatternRandomBaseWeight();
+                // 0이라면 가중치에따라 랜덤
+               attackStyles= Util.PickRandomPatterns(
+               baseMobBossData.AttackPattern,
+               baseMobBossData.AttackWeight,
+               15);
             }
             isPlayerAttack = baseMobBossData.AttackPlayer;
 
@@ -436,17 +432,11 @@ namespace Cardevil.InGame.Enemy
 
             char trimText = '"';
             IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
+            if(igimmick==null)
+            {
+                return;
+            }
             igimmick.Apply(this);
-        }
-        private void SetPatternRandomBaseWeight()
-        {
-            // 한 줄로 깔끔하게 처리
-            baseMobBossData.AttackPattern = Util.PickRandomPatterns(
-                baseMobBossData.AttackPattern,
-                baseMobBossData.AttackWeight,
-                15
-            );
-
         }
         #endregion
 

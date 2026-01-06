@@ -5,8 +5,10 @@ using Cardevil.Events;
 
 namespace Cardevil.InGame.Enemy
 {
-    // # 적이 공격을 성공하면, 최대 체력의 X%만큼을 회복합니다.
-    public class Gimmick_Attack_Heal : IGimmick
+    /// <summary>
+    /// # 턴이 종료될 때, 내 손패에 오망성 카드가 있다면, 적이 최대 체력의 X%만큼 회복합니다.
+    /// </summary>
+    public class Gimmick_Pentagram_Heal : IGimmick
     {
         private Enemy _targetEnemy;
 
@@ -19,12 +21,13 @@ namespace Cardevil.InGame.Enemy
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<EnemyAttackAfterArgs>.RegisterDynamic(EnemyAttack);
+            ExecEventBus<EnemyTurnEndArgs>.RegisterDynamic(EnemyTurnEndHeal);
         }
 
-        private void EnemyAttack(ExecQueue<EnemyAttackAfterArgs> queue, EnemyAttackAfterArgs args)
+        private void EnemyTurnEndHeal(ExecQueue<EnemyTurnEndArgs> queue, EnemyTurnEndArgs args)
         {
-            if(_targetEnemy._enemyAttackInfo.attackSucess)  // 플레이어 공격에 성공했다면
+            // TODO : 오망성카드를 현재 보유하고 있는지?
+            if (_targetEnemy.CurrentHp>=0)  // 체력 테스트, 오망성카드의 존재여부
             {
                 // 최대체력의 5% 회복
 
@@ -34,6 +37,7 @@ namespace Cardevil.InGame.Enemy
             }
         }
 
-      
+
     }
 }
+

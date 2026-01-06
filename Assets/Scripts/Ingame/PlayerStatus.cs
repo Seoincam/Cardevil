@@ -56,11 +56,13 @@ namespace Cardevil.Ingame
             set
             {
                 PlayerHealthChangeArgs args = PlayerHealthChangeArgs.Get();
-                
+
                 args.Init(_currentHP, value);
-                ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
-                _currentHP = args.ModifiedHealth;
+                ExecEventBus<PlayerHealthChangeArgs>.InvokeMerged(args).ContinueWith(() => { _currentHP = args.ModifiedHealth;
+                    args.Dispose();
+                } ).Forget();
                 
+              
             }
         }
         public int MaxHp

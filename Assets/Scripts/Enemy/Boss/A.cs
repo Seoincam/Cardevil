@@ -26,7 +26,7 @@ namespace Cardevil.InGame.Enemy.Boss
             if (HandRankAttackLogic.CheckHit(attack, damage, out var result))
             {
                 // --- 공격 성공 시 ---
-                isAttackSuccess = true;
+                _enemyAttackInfo.attackSucess = true;
                 LogEx.Log("Ace 공격 성공!");
 
                 // TODO : 카드를 잠구는 로직
@@ -35,7 +35,7 @@ namespace Cardevil.InGame.Enemy.Boss
             else
             {
                 // --- 공격 실패 시 ---
-                isAttackSuccess = false;
+                _enemyAttackInfo.attackSucess = false;
                 LogEx.Log("Ace 공격 실패.");
             }
         }
