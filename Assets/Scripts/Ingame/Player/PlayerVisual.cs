@@ -13,6 +13,7 @@ namespace Cardevil.Ingame.Player
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private SpriteRenderer _mainSpriteRenderer;
+        [SerializeField] private SpriteRenderer _shadowSpriteRenderer;
 
         public bool IsRunning
         {
@@ -40,6 +41,23 @@ namespace Cardevil.Ingame.Player
         {
             get => _mainSpriteRenderer.color.a;
             set => SetFade(value);
+        }
+        
+        public float ShadowFadeAlpha
+        {
+            get => _shadowSpriteRenderer.color.a;
+            set
+            {
+                Color color = _shadowSpriteRenderer.color;
+                color.a = value;
+                _shadowSpriteRenderer.color = color;
+            }
+        }
+        
+        public float ShadowScale
+        {
+            get => _shadowSpriteRenderer.transform.localScale.x;
+            set => _shadowSpriteRenderer.transform.localScale = new Vector3(value, value, 1f);
         }
         
         public void PlayAttackAnimation()
