@@ -102,11 +102,11 @@ namespace Cardevil.Cards.Evaluations
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
 
             List<CardData> attacks = sortedCards
-                .Where(c => c.Data.Kind == CardKind.Attack)
+                .Where(c => c.Data.IsAttack)
                 .Select(c => c.Data).ToList();
 
             List<CardData> moves = sortedCards
-                .Where(c => c.Data.Kind == CardKind.Move)
+                .Where(c => c.Data.IsMove)
                 .Select(c => c.Data).ToList();
 
             _resultBuilder = EvaluationResult.CreateBuilder()

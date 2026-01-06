@@ -75,9 +75,9 @@ namespace Cardevil.Cards.InStage.Model
                 foreach (var card in _selection)
                 {
                     var data = card.Data;
-                    if (data.Kind == CardKind.Attack && data.NumberSelectState.FinalValue != null)
+                    if (data.IsAttack && data.NumberSelectState.FinalValue != null)
                         continue;
-                    if (data.Kind == CardKind.Move && data.DirectionSelectState.FinalValue != null)
+                    if (data.IsMove && data.DirectionSelectState.FinalValue != null)
                         continue;
 
                     return false;
@@ -318,7 +318,7 @@ namespace Cardevil.Cards.InStage.Model
         
         private static int MoveSelectTypeOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Move)
+            if (!c.Data.IsMove)
                 return int.MaxValue;
 
             return c.Data.DirectionSelectState.Selectables.Count;
@@ -326,7 +326,7 @@ namespace Cardevil.Cards.InStage.Model
         
         private static int DirectionOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Move)
+            if (!c.Data.IsMove)
                 return int.MaxValue;
             if (!c.Data.DirectionSelectState.FinalValue.HasValue)
                 return 5;
@@ -343,12 +343,12 @@ namespace Cardevil.Cards.InStage.Model
 
         private static int ValueTypeOrder(Card c)
         {
-            return c.Data.Kind == CardKind.Move ? 0 : 1;
+            return c.Data.IsMove ? 0 : 1;
         }
         
         private static int NumberSelectTypeOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Attack)
+            if (!c.Data.IsAttack)
                 return int.MinValue;
 
             var n = c.Data.NumberSelectState;
@@ -359,7 +359,7 @@ namespace Cardevil.Cards.InStage.Model
 
         private static int NumberColorOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Attack)
+            if (!c.Data.IsAttack)
                 return int.MinValue;
 
             return (int)c.Data.Color;
@@ -367,7 +367,7 @@ namespace Cardevil.Cards.InStage.Model
 
         private static int NumberSelectedValueOrder(Card c)
         {
-            if (c.Data.Kind != CardKind.Attack)
+            if (!c.Data.IsAttack)
                 return int.MinValue;
 
             if (!c.Data.NumberSelectState.FinalValue.HasValue)
