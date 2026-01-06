@@ -1,7 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
 using System;
 using Random = UnityEngine.Random;

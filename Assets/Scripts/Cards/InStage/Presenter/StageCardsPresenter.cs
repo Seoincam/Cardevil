@@ -448,21 +448,34 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             await _evaluationPresenter.ExcuteSequenceAsync();
             await UniTask.Delay(TimeSpan.FromSeconds(.5f));
-            await DiscardAsync();
+            await DiscardAsync(false);
 
             cmp.TrySetResult();
         }
-
-        private async UniTask DiscardAsync()
+        
+        /// <param name="discardOnly">
+        /// '사용하기'가 아닌, '버리기' 버튼으로 버리기가 실행됐나 여부.
+        /// </param>
+        private async UniTask DiscardAsync(bool discardOnly)
         {
             foreach (var card in _model.SortedSelection.Reverse())
             {
                 _model.TryGetIndex(card, out var index);
                 
+                if (discardOnly)
+                {
+                    var cardData = card.Data;
+                    var args = EachCardDiscardedArgs.Get(cardData);
+                    ExecEventBus<EachCardDiscardedArgs>.InvokeMergedAndDispose(args).Forget();
+                }
+                
                 UnwireCard(card);
                 _model.Discard(card);
                 _handChanged?.Invoke();
                 card.DoDiscard();
+
+
+                    
                 
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
@@ -497,7 +510,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _state.isSwapping = true;
             UpdateUI();
             
-            await DiscardAsync();
+            await DiscardAsync(true);
             await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardDrawInterval));
             await DrawAsync();
             
