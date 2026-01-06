@@ -241,6 +241,14 @@ namespace Cardevil.Events
     /// </summary>
     public class CardDiscardChangeArgs : ExecEventArgs<CardDiscardChangeArgs>
     {
+        public int OldDiscard { get; private set; }
+        public int NewDiscard { get; private set; }
+        
+        /// <summary>
+        /// 이벤트 진행으로 인해 수정된 카드 버리기 횟수. 최종적으로 해당 개수로 카드 버리기 횟수가 설정됨.
+        /// </summary>
+        public int ModifiedDiscard { get; set; }
+        
         public static CardDiscardChangeArgs Get(int currentDiscard, int newDiscard)
         {
             var args = Get();
@@ -253,14 +261,6 @@ namespace Cardevil.Events
             First = int.MinValue,
             Last = int.MaxValue
         }
-
-        public int OldDiscard { get; private set; }
-        public int NewDiscard { get; private set; }
-
-        /// <summary>
-        /// 이벤트 진행으로 인해 수정된 카드 버리기 횟수. 최종적으로 해당 개수로 카드 버리기 횟수가 설정됨.
-        /// </summary>
-        public int ModifiedDiscard { get; set; }
 
         private void Init(int currentDiscard, int newDiscard)
         {
@@ -275,6 +275,29 @@ namespace Cardevil.Events
             OldDiscard = 0;
             NewDiscard = 0;
             ModifiedDiscard = 0;
+        }
+    }
+
+    /// <summary>
+    /// 카드 '하나하나'가 버려지는 이벤트 인자.
+    /// </summary>
+    public class EachCardDiscardedArgs : ExecEventArgs<EachCardDiscardedArgs>
+    {
+        public CardData CardData { get; private set; }
+
+        public static EachCardDiscardedArgs Get(CardData cardData)
+        {
+            var args = Get();
+            args.Init(cardData);
+            return args;
+        }
+
+        private void Init(CardData cardData) => CardData = cardData;
+
+        public override void Clear()
+        {
+            base.Clear();
+            CardData = null;
         }
     }
 }

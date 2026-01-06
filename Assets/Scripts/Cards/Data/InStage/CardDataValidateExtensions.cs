@@ -14,7 +14,7 @@ namespace Cardevil.Cards.Data.InStage
                 throw new InvalidOperationException($"잘못된 id: {data.Id}");
 
             // Attack 카드 검사
-            if (data.Kind == CardKind.Attack)
+            if (data.IsAttack)
             {
                 if (data.Color == CardColor.None)
                     throw new InvalidOperationException("Color가 None입니다.");
@@ -25,7 +25,7 @@ namespace Cardevil.Cards.Data.InStage
             }
 
             // Move 카드 검사
-            if (data.Kind == CardKind.Move)
+            if (data.IsMove)
             {
                 if (data.Length < 1)
                     throw new InvalidOperationException("이동 길이가 1보다 작습니다.");

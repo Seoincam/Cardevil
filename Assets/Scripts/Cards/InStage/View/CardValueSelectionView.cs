@@ -254,12 +254,12 @@ namespace Cardevil.Cards.InStage.View
                 var visual = go.GetComponent<CardVisualValueSelectionView>();
                 visual.Selected += OnValueSelected;
 
-                if (data.Kind == CardKind.Attack)
+                if (data.IsAttack)
                 {
                     var num = data.NumberSelectState.Selectables[i].value;
                     visual.Init(CardScale, data.Color, num);
                 }
-                else if (data.Kind == CardKind.Move)
+                else if (!data.IsMove)
                 {
                     var dir = data.DirectionSelectState.Selectables[i].value;
                     visual.Init(CardScale, dir);
