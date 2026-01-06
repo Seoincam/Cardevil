@@ -26,7 +26,7 @@ namespace Cardevil.InGame.Enemy
         Straight,
         Flush,
         FourCard,
-        StraightPlush
+        StraightFlush
     }
     public class Enemy : MonoBehaviour, ITurnEnemy
     {
@@ -486,7 +486,7 @@ namespace Cardevil.InGame.Enemy
         {
             LogEx.Log("SetStraightPlushAttack! (center all except one diagonal)");
 
-            attack.currentAttackStyle = AttackStyle.StraightPlush;
+            attack.currentAttackStyle = AttackStyle.StraightFlush;
 
             // 중앙 고정
             attack.attackPointNumber_x = 1;
@@ -879,7 +879,7 @@ namespace Cardevil.InGame.Enemy
                     return (AttackPlush(attack));
                 case AttackStyle.FourCard:
                     return (AttackFourCard(attack));
-                case AttackStyle.StraightPlush:
+                case AttackStyle.StraightFlush:
                     return (AttackStraightPlush(attack));
 
                 default: break;
@@ -981,7 +981,7 @@ namespace Cardevil.InGame.Enemy
                 case AttackStyle.FourCard:
                     SettingAttackFourCard(attack);
                     break;
-                case AttackStyle.StraightPlush:
+                case AttackStyle.StraightFlush:
                     SettingAttackStraightPlush(attack);
                     break;
                 default:
@@ -1118,7 +1118,7 @@ namespace Cardevil.InGame.Enemy
                     }
                     break;
 
-                case AttackStyle.StraightPlush:
+                case AttackStyle.StraightFlush:
                     // 세팅 시 저장한 excludedCornerIndex를 참조해 그 칸만 스킵하고 나머지 타일의 하이라이트를 끔
                     List<(int x, int y)> cornersSP = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
                     if (attack.excludedCornerIndex >= 0 && attack.excludedCornerIndex < cornersSP.Count)

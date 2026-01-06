@@ -1194,6 +1194,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1793844106057870302, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: forceUseStreamingAsset
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4839014720585370412, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
       propertyPath: m_Name
       value: '@Cardevil_Core'
