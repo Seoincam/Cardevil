@@ -14,6 +14,7 @@ using DG.Tweening;
 using JetBrains.Annotations;
 using System;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.Scripting;
 using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
@@ -161,7 +162,21 @@ namespace Cardevil.Ingame.Player
             // 이동하고 싶은 타일
             Tile desiredTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
             // 실제 이동 타일
-            bool reflected = false || debugReflect;
+            using var listHandle = ListPool<IReflecterEntity>.Get(out var entityList);
+            bool reflected = desiredTile.GetEntitiesWithComponent<IReflecterEntity>(
+                (e) => e.DoReflect, ref entityList);
+            if (debugReflect)
+            {
+                reflected = true;
+            }
+            void NotifyReflect()
+            {
+                foreach (var reflecter in entityList)
+                {
+                    reflecter.OnReflect();
+                }
+            }
+            
             Tile movedTile = reflected ? Field.GetTileByDirectionWrap(desiredTile, direction.Opposite(), out _, distance) : desiredTile;
             _entity.MoveTo(movedTile, false);
             
@@ -241,6 +256,7 @@ namespace Cardevil.Ingame.Player
                 PlayerVisual.IsRunning = true;
                 Sequence sequence = DOTween.Sequence();
                 sequence.Append(transform.DOMove(desiredTilePosition, 1f / MoveSpeed).SetEase(Ease.Linear));
+                sequence.AppendCallback(NotifyReflect);
                 sequence.Append(transform.DOMove(startPosition, 0.5f / MoveSpeed).SetEase(Ease.Linear));
                 sequence.Join(VisualTransform.DOLocalJump(
                     Vector3.zero,
@@ -303,6 +319,7 @@ namespace Cardevil.Ingame.Player
                 await sequence.ToUniTask();
                 
                 // 충돌함. 반사
+                NotifyReflect();
                 var reflectSequence = DOTween.Sequence();
                 // 튕기는중
                 reflectSequence.Append(VisualTransform.DOLocalJump(

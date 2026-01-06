@@ -87,5 +87,10 @@ namespace Cardevil.Ingame.Entities
         }
 
 
+        public void Kill()
+        {
+            _currentTile.RemoveEntity(this);
+            Destroy(gameObject);
+        }
     }
 }

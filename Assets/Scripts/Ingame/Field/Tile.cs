@@ -99,12 +99,12 @@ namespace Cardevil.Ingame.Field
             return entity != null;
         }
         
-        public void GetEntities(Predicate<Entity> predicate, ref List<Entity> result)
+        public bool GetEntities(Predicate<Entity> predicate, ref List<Entity> result)
         {
             if (result == null)
             {
                 Debug.LogError("Result list cannot be null.");
-                return;
+                return false;
             }
             result.Clear();
             foreach (var entity in entities)
@@ -114,7 +114,74 @@ namespace Cardevil.Ingame.Field
                     result.Add(entity);
                 }
             }
+            return result.Count > 0;
         }
+        
+        public IEnumerator<T> GetEntitiesWithComponent<T>()
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    yield return tEntity;
+                }
+            }
+        }
+        
+        public IEnumerator<T> GetEntitiesWithComponent<T>(Predicate<T> predicate)
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    if (predicate(tEntity))
+                    {
+                        yield return tEntity;
+                    }
+                }
+            }
+        }
+        
+        public bool GetEntitiesWithComponent<T>(ref List<T> result)
+        {
+            if (result == null)
+            {
+                Debug.LogError("Result list cannot be null.");
+                return false;
+            }
+            result.Clear();
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    result.Add(tEntity);
+                }
+            }
+            return result.Count > 0;
+        }
+        
+        public bool GetEntitiesWithComponent<T>(Predicate<T> predicate, ref List<T> result)
+        {
+            if (result == null)
+            {
+                Debug.LogError("Result list cannot be null.");
+                return false;
+            }
+            result.Clear();
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    if (predicate(tEntity))
+                    {
+                        result.Add(tEntity);
+                    }
+                }
+            }
+            return result.Count > 0;
+        }
+        
+        
         
         [ContextMenu("Highlight Tile")]
         [Obsolete("Use Highlight(Define.HighlightType) instead.")]
@@ -184,7 +251,9 @@ namespace Cardevil.Ingame.Field
                 block.SetColor(Hashes.SHADER_COLOR, color);
             }
         }
-        
+
+
+
         
     }
 }
