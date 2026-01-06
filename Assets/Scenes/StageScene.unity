@@ -516,14 +516,6 @@ PrefabInstance:
       propertyPath: _initialTile
       value: 
       objectReference: {fileID: 401468741}
-    - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
-      propertyPath: _isDebugMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
-      propertyPath: _initTileManually
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3457398501423220523, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
       propertyPath: m_Name
       value: PlayerCharacter
