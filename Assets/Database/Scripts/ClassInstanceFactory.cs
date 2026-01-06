@@ -99,11 +99,21 @@ namespace Database
                     string[] elements = SplitToList(value);
                     var listInstance = Activator.CreateInstance(targetType);
                     var addMethod = targetType.GetMethod("Add");
-                    foreach (var element in elements)
+                    foreach (string element in elements)
                     {
                         try
                         {
-                            object convertedValue = ConvertValue(elementType, element, depth + 1);
+                            object convertedValue;
+                            if(elementType == typeof(string) && element.StartsWith("\"") && element.EndsWith("\"") && element.Length >=2)
+                            {
+                                // 문자열 요소의 경우 양쪽 따옴표 제거
+                                convertedValue = ConvertValue(elementType,element.Substring(1, element.Length - 2), depth + 1);
+                            }
+                            else
+                            {
+                                convertedValue = ConvertValue(elementType, element, depth + 1);
+                            }
+                              
                             addMethod!.Invoke(listInstance, new[] { convertedValue });
                         } 
                         catch (Exception e)
