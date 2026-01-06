@@ -98,13 +98,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87c30e820d0e37b4e83d784b7fa39b68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hpBar: {fileID: 0}
+  hpBar: {fileID: 4653617405066453914}
+  maxHP: 100
+  baseMobBossData:
+    MobID: 
+    MobKorID: 
+    MobType: 
+    BaseHP: 0
+    ChapterFactor: 0
+    HPGrowFactor: 0
+    AttackCycle: 0
+    AttackDamage: 0
+    BoolAttackType: 0
+    AttackWeight: 
+    AttackPattern: 
+    AttackPlayer: 0
+    GimmickName: []
+    GimmickValue: []
+    "\uCC55\uD130": 
+    "\uC218": 
   HP: 100
   attackCreateTurnOrder: 0
   attackCreateCycle: 3
   isAttackSuccess: 0
   isPlayerAttack: 1
   delayAttackByRelic: 0
+  enforcedAttackRanking: 0
+  enforcedAttackDamage: 0
 --- !u!1 &2606874335021637752
 GameObject:
   m_ObjectHideFlags: 0

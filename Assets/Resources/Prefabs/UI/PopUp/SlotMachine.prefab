@@ -1634,11 +1634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   probabilityPanel: {fileID: 3820963323397306502}
   spacing: 10
-  values:
-  - 75
-  - 50
-  - 125
-  - 250
+  values: 4b000000320000007d000000fa000000
   boxImages:
   - {fileID: 7033775599740929897}
   - {fileID: 5759336153366981277}

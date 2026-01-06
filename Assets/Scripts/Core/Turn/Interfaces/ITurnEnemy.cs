@@ -18,6 +18,6 @@ namespace Cardevil.Core.Turn.Interfaces
         /// <summary>
         /// 첫 공격 범위를 표시.
         /// </summary>
-        UniTask ShowInitialAttackArea();
+        UniTask ShowInitialAttackArea(IReadOnlyTurnContext ctx);
     }
 }

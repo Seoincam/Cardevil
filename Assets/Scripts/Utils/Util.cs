@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using System.Collections.Generic;
 
 namespace Cardevil.Utils
 {
@@ -108,6 +109,34 @@ namespace Cardevil.Utils
                 }
             }
             return null;
+        }
+
+        // 제네릭을 사용하여 어떤 타입이든 가중치 뽑기가 가능하도록 변경
+        public static List<T> PickRandomPatterns<T>(List<T> items, List<int> weights, int count)
+        {
+            if (items.Count != weights.Count) return new List<T>();
+
+            int totalWeight = 0;
+            foreach (var w in weights) totalWeight += w;
+            if (totalWeight <= 0) return new List<T>();
+
+            List<T> results = new List<T>(count);
+            for (int i = 0; i < count; i++)
+            {
+                int randomValue = UnityEngine.Random.Range(0, totalWeight);
+                int currentSum = 0;
+                for (int j = 0; j < weights.Count; j++)
+                {
+                    currentSum += weights[j];
+                    if (randomValue < currentSum)
+                    {
+                        results.Add(items[j]);
+                        break;
+                    }
+                }
+            }
+            return results;
+
         }
     }
 }
