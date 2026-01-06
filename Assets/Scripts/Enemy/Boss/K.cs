@@ -1,49 +1,56 @@
 using UnityEngine;
 using Cardevil.InGame.Enemy;
+using Cardevil.Utils; 
 
 namespace Cardevil.InGame.Enemy.Boss
 {
     public class K : Enemy
     {
-        // 항상 유도공격만함
+        // K(King) 특징: 항상 유도 공격(PlayerAttack)만 수행함
 
         public override bool GetDamage(float damage)
         {
             if (base.GetDamage(damage))
             {
-                return true; // 사망시 스킵
+                return true; // 사망 시 처리
             }
-
-            return false; // 아직 살아있다
+            return false; // 생존
         }
 
+        // 공격 설정 (Setup)
         public override void SetAttack(Attack attack, bool setPlayerAttack = false)
         {
-            if (setPlayerAttack) // 플레이어 위치로 공격할 것인가에 대해
-            {
-                SetPlayerAttack(attack);
-                Debug.Log($"KingAttack 예상 sign {attack.currentAttackStyle}");
-            }
+            // 플레이어 조준
+            attack.isPlayerAttack = true;
 
+            HandRankAttackLogic.SetupAttack(attack, this);
+
+            LogEx.Log($"KingAttack 설정 완료: {attack.currentAttackStyle} (유도)");
         }
 
+        // 공격 판정 (Check)
         public override void AttackingCheck(Attack attack)
         {
-            Debug.Log("AttackingCheck");
-            if(AttackGo(attack))
+
+            float damage = baseMobBossData.AttackDamage;
+
+        
+            if (HandRankAttackLogic.CheckHit(attack, damage, out var result))
             {
-                // 공격에 성공했음
-                Debug.Log("King이 공격에 성공했다!");
-                isAttackSuccess = true;
+                // 공격 성공
+                LogEx.Log("King이 공격에 성공했다!");
+                _enemyAttackInfo.attackSucess = true;
+
+
+                // King만의 특수 로직 
                 SetAllAttackOrder(1);
             }
             else
             {
-                isAttackSuccess = false;
-                Debug.Log("King이 공격에 실패했다!");
-                //공격에 실패했음.
+                // 공격 실패
+                _enemyAttackInfo.attackSucess = false;
+                LogEx.Log("King이 공격에 실패했다!");
             }
         }
     }
-
 }

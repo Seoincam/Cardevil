@@ -7,6 +7,8 @@ using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Enemy;
 using Cardevil.Utils;
 using UnityEngine;
+using Cardevil.Events.ExecEvents;
+using Cardevil.Events;
 
 namespace Cardevil.Core.Turn
 {
@@ -113,7 +115,7 @@ namespace Cardevil.Core.Turn
             try
             {
                 // TODO: 적에 대한 설명 표시
-                await _enemy.ShowInitialAttackArea();
+                await _enemy.ShowInitialAttackArea(context);
 
                 await _cardFlow.EnterRerollPhase(6);
                 await _cardFlow.Reroll();
@@ -160,6 +162,9 @@ namespace Cardevil.Core.Turn
                         // Bootstrapper.Instance.Game.PlayerDied();
                         break;
                     }
+
+                    // Enemy Turn이 끝났을때 전파
+                    await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get());
                 }
             }
             catch (OperationCanceledException)

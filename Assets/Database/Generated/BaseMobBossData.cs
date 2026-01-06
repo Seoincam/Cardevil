@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class BaseMobBossData    {
+    public partial class BaseMobBossData: IDBData {
 
         /// <summary> 몹ID </summary>
         public string MobID;
@@ -37,5 +37,9 @@ namespace Database.Generated
         public List<string> GimmickName;
         /// <summary> 기믹 value </summary>
         public List<float> GimmickValue;
+        /// <summary> 1챕터 </summary>
+        public string 챕터;
+        /// <summary> 17 </summary>
+        public string 수;
     }
 }

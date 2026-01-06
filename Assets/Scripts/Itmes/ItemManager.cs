@@ -9,7 +9,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Database;
 using Database.Generated;
-using Unity.Android.Gradle.Manifest;
 
 public class ItemManager
 {

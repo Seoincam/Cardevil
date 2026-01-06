@@ -1,47 +1,82 @@
 [
   {
     "MachineLevel": 1,
-    "RankProbabillity": [
-      85,
-      10,
-      4,
+    "RankWeight": [
+      8600,
+      1000,
+      399,
       1
-    ]
+    ],
+    "LevelUpCost": 2
   },
   {
     "MachineLevel": 2,
-    "RankProbabillity": [
-      77,
-      15,
-      6,
-      2
-    ]
+    "RankWeight": [
+      800,
+      140,
+      59,
+      1
+    ],
+    "LevelUpCost": 6
   },
   {
     "MachineLevel": 3,
-    "RankProbabillity": [
-      63,
-      25,
-      9,
-      3
-    ]
+    "RankWeight": [
+      67,
+      22,
+      10,
+      1
+    ],
+    "LevelUpCost": 12
   },
   {
     "MachineLevel": 4,
-    "RankProbabillity": [
-      41,
-      40,
-      14,
-      5
-    ]
+    "RankWeight": [
+      46,
+      36,
+      16,
+      2
+    ],
+    "LevelUpCost": 20
   },
   {
     "MachineLevel": 5,
-    "RankProbabillity": [
-      37,
-      35,
-      20,
-      8
-    ]
+    "RankWeight": [
+      21,
+      50,
+      25,
+      4
+    ],
+    "LevelUpCost": 40
+  },
+  {
+    "MachineLevel": 6,
+    "RankWeight": [
+      102,
+      166,
+      666,
+      66
+    ],
+    "LevelUpCost": 0
+  },
+  {
+    "MachineLevel": 0,
+    "RankWeight": [],
+    "LevelUpCost": 0
+  },
+  {
+    "MachineLevel": 0,
+    "RankWeight": [],
+    "LevelUpCost": 0
+  },
+  {
+    "MachineLevel": 0,
+    "RankWeight": [],
+    "LevelUpCost": 0
+  },
+  {
+    "MachineLevel": 0,
+    "RankWeight": [],
+    "LevelUpCost": 0
   }
 ]

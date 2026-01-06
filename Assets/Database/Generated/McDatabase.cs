@@ -10,8 +10,8 @@ namespace Database
     public class McDatabase
     {
         public List<CustomClassTest> CustomClassTestList = new List<CustomClassTest>();
-        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
         public List<RoomData> RoomDataList = new List<RoomData>();
+        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
         public List<Heal> HealList = new List<Heal>();
         public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
@@ -20,8 +20,8 @@ namespace Database
         public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
         public readonly List<string> ClassNames = new List<string> {
             "CustomClassTest",
-            "BaseMobBossData",
             "RoomData",
+            "BaseMobBossData",
             "Heal",
             "HandRankingData",
             "MachineReward",
@@ -58,8 +58,8 @@ namespace Database
         public void ClearAll()
         {
             CustomClassTestList.Clear();
-            BaseMobBossDataList.Clear();
             RoomDataList.Clear();
+            BaseMobBossDataList.Clear();
             HealList.Clear();
             HandRankingDataList.Clear();
             MachineRewardList.Clear();
@@ -93,11 +93,11 @@ namespace Database
                     case "CustomClassTest":
                         CustomClassTestList = CreateInstance<CustomClassTest>(df);
                         break;
-                    case "BaseMobBossData":
-                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
-                        break;
                     case "RoomData":
                         RoomDataList = CreateInstance<RoomData>(df);
+                        break;
+                    case "BaseMobBossData":
+                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
                         break;
                     case "Heal":
                         HealList = CreateInstance<Heal>(df);
@@ -133,13 +133,13 @@ namespace Database
                     var newCustomClassTestItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CustomClassTest>>(json);
                     CustomClassTestList.AddRange(newCustomClassTestItems);
                     break;
-                case "BaseMobBossData":
-                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
-                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
-                    break;
                 case "RoomData":
                     var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
                     RoomDataList.AddRange(newRoomDataItems);
+                    break;
+                case "BaseMobBossData":
+                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
+                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
                     break;
                 case "Heal":
                     var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
@@ -178,10 +178,10 @@ namespace Database
             {
                 case "CustomClassTest":
                     return typeof(CustomClassTest);
-                case "BaseMobBossData":
-                    return typeof(BaseMobBossData);
                 case "RoomData":
                     return typeof(RoomData);
+                case "BaseMobBossData":
+                    return typeof(BaseMobBossData);
                 case "Heal":
                     return typeof(Heal);
                 case "HandRankingData":
