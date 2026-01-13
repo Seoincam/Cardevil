@@ -117,9 +117,9 @@ namespace Cardevil.Events
     /// <summary>
     /// 전투 중 데미지 계산에 사용되는 이벤트 인자.
     /// </summary>
-    public class CardDamageCalculationArgs : ExecEventArgs<CardDamageCalculationArgs>
+    public class CardDamageEvaluationArgs : ExecEventArgs<CardDamageEvaluationArgs>
     {
-        private Card[] _cards;
+        private IReadOnlyList<Card> _cards;
         public float Damage { get; private set; }
         public HandRanking HandRanking { get; private set; }
 
@@ -133,7 +133,7 @@ namespace Cardevil.Events
             .Select(c => c.Data)
             .ToArray();
 
-        public static CardDamageCalculationArgs Get(Card[] cards, HandRanking handRanking)
+        public static CardDamageEvaluationArgs Get(IReadOnlyList<Card> cards, HandRanking handRanking)
         {
             var args = Get();
             args.Initialize(cards, handRanking);
@@ -202,10 +202,14 @@ namespace Cardevil.Events
             /// </remarks>
             MultiplyPlayerStatus = 90, 
             
-            Last = int.MaxValue
+            /// <summary>
+            /// 모델에 결과를 등록합니다.
+            /// 평가 과정의 마지막에 호출 되어야합니다.
+            /// </summary>
+            RegisterOnModel = int.MaxValue
         }
 
-        public EvaluationResult MakeSnapshot() => new((int)Damage, AttackCards, MoveCards, HandRanking);
+        public EvaluationResult BuildResult() => new((int)Damage, AttackCards, MoveCards, HandRanking);
         public override void Clear()
         {
             base.Clear();
@@ -213,7 +217,7 @@ namespace Cardevil.Events
             HandRanking = HandRanking.None;
         }
 
-        private void Initialize(Card[] cards, HandRanking handRanking)
+        private void Initialize(IReadOnlyList<Card> cards, HandRanking handRanking)
         {
             _cards = cards;
             HandRanking = handRanking;

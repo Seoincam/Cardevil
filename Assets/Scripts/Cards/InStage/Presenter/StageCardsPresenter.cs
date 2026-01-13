@@ -430,7 +430,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Close();
             
             UpdateUI();
-            _evaluationPresenter.ConfigureSequence(_model.SortedSelection);
+            _evaluationPresenter.RegisterUsingCards(_model.SortedSelection);
             _ = UseAsync();
         }
 
@@ -446,9 +446,9 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private async UniTask UseAsync()
         {
-            await _evaluationPresenter.ExcuteSequenceAsync();
-            await UniTask.Delay(TimeSpan.FromSeconds(.5f));
-            await DiscardAsync(false);
+            // await _evaluationPresenter.ExcuteSequenceAsync();
+            // await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+            // await DiscardAsync(false);
 
             cmp.TrySetResult();
         }

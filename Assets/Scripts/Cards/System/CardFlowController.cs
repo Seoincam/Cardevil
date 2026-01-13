@@ -5,6 +5,8 @@ using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core.Turn.Interfaces;
+using Cardevil.Events;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Cardevil.Cards.System
 {
@@ -84,6 +86,8 @@ namespace Cardevil.Cards.System
         {
             await _stageCardsPresenter.WaitUserInput();
         }
+
+        public CardDamageEvaluationArgs GetCardDamageEvaluationArgs() => _evaluationPresenter.GetArgs();
 
         public EvaluationResult Result => _evaluationPresenter.GetCurrentEvaluationResult();
         

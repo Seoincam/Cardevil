@@ -2,7 +2,6 @@ using Cardevil.Attributes;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
-using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Enemy;
 using Cardevil.Utils;
@@ -134,6 +133,9 @@ namespace Cardevil.Core.Turn
                     }
 
                     await _cardFlow.WaitUserInput();
+
+                    var evaluationArgs = _cardFlow.GetCardDamageEvaluationArgs();
+                    await ExecEventBus<CardDamageEvaluationArgs>.InvokeMerged(evaluationArgs, token);
                     
                     // 2. 플레이어 이동 + 공격
                     var playerPosition = await _player.TurnMove();
@@ -164,7 +166,7 @@ namespace Cardevil.Core.Turn
                     }
 
                     // Enemy Turn이 끝났을때 전파
-                    await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get());
+                    await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get(), token);
                 }
             }
             catch (OperationCanceledException)

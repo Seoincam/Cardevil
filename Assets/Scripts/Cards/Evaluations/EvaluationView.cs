@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -19,8 +20,9 @@ namespace Cardevil.Cards.Evaluations
         private HandRanking _lastRanking;
         private Tween _mainRankingTween;
         private Tween _subRankingTween;
-
+        
         private TextAnimator _mainText;
+        private TextAnimator _subText;
         // TODO: Pooling 구현해야할 듯
         
         private float _cachedDamage;
@@ -50,19 +52,26 @@ namespace Cardevil.Cards.Evaluations
         {
             if (handRanking == _lastRanking) return;
             _lastRanking = handRanking;
+
+            if (_subText && _subText.gameObject)
+            {
+                _subText.ClearText();
+                Destroy(_subText.transform.parent.gameObject);
+            }
             
-            var sub = GetSub();
+            _subText = GetSub();
             if (handRanking is HandRanking.None)
             {
                 ClearTextAsync(_mainText).Forget();
-                ClearTextAsync(sub).Forget();
+                ClearTextAsync(_subText).Forget();
                 // TODO: 풀링
-                Destroy(sub.gameObject);
+                if (_subText.gameObject)
+                    Destroy(_subText.transform.parent.gameObject);
                 return;
             }
             
             // 트윈 정리 및 Transform 초기화
-            var subRect = sub.transform.parent.GetComponent<RectTransform>();
+            var subRect = _subText.transform.parent.GetComponent<RectTransform>();
             _mainRankingTween?.Kill();
             _subRankingTween?.Kill();
             rect.localScale = Vector3.one;
@@ -83,15 +92,14 @@ namespace Cardevil.Cards.Evaluations
             _subRankingTween = subRect
                 .DOAnchorPosX(0f, setting.subRankingChangeDur)
                 .SetAutoKill(true)
-                .SetLink(sub.gameObject);
+                .SetLink(_subText.gameObject);
             
             _mainText.UpdateText(handRankingData.DisplayName);
-            sub.UpdateText("+" + handRankingData.Value);
+            _subText.UpdateText("+" + handRankingData.Value);
         }
 
         public async UniTask DoStep(float damage, EvaluationType type)
         {
-            // TODO: 로직 추가
             var totalDamage = _cachedDamage + damage; 
             
             // 1. Sub Text 이동

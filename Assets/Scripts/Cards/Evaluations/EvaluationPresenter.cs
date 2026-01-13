@@ -1,5 +1,4 @@
 using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
@@ -7,9 +6,7 @@ using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -28,13 +25,12 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         /// <param name="selection">선택된 카드 목록</param>
         void UpdateHandRankingText(IEnumerable<Card> selection);
-        
+
         /// <summary>
-        /// 평가 시퀀스 구성.
-        /// 정렬된 카드 목록을 기반으로 족보 및 이동 카드 데이터 설정.
+        /// 사용한 카드를 등록.
+        /// 정렬된 카드 목록을 기반으로 족보 등을 미리 계산함.
         /// </summary>
-        /// <param name="sortedCards">정렬된 카드 목록</param>
-        void ConfigureSequence(IEnumerable<Card> sortedCards);
+        void RegisterUsingCards(IReadOnlyList<Card> sortedCards);
         
         /// <summary>
         /// 평가 시퀀스 실행.
@@ -46,6 +42,11 @@ namespace Cardevil.Cards.Evaluations
         EvaluationResult GetCurrentEvaluationResult();
         
         IReadOnlyEvaluationResultsModel ResultsModel { get; }
+
+        /// <summary>
+        /// <see cref="CardDamageEvaluationArgs"/>를 플레이어의 카드 사용 기반으로 초기화하여 반환함.
+        /// </summary>
+        CardDamageEvaluationArgs GetArgs();
     }
     
     public class EvaluationPresenter : IEvaluationPresenter
@@ -59,7 +60,11 @@ namespace Cardevil.Cards.Evaluations
 
         public IReadOnlyEvaluationResultsModel ResultsModel => _model;
 
-        private Card[] _attackCards;
+        public CardDamageEvaluationArgs GetArgs() => CardDamageEvaluationArgs.Get(_usingCards, _handRanking);
+
+        private IReadOnlyList<Card> _usingCards;
+        private HandRanking _handRanking;
+        
         private int _attackCardsUsingIndex;
 
         public void Init(EvaluationResultsModel model)
@@ -90,6 +95,9 @@ namespace Cardevil.Cards.Evaluations
                 return;
             }
             _view = go.GetComponent<EvaluationView>();
+            
+            int priority = (int)CardDamageEvaluationArgs.Order.RegisterOnModel;
+            ExecStaticEventBus<CardDamageEvaluationArgs>.Register(priority, OnEvaluationEnded);
         }
         
         public void ClearHandRankingText()
@@ -103,11 +111,10 @@ namespace Cardevil.Cards.Evaluations
             _view.UpdateHandRankingText(handRanking);
         }
 
-        public void ConfigureSequence(IEnumerable<Card> sortedCards)
+        public void RegisterUsingCards(IReadOnlyList<Card> sortedCards)
         {
-            var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
-            
-            _seq = _factory.ConfigureSequence(sortedCards);
+            _usingCards = sortedCards;
+            _handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
             
             // 0. 이미 유물 등은 static으로 등록되어있음.
             // 1. 카드를 하나씩 등록함 (Dynamic)
@@ -115,35 +122,35 @@ namespace Cardevil.Cards.Evaluations
             // 3. Args에 족보 + 데미지 정보가 쌓임
             // 마지막에 적한테 가할 수 있게 TurnManager에 넘겨주면 될 듯.
             
-            // TODO:
-            // 실제 호출은 TurnManager에서 하는게 맞을 듯.
-            // args 초기화하고 넘길 방법을 찾기!
-            var args = CardDamageCalculationArgs.Get(sortedCards.ToArray(), handRanking);
-            ExecEventBus<CardDamageCalculationArgs>.InvokeMerged(args, default).Forget(); 
-            
-            ExecDynamicEventBus<CardDamageCalculationArgs>.Register(OnCalculateDamage);
+            ExecDynamicEventBus<CardDamageEvaluationArgs>.Register(OnCalculateDamage);
         }
-
-        private void OnCalculateDamage(ExecQueue<CardDamageCalculationArgs> queue, CardDamageCalculationArgs args)
+        
+        private void OnCalculateDamage(ExecQueue<CardDamageEvaluationArgs> queue, CardDamageEvaluationArgs args)
         {
             _attackCardsUsingIndex = 0;
-            for (int i = 0; i < _attackCards.Length; i++)
+            for (int i = 0; i < _usingCards.Count; i++)
             {
-                int priority = (int)CardDamageCalculationArgs.Order.PlusCardDamage;
+                int priority = (int)CardDamageEvaluationArgs.Order.PlusCardDamage;
                 queue.Enqueue(priority, AddCardDamageAsync);
             }
             return;
             
-            async UniTask AddCardDamageAsync(CardDamageCalculationArgs calculationArgs, CancellationToken cancellationToken)
+            async UniTask AddCardDamageAsync(CardDamageEvaluationArgs evaluationArgs, CancellationToken cancellationToken)
             {
-                int damageAmount = _attackCards[_attackCardsUsingIndex++].Data.FinalNumber;
+                int damageAmount = _usingCards[_attackCardsUsingIndex++].Data.FinalNumber;
                 await EvaluationView.Current.DoStep(damageAmount, EvaluationView.EvaluationType.Plus);
                 // TODO:
                 // 카드별 기본 데미지 유물 호출을 위해 새로운 args 정의,
                 // 호출해야함.
                 
-                calculationArgs.AddDamage(damageAmount);
+                evaluationArgs.AddDamage(damageAmount);
             }
+        }
+
+        private async UniTask OnEvaluationEnded(CardDamageEvaluationArgs args, CancellationToken token)
+        {
+            var result = args.BuildResult();
+            _model.Add(result);
         }
 
         

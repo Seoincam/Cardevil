@@ -1,5 +1,6 @@
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Events;
 using Cysharp.Threading.Tasks;
 
 namespace Cardevil.Core.Turn.Interfaces
@@ -83,5 +84,10 @@ namespace Cardevil.Core.Turn.Interfaces
         /// 유저 입력이 완료되면 제어권 반환.
         /// </summary>
         UniTask WaitUserInput();
+
+        /// <summary>
+        /// <see cref="CardDamageEvaluationArgs"/>를 플레이어의 카드 사용 기반으로 초기화하여 반환함.
+        /// </summary>
+        CardDamageEvaluationArgs GetCardDamageEvaluationArgs();
     }
 }
