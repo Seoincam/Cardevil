@@ -81,13 +81,14 @@ namespace Cardevil.Ingame.Entities
                 animator.SetTrigger(AnimatorHashes.Break);
             }
         }
-
+#if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.gray;
             // 남은 수 표시
             UnityEditor.Handles.Label(transform.position + Vector3.up * 1.5f, _rockCount.ToString());  
         }
+#endif
     }
 
     public interface IReflectorEntity : IEntityComponent
