@@ -28,7 +28,7 @@ namespace Cardevil.Cards.Evaluations
             var attackCards = new List<Card>();
             var moveCards = new List<Card>();
             foreach (var c in selection)
-                (c.Data.Kind == CardKind.Attack ? attackCards : moveCards).Add(c);
+                (c.Data.IsAttack ? attackCards : moveCards).Add(c);
 
             // Move Only
             if (attackCards.Count == 0 && moveCards.Count > 0)

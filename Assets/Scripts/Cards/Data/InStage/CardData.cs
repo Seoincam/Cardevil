@@ -24,6 +24,9 @@ namespace Cardevil.Cards.Data.InStage
         [SerializeField, VisibleOnly] private int length;
         [SerializeField, VisibleOnly] private SelectState<Direction> directionSelectState;
         [SerializeField, VisibleOnly] private DirectionFlag directionFlag;
+
+        public bool IsAttack => kind == CardKind.Attack;
+        public bool IsMove => kind == CardKind.Move;
         
         /// <summary>
         /// 스테이지 입장 전 상태로 초기화합니다.

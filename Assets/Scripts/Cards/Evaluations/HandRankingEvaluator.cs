@@ -31,7 +31,7 @@ namespace Cardevil.Cards.Evaluations
         {
             cardsInHandRanking = null;
             
-            var attackCards = selection.Where(c => c.Data.Kind == CardKind.Attack)
+            var attackCards = selection.Where(c => c.Data.IsAttack)
                 .ToList();
         
             if (attackCards.Count == 0)
