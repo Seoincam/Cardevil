@@ -41,7 +41,8 @@ namespace Cardevil.Cards.Evaluations
 
         public void ClearText()
         {
-            UpdateText(string.Empty);
+            _cts?.Cancel();
+            _textComponent.text = string.Empty;
         }
 
         /// <summary>
@@ -49,13 +50,6 @@ namespace Cardevil.Cards.Evaluations
         /// </summary>
         public void UpdateText(string text)
         {
-            if (text == string.Empty)
-            {
-                _cts?.Cancel();
-                _textComponent.text = text;
-                return;
-            }
- 
             SetAlpha(1f);
             _textComponent.text = text;
             RestartAnimation();

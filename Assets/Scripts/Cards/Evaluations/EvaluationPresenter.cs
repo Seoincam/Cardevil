@@ -137,7 +137,7 @@ namespace Cardevil.Cards.Evaluations
             async UniTask AddCardDamageAsync(CardDamageCalculationArgs calculationArgs, CancellationToken cancellationToken)
             {
                 int damageAmount = _attackCards[_attackCardsUsingIndex++].Data.FinalNumber;
-                await EvaluationView2.Current.DoStep(damageAmount, EvaluationView2.EvaluationType.Plus);
+                await EvaluationView.Current.DoStep(damageAmount, EvaluationView.EvaluationType.Plus);
                 // TODO:
                 // 카드별 기본 데미지 유물 호출을 위해 새로운 args 정의,
                 // 호출해야함.
@@ -146,37 +146,40 @@ namespace Cardevil.Cards.Evaluations
             }
         }
 
+        
         public async UniTask ExcuteSequenceAsync()
         {
-            _seq.Build();
-            await _view.Clear();
+            LogEx.LogWarning("서인 - 아직 Excute 로직 미구현.");
             
-            int index = 0;
-            float totalDamage = 0f;
-            while (_seq.TryGetStepGroup(index++, out List<EvaluationStep> stepGroup))
-            {
-                if (stepGroup == null || stepGroup.Count == 0) 
-                    continue;
-                
-                for (int i = 0; i < stepGroup.Count; i++)
-                {
-                    var step = stepGroup[i];
-                    step.CalculateDamage(ref totalDamage);
-                    step.ExecuteVisualEffect();
-                    _view.RegisterStep(step);
-                    
-                    await UniTask.Delay(TimeSpan.FromSeconds(.3f));
-                }
-                
-                await _view.DoStep(totalDamage);
-                await UniTask.Delay(TimeSpan.FromSeconds(.2f));
-            }
-            _view.Clear().Forget();
-            
-            var result = _resultBuilder
-                .SetDamage((int)Math.Round(totalDamage))
-                .Build();
-            _model.Add(result);
+            // _seq.Build();
+            // await _view.Clear();
+            //
+            // int index = 0;
+            // float totalDamage = 0f;
+            // while (_seq.TryGetStepGroup(index++, out List<EvaluationStep> stepGroup))
+            // {
+            //     if (stepGroup == null || stepGroup.Count == 0) 
+            //         continue;
+            //     
+            //     for (int i = 0; i < stepGroup.Count; i++)
+            //     {
+            //         var step = stepGroup[i];
+            //         step.CalculateDamage(ref totalDamage);
+            //         step.ExecuteVisualEffect();
+            //         _view.RegisterStep(step);
+            //         
+            //         await UniTask.Delay(TimeSpan.FromSeconds(.3f));
+            //     }
+            //     
+            //     await _view.DoStep(totalDamage);
+            //     await UniTask.Delay(TimeSpan.FromSeconds(.2f));
+            // }
+            // _view.Clear().Forget();
+            //
+            // var result = _resultBuilder
+            //     .SetDamage((int)Math.Round(totalDamage))
+            //     .Build();
+            // _model.Add(result);
         }
 
         public EvaluationResult GetCurrentEvaluationResult()

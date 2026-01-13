@@ -1,5 +1,183 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System.Linq;
+using UnityEngine;
+
+namespace Cardevil.Cards.Evaluations
+{
+    public class EvaluationView : MonoBehaviour
+    {
+        [SerializeField] private CardEvaluationAnimSO setting;
+        [SerializeField] private RectTransform rect;
+        
+        public static EvaluationView Current { get; private set; }
+
+        private HandRanking _lastRanking;
+        private Tween _mainRankingTween;
+        private Tween _subRankingTween;
+
+        private TextAnimator _mainText;
+        // TODO: Pooling 구현해야할 듯
+        
+        private float _cachedDamage;
+
+        private void Awake()
+        {
+            _mainText = rect.GetComponentInChildren<TextAnimator>();
+            
+            if (Current && Current != this)
+                Destroy(Current);
+            Current = this;
+        }
+
+        private void OnDestroy()
+        {
+            _mainRankingTween?.Kill();
+            _subRankingTween?.Kill();
+        }
+
+        public async UniTask ClearAllTextAsync()
+        {
+            // var clearTasks = new List<UniTask> { ClearTextAsync(_mainText) };
+            // clearTasks.AddRange();
+        }
+
+        public void UpdateHandRankingText(HandRanking handRanking)
+        {
+            if (handRanking == _lastRanking) return;
+            _lastRanking = handRanking;
+            
+            var sub = GetSub();
+            if (handRanking is HandRanking.None)
+            {
+                ClearTextAsync(_mainText).Forget();
+                ClearTextAsync(sub).Forget();
+                // TODO: 풀링
+                Destroy(sub.gameObject);
+                return;
+            }
+            
+            // 트윈 정리 및 Transform 초기화
+            var subRect = sub.transform.parent.GetComponent<RectTransform>();
+            _mainRankingTween?.Kill();
+            _subRankingTween?.Kill();
+            rect.localScale = Vector3.one;
+            subRect.anchoredPosition = new Vector2(setting.subPosX, 0);
+            
+            // DB 접근
+            var handRankingData = CardevilCore.Instance.Database.Database.HandRankingDataList
+                .FirstOrDefault(d => d.Ranking == handRanking);
+            Debug.Assert(handRankingData != null, $"Can't find HandRanking Data: {handRanking}");
+            
+            // 트윈
+            _mainRankingTween = rect
+                .DOScale(setting.mainRankingScaleValue, setting.mainRankingChangeDur)
+                .SetLoops(2, LoopType.Yoyo)
+                .SetAutoKill(true)
+                .SetLink(rect.gameObject);
+
+            _subRankingTween = subRect
+                .DOAnchorPosX(0f, setting.subRankingChangeDur)
+                .SetAutoKill(true)
+                .SetLink(sub.gameObject);
+            
+            _mainText.UpdateText(handRankingData.DisplayName);
+            sub.UpdateText("+" + handRankingData.Value);
+        }
+
+        public async UniTask DoStep(float damage, EvaluationType type)
+        {
+            // TODO: 로직 추가
+            var totalDamage = _cachedDamage + damage; 
+            
+            // 1. Sub Text 이동
+            var sub = GetSub();
+            var subRect = sub.transform.parent.GetComponent<RectTransform>();
+
+            var moveTween = subRect
+                .DOAnchorPosX(0f, setting.subEvaDur)
+                .SetEase(setting.subEvaEase);
+            var fadeTween = DOTween.To(
+                getter: () => 1f,
+                setter: sub.SetAlpha,
+                endValue: 0f,
+                duration: setting.subEvaDur
+            ).SetEase(setting.subFadeOutEase);
+
+            await DOTween.Sequence()
+                .Join(moveTween)
+                .Join(fadeTween)
+                .SetAutoKill()
+                .SetRecyclable()
+                .SetLink(gameObject);
+
+            // 2. Main Text에 Damage 반영
+            float dur = ((damage - _cachedDamage) / 10f + 1) * setting.mainEvaChangeDur; // 데미지에 따라 시간 늘어남.
+            
+            var scaleTween = rect
+                .DOScale(setting.mainRankingScaleValue, setting.mainEvaDur)
+                .SetLoops(2, LoopType.Yoyo);
+            var numberTween = DOTween.To(
+                getter: () => _cachedDamage,
+                setter: value => _mainText.UpdateText(value.ToString("0")),
+                endValue: totalDamage,
+                dur
+            );
+
+            await DOTween.Sequence()
+                .Join(scaleTween)
+                .Join(numberTween)
+                .SetAutoKill()
+                .SetRecyclable()
+                .SetLink(gameObject);
+
+            _cachedDamage = totalDamage;
+            sub.ClearText();
+            // TODO: 삭제
+        }
+
+        public enum EvaluationType
+        {
+            Plus,
+            Multiply
+        }
+
+        private TextAnimator GetSub()
+        {
+            const string path = "UI/CardUI/Evaluation View Sub";
+            var go = AssetUtil.Instantiate(path, transform);
+            if (!go)
+            {
+                LogEx.LogError($"Can't find Evaluation View Sub: {path}");
+                return null;
+            }
+
+            var sub = go.GetComponentInChildren<TextAnimator>();
+            return sub;
+        }
+
+        private async UniTask ClearTextAsync(TextAnimator text)
+        {
+            Tween fadeOut = DOTween.To(
+                getter: () => 1f,
+                setter: text.SetAlpha,
+                endValue: 0f,
+                duration: setting.clearTextDur
+            );
+
+            await fadeOut;
+            text.ClearText();
+        }
+    }
+}
+
+#if false
+using Cardevil.Cards.Data;
+using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
@@ -212,3 +390,4 @@ namespace Cardevil.Cards.Evaluations
         }
     }
 }
+#endif
