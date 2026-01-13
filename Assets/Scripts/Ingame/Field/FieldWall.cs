@@ -1,11 +1,14 @@
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
 using Cysharp.Threading.Tasks;
+using System;
 using System.Threading;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
 {
+    
+    [Obsolete]
     public class FieldWall : MonoBehaviour
     {
         [SerializeField] private GameObject[] _walls;

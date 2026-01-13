@@ -65,6 +65,9 @@ namespace Cardevil.Core.Root
         {
             // TODO: 얘를 외부에서 호출되도록 해야겠음.
             
+            // TODO : 필드 초기화 - @machamy
+            Field.InitField(3,3, Random.Range(0,4));
+            
             _enemySpawner.ConfigStageMobData(_context.stageId);
             if (!_enemySpawner.TrySpawn(out var enemy))
             {
