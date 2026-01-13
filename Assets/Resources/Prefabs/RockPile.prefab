@@ -256,10 +256,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entity: {fileID: 4308621736268814488}
   spriteRenderer: {fileID: 6370225565603933019}
-  animator: {fileID: 0}
+  animator: {fileID: 4660370686731059197}
   animSignalListener: {fileID: 7063735668272426058}
   countText: {fileID: 0}
   _poolable: {fileID: 5318671644886050455}
+  _rockCount: 3
 --- !u!114 &5318671644886050455
 MonoBehaviour:
   m_ObjectHideFlags: 0

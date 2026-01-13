@@ -1,6 +1,5 @@
 ﻿using Cardevil.Ingame.Entities;
 using Cardevil.Utils;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
@@ -26,7 +25,7 @@ namespace Cardevil.Ingame.Field
             return entityInstance;
         }
         
-        public static T SummonEntityComponent<T>(this Field field, T entityComponentPrefab, TileVector coordinate) where T : MonoBehaviour, IEntityComponent
+        public static T SummonEntityComponent<T>(this Field field, T entityComponent, TileVector coordinate) where T : MonoBehaviour, IEntityComponent
         {
             Tile tile = field.GetTile(coordinate);
             if (tile == null)
@@ -34,21 +33,26 @@ namespace Cardevil.Ingame.Field
                 LogEx.LogError($"Cannot summon entity component at invalid coordinate {coordinate}.");
                 return null;
             }
-            return field.SummonEntityComponent(entityComponentPrefab, tile);
+            return field.SummonEntityComponent(entityComponent, tile);
         }
         
-        public static T SummonEntityComponent<T>(this Field field, T entityComponentPrefab, Tile tile) where T : MonoBehaviour, IEntityComponent
+        public static T SummonEntityComponent<T>(this Field field, T entityComponent, Tile tile) where T : MonoBehaviour, IEntityComponent
         {
-            Entity entityInstance = Object.Instantiate(entityComponentPrefab.Entity);
-            entityInstance.Init(tile);
-            T componentInstance = entityInstance.GetComponent<T>();
-            if (componentInstance == null)
+            if (entityComponent == null)
             {
-                LogEx.LogError($"The summoned entity does not have the required component of type {typeof(T).Name}.");
-                Object.Destroy(entityInstance.gameObject);
+                LogEx.LogError($"Cannot summon null entity component.");
                 return null;
             }
-            return componentInstance;
+            
+            Entity entity = entityComponent.Entity;
+            if (entity == null)
+            {
+                LogEx.LogError($"Entity component does not have a valid Entity reference.");
+                return null;
+            }
+            
+            entity.Init(tile);
+            return entityComponent;
         }
     }
 }

@@ -33,7 +33,7 @@ namespace Cardevil.Ingame.Entities
 
         public bool DoReflect => _rockCount > 0;
         
-        private int _rockCount;
+        [SerializeField] private int _rockCount = 3;
         
         public int RockCount
         {
@@ -41,13 +41,22 @@ namespace Cardevil.Ingame.Entities
             set
             {
                 _rockCount = value;
-                countText.text = _rockCount.ToString();
+                if (countText != null)
+                {
+                    countText.text = _rockCount.ToString();
+                }
             }
         }
 
         private void OnEnable()
         {
             animSignalListener.SignalEvent += OnAnimSignal;
+        }
+        
+        public void Init(int initialRockCount)
+        {
+            RockCount = initialRockCount;
+            animator.ResetTrigger(AnimatorHashes.Break);
         }
 
         private void OnDisable()

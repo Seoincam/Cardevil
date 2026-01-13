@@ -24,6 +24,7 @@ namespace Cardevil.Ingame
 
             var pm = CardevilCore.Instance.Pool;
             var pile = pm.Get<RockPile>("RockPile");
+            pile.Init(3);
             field.SummonEntityComponent(pile, TileVector.One);
         }
     }

@@ -158,7 +158,7 @@ namespace Cardevil.Ingame.Player
             bool wrapped = false;
                 
             // 원래 타일
-            Tile originalTile = _entity.CurrentTile;
+            Tile originalTile = _entity.CurrentTile;    
             // 이동하고 싶은 타일
             Tile desiredTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
             // 실제 이동 타일
@@ -264,6 +264,7 @@ namespace Cardevil.Ingame.Player
                  1,
                     1f / MoveSpeed).SetEase(Ease.Linear));
                 PlayerVisual.IsRunning = false;
+                await sequence.ToUniTask();
             }
 
             async UniTask MoveReflectFallTask()
