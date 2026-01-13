@@ -3,11 +3,14 @@ using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace Cardevil.Cards.Evaluations
@@ -56,6 +59,9 @@ namespace Cardevil.Cards.Evaluations
 
         public IReadOnlyEvaluationResultsModel ResultsModel => _model;
 
+        private Card[] _attackCards;
+        private int _attackCardsUsingIndex;
+
         public void Init(EvaluationResultsModel model)
         {
             if (model == null)
@@ -100,21 +106,44 @@ namespace Cardevil.Cards.Evaluations
         public void ConfigureSequence(IEnumerable<Card> sortedCards)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
-
-            List<CardData> attacks = sortedCards
-                .Where(c => c.Data.IsAttack)
-                .Select(c => c.Data).ToList();
-
-            List<CardData> moves = sortedCards
-                .Where(c => c.Data.IsMove)
-                .Select(c => c.Data).ToList();
-
-            _resultBuilder = EvaluationResult.CreateBuilder()
-                .SetHandRanking(handRanking)
-                .SetAttacks(attacks)
-                .SetMoves(moves);
             
             _seq = _factory.ConfigureSequence(sortedCards);
+            
+            // 0. 이미 유물 등은 static으로 등록되어있음.
+            // 1. 카드를 하나씩 등록함 (Dynamic)
+            // 2. MergeAndInvoke()
+            // 3. Args에 족보 + 데미지 정보가 쌓임
+            // 마지막에 적한테 가할 수 있게 TurnManager에 넘겨주면 될 듯.
+            
+            // TODO:
+            // 실제 호출은 TurnManager에서 하는게 맞을 듯.
+            // args 초기화하고 넘길 방법을 찾기!
+            var args = CardDamageCalculationArgs.Get(sortedCards.ToArray(), handRanking);
+            ExecEventBus<CardDamageCalculationArgs>.InvokeMerged(args, default).Forget(); 
+            
+            ExecDynamicEventBus<CardDamageCalculationArgs>.Register(OnCalculateDamage);
+        }
+
+        private void OnCalculateDamage(ExecQueue<CardDamageCalculationArgs> queue, CardDamageCalculationArgs args)
+        {
+            _attackCardsUsingIndex = 0;
+            for (int i = 0; i < _attackCards.Length; i++)
+            {
+                int priority = (int)CardDamageCalculationArgs.Order.PlusCardDamage;
+                queue.Enqueue(priority, AddCardDamageAsync);
+            }
+            return;
+            
+            async UniTask AddCardDamageAsync(CardDamageCalculationArgs calculationArgs, CancellationToken cancellationToken)
+            {
+                int damageAmount = _attackCards[_attackCardsUsingIndex++].Data.FinalNumber;
+                await EvaluationView2.Current.DoStep(damageAmount, EvaluationView2.EvaluationType.Plus);
+                // TODO:
+                // 카드별 기본 데미지 유물 호출을 위해 새로운 args 정의,
+                // 호출해야함.
+                
+                calculationArgs.AddDamage(damageAmount);
+            }
         }
 
         public async UniTask ExcuteSequenceAsync()

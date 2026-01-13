@@ -27,6 +27,18 @@ namespace Cardevil.Cards.Data.InStage
 
         public bool IsAttack => kind == CardKind.Attack;
         public bool IsMove => kind == CardKind.Move;
+
+        /// <summary>
+        /// 값이 확정된 시점에 호출해야함.
+        /// 공격카드의 최종 선택 숫자.
+        /// </summary>
+        public int FinalNumber => (int)numberSelectState.FinalValue;
+
+        /// <summary>
+        /// 값이 확정된 시점에 호출해야함.
+        /// 이동카드의 최종 선택 방향.
+        /// </summary>
+        public Direction FinalDirection => (Direction)directionSelectState.FinalValue; 
         
         /// <summary>
         /// 스테이지 입장 전 상태로 초기화합니다.

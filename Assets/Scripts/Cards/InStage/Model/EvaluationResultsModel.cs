@@ -74,20 +74,15 @@ namespace Cardevil.Cards.InStage.Model
     [Serializable]
     public sealed class EvaluationResult
     {
-        [SerializeField, VisibleOnly] private int totalDamage;
-        [SerializeField, VisibleOnly] private List<CardData> attacks;
-        [SerializeField, VisibleOnly] private List<CardData> moves;
-        [SerializeField, VisibleOnly] private HandRanking handRanking;
-
-        public int TotalDamage => totalDamage;
-        public IReadOnlyList<CardData> Attacks => attacks;
-        public IReadOnlyList<CardData> Moves => moves;
-        public HandRanking HandRanking => handRanking;
+        public int TotalDamage { get; }
+        public IReadOnlyList<CardData> Attacks { get; }
+        public IReadOnlyList<CardData> Moves { get; }
+        public HandRanking HandRanking { get; }
         
         /// <summary>
         /// 사용한 카드 장수. 
         /// </summary>
-        public int CardsCount => attacks.Count + moves.Count;
+        public int CardsCount => Attacks.Count + Moves.Count;
 
         #region Builder
 
@@ -124,12 +119,15 @@ namespace Cardevil.Cards.InStage.Model
             public EvaluationResult Build() => new(_totalDamage, _attacks, _moves, _handRanking);
         }
 
-        public EvaluationResult(int totalDamage, List<CardData> attacks, List<CardData> moves, HandRanking handRanking)
+        public EvaluationResult(int totalDamage, 
+            IReadOnlyList<CardData> attacks, 
+            IReadOnlyList<CardData> moves, 
+            HandRanking handRanking)
         {
-            this.totalDamage = totalDamage;
-            this.attacks = attacks;
-            this.moves = moves;
-            this.handRanking = handRanking;
+            TotalDamage = totalDamage;
+            Attacks = attacks;
+            Moves = moves;
+            HandRanking = handRanking;
         }
 
         #endregion

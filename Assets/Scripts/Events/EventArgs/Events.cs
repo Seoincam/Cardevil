@@ -129,45 +129,6 @@ namespace Cardevil.Events
     }
 
     /// <summary>
-    /// 덱 카드 개수 변화 이벤트 인자.
-    /// </summary>
-    public class CardDeckChangeArgs : ExecEventArgs<CardDeckChangeArgs>
-    {
-        public enum Order
-        {
-            UIUpdate = int.MinValue,
-        }
-
-        public static CardDeckChangeArgs Get(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
-        {
-            var args = Get();
-            args.Init(currentDeckCount, newDeckCount, newModel);
-            return args;
-        }
-
-        public int OldDeckCount { get; private set; }
-        public int NewDeckCount { get; private set; }
-        public IReadOnlyCardsModel NewModel { get; private set; }
-        // 남은 덱 카드 개수는 이벤트로 변화주지 않음.
-
-        private void Init(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
-        {
-            OldDeckCount = currentDeckCount;
-            NewDeckCount = newDeckCount;
-            NewModel = newModel;
-        }
-
-        public override void Clear()
-        {
-            base.Clear();
-            // 자신의 멤버 변수를 초기화하도록 수정
-            OldDeckCount = 0;
-            NewDeckCount = 0;
-            NewModel = null;
-        }
-    }
-
-    /// <summary>
     /// Enemy가 공격한 후 호출
     /// </summary>
     public class EnemyAttackAfterArgs : ExecEventArgs<EnemyAttackAfterArgs>
@@ -233,71 +194,5 @@ namespace Cardevil.Events
             DamageAmount = 0f;
         }
 
-    }
-
-
-    /// <summary>
-    /// 카드 버리기 횟수 변화 이벤트 인자.
-    /// </summary>
-    public class CardDiscardChangeArgs : ExecEventArgs<CardDiscardChangeArgs>
-    {
-        public int OldDiscard { get; private set; }
-        public int NewDiscard { get; private set; }
-        
-        /// <summary>
-        /// 이벤트 진행으로 인해 수정된 카드 버리기 횟수. 최종적으로 해당 개수로 카드 버리기 횟수가 설정됨.
-        /// </summary>
-        public int ModifiedDiscard { get; set; }
-        
-        public static CardDiscardChangeArgs Get(int currentDiscard, int newDiscard)
-        {
-            var args = Get();
-            args.Init(currentDiscard, newDiscard);
-            return args;
-        }
-
-        public enum Order
-        {
-            First = int.MinValue,
-            Last = int.MaxValue
-        }
-
-        private void Init(int currentDiscard, int newDiscard)
-        {
-            OldDiscard = currentDiscard;
-            NewDiscard = newDiscard;
-            ModifiedDiscard = newDiscard;
-        }
-
-        public override void Clear()
-        {
-            base.Clear();
-            OldDiscard = 0;
-            NewDiscard = 0;
-            ModifiedDiscard = 0;
-        }
-    }
-
-    /// <summary>
-    /// 카드 '하나하나'가 버려지는 이벤트 인자.
-    /// </summary>
-    public class EachCardDiscardedArgs : ExecEventArgs<EachCardDiscardedArgs>
-    {
-        public CardData CardData { get; private set; }
-
-        public static EachCardDiscardedArgs Get(CardData cardData)
-        {
-            var args = Get();
-            args.Init(cardData);
-            return args;
-        }
-
-        private void Init(CardData cardData) => CardData = cardData;
-
-        public override void Clear()
-        {
-            base.Clear();
-            CardData = null;
-        }
     }
 }
