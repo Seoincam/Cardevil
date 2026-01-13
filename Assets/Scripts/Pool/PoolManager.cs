@@ -20,7 +20,7 @@ namespace Cardevil.Pools
         
         [SerializeField] private SerializableDictionary<string, ICloneFactory<Poolable>> _factories = new();
         [SerializeField] private SerializableDictionary<string, IObjectPool<Poolable>> _pools = new();
-        
+        [SerializeField] private SerializableDictionary<Type, IObjectPool<Poolable>> _typePools = new();
         /// <summary>
         /// Root Transform임
         /// 필요시 각 Poolable의 부모로 변경 가능.
@@ -75,6 +75,7 @@ namespace Cardevil.Pools
                 pool.Value.Clear();
             }
             _pools.Clear();
+            _typePools.Clear();
             _factories.Clear();
         }
         
@@ -140,6 +141,7 @@ namespace Cardevil.Pools
                     _initialSize,
                     _maxSize
                 );
+            _typePools[cloneFactory.Original.GetType()] = _pools[type];
         }
 
         private void ActionOnGet(Poolable poolable)
@@ -261,6 +263,22 @@ namespace Cardevil.Pools
                     $"Requested type {typeof(T)} do`es not match the poolable type {poolable.GetType()} from pool {type}");
                 return null;
             }
+        }
+        
+        
+        /// <summary>
+        /// 타입으로 Poolable을 가져옴.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T Get<T> (Transform parent = null) where T : MonoBehaviour, IPoolableSubComponent
+        {
+            var pool = _typePools[typeof(T)];
+            _tempPoolParent = parent;
+            var poolable = pool.Get();
+            poolable._pool = pool;
+            return poolable.GetComponent<T>();
         }
         
         /// <summary>

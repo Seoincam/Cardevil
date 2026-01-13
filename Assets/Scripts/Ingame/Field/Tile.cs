@@ -49,6 +49,16 @@ namespace Cardevil.Ingame.Field
             _fieldConfiguration = field.FieldConfiguration;
             
         }
+        
+        public bool AddEntity(IEntityComponent entityComponent)
+        {
+            if (entityComponent == null)
+            {
+                LogEx.LogError("Cannot add a null entity component to the tile.");
+                return false;
+            }
+            return AddEntity(entityComponent.Entity);
+        }
 
         public bool AddEntity(Entity entity){
             if (entity == null)
@@ -63,6 +73,16 @@ namespace Cardevil.Ingame.Field
                 return true;
             }
             return false;
+        }
+        
+        public bool RemoveEntity(IEntityComponent entityComponent)
+        {
+            if (entityComponent == null)
+            {
+                LogEx.LogError("Cannot remove a null entity component from the tile.");
+                return false;
+            }
+            return RemoveEntity(entityComponent.Entity);
         }
         
         public bool RemoveEntity(Entity entity)

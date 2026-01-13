@@ -162,8 +162,8 @@ namespace Cardevil.Ingame.Player
             // 이동하고 싶은 타일
             Tile desiredTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
             // 실제 이동 타일
-            using var listHandle = ListPool<IReflecterEntity>.Get(out var entityList);
-            bool reflected = desiredTile.GetEntitiesWithComponent<IReflecterEntity>(
+            using var listHandle = ListPool<IReflectorEntity>.Get(out var entityList);
+            bool reflected = desiredTile.GetEntitiesWithComponent<IReflectorEntity>(
                 (e) => e.DoReflect, ref entityList);
             if (debugReflect)
             {
