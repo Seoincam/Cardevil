@@ -252,6 +252,7 @@ namespace Cardevil.Ingame.Player
             {
                 Vector3 startPosition = transform.position;
                 Vector3 desiredTilePosition = desiredTile.transform.position;
+                desiredTilePosition.y = startPosition.y;
                 PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
                 PlayerVisual.IsRunning = true;
                 Sequence sequence = DOTween.Sequence();
@@ -263,8 +264,8 @@ namespace Cardevil.Ingame.Player
                     0.25f,
                  1,
                     1f / MoveSpeed).SetEase(Ease.Linear));
-                PlayerVisual.IsRunning = false;
                 await sequence.ToUniTask();
+                PlayerVisual.IsRunning = false;
             }
 
             async UniTask MoveReflectFallTask()
