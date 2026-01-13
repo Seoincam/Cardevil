@@ -4,7 +4,7 @@ namespace Cardevil.Utils
 {
     public static class Hashes
     {
-        public static readonly int SHADER_COLOR =  Shader.PropertyToID("_Color");
+        public static readonly int SHADER_COLOR =  Shader.PropertyToID("_BaseColor");
         
     }
     

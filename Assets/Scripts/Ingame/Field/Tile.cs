@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cardevil.Attributes;
 using Cardevil.Core.Bootstrap;
+using Cardevil.DebugConsole;
 using Cardevil.Ingame.Entities;
 using Cardevil.Pools;
 using Cardevil.Utils;
@@ -211,7 +212,7 @@ namespace Cardevil.Ingame.Field
             highlightObject.Initialize(this, _fieldConfiguration);
             highlightObject.SetHighlightColor(highlightType, _fieldConfiguration.DefaultTileHighlightColor);
             highlightObject.transform.SetParent(transform, false);
-            highlightObject.transform.position = transform.position;
+            highlightObject.transform.position = transform.position; 
             _highlightObjects.Add(highlightObject);
             return highlightObject;
         }
@@ -253,7 +254,17 @@ namespace Cardevil.Ingame.Field
         }
 
 
-
-        
+        [ConsoleCommand("tile.SpriteRenderer.enabled", "Enables or disables the sprite renderer of the tile.")]
+        private static void SetSpriteRendererEnabled(bool enabled)
+        {
+            var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
+            foreach (var tile in tiles)
+            {
+                if (tile._spriteRenderer != null)
+                {
+                    tile._spriteRenderer.enabled = enabled;
+                }
+            }
+        }
     }
 }

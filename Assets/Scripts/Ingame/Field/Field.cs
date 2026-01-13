@@ -3,8 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Cardevil.Attributes;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
+using Cysharp.Threading.Tasks;
+using System.Threading;
+using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 namespace Cardevil.Ingame.Field
@@ -16,9 +21,9 @@ namespace Cardevil.Ingame.Field
     /// 일종의 타일 컨테이너 클래스.
     /// 음수인덱스는 지원 안함. 필요시 지원 예정
     /// Tile [세로값][가로값] 값은 0,1,2 값
+    /// TODO : 비주얼 분리
     /// </remarks>
-   
-    [RequireComponent(typeof(Grid))]
+    
     public class Field : MonoBehaviour, IEnumerable<Tile>, IGridTileContainer
     {
         //
@@ -30,8 +35,10 @@ namespace Cardevil.Ingame.Field
         [SerializeField] private bool _initOnAwake = true;
         [Header("References")]
         [SerializeField] private Grid grid;
+        
+        [SerializeField] private FieldSubFloorObject[] _subFloorObjects;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform tileParent;
         [SerializeField, VisibleOnly] private TileLine[] _tileContainer;
-
         [Serializable]
         internal class TileLine : IEnumerable<Tile>
         {
@@ -94,23 +101,56 @@ namespace Cardevil.Ingame.Field
 
             if (_initOnAwake)
             {
-                InitField(3,3);
+                InitField(3,3, 0);
             }
         }
 
-        [ContextMenu("Init Field")]
-        public void InitField(int width, int height)
+        #region Visual Part...
+        // TODO : 나중에 따로 분리해야함
+        
+        private void OnEnable()
         {
+            ExecEventBus<PlayerHealthChangeArgs>.RegisterStatic((int)PlayerHealthChangeArgs.Priority.UI, OnPlayerHealthChanged);
+        }
+        
+        private void OnDisable()
+        {
+            ExecEventBus<PlayerHealthChangeArgs>.UnregisterStatic(OnPlayerHealthChanged);
+        }
+        
+        
+        private async UniTask OnPlayerHealthChanged(PlayerHealthChangeArgs args, CancellationToken cancellationToken)
+        {
+            for (int i = 0; i < _subFloorObjects.Length; i++)
+            {
+                if (_subFloorObjects[i] != null)
+                {
+                    bool isActive = i < args.ModifiedHealth;
+                    _subFloorObjects[i].gameObject.SetActive(isActive);
+                }
+            }
+            await UniTask.CompletedTask;
+        }
+
+        #endregion
+        
+
+        [ContextMenu("Init Field")]
+        public void InitField(int width, int height, int stageIndex)
+        {
+            LogEx.Log($"Idx {stageIndex}, Size {width}x{height}");
             ClearTiles();
             this.width = width;
             this.height = height;
             _tileContainer = new TileLine[height];
+            var tileParentTransform = tileParent != null ? tileParent : transform;
             for (int i = 0; i < height; i++)
             {
                 _tileContainer[i] = new TileLine();
                 for (int j = 0; j < width; j++)
                 {
-                    Tile tile = Instantiate(_tilePrefab, transform);
+
+                    Tile tile = Instantiate(_tilePrefab, tileParentTransform);
                     tile.Initialize(this, new TileVector(i, j));
                     tile.name = $"Tile_({i},{j})";
                     tile.transform.position = Grid.GetCellCenterWorld(new Vector3Int(j,i, 0));
@@ -118,6 +158,32 @@ namespace Cardevil.Ingame.Field
                     _tileContainer[i][j] = tile;
                 }
             }
+            
+            // 층 별 머터리얼 초기화
+            for (int i = 0; i < 4; i++)
+            {
+                _subFloorObjects[i].SetMesh(fieldConfiguration.GetMesh(i));
+                _subFloorObjects[i].Init(fieldConfiguration.GetMaterial(stageIndex));
+            }
+        }
+
+        public void SetDoughnutForm(bool isDoughnut = true)
+        {
+            if (isDoughnut)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    _subFloorObjects[i].SetMesh(fieldConfiguration.GetDoughnutMesh(i));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    _subFloorObjects[i].SetMesh(fieldConfiguration.GetMesh(i));
+                }
+            }
+
         }
 
         [ContextMenu("Clear Tiles")]
@@ -328,7 +394,7 @@ namespace Cardevil.Ingame.Field
         {
             width = 3;
             height = 3;
-            InitField(width, height);
+            InitField(width, height, 0);
         }
         #endif
         
