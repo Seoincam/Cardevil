@@ -4,6 +4,12 @@ using UnityEngine.Pool;
 
 namespace Cardevil.Pools
 {
+    public interface IPoolableSubComponent
+    {
+        public Poolable Poolable { get; }
+        
+    }
+    
     public class Poolable : MonoBehaviour
     {
         internal IObjectPool<Poolable> _pool;

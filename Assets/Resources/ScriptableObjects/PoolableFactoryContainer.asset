@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PoolableFactoryContainer
   m_EditorClassIdentifier: 
   _factories:
-    defaultKey: 0
+    defaultKey: 6
     _items:
     - Key: 4
       Value: {fileID: 11400000, guid: ee58240e2c5904f6ebee8df0fc1633f5, type: 2}
@@ -25,3 +25,5 @@ MonoBehaviour:
       Value: {fileID: 11400000, guid: 5ce0f5a5d079c0b458b9e7522a60e8cd, type: 2}
     - Key: 1
       Value: {fileID: 11400000, guid: 9363e778aafbb5f429ab797bc769b901, type: 2}
+    - Key: 6
+      Value: {fileID: 11400000, guid: 2a10cc8c2f8d2be48b837a85aec86507, type: 2}
