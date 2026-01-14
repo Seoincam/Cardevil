@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
+using System.Threading;      // CancellationToken 사용을 위해 필요
 
 /// <summary>
 /// # 최대 체력의 X% 이상의 피해를 받으면, 초과된 피해량만큼을 0으로 만듭니다.
@@ -12,17 +13,24 @@ namespace Cardevil.InGame.Enemy
     public class Gimmick_Damage_Limit : IGimmick
     {
         private Enemy _targetEnemy;
+
+        // 핸들러를 멤버 변수로 캐싱 
+        private ExecAction<PlayerAttackArgs> _handler;
+
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
+            _handler = CalculateAttackDamage; // 핸들러 할당
 
-            ExecEventBus<PlayerAttackArgs>.RegisterDynamic(CalculateAttackDamage);
+            ExecEventBus<PlayerAttackArgs>.RegisterStatic(
+            (int)PlayerAttackArgs.Order.Phase_Final,
+            _handler
+        );
 
 
-            
         }
 
-        private void CalculateAttackDamage(ExecQueue<PlayerAttackArgs> queue, PlayerAttackArgs args)
+        private async UniTask CalculateAttackDamage(PlayerAttackArgs args, CancellationToken cancellationToken)
         {
             // 1. 제한할 데미지 상한선 계산 (최대 체력 * 기믹 설정값 %)
             // 예: GimmickValue[0]이 0.1이면 10%
@@ -39,6 +47,10 @@ namespace Cardevil.InGame.Enemy
 
                 Debug.Log($"[Gimmick] 데미지 제한 발동: {originalDamage} -> {args.DamageAmount} (최대치: {damageCap})");
             }
+        }
+        public void Remove()
+        {
+
         }
     }
     
