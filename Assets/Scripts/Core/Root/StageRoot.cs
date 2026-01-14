@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Player;
 using Cardevil.SceneManagement;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Cardevil.Core.Root
@@ -76,8 +77,8 @@ namespace Cardevil.Core.Root
             }
             
             enemy.Init(Field);
-            // turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
-            // turn.StartLoop();
+            turn.Initialize(_enemySpawner, Card.BuildFlow(), Player, enemy);
+            turn.EnterLoopAsync().Forget();
         }
 
         /// <summary>

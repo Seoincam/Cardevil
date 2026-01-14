@@ -63,7 +63,7 @@ namespace Cardevil.Cards.Evaluations
 
         private Card[] _toUseCards;
         private HandRanking _handRanking;
-        private Vector2Int _playerPosition;
+        private TileVector _playerPosition;
         
         private int _attackCardsUsingIndex;
 
@@ -104,7 +104,7 @@ namespace Cardevil.Cards.Evaluations
             int registerOnModel = (int)CardDamageEvaluationArgs.Order.RegisterOnModel;
             ExecStaticEventBus<CardDamageEvaluationArgs>.Register(registerOnModel, OnEvaluationEnded);
 
-            int playerMovingEnd = (int)PlayerMoveArgs.Order.Last;
+            int playerMovingEnd = (int)PlayerMoveArgs.Orders.Last;
             ExecStaticEventBus<PlayerMoveArgs>.Register(playerMovingEnd, OnPlayerMovingEnded);
             
             // TODO: 나중에 모두 해제해야함.

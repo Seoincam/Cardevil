@@ -29,18 +29,18 @@ namespace Cardevil.Relics.OnEvaluation
             
             // 최근부터 과거로 스캔하는 방식으로 체크
             int remaining = executionCount;
-            for (int i = h.Count - 1; i >= 0; i--)
-            {
-                var result = h[i];
-                if (result == null || result.HandRanking == HandRanking.None)
-                    continue;
-
-                if (result.HandRanking == triggerHandRanking)
-                    return isPermanent || remaining > 0;
-
-                if (!isPermanent && --remaining <= 0)
-                    return false;
-            }
+            // for (int i = h.Count - 1; i >= 0; i--)
+            // {
+            //     var result = h[i];
+            //     if (result == null || result.HandRanking == HandRanking.None)
+            //         continue;
+            //
+            //     if (result.HandRanking == triggerHandRanking)
+            //         return isPermanent || remaining > 0;
+            //
+            //     if (!isPermanent && --remaining <= 0)
+            //         return false;
+            // }
             
             return false;
         }

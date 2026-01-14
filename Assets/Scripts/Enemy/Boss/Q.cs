@@ -2,6 +2,7 @@ using Cardevil.Cards.Data;
 using Cardevil.Core.Turn;
 using UnityEngine;
 using Cardevil.InGame.Enemy;
+using Cardevil.Utils;
 using Unity.VisualScripting;
 
 namespace Cardevil.InGame.Enemy.Boss
@@ -59,7 +60,7 @@ namespace Cardevil.InGame.Enemy.Boss
             return false; // 아직 살아있다.
         }
 
-        public override void AttackEnemyAwake(IReadOnlyTurnContext ctx) // 처음으로 호출되었을때
+        public override void AttackEnemyAwake(TileVector playerPosition) // 처음으로 호출되었을때
         {
             SetFirstAwake();
             currentState = State.Normal;

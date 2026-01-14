@@ -20,12 +20,12 @@ namespace Cardevil.Core.Turn
         private UniTask _loopTask;
         
         private ITurnCardFlow _cardFlow;
-        private ITurnTarget2 _targetEnemy;
-        private ITurnTarget2 _targetPlayer; 
+        private ITurnTarget _targetEnemy;
+        private ITurnTarget _targetPlayer; 
         
         private EnemySpawner _spawner;
 
-        public interface ITurnTarget2
+        public interface ITurnTarget
         {
             bool IsDead { get; }
         }
@@ -36,39 +36,29 @@ namespace Cardevil.Core.Turn
             _cardFlow = null;
         }
 
-        public void Init(EnemySpawner spawner, ITurnCardFlow cardFlow)
+        public void Initialize(EnemySpawner spawner, ITurnCardFlow cardFlow, ITurnTarget player, ITurnTarget enemy)
         {
             _spawner = spawner;
             _cardFlow = cardFlow;
         }
         
+
         /// <summary>
         /// 스테이지 입장 시 턴 루프 시작. 외부 토큰과 링크.
         /// </summary>
-        public void StartLoop(CancellationToken external = default)
-        {
-            _ = StartLoopAsync(external);
-        }
-
-        private async UniTask StartLoopAsync(CancellationToken external = default)
+        public async UniTask EnterLoopAsync(CancellationToken external = default)
         {
             // 혹시 돌고 있던 루프가 있으면 안전 종료까지 대기
             await StopLoopAsync();
             
             _cts = CancellationTokenSource.CreateLinkedTokenSource(external);
 
+            // 입장 시 이벤트
             var enterStageArgs = EnterStageArgs.Get(TileVector.Zero, 6);
             await ExecEventBus<EnterStageArgs>.InvokeMergedAndDispose(enterStageArgs, _cts.Token);
-
-            // await _enemy.ShowInitialAttackArea(initialPlayerPosition);
-            //
-            // await _cardFlow.EnterRerollPhase(6);
-            // await _cardFlow.Reroll();
-            // await _cardFlow.ExitRerollPhase();
-            //     
-            // await _cardFlow.EnterHandPhase();
             
-            _loopTask = GameLoopAsync(_cts.Token);
+            // 코어 루프 시작
+            _loopTask = CoreLoopAsync(_cts.Token);
         }
 
         /// <summary>
@@ -101,71 +91,55 @@ namespace Cardevil.Core.Turn
             }
         }
         
-        private async UniTask GameLoopAsync(CancellationToken cancellationToken)
+        private async UniTask CoreLoopAsync(CancellationToken cancellationToken)
         {
-            try
+            while (!cancellationToken.IsCancellationRequested)
             {
-                while (!cancellationToken.IsCancellationRequested)
+                TurnOrder++;
+                
+                await _cardFlow.DrawCard();
+                if (_cardFlow.IsNoCard)
                 {
-                    TurnOrder++;
-                    
-                    await _cardFlow.DrawCard();
-                    if (_cardFlow.IsNoCard)
-                    {
-                        // TODO: 게임 오버
-                        break;
-                    }
-
-                    await _cardFlow.WaitUserInput();
-                    
-                    // 모든 카드 사용.
-                    // 플레이어는 이때 이동을 함.
-                    await _cardFlow.UseAllCardsAsync(cancellationToken);
-                    
-                    // 공격 카드 데미지 계산.
-                    // EvaluationResult에 모든 계산이 끝난 데미지, 플레이어 위치, 족보가 모두 포함되어 있음.
-                    // 이 시점에선 result는 불변임.
-                    var evaluationResult = await _cardFlow.EvaluateAsync(cancellationToken);
-                    
-                    // 플레이어의 공격 + 적의 타격
-                    var playerAttackArgs = PlayerAttackArgs2.Get(evaluationResult);
-                    await ExecEventBus<PlayerAttackArgs2>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
-                    
-                    if (_targetEnemy.IsDead)
-                    {
-                        // if (!_spawner.TrySpawn(out var spawned))
-                        //     break;
-                        // // TODO: Enemy에 필드를 주입해줘야함.
-                        // await _enemy.Replace();
-                        // _enemy = spawned;
-                    }
-
-                    // 3. 적의 공격 + 플레이어의 타격
-                    var enemyAttackArgs = EnemyAttackArgs.Get();
-                    await ExecEventBus<EnemyAttackArgs>.InvokeMergedAndDispose(enemyAttackArgs, cancellationToken);
-
-                    if (_targetPlayer.IsDead)
-                    {
-                        
-                    }
-                    
-
-                    // Enemy Turn이 끝났을때 전파
-                    await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get(), cancellationToken);
+                    // TODO: 게임 오버
+                    break;
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                // 정상적인 취소
-            }
-            catch (Exception e)
-            {
-                LogEx.LogError($"Loop exception: {e}");
-            }
-            finally
-            {
-                // TurnLoopEnded?.Invoke(context);
-                // await _cardFlow.ExitHandPhase();
+
+                await _cardFlow.WaitUserInput();
+                
+                // 모든 카드 사용.
+                // 플레이어는 이때 이동을 함.
+                await _cardFlow.UseAllCardsAsync(cancellationToken);
+                
+                // 공격 카드 데미지 계산.
+                // EvaluationResult에 모든 계산이 끝난 데미지, 플레이어 위치, 족보가 모두 포함되어 있음.
+                // 이 시점에선 result는 불변임.
+                var evaluationResult = await _cardFlow.EvaluateAsync(cancellationToken);
+                
+                // 플레이어의 공격 + 적의 타격
+                var playerAttackArgs = PlayerAttackArgs2.Get(evaluationResult);
+                await ExecEventBus<PlayerAttackArgs2>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
+                
+                if (_targetEnemy.IsDead)
+                {
+                    // if (!_spawner.TrySpawn(out var spawned))
+                    //     break;
+                    // // TODO: Enemy에 필드를 주입해줘야함.
+                    // await _enemy.Replace();
+                    // _enemy = spawned;
+                }
+
+                // 3. 적의 공격 + 플레이어의 타격
+                var enemyAttackArgs = EnemyAttackArgs.Get();
+                await ExecEventBus<EnemyAttackArgs>.InvokeMergedAndDispose(enemyAttackArgs, cancellationToken);
+
+                if (_targetPlayer.IsDead)
+                {
+                    
+                }
+                
+
+                // Enemy Turn이 끝났을때 전파
+                await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get(), cancellationToken);
             }
         }
     }

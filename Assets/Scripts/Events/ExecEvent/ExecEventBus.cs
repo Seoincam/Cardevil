@@ -130,7 +130,7 @@ namespace Cardevil.Events.ExecEvents
         /// <param name="cancellationToken"></param>
         public static async UniTask InvokeMerged(TEvent args, CancellationToken cancellationToken = default)
         {
-            LogEx.Log("Invoking Merged Event Bus");
+            LogEx.Log($"{typeof(TEvent)} Invoking Merged Event Bus");
             _isMergedExecuting = true;
             
             try

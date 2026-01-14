@@ -3,6 +3,7 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,13 +34,13 @@ namespace Cardevil.Cards.InStage.Model
         public readonly IReadOnlyList<CardData> Cards;
         public readonly int TotalDamage;
         public readonly HandRanking HandRanking;
-        public readonly Vector2Int PlayerPosition;
+        public readonly TileVector PlayerPosition;
 
         public EvaluationResult(
             IReadOnlyList<CardData> cards, 
             int totalDamage, 
             HandRanking handRanking, 
-            Vector2Int playerPosition)
+            TileVector playerPosition)
         {
             Cards = cards;
             TotalDamage = totalDamage;

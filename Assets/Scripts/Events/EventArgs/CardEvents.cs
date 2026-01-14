@@ -1,15 +1,11 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Evaluations;
-using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Events.ExecEvents;
-using Cardevil.InGame.SlotMachine.Cards.Utils;
+using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Cardevil.Events
 {
@@ -121,28 +117,28 @@ namespace Cardevil.Events
     /// 전투 중 플레이어의 각 이동 카드 발동 시 사용되는 이벤트 인자.
     /// </summary>
     /// <remarks>
-    /// 모든 이동을 취합한 것이 아닌, 이동 카드 '하나하나'를 다룸.
+    /// 모든 이동 카드를 취합한 것이 아닌, 이동 카드 '하나하나'를 다룸.
     /// </remarks>
     public class PlayerMoveArgs : ExecEventArgs<PlayerMoveArgs>
     {
         private readonly List<Direction> _toMove = new(2);
         public IReadOnlyList<Direction> ToMove => _toMove;
         
-        public Vector2Int PlayerPosition { get; private set; }
+        public TileVector PlayerPosition { get; private set; }
 
         public static PlayerMoveArgs Get(Direction direction)
         {
             var args = Get();
-            args.AddDirections(direction);
+            args.Initialize(direction);
             return args;
         }
         
-        public void AddDirections(Direction direction) => _toMove.Add(direction);
+        public void AddDirection(Direction direction) => _toMove.Add(direction);
 
-        public void SetPlayerPositionAfterMoving(Vector2Int playerPositionOnField) =>
+        public void SetPlayerPositionAfterMove(TileVector playerPositionOnField) =>
             PlayerPosition = playerPositionOnField;
         
-        public enum Order
+        public enum Orders
         {
             /// <summary>
             /// 기본 방향이 등록되는 시점.
@@ -169,6 +165,11 @@ namespace Cardevil.Events
         {
             base.Clear();
             _toMove.Clear();
+        }
+
+        private void Initialize(Direction direction)
+        {
+            AddDirection(direction);
         }
     }
 

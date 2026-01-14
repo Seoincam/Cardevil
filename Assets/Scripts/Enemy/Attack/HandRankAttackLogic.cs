@@ -40,8 +40,8 @@ namespace Cardevil.InGame.Enemy
         {
             if (attack.isPlayerAttack)
             {
-                attack.attackPointNumber_x = (int)attack.turnCtx.PlayerPosition.x;
-                attack.attackPointNumber_y = (int)attack.turnCtx.PlayerPosition.y;
+                attack.attackPointNumber_x = (int)attack.playerPosition.i;
+                attack.attackPointNumber_y = (int)attack.playerPosition.j;
             }
             else
             {
@@ -205,7 +205,7 @@ namespace Cardevil.InGame.Enemy
         private static void SetHorizontal(Attack attack, IAttackVisualizer visualizer)
         {
             if (attack.isPlayerAttack)
-                attack.attackLineNumber = (int)attack.turnCtx.PlayerPosition.x;
+                attack.attackLineNumber = (int)attack.playerPosition.i;
             else
                 attack.attackLineNumber = Random.Range(0, 3);
 
@@ -215,7 +215,7 @@ namespace Cardevil.InGame.Enemy
         private static void SetVertical(Attack attack, IAttackVisualizer visualizer)
         {
             if (attack.isPlayerAttack)
-                attack.attackLineNumber = (int)attack.turnCtx.PlayerPosition.y;
+                attack.attackLineNumber = (int)attack.playerPosition.j;
             else
                 attack.attackLineNumber = Random.Range(0, 3);
 
@@ -249,13 +249,13 @@ namespace Cardevil.InGame.Enemy
         private static bool CheckHorizontal(Attack attack)
         {
             // 플레이어의 x좌표(행) == 공격 라인
-            return (int)attack.turnCtx.PlayerPosition.x == attack.attackLineNumber;
+            return attack.playerPosition.i == attack.attackLineNumber;
         }
 
         private static bool CheckVertical(Attack attack)
         {
             // 플레이어의 y좌표(열) == 공격 라인
-            return (int)attack.turnCtx.PlayerPosition.y == attack.attackLineNumber;
+            return attack.playerPosition.j == attack.attackLineNumber;
         }
 
         private static bool CheckPointBasedAttack(Attack attack)
@@ -280,8 +280,8 @@ namespace Cardevil.InGame.Enemy
         private static bool IsPlayerAt(Attack attack, int x, int y)
         {
             if (x < 0 || x > 2 || y < 0 || y > 2) return false;
-            return ((int)attack.turnCtx.PlayerPosition.x == x) &&
-                   ((int)attack.turnCtx.PlayerPosition.y == y);
+            return (attack.playerPosition.i == x) &&
+                   (attack.playerPosition.j == y);
         }
 
         #endregion

@@ -1,10 +1,12 @@
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
-using UnityEngine;
 
 namespace Cardevil.Events
 {
+    /// <summary>
+    /// 전투 스테이지에 입장할 때 사용되는 이벤트 인자.
+    /// </summary>
     public class EnterStageArgs : ExecEventArgs<EnterStageArgs>
     {
         public TileVector PlayerPosition { get; private set; } 
@@ -39,12 +41,15 @@ namespace Cardevil.Events
             
             /// <summary>
             /// 리롤 뷰에 있던 카드들을 메인 뷰로 이동 시킴. 
-            /// 입장 시의 모든 이벤트가 끝나고 메인 루프로 넘어갈 때 호출됨.
+            /// 입장 시의 모든 이벤트가 끝나고 코어 루프로 넘어갈 때 호출됨.
             /// </summary>
             Last = int.MaxValue,
         }
     }
     
+    /// <summary>
+    /// 플레이어의 공격 시전 이벤트 인자.
+    /// </summary>
     public class PlayerAttackArgs2 : ExecEventArgs<PlayerAttackArgs2>
     {
         public EvaluationResult EvaluationResult { get; private set; }
@@ -56,10 +61,10 @@ namespace Cardevil.Events
             return args;
         }
 
-        public enum Order
+        public enum Orders
         {
-            PlayerAttackMotion,
-            EnemyAttackedMotion
+            PlayerAttack,
+            EnemyAttacked
         }
 
         public override void Clear()
@@ -69,12 +74,25 @@ namespace Cardevil.Events
         }
     }
 
+    /// <summary>
+    /// 적의 공격 시전 이벤트 인자.
+    /// </summary>
     public class EnemyAttackArgs : ExecEventArgs<EnemyAttackArgs>
     {
-        public enum Order
+        public int TotalDamage { get; private set; }
+
+        public void SetDamage(int totalDamage) => TotalDamage = totalDamage;
+        
+        public enum Orders
         {
-            EnemyAttackMotion,
-            PlayerAttackedMotion
+            EnemyAttack,
+            PlayerAttacked
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            TotalDamage = 0;
         }
     }
 }
