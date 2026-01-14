@@ -79,7 +79,7 @@ namespace Cardevil.InGame.Enemy
             _targetEnemy.enforcedAttackRanking++;
         }
 
-        public void OnRemove()
+        public void Remove()
         {
             ExecEventBus<EnemyHealthChangeArgs>.UnregisterDynamic(OnHealthChanged);
         }

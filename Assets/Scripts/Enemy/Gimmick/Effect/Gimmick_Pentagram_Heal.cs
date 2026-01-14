@@ -36,7 +36,11 @@ namespace Cardevil.InGame.Enemy
 
             }
         }
-
+        // 구독해제
+        public void Remove()
+        {
+            ExecEventBus<EnemyTurnEndArgs>.UnregisterDynamic(EnemyTurnEndHeal);
+        }
 
     }
 }
