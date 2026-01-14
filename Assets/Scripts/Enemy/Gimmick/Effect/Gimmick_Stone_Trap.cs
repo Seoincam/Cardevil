@@ -24,5 +24,11 @@ namespace Cardevil.InGame.Enemy
             // TODO : 돌무더기 설치
 
         }
+
+        // 구독해제
+        public void Remove()
+        {
+         
+        }
     }
 }

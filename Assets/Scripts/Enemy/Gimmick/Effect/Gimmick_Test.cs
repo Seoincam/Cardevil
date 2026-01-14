@@ -13,11 +13,6 @@ namespace Cardevil.InGame.Enemy
         {
             _targetEnemy = enemy;
 
-
-
-            Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
-
-
             ExecEventBus<EnemyHealthChangeArgs>.RegisterDynamic(ActionFunction);
         }
 
@@ -26,22 +21,29 @@ namespace Cardevil.InGame.Enemy
 
         }
 
-        /*
-         * 
-         * 이런식으로 등록
-         *public float CurrentHp
+        // 구독해제
+        public void Remove()
         {
-            get => HP;
-            set
-            {
-                using (EnemyHealthChangeArgs args = EnemyHealthChangeArgs.Get())
-                {
-                    args.Init(HP, value,this);
-                    ExecEventBus<EnemyHealthChangeArgs>.InvokeMerged(args).Forget();
-                    HP = args.ModifiedHealth;
-                }
-            }
+
         }
-        */
+
     }
 }
+
+/*
+ * 
+ * 이런식으로 등록
+ *public float CurrentHp
+{
+    get => HP;
+    set
+    {
+        using (EnemyHealthChangeArgs args = EnemyHealthChangeArgs.Get())
+        {
+            args.Init(HP, value,this);
+            ExecEventBus<EnemyHealthChangeArgs>.InvokeMerged(args).Forget();
+            HP = args.ModifiedHealth;
+        }
+    }
+}
+*/

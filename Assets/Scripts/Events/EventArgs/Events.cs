@@ -186,14 +186,11 @@ namespace Cardevil.Events
     /// </summary>
     public class EnemyTurnEndArgs : ExecEventArgs<EnemyTurnEndArgs>
     {
-        public int OldDeckCount;
-        public int NewDeckCount;
+
 
         public override void Clear()
         {
             base.Clear();
-            OldDeckCount = 0;
-            NewDeckCount = 0;
         }
     }
 

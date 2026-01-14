@@ -60,6 +60,8 @@ namespace Cardevil.InGame.Enemy
         public int enforcedAttackRanking = 0;
         public int enforcedAttackDamage = 0;
 
+        // --------기믹 관련----------
+        private IGimmick gimmick;
         public void Init(Field field)
         {
             this.field = field;
@@ -79,6 +81,7 @@ namespace Cardevil.InGame.Enemy
             AttackEnemyTurnStart(ctx);
         }
        
+        // 플레이어 턴 -> Enemy턴 -> 종료 반복
         public async UniTask<AttackResult> TurnAttackAsync()
         {
             _enemyAttackInfo.attackSucess = false;
@@ -432,6 +435,7 @@ namespace Cardevil.InGame.Enemy
 
             char trimText = '"';
             IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
+            gimmick = igimmick;
             if(igimmick==null)
             {
                 return;
