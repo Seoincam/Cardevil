@@ -5,6 +5,14 @@ using UnityEngine;
 
 namespace Cardevil.Ingame.Entities
 {
+    /// <summary>
+    /// 엔티티의 서브 컴포넌트 인터페이스
+    /// </summary>
+    public interface IEntityComponent
+    {
+        public Entity Entity { get; }
+    }
+    
     public class Entity : MonoBehaviour
     {
         private Tile _currentTile;
@@ -87,5 +95,13 @@ namespace Cardevil.Ingame.Entities
         }
 
 
+        public void Kill(bool destroyGameObject = true)
+        {
+
+            if (_currentTile != null)
+                _currentTile.RemoveEntity(this);
+            if (destroyGameObject)
+                Destroy(gameObject);
+        }
     }
 }

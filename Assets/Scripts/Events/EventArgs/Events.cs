@@ -12,6 +12,11 @@ namespace Cardevil.Events
     /// </summary>
     public class PlayerHealthChangeArgs : ExecEventArgs<PlayerHealthChangeArgs>
     {
+        public enum Priority
+        {
+            First = int.MinValue,
+            UI = 1000,
+        }
         /// <summary>
         /// 단순히 체력 변화 이벤트를 방송만 할 때 true로 설정.
         /// </summary>

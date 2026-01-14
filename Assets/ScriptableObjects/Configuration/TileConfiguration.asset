@@ -15,3 +15,22 @@ MonoBehaviour:
   tileSize: 0.95
   defaultTileColor: {r: 1, g: 1, b: 1, a: 1}
   defaultTileHighlightColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.41960785}
+  <Materials>k__BackingField:
+  - {fileID: 2100000, guid: 4fd0b9572d9432c4c8507b8673a7b1b0, type: 2}
+  - {fileID: 2100000, guid: bf18eb3f6bf63e04b93775c65453f77e, type: 2}
+  - {fileID: 2100000, guid: 29dd1ad64e6664d4087188f234c6cd93, type: 2}
+  <Meshes>k__BackingField:
+  - {fileID: 7450741763379908841, guid: 29d31c4e5ed815148846bfc69d242a14, type: 3}
+  - {fileID: -3292925553009838691, guid: 74148157e3a5a9f47b7f9923e03eae6c, type: 3}
+  - {fileID: -3996760141626369306, guid: 8096660f8fcd34144a77cc59ed896865, type: 3}
+  - {fileID: -3531946766418785785, guid: 0360407ceaaa3504587b76734ad9f02a, type: 3}
+  <DoughnutMeshes>k__BackingField:
+  - {fileID: 7450741763379908841, guid: 11be048aa0fac344f88fe669d1b28888, type: 3}
+  - {fileID: -3292925553009838691, guid: b8faef658186b454581d5222195f8a70, type: 3}
+  - {fileID: -3996760141626369306, guid: 8f21d6ee6966eb642b513e86f57c7758, type: 3}
+  - {fileID: -3531946766418785785, guid: 072a0843e88424c418b4844ac1665423, type: 3}
+  <MunchkinMeshes>k__BackingField:
+  - {fileID: -8113768720884857512, guid: c7503829e54d58b4b832af0648b9ae4c, type: 3}
+  - {fileID: 9186633843763367028, guid: a88da3cd4c7c3304cb3f71fcddbd3898, type: 3}
+  - {fileID: -2639241166356525208, guid: ce816a2f630ff8f4fb2c38e1194c7dc5, type: 3}
+  - {fileID: 7733717212360752527, guid: 196bcbeb88bd2194daa0fa6819f44bdb, type: 3}

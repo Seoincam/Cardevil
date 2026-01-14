@@ -4,15 +4,17 @@ using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
 using System.Threading;
 
+
 namespace Cardevil.InGame.Enemy
 {
     /// <summary>
-    /// # 적이 받는 데미지가 최대 체력의 X%를 초과하지 않도록 제한합니다.
+
     /// </summary>
     public class Gimmick_Damage_Debuff : IGimmick
     {
         private Enemy _targetEnemy;
         private ExecAction<PlayerAttackArgs> _handler;
+
 
         public void Apply(Enemy enemy)
         {
@@ -51,3 +53,4 @@ namespace Cardevil.InGame.Enemy
 
     }
 }
+
