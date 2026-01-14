@@ -50,11 +50,11 @@ namespace Cardevil.Events
     /// <summary>
     /// 플레이어의 공격 시전 이벤트 인자.
     /// </summary>
-    public class PlayerAttackArgs2 : ExecEventArgs<PlayerAttackArgs2>
+    public class PlayerAttackArgs : ExecEventArgs<PlayerAttackArgs>
     {
         public EvaluationResult EvaluationResult { get; private set; }
 
-        public static PlayerAttackArgs2 Get(EvaluationResult evaluationResult)
+        public static PlayerAttackArgs Get(EvaluationResult evaluationResult)
         {
             var args = Get();
             args.EvaluationResult = evaluationResult;

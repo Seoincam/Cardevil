@@ -443,6 +443,8 @@ namespace Cardevil.Cards.InStage.Presenter
             _selectionView.Close();
             UpdateUI();
             _evaluationPresenter.RegisterUsingCards(_model.SortedSelection);
+            
+            cmp.TrySetResult();
         }
 
         private void Discard()

@@ -6,6 +6,7 @@ using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.Events
 {
@@ -192,9 +193,11 @@ namespace Cardevil.Events
         public void AddDamage(float amount) => Damage += amount;
         public void MultiplyDamage(float multiplier) => Damage *= multiplier;
 
+        public void ClampDamage(float maxDamage) => Damage = Mathf.Min(Damage, maxDamage);
+
         public void SetCards(Card[] cards) => Cards = cards;
         
-        public enum Order
+        public enum Orders
         {
             /// <summary>
             /// 최초의 View 클리어.

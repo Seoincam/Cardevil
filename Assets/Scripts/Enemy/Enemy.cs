@@ -80,8 +80,8 @@ namespace Cardevil.InGame.Enemy
             int attackPriority = (int)EnemyAttackArgs.Orders.EnemyAttack;
             ExecStaticEventBus<EnemyAttackArgs>.Register(attackPriority, OnTurnAttackAsync);
 
-            int attackedPriority = (int)PlayerAttackArgs2.Orders.EnemyAttacked;
-            ExecStaticEventBus<PlayerAttackArgs2>.Register(attackedPriority, OnTurnAttackedAsync);
+            int attackedPriority = (int)PlayerAttackArgs.Orders.EnemyAttacked;
+            ExecStaticEventBus<PlayerAttackArgs>.Register(attackedPriority, OnTurnAttackedAsync);
             
             // TODO: 디스폰될 때 이벤트 해제
         }
@@ -111,12 +111,12 @@ namespace Cardevil.InGame.Enemy
             await UniTask.Delay(1200);
         }
 
-        private async UniTask OnTurnAttackedAsync(PlayerAttackArgs2 args, CancellationToken cancellationToken)
+        private async UniTask OnTurnAttackedAsync(PlayerAttackArgs args, CancellationToken cancellationToken)
         {
             // TODO: 적이 데미지 받기
             
-            CurrentHp = HP - damage;
-            LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
+            CurrentHp = HP - args.EvaluationResult.TotalDamage;
+            LogEx.Log($"{args.EvaluationResult.TotalDamage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
             UpdateHPBar();
             
             // 유닛 사망

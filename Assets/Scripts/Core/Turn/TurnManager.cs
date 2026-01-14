@@ -116,8 +116,8 @@ namespace Cardevil.Core.Turn
                 var evaluationResult = await _cardFlow.EvaluateAsync(cancellationToken);
                 
                 // 플레이어의 공격 + 적의 타격
-                var playerAttackArgs = PlayerAttackArgs2.Get(evaluationResult);
-                await ExecEventBus<PlayerAttackArgs2>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
+                var playerAttackArgs = PlayerAttackArgs.Get(evaluationResult);
+                await ExecEventBus<PlayerAttackArgs>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
                 
                 if (_targetEnemy.IsDead)
                 {

@@ -52,7 +52,6 @@ namespace Cardevil.Cards.Evaluations
     public class EvaluationPresenter : IEvaluationPresenter
     {
         private EvaluationResultsModel _model;
-        private EvaluationView _view;
         private EvaluationSequenceFactory _factory;
         
         private EvaluationSequence _seq;
@@ -95,13 +94,12 @@ namespace Cardevil.Cards.Evaluations
                 LogEx.LogError($"Evaluation UI Animator가 존재하지 않음! path: {path}");
                 return;
             }
-            _view = go.GetComponent<EvaluationView>();
 
             // 정적 이벤트 등록
-            int clearView = (int)CardDamageEvaluationArgs.Order.ClearView;
+            int clearView = (int)CardDamageEvaluationArgs.Orders.ClearView;
             ExecStaticEventBus<CardDamageEvaluationArgs>.Register(clearView, ClearView);
             
-            int registerOnModel = (int)CardDamageEvaluationArgs.Order.RegisterOnModel;
+            int registerOnModel = (int)CardDamageEvaluationArgs.Orders.RegisterOnModel;
             ExecStaticEventBus<CardDamageEvaluationArgs>.Register(registerOnModel, OnEvaluationEnded);
 
             int playerMovingEnd = (int)PlayerMoveArgs.Orders.Last;
@@ -112,13 +110,13 @@ namespace Cardevil.Cards.Evaluations
         
         public void ClearHandRankingText()
         {
-            _view.UpdateHandRankingText(HandRanking.None);
+            EvaluationView.Current.UpdateHandRankingText(HandRanking.None);
         }
         
         public void UpdateHandRankingText(IEnumerable<Card> selection)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(selection);
-            _view.UpdateHandRankingText(handRanking);
+            EvaluationView.Current.UpdateHandRankingText(handRanking);
         }
         
         /*
@@ -154,6 +152,7 @@ namespace Cardevil.Cards.Evaluations
             
             ExecDynamicEventBus<CardDamageEvaluationArgs>.Register(HandleEvaluation);
         }
+        
         public async UniTask UseAllCardsAsync(CancellationToken cancellationToken)
         {
             var usingCards = _toUseCards.ToArray();
@@ -179,7 +178,8 @@ namespace Cardevil.Cards.Evaluations
                 else if (card.Data.IsAttack)
                 {
                     // TODO:
-                    // 머리 위에 쌓이기
+                    // 1. 족보 판별 바탕으로 필요한 카드만 사용되기
+                    // 2. 머리 위에 쌓이기
                 }
             }
         }
@@ -202,7 +202,7 @@ namespace Cardevil.Cards.Evaluations
             // 족보 기본 데미지
             if (_handRanking > HandRanking.High)
             {
-                int priority = (int)CardDamageEvaluationArgs.Order.HandRankingDamage;
+                int priority = (int)CardDamageEvaluationArgs.Orders.HandRankingDamage;
                 queue.Enqueue(priority, AddHandRankingDamage);
                 
                 async UniTask AddHandRankingDamage(CardDamageEvaluationArgs evaluationArgs, CancellationToken cancellationToken)
@@ -229,7 +229,7 @@ namespace Cardevil.Cards.Evaluations
             {
                 if (!_toUseCards[i]) continue;
                 
-                int priority = (int)CardDamageEvaluationArgs.Order.PlusCardDamage;
+                int priority = (int)CardDamageEvaluationArgs.Orders.PlusCardDamage;
                 queue.Enqueue(priority, AddCardDamageAsync);
             }
             return;

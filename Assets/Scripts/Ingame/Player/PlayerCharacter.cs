@@ -100,8 +100,8 @@ namespace Cardevil.Ingame.Player
             int movePriority = (int)PlayerMoveArgs.Orders.PlayerMove;
             ExecStaticEventBus<PlayerMoveArgs>.Register(movePriority, OnTurnMoveAsync);
 
-            int attackPriority = (int)PlayerAttackArgs2.Orders.PlayerAttack;
-            ExecStaticEventBus<PlayerAttackArgs2>.Register(attackPriority, OnTurnAttackAsync);
+            int attackPriority = (int)PlayerAttackArgs.Orders.PlayerAttack;
+            ExecStaticEventBus<PlayerAttackArgs>.Register(attackPriority, OnTurnAttackAsync);
 
             int attackedPriority = (int)EnemyAttackArgs.Orders.PlayerAttacked;
             ExecStaticEventBus<EnemyAttackArgs>.Register(attackedPriority, OnTurnAttackedAsync);
@@ -448,7 +448,7 @@ namespace Cardevil.Ingame.Player
             args.SetPlayerPositionAfterMove(Entity.Tile);
         }
 
-        private async UniTask OnTurnAttackAsync(PlayerAttackArgs2 args, CancellationToken cancellationToken)
+        private async UniTask OnTurnAttackAsync(PlayerAttackArgs args, CancellationToken cancellationToken)
         {
             LogEx.Log("Player Attacks!");
 

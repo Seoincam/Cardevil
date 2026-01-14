@@ -4,6 +4,7 @@ using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -44,8 +45,8 @@ namespace Cardevil.Cards.Evaluations
 
         public async UniTask ClearAllTextAsync()
         {
-            // var clearTasks = new List<UniTask> { ClearTextAsync(_mainText) };
-            // clearTasks.AddRange();
+            var clearTasks = new List<UniTask> { ClearTextAsync(_mainText), ClearTextAsync(_subText) };
+            await UniTask.WhenAll(clearTasks);
         }
 
         public void UpdateHandRankingText(HandRanking handRanking)
@@ -104,7 +105,11 @@ namespace Cardevil.Cards.Evaluations
             
             // 1. Sub Text 이동
             var sub = GetSub();
+            var operatorSymbol = type == EvaluationType.Plus ? "+" : "x";
+            sub.UpdateText($"{operatorSymbol}{damage}");
+            
             var subRect = sub.transform.parent.GetComponent<RectTransform>();
+            subRect.anchoredPosition = new Vector2(setting.subPosX, 0);
 
             var moveTween = subRect
                 .DOAnchorPosX(0f, setting.subEvaDur)
