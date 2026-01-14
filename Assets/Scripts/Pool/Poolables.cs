@@ -14,5 +14,6 @@
         TileHighlight,
         Card,
         CardVisual,
+        RockPile,
     }
 }

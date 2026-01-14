@@ -46,7 +46,7 @@ namespace Cardevil.InGame.Enemy
             
         }
 
-        public void OnRemove()
+        public void Remove()
         {
             ExecEventBus<EnemyHealthChangeArgs>.UnregisterDynamic(OnHealthChanged);
         }

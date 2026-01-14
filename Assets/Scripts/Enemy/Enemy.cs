@@ -62,6 +62,8 @@ namespace Cardevil.InGame.Enemy
         public int enforcedAttackRanking = 0;
         public int enforcedAttackDamage = 0;
 
+        // --------기믹 관련----------
+        private IGimmick gimmick;
         public void Init(Field field)
         {
             this.field = field;
@@ -133,7 +135,7 @@ namespace Cardevil.InGame.Enemy
         {
             AttackEnemyTurnStart(playerPosition);
         }
-       
+        
         // public async UniTask<AttackResult> TurnAttackAsync()
         // {
         //     _enemyAttackInfo.attackSucess = false;
@@ -154,7 +156,6 @@ namespace Cardevil.InGame.Enemy
         //         ? new AttackResult(target, HandRanking.None, (int)damage + enforcedAttackDamage)
         //         : new AttackResult(target, HandRanking.None, 0);
         // }
-
 
         #region Attack 관련
 
@@ -487,6 +488,7 @@ namespace Cardevil.InGame.Enemy
 
             char trimText = '"';
             IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
+            gimmick = igimmick;
             if(igimmick==null)
             {
                 return;
