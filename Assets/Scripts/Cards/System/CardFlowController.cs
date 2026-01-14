@@ -5,8 +5,7 @@ using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core.Turn.Interfaces;
-using Cardevil.Events;
-using NotImplementedException = System.NotImplementedException;
+using System.Threading;
 
 namespace Cardevil.Cards.System
 {
@@ -32,46 +31,9 @@ namespace Cardevil.Cards.System
             _stageCardsPresenter = stageCardsPresenter;
             
             _evaluationPresenter = evaluationPresenter;
-        }
-
-        public async UniTask EnterRerollPhase(int maxHand)
-        {
-            _maxHand = maxHand;
             
             _rerollPresenter.Init(_status, _cardsModel);
-            await _rerollPresenter.SetUp(maxHand);
-        }
-
-        public async UniTask Reroll()
-        {
-            await _rerollPresenter.Reroll();
-        }
-
-        public async UniTask ExitRerollPhase()
-        {
-            await _rerollPresenter.Exit();
-        }
-
-        public void DeactivateReroll()
-        {
-            _rerollPresenter.Clear();
-        }
-
-        public async UniTask EnterHandPhase()
-        {
             _stageCardsPresenter.Init(_status, _cardsModel, _evaluationPresenter);
-            await _stageCardsPresenter.SetUp();
-            DeactivateReroll();
-        }
-
-        public async UniTask ExitHandPhase()
-        {
-            await _stageCardsPresenter.Exit();
-        }
-
-        public void DeactivateHandPhase()
-        {
-            _stageCardsPresenter.Clear();
         }
 
         // TODO: 구현해야함.
@@ -86,10 +48,17 @@ namespace Cardevil.Cards.System
         {
             await _stageCardsPresenter.WaitUserInput();
         }
+        
+        public async UniTask UseAllCardsAsync(CancellationToken cancellationToken) =>
+            await _evaluationPresenter.UseAllCardsAsync(cancellationToken);
 
-        public CardDamageEvaluationArgs GetCardDamageEvaluationArgs() => _evaluationPresenter.GetArgs();
-
-        public EvaluationResult Result => _evaluationPresenter.GetCurrentEvaluationResult();
+        public async UniTask<EvaluationResult> EvaluateAsync(CancellationToken cancellationToken)
+        {
+            var evaluationResult = await _evaluationPresenter.EvaluateAsync(cancellationToken);
+            return evaluationResult;
+        }
+            
+        public EvaluationResult? Result => _evaluationPresenter.GetCurrentEvaluationResult();
         
         public IReadOnlyEvaluationResultsModel ResultsModel => _evaluationPresenter.ResultsModel;
 

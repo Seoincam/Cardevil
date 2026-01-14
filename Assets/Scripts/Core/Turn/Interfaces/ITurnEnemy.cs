@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Cardevil.Core.Turn.Interfaces
 {
@@ -18,6 +19,6 @@ namespace Cardevil.Core.Turn.Interfaces
         /// <summary>
         /// 첫 공격 범위를 표시.
         /// </summary>
-        UniTask ShowInitialAttackArea(IReadOnlyTurnContext ctx);
+        UniTask ShowInitialAttackArea(Vector2Int initialPlayerPosition);
     }
 }

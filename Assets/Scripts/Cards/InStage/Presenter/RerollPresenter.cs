@@ -8,6 +8,10 @@ using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Events;
+using Cardevil.Events.ExecEvents;
+using System.Threading;
+using Unity.VisualScripting;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
@@ -57,6 +61,14 @@ namespace Cardevil.Cards.InStage.Presenter
                 LogEx.LogError($"CardVisualSettingSO 로드 실패. 경로가 올바른지 확인하세요: {path}");
                 return;
             }
+
+            int priority = (int)EnterStageArgs.Orders.Reroll;
+            ExecStaticEventBus<EnterStageArgs>.Register(priority, OnEnterReroll, 0);
+            ExecStaticEventBus<EnterStageArgs>.Register(priority, Reroll, 1);
+            ExecStaticEventBus<EnterStageArgs>.Register(priority, Exit, 2);
+
+            int deactivatePriority = (int)EnterStageArgs.Orders.Last;
+            ExecStaticEventBus<EnterStageArgs>.Register(deactivatePriority, ClearAsync, int.MaxValue);
             
             _isInitialized = true;
         }
@@ -66,15 +78,14 @@ namespace Cardevil.Cards.InStage.Presenter
         /// RerollView를 씬에서 찾거나 존재하지 않을 경우 새로 생성,  
         /// 슬롯 수를 지정하고 버튼 이벤트를 바인딩.  
         /// </summary>
-        /// <param name="maxHand">한 번에 표시할 최대 손패(카드) 개수.</param>
         /// <returns>UI 초기화 및 등장 애니메이션 완료 후 완료되는 <see cref="UniTask"/>.</returns>
-        public async UniTask SetUp(int maxHand)
+        private async UniTask OnEnterReroll(EnterStageArgs args, CancellationToken cancellationToken)
         {
-            _maxHand = maxHand;
+            _maxHand = args.PlayerMaxHand;
             _cmp = new UniTaskCompletionSource();
             
             // Model
-            _model.SetUp(maxHand, 3);
+            _model.SetUp(_maxHand, 3);
 
             for (int i = 0; i < _status.Count; i++)
             {
@@ -101,19 +112,20 @@ namespace Cardevil.Cards.InStage.Presenter
             }
             
             _view.Init(_visualSetting);
-            _view.ConfigureSlots(maxHand);
+            _view.ConfigureSlots(_maxHand);
             _view.BindButtonEvents(DoReroll, EndReroll);
             
             CardevilCore.Instance.Game.PlayerStatus.RerollTicket = 5; // 임시
             await _view.EnterRerollAsync();
         }
         
+        
         /// <summary>
         /// 리롤 단계를 종료, 관련 UI를 비활성화.  
         /// 리롤 종료 애니메이션이 완료될 때까지 대기.
         /// </summary>
         /// <returns>리롤 종료 애니메이션이 완료되면 완료되는 <see cref="UniTask"/>.</returns>
-        public async UniTask Exit()
+        public async UniTask Exit(EnterStageArgs args, CancellationToken cancellationToken)
         {
             await _view.ExitRerollAsync();
         }
@@ -134,7 +146,7 @@ namespace Cardevil.Cards.InStage.Presenter
         }
         
         // ITurnRerollInput
-        public async UniTask Reroll()
+        public async UniTask Reroll(EnterStageArgs args, CancellationToken cancellationToken)
         {
             _ = RerollAsync();
             await _cmp.Task;
@@ -215,6 +227,11 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.SetCardToSlot(card, idx);
 
             return card;
+        }
+
+        private async UniTask ClearAsync(EnterStageArgs _, CancellationToken __)
+        {
+            Clear();
         }
     }
 }

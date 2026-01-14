@@ -1,6 +1,7 @@
 using Cardevil.Events.ExecEvents;
 using Cardevil.InGame.Enemy;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using System;
 using System.Collections.Generic;

@@ -5,8 +5,11 @@ using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Events.ExecEvents;
+using Cardevil.InGame.SlotMachine.Cards.Utils;
+using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Cardevil.Events
 {
@@ -115,23 +118,68 @@ namespace Cardevil.Events
     }
 
     /// <summary>
+    /// 전투 중 플레이어의 각 이동 카드 발동 시 사용되는 이벤트 인자.
+    /// </summary>
+    /// <remarks>
+    /// 모든 이동을 취합한 것이 아닌, 이동 카드 '하나하나'를 다룸.
+    /// </remarks>
+    public class PlayerMoveArgs : ExecEventArgs<PlayerMoveArgs>
+    {
+        private readonly List<Direction> _toMove = new(2);
+        public IReadOnlyList<Direction> ToMove => _toMove;
+        
+        public Vector2Int PlayerPosition { get; private set; }
+
+        public static PlayerMoveArgs Get(Direction direction)
+        {
+            var args = Get();
+            args.AddDirections(direction);
+            return args;
+        }
+        
+        public void AddDirections(Direction direction) => _toMove.Add(direction);
+
+        public void SetPlayerPositionAfterMoving(Vector2Int playerPositionOnField) =>
+            PlayerPosition = playerPositionOnField;
+        
+        public enum Order
+        {
+            /// <summary>
+            /// 기본 방향이 등록되는 시점.
+            /// </summary>
+            DefaultRegister = int.MinValue,
+            
+            /// <summary>
+            /// 일반적인 수정이 이뤄지는 시점.
+            /// </summary>
+            Normal,
+            
+            /// <summary>
+            /// 실제 플레이어가 이동하는 시점.
+            /// </summary>
+            PlayerMove = int.MaxValue - 1,
+            
+            /// <summary>
+            /// 모든 처리가 끝난 후 Model에 이동 위치를 업데이트하는 시점.
+            /// </summary>
+            Last = int.MaxValue
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            _toMove.Clear();
+        }
+    }
+
+    /// <summary>
     /// 전투 중 데미지 계산에 사용되는 이벤트 인자.
     /// </summary>
     public class CardDamageEvaluationArgs : ExecEventArgs<CardDamageEvaluationArgs>
     {
-        private IReadOnlyList<Card> _cards;
+        public IReadOnlyList<Card> Cards { get; private set; }
         public float Damage { get; private set; }
         public HandRanking HandRanking { get; private set; }
-
-        public IReadOnlyList<CardData> AttackCards => _cards?
-                .Where(c => c.Data.IsAttack)
-                .Select(c => c.Data)
-                .ToArray();
-
-        public IReadOnlyList<CardData> MoveCards => _cards?
-            .Where(c => c.Data.IsMove)
-            .Select(c => c.Data)
-            .ToArray();
 
         public static CardDamageEvaluationArgs Get(IReadOnlyList<Card> cards, HandRanking handRanking)
         {
@@ -143,11 +191,19 @@ namespace Cardevil.Events
         public void AddDamage(float amount) => Damage += amount;
         public void MultiplyDamage(float multiplier) => Damage *= multiplier;
 
-        public void SetCards(Card[] cards) => _cards = cards;
+        public void SetCards(Card[] cards) => Cards = cards;
         
         public enum Order
         {
-            First = int.MinValue,
+            /// <summary>
+            /// 최초의 View 클리어.
+            /// </summary>
+            ClearView = int.MinValue,
+            
+            /// <summary>
+            /// 0. 족보 데미지 합연산.
+            /// </summary>
+            HandRankingDamage = 0,
             
             /// <summary>
             /// 1. 카드 기본 데미지 합연산.
@@ -208,8 +264,7 @@ namespace Cardevil.Events
             /// </summary>
             RegisterOnModel = int.MaxValue
         }
-
-        public EvaluationResult BuildResult() => new((int)Damage, AttackCards, MoveCards, HandRanking);
+        
         public override void Clear()
         {
             base.Clear();
@@ -219,7 +274,7 @@ namespace Cardevil.Events
 
         private void Initialize(IReadOnlyList<Card> cards, HandRanking handRanking)
         {
-            _cards = cards;
+            Cards = cards;
             HandRanking = handRanking;
         }
     }

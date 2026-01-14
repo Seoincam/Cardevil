@@ -85,6 +85,8 @@ namespace Cardevil.Cards.InStage.Presenter
                 return;
             }
 
+            int priority = (int)EnterStageArgs.Orders.Last;
+            ExecStaticEventBus<EnterStageArgs>.Register(priority, SetUp, 0);
             _state.isInitialized = true;
         }
 
@@ -93,7 +95,7 @@ namespace Cardevil.Cards.InStage.Presenter
         /// 카드의 시각적 상태를 설정, 입력 감지 Update 루프 시작.
         /// </summary>
         /// <returns>UI 초기화 완료 후 완료되는 <see cref="UniTask"/></returns>
-        public async UniTask SetUp()
+        public async UniTask SetUp(EnterStageArgs args, CancellationToken cancellationToken)
         {
             Transform canvas = GameObject.Find("CardCanvas").transform;
             
@@ -426,12 +428,21 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void Use()
         {
+            // _state.canInteract = false;
+            // _selectionView.Close();
+            //
+            // UpdateUI();
+            // _evaluationPresenter.RegisterUsingCards(_model.SortedSelection);
+            // _ = UseAsync();
+
+            // TODO:
+            // EvaluationPresenter로 카드 및 모든 제어권 넘기고
+            // 이 Presenter는 여기서 멈추면 될 듯.
+
             _state.canInteract = false;
             _selectionView.Close();
-            
             UpdateUI();
             _evaluationPresenter.RegisterUsingCards(_model.SortedSelection);
-            _ = UseAsync();
         }
 
         private void Discard()

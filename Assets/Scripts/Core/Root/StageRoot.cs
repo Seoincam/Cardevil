@@ -40,7 +40,7 @@ namespace Cardevil.Core.Root
             
             _enemySpawner = new EnemySpawner();
             turn = new TurnManager();
-            turn.TurnLoopEnded += OnTurnLoopEnded;
+            // turn.TurnLoopEnded += OnTurnLoopEnded;
             
             Player.Init(Field);
             await InitAsync();
@@ -76,16 +76,15 @@ namespace Cardevil.Core.Root
             }
             
             enemy.Init(Field);
-            turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
-            turn.StartLoop();
+            // turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
+            // turn.StartLoop();
         }
 
         /// <summary>
         /// 턴 루프 종료 처리.
         /// 던전 노드 퇴장 처리 및 스테이지 씬 언로드.
         /// </summary>
-        /// <param name="ctx">턴 컨텍스트</param>
-        private void OnTurnLoopEnded(TurnContext ctx)
+        private void OnTurnLoopEnded()
         {
             // TODO: 보상창 등 나와야함.
             // TODO: 변경사항 세이브 해야함.

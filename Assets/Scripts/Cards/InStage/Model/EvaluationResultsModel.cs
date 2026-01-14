@@ -1,135 +1,50 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Data.Modifiers;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
-using Cardevil.Utils;
-using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.Cards.InStage.Model
 {
-    // 플레이어 캐릭터 : 방향 및 총 데미지
-    // 적 : 족보
-    
+    [Serializable]
     public sealed class EvaluationResultsModel : IReadOnlyEvaluationResultsModel, IClearable
     {
-        private readonly List<EvaluationResult> _history = new();
-        private int _cursor = -1;
+        // 일단 전투의 모든 평가 결과를 저장함.
+        [SerializeField, VisibleOnly] private List<EvaluationResult> history = new();
+            
+        public IReadOnlyList<EvaluationResult> History => history;
 
-        #region IReadOnlyEvaluationResultsModel
-
-        public IReadOnlyList<EvaluationResult> History => _history;
-        public EvaluationResult CurrentResult => (_cursor >= 0 && _cursor < _history.Count) ? _history[_cursor] : null;
-
-        #endregion
+        public EvaluationResult? CurrentResult => history.Count == 0 ? null : history[^1];
         
         public void Clear()
         {
-            _history.Clear();
-            _cursor = -1;
+            history.Clear();
         }
-        
-        /// <summary>
-        /// 다음 결과를 받을 준비로 끝에 빈 슬롯(null)을 하나 보장.
-        /// </summary>
-        public void StepToNext()
-        {
-            if (_history.Count == 0 || _history[^1] != null)
-            {
-                _history.Add(null);
-            }
-            _cursor = _history.Count - 1;
-        }
-        
-        /// <summary>
-        /// 임시 저장된 결과(<c>_committed</c>)를
-        /// 현재 단계(null 슬롯)에 반영하거나, 없으면 새로 추가.
-        /// </summary>
-        public void Add(EvaluationResult result)
-        {
-            if (result == null)
-            {
-                LogEx.LogError("result is null.");
-                return;
-            }
-            
-            // 리스트가 비었거나 마지막이 이미 값이면 새로 추가
-            if (_history.Count == 0 || _history[^1] != null)
-            {
-                _history.Add(result);
-                _cursor = _history.Count - 1;
-                return;
-            }
-            
-            // 마지막이 null 슬롯이면 거기에 채우기
-            _history[^1] = result;
-            _cursor = _history.Count - 1;
-        }
+
+        public void AddResult(EvaluationResult evaluationResult) => history.Add(evaluationResult);
     }
 
     [Serializable]
-    public sealed class EvaluationResult
+    public readonly struct EvaluationResult
     {
-        public int TotalDamage { get; }
-        public IReadOnlyList<CardData> Attacks { get; }
-        public IReadOnlyList<CardData> Moves { get; }
-        public HandRanking HandRanking { get; }
-        
-        /// <summary>
-        /// 사용한 카드 장수. 
-        /// </summary>
-        public int CardsCount => Attacks.Count + Moves.Count;
+        public readonly IReadOnlyList<CardData> Cards;
+        public readonly int TotalDamage;
+        public readonly HandRanking HandRanking;
+        public readonly Vector2Int PlayerPosition;
 
-        #region Builder
-
-        public static Builder CreateBuilder() => new(); 
-        
-        public sealed class Builder
+        public EvaluationResult(
+            IReadOnlyList<CardData> cards, 
+            int totalDamage, 
+            HandRanking handRanking, 
+            Vector2Int playerPosition)
         {
-            private int _totalDamage;
-            private List<CardData> _attacks;
-            private List<CardData> _moves;
-            private HandRanking _handRanking;
-
-            public Builder SetDamage(int damage)
-            {
-                _totalDamage += damage;
-                return this;
-            }
-            public Builder SetAttacks(List<CardData> attacks)
-            {
-                _attacks = attacks;
-                return this;
-            }
-            public Builder SetMoves(List<CardData> moves)
-            {
-                _moves = moves;
-                return this;
-            }
-            public Builder SetHandRanking(HandRanking handRanking)
-            {
-                _handRanking = handRanking;
-                return this;
-            }
-
-            public EvaluationResult Build() => new(_totalDamage, _attacks, _moves, _handRanking);
-        }
-
-        public EvaluationResult(int totalDamage, 
-            IReadOnlyList<CardData> attacks, 
-            IReadOnlyList<CardData> moves, 
-            HandRanking handRanking)
-        {
+            Cards = cards;
             TotalDamage = totalDamage;
-            Attacks = attacks;
-            Moves = moves;
             HandRanking = handRanking;
+            PlayerPosition = playerPosition;
         }
-
-        #endregion
     }
 }
