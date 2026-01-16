@@ -205,6 +205,14 @@ namespace Cardevil.Cards.InStage.Presenter
             AssetUtil.Destroy(gameObject);
         }
 
+        public async UniTask DiscardWithFadeOutAsync()
+        {
+            Set(State.Discarded, true);
+            UnwireVisual(visual);
+            await visual.DiscardWithFadeOutAsync();
+            AssetUtil.Destroy(gameObject);
+        }
+
         #endregion
 
         #region Presenter

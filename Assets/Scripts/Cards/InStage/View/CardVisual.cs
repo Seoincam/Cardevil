@@ -286,6 +286,18 @@ namespace Cardevil.Cards.InStage.View
                         .SetEase(visualSetting.DiscardEase);
             tween.OnComplete(Destroy);
         }
+
+        public async UniTask DiscardWithFadeOutAsync()
+        {
+            _state.isDiscarded = true;
+
+            var fadeOut = CanvasGroup
+                .DOFade(0f, visualSetting.DiscardDuration)
+                .SetEase(visualSetting.DiscardEase);
+
+            await fadeOut;
+            Destroy();
+        }
         
         public void UpdateVisualIndex(int index) => transform.SetSiblingIndex(index);
         

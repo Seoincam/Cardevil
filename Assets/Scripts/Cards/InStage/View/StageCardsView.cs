@@ -37,7 +37,7 @@ namespace Cardevil.Cards.InStage.View
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
 
-        private float _widthFactor = 130;
+        private const float WidthFactor = 130;
         private const string SlotPath = "UI/CardUI/Slot";
         
 #if UNITY_EDITOR
@@ -216,7 +216,7 @@ namespace Cardevil.Cards.InStage.View
                 }
             }
             
-            var width = _widthFactor * _model.Hand.Count;
+            var width = WidthFactor * _model.Hand.Count;
             var height = 200;
             bar.sizeDelta = new Vector2(width, height);
         }

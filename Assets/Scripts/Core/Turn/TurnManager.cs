@@ -106,16 +106,15 @@ namespace Cardevil.Core.Turn
 
                 await _cardFlow.WaitUserInput();
                 
-                // 모든 카드 사용.
-                // 플레이어는 이때 이동을 함.
+                // 플레이어가 사용한 모든 카드를 사용함.
+                // 이때 플레이어의 이동이 이루어짐.
                 await _cardFlow.UseAllCardsAsync(cancellationToken);
                 
-                // 공격 카드 데미지 계산.
-                // EvaluationResult에 모든 계산이 끝난 데미지, 플레이어 위치, 족보가 모두 포함되어 있음.
-                // 이 시점에선 result는 불변임.
+                // 공격 카드 데미지 계산. EvaluationResult에 모든 계산이 끝난 데미지,
+                // 플레이어 위치, 족보가 모두 포함되어 있음. 이 시점에선 result는 불변임.
                 var evaluationResult = await _cardFlow.EvaluateAsync(cancellationToken);
                 
-                // 플레이어의 공격 + 적의 타격
+                // 플레이어의 공격 + 적의 피격
                 var playerAttackArgs = PlayerAttackArgs.Get(evaluationResult);
                 await ExecEventBus<PlayerAttackArgs>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
                 
@@ -128,7 +127,7 @@ namespace Cardevil.Core.Turn
                     // _enemy = spawned;
                 }
 
-                // 3. 적의 공격 + 플레이어의 타격
+                // 3. 적의 공격 + 플레이어의 피격
                 var enemyAttackArgs = EnemyAttackArgs.Get();
                 await ExecEventBus<EnemyAttackArgs>.InvokeMergedAndDispose(enemyAttackArgs, cancellationToken);
 

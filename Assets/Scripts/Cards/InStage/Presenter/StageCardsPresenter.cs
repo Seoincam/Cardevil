@@ -231,7 +231,7 @@ namespace Cardevil.Cards.InStage.Presenter
         #region ITurnPlayerInput
 
         public bool IsNoCard => false;
-        private UniTaskCompletionSource cmp;
+        private UniTaskCompletionSource _waitUserInputCompletionSource;
 
         public async UniTask DrawCard()
         {
@@ -240,12 +240,12 @@ namespace Cardevil.Cards.InStage.Presenter
         
         public async UniTask WaitUserInput()
         {
-            cmp = new();
+            _waitUserInputCompletionSource = new UniTaskCompletionSource();
             _evaluationPresenter.ClearHandRankingText();
             _state.canInteract = true;
             UpdateUI();
             
-            await cmp.Task; // Input 완료까지 대기
+            await _waitUserInputCompletionSource.Task; // Input 완료까지 대기
             
             _state.canInteract = false;
             UpdateUI();
@@ -428,24 +428,34 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private void Use()
         {
-            // _state.canInteract = false;
-            // _selectionView.Close();
-            //
-            // UpdateUI();
-            // _evaluationPresenter.RegisterUsingCards(_model.SortedSelection);
-            // _ = UseAsync();
-
-            // TODO:
-            // EvaluationPresenter로 카드 및 모든 제어권 넘기고
-            // 이 Presenter는 여기서 멈추면 될 듯.
-
             _state.canInteract = false;
             _selectionView.Close();
             UpdateUI();
-            _evaluationPresenter.RegisterUsingCards(_model.SortedSelection);
             
-            cmp.TrySetResult();
+            _waitUserInputCompletionSource.TrySetResult();
         }
+
+        public async UniTask UseAllCardsAsync(CancellationToken cancellationToken)
+        {
+            var toUseCards = _model.SortedSelection.ToList();
+
+            foreach (var card in toUseCards)
+            {
+                if (card.Data.IsMove)
+                {
+                    var movingArgs = PlayerMoveArgs.Get(card.Data.FinalDirection);
+                    await ExecEventBus<PlayerMoveArgs>.InvokeMergedAndDispose(movingArgs, cancellationToken);
+                    
+                    _model.Discard(card);
+                    await card.DiscardWithFadeOutAsync();
+                    _handChanged?.Invoke();
+                }
+                else if (card.Data.IsAttack)
+                {
+                    // TODO: 머리 위에 쌓이기
+                }
+            }
+        } 
 
         private void Discard()
         {
@@ -463,7 +473,7 @@ namespace Cardevil.Cards.InStage.Presenter
             // await UniTask.Delay(TimeSpan.FromSeconds(.5f));
             // await DiscardAsync(false);
 
-            cmp.TrySetResult();
+            _waitUserInputCompletionSource.TrySetResult();
         }
         
         /// <param name="discardOnly">

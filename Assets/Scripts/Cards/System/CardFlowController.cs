@@ -50,7 +50,7 @@ namespace Cardevil.Cards.System
         }
         
         public async UniTask UseAllCardsAsync(CancellationToken cancellationToken) =>
-            await _evaluationPresenter.UseAllCardsAsync(cancellationToken);
+            await _stageCardsPresenter.UseAllCardsAsync(cancellationToken);
 
         public async UniTask<EvaluationResult> EvaluateAsync(CancellationToken cancellationToken)
         {
