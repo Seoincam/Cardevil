@@ -10,13 +10,11 @@ namespace Cardevil.Events
     public class EnterStageArgs : ExecEventArgs<EnterStageArgs>
     {
         public TileVector PlayerPosition { get; private set; } 
-        public int PlayerMaxHand { get; private set; }
 
         public static EnterStageArgs Get(TileVector playerPosition, int playerMaxHand)
         {
             var args = Get();
             args.PlayerPosition = playerPosition;
-            args.PlayerMaxHand = playerMaxHand;
 
             return args;
         }

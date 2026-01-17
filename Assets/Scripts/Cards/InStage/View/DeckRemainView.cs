@@ -27,7 +27,7 @@ namespace Cardevil.Cards.InStage.View
         
         [Header("Cards Area")]
         [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
-        
+        /*
         private IReadOnlyCardStatus _status;
         private IReadOnlyCardsModel _model;
         
@@ -206,6 +206,7 @@ namespace Cardevil.Cards.InStage.View
             if (animCanceled)
                 card.Rect.anchoredPosition = originalPos;
         }
+        */
     }
 }
 

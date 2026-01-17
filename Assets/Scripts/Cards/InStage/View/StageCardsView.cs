@@ -1,4 +1,6 @@
+using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Cards.InStage.NCard;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
 using Cardevil.Events;
@@ -32,7 +34,7 @@ namespace Cardevil.Cards.InStage.View
         
         public PointerAreaTrigger HandArea => handArea;
         
-        private IReadOnlyCardsModel _model;
+        private IReadOnlyNewStageCardsModel _model;
 
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
@@ -52,7 +54,7 @@ namespace Cardevil.Cards.InStage.View
         }
 #endif
 
-        public void Init(IReadOnlyCardsModel model)
+        public void Init(IReadOnlyNewStageCardsModel model)
         {
             _model = model;
             ConfigureSlots(model.MaxHand);
@@ -189,25 +191,23 @@ namespace Cardevil.Cards.InStage.View
                 AssetUtil.Destroy(last.gameObject);
             }
         }
-
-        public void HoldCardOutsideBar(Card card)
+        
+        public void SetCardParentTemp(NewCard card)
         {
-            card.transform.SetParent(transform);
+            card.SetParent(transform);
         }
 
-
-        public void OnHandChanged()
+        public void UpdateAllCardsParentSlot()
         {
-            var count = _model.Hand.Count;
+            int count = _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
                 var slot = _slots[i];
-                
                 slot.gameObject.SetActive(true);
-                _model.Hand[i].transform.SetParent(slot);
-                _model.Hand[i].UpdatePosition();
+                
+                _model.Hand[i].SetParent(slot);
             }
-
+            
             if (count < _model.MaxHand)
             {
                 for (int i = count; i < _model.MaxHand; i++)
@@ -222,9 +222,3 @@ namespace Cardevil.Cards.InStage.View
         }
     }
 }
-
-/*
- * DOPunchRotation(Vector3.forward * hoverPunchAngle, hoverTransition, 20, 1)
- *     [SerializeField] private float hoverPunchAngle = 5;
-    [SerializeField] private float hoverTransition = .15f;
- */

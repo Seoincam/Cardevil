@@ -22,7 +22,7 @@ namespace Cardevil.Core.Turn.Interfaces
         /// <summary>
         /// 현재 플레이어 카드 정보를 저장하는 모델.
         /// </summary>
-        IReadOnlyCardsModel CardsModel { get; }
+        IReadOnlyNewStageCardsModel CardsModel { get; }
     }
     
     public interface ITurnCardFlow : IReadOnlyCardFlow

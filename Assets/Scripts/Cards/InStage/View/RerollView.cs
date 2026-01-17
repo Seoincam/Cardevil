@@ -1,3 +1,4 @@
+using Cardevil.Cards.InStage.NCard;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Core;
@@ -99,7 +100,7 @@ namespace Cardevil.Cards.InStage.View
         /// 배경 페이드인, 티켓 카운트 등장 애니메이션, 버튼 스케일 인 등을 순서대로 재생.
         /// </summary>
         /// <returns>연출이 모두 완료되면 완료되는 <see cref="UniTask"/>.</returns>
-        public async UniTask EnterRerollAsync()
+        public async UniTask EnterStageAsync()
         {
             var image = background.GetComponent<Image>();
             var color = image.color;
@@ -189,10 +190,9 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         /// <param name="card">배치할 카드.</param>
         /// <param name="slotIndex">배치할 슬롯의 인덱스.</param>
-        public void SetCardToSlot(Card card, int slotIndex)
+        public void SetCardToSlot(NewCard card, int slotIndex)
         {
-            card.transform.SetParent(_slots[slotIndex]);
-            card.UpdatePosition();
+            card.SetParent(_slots[slotIndex]);
         }
 
         #region Reroll Ticket Count

@@ -36,6 +36,7 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private ValueSelectionViewAnimSetting setting;
 
 
+        /*
         /// <summary>
         /// 값 선택 완료 이벤트.
         /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
@@ -342,6 +343,11 @@ namespace Cardevil.Cards.InStage.View
             bar.raycastTarget = value;
             foreach (var visual in _visuals)
                 visual.CanvasGroup.blocksRaycasts = value;
+        }
+        */
+        public void Clear()
+        {
+            throw new NotImplementedException();
         }
     }
 }

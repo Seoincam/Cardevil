@@ -10,8 +10,23 @@ using UnityEngine;
 
 namespace Cardevil.Cards.InStage.Model
 {
+    public interface IReadOnlyNewStageCardsModel
+    {
+        int MaxHand { get; }
+        
+        int DiscardRemain { get; }
+        
+        IReadOnlyList<CardData> Deck { get; }
+        
+        IReadOnlyList<CardData> DiscardPile { get; }
+        
+        IReadOnlyList<NewCard> Hand { get; }
+        
+        IReadOnlyCollection<NewCard> Selection { get; }
+    }
+    
     [Serializable]
-    public class NewStageCardsModel
+    public class NewStageCardsModel : IReadOnlyNewStageCardsModel
     {
         [Header("Cards")]
         [SerializeField, VisibleOnly] private List<CardData> deck;
@@ -31,7 +46,6 @@ namespace Cardevil.Cards.InStage.Model
         public NewStageCardsModel(CardData[] initialDeck, int maxHand, int initialDiscardCount)
         {
             _initialDeck = initialDeck;
-            deck = initialDeck.ToList();
         }
         
         /// <summary>
@@ -118,7 +132,7 @@ namespace Cardevil.Cards.InStage.Model
         {
             hand.Add(card);
         }
-
+        
         public void InsertHand(NewCard card, int index)
         {
             hand.Insert(index, card);
@@ -143,7 +157,7 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         /// <summary>
-        /// Card를 선택패에 추가함.
+        /// Card 인스턴스를 선택패에 추가함.
         /// </summary>
         public void Select(NewCard card)
         {
@@ -151,7 +165,7 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         /// <summary>
-        /// Card를 선택패에서 제거함.
+        /// Card 인스턴스를 선택패에서 제거함.
         /// </summary>
         /// <param name="card"></param>
         public void Deselect(NewCard card)
@@ -160,30 +174,30 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         /// <summary>
-        /// 상호작용을 시작한 카드를 등록합니다.
+        /// 상호작용 정보를 등록합니다.
         /// </summary>
-        public void RegisterInteractingCard(NewCard card)
+        public void UpdateInteractingInfo(NewCard card)
         {
             CurrentInteracting = new InteractingInfo(card, Time.time, hand.IndexOf(card));
         }
 
         /// <summary>
-        /// 등록된 상호작용 카드를 해제합니다. 
+        /// 등록된 상호작용 정보를 해제합니다.
         /// </summary>
-        public void ClearInteractingCard()
+        public void ClearInteractingInfo()
         {
             CurrentInteracting = InteractingInfo.Empty;
         }
 
         /// <summary>
-        /// 손패 내 카드 위치를 스왑합니다.
+        /// 손패 내 Card 인스턴스의 위치를 스왑합니다.
         /// </summary>
         public void SwapInHand(NewCard card, int otherIndex)
         {
-            if (!TryGetIndexInHand(card, out int index)) 
+            if (!TryGetIndexInHand(card, out int cardIndex)) 
                 return;
             
-            (hand[index], hand[otherIndex]) = (hand[otherIndex], hand[index]);
+            (hand[cardIndex], hand[otherIndex]) = (hand[otherIndex], hand[cardIndex]);
         }
 
         /// <summary>
@@ -203,7 +217,7 @@ namespace Cardevil.Cards.InStage.Model
         }
 
         /// <summary>
-        /// 모델의 카드 정보를 초기화한 후 덱을 섞습니다.
+        /// 모델의 모든 카드 정보를 초기화한 후 덱을 섞습니다.
         /// </summary>
         public void ClearAndShuffle()
         {
@@ -213,7 +227,7 @@ namespace Cardevil.Cards.InStage.Model
         }
         
         /// <summary>
-        /// 모델의 카드 정보를 초기화합니다.
+        /// 모델의 모든 카드 정보를 초기화합니다.
         /// </summary>
         private void ClearCards()
         {
@@ -223,6 +237,9 @@ namespace Cardevil.Cards.InStage.Model
             _selection.Clear();
         }
 
+        /// <summary>
+        /// 카드의 상호작용 정보.
+        /// </summary>
         [Serializable]
         public struct InteractingInfo
         {

@@ -20,7 +20,6 @@ namespace Cardevil.Core.Root
     /// </summary>
     public class StageRoot : MonoBehaviour
     {
-        [field: SerializeField] public CardManager Card { get; private set; }
         [SerializeField] private TurnManager turn;
         [SerializeField] private EnemySpawner _enemySpawner;
 
@@ -51,12 +50,7 @@ namespace Cardevil.Core.Root
         private async UniTask InitAsync()
         {
             _context = CardevilCore.Instance.GameFlow.Context;
-            
-            var cardStatus = CardevilCore.Instance.Game.CardStatus;
-            await Card.InitAsync(cardStatus);
         }
-
-         
         
         /// <summary>
         /// 전투 스테이지 진입 비동기 처리.
@@ -77,7 +71,7 @@ namespace Cardevil.Core.Root
             }
             
             enemy.Init(Field);
-            turn.Initialize(_enemySpawner, Card.BuildFlow(), Player, enemy);
+            turn.Initialize(_enemySpawner, CardFlowController.Build(), Player, enemy);
             turn.EnterLoopAsync().Forget();
         }
 

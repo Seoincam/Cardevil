@@ -10,22 +10,28 @@ using System.Linq;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
-    // Core
-    public partial class NewStageCardsPresenter
+    public partial class StageCardsPresenter
     {
         private NewStageCardsModel _model;
+        private StageCardsView _view;
+        private DeckRemainView _deckRemainView;
         
-        private Action _handChanged;
         private Action _deckChanged;
 
         private State _state;
+        private bool _completePlayerInput;
 
-        private bool CanInteract => !Is(State.Discarding) && !Is(State.Drawing) && !Is(State.DiscardAndDrawInterval);
+        private bool CanInteract => Is(State.PlayerTurn) &&
+                                    !Is(State.Discarding) &&
+                                    !Is(State.Drawing) &&
+                                    !Is(State.Sorting) &&
+                                    !Is(State.DiscardAndDrawInterval);
         
-        public void Initialize(NewStageCardsModel model)
+        public StageCardsPresenter(NewStageCardsModel model)
         {
             Debug.Assert(_model != null);
             
@@ -35,20 +41,65 @@ namespace Cardevil.Cards.InStage.Presenter
             ExecStaticEventBus<EnterStageArgs>.Register(priority, OnEnterStageAsync);
         }
 
-        public async UniTask OnEnterStageAsync(EnterStageArgs args, CancellationToken cancellationToken)
+        /// <summary>
+        /// UI 초기화, 카드를 슬롯에 배치, 버튼 이벤트 바인딩. Update 루프 시작.
+        /// </summary>
+        private async UniTask OnEnterStageAsync(EnterStageArgs args, CancellationToken cancellationToken)
         {
             Transform canvas = GameObject.Find("CardCanvas").transform;
             
             // 1. View 생성
+            var views = Object.FindObjectsByType<StageCardsView>(FindObjectsSortMode.None);
+            if (views is { Length: > 0 }) _view = views[0];
+            else
+            {
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/StageCardsView", canvas);
+                _view = go.GetComponent<StageCardsView>();
+            }
+            _view.Init(_model);
+            _view.BindButtonEvents(
+                OnUseButtonClicked, 
+                OnDiscardButtonClicked, 
+                OnSortByNumberButtonClicked, 
+                OnSortByIconButtonClicked);
             
-            // 2. Deck Remain View
+            // TODO: 2. Deck Remain View
+
             
             // 3. Value Selection View
             
             // 생성되어 있는 카드를 모두 HandBar Slot으로 이동
+            foreach (var card in _model.Hand)
+            {
+                BindCallback(card);
+                // TODO: Reroll State 관리
+                _view.UpdateAllCardsParentSlot();
+            }
+
+            await _view.EnterHandBarAsync(_model.Deck.Count, _model.DiscardRemain);
             
             // Update Async
             UpdateAsync(cancellationToken).Forget();
+        }
+
+        /// <summary>
+        /// 플레이어의 인풋이 끝날 때까지 대기.
+        /// </summary>
+        public async UniTask WaitPlayerInputCompleted()
+        {
+            _completePlayerInput = false;
+            
+            using (Scope(State.PlayerTurn))
+            {
+                // TODO: UI 갱신
+                await UniTask.WaitUntil(() => _completePlayerInput);
+                // TODO: UI 갱신
+            }
+        }
+
+        public async UniTask UseAllCardsAsync()
+        {
+            
         }
         
         // MonoBehaviour의 Update()를 대체함.
@@ -59,6 +110,27 @@ namespace Cardevil.Cards.InStage.Presenter
                 UpdateDetectSwap();
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
             }
+        }
+
+        private void OnUseButtonClicked()
+        {
+            _completePlayerInput = true;
+            // TODO: UI 갱신
+        }
+
+        private void OnDiscardButtonClicked()
+        {
+            DiscardAndDrawAsync().Forget();
+        }
+
+        private void OnSortByNumberButtonClicked()
+        {
+            SortByNumberAsync().Forget();
+        }
+
+        private void OnSortByIconButtonClicked()
+        {
+            SortByIconAsync().Forget();
         }
 
         private async UniTask DiscardAndDrawAsync()
@@ -88,9 +160,8 @@ namespace Cardevil.Cards.InStage.Presenter
                 
                     UnbindCallback(card);
                     _model.Discard(card);
-                
-                    // TODO: 연출 확인하기
-                    discardTasks.Add(card.SafeMoveToDeckWithFlipAsync());
+                    
+                    discardTasks.Add(card.FadeOutAsync());
                     // TODO: await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
                 }
                 await UniTask.WhenAll(discardTasks);
@@ -100,7 +171,7 @@ namespace Cardevil.Cards.InStage.Presenter
             ListPool<UniTask>.Release(discardTasks);
         }
 
-        private async UniTask DrawUntilMaxHandAsync()
+        public async UniTask DrawUntilMaxHandAsync()
         {
             var drawTasks = ListPool<UniTask>.Get();
 
@@ -109,7 +180,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 int count = _model.MaxHand - _model.Hand.Count;
                 while (count-- > 0)
                 {
-                    var card = SpawnCard();
+                    var card = InstantiateCard();
                     if (!card) continue;
 
                     drawTasks.Add(card.SafeMoveToSlotWithFlipAsync());
@@ -122,7 +193,42 @@ namespace Cardevil.Cards.InStage.Presenter
             ListPool<UniTask>.Release(drawTasks);
         }
 
-        private NewCard SpawnCard()
+        private async UniTask SortByNumberAsync()
+        {
+            var sortTasks = ListPool<UniTask>.Get();
+
+            using (Scope(State.Sorting))
+            {
+                _model.SortHandByNumber();
+                _view.UpdateAllCardsParentSlot();
+                
+                foreach (var card in _model.Hand)
+                    sortTasks.Add(card.MoveToSlotAsync());
+                await UniTask.WhenAll(sortTasks);
+            }
+            
+            ListPool<UniTask>.Release(sortTasks);
+        }
+
+        private async UniTask SortByIconAsync()
+        {
+            var sortTasks = ListPool<UniTask>.Get();
+
+            using (Scope(State.Sorting))
+            {
+                _model.SortHandByIcon();
+                _view.UpdateAllCardsParentSlot();
+                
+                foreach (var card in _model.Hand)
+                    sortTasks.Add(card.MoveToSlotAsync());
+                
+                await UniTask.WhenAll(sortTasks);
+            }
+            
+            ListPool<UniTask>.Release(sortTasks);
+        }
+
+        private NewCard InstantiateCard()
         {
             const string cardPath = "Cards/Card!!!";
 
@@ -134,9 +240,9 @@ namespace Cardevil.Cards.InStage.Presenter
             BindCallback(card);
             
             _model.AddHand(card);
+            _view.UpdateAllCardsParentSlot();
             
             // TODO:
-            // HandChanged?.invoke
             // deckchanged?.invoke
             // updateui
 
@@ -161,7 +267,17 @@ namespace Cardevil.Cards.InStage.Presenter
             /// <summary>
             /// 카드를 버리고 다시 뽑기 전 인터벌 상태임.
             /// </summary>
-            DiscardAndDrawInterval = 1 << 2
+            DiscardAndDrawInterval = 1 << 2,
+            
+            /// <summary>
+            /// 현재 플레이어의 턴임.
+            /// </summary>
+            PlayerTurn = 1 << 3,
+            
+            /// <summary>
+            /// 정렬 중임.
+            /// </summary>
+            Sorting = 1 << 4,
         }
 
         private bool Is(State targetState) => (_state & targetState) != 0;
@@ -173,11 +289,11 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private readonly struct StateScope : IDisposable
         {
-            private readonly NewStageCardsPresenter _presenter;
+            private readonly StageCardsPresenter _presenter;
             private readonly State _targetState;
             private readonly bool _originalValue;
 
-            public StateScope(NewStageCardsPresenter presenter, State targetState, bool value)
+            public StateScope(StageCardsPresenter presenter, State targetState, bool value)
             {
                 _presenter = presenter;
                 _targetState = targetState;

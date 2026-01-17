@@ -137,6 +137,12 @@ namespace Cardevil.Cards.InStage.NCard
             
             CardDeckVisual.Instance.OnInteraction();
         }
+
+        public async UniTask FadeOutAsync()
+        {
+            await CreateFadeOutTween();
+        }
+        
         
         // TODO: 트윈을 시간이 아닌 속도로!
         
@@ -164,6 +170,14 @@ namespace Cardevil.Cards.InStage.NCard
             return transform
                 .DOMove(CardDeckVisual.Instance.Front.position, visualSetting.RerollDiscardDuration)
                 .SetEase(visualSetting.RerollDiscardEase)
+                .OnComplete(() => _isTweening = false);
+        }
+
+        private Tween CreateFadeOutTween()
+        {
+            _isTweening = true;
+            return visual.CanvasGroup.DOFade(0f, .5f)
+                .SetEase(Ease.Unset)
                 .OnComplete(() => _isTweening = false);
         }
     }

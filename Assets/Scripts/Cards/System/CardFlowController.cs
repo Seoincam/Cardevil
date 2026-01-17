@@ -1,56 +1,66 @@
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.Evaluations;
 using Cysharp.Threading.Tasks;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn.Interfaces;
 using System.Threading;
+using UnityEngine;
 
 namespace Cardevil.Cards.System
 {
     public sealed class CardFlowController : ITurnCardFlow
     {
-        private readonly IReadOnlyCardStatus _status;
+        private NewStageCardsModel _cardsModel;
+        private RerollPresenter _rerollPresenter;
+        private StageCardsPresenter _stageCardsPresenter;
+        private IEvaluationPresenter _evaluationPresenter;
         
-        private readonly CardsModel _cardsModel;
-        private readonly RerollPresenter _rerollPresenter;
-        private readonly StageCardsPresenter _stageCardsPresenter;
-        private readonly IEvaluationPresenter _evaluationPresenter;
-
-        private int _maxHand;
-        
-        public CardFlowController(IReadOnlyCardStatus status,
-            CardsModel cardsModel, RerollPresenter rerollPresenter,
-            StageCardsPresenter stageCardsPresenter, IEvaluationPresenter evaluationPresenter)
+        public static CardFlowController Build()
         {
-            _status = status;
+            var status = CardStatus.Current;
+            var initialDeck = new CardData[status.Count];
             
-            _cardsModel = cardsModel;
-            _rerollPresenter = rerollPresenter;
-            _stageCardsPresenter = stageCardsPresenter;
-            
-            _evaluationPresenter = evaluationPresenter;
-            
-            _rerollPresenter.Init(_status, _cardsModel);
-            _stageCardsPresenter.Init(_status, _cardsModel, _evaluationPresenter);
+            for (int i = 0; i < status.Count; i++)
+            {
+                initialDeck[i] = status.GetCardDataById(i);
+                Debug.Assert(initialDeck[i] != null, $"[CardStatus] data[{i}] is null.");
+            }
+
+            var maxHand = CardevilCore.Instance.Game.PlayerStatus.MaxHand;
+            var discardRemain = CardevilCore.Instance.Game.PlayerStatus.DiscardCard;
+            var model = new NewStageCardsModel(initialDeck, maxHand, discardRemain);
+
+            var rerollPresenter = new RerollPresenter(model);
+            var stageCardsPresenter = new StageCardsPresenter(model);
+            EvaluationPresenter evaluationPresenter = null;
+
+            return new CardFlowController
+            {
+                _cardsModel = model,
+                _rerollPresenter = rerollPresenter,
+                _stageCardsPresenter = stageCardsPresenter,
+                _evaluationPresenter = evaluationPresenter
+            };
         }
 
-        // TODO: 구현해야함.
         public bool IsNoCard => _cardsModel.Hand.Count == 0;
         
         public async UniTask DrawCard()
         {
-            await _stageCardsPresenter.DrawCard();
+            await _stageCardsPresenter.DrawUntilMaxHandAsync();
         }
 
         public async UniTask WaitUserInput()
         {
-            await _stageCardsPresenter.WaitUserInput();
+            await _stageCardsPresenter.WaitPlayerInputCompleted();
         }
         
         public async UniTask UseAllCardsAsync(CancellationToken cancellationToken) =>
-            await _stageCardsPresenter.UseAllCardsAsync(cancellationToken);
+            await _stageCardsPresenter.UseAllCardsAsync();
 
         public async UniTask<EvaluationResult> EvaluateAsync(CancellationToken cancellationToken)
         {
@@ -62,6 +72,6 @@ namespace Cardevil.Cards.System
         
         public IReadOnlyEvaluationResultsModel ResultsModel => _evaluationPresenter.ResultsModel;
 
-        public IReadOnlyCardsModel CardsModel => _cardsModel;
+        public IReadOnlyNewStageCardsModel CardsModel => _cardsModel;
     }
 }

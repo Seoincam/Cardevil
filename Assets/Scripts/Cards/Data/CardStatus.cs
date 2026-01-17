@@ -47,9 +47,12 @@ namespace Cardevil.Cards.Data
 
         private EnhancementDataLibrary _enhancementDataLibrary;
 
+        public static IReadOnlyCardStatus Current;
+        
         public CardStatus(EnhancementDataLibrary enhancementDataLibrary)
         {
             _enhancementDataLibrary = enhancementDataLibrary;
+            Current = this;
         }
 
         public void Clear()

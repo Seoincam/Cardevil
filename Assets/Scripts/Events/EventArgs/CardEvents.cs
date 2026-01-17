@@ -101,12 +101,10 @@ namespace Cardevil.Events
         public static EachCardDiscardedArgs Get(CardData cardData)
         {
             var args = Get();
-            args.Init(cardData);
+            args.CardData = cardData;
             return args;
         }
-
-        private void Init(CardData cardData) => CardData = cardData;
-
+        
         public override void Clear()
         {
             base.Clear();

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
-    public partial class NewStageCardsPresenter
+    public partial class StageCardsPresenter
     {
         private void BindCallback(NewCard card)
         {
@@ -27,7 +27,7 @@ namespace Cardevil.Cards.InStage.Presenter
         {
             if (!CanInteract) return;
 
-            _model.RegisterInteractingCard(card);
+            _model.UpdateInteractingInfo(card);
         }
         
         private void OnPointerUp(NewCard card)
@@ -57,9 +57,8 @@ namespace Cardevil.Cards.InStage.Presenter
             {
                 // TODO:
                 // UI 로직
-                // HandChanged Invoke
             }
-            _model.ClearInteractingCard();
+            _model.ClearInteractingInfo();
         }
         
         private void OnDragStarted(NewCard card)
@@ -95,6 +94,8 @@ namespace Cardevil.Cards.InStage.Presenter
                 return;
             
             _model.RemoveHand(_model.CurrentInteracting);
+            _view.SetCardParentTemp(_model.CurrentInteracting);
+            _view.UpdateAllCardsParentSlot();
         }
         
         // 드래그 중 다시 핸드 영역에 진입했을 때.
@@ -105,7 +106,8 @@ namespace Cardevil.Cards.InStage.Presenter
             
             var toInsertIndex = GetIndexByPosition();
             _model.InsertHand(_model.CurrentInteracting, toInsertIndex);
-            // TODO: HandChanged?.Invoke
+            
+            _view.UpdateAllCardsParentSlot();
         }
 
         // 드래그 중인 카드가 있다면, 매 틱마다 해당 카드의 x 좌표와
@@ -129,13 +131,13 @@ namespace Cardevil.Cards.InStage.Presenter
                     (draggingX < otherX && draggingX > otherIndex))
                 {
                     _model.SwapInHand(dragging, otherIndex);
-                    // TODO: handChanged?.Invoke()
+                    _view.UpdateAllCardsParentSlot();
                     break;
                 }
             }
         }
         
-        // 카드가 해당 위치에 존재한다 가정하고 인덱스를 반환.
+        // 카드가 해당 위치에 따른 인덱스를 반환.
         private int GetIndexByPosition()
         {
             if (!_model.CurrentInteracting.Exist) return -1;
