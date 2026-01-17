@@ -1,6 +1,7 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Cards.InStage.NCard;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Events;
@@ -52,7 +53,6 @@ namespace Cardevil.Cards.Evaluations
     public class EvaluationPresenter : IEvaluationPresenter
     {
         private EvaluationResultsModel _model;
-        private EvaluationSequenceFactory _factory;
         
         private EvaluationSequence _seq;
 
@@ -74,8 +74,6 @@ namespace Cardevil.Cards.Evaluations
                 return;
             }
             _model = model;
-            
-            _factory = new EvaluationSequenceFactory(model);
             
             // TODO: View는 씬에 박아놔도 될 듯.
             // view 생성

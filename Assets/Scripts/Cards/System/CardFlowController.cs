@@ -14,7 +14,7 @@ namespace Cardevil.Cards.System
 {
     public sealed class CardFlowController : ITurnCardFlow
     {
-        private NewStageCardsModel _cardsModel;
+        private StageCardsModel _cardsModel;
         private RerollPresenter _rerollPresenter;
         private StageCardsPresenter _stageCardsPresenter;
         private IEvaluationPresenter _evaluationPresenter;
@@ -32,7 +32,7 @@ namespace Cardevil.Cards.System
 
             var maxHand = CardevilCore.Instance.Game.PlayerStatus.MaxHand;
             var discardRemain = CardevilCore.Instance.Game.PlayerStatus.DiscardCard;
-            var model = new NewStageCardsModel(initialDeck, maxHand, discardRemain);
+            var model = new StageCardsModel(initialDeck, maxHand, discardRemain);
 
             var rerollPresenter = new RerollPresenter(model);
             var stageCardsPresenter = new StageCardsPresenter(model);
@@ -72,6 +72,6 @@ namespace Cardevil.Cards.System
         
         public IReadOnlyEvaluationResultsModel ResultsModel => _evaluationPresenter.ResultsModel;
 
-        public IReadOnlyNewStageCardsModel CardsModel => _cardsModel;
+        public IReadOnlyStageCardsModel CardsModel => _cardsModel;
     }
 }

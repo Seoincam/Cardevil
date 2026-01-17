@@ -16,7 +16,7 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public partial class StageCardsPresenter
     {
-        private NewStageCardsModel _model;
+        private StageCardsModel _model;
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
         
@@ -31,7 +31,7 @@ namespace Cardevil.Cards.InStage.Presenter
                                     !Is(State.Sorting) &&
                                     !Is(State.DiscardAndDrawInterval);
         
-        public StageCardsPresenter(NewStageCardsModel model)
+        public StageCardsPresenter(StageCardsModel model)
         {
             Debug.Assert(_model != null);
             
@@ -228,14 +228,14 @@ namespace Cardevil.Cards.InStage.Presenter
             ListPool<UniTask>.Release(sortTasks);
         }
 
-        private NewCard InstantiateCard()
+        private Card InstantiateCard()
         {
             const string cardPath = "Cards/Card!!!";
 
             var cardData = _model.PopCardData();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate(cardPath).GetComponent<NewCard>();
+            var card = AssetUtil.Instantiate(cardPath).GetComponent<Card>();
             card.Initialize(cardData);
             BindCallback(card);
             

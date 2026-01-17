@@ -34,7 +34,7 @@ namespace Cardevil.Cards.InStage.View
         
         public PointerAreaTrigger HandArea => handArea;
         
-        private IReadOnlyNewStageCardsModel _model;
+        private IReadOnlyStageCardsModel _model;
 
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
@@ -54,7 +54,7 @@ namespace Cardevil.Cards.InStage.View
         }
 #endif
 
-        public void Init(IReadOnlyNewStageCardsModel model)
+        public void Init(IReadOnlyStageCardsModel model)
         {
             _model = model;
             ConfigureSlots(model.MaxHand);
@@ -192,7 +192,7 @@ namespace Cardevil.Cards.InStage.View
             }
         }
         
-        public void SetCardParentTemp(NewCard card)
+        public void SetCardParentTemp(Card card)
         {
             card.SetParent(transform);
         }

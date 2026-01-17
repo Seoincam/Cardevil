@@ -1,5 +1,5 @@
 using Cardevil.Cards.Data;
-using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.InStage.NCard;
 using Cardevil.Utils;
 using System.Collections.Generic;
 using System.Linq;

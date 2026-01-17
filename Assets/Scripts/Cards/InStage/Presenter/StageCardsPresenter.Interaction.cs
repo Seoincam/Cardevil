@@ -7,7 +7,7 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public partial class StageCardsPresenter
     {
-        private void BindCallback(NewCard card)
+        private void BindCallback(Card card)
         {
             card.DragStart += OnDragStarted;
             card.DragEnd += OnDragEnded;
@@ -15,7 +15,7 @@ namespace Cardevil.Cards.InStage.Presenter
             card.PointerUp += OnPointerUp;
         }
 
-        private void UnbindCallback(NewCard card)
+        private void UnbindCallback(Card card)
         {
             card.DragStart -= OnDragStarted;
             card.DragEnd -= OnDragEnded;
@@ -23,14 +23,14 @@ namespace Cardevil.Cards.InStage.Presenter
             card.PointerUp -= OnPointerUp;
         }
         
-        private void OnPointerDown(NewCard card)
+        private void OnPointerDown(Card card)
         {
             if (!CanInteract) return;
 
             _model.UpdateInteractingInfo(card);
         }
         
-        private void OnPointerUp(NewCard card)
+        private void OnPointerUp(Card card)
         {
             Debug.Assert(_model.CurrentInteracting.Card == card);
             
@@ -41,14 +41,14 @@ namespace Cardevil.Cards.InStage.Presenter
             {
                 if (_model.Selection.Contains(card))
                 {
-                    card.Set(NewCard.State.Selected, false);
+                    card.Set(Card.State.Selected, false);
                     card.MoveToSlotAsync().Forget();
                     changed = true;
                 }
                 else if (_model.Selection.Count < 4)
                 {
                     _model.Select(card);
-                    card.Set(NewCard.State.Selected, true);
+                    card.Set(Card.State.Selected, true);
                     changed = true;
                 }
             }
@@ -61,7 +61,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _model.ClearInteractingInfo();
         }
         
-        private void OnDragStarted(NewCard card)
+        private void OnDragStarted(Card card)
         {
             Debug.Assert(_model.CurrentInteracting.Card == card);
             
@@ -69,12 +69,12 @@ namespace Cardevil.Cards.InStage.Presenter
 
             foreach (var handCard in _model.Hand)
             {
-                handCard.Set(NewCard.State.AnyCardDragging, true);   
+                handCard.Set(Card.State.AnyCardDragging, true);   
             }
-            card.Set(NewCard.State.Dragging, true);
+            card.Set(Card.State.Dragging, true);
         }
 
-        private void OnDragEnded(NewCard card)
+        private void OnDragEnded(Card card)
         {
             Debug.Assert(_model.CurrentInteracting.Card == card);
             
@@ -83,7 +83,7 @@ namespace Cardevil.Cards.InStage.Presenter
             // TODO: 값 바꾸는 영역 내인가 체크
             if (false) return;
             
-            card.Set(NewCard.State.Dragging, false);
+            card.Set(Card.State.Dragging, false);
             _model.InsertHand(card, _model.CurrentInteracting.OriginalIndex);
         }
 
@@ -115,7 +115,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private void UpdateDetectSwap()
         {
             if (!_model.CurrentInteracting.Exist) return;
-            if (!_model.CurrentInteracting.Card.Is(NewCard.State.Dragging)) return;
+            if (!_model.CurrentInteracting.Card.Is(Card.State.Dragging)) return;
 
             var dragging = _model.CurrentInteracting.Card;
             var draggingX = dragging.transform.position.x;

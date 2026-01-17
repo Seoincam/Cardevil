@@ -5,12 +5,12 @@ using UnityEngine.EventSystems;
 
 namespace Cardevil.Cards.InStage.NCard
 {
-    public partial class NewCard
+    public partial class Card
     {
-        public event Action<NewCard> PointerDown;
-        public event Action<NewCard> PointerUp;
-        public event Action<NewCard> DragStart;
-        public event Action<NewCard> DragEnd;
+        public event Action<Card> PointerDown;
+        public event Action<Card> PointerUp;
+        public event Action<Card> DragStart;
+        public event Action<Card> DragEnd;
         
         public void OnPointerEnter(PointerEventData eventData)
         {

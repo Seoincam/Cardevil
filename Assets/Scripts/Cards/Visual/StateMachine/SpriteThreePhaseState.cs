@@ -1,4 +1,5 @@
 using Cardevil.Cards.Visual.Base;
+using Cardevil.Cards.Visual.Sprites;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -7,27 +8,30 @@ namespace Cardevil.Cards.Visual.StateMachine
 {
     public class SpriteThreePhaseState : IPhaseState
     {
-        private readonly CardVisualBase _visual;
-        private CardVisualBase.SelectionGroup _group;
+        private readonly ChangeableCardVisual _visual;
+        private ChangeableCardVisual.PhaseGroup _group;
         
         public VisualPhase Kind => VisualPhase.Two;
+        
+        private RectTransform Middle => _visual.SelectionBackgrounds[ChangeableCardVisual.Position.Middle];
+        private RectTransform Bottom => _visual.SelectionBackgrounds[ChangeableCardVisual.Position.Bottom];
 
-        public SpriteThreePhaseState(CardVisualBase visual)
+        public SpriteThreePhaseState(ChangeableCardVisual visual)
         {
             _visual = visual;
         }
         
         // 숫자가 크기가 커지며 나타남
-        public async UniTask OnEnter(CardVisualSpriteSet spriteSet)
+        public async UniTask OnEnter(CardSpriteSet spriteSet)
         {
-            _visual.InnerFrame.sprite = spriteSet.innerFrame;
+            _visual.InnerFrame.sprite = spriteSet.InnerFrame;
 
-            _group ??= _visual.GetSelectionGroup(Kind);
-            _group.NumberGroup.SetActive(true);
+            _group = _visual.SelectionGroups[VisualPhase.Three];
+            _group.Group.SetActive(true);
 
-            _group.NumberMap[CardVisualBase.Position.Top].sprite = spriteSet.sprites[0];
-            _group.NumberMap[CardVisualBase.Position.Middle].sprite = spriteSet.sprites[1];
-            _group.NumberMap[CardVisualBase.Position.Bottom].sprite = spriteSet.sprites[2];
+            _group.NumberMap[ChangeableCardVisual.Position.Top].sprite = spriteSet.MainSprites[0];
+            _group.NumberMap[ChangeableCardVisual.Position.Middle].sprite = spriteSet.MainSprites[1];
+            _group.NumberMap[ChangeableCardVisual.Position.Bottom].sprite = spriteSet.MainSprites[2];
 
             foreach (var image in _group.NumberMap.Values)
                 image.rectTransform.localScale = Vector3.zero;
@@ -47,7 +51,7 @@ namespace Cardevil.Cards.Visual.StateMachine
                 seq.Join(image.rectTransform.DOScale(0f, .5f));
             await seq;
             
-            _group.NumberGroup.SetActive(false);
+            _group.Group.SetActive(false);
             // foreach (var image in _group.NumberMap.Values)
             //     image.gameObject.SetActive(false);
         }
@@ -67,31 +71,31 @@ namespace Cardevil.Cards.Visual.StateMachine
 
         private async UniTask TransitToOneAsync()
         {
-            var midSetting = CardVisualBase.BackgroundPos.MidSetting;
-            var botSetting = CardVisualBase.BackgroundPos.BotSetting;
+            var middleInit =  ChangeableCardVisual.BackgroundPositions.MiddleInit;
+            var bottomInit = ChangeableCardVisual.BackgroundPositions.BottomInit;
             
             // 트윈
             var dur = .5f;
             await DOTween.Sequence()
-                .Join(_visual.SelMidBackground.DOAnchorPos(midSetting.initPos, dur))
-                .Join(_visual.SelBotBackground.DOAnchorPos(botSetting.initPos, dur));
+                .Join(Middle.DOAnchorPos(middleInit, dur))
+                .Join(Bottom.DOAnchorPos(bottomInit, dur));
             
-            _visual.SelMidBackground.gameObject.SetActive(false);
-            _visual.SelBotBackground.gameObject.SetActive(false);
+            Middle.gameObject.SetActive(false);
+            Bottom.gameObject.SetActive(false);
         }
         
         private async UniTask TransitToTwoAsync()
         {
-            var midSetting = CardVisualBase.BackgroundPos.MidSetting;
-            var botSetting = CardVisualBase.BackgroundPos.BotSetting;
+            var middleFinal =  ChangeableCardVisual.BackgroundPositions.MiddleFinal;
+            var bottomInit =  ChangeableCardVisual.BackgroundPositions.BottomInit;
             
             // 트윈
             var dur = .5f;
             await DOTween.Sequence()
-                .Join(_visual.SelMidBackground.DOAnchorPos(midSetting.finalPos, dur))
-                .Join(_visual.SelBotBackground.DOAnchorPos(botSetting.initPos, dur));
+                .Join(Middle.DOAnchorPos(middleFinal, dur))
+                .Join(Bottom.DOAnchorPos(bottomInit, dur));
             
-            _visual.SelBotBackground.gameObject.SetActive(false);
+            Bottom.gameObject.SetActive(false);
         }
     }
 }

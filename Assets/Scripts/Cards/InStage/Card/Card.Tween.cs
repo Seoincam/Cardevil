@@ -1,5 +1,5 @@
 using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Visual.New;
+using Cardevil.Cards.Visual.Base;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Cardevil.Cards.InStage.NCard
 {
-    public partial class NewCard
+    public partial class Card
     {
         // 현재 트윈으로 움직이고 있는가?
         private bool _isTweening;

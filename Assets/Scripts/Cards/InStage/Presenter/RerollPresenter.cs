@@ -17,7 +17,7 @@ namespace Cardevil.Cards.InStage.Presenter
 {
     public class RerollPresenter : IDisposable
     {
-        private NewStageCardsModel _model;
+        private StageCardsModel _model;
         private RerollView _view;
         private CardVisualSettingSO _visualSetting;
 
@@ -30,7 +30,7 @@ namespace Cardevil.Cards.InStage.Presenter
         private static int RerollTicket => CardevilCore.Instance.Game.PlayerStatus.RerollTicket;
         private static bool HasRerollTicket => RerollTicket > 0; 
         
-        public RerollPresenter(NewStageCardsModel model)
+        public RerollPresenter(StageCardsModel model)
         {
             Debug.Assert(model != null, "[Reroll Presenter] Cards Model cannot be null.");
             _model = model;
@@ -150,14 +150,14 @@ namespace Cardevil.Cards.InStage.Presenter
             ListPool<UniTask>.Release(drawTasks);
         }
         
-        private NewCard InstantiateCard()
+        private Card InstantiateCard()
         {
             const string cardPath = "Cards/Card!!!";
 
             var cardData = _model.PopCardData();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate(cardPath).GetComponent<NewCard>();
+            var card = AssetUtil.Instantiate(cardPath).GetComponent<Card>();
             card.Initialize(cardData);
             
             _model.AddHand(card);

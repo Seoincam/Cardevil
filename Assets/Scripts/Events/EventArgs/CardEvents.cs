@@ -1,6 +1,8 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Cards.InStage.NCard;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
@@ -20,23 +22,23 @@ namespace Cardevil.Events
             UIUpdate = int.MinValue,
         }
 
-        public static CardDeckChangeArgs Get(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
+        public static CardDeckChangeArgs Get(int currentDeckCount, int newDeckCount, IReadOnlyStageCardsModel model)
         {
             var args = Get();
-            args.Init(currentDeckCount, newDeckCount, newModel);
+            args.Init(currentDeckCount, newDeckCount, model);
             return args;
         }
 
         public int OldDeckCount { get; private set; }
         public int NewDeckCount { get; private set; }
-        public IReadOnlyCardsModel NewModel { get; private set; }
+        public IReadOnlyStageCardsModel Model { get; private set; }
         // 남은 덱 카드 개수는 이벤트로 변화주지 않음.
 
-        private void Init(int currentDeckCount, int newDeckCount, IReadOnlyCardsModel newModel)
+        private void Init(int currentDeckCount, int newDeckCount, IReadOnlyStageCardsModel model)
         {
             OldDeckCount = currentDeckCount;
             NewDeckCount = newDeckCount;
-            NewModel = newModel;
+            Model = model;
         }
 
         public override void Clear()
@@ -45,7 +47,7 @@ namespace Cardevil.Events
             // 자신의 멤버 변수를 초기화하도록 수정
             OldDeckCount = 0;
             NewDeckCount = 0;
-            NewModel = null;
+            Model = null;
         }
     }
     

@@ -190,7 +190,7 @@ namespace Cardevil.Cards.InStage.View
         /// </summary>
         /// <param name="card">배치할 카드.</param>
         /// <param name="slotIndex">배치할 슬롯의 인덱스.</param>
-        public void SetCardToSlot(NewCard card, int slotIndex)
+        public void SetCardToSlot(Card card, int slotIndex)
         {
             card.SetParent(_slots[slotIndex]);
         }

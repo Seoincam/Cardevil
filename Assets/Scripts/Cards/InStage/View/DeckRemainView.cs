@@ -1,7 +1,6 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.ScriptableObjects;
-using Cardevil.Cards.Visual.Handler;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -25,8 +24,8 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private SerializableDictionary<string, TextMeshProUGUI> countTexts;
         [SerializeField] private Button closeButton;
         
-        [Header("Cards Area")]
-        [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
+        // [Header("Cards Area")]
+        // [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
         /*
         private IReadOnlyCardStatus _status;
         private IReadOnlyCardsModel _model;

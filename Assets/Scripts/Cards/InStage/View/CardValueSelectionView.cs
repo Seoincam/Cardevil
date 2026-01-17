@@ -3,7 +3,6 @@ using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Cards.ScriptableObjects;
-using Cardevil.Cards.Visual.Handler;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;

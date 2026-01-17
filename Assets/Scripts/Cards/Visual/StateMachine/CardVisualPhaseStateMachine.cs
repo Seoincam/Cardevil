@@ -1,4 +1,5 @@
 using Cardevil.Cards.Visual.Base;
+using Cardevil.Cards.Visual.Sprites;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -9,7 +10,7 @@ namespace Cardevil.Cards.Visual.StateMachine
         private readonly Dictionary<VisualPhase, IPhaseState> _states;
         private IPhaseState _current;
 
-        public CardVisualPhaseStateMachine(CardVisualBase visual, CardVisualSpriteSet spriteSet)
+        public CardVisualPhaseStateMachine(ChangeableCardVisual visual, CardSpriteSet spriteSet)
         {
             _states = new Dictionary<VisualPhase, IPhaseState>()
             {
@@ -21,13 +22,13 @@ namespace Cardevil.Cards.Visual.StateMachine
             _current.OnEnter(spriteSet);
         }
 
-        public async UniTaskVoid InitPhase(CardVisualSpriteSet spriteSet)
+        public async UniTaskVoid InitPhase(CardSpriteSet spriteSet)
         {
             _current = _states[spriteSet.Phase];
             await _current.OnEnter(spriteSet);
         }
 
-        public async UniTask SetPhase(CardVisualSpriteSet spriteSet)
+        public async UniTask SetPhase(CardSpriteSet spriteSet)
         {
             await _current.OnExit();
             await _current.SetPhase(spriteSet.Phase);
