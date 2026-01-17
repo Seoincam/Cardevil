@@ -6,6 +6,11 @@ using UnityEngine;
 
 namespace Cardevil.Cards.Visual.New
 {
+    public enum CardFace
+    {
+        None, Front, Back
+    }
+    
     /// <summary>
     /// 카드 앞뒷면 플립(회전) 애니메이션 담당 컴포넌트.
     /// 앞면과 뒷면 RectTransform을 90도로 회전시켜 카드 플립 효과를 제공함. 
@@ -30,43 +35,38 @@ namespace Cardevil.Cards.Visual.New
         public RectTransform Back { get; private set; }
         
         [field: SerializeField, VisibleOnly]
-        public Face CurrentFace { get; private set; }
+        public CardFace CurrentFace { get; private set; }
 
-        private bool IsFront => CurrentFace == Face.Front;
+        private bool IsFront => CurrentFace == CardFace.Front;
 
         private static readonly Vector3 FrontEulerAngles = Vector3.zero;
         private static readonly Vector3 BackEulerAngles = new(0, 90, 0);
-
-        public enum Face
-        {
-            None, Front, Back
-        }
-
+        
         private void OnEnable()
         {
             if (ApproximatelyEqual(Front.localEulerAngles, FrontEulerAngles) &&
                 ApproximatelyEqual(Back.localEulerAngles, BackEulerAngles))
             {
-                CurrentFace = Face.Front;
+                CurrentFace = CardFace.Front;
             }
             else if (ApproximatelyEqual(Front.localEulerAngles, BackEulerAngles) &&
                      ApproximatelyEqual(Back.localEulerAngles, FrontEulerAngles))
             {
-                CurrentFace = Face.Back;
+                CurrentFace = CardFace.Back;
             }
             else
             {
                 LogEx.LogWarning("현재 Front/Back 중 해당되는 Face가 없습니다.");
-                CurrentFace = Face.None;
+                CurrentFace = CardFace.None;
             }
         }
 
         /// <summary>
         /// 애니메이션과 함께 <see cref="targetFace"/>로 회전합니다.
         /// </summary>
-        public async UniTask FlipAsync(Face targetFace, float duration, Ease ease)
+        public async UniTask FlipAsync(CardFace targetFace, float duration, Ease ease)
         {
-            if (targetFace == Face.None)
+            if (targetFace == CardFace.None)
             {
                 LogEx.LogError("Cannot flip to Face.None");
                 return;
@@ -104,9 +104,9 @@ namespace Cardevil.Cards.Visual.New
         /// <summary>
         /// 즉시 <see cref="targetFace"/>로 회전합니다.
         /// </summary>
-        public void FlipInstant(Face targetFace)
+        public void FlipInstant(CardFace targetFace)
         {
-            if (targetFace == Face.None)
+            if (targetFace == CardFace.None)
             {
                 LogEx.LogError("Cannot flip to Face.None");
                 return;
@@ -114,7 +114,7 @@ namespace Cardevil.Cards.Visual.New
             
             if (CurrentFace == targetFace) return;
 
-            if (targetFace == Face.Front)
+            if (targetFace == CardFace.Front)
             {
                 Front.gameObject.SetActive(true);
                 Back.gameObject.SetActive(false);
@@ -122,7 +122,7 @@ namespace Cardevil.Cards.Visual.New
                 Front.localEulerAngles = FrontEulerAngles;
                 Back.localEulerAngles = BackEulerAngles;
             }
-            else if (targetFace == Face.Back)
+            else if (targetFace == CardFace.Back)
             {
                 Front.gameObject.SetActive(false);
                 Back.gameObject.SetActive(true);
@@ -137,7 +137,7 @@ namespace Cardevil.Cards.Visual.New
         /// <summary>
         /// 기존에 진행중인 Flip 애니메이션이 있다면 멈추고, 즉시 <see cref="targetFace"/>로 회전합니다.
         /// </summary>
-        public void StopAndFlipInstant(Face targetFace)
+        public void StopAndFlipInstant(CardFace targetFace)
         {
             StopFlip();
             FlipInstant(targetFace);
@@ -153,10 +153,10 @@ namespace Cardevil.Cards.Visual.New
         }
 
         [ContextMenu("Flip Front")]
-        private void SetFront() => FlipInstant(Face.Front);
+        private void SetFront() => FlipInstant(CardFace.Front);
         
         [ContextMenu("Flip Back")]
-        private void SetBack() => FlipInstant(Face.Back);
+        private void SetBack() => FlipInstant(CardFace.Back);
 
         private static bool ApproximatelyEqual(Vector3 a, Vector3 b)
         {

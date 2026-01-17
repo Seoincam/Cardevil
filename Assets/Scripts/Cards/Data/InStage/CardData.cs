@@ -24,21 +24,6 @@ namespace Cardevil.Cards.Data.InStage
         [SerializeField, VisibleOnly] private int length;
         [SerializeField, VisibleOnly] private SelectState<Direction> directionSelectState;
         [SerializeField, VisibleOnly] private DirectionFlag directionFlag;
-
-        public bool IsAttack => kind == CardKind.Attack;
-        public bool IsMove => kind == CardKind.Move;
-
-        /// <summary>
-        /// 값이 확정된 시점에 호출해야함.
-        /// 공격카드의 최종 선택 숫자.
-        /// </summary>
-        public int FinalNumber => (int)numberSelectState.FinalValue;
-
-        /// <summary>
-        /// 값이 확정된 시점에 호출해야함.
-        /// 이동카드의 최종 선택 방향.
-        /// </summary>
-        public Direction FinalDirection => (Direction)directionSelectState.FinalValue; 
         
         /// <summary>
         /// 스테이지 입장 전 상태로 초기화합니다.
@@ -69,13 +54,43 @@ namespace Cardevil.Cards.Data.InStage
         public DirectionFlag DirectionFlag => directionFlag;
         
         // Etc
-        public bool CanOpenSelection =>
-            kind switch
-            {
-                CardKind.Attack => numberSelectState.Selectables.Count > 1,
-                CardKind.Move => directionSelectState.Selectables.Count > 1,
-                _ => throw new ArgumentOutOfRangeException()
-            };
+        public bool CanOpenSelection => 
+            IsAttack ? numberSelectState.Selectables.Count > 1 : directionSelectState.Selectables.Count > 1; 
+        
+        public bool IsAttack => kind == CardKind.Attack;
+        public bool IsMove => kind == CardKind.Move;
+
+        /// <summary>
+        /// 오망성 카드인가 여부.
+        /// </summary>
+        public bool IsStar => IsAttack && numberSelectState.Selectables.Count == 9;
+
+        /// <summary>
+        /// 선택 가능한 값들의 수.
+        /// </summary>
+        public int SelectableCount =>
+            IsAttack ? numberSelectState.Selectables.Count : directionSelectState.Selectables.Count;
+
+        /// <summary>
+        /// 값 선택을 완료했는가 여부.
+        /// 선택 가능한 값이 하나인 경우에도 <c>true</c>를 반환함.
+        /// </summary>
+        public bool CompleteSelectingValue =>
+            IsAttack ? numberSelectState.FinalValue.HasValue : directionSelectState.FinalValue.HasValue;
+
+        /// <summary>
+        /// 공격 카드의 최종 선택 숫자.
+        /// </summary>
+        public int FinalNumber => CompleteSelectingValue
+                ? (int)numberSelectState.FinalValue
+                : throw new ArgumentNullException(nameof(numberSelectState.FinalValue));
+
+        /// <summary>
+        /// 이동 카드의 최종 선택 방향.
+        /// </summary>
+        public Direction FinalDirection => CompleteSelectingValue 
+            ? (Direction)directionSelectState.FinalValue
+            : throw new ArgumentNullException(nameof(directionSelectState.FinalValue));
 
         #region Builder
         

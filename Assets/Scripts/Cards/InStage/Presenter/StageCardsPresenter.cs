@@ -6,6 +6,7 @@ using Cardevil.Cards.Evaluations;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.NCard;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
 using Cardevil.Events;
@@ -545,12 +546,14 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private Card Spawn()
         {
+            const string cardPath = "Cards/Card!!!!!!!!!";
+            
             var cardData = _model.PopCard();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate("Cards/Card").GetComponent<Card>();
-            card.Init(cardData, _model);
-
+            var card = AssetUtil.Instantiate(cardPath).GetComponent<NewCard>();
+            card.Initialize(cardData);
+            
             // 이벤트 구독
             _model.Draw(card);
             WireCard(card);

@@ -13,11 +13,11 @@ namespace Cardevil.Cards.Visual.StateMachine
         {
             _states = new Dictionary<VisualPhase, IPhaseState>()
             {
-                { VisualPhase.SpriteOne, new SpriteOnePhaseState(visual) },
-                { VisualPhase.SpriteTwo, new SpriteTwoPhaseState(visual) },
-                { VisualPhase.SpriteThree, new SpriteThreePhaseState(visual) }
+                { VisualPhase.One, new SpriteOnePhaseState(visual) },
+                { VisualPhase.Two, new SpriteTwoPhaseState(visual) },
+                { VisualPhase.Three, new SpriteThreePhaseState(visual) }
             };
-            _current = _states[VisualPhase.SpriteOne];
+            _current = _states[VisualPhase.One];
             _current.OnEnter(spriteSet);
         }
 

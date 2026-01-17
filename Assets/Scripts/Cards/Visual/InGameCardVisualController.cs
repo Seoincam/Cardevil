@@ -26,9 +26,9 @@ namespace Cardevil.Cards.Visual
             var spriteSet = ConfigureSpriteSet(data);
             switch (spriteSet.Phase)
             {
-                case VisualPhase.SpriteOne: UpdateVisualOne(spriteSet); break;
-                case VisualPhase.SpriteTwo: UpdateVisualTwo(spriteSet); break;
-                case VisualPhase.SpriteThree: UpdateVisualThree(spriteSet); break;
+                case VisualPhase.One: UpdateVisualOne(spriteSet); break;
+                case VisualPhase.Two: UpdateVisualTwo(spriteSet); break;
+                case VisualPhase.Three: UpdateVisualThree(spriteSet); break;
             }
         }
 
@@ -52,7 +52,7 @@ namespace Cardevil.Cards.Visual
             SetInactiveVisualThree();
 
             // Active
-            var group = _visual.GetSelectionGroup(VisualPhase.SpriteTwo);
+            var group = _visual.GetSelectionGroup(VisualPhase.Two);
             group.NumberMap[CardVisualBase.Position.Top].sprite = spriteSet.sprites[0];
             group.NumberMap[CardVisualBase.Position.Bottom].sprite = spriteSet.sprites[1];
 
@@ -67,7 +67,7 @@ namespace Cardevil.Cards.Visual
             SetInactiveVisualTwo();
 
             // Active
-            var group = _visual.GetSelectionGroup(VisualPhase.SpriteThree);
+            var group = _visual.GetSelectionGroup(VisualPhase.Three);
             group.NumberMap[CardVisualBase.Position.Top].sprite = spriteSet.sprites[0];
             group.NumberMap[CardVisualBase.Position.Middle].sprite = spriteSet.sprites[1];
             group.NumberMap[CardVisualBase.Position.Bottom].sprite = spriteSet.sprites[2];
@@ -85,7 +85,7 @@ namespace Cardevil.Cards.Visual
 
         private void SetInactiveVisualTwo()
         {
-            var group = _visual.GetSelectionGroup(VisualPhase.SpriteTwo);
+            var group = _visual.GetSelectionGroup(VisualPhase.Two);
             group.NumberGroup.SetActive(false);
 
             _visual.SelMidBackground.gameObject.SetActive(false);
@@ -94,7 +94,7 @@ namespace Cardevil.Cards.Visual
 
         private void SetInactiveVisualThree()
         {
-            var group = _visual.GetSelectionGroup(VisualPhase.SpriteThree);
+            var group = _visual.GetSelectionGroup(VisualPhase.Three);
             group.NumberGroup.SetActive(false);
 
             _visual.SelMidBackground.gameObject.SetActive(false);

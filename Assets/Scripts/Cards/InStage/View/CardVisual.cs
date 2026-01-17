@@ -235,6 +235,12 @@ namespace Cardevil.Cards.InStage.View
 
         #region Reroll
 
+        /*
+         * 1. 덱 비주얼이 반응
+         * 2. 앞면으로 flip
+         * 3. 동시에 Slot으로 이동
+         * -> newCard.SafeMoveToDeckWithFlipAsync().Forget();
+         */
         public void AnimateRerollDraw()
         {
             _deckVisual.OnInteraction();
@@ -245,6 +251,13 @@ namespace Cardevil.Cards.InStage.View
                 .SetEase(visualSetting.RerollDrawEase);
         }
 
+        /*
+         * 1. 덱으로 이동
+         * 2. 동시에 Slot으로 이동
+         * 3. 덱 비주얼이 반응
+         * -> newCard.SafeMoveToDeckWithFlipAsync().Forget();
+         * 
+         */
         public void AnimateRerollDiscard()
         {
             _state.isDiscarded = true;
@@ -269,6 +282,12 @@ namespace Cardevil.Cards.InStage.View
 
         #endregion
         
+        /*
+         * 1. 덱이 반응
+         * 2. 앞으로 flip
+         * 3. 동시에 슬롯으로 이동
+         * -> newCard.MoveToSlotWithFlipAsync().Forget()
+         */
         public void AnimateDraw()
         {
             _deckVisual.OnInteraction();
@@ -277,6 +296,10 @@ namespace Cardevil.Cards.InStage.View
             visualBase.FlipFrontAsync(visualSetting.DrawFlipDuration, visualSetting.FlipEase).Forget();
         }
 
+        /*
+         * 1. 밖으로 이동
+         * 
+         */
         public void Discard()
         {
             _state.isDiscarded = true;
@@ -299,6 +322,7 @@ namespace Cardevil.Cards.InStage.View
             Destroy();
         }
         
+        // 해결
         public void UpdateVisualIndex(int index) => transform.SetSiblingIndex(index);
         
         private void Destroy()
@@ -315,6 +339,7 @@ namespace Cardevil.Cards.InStage.View
                     .SetLoops(2, LoopType.Yoyo));
         }
 
+        // 해결
         public void FadeChangeImage(bool active)
         {
             changeImage.DOKill();

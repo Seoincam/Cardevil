@@ -1,7 +1,7 @@
 using Cardevil.Cards.Data;
+using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
@@ -13,6 +13,13 @@ namespace Cardevil.Cards.Visual
         private static bool _isInitialized;
         
         private const string AtlasPath = "Arts/CardAtlas";
+        
+        private const string PrefixSingleNumber = "Card_Single_Number";
+        private const string PrefixNumber = "Card_Number";
+        private const string PrefixFrame = "Card_Frame";
+        private const string PrefixEnhancement = "Card_Enhancement";
+        private const string PrefixDirectionFrame = "Card_Direction_Frame";
+        private const string PrefixDirectionIcon = "Card_Direction_Icon";
 
         private static bool TryInitialize()
         {
@@ -30,76 +37,44 @@ namespace Cardevil.Cards.Visual
             return true;
         }
         
+
+    
         // Attack Card Sprites
-        public static Sprite GetNumber(CardColor color, int number)
-        {
-            var s = $"Card_Single_Number_{color}_{number}";
-            return GetSprite(s);
-        }
+        public static SpriteKey GetNumber(CardColor color, int number)
+            => new($"{PrefixSingleNumber}_{color}_{number}");
 
-        public static Sprite GetSmallNumber(CardColor color, int number)
-        {
-            var s = $"Card_Number_{color}_Small_{number}";
-            return GetSprite(s);
-        }
-        
-        public static Sprite GetQuestionMark(CardColor color)
-        {
-            var s = $"Card_Number_{color}_Q";
-            return GetSprite(s);
-        }
+        public static SpriteKey GetSmallNumber(CardColor color, int number)
+            => new($"{PrefixNumber}_{color}_Small_{number}");
+    
+        public static SpriteKey GetQuestionMark(CardColor color)
+            => new($"{PrefixNumber}_{color}_Q");
 
-        public static Sprite GetStar(CardColor color)
-        {
-            var s = $"Card_Single_Number_{color}_Star";
-            return GetSprite(s);
-        }
-        
-        public static Sprite GetSmallStar(CardColor color)
-        {
-            var s = $"Card_Number_{color}_Small_Star";
-            return GetSprite(s);
-        }
-        
-        public static Sprite GetInnerFrame(CardColor color)
-        {
-            var s = $"Card_Frame_{color}";
-            return GetSprite(s);
-        }
-        
-        public static Sprite GetEnhancementFrame(CardColor color, int level)
-        {
-            var s = $"Card_Enhancement_{color}_{level}";
-            return GetSprite(s);
-        }
-        
+        public static SpriteKey GetStar(CardColor color)
+            => new($"{PrefixSingleNumber}_{color}_Star");
+    
+        public static SpriteKey GetSmallStar(CardColor color)
+            => new($"{PrefixNumber}_{color}_Small_Star");
+    
+        public static SpriteKey GetInnerFrame(CardColor color)
+            => new($"{PrefixFrame}_{color}");
+    
+        public static SpriteKey GetEnhancementFrame(CardColor color, int level)
+            => new($"{PrefixEnhancement}_{color}_{level}");
+    
         // Move Card Sprites
-        public static Sprite GetInnerFrame(Direction dir)
-        {
-            var s = $"Card_Direction_Frame_{dir}";
-            return GetSprite(s);
-        }
+        public static SpriteKey GetInnerFrame(Direction dir)
+            => new($"{PrefixDirectionFrame}_{dir}");
+    
+        public static SpriteKey GetInnerFrame(DirectionFlag flag)
+            => new($"{PrefixDirectionFrame}_{flag.ToCustomString()}");
+    
+        public static SpriteKey GetArrow(Direction dir)
+            => new($"{PrefixDirectionIcon}_{dir}");
+    
+        public static SpriteKey GetArrow(DirectionFlag flag)
+            => new($"{PrefixDirectionIcon}_{flag.ToCustomString()}");
         
-        public static Sprite GetInnerFrame(DirectionFlag flag)
-        {
-            var s = $"Card_Direction_Frame_{flag.ToCustomString()}";
-            return GetSprite(s);
-        }
-        
-        public static Sprite GetArrow(Direction dir)
-        {
-            var s = $"Card_Direction_Icon_{dir}";
-            return GetSprite(s);
-        }
-        
-        public static Sprite GetArrow(DirectionFlag flag)
-        {
-            var s = $"Card_Direction_Icon_{flag.ToCustomString()}";
-            return GetSprite(s);
-        }
-        
-        
-        private static Sprite GetSprite(string key)
+        public static Sprite GetSprite(string key)
         {
             if (!TryInitialize())
                 return null;

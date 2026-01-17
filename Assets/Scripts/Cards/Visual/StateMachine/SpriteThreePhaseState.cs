@@ -10,7 +10,7 @@ namespace Cardevil.Cards.Visual.StateMachine
         private readonly CardVisualBase _visual;
         private CardVisualBase.SelectionGroup _group;
         
-        public VisualPhase Kind => VisualPhase.SpriteTwo;
+        public VisualPhase Kind => VisualPhase.Two;
 
         public SpriteThreePhaseState(CardVisualBase visual)
         {
@@ -56,9 +56,9 @@ namespace Cardevil.Cards.Visual.StateMachine
         {
             switch (phase)
             {
-                case VisualPhase.SpriteOne:
+                case VisualPhase.One:
                     await TransitToOneAsync(); break;
-                case VisualPhase.SpriteTwo:
+                case VisualPhase.Two:
                     await TransitToTwoAsync(); break;
                 
                 default: return;
