@@ -1,7 +1,5 @@
-using Cardevil.Cards.InStage.Model;
-using Cardevil.Cards.InStage.NCard;
-using Cardevil.Cards.InStage.View;
-using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Config;
+using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
@@ -13,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Cards.InStage.Presenter
+namespace Cardevil.Cards.InStage
 {
     public class RerollPresenter : IDisposable
     {
@@ -152,12 +150,10 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private Card InstantiateCard()
         {
-            const string cardPath = "Cards/Card!!!";
-
             var cardData = _model.PopCardData();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate(cardPath).GetComponent<Card>();
+            var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<Card>();
             card.Initialize(cardData);
             
             _model.AddHand(card);

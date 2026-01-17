@@ -1,7 +1,3 @@
-using Cardevil.Cards.InStage.Model;
-using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Cards.InStage.NCard;
-using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
@@ -15,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     public class StageCardsView: MonoBehaviour, IClearable
     {

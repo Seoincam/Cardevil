@@ -1,6 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Core;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core;
 using Cardevil.Utils;
@@ -8,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.Cards.InStage.Model
+namespace Cardevil.Cards.InStage
 {
     [Serializable]
     public sealed class EvaluationResultsModel : IReadOnlyEvaluationResultsModel, IClearable

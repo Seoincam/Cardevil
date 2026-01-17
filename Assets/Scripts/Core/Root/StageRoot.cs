@@ -1,5 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.System;
+using Cardevil.Cards.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
 using Cardevil.Dungeon;

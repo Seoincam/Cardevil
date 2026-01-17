@@ -1,5 +1,5 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.OutStage;
+using Cardevil.Cards.Enhancements;
+using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Dungeon;
 using Cardevil.SceneManagement;

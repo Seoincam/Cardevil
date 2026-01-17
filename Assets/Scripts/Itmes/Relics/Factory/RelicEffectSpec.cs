@@ -1,4 +1,4 @@
-using Cardevil.Cards.Data;
+using Cardevil.Cards.Core;
 
 namespace Cardevil.Items.Relics.Factory
 {

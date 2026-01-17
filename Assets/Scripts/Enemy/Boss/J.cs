@@ -1,6 +1,5 @@
 using UnityEngine;
 using Cardevil.InGame.Enemy;
-using Cardevil.Cards.Data;
 
 
 namespace Cardevil.InGame.Enemy.Boss

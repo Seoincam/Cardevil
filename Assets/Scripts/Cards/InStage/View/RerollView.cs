@@ -1,6 +1,5 @@
-using Cardevil.Cards.InStage.NCard;
-using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Config;
+using Cardevil.Cards.Utils;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
@@ -15,7 +14,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Math = System.Math;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     public class RerollView : MonoBehaviour, IClearable
     {
@@ -41,9 +40,7 @@ namespace Cardevil.Cards.InStage.View
 
         private UniTask _ticketAnim = UniTask.CompletedTask;
         private Tween _ticketTween;
-
-        private const string SlotPath = "UI/CardUI/Slot";
-
+        
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -173,7 +170,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = AssetUtil.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(CardAssetPath.Slot, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 

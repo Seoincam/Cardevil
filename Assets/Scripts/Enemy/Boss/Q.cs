@@ -1,5 +1,3 @@
-using Cardevil.Cards.Data;
-using Cardevil.Core.Turn;
 using UnityEngine;
 using Cardevil.InGame.Enemy;
 using Cardevil.Utils;

@@ -1,7 +1,5 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage;
 using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Events;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 

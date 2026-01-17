@@ -1,7 +1,5 @@
-using Cardevil.Cards.Evaluations;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
-using Cardevil.Core.Turn.Interfaces;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
 using Cardevil.Events.AsyncPriorityEvent;

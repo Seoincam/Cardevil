@@ -1,6 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage.NCard;
+using Cardevil.Cards.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -8,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Cardevil.Cards.InStage.Model
+namespace Cardevil.Cards.InStage
 {
     public interface IReadOnlyStageCardsModel
     {

@@ -1,9 +1,8 @@
-using Cardevil.Cards.InStage.NCard;
 using Cysharp.Threading.Tasks;
 using System.Linq;
 using UnityEngine;
 
-namespace Cardevil.Cards.InStage.Presenter
+namespace Cardevil.Cards.InStage
 {
     public partial class StageCardsPresenter
     {

@@ -1,9 +1,5 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage.Model;
-using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Cards.InStage.NCard;
-using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.Core;
+using Cardevil.Cards.InStage;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;

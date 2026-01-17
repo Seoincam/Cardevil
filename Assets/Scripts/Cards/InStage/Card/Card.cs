@@ -1,13 +1,13 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Config;
+using Cardevil.Cards.Core;
 using Cardevil.Cards.Visual.Base;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.InStage.NCard
+namespace Cardevil.Cards.InStage
 {
     // TODO:
     // 소환될 때 CardVisual / Changeable ... 분기 처리하기 

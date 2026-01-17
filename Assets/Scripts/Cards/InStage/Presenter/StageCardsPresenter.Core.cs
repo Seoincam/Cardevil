@@ -1,6 +1,4 @@
-using Cardevil.Cards.InStage.Model;
-using Cardevil.Cards.InStage.NCard;
-using Cardevil.Cards.InStage.View;
+using Cardevil.Cards.Utils;
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
@@ -12,7 +10,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Cards.InStage.Presenter
+namespace Cardevil.Cards.InStage
 {
     public partial class StageCardsPresenter
     {
@@ -34,7 +32,6 @@ namespace Cardevil.Cards.InStage.Presenter
         public StageCardsPresenter(StageCardsModel model)
         {
             Debug.Assert(_model != null);
-            
             _model = model;
 
             int priority = (int)EnterStageArgs.Orders.Last;
@@ -53,7 +50,7 @@ namespace Cardevil.Cards.InStage.Presenter
             if (views is { Length: > 0 }) _view = views[0];
             else
             {
-                GameObject go = AssetUtil.Instantiate("UI/CardUI/StageCardsView", canvas);
+                GameObject go = AssetUtil.Instantiate(CardAssetPath.StageCardsView, canvas);
                 _view = go.GetComponent<StageCardsView>();
             }
             _view.Init(_model);
@@ -230,12 +227,10 @@ namespace Cardevil.Cards.InStage.Presenter
 
         private Card InstantiateCard()
         {
-            const string cardPath = "Cards/Card!!!";
-
             var cardData = _model.PopCardData();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate(cardPath).GetComponent<Card>();
+            var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<Card>();
             card.Initialize(cardData);
             BindCallback(card);
             

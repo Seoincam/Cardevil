@@ -1,6 +1,5 @@
-using Cardevil.Cards.Data;
+using Cardevil.Cards.Config;
 using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Cards.ScriptableObjects;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -12,7 +11,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class DeckRemainView : UI_Popup

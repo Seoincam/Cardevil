@@ -1,4 +1,4 @@
-using Cardevil.Cards.Data;
+using Cardevil.Cards.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using UnityEngine;

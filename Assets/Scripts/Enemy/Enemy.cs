@@ -1,4 +1,3 @@
-using Cardevil.Cards.Data;
 using Cardevil.Core.Turn;
 using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
@@ -14,7 +13,6 @@ using Cardevil.Events;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Player;
 using System.Threading;
-using UnityEngine.Android;
 
 namespace Cardevil.InGame.Enemy
 {

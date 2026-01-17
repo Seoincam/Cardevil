@@ -1,11 +1,9 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage.NCard;
-using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Cards.Core;
+using Cardevil.Cards.InStage;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Cardevil.InGame.SlotMachine.Cards.Utils
+namespace Cardevil.Cards.Utils
 {
     public static class CardsUtils
     {

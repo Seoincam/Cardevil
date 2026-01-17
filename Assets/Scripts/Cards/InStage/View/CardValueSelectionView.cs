@@ -1,8 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Config;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
@@ -14,7 +11,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {

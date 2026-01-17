@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Cardevil.Cards.InStage.NCard
+namespace Cardevil.Cards.InStage
 {
     public partial class Card
     {

@@ -1,11 +1,11 @@
-using Cardevil.Cards.Data.InStage;
+using Cardevil.Cards.Core;
 using Cardevil.Cards.Visual.Base;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Cardevil.Cards.InStage.NCard
+namespace Cardevil.Cards.InStage
 {
     public partial class Card
     {

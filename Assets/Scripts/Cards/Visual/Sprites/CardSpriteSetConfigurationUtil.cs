@@ -1,5 +1,4 @@
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.Visual.StateMachine;
+using Cardevil.Cards.Core;
 using System;
 
 namespace Cardevil.Cards.Visual.Sprites
