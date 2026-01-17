@@ -1,14 +1,12 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Core;
-using Cardevil.Cards.Visual.Sprites;
-using Cardevil.Cards.Visual.StateMachine;
 using Cardevil.DataStructure.Serializables;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.Visual.Base
+namespace Cardevil.Cards.Visual
 {
     /// <summary>
     /// 선택 가능한 값이 2개 혹은 3개일 때 사용되는 카드 비주얼 컴포넌트.

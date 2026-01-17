@@ -12,7 +12,7 @@ using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage
 {
-    public partial class StageCardsPresenter
+    public partial class StageCardsPresenter : IDisposable
     {
         private StageCardsModel _model;
         private StageCardsView _view;
@@ -31,11 +31,16 @@ namespace Cardevil.Cards.InStage
         
         public StageCardsPresenter(StageCardsModel model)
         {
-            Debug.Assert(_model != null);
+            Debug.Assert(model != null);
             _model = model;
 
             int priority = (int)EnterStageArgs.Orders.Last;
-            ExecStaticEventBus<EnterStageArgs>.Register(priority, OnEnterStageAsync);
+            ExecEventBus<EnterStageArgs>.RegisterStatic(priority, OnEnterStageAsync);
+        }
+        
+        public void Dispose()
+        {
+            ExecEventBus<EnterStageArgs>.UnregisterStatic(OnEnterStageAsync);
         }
 
         /// <summary>
@@ -65,13 +70,22 @@ namespace Cardevil.Cards.InStage
             
             // 3. Value Selection View
             
-            // 생성되어 있는 카드를 모두 HandBar Slot으로 이동
-            foreach (var card in _model.Hand)
+            // 4. 생성되어 있는 카드를 모두 HandBar Slot으로 이동
+            _view.UpdateAllCardsParentSlot();
+
+            var moveTasks = ListPool<UniTask>.Get();
+            using (Scope(State.Drawing))
             {
-                BindCallback(card);
-                // TODO: Reroll State 관리
-                _view.UpdateAllCardsParentSlot();
+                foreach (var card in _model.Hand)
+                {
+                    BindCallback(card);
+                    card.Set(Card.State.Rerolling, false);
+                    moveTasks.Add(card.MoveToSlotAsync());
+                }
+                await UniTask.WhenAll(moveTasks);
             }
+            ListPool<UniTask>.Release(moveTasks);
+
 
             await _view.EnterHandBarAsync(_model.Deck.Count, _model.DiscardRemain);
             
@@ -282,6 +296,7 @@ namespace Cardevil.Cards.InStage
             _state = (_state &= ~targetState) | (value ? targetState : 0);
         }
 
+        // Using을 사용해 해당 블록에서만 특정 상태가 적용되도록 만들었음
         private readonly struct StateScope : IDisposable
         {
             private readonly StageCardsPresenter _presenter;

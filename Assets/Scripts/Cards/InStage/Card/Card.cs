@@ -1,7 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Config;
 using Cardevil.Cards.Core;
-using Cardevil.Cards.Visual.Base;
+using Cardevil.Cards.Visual;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -53,8 +53,8 @@ namespace Cardevil.Cards.InStage
         /// 드래그되고 있지 않을 때 돌아갈 원점.
         /// 선택이 된 상태라면 위로 <c>visualSetting.SelectOffset</c>만큼 더 올라감.
         /// </summary>
-        private Vector2 LocalZeroPosition =>
-            Is(State.Selected) ? new Vector2(0, visualSetting.SelectOffset) : Vector2.zero; 
+        private Vector3 LocalZeroPosition =>
+            Is(State.Selected) ? new Vector3(0, visualSetting.SelectOffset) : Vector3.zero; 
 
         private bool CanInteract
         {

@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7814588497733995966}
   - component: {fileID: 3254360240645517945}
   - component: {fileID: 8731196136805660166}
-  - component: {fileID: 369804615417455345}
-  - component: {fileID: 21718008494312992}
+  - component: {fileID: 7406996566772322818}
+  - component: {fileID: 5095517137004943688}
   m_Layer: 5
   m_Name: Simple Card Visual
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!225 &369804615417455345
+--- !u!225 &7406996566772322818
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -92,7 +92,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &21718008494312992
+--- !u!114 &5095517137004943688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,7 +107,7 @@ MonoBehaviour:
   <InnerFrame>k__BackingField: {fileID: 8240629459506563766}
   <PrimaryValue>k__BackingField: {fileID: 7526330344487185801}
   <SmallNumber>k__BackingField: {fileID: 6556934645560827717}
-  <CanvasGroup>k__BackingField: {fileID: 369804615417455345}
+  <CanvasGroup>k__BackingField: {fileID: 7406996566772322818}
 --- !u!1 &5757277815351727259
 GameObject:
   m_ObjectHideFlags: 0

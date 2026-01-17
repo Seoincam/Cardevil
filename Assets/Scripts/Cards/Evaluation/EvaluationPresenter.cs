@@ -1,6 +1,5 @@
 using Cardevil.Cards.Core;
 using Cardevil.Cards.InStage;
-using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Events;

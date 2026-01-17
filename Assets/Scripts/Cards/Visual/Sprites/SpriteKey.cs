@@ -1,7 +1,7 @@
 using Cardevil.Utils;
 using UnityEngine;
 
-namespace Cardevil.Cards.Visual.Sprites
+namespace Cardevil.Cards.Visual
 {
     /// <summary>
     /// 스프라이트 키 래퍼.

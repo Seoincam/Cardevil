@@ -1,7 +1,6 @@
-using Cardevil.Cards.Visual.Sprites;
 using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Cards.Visual.StateMachine
+namespace Cardevil.Cards.Visual
 {
     public interface IPhaseState
     {

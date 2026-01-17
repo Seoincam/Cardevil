@@ -4,7 +4,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Cardevil.Cards.Visual.Base
+namespace Cardevil.Cards.Visual
 {
     public enum CardFace
     {

@@ -1,4 +1,4 @@
-namespace Cardevil.Cards.Visual.StateMachine
+namespace Cardevil.Cards.Visual
 {
     public enum VisualPhase
     {

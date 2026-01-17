@@ -1,7 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Core;
 using Cardevil.Cards.Evaluation;
-using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Cards.InStage;
 using System;
 using UnityEngine;
 

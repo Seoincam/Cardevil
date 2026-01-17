@@ -4,7 +4,7 @@ using Cardevil.Utils.Directions;
 using UnityEngine;
 using UnityEngine.U2D;
 
-namespace Cardevil.Cards.Visual.Sprites
+namespace Cardevil.Cards.Visual
 {
     public static class CardSpriteCache
     {

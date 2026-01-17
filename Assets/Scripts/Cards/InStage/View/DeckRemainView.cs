@@ -1,5 +1,4 @@
 using Cardevil.Cards.Config;
-using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;

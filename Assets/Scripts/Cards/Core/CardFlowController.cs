@@ -1,7 +1,6 @@
 using Cardevil.Cards.Evaluation;
 using Cardevil.Cards.InStage;
 using Cysharp.Threading.Tasks;
-using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn.Interfaces;
 using System.Threading;

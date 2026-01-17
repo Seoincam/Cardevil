@@ -160,9 +160,9 @@ GameObject:
   - component: {fileID: 4662785914741252672}
   - component: {fileID: 2585749001453972805}
   - component: {fileID: 4178753094895523409}
-  - component: {fileID: 8175450807929902175}
   - component: {fileID: 1419397700359555017}
-  - component: {fileID: 8436860478165694582}
+  - component: {fileID: 4755375966199987305}
+  - component: {fileID: 6822958254164814155}
   m_Layer: 5
   m_Name: Changeable Card Visual
   m_TagString: Untagged
@@ -233,18 +233,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!225 &8175450807929902175
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2996782719944144001}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &1419397700359555017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,7 +246,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 1
---- !u!114 &8436860478165694582
+--- !u!225 &4755375966199987305
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2996782719944144001}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &6822958254164814155
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -273,7 +273,7 @@ MonoBehaviour:
   <InnerFrame>k__BackingField: {fileID: 3790035160269428364}
   <PrimaryValue>k__BackingField: {fileID: 8336154769004236343}
   <SmallNumber>k__BackingField: {fileID: 5917855220330536660}
-  <CanvasGroup>k__BackingField: {fileID: 8175450807929902175}
+  <CanvasGroup>k__BackingField: {fileID: 4755375966199987305}
   selectionGroups:
     defaultKey: 3
     _items:
@@ -303,9 +303,9 @@ MonoBehaviour:
     defaultKey: 2
     _items:
     - Key: 1
-      Value: {fileID: 0}
+      Value: {fileID: 4211446538272407020}
     - Key: 2
-      Value: {fileID: 0}
+      Value: {fileID: 1958222751343090014}
 --- !u!1 &3742454461975770828
 GameObject:
   m_ObjectHideFlags: 0

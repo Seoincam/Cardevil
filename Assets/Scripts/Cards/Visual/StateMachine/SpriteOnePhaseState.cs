@@ -1,10 +1,8 @@
-using Cardevil.Cards.Visual.Base;
-using Cardevil.Cards.Visual.Sprites;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
-namespace Cardevil.Cards.Visual.StateMachine
+namespace Cardevil.Cards.Visual
 {
     public class SpriteOnePhaseState : IPhaseState
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.InStage.Model.ReadOnly
+namespace Cardevil.Cards.InStage
 {
     public interface IReadOnlyEvaluationResultsModel
     {

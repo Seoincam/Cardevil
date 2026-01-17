@@ -28,14 +28,14 @@ namespace Cardevil.Cards.InStage
     public class StageCardsModel : IReadOnlyStageCardsModel
     {
         [Header("Cards")]
-        [SerializeField, VisibleOnly] private List<CardData> deck;
-        [SerializeField, VisibleOnly] private List<CardData> discardPile;
-        [SerializeField, VisibleOnly] private List<Card> hand;
+        [SerializeField, VisibleOnly] private List<CardData> deck = new();
+        [SerializeField, VisibleOnly] private List<CardData> discardPile = new();
+        [SerializeField, VisibleOnly] private List<Card> hand = new();
         
         [field: Header("Interacting")]
         [field: SerializeField, VisibleOnly] public InteractingInfo CurrentInteracting { get; private set; }
-        
-        private HashSet<Card> _selection;
+
+        private HashSet<Card> _selection = new();
 
         private readonly CardData[] _initialDeck;
         
@@ -45,6 +45,8 @@ namespace Cardevil.Cards.InStage
         public StageCardsModel(CardData[] initialDeck, int maxHand, int initialDiscardCount)
         {
             _initialDeck = initialDeck;
+            MaxHand = maxHand;
+            DiscardRemain = initialDiscardCount;
         }
         
         /// <summary>

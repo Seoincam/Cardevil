@@ -1,5 +1,5 @@
 using Cardevil.Cards.Core;
-using Cardevil.Cards.Visual.Base;
+using Cardevil.Cards.Visual;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -32,10 +32,18 @@ namespace Cardevil.Cards.InStage
             if (!UseLerp) return;
 
             var verticalOffset = Vector3.up * (Is(State.Dragging) ? 0 : _curveYOffset);
-            var newTargetPosition = targetPosition + verticalOffset;
             var t = visualSetting.FollowSpeed * Time.deltaTime;
-            
-            transform.position = Vector3.Lerp(transform.position, newTargetPosition, t);
+
+            if (Is(State.Dragging))
+            {
+                var newTargetPosition = targetPosition + verticalOffset;
+                transform.position = Vector3.Lerp(transform.position, newTargetPosition, t);
+            }
+            else
+            {
+                var newTargetPosition = LocalZeroPosition + verticalOffset;
+                transform.localPosition = Vector3.Lerp(transform.localPosition, newTargetPosition, t);
+            }
         }
 
         /// <summary>

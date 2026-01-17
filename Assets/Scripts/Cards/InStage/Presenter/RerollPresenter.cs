@@ -109,7 +109,7 @@ namespace Cardevil.Cards.InStage
 
             if (!HasRerollTicket)
             {
-                // await UniTask.Delay(TimeSpan.FromSeconds(autoEnd));
+                await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.EndRerollInterval));
                 _completeReroll = true;
                 return;
             }
@@ -124,7 +124,7 @@ namespace Cardevil.Cards.InStage
             foreach (var card in _model.Hand)
             {
                 discardTasks.Add(card.SafeMoveToDeckWithFlipAsync());
-                // await UniTask.Delay(TimeSpan.FromSeconds(discard));
+                await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
             await UniTask.WhenAll(discardTasks);
             
@@ -141,7 +141,7 @@ namespace Cardevil.Cards.InStage
             {
                 var card = InstantiateCard();
                 drawTasks.Add(card.SafeMoveToSlotWithFlipAsync());
-                // await UniTask.Delay(TimeSpan.FromSeconds(draw));
+                await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }
             await UniTask.WhenAll(drawTasks);
             
@@ -155,6 +155,7 @@ namespace Cardevil.Cards.InStage
 
             var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<Card>();
             card.Initialize(cardData);
+            card.Set(Card.State.Rerolling, true);
             
             _model.AddHand(card);
             _view.SetCardToSlot(card, _model.GetIndexInHand(card));

@@ -1,11 +1,9 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Core;
-using Cardevil.Cards.Visual.Sprites;
-using Cardevil.Cards.Visual.StateMachine;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.Visual.Base
+namespace Cardevil.Cards.Visual
 {
     /// <summary>
     /// 단순한 값만 표시하는 기본 카드 비주얼 컴포넌트.

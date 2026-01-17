@@ -1,9 +1,7 @@
-using Cardevil.Cards.Visual.Base;
-using Cardevil.Cards.Visual.Sprites;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Visual.StateMachine
+namespace Cardevil.Cards.Visual
 {
     public sealed class CardVisualPhaseStateMachine
     {

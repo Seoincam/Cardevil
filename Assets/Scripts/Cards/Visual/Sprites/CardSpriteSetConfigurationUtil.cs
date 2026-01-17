@@ -1,7 +1,7 @@
 using Cardevil.Cards.Core;
 using System;
 
-namespace Cardevil.Cards.Visual.Sprites
+namespace Cardevil.Cards.Visual
 {
     /// <summary>
     /// CardData를 기반으로 <see cref="CardSpriteSet"/>을 구성하는 유틸.

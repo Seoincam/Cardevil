@@ -1,6 +1,4 @@
-using Cardevil.Cards.Visual.StateMachine;
-
-namespace Cardevil.Cards.Visual.Sprites
+namespace Cardevil.Cards.Visual
 {
     public readonly struct CardSpriteSet
     {

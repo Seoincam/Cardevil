@@ -1,5 +1,4 @@
 using Cardevil.Cards.InStage;
-using Cardevil.Cards.InStage.Model;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 
