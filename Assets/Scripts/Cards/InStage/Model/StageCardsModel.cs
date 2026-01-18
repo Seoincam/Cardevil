@@ -193,12 +193,9 @@ namespace Cardevil.Cards.InStage
         /// <summary>
         /// 손패 내 Card 인스턴스의 위치를 스왑합니다.
         /// </summary>
-        public void SwapInHand(Card card, int otherIndex)
+        public void SwapInHand(int indexA, int indexB)
         {
-            if (!TryGetIndexInHand(card, out int cardIndex)) 
-                return;
-            
-            (hand[cardIndex], hand[otherIndex]) = (hand[otherIndex], hand[cardIndex]);
+            (hand[indexA], hand[indexB]) = (hand[indexB], hand[indexA]);
         }
 
         /// <summary>
@@ -244,9 +241,9 @@ namespace Cardevil.Cards.InStage
         [Serializable]
         public struct InteractingInfo
         {
-            public Card Card { get; }
-            public float LastInteractionTime { get; }
-            public int OriginalIndex { get; }
+            [field: SerializeField] public Card Card { get; private set; }
+            [field: SerializeField] public float LastInteractionTime { get; private set; }
+            [field: SerializeField] public int OriginalIndex { get; private set; }
 
             public InteractingInfo(Card card, float lastInteractionTime, int originalIndex)
             {

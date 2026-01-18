@@ -1,16 +1,19 @@
+using Cardevil.Attributes;
 using Cardevil.Cards.Evaluation;
 using Cardevil.Cards.InStage;
 using Cysharp.Threading.Tasks;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn.Interfaces;
+using System;
 using System.Threading;
 using UnityEngine;
 
 namespace Cardevil.Cards.Core
 {
+    [Serializable]
     public sealed class CardFlowController : ITurnCardFlow
     {
-        private StageCardsModel _cardsModel;
+        [SerializeField, VisibleOnly] private StageCardsModel cardsModel;
         private RerollPresenter _rerollPresenter;
         private StageCardsPresenter _stageCardsPresenter;
         private IEvaluationPresenter _evaluationPresenter;
@@ -36,14 +39,14 @@ namespace Cardevil.Cards.Core
 
             return new CardFlowController
             {
-                _cardsModel = model,
+                cardsModel = model,
                 _rerollPresenter = rerollPresenter,
                 _stageCardsPresenter = stageCardsPresenter,
                 _evaluationPresenter = evaluationPresenter
             };
         }
 
-        public bool IsNoCard => _cardsModel.Hand.Count == 0;
+        public bool IsNoCard => cardsModel.Hand.Count == 0;
         
         public async UniTask DrawCard()
         {
@@ -68,6 +71,6 @@ namespace Cardevil.Cards.Core
         
         public IReadOnlyEvaluationResultsModel ResultsModel => _evaluationPresenter.ResultsModel;
 
-        public IReadOnlyStageCardsModel CardsModel => _cardsModel;
+        public IReadOnlyStageCardsModel CardsModel => cardsModel;
     }
 }

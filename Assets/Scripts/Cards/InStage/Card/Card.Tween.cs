@@ -9,9 +9,6 @@ namespace Cardevil.Cards.InStage
 {
     public partial class Card
     {
-        // 현재 트윈으로 움직이고 있는가?
-        private bool _isTweening;
-        
         private Vector3 _movementDelta;
         private float _curveYOffset;
         private Tween _hoverScaleTween;
@@ -25,7 +22,7 @@ namespace Cardevil.Cards.InStage
         }
 
         /// <summary>
-        /// <see cref="targetPosition"/>으로 보간해 부드럽게 따라감.
+        /// <see cref="TargetPosition"/>으로 보간해 부드럽게 따라감.
         /// </summary>
         private void SmoothFollowPosition()
         {
@@ -36,7 +33,7 @@ namespace Cardevil.Cards.InStage
 
             if (Is(State.Dragging))
             {
-                var newTargetPosition = targetPosition + verticalOffset;
+                var newTargetPosition = TargetPosition + verticalOffset;
                 transform.position = Vector3.Lerp(transform.position, newTargetPosition, t);
             }
             else
@@ -162,11 +159,11 @@ namespace Cardevil.Cards.InStage
         /// </remarks>
         private Tween CreateMoveToSlotTween()
         {
-            _isTweening = true;
+            Set(State.Tweening, true);
             return transform
                 .DOLocalMove(LocalZeroPosition, visualSetting.RerollDrawDuration)
                 .SetEase(visualSetting.RerollDrawEase)
-                .OnComplete(() => _isTweening = false);
+                .OnComplete(() => Set(State.Tweening, false));
         }
         
         /// <returns>
@@ -174,19 +171,19 @@ namespace Cardevil.Cards.InStage
         /// </returns>
         private Tween CreateMoveToDeckTween()
         {
-            _isTweening = true;
+            Set(State.Tweening, true);
             return transform
                 .DOMove(CardDeckVisual.Instance.Front.position, visualSetting.RerollDiscardDuration)
                 .SetEase(visualSetting.RerollDiscardEase)
-                .OnComplete(() => _isTweening = false);
+                .OnComplete(() => Set(State.Tweening, false));
         }
 
         private Tween CreateFadeOutTween()
         {
-            _isTweening = true;
+            Set(State.Tweening, true);
             return visual.CanvasGroup.DOFade(0f, .5f)
                 .SetEase(Ease.Unset)
-                .OnComplete(() => _isTweening = false);
+                .OnComplete(() => Set(State.Tweening, false));
         }
     }
 }

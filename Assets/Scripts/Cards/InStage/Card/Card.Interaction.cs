@@ -10,11 +10,13 @@ namespace Cardevil.Cards.InStage
         public event Action<Card> PointerDown;
         public event Action<Card> PointerUp;
         public event Action<Card> DragStart;
+        public event Action<Card> Dragging;
         public event Action<Card> DragEnd;
         
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!CanInteract) return;
+            if (Is(State.Dragging)) return;
             
             _hoverScaleTween?.Kill();
             _hoverScaleTween = visualRoot
@@ -24,6 +26,8 @@ namespace Cardevil.Cards.InStage
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (Is(State.Dragging)) return;
+            
             _hoverScaleTween?.Kill();
             _hoverScaleTween = visualRoot
                 .DOScale(1f, visualSetting.hoverScaleTweenDuration)
@@ -53,6 +57,7 @@ namespace Cardevil.Cards.InStage
         
         public void OnDrag(PointerEventData eventData)
         {
+            Dragging?.Invoke(this);
         }
         
         public void OnEndDrag(PointerEventData eventData)

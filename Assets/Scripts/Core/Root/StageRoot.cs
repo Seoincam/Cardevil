@@ -22,6 +22,7 @@ namespace Cardevil.Core.Root
     {
         [SerializeField] private TurnManager turn;
         [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private CardFlowController cardFlowController;
 
         [Header("References")]
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
@@ -70,8 +71,10 @@ namespace Cardevil.Core.Root
                 return;
             }
             
+            cardFlowController = CardFlowController.Build();
+            
             enemy.Init(Field);
-            turn.Initialize(_enemySpawner, CardFlowController.Build(), Player, enemy);
+            turn.Initialize(_enemySpawner, cardFlowController, Player, enemy);
             turn.EnterLoopAsync().Forget();
         }
 

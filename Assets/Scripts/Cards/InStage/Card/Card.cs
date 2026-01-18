@@ -22,9 +22,9 @@ namespace Cardevil.Cards.InStage
         [Header("Data")] 
         [field: SerializeField, VisibleOnly] public CardData Data { get; private set; }
 
-        [Header("State")]
-        [SerializeField] private State debugState; 
-        [SerializeField, VisibleOnly] private Vector3 targetPosition;
+        [field: Header("State")]
+        [field: SerializeField, VisibleOnly] public Vector3 TargetPosition { get; private set; }
+        [SerializeField] private State debugState;
         
         [Header("Visual")] 
         [SerializeField, VisibleOnly(EditableIn.EditMode)]
@@ -42,12 +42,14 @@ namespace Cardevil.Cards.InStage
         private State _state;
         
         public static implicit operator CardData(Card card) => card.Data;
+
+        public Transform Slot => transform.parent;
         
         /// <summary>
         /// Lerp 이동을 사용할지 여부.
         /// Reroll 중이거나 트윈 중이면 <c>false</c>를 반환함.
         /// </summary>
-        private bool UseLerp => !Is(State.Rerolling) && !_isTweening;
+        private bool UseLerp => !Is(State.Rerolling) && !Is(State.Tweening);
         
         /// <summary>
         /// 드래그되고 있지 않을 때 돌아갈 원점.
@@ -89,9 +91,9 @@ namespace Cardevil.Cards.InStage
             if (Is(State.Dragging))
             {
                 var newTargetPosition = Input.mousePosition;
-                var direction = (newTargetPosition - targetPosition).normalized;
+                var direction = (newTargetPosition - TargetPosition).normalized;
                 
-                targetPosition = newTargetPosition;
+                TargetPosition = newTargetPosition;
             }
         }
 
@@ -134,6 +136,11 @@ namespace Cardevil.Cards.InStage
             /// 카드 값 선택 중임.
             /// </summary>
             ChangingValue = 1 << 6,
+            
+            /// <summary>
+            /// 트윈 중임
+            /// </summary>
+            Tweening = 1 << 7
         }
 
         public bool Is(State targetState)

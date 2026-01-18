@@ -78,6 +78,8 @@ namespace Cardevil.Cards.InStage
             {
                 foreach (var card in _model.Hand)
                 {
+                    card.gameObject.name = $"{_model.GetIndexInHand(card)}";
+                    
                     BindCallback(card);
                     card.Set(Card.State.Rerolling, false);
                     moveTasks.Add(card.MoveToSlotAsync());
@@ -88,9 +90,6 @@ namespace Cardevil.Cards.InStage
 
 
             await _view.EnterHandBarAsync(_model.Deck.Count, _model.DiscardRemain);
-            
-            // Update Async
-            UpdateAsync(cancellationToken).Forget();
         }
 
         /// <summary>
@@ -111,16 +110,6 @@ namespace Cardevil.Cards.InStage
         public async UniTask UseAllCardsAsync()
         {
             
-        }
-        
-        // MonoBehaviour의 Update()를 대체함.
-        private async UniTask UpdateAsync(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                UpdateDetectSwap();
-                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
-            }
         }
 
         private void OnUseButtonClicked()
