@@ -29,7 +29,7 @@ namespace Cardevil.InGame.Enemy
             Debug.Log($"{_targetEnemy.name} : 턴이 종료되어 체력을 { _targetEnemy.maxHP * _targetEnemy.baseMobBossData.GimmickValue[0]} 만큼 회복하였습니다 ");
         }
 
-        // 구독해제
+        // 구독해제 
         public void Remove()
         {
             ExecEventBus<EnemyTurnEndArgs>.UnregisterStatic(ActionFunction);
