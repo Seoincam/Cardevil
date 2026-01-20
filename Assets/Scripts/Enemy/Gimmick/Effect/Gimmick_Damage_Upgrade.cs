@@ -2,7 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
-
+using System.Threading;
 namespace Cardevil.InGame.Enemy
 {
     public class Gimmick_Damage_Upgrade : IGimmick
@@ -10,20 +10,22 @@ namespace Cardevil.InGame.Enemy
         private Enemy _targetEnemy;
         private float FirstThresholdRatio = 0.6f;
         private bool _isFirstUpgradeDone = false;
+        private ExecAction<EnemyHealthChangeArgs> _handler;
 
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
 
             _isFirstUpgradeDone = false;
+            _handler = OnHealthChanged;
 
             FirstThresholdRatio = enemy.baseMobBossData.GimmickValue[0];
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<EnemyHealthChangeArgs>.RegisterDynamic(OnHealthChanged);
+            ExecEventBus<EnemyHealthChangeArgs>.RegisterStatic(0,_handler);
         }
-        private void OnHealthChanged(ExecQueue<EnemyHealthChangeArgs> queue, EnemyHealthChangeArgs args)
+        private async UniTask OnHealthChanged(EnemyHealthChangeArgs args, CancellationToken cancellationToken)
         {
  
             // * Enemy 스크립트에서 args.Init(HP, value, this); 처럼 'this'를 넘겨줘야 함
@@ -60,7 +62,7 @@ namespace Cardevil.InGame.Enemy
 
         public void Remove()
         {
-            ExecEventBus<EnemyHealthChangeArgs>.UnregisterDynamic(OnHealthChanged);
+            ExecEventBus<EnemyHealthChangeArgs>.UnregisterStatic(_handler);
         }
     }
 }

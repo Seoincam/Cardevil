@@ -41,7 +41,7 @@ namespace Cardevil.InGame.Enemy
 
         private Field field;
         // ---- 기본 선언부 --- ///
-        private float damage = 1; // Enemy의 공격력
+        public float damage = 1; // Enemy의 공격력
         public float HP = 100; // Enemy의 체력
         public int attackCreateTurnOrder;
         public int attackCreateCycle = 3; // 일단 기본 3, 몇번 마다 공격이 시행되는지?

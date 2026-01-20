@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
+using System.Threading;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -15,10 +16,10 @@ namespace Cardevil.InGame.Enemy
         {
             _targetEnemy = enemy;
 
-            ExecEventBus<EachCardDiscardedArgs>.RegisterDynamic(CalculateAttackDamage);
+            ExecEventBus<EachCardDiscardedArgs>.RegisterStatic(0, CalculateAttackDamage);
         }
 
-        private void CalculateAttackDamage(ExecQueue<EachCardDiscardedArgs> queue, EachCardDiscardedArgs args)
+        private async UniTask CalculateAttackDamage(EachCardDiscardedArgs args, CancellationToken cancellationToken)
         {
             float newHP;
             newHP = _targetEnemy.HP + (_targetEnemy.HP * (float)args.CardData.NumberSelectState.FinalValue/100);
@@ -29,7 +30,7 @@ namespace Cardevil.InGame.Enemy
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<EachCardDiscardedArgs>.UnregisterDynamic(CalculateAttackDamage);
+            ExecEventBus<EachCardDiscardedArgs>.UnregisterStatic(CalculateAttackDamage);
         }
     }
 }

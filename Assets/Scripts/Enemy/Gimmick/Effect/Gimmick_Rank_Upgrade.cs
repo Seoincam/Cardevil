@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
+using System.Threading;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -34,10 +35,10 @@ namespace Cardevil.InGame.Enemy
                 SecondThresholdRatio = enemy.baseMobBossData.GimmickValue[1];
             }
 
-            ExecEventBus<EnemyHealthChangeArgs>.RegisterDynamic(OnHealthChanged);
+            ExecEventBus<EnemyHealthChangeArgs>.RegisterStatic(0, OnHealthChanged);
         }
 
-        private void OnHealthChanged(ExecQueue<EnemyHealthChangeArgs> queue,EnemyHealthChangeArgs args)
+        private async UniTask OnHealthChanged(EnemyHealthChangeArgs args, CancellationToken cancellationToken)
         {
             Debug.Log("작동?!");
             // [중요 1] 이 이벤트가 '내 적'에게서 발생한 건지 확인
@@ -81,7 +82,7 @@ namespace Cardevil.InGame.Enemy
 
         public void Remove()
         {
-            ExecEventBus<EnemyHealthChangeArgs>.UnregisterDynamic(OnHealthChanged);
+            ExecEventBus<EnemyHealthChangeArgs>.UnregisterStatic(OnHealthChanged);
         }
     }
 }

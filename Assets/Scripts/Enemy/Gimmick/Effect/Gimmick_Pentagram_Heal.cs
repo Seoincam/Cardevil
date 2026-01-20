@@ -2,7 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
-
+using System.Threading;
 namespace Cardevil.InGame.Enemy
 {
     /// <summary>
@@ -21,10 +21,10 @@ namespace Cardevil.InGame.Enemy
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<EnemyTurnEndArgs>.RegisterDynamic(EnemyTurnEndHeal);
+            ExecEventBus<EnemyTurnEndArgs>.RegisterStatic(0, EnemyTurnEndHeal);
         }
 
-        private void EnemyTurnEndHeal(ExecQueue<EnemyTurnEndArgs> queue, EnemyTurnEndArgs args)
+        private async UniTask EnemyTurnEndHeal(EnemyTurnEndArgs args, CancellationToken cancellationToken)
         {
             // TODO : 오망성카드를 현재 보유하고 있는지?
             if (_targetEnemy.CurrentHp>=0)  // 체력 테스트, 오망성카드의 존재여부
@@ -39,7 +39,7 @@ namespace Cardevil.InGame.Enemy
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<EnemyTurnEndArgs>.UnregisterDynamic(EnemyTurnEndHeal);
+            ExecEventBus<EnemyTurnEndArgs>.UnregisterStatic(EnemyTurnEndHeal);
         }
 
     }

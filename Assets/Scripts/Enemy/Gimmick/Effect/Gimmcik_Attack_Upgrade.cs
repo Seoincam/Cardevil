@@ -2,11 +2,14 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
+using System.Threading;
 
 namespace Cardevil.InGame.Enemy
 {
 
-
+    /// <summary>
+    /// # 플레이어의 남은 카드 장 수가 X장 미만이면, 적의 공격력이 Y로 증가합니다.
+    /// </summary>
     public class Gimmick_Attack_Upgrade: IGimmick
     {
         private Enemy _targetEnemy;
@@ -15,7 +18,7 @@ namespace Cardevil.InGame.Enemy
 
         // 상태: 이미 발동했는지 체크하는 플래그
         private bool _isFirstUpgradeDone = false;
-   
+        private ExecAction<EachCardDiscardedArgs> _handler;
 
         public void Apply(Enemy enemy)
         {
@@ -23,18 +26,17 @@ namespace Cardevil.InGame.Enemy
 
             // 초기화
             _isFirstUpgradeDone = false;
+            _handler = FunctionAction;
 
            
-            ExecEventBus<EnemyHealthChangeArgs>.RegisterDynamic(OnHealthChanged);
+            ExecEventBus<EachCardDiscardedArgs>.RegisterStatic(0,_handler);
         }
 
-        private void OnHealthChanged(ExecQueue<EnemyHealthChangeArgs> queue, EnemyHealthChangeArgs args)
+        private async UniTask FunctionAction(EachCardDiscardedArgs args, CancellationToken cancellationToken)
         {
-           
-            if (args.Owner != _targetEnemy)
-            {
-                return; // 내 적이 아니면 무시
-            }
+            
+
+
 
         }
 
@@ -48,7 +50,7 @@ namespace Cardevil.InGame.Enemy
 
         public void Remove()
         {
-            ExecEventBus<EnemyHealthChangeArgs>.UnregisterDynamic(OnHealthChanged);
+            ExecEventBus<EachCardDiscardedArgs>.UnregisterStatic(_handler);
         }
     }
 }

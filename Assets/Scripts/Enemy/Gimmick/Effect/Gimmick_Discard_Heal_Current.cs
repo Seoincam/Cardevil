@@ -3,6 +3,7 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
 
+using System.Threading;
 namespace Cardevil.InGame.Enemy
 {
     /// <summary>
@@ -11,22 +12,22 @@ namespace Cardevil.InGame.Enemy
     public class Gimmick_Discard_Heal_Current : IGimmick
     {
         private Enemy _targetEnemy;
-
+        private ExecAction<CardDiscardChangeArgs> _handler;
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
-
+            _handler = ActionFunction;
 
 
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<CardDiscardChangeArgs>.RegisterDynamic(ActionFunction);
+            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic(0,_handler);
         }
 
 
         // 턴이 끝난뒤 체력을 회복합니다.
-        private void ActionFunction(ExecQueue<CardDiscardChangeArgs> queue, CardDiscardChangeArgs args)
+        private async UniTask ActionFunction(CardDiscardChangeArgs args, CancellationToken cancellationToken)
         {
             _targetEnemy.CurrentHp = Mathf.Min(_targetEnemy.CurrentHp * _targetEnemy.baseMobBossData.GimmickValue[0] + _targetEnemy.CurrentHp, _targetEnemy.maxHP);
             Debug.Log($"{_targetEnemy.name} : 카드를 버려 체력을 { _targetEnemy.maxHP * _targetEnemy.baseMobBossData.GimmickValue[0]} 만큼 회복하였습니다 ");
@@ -35,7 +36,7 @@ namespace Cardevil.InGame.Enemy
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<CardDiscardChangeArgs>.UnregisterDynamic(ActionFunction);
+            ExecEventBus<CardDiscardChangeArgs>.UnregisterStatic(_handler);
         }
     }
 }

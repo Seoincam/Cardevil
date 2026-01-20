@@ -2,6 +2,7 @@ using UnityEngine;
 using Cysharp.Threading.Tasks;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
+using System.Threading;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -9,20 +10,21 @@ namespace Cardevil.InGame.Enemy
     public class Gimmick_Attack_Heal : IGimmick
     {
         private Enemy _targetEnemy;
+        private ExecAction<EnemyAttackAfterArgs> _handler;
 
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
-
+            _handler = EnemyAttack;
 
 
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<EnemyAttackAfterArgs>.RegisterDynamic(EnemyAttack);
+            ExecEventBus<EnemyAttackAfterArgs>.RegisterStatic(0,_handler);
         }
 
-        private void EnemyAttack(ExecQueue<EnemyAttackAfterArgs> queue, EnemyAttackAfterArgs args)
+        private async UniTask EnemyAttack(EnemyAttackAfterArgs args, CancellationToken cancellationToken)
         {
             if(_targetEnemy._enemyAttackInfo.attackSucess)  // 플레이어 공격에 성공했다면
             {
@@ -37,7 +39,7 @@ namespace Cardevil.InGame.Enemy
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<EnemyAttackAfterArgs>.UnregisterDynamic(EnemyAttack);
+            ExecEventBus<EnemyAttackAfterArgs>.UnregisterStatic(_handler);
         }
 
 
