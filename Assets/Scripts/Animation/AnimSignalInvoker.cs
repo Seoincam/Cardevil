@@ -24,7 +24,7 @@ namespace Cardevil.Animation
             if (!hasInvoked && stateInfo.normalizedTime >= eventTimePercent)
             {
                 var listeners = animator.GetComponentsInChildren<IAnimSignalListener>();
-                foreach (var listener in listeners)
+                foreach (var listener in listeners) 
                 {
                     listener.OnSignalEvent(eventName);
                 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cardevil.Attributes;
 using Cardevil.Core.Bootstrap;
+using Cardevil.DebugConsole;
 using Cardevil.Ingame.Entities;
 using Cardevil.Pools;
 using Cardevil.Utils;
@@ -48,6 +49,16 @@ namespace Cardevil.Ingame.Field
             _fieldConfiguration = field.FieldConfiguration;
             
         }
+        
+        public bool AddEntity(IEntityComponent entityComponent)
+        {
+            if (entityComponent == null)
+            {
+                LogEx.LogError("Cannot add a null entity component to the tile.");
+                return false;
+            }
+            return AddEntity(entityComponent.Entity);
+        }
 
         public bool AddEntity(Entity entity){
             if (entity == null)
@@ -62,6 +73,16 @@ namespace Cardevil.Ingame.Field
                 return true;
             }
             return false;
+        }
+        
+        public bool RemoveEntity(IEntityComponent entityComponent)
+        {
+            if (entityComponent == null)
+            {
+                LogEx.LogError("Cannot remove a null entity component from the tile.");
+                return false;
+            }
+            return RemoveEntity(entityComponent.Entity);
         }
         
         public bool RemoveEntity(Entity entity)
@@ -99,12 +120,12 @@ namespace Cardevil.Ingame.Field
             return entity != null;
         }
         
-        public void GetEntities(Predicate<Entity> predicate, ref List<Entity> result)
+        public bool GetEntities(Predicate<Entity> predicate, ref List<Entity> result)
         {
             if (result == null)
             {
                 Debug.LogError("Result list cannot be null.");
-                return;
+                return false;
             }
             result.Clear();
             foreach (var entity in entities)
@@ -114,7 +135,74 @@ namespace Cardevil.Ingame.Field
                     result.Add(entity);
                 }
             }
+            return result.Count > 0;
         }
+        
+        public IEnumerator<T> GetEntitiesWithComponent<T>()
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    yield return tEntity;
+                }
+            }
+        }
+        
+        public IEnumerator<T> GetEntitiesWithComponent<T>(Predicate<T> predicate)
+        {
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    if (predicate(tEntity))
+                    {
+                        yield return tEntity;
+                    }
+                }
+            }
+        }
+        
+        public bool GetEntitiesWithComponent<T>(ref List<T> result)
+        {
+            if (result == null)
+            {
+                Debug.LogError("Result list cannot be null.");
+                return false;
+            }
+            result.Clear();
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    result.Add(tEntity);
+                }
+            }
+            return result.Count > 0;
+        }
+        
+        public bool GetEntitiesWithComponent<T>(Predicate<T> predicate, ref List<T> result)
+        {
+            if (result == null)
+            {
+                Debug.LogError("Result list cannot be null.");
+                return false;
+            }
+            result.Clear();
+            foreach (var entity in entities)
+            {
+                if (entity.TryGetComponent(out T tEntity))
+                {
+                    if (predicate(tEntity))
+                    {
+                        result.Add(tEntity);
+                    }
+                }
+            }
+            return result.Count > 0;
+        }
+        
+        
         
         [ContextMenu("Highlight Tile")]
         [Obsolete("Use Highlight(Define.HighlightType) instead.")]
@@ -144,7 +232,7 @@ namespace Cardevil.Ingame.Field
             highlightObject.Initialize(this, _fieldConfiguration);
             highlightObject.SetHighlightColor(highlightType, _fieldConfiguration.DefaultTileHighlightColor);
             highlightObject.transform.SetParent(transform, false);
-            highlightObject.transform.position = transform.position;
+            highlightObject.transform.position = transform.position; 
             _highlightObjects.Add(highlightObject);
             return highlightObject;
         }
@@ -184,7 +272,19 @@ namespace Cardevil.Ingame.Field
                 block.SetColor(Hashes.SHADER_COLOR, color);
             }
         }
-        
-        
+
+
+        [ConsoleCommand("tile.SpriteRenderer.enabled", "Enables or disables the sprite renderer of the tile.")]
+        private static void SetSpriteRendererEnabled(bool enabled)
+        {
+            var tiles = FindObjectsByType<Tile>(FindObjectsSortMode.None);
+            foreach (var tile in tiles)
+            {
+                if (tile._spriteRenderer != null)
+                {
+                    tile._spriteRenderer.enabled = enabled;
+                }
+            }
+        }
     }
 }

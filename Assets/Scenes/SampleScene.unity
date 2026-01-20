@@ -1182,17 +1182,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
---- !u!114 &401468741 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4972091325231978586, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-  m_PrefabInstance: {fileID: 401468740}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f201b42e3a474fb29894d465169a0ea6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &496353166
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,858 +1575,11 @@ MonoBehaviour:
       integerVar: 1
       fullEnumList: e9030000
       shortEnumList: 1
-      CustomClass: "{\n  \"a\": 10,\n  \"b\": 20.0,\n  \"c\": \"SampleText\",\n}"
-      CustomClassList: "{\n  \"a\": 10,\n  \"b\": 20.0,\n  \"c\": \"SampleText\",\n},{\n 
-        \"a\": 222,\n  \"b\": 20.4444,\n  \"c\": \"SampleText2\",\n}"
-      ListList: '[
-
-        [2,3,3],
-
-        [2,3,1,2]
-
-        ]'
-    BaseMobBossDataList:
-    - MobID: 1001
-      MobKorID: "\uB2A5\uC219\uD55C \uC0AC\uADC0\uAFBC"
-      MobType: 
-      BaseHP: 300
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_None"'
-      GimmickValue: []
-    - MobID: 1002
-      MobKorID: 
-      MobType: 
-      BaseHP: 350
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue:
-      - 1
-      - 1
-    - MobID: 1003
-      MobKorID: "\uC0AC\uB0E5\uAC1C"
-      MobType: "\uAC1C"
-      BaseHP: 350
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1004
-      MobKorID: 
-      MobType: 
-      BaseHP: 350
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1005
-      MobKorID: "\uC0AC\uB0E5\uAC1C"
-      MobType: "\uAC1C"
-      BaseHP: 350
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1006
-      MobKorID: 
-      MobType: 
-      BaseHP: 200
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 4
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1007
-      MobKorID: 
-      MobType: 
-      BaseHP: 400
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1008
-      MobKorID: 
-      MobType: 
-      BaseHP: 400
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1009
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1010
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1011
-      MobKorID: 
-      MobType: 
-      BaseHP: 400
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 4
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1012
-      MobKorID: 
-      MobType: 
-      BaseHP: 350
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1013
-      MobKorID: 
-      MobType: "\uAD34\uC9DC"
-      BaseHP: 400
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1014
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1015
-      MobKorID: 
-      MobType: "\uAD34\uC9DC"
-      BaseHP: 400
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 04000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9001
-      MobKorID: 
-      MobType: 
-      BaseHP: 800
-      ChapterFactor: 1
-      HPGrowFactor: 0
-      AttackCycle: 4
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1016
-      MobKorID: 
-      MobType: "\uC545\uB9C8"
-      BaseHP: 400
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1017
-      MobKorID: 
-      MobType: "\uC545\uB9C8"
-      BaseHP: 400
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1018
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1019
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1020
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 1021
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1
-      HPGrowFactor: 16
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9002
-      MobKorID: 
-      MobType: 
-      BaseHP: 1100
-      ChapterFactor: 1
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2001
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 4
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2002
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2003
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2004
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2005
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2006
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2007
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2008
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2009
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 2
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2010
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9003
-      MobKorID: 
-      MobType: 
-      BaseHP: 1000
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2011
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2012
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2013
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 2
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 2014
-      MobKorID: 
-      MobType: 
-      BaseHP: 500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9004
-      MobKorID: 
-      MobType: 
-      BaseHP: 1500
-      ChapterFactor: 1.5
-      HPGrowFactor: 0
-      AttackCycle: 2
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3001
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 2
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3002
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3003
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3004
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3005
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3006
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3007
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3008
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3009
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9005
-      MobKorID: 
-      MobType: 
-      BaseHP: 1800
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3010
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 4
-      AttackDamage: 2
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3011
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 2
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3012
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 3013
-      MobKorID: 
-      MobType: 
-      BaseHP: 550
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 0
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9006
-      MobKorID: 
-      MobType: 
-      BaseHP: 5000
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 3
-      AttackDamage: 1
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 9007
-      MobKorID: 
-      MobType: 
-      BaseHP: 1500
-      ChapterFactor: 2
-      HPGrowFactor: 0
-      AttackCycle: 2
-      AttackDamage: 2
-      BoolAttackType: 1
-      AttackWeight: 
-      AttackPattern: 0400000005000000
-      AttackPlayer: 1
-      GimmickName:
-      - '"Gimmick_Test"'
-      GimmickValue: []
-    - MobID: 
-      MobKorID: 
-      MobType: 
-      BaseHP: 0
-      ChapterFactor: 0
-      HPGrowFactor: 0
-      AttackCycle: 0
-      AttackDamage: 0
-      BoolAttackType: 0
-      AttackWeight: 04000000060000000400000002000000
-      AttackPattern: 
-      AttackPlayer: 0
-      GimmickName: []
-      GimmickValue: []
+      CustomClass:
+        a: 10
+        b: 20
+        c: SampleText
+      CustomClassList: []
     RoomDataList:
     - RoomID: 1.1
       MobCount: 1
@@ -2898,6 +2040,960 @@ MonoBehaviour:
       - 1
       - 1
       MachineLevel: 1
+    BaseMobBossDataList:
+    - MobID: 1001
+      MobKorID: "\uB2A5\uC219\uD55C \uC0AC\uADC0\uAFBC"
+      MobType: 
+      BaseHP: 300
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_None"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1002
+      MobKorID: 
+      MobType: 
+      BaseHP: 350
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue:
+      - 1
+      - 1
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1003
+      MobKorID: "\uC0AC\uB0E5\uAC1C"
+      MobType: "\uAC1C"
+      BaseHP: 350
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1004
+      MobKorID: 
+      MobType: 
+      BaseHP: 350
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1005
+      MobKorID: "\uC0AC\uB0E5\uAC1C"
+      MobType: "\uAC1C"
+      BaseHP: 350
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1006
+      MobKorID: 
+      MobType: 
+      BaseHP: 200
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 4
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1007
+      MobKorID: 
+      MobType: 
+      BaseHP: 400
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1008
+      MobKorID: 
+      MobType: 
+      BaseHP: 400
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1009
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1010
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1011
+      MobKorID: 
+      MobType: 
+      BaseHP: 400
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 4
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1012
+      MobKorID: 
+      MobType: 
+      BaseHP: 350
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1013
+      MobKorID: 
+      MobType: "\uAD34\uC9DC"
+      BaseHP: 400
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1014
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1015
+      MobKorID: 
+      MobType: "\uAD34\uC9DC"
+      BaseHP: 400
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 04000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9001
+      MobKorID: 
+      MobType: 
+      BaseHP: 800
+      ChapterFactor: 1
+      HPGrowFactor: 0
+      AttackCycle: 4
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1016
+      MobKorID: 
+      MobType: "\uC545\uB9C8"
+      BaseHP: 400
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1017
+      MobKorID: 
+      MobType: "\uC545\uB9C8"
+      BaseHP: 400
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1018
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1019
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1020
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 1021
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1
+      HPGrowFactor: 16
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9002
+      MobKorID: 
+      MobType: 
+      BaseHP: 1100
+      ChapterFactor: 1
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2001
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 4
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2002
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2003
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2004
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2005
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2006
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2007
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2008
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2009
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 2
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2010
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9003
+      MobKorID: 
+      MobType: 
+      BaseHP: 1000
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2011
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2012
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2013
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 2
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 2014
+      MobKorID: 
+      MobType: 
+      BaseHP: 500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9004
+      MobKorID: 
+      MobType: 
+      BaseHP: 1500
+      ChapterFactor: 1.5
+      HPGrowFactor: 0
+      AttackCycle: 2
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3001
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 2
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3002
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3003
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3004
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3005
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3006
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3007
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3008
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3009
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9005
+      MobKorID: 
+      MobType: 
+      BaseHP: 1800
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3010
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 4
+      AttackDamage: 2
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3011
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 2
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3012
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 3013
+      MobKorID: 
+      MobType: 
+      BaseHP: 550
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 0
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9006
+      MobKorID: 
+      MobType: 
+      BaseHP: 5000
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 3
+      AttackDamage: 1
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 9007
+      MobKorID: 
+      MobType: 
+      BaseHP: 1500
+      ChapterFactor: 2
+      HPGrowFactor: 0
+      AttackCycle: 2
+      AttackDamage: 2
+      BoolAttackType: 1
+      AttackWeight: 
+      AttackPattern: 0400000005000000
+      AttackPlayer: 1
+      GimmickName:
+      - '"Gimmick_Test"'
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
+    - MobID: 
+      MobKorID: 
+      MobType: 
+      BaseHP: 0
+      ChapterFactor: 0
+      HPGrowFactor: 0
+      AttackCycle: 0
+      AttackDamage: 0
+      BoolAttackType: 0
+      AttackWeight: 04000000060000000400000002000000
+      AttackPattern: 
+      AttackPlayer: 0
+      GimmickName: []
+      GimmickValue: []
+      "\uCC55\uD130": 
+      "\uC218": 
     HandRankingDataList:
     - Ranking: 1
       Value: 0
@@ -3017,127 +3113,132 @@ MonoBehaviour:
     MachineRewardList:
     - ItemName: 3
       Rank: 2
-      Value: 5
       Comment: 
+      Value: 5
       ItemProbability: 20
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 5
       Rank: 2
-      Value: 1
       Comment: 
+      Value: 1
       ItemProbability: 10
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 1
       Rank: 2
-      Value: 7
       Comment: 
+      Value: 7
       ItemProbability: 25
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 2
       Rank: 2
-      Value: 10
       Comment: 6
+      Value: 10
       ItemProbability: 25
       RandomProbablility: 190000001e000000140000000f0000000a000000
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 4
       Rank: 2
-      Value: 7
       Comment: 
+      Value: 7
       ItemProbability: 20
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 6
       Rank: 3
-      Value: 1
       Comment: 
+      Value: 1
       ItemProbability: 100
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 3
       Rank: 0
-      Value: 2
       Comment: 
+      Value: 2
       ItemProbability: 15
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 1
       Rank: 0
-      Value: 3
       Comment: 
+      Value: 3
       ItemProbability: 25
       RandomProbablility: 
       URL: https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr
     - ItemName: 0
       Rank: 0
-      Value: 1
       Comment: 
+      Value: 1
       ItemProbability: 20
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 2
       Rank: 0
-      Value: 4
       Comment: 2
+      Value: 4
       ItemProbability: 25
       RandomProbablility: 190000003200000019000000
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 4
       Rank: 0
-      Value: 3
       Comment: 
+      Value: 3
       ItemProbability: 15
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 3
       Rank: 1
-      Value: 3
       Comment: 
+      Value: 3
       ItemProbability: 15
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 1
       Rank: 1
-      Value: 4
       Comment: 
+      Value: 4
       ItemProbability: 25
       RandomProbablility: 
       URL: https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr
     - ItemName: 0
       Rank: 1
-      Value: 2
       Comment: 
+      Value: 2
       ItemProbability: 20
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 2
       Rank: 1
-      Value: 6
       Comment: 3
+      Value: 6
       ItemProbability: 25
       RandomProbablility: 1900000028000000140000000f000000
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     - ItemName: 4
       Rank: 1
-      Value: 4
       Comment: 
+      Value: 4
       ItemProbability: 15
       RandomProbablility: 
       URL: https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link
     MachineProbabillityList:
     - MachineLevel: 1
-      RankProbabillity: 550000000a0000000400000001000000
+      RankWeight: 
+      LevelUpCost: 0
     - MachineLevel: 2
-      RankProbabillity: 4d0000000f0000000600000002000000
+      RankWeight: 
+      LevelUpCost: 0
     - MachineLevel: 3
-      RankProbabillity: 3f000000190000000900000003000000
+      RankWeight: 
+      LevelUpCost: 0
     - MachineLevel: 4
-      RankProbabillity: 29000000280000000e00000005000000
+      RankWeight: 
+      LevelUpCost: 0
     - MachineLevel: 5
-      RankProbabillity: 25000000230000001400000008000000
+      RankWeight: 
+      LevelUpCost: 0
     RelicDataList:
     - DisplayName: "(\uAE30\uBCF8 red \uD50C\uB7EC\uC2DC)"
       DisplayDescription: "\uAE30\uBCF8 \uD6A8\uACFC. \uC720\uBB3C\uC740 \uC544\uB2C8\uC9C0\uB9CC,
@@ -3715,78 +3816,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16129f8d2ad92cd48ac65dcf2f94dd6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pool:
-    _initialSize: 3
-    _maxSize: 100
-    _factories:
-      defaultKey: 
-      _items: []
-    _pools:
-      defaultKey: 
-      _items: []
-  _saveload:
-    DefaultSaveName: AutoSave
-    _exceptionScenes: []
-    _currentSave:
-      Name: DefaultSave
-      RawSaveTime: -8584430706108793894
-      PlayerStatus:
-        _currentHP: 3
-        _maxHP: 3
-        _shield: 0
-        _rerollTicket: 0
-        _maxHand: 6
-        _discardHand: 3
-        _variableContainer:
-          variables: []
-        gold: 0
-        canRevive: 0
-  _sound:
-    root: {fileID: 0}
-    audioMixer: {fileID: 0}
-    audioMixerGroups: []
-    defaultVolume: 0.75
-    _defaultBackgroundAudioConfiguration: {fileID: 0}
-    _defaultSoundEffectAudioConfiguration: {fileID: 0}
-    _sfxEmitters: []
-    _cachedBackgroundSoundEmitters:
-      defaultKey: 
-      _items: []
-    _currentPlayingBackgroundMusicName: 
-  _card:
-    cardLibrary:
-      pipelineMap:
-        defaultKey: 0
-        _items: []
-      dataMap:
-        defaultKey: 0
-        _items: []
-    enhancementDataLibrary:
-      table:
-        _items: []
-  _relic:
-    all: []
-    ownedRelics: []
-  _dungeon:
-    dungeonConfigurations: []
-    dungeons: []
-    dungeonUI: {fileID: 0}
-    currentNode:
-      dungeon:
-        rid: -2
-      nodeId: 0
-      floor: 0
-      type: 0
-      preset: {fileID: 0}
-      <IsBranchStart>k__BackingField: 0
-      <IsInBranch>k__BackingField: 0
-      <IsBranchEnd>k__BackingField: 0
-  _database: {fileID: 683164373}
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!4 &799136585
 Transform:
   m_ObjectHideFlags: 0
@@ -3859,7 +3888,7 @@ PrefabInstance:
     - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
       propertyPath: _initialTile
       value: 
-      objectReference: {fileID: 401468741}
+      objectReference: {fileID: 0}
     - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
       propertyPath: _isDebugMode
       value: 0
@@ -4920,6 +4949,10 @@ PrefabInstance:
     - target: {fileID: 6542795533423006199, guid: bcefdac074da60d4294942f775bed484, type: 3}
       propertyPath: m_Name
       value: FieldWall
+      objectReference: {fileID: 0}
+    - target: {fileID: 6542795533423006199, guid: bcefdac074da60d4294942f775bed484, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8401765644790202395, guid: bcefdac074da60d4294942f775bed484, type: 3}
       propertyPath: m_LocalPosition.x

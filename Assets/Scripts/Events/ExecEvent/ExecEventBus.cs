@@ -98,7 +98,7 @@ namespace Cardevil.Events.ExecEvents
         /// <param name="cancellationToken"></param>
         public static async UniTask InvokeSequentially(TEvent args, CancellationToken cancellationToken = default)
         {
-            LogEx.Log("Invoking Dynamic Event Bus");
+            LogEx.Log($"<b>{ExecEventUtil.GetEventArgsName(typeof(TEvent))}</b> Invoking Dynamic Event Bus");
             await ExecDynamicEventBus<TEvent>.Invoke(args, cancellationToken);
             if (cancellationToken.IsCancellationRequested)
             {
@@ -110,7 +110,7 @@ namespace Cardevil.Events.ExecEvents
                 LogEx.Log("Sequential Event Bus invocation chain broken.");
                 return;
             }
-            LogEx.Log("Invoking Static Event Bus");
+            LogEx.Log($"<b>{typeof(TEvent)}</b> Invoking Static Event Bus");
             await ExecStaticEventBus<TEvent>.Invoke(args, cancellationToken);
         }
 
@@ -130,7 +130,7 @@ namespace Cardevil.Events.ExecEvents
         /// <param name="cancellationToken"></param>
         public static async UniTask InvokeMerged(TEvent args, CancellationToken cancellationToken = default)
         {
-            LogEx.Log("Invoking Merged Event Bus");
+            LogEx.Log($"<b>{ExecEventUtil.GetEventArgsName(typeof(TEvent))}</b> Invoking Merged Event Bus");
             _isMergedExecuting = true;
             
             try
@@ -195,7 +195,7 @@ namespace Cardevil.Events.ExecEvents
                 _isMergedExecuting = false;
             }
             
-            LogEx.Log("Merged Event Bus Invocation Complete");
+            LogEx.Log($"<b>{ExecEventUtil.GetEventArgsName(typeof(TEvent))}</b> Merged Event Bus Invocation Complete");
         }
 
         /// <summary>

@@ -279,6 +279,7 @@ namespace Cardevil.InGame.Enemy
             {
                 // 유닛 사망
                 isEnemyDead = true;
+                EnemyDieAnimation();
                 return true; // 사망시 true 변환 
             }
 
@@ -376,6 +377,14 @@ namespace Cardevil.InGame.Enemy
         private bool IsValidPoint(int x, int y)
         {
             return (x >= 0 && x < 3 && y >= 0 && y < 3);
+        }
+
+        #endregion
+
+        #region 애니메이션
+        private async UniTask EnemyDieAnimation()
+        {
+            await UniTask.WaitForSeconds(1f);
         }
 
         #endregion

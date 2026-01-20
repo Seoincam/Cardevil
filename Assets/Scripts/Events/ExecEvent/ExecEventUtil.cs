@@ -1,4 +1,5 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Cards.Evaluations;
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -111,5 +112,16 @@ namespace Cardevil.Events.ExecEvents
                 }
             }
         }
+
+        /// <summary>
+        /// EventArgs의 타입 이름을 네임스페이스를 제거해 반환합니다.
+        /// </summary>
+        public static string GetEventArgsName(Type eventType)
+        {
+            const string prefix = "Cardevil.Events.";
+            string name = eventType.FullName ?? eventType.Name;
+            return name.StartsWith(prefix) ? name[prefix.Length..] : name;
+        }
+
     }
 }
