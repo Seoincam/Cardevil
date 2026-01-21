@@ -15,10 +15,10 @@ MonoBehaviour:
   <DrawMoveEase>k__BackingField: 26
   <DrawFlipDuration>k__BackingField:
     baseValue: 0.3
-  <DrawMoveSpeed>k__BackingField:
-    baseValue: 10
+  <DrawMoveDuration>k__BackingField:
+    baseValue: 1
   <DiscardMoveEase>k__BackingField: 26
   <DiscardFlipDuration>k__BackingField:
     baseValue: 0.3
-  <DiscardMoveSpeed>k__BackingField:
-    baseValue: 10
+  <DiscardMoveDuration>k__BackingField:
+    baseValue: 1

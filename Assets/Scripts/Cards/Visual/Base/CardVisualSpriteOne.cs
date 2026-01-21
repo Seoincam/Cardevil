@@ -10,7 +10,7 @@ namespace Cardevil.Cards.Visual
     /// InnerFrame, PrimaryValue, SmallNumber로 구성.
     /// </summary>
     [RequireComponent(typeof(CanvasGroup))]
-    public class SimpleCardVisual : MonoBehaviour
+    public class CardVisualSpriteOne : MonoBehaviour, ISimpleCardVisual
     {
         [field: Header("Image References")]
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)]

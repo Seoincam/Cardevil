@@ -18,6 +18,6 @@ MonoBehaviour:
   <FlipDuration>k__BackingField:
     baseValue: 0.4
   <FlipEase>k__BackingField: 4
-  <DrawMoveSpeed>k__BackingField:
-    baseValue: 14
+  <DrawMoveDuration>k__BackingField:
+    baseValue: 1
   <DrawMoveEase>k__BackingField: 17

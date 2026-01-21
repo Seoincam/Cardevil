@@ -16,7 +16,7 @@ namespace Cardevil.Cards.Config.StageCard
         [field: SerializeField]
         public ScalableFloat FlipDuration { get; private set; } = new(0.4f);
         [field: SerializeField] public Ease FlipEase { get; private set; } = Ease.InOutSine;
-        [field: SerializeField] public ScalableFloat DrawMoveSpeed { get; private set; } = new(14f);
+        [field: SerializeField] public ScalableFloat DrawMoveDuration { get; private set; } = new(0.5f);
         [field: SerializeField] public Ease DrawMoveEase { get; private set; } = Ease.InExpo;
     }
 }

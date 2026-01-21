@@ -9,11 +9,22 @@ using UnityEngine.UI;
 namespace Cardevil.Cards.Visual
 {
     /// <summary>
-    /// 선택 가능한 값이 2개 혹은 3개일 때 사용되는 카드 비주얼 컴포넌트.
-    /// Phase에 따라 적절한 레이아웃으로 자동 전환함. 
+    /// 애니메이션이 필요할 때 사용할 카드 비주얼.
+    /// TODO: 현재 fsm과 로직이 분리되어 있음. 추후 필요할 때 합쳐야함.
     /// </summary>
-    public class ChangeableCardVisual : SimpleCardVisual
+    [RequireComponent(typeof(CanvasGroup))]
+    public class ChangeableCardVisual : MonoBehaviour, ISimpleCardVisual
     {
+        [field: Header("Image References")]
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)]
+        public Image InnerFrame { get; protected set; }
+        
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)]
+        public Image PrimaryValue { get; protected set; }
+        
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)]
+        public Image SmallNumber { get; protected set; }
+        
         [Header("Phase Groups")]
         [SerializeField, VisibleOnly(EditableIn.EditMode)]
         private SerializableDictionary<VisualPhase, PhaseGroup> selectionGroups;
@@ -22,10 +33,19 @@ namespace Cardevil.Cards.Visual
         [SerializeField, VisibleOnly(EditableIn.EditMode)]
         private SerializableDictionary<Position, RectTransform> selectionBackgrounds;
         
+        [field: Header("Other References")]
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)]
+        public CanvasGroup CanvasGroup { get; protected set; }
+        
         public IReadOnlyDictionary<VisualPhase, PhaseGroup> SelectionGroups => selectionGroups;
         public IReadOnlyDictionary<Position, RectTransform> SelectionBackgrounds => selectionBackgrounds;
-        
-        public override void ChangeVisualInstant(CardData cardData)
+
+        private void Reset()
+        {
+            CanvasGroup = GetComponent<CanvasGroup>();
+        }
+
+        public void ChangeVisualInstant(CardData cardData)
         {
             var spriteSet = CardSpriteSetConfigurationUtil.Configure(cardData);
 

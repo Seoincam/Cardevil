@@ -10,11 +10,12 @@ namespace Cardevil.Cards.Config.StageCard
         [field: Header("Draw")]
         [field: SerializeField] public Ease DrawMoveEase { get; private set; } = Ease.InBack;
         [field: SerializeField] public ScalableFloat DrawFlipDuration { get; private set; } = new(0.3f);
-        [field: SerializeField] public ScalableFloat DrawMoveSpeed { get; private set; } = new(10f);
+        [field: SerializeField] public ScalableFloat DrawMoveDuration { get; private set; } = new(0.5f);
 
         [field: Header("Discard")]
         [field: SerializeField] public Ease DiscardMoveEase { get; private set; } = Ease.InBack;
         [field: SerializeField] public ScalableFloat DiscardFlipDuration { get; private set; } = new(0.3f);
-        [field: SerializeField] public ScalableFloat DiscardMoveSpeed { get; private set; } = new(10f);
+        [field: SerializeField] public ScalableFloat DiscardMoveDuration { get; private set; } = new(0.5f);
+        // ㅎㅏ이~
     }
 }

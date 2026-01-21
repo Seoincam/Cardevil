@@ -41,6 +41,7 @@ namespace Cardevil.Cards.InStage
         
         private void InitializeVisual(CardData cardData)
         {
+            // TODO: 스프라이트 개수별로 다른 오브젝트를 소환할지 고려하기.
             visual.ChangeVisualInstant(cardData);
             changeableMarker.gameObject.SetActive(cardData.CanOpenSelection);
         }
@@ -126,7 +127,7 @@ namespace Cardevil.Cards.InStage
         {
             var flipDuration = rerollConfig.DrawFlipDuration;
             var flipEase = config.FlipEase;
-            var moveSpeed = rerollConfig.DrawMoveSpeed;
+            var moveDuration = rerollConfig.DrawMoveDuration;
             var moveEase = rerollConfig.DrawMoveEase;
 
             if (ensureBack)
@@ -135,7 +136,7 @@ namespace Cardevil.Cards.InStage
             }
             CardDeckVisual.Instance.OnInteraction();
 
-            await CreateMoveToSlotTween(moveSpeed, moveEase);
+            await CreateMoveToSlotTween(moveDuration, moveEase);
             await flip.FlipAsync(CardFace.Front, flipDuration, flipEase);
         }
 
@@ -147,7 +148,7 @@ namespace Cardevil.Cards.InStage
         {
             var flipDuration = rerollConfig.DiscardFlipDuration;
             var flipEase = config.FlipEase;
-            var moveSpeed = rerollConfig.DiscardMoveSpeed;
+            var moveDuration = rerollConfig.DiscardMoveDuration;
             var moveEase = rerollConfig.DiscardMoveEase;
             
             if (ensureFront)
@@ -155,9 +156,16 @@ namespace Cardevil.Cards.InStage
                 flip.StopAndFlipInstant(CardFace.Front);   
             }
             await flip.FlipAsync(CardFace.Back, flipDuration, flipEase);
-            await CreateMoveToDeckTween(moveSpeed, moveEase);
+            await CreateMoveToDeckTween(moveDuration, moveEase);
             
             CardDeckVisual.Instance.OnInteraction();
+        }
+
+        public async UniTask MoveOnRerollEnd()
+        {
+            var moveDuration = config.DrawMoveDuration;
+            
+            await CreateMoveToSlotTween(moveDuration);
         }
 
         /// <summary>
@@ -169,7 +177,7 @@ namespace Cardevil.Cards.InStage
         {
             var flipDuration = config.FlipDuration;
             var flipEase = config.FlipEase;
-            var moveSpeed = config.DrawMoveSpeed;
+            var moveDuration = config.DrawMoveDuration;
             var moveEase = config.DrawMoveEase;
             
             if (ensureBack)
@@ -179,7 +187,7 @@ namespace Cardevil.Cards.InStage
             
             CardDeckVisual.Instance.OnInteraction();
 
-            await CreateMoveToSlotTween(moveSpeed, moveEase);
+            await CreateMoveToSlotTween(moveDuration, moveEase);
             await flip.FlipAsync(CardFace.Front, flipDuration, flipEase);
         }
         
@@ -189,27 +197,25 @@ namespace Cardevil.Cards.InStage
         }
         
         /// <returns>
-        /// 슬롯(<see cref="LocalZeroPosition"/>)으로 이동하는 트윈. 속도를 기반으로 함.
+        /// 슬롯(<see cref="LocalZeroPosition"/>)으로 이동하는 트윈.
         /// </returns>
-        private Tween CreateMoveToSlotTween(float speed, Ease ease = Ease.Unset)
+        private Tween CreateMoveToSlotTween(float duration, Ease ease = Ease.Unset)
         {
             Set(State.Tweening, true);
             return transform
-                .DOLocalMove(LocalZeroPosition, speed)
-                .SetSpeedBased()
+                .DOLocalMove(LocalZeroPosition, duration)
                 .SetEase(ease)
                 .OnComplete(() => Set(State.Tweening, false));
         }
         
         /// <returns>
-        /// 덱으로 이동하는 트윈. 속도를 기반으로 함.
+        /// 덱으로 이동하는 트윈
         /// </returns>
-        private Tween CreateMoveToDeckTween(float speed, Ease ease = Ease.Unset)
+        private Tween CreateMoveToDeckTween(float duration, Ease ease = Ease.Unset)
         {
             Set(State.Tweening, true);
             return transform
-                .DOMove(CardDeckVisual.Instance.Front.position, speed)
-                .SetSpeedBased()
+                .DOMove(CardDeckVisual.Instance.Front.position, duration)
                 .SetEase(ease)
                 .OnComplete(() => Set(State.Tweening, false));
         }

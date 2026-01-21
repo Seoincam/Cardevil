@@ -81,7 +81,7 @@ namespace Cardevil.Cards.InStage
                     
                     BindCallback(card);
                     card.Set(StageCard.State.Rerolling, false);
-                    moveTasks.Add(card.DrawAsync());
+                    moveTasks.Add(card.MoveOnRerollEnd());
                 }
                 await UniTask.WhenAll(moveTasks);
             }

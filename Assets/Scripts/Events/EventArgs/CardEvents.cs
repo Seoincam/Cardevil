@@ -94,7 +94,7 @@ namespace Cardevil.Events
     /// </summary>
     public class EachCardDiscardedArgs : ExecEventArgs<EachCardDiscardedArgs>
     {
-        public CardData xCardData { get; private set; }
+        public CardData CardData { get; private set; }
 
         public static EachCardDiscardedArgs Get(CardData cardData)
         {
