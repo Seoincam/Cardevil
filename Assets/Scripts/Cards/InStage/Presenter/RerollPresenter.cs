@@ -123,7 +123,7 @@ namespace Cardevil.Cards.InStage
 
             foreach (var card in _model.Hand)
             {
-                discardTasks.Add(card.SafeMoveToDeckWithFlipAsync());
+                discardTasks.Add(card.RerollDiscardAsync());
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DiscardInterval));
             }
             await UniTask.WhenAll(discardTasks);
@@ -140,7 +140,7 @@ namespace Cardevil.Cards.InStage
             while (count-- > 0)
             {
                 var card = InstantiateCard();
-                drawTasks.Add(card.SafeMoveToSlotWithFlipAsync());
+                drawTasks.Add(card.RerollDrawAsync());
                 await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
             }
             await UniTask.WhenAll(drawTasks);
@@ -148,18 +148,17 @@ namespace Cardevil.Cards.InStage
             ListPool<UniTask>.Release(drawTasks);
         }
         
-        private Card InstantiateCard()
+        private StageCard InstantiateCard()
         {
             var cardData = _model.PopCardData();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<Card>();
+            var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<StageCard>();
             card.Initialize(cardData);
-            card.Set(Card.State.Rerolling, true);
+            card.Set(StageCard.State.Rerolling, true);
             
             _model.AddHand(card);
-            _view.SetCardToSlot(card, _model.GetIndexInHand(card));
-            card.SafeMoveToSlotWithFlipAsync().Forget();
+            _view.UpdateCardParentSlot(card, _model.GetIndexInHand(card));
             
             return card;
         }

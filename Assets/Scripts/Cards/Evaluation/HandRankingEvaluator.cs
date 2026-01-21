@@ -14,7 +14,7 @@ namespace Cardevil.Cards.Evaluation
         /// </summary>
         /// <param name="selection">평가 대상 카드 목록</param>
         /// <returns>평가된 족보 결과</returns>
-        public static HandRanking EvaluateHandRanking(IEnumerable<Card> selection)
+        public static HandRanking EvaluateHandRanking(IEnumerable<StageCard> selection)
         {
             var handRanking = EvaluateHandRanking(selection, out var _);
             return handRanking;
@@ -27,7 +27,7 @@ namespace Cardevil.Cards.Evaluation
         /// <param name="selection">평가 대상 카드 목록</param>
         /// <param name="cardsInHandRanking">평가된 족보에 속한 카드 목록</param>
         /// <returns>평가된 족보 결과</returns>
-        public static HandRanking EvaluateHandRanking(IEnumerable<Card> selection, out List<Card> cardsInHandRanking)
+        public static HandRanking EvaluateHandRanking(IEnumerable<StageCard> selection, out List<StageCard> cardsInHandRanking)
         {
             cardsInHandRanking = null;
             
@@ -76,9 +76,9 @@ namespace Cardevil.Cards.Evaluation
             return HandRanking.High;
         }
         
-        private static bool IsStraight(List<Card> numberCards, out List<Card> cardsInRanking)
+        private static bool IsStraight(List<StageCard> numberCards, out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
             
             if (numberCards.Count != 4) 
                 return false;
@@ -95,9 +95,9 @@ namespace Cardevil.Cards.Evaluation
             return true;
         }
 
-        private static bool IsFlush(List<Card> numberCards, out List<Card> cardsInRanking)
+        private static bool IsFlush(List<StageCard> numberCards, out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
             
             if (numberCards.Count != 4) 
                 return false;
@@ -116,9 +116,9 @@ namespace Cardevil.Cards.Evaluation
             return allSameColor;
         }
 
-        private static bool IsStraightFlush(List<Card> numberCards,  out List<Card> cardsInRanking)
+        private static bool IsStraightFlush(List<StageCard> numberCards,  out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
             
             if (numberCards.Count != 4) 
                 return false;
@@ -129,9 +129,9 @@ namespace Cardevil.Cards.Evaluation
             return value;
         }
 
-        private static bool IsFourCard(List<Card> numberCards, out List<Card> cardsInRanking)
+        private static bool IsFourCard(List<StageCard> numberCards, out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
 
             if (numberCards.Count < 4)
                 return false;
@@ -150,9 +150,9 @@ namespace Cardevil.Cards.Evaluation
             return false;
         }
 
-        private static bool IsTriple(List<Card> numberCards, out List<Card> cardsInRanking)
+        private static bool IsTriple(List<StageCard> numberCards, out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
 
             if (numberCards.Count < 3)
                 return false;
@@ -171,9 +171,9 @@ namespace Cardevil.Cards.Evaluation
             return false;
         }
 
-        private static bool IsTwoPair(List<Card> numberCards, out List<Card> cardsInRanking)
+        private static bool IsTwoPair(List<StageCard> numberCards, out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
             
             if (numberCards.Count != 4)
                 return false;
@@ -190,9 +190,9 @@ namespace Cardevil.Cards.Evaluation
             return false;
         }
 
-        private static bool IsOnePair(List<Card> numberCards, out List<Card> cardsInRanking)
+        private static bool IsOnePair(List<StageCard> numberCards, out List<StageCard> cardsInRanking)
         {
-            cardsInRanking = new List<Card>();
+            cardsInRanking = new List<StageCard>();
             if (numberCards.Count < 2)
                 return false;
 

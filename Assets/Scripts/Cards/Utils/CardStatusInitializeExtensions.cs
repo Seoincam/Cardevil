@@ -17,7 +17,7 @@ namespace Cardevil.Cards.Utils
             
             cardStatus.specMap.Clear();
             int id = 0;
-            CardSpec spec;
+            StageCardSpec spec;
             
             // Number Data 생성
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
@@ -27,7 +27,7 @@ namespace Cardevil.Cards.Utils
                 // 일반 Number Data (2~10)
                 for (int i = 2; i <= 10; i++)
                 {
-                    spec = new CardSpec(CardKind.Attack, id);
+                    spec = new StageCardSpec(CardKind.Attack, id);
                     
                     // Modifier 추가
                     spec.AddModifier(new ColorModifier(color));
@@ -51,7 +51,7 @@ namespace Cardevil.Cards.Utils
                 }
 
                 // 오망성 Number Data
-                spec = new CardSpec(CardKind.Attack, id);
+                spec = new StageCardSpec(CardKind.Attack, id);
                 spec.AddModifier(new ColorModifier(color));
                 for (int i = 0; i < 9; i++) 
                     spec.AddModifier(new SelectableNumberModifier());
@@ -76,7 +76,7 @@ namespace Cardevil.Cards.Utils
                 // 일반 Move 
                 for (int i = 0; i < 2; i++)
                 {
-                    spec = new  CardSpec(CardKind.Move, id);
+                    spec = new  StageCardSpec(CardKind.Move, id);
 
                     // Modifier 추가
                     spec.AddModifier(new DirSelectableModifier(direction));
@@ -100,7 +100,7 @@ namespace Cardevil.Cards.Utils
             // 4방향 선택 가능 Move Data
             for (int i = 0; i < 2; i++)
             {
-                spec = new CardSpec(CardKind.Move, id);
+                spec = new StageCardSpec(CardKind.Move, id);
                 
                 // Modifier 추가
                 for (int j = 0; j < 4; j++)

@@ -127,6 +127,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   visualSetting: {fileID: 11400000, guid: 4b7539de82d4b4b63b8d9ff49ee71fed, type: 2}
   changeFlipSetting: {fileID: 0}
+  config: {fileID: 11400000, guid: 1ea110615043c44ce977bdb6d44ada7f, type: 2}
+  rerollConfig: {fileID: 11400000, guid: 495dea9578c5e4bb1ac1166ef5dd07ac, type: 2}
+  curveConfig: {fileID: 11400000, guid: c56787ba70d3041d7bd822ac06cc8236, type: 2}
   <Data>k__BackingField:
     id: 0
     kind: 0
@@ -145,7 +148,6 @@ MonoBehaviour:
         value: 0
     directionFlag: 0
   debugState: 0
-  targetPosition: {x: 0, y: 0, z: 0}
   visualRoot: {fileID: 5989813122176844434}
   visual: {fileID: 6774856469034176563}
   flip: {fileID: 6068996948817663795}

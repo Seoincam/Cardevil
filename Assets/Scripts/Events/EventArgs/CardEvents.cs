@@ -94,7 +94,7 @@ namespace Cardevil.Events
     /// </summary>
     public class EachCardDiscardedArgs : ExecEventArgs<EachCardDiscardedArgs>
     {
-        public CardData CardData { get; private set; }
+        public CardData xCardData { get; private set; }
 
         public static EachCardDiscardedArgs Get(CardData cardData)
         {
@@ -175,11 +175,11 @@ namespace Cardevil.Events
     /// </summary>
     public class CardDamageEvaluationArgs : ExecEventArgs<CardDamageEvaluationArgs>
     {
-        public IReadOnlyList<Card> Cards { get; private set; }
+        public IReadOnlyList<StageCard> Cards { get; private set; }
         public float Damage { get; private set; }
         public HandRanking HandRanking { get; private set; }
 
-        public static CardDamageEvaluationArgs Get(IReadOnlyList<Card> cards, HandRanking handRanking)
+        public static CardDamageEvaluationArgs Get(IReadOnlyList<StageCard> cards, HandRanking handRanking)
         {
             var args = Get();
             args.Initialize(cards, handRanking);
@@ -191,7 +191,7 @@ namespace Cardevil.Events
 
         public void ClampDamage(float maxDamage) => Damage = Mathf.Min(Damage, maxDamage);
 
-        public void SetCards(Card[] cards) => Cards = cards;
+        public void SetCards(StageCard[] cards) => Cards = cards;
         
         public enum Orders
         {
@@ -272,7 +272,7 @@ namespace Cardevil.Events
             HandRanking = HandRanking.None;
         }
 
-        private void Initialize(IReadOnlyList<Card> cards, HandRanking handRanking)
+        private void Initialize(IReadOnlyList<StageCard> cards, HandRanking handRanking)
         {
             Cards = cards;
             HandRanking = handRanking;

@@ -66,9 +66,8 @@ namespace Cardevil.Cards.InStage
                 OnSortByIconButtonClicked);
             
             // TODO: 2. Deck Remain View
-
             
-            // 3. Value Selection View
+            // TODO: 3. Value Selection View
             
             // 4. 생성되어 있는 카드를 모두 HandBar Slot으로 이동
             _view.UpdateAllCardsParentSlot();
@@ -81,8 +80,8 @@ namespace Cardevil.Cards.InStage
                     card.gameObject.name = $"{_model.GetIndexInHand(card)}";
                     
                     BindCallback(card);
-                    card.Set(Card.State.Rerolling, false);
-                    moveTasks.Add(card.MoveToSlotAsync());
+                    card.Set(StageCard.State.Rerolling, false);
+                    moveTasks.Add(card.DrawAsync());
                 }
                 await UniTask.WhenAll(moveTasks);
             }
@@ -183,7 +182,7 @@ namespace Cardevil.Cards.InStage
                     var card = InstantiateCard();
                     if (!card) continue;
 
-                    drawTasks.Add(card.SafeMoveToSlotWithFlipAsync());
+                    drawTasks.Add(card.DrawAsync());
                     // TODO: await UniTask.Delay(TimeSpan.FromSeconds(_visualSetting.DrawInterval));
                 }
                 await UniTask.WhenAll(drawTasks);
@@ -202,9 +201,9 @@ namespace Cardevil.Cards.InStage
                 _model.SortHandByNumber();
                 _view.UpdateAllCardsParentSlot();
                 
-                foreach (var card in _model.Hand)
-                    sortTasks.Add(card.MoveToSlotAsync());
-                await UniTask.WhenAll(sortTasks);
+                // foreach (var card in _model.Hand)
+                //     sortTasks.Add(card.MoveToSlotAsync());
+                // await UniTask.WhenAll(sortTasks);
             }
             
             ListPool<UniTask>.Release(sortTasks);
@@ -219,21 +218,20 @@ namespace Cardevil.Cards.InStage
                 _model.SortHandByIcon();
                 _view.UpdateAllCardsParentSlot();
                 
-                foreach (var card in _model.Hand)
-                    sortTasks.Add(card.MoveToSlotAsync());
-                
-                await UniTask.WhenAll(sortTasks);
+                // foreach (var card in _model.Hand)
+                //     sortTasks.Add(card.MoveToSlotAsync());
+                // await UniTask.WhenAll(sortTasks);
             }
             
             ListPool<UniTask>.Release(sortTasks);
         }
 
-        private Card InstantiateCard()
+        private StageCard InstantiateCard()
         {
             var cardData = _model.PopCardData();
             if (cardData == null) return null;
 
-            var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<Card>();
+            var card = AssetUtil.Instantiate(CardAssetPath.Card).GetComponent<StageCard>();
             card.Initialize(cardData);
             BindCallback(card);
             

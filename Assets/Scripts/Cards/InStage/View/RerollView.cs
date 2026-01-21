@@ -185,11 +185,11 @@ namespace Cardevil.Cards.InStage
         /// <summary>
         /// 지정된 인덱스 슬롯에 카드를 배치, 시각적 인덱스를 갱신.
         /// </summary>
-        /// <param name="card">배치할 카드.</param>
+        /// <param name="stageCard">배치할 카드.</param>
         /// <param name="slotIndex">배치할 슬롯의 인덱스.</param>
-        public void SetCardToSlot(Card card, int slotIndex)
+        public void UpdateCardParentSlot(StageCard stageCard, int slotIndex)
         {
-            card.SetParent(_slots[slotIndex]);
+            stageCard.SetParent(_slots[slotIndex]);
         }
 
         #region Reroll Ticket Count

@@ -38,7 +38,7 @@ namespace Cardevil.Cards.Core
     public class CardStatus : IClearable, IReadOnlyCardStatus, ISaveLoad, INewGameInitializable
     {
         [Tooltip("카드 ID별 데이터 스펙 맵."), VisibleOnly]
-        public SerializableDictionary<int, CardSpec> specMap = new();
+        public SerializableDictionary<int, StageCardSpec> specMap = new();
 
         // 스펙을 바탕으로 생성된 데이터들.
         // 스펙의 수정이 있을 때, 해당 Id의 데이터만 갱신함.
@@ -60,7 +60,7 @@ namespace Cardevil.Cards.Core
             dataMap.Clear();
         }
 
-        public CardSpec GetSpecById(int id)
+        public StageCardSpec GetSpecById(int id)
         {
             if (!ValidateId(id))
                 return null;
@@ -89,7 +89,7 @@ namespace Cardevil.Cards.Core
         }
 
         /// <summary>
-        /// <see cref="CardSpec"/>을 기반으로
+        /// <see cref="StageCardSpec"/>을 기반으로
         /// <see cref="CardData"/>를 재빌드합니다.
         /// </summary>
         public void UpdateDataMap(int id)
@@ -172,7 +172,7 @@ namespace Cardevil.Cards.Core
 
             foreach (var p in saveData.specList)
             {
-                var cardSpec = CardSpec.FromSaveData(p);
+                var cardSpec = StageCardSpec.FromSaveData(p);
                 specMap[p.id] = cardSpec;
                 UpdateDataMap(p.id);
                 

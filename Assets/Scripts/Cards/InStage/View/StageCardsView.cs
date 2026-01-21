@@ -188,9 +188,9 @@ namespace Cardevil.Cards.InStage
             }
         }
         
-        public void SetCardParentTemp(Card card)
+        public void SetCardParentTemp(StageCard stageCard)
         {
-            card.SetParent(transform);
+            stageCard.SetParent(transform);
         }
 
         public void UpdateAllCardsParentSlot()

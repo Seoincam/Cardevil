@@ -25,13 +25,13 @@ namespace Cardevil.Cards.Evaluation
         /// 선택된 카드 목록을 기반으로 족보 평가 후 표시 텍스트 업데이트.
         /// </summary>
         /// <param name="selection">선택된 카드 목록</param>
-        void UpdateHandRankingText(IEnumerable<Card> selection);
+        void UpdateHandRankingText(IEnumerable<StageCard> selection);
 
         /// <summary>
         /// 사용한 카드를 등록.
         /// 정렬된 카드 목록을 기반으로 족보 등을 미리 계산함.
         /// </summary>
-        void RegisterUsingCards(IReadOnlyList<Card> sortedCards);
+        void RegisterUsingCards(IReadOnlyList<StageCard> sortedCards);
         
         IReadOnlyEvaluationResultsModel ResultsModel { get; }
         
@@ -57,7 +57,7 @@ namespace Cardevil.Cards.Evaluation
 
         public CardDamageEvaluationArgs GetArgs() => CardDamageEvaluationArgs.Get(_toUseCards, _handRanking);
 
-        private Card[] _toUseCards;
+        private StageCard[] _toUseCards;
         private HandRanking _handRanking;
         private TileVector _playerPosition;
         
@@ -108,7 +108,7 @@ namespace Cardevil.Cards.Evaluation
             EvaluationView.Current.UpdateHandRankingText(HandRanking.None);
         }
         
-        public void UpdateHandRankingText(IEnumerable<Card> selection)
+        public void UpdateHandRankingText(IEnumerable<StageCard> selection)
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(selection);
             EvaluationView.Current.UpdateHandRankingText(handRanking);
@@ -140,7 +140,7 @@ namespace Cardevil.Cards.Evaluation
         // 2. MergeAndInvoke() (turn manager)
         // 3. Args에 족보 + 데미지 정보가 쌓임
         // 마지막에 적한테 가할 수 있게 TurnManager에 넘겨주면 될 듯.
-        public void RegisterUsingCards(IReadOnlyList<Card> sortedCards)
+        public void RegisterUsingCards(IReadOnlyList<StageCard> sortedCards)
         {
             _toUseCards = sortedCards.ToArray();
             _handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);

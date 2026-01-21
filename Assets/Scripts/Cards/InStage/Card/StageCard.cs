@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Config;
+using Cardevil.Cards.Config.StageCard;
 using Cardevil.Cards.Core;
 using Cardevil.Cards.Visual;
 using System;
@@ -9,22 +10,32 @@ using UnityEngine.UI;
 
 namespace Cardevil.Cards.InStage
 {
-    // TODO:
-    // 소환될 때 CardVisual / Changeable ... 분기 처리하기 
-    // 일단은 ChangeableCardVisual을 사용함.
-    public partial class Card : MonoBehaviour, 
-        IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
+    public partial class StageCard : MonoBehaviour,
+        IPointerEnterHandler, IPointerExitHandler, 
+        IPointerUpHandler, IPointerDownHandler,
+        IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        [Header("SO")]
-        [SerializeField] private CardVisualSettingSO visualSetting;
-        [SerializeField] private CardChangeValueFlipSetting changeFlipSetting;
+        [Header("Config")]
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] 
+        private CardVisualSettingSO visualSetting;
+        
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] 
+        private CardChangeValueFlipSetting changeFlipSetting;
+        
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private StageCardDefaultConfig config;
 
-        [Header("Data")] 
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private StageCardRerollConfig rerollConfig;
+        
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private CurveConfig curveConfig;
+
+        [field: Header("Data")] 
         [field: SerializeField, VisibleOnly] public CardData Data { get; private set; }
 
         [field: Header("State")]
-        [field: SerializeField, VisibleOnly] public Vector3 TargetPosition { get; private set; }
-        [SerializeField] private State debugState;
+        [SerializeField] private State debugState; // VisibleOnly일 경우 enum을 확인할 수 없어, 디버깅용으로 추가함.
         
         [Header("Visual")] 
         [SerializeField, VisibleOnly(EditableIn.EditMode)]
@@ -41,22 +52,11 @@ namespace Cardevil.Cards.InStage
         
         private State _state;
         
-        public static implicit operator CardData(Card card) => card.Data;
+        public static implicit operator CardData(StageCard stageCard) => stageCard.Data;
 
         public Transform Slot => transform.parent;
         
-        /// <summary>
-        /// Lerp 이동을 사용할지 여부.
-        /// Reroll 중이거나 트윈 중이면 <c>false</c>를 반환함.
-        /// </summary>
-        private bool UseLerp => !Is(State.Rerolling) && !Is(State.Tweening);
-        
-        /// <summary>
-        /// 드래그되고 있지 않을 때 돌아갈 원점.
-        /// 선택이 된 상태라면 위로 <c>visualSetting.SelectOffset</c>만큼 더 올라감.
-        /// </summary>
-        private Vector3 LocalZeroPosition =>
-            Is(State.Selected) ? new Vector3(0, visualSetting.SelectOffset) : Vector3.zero; 
+        private bool HasParent => transform.parent;
 
         private bool CanInteract
         {
@@ -82,19 +82,8 @@ namespace Cardevil.Cards.InStage
         {
             if (Is(State.Discarded)) return;
             
-            UpdateTargetPosition();
-            SmoothFollowPosition();
-        }
-
-        private void UpdateTargetPosition()
-        {
-            if (Is(State.Dragging))
-            {
-                var newTargetPosition = Input.mousePosition;
-                var direction = (newTargetPosition - TargetPosition).normalized;
-                
-                TargetPosition = newTargetPosition;
-            }
+            CalculateCurveInHand();
+            LerpMoveToSlot();
         }
 
         [Flags]

@@ -5,13 +5,15 @@ using UnityEngine.EventSystems;
 
 namespace Cardevil.Cards.InStage
 {
-    public partial class Card
+    public partial class StageCard
     {
-        public event Action<Card> PointerDown;
-        public event Action<Card> PointerUp;
-        public event Action<Card> DragStart;
-        public event Action<Card> Dragging;
-        public event Action<Card> DragEnd;
+        private Tween _hoverScaleTween;
+
+        public event Action<StageCard> PointerDown;
+        public event Action<StageCard> PointerUp;
+        public event Action<StageCard> DragStart;
+        public event Action<StageCard> Dragging;
+        public event Action<StageCard> DragEnd;
         
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -58,6 +60,9 @@ namespace Cardevil.Cards.InStage
         public void OnDrag(PointerEventData eventData)
         {
             Dragging?.Invoke(this);
+
+            var t = config.DragFollowSpeed * Time.deltaTime;
+            transform.position = Vector3.Lerp(transform.position, Input.mousePosition, t); // TODO: Input 접근 수정
         }
         
         public void OnEndDrag(PointerEventData eventData)

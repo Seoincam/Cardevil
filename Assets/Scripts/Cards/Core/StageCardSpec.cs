@@ -23,7 +23,7 @@ namespace Cardevil.Cards.Core
     /// 수정자 및 강화 흐름을 기반으로 카드 데이터 구성.
     /// </summary>
     [Serializable]
-    public class CardSpec : IReadOnlyCardSpec, ICardSpecSaveLoad
+    public class StageCardSpec : IReadOnlyCardSpec, ICardSpecSaveLoad
     {
         [SerializeField, VisibleOnly] private int id;
         [SerializeField, VisibleOnly] private CardKind kind;
@@ -43,7 +43,7 @@ namespace Cardevil.Cards.Core
 
         #endregion
         
-        public CardSpec(CardKind kind, int id)
+        public StageCardSpec(CardKind kind, int id)
         {
             this.kind = kind;
             this.id = id;
@@ -107,9 +107,9 @@ namespace Cardevil.Cards.Core
                 _nextEnhancementIds.AddRange(saveSpecSaveData.nextEnhancementIds);
         }
 
-        public static CardSpec FromSaveData(CardSpecSaveData saveSpecSaveData)
+        public static StageCardSpec FromSaveData(CardSpecSaveData saveSpecSaveData)
         {
-            var cardSpec = new CardSpec(CardKind.Attack, -1);
+            var cardSpec = new StageCardSpec(CardKind.Attack, -1);
             cardSpec.Deserialize(saveSpecSaveData);
             return cardSpec;
         }

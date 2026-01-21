@@ -19,23 +19,28 @@ namespace Cardevil.Cards.InStage
         
         IReadOnlyList<CardData> DiscardPile { get; }
         
-        IReadOnlyList<Card> Hand { get; }
+        IReadOnlyList<StageCard> Hand { get; }
         
-        IReadOnlyCollection<Card> Selection { get; }
+        IReadOnlyCollection<StageCard> Selection { get; }
+
+        int GetIndexInHand(StageCard stageCard);
     }
     
     [Serializable]
-    public class StageCardsModel : IReadOnlyStageCardsModel
+    public class StageCardsModel : IReadOnlyStageCardsModel, IDisposable
     {
         [Header("Cards")]
         [SerializeField, VisibleOnly] private List<CardData> deck = new();
         [SerializeField, VisibleOnly] private List<CardData> discardPile = new();
-        [SerializeField, VisibleOnly] private List<Card> hand = new();
+        [SerializeField, VisibleOnly] private List<StageCard> hand = new();
         
         [field: Header("Interacting")]
-        [field: SerializeField, VisibleOnly] public InteractingInfo CurrentInteracting { get; private set; }
+        [field: SerializeField, VisibleOnly] 
+        public InteractingInfo CurrentInteracting { get; private set; }
 
-        private HashSet<Card> _selection = new();
+        private HashSet<StageCard> _selection = new();
+        
+        public static IReadOnlyStageCardsModel Current { get; private set; }
 
         private readonly CardData[] _initialDeck;
         
@@ -47,6 +52,13 @@ namespace Cardevil.Cards.InStage
             _initialDeck = initialDeck;
             MaxHand = maxHand;
             DiscardRemain = initialDiscardCount;
+
+            Current = this;
+        }
+
+        public void Dispose()
+        {
+            Current = null;
         }
         
         /// <summary>
@@ -63,9 +75,9 @@ namespace Cardevil.Cards.InStage
         
         public IReadOnlyList<CardData> DiscardPile => discardPile;
         
-        public IReadOnlyList<Card> Hand => hand;
+        public IReadOnlyList<StageCard> Hand => hand;
         
-        public IReadOnlyCollection<Card> Selection => _selection;
+        public IReadOnlyCollection<StageCard> Selection => _selection;
 
         /// <summary>
         /// 선택된 Card들을 사용할 수 있는지 여부를 반환.
@@ -85,18 +97,18 @@ namespace Cardevil.Cards.InStage
             }
         }
         
-        public bool TryGetIndexInHand(Card card, out int index)
+        public bool TryGetIndexInHand(StageCard stageCard, out int index)
         {
-            if (hand.Contains(card))
+            if (hand.Contains(stageCard))
             {
-                index = hand.IndexOf(card);
+                index = hand.IndexOf(stageCard);
                 return true;
             }
             index = -1;
             return false;
         }
 
-        public IReadOnlyList<Card> GetSortedSelection()
+        public IReadOnlyList<StageCard> GetSortedSelection()
         {
             return _selection.OrderBy(c => hand.IndexOf(c)).ToList();
         }
@@ -104,7 +116,7 @@ namespace Cardevil.Cards.InStage
         /// <returns>
         /// 손패 상의 인덱스.
         /// </returns>
-        public int GetIndexInHand(Card card) => hand.IndexOf(card);
+        public int GetIndexInHand(StageCard stageCard) => hand.IndexOf(stageCard);
 
         /// <summary>
         /// 덱에서 Card Data를 꺼냄.
@@ -129,57 +141,57 @@ namespace Cardevil.Cards.InStage
         /// <summary>
         /// 생성된 Card 인스턴스를 손패에 등록함.
         /// </summary>
-        public void AddHand(Card card)
+        public void AddHand(StageCard stageCard)
         {
-            hand.Add(card);
+            hand.Add(stageCard);
         }
         
-        public void InsertHand(Card card, int index)
+        public void InsertHand(StageCard stageCard, int index)
         {
-            hand.Insert(index, card);
+            hand.Insert(index, stageCard);
         }
 
         /// <summary>
         /// Card 인스턴스를 손패에서 제거함.
         /// </summary>
-        public void RemoveHand(Card card)
+        public void RemoveHand(StageCard stageCard)
         {
-            hand.Remove(card);
+            hand.Remove(stageCard);
         }
 
         /// <summary>
         /// Card 인스턴스를 손패 및 선택패에서 제거하고, Card Data를 버린 패 더미에 추가함. 
         /// </summary>
-        public void Discard(Card card)
+        public void Discard(StageCard stageCard)
         {
-            hand.Remove(card);
-            _selection.Remove(card);
-            discardPile.Add(card);
+            hand.Remove(stageCard);
+            _selection.Remove(stageCard);
+            discardPile.Add(stageCard);
         }
 
         /// <summary>
         /// Card 인스턴스를 선택패에 추가함.
         /// </summary>
-        public void Select(Card card)
+        public void Select(StageCard stageCard)
         {
-            _selection.Add(card);
+            _selection.Add(stageCard);
         }
 
         /// <summary>
         /// Card 인스턴스를 선택패에서 제거함.
         /// </summary>
-        /// <param name="card"></param>
-        public void Deselect(Card card)
+        /// <param name="stageCard"></param>
+        public void Deselect(StageCard stageCard)
         {
-            _selection.Remove(card);
+            _selection.Remove(stageCard);
         }
 
         /// <summary>
         /// 상호작용 정보를 등록합니다.
         /// </summary>
-        public void UpdateInteractingInfo(Card card)
+        public void UpdateInteractingInfo(StageCard stageCard)
         {
-            CurrentInteracting = new InteractingInfo(card, Time.time, hand.IndexOf(card));
+            CurrentInteracting = new InteractingInfo(stageCard, Time.time, hand.IndexOf(stageCard));
         }
 
         /// <summary>
@@ -193,8 +205,9 @@ namespace Cardevil.Cards.InStage
         /// <summary>
         /// 손패 내 Card 인스턴스의 위치를 스왑합니다.
         /// </summary>
-        public void SwapInHand(int indexA, int indexB)
+        public void SwapInHand(StageCard stageCardA, int indexB)
         {
+            int indexA = GetIndexInHand(stageCardA);
             (hand[indexA], hand[indexB]) = (hand[indexB], hand[indexA]);
         }
 
@@ -241,27 +254,27 @@ namespace Cardevil.Cards.InStage
         [Serializable]
         public struct InteractingInfo
         {
-            [field: SerializeField] public Card Card { get; private set; }
+            [field: SerializeField] public StageCard StageCard { get; private set; }
             [field: SerializeField] public float LastInteractionTime { get; private set; }
             [field: SerializeField] public int OriginalIndex { get; private set; }
 
-            public InteractingInfo(Card card, float lastInteractionTime, int originalIndex)
+            public InteractingInfo(StageCard stageCard, float lastInteractionTime, int originalIndex)
             {
-                Card = card;
+                StageCard = stageCard;
                 LastInteractionTime = lastInteractionTime;
                 OriginalIndex = originalIndex;
             }
             
-            public bool Exist => Card;
+            public bool Exist => StageCard;
             
             public static InteractingInfo Empty => new(null, Time.time, 0);
 
-            public static implicit operator Card(InteractingInfo interacting) => interacting.Card;
+            public static implicit operator StageCard(InteractingInfo interacting) => interacting.StageCard;
         }
 
         #region Sorting Helper
 
-        private static int CompareByNumber(Card a, Card b)
+        private static int CompareByNumber(StageCard a, StageCard b)
         {
             int cmp = ValueTypeOrder(a).CompareTo(ValueTypeOrder(b));
             if (cmp != 0) return cmp;
@@ -276,7 +289,7 @@ namespace Cardevil.Cards.InStage
             return cmp;
         }
 
-        private static int CompareByIcon(Card a, Card b)
+        private static int CompareByIcon(StageCard a, StageCard b)
         {
             int cmp = ValueTypeOrder(a).CompareTo(ValueTypeOrder(b));
             if (cmp != 0) return cmp;

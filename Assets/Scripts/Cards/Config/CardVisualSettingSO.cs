@@ -85,10 +85,8 @@ namespace Cardevil.Cards.Config
         [SerializeField] Ease _discardEase = Ease.InOutCirc;
 
         [Header("- Follow")]
-        [SerializeField] float _followSpeed = 9;
         [SerializeField] float _rotationAmount = .2f;
         [SerializeField] float _rotationSpeed = 5;
-        [SerializeField] float _tiltSpeed = 20f;
 
         [Header("- Select")]
         [SerializeField] float _selectScale = 1.25f;
@@ -97,9 +95,6 @@ namespace Cardevil.Cards.Config
 
         [Header("- Shadow")]
         [SerializeField] float _shadowOffset = 20f;
-
-        [Header("- Curve")]
-        [SerializeField] private CurveParameters _curve;
 
         [Header("- Hover")] 
         public float hoverScale;
@@ -166,17 +161,14 @@ namespace Cardevil.Cards.Config
         public float DiscardDuration => _discardDuration * SpeedFactor;
         public Ease DiscardEase => _discardEase;
         
-        public float FollowSpeed => _followSpeed;
         public float RotationAmount => _rotationAmount;
         public float RotationSpeed => _rotationSpeed;
-        public float TiltSpeed => _tiltSpeed;
         
         public float SelectScale => _selectScale;
         public float SelectScaleTweenDuration => _selectScaleTweenDuration * SpeedFactor;
         public Ease SelectScaleEase => _selectScaleEase;
         
         public float ShadowOffset => _shadowOffset;
-        public CurveParameters Curve => _curve;
         
         public float DeckInteractionScale => _deckInteractionScale;
         public float DeckInteractionDuration => _deckInteractionDuration * SpeedFactor;

@@ -11,31 +11,31 @@ namespace Cardevil.Cards.Utils
         // public static class 별도자료구조Extensions
         // 필요하다면..
         
-        public static IReadOnlyList<Card> GetAttackCards(this IReadOnlyList<Card> cards) =>
+        public static IReadOnlyList<StageCard> GetAttackCards(this IReadOnlyList<StageCard> cards) =>
             cards.GetCardsByKind(CardKind.Attack);
 
-        public static IReadOnlyList<Card> GetMoveCards(this IReadOnlyList<Card> cards) =>
+        public static IReadOnlyList<StageCard> GetMoveCards(this IReadOnlyList<StageCard> cards) =>
             cards.GetCardsByKind(CardKind.Move);
 
-        public static IReadOnlyList<Card> GetCardsByKind(this IReadOnlyList<Card> cards, CardKind kind) =>
+        public static IReadOnlyList<StageCard> GetCardsByKind(this IReadOnlyList<StageCard> cards, CardKind kind) =>
             InternalGetCardByKind(cards, kind).ToArray();
 
-        public static IReadOnlyList<CardData> GetCardsData(this IReadOnlyList<Card> cards) => cards
+        public static IReadOnlyList<CardData> GetCardsData(this IReadOnlyList<StageCard> cards) => cards
             .Select(c => c.Data)
             .ToArray();
         
-        public static IReadOnlyList<CardData> GetAttackCardData(this IReadOnlyList<Card> cards) =>
+        public static IReadOnlyList<CardData> GetAttackCardData(this IReadOnlyList<StageCard> cards) =>
             cards.GetCardsDataByKind(CardKind.Attack);
 
-        public static IReadOnlyList<CardData> GetMoveCardData(this IReadOnlyList<Card> cards) =>
+        public static IReadOnlyList<CardData> GetMoveCardData(this IReadOnlyList<StageCard> cards) =>
             cards.GetCardsDataByKind(CardKind.Move);
 
-        public static IReadOnlyList<CardData> GetCardsDataByKind(this IReadOnlyList<Card> cards, CardKind kind) =>
+        public static IReadOnlyList<CardData> GetCardsDataByKind(this IReadOnlyList<StageCard> cards, CardKind kind) =>
             InternalGetCardByKind(cards, kind)
                 .Select(c => c.Data)
                 .ToArray();
         
-        private static IEnumerable<Card> InternalGetCardByKind(IReadOnlyList<Card> cards, CardKind kind) => cards?
+        private static IEnumerable<StageCard> InternalGetCardByKind(IReadOnlyList<StageCard> cards, CardKind kind) => cards?
             .Where(c => c.Data.Kind == kind);
     }
 }
