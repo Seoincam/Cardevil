@@ -76,9 +76,7 @@ namespace Cardevil.Cards.Core
         /// 선택 가능한 값이 하나인 경우에도 <c>true</c>를 반환함.
         /// </summary>
         public bool CompleteSelectingValue =>
-            IsAttack 
-                ? numberSelectState.FinalValue.HasValue && colorSelectState.FinalValue.HasValue 
-                : directionSelectState.FinalValue.HasValue;
+            IsAttack ? numberSelectState.FinalValue.HasValue : directionSelectState.FinalValue.HasValue;
 
         /// <summary>
         /// 공격 카드의 최종 선택 숫자.
@@ -86,10 +84,8 @@ namespace Cardevil.Cards.Core
         public int FinalNumber => CompleteSelectingValue
                 ? (int)numberSelectState.FinalValue
                 : throw new ArgumentNullException(nameof(numberSelectState.FinalValue));
-        
-        public CardColor FinalColor => CompleteSelectingValue 
-            ? (CardColor)colorSelectState.FinalValue 
-            : throw new ArgumentNullException(nameof(colorSelectState.FinalValue));
+
+        public CardColor FinalColor => colorSelectState.FinalValue ?? CardColor.None;
 
         /// <summary>
         /// 이동 카드의 최종 선택 방향.
@@ -117,6 +113,7 @@ namespace Cardevil.Cards.Core
             
             private EnhancementData _currentEnhancement;
             
+            public IReadOnlyList<CardColor?> ColorSelectables => _colorSelectables;
             public IReadOnlyList<int?> NumberSelectables => _numberSelectables;
             public IReadOnlyList<Direction?> DirectionSelectables => _directionSelectables;
 

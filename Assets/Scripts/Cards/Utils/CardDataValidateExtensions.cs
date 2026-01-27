@@ -17,7 +17,7 @@ namespace Cardevil.Cards.Utils
             // Attack 카드 검사
             if (data.IsAttack)
             {
-                if (data.Color == CardColor.None)
+                if (data.FinalColor == CardColor.None)
                     throw new InvalidOperationException("Color가 None입니다.");
                 if (data.DamageMultiplier < 1f)
                     throw new InvalidOperationException("DamageMultiplier가 1보다 작습니다.");

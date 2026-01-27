@@ -30,7 +30,8 @@ namespace Cardevil.Cards.Utils
                     spec = new StageCardSpec(CardKind.Attack, id);
                     
                     // Modifier 추가
-                    spec.AddModifier(new ColorModifier(color));
+                    spec.AddModifier(new SelectableColorModifier());
+                    spec.AddModifier(new SelectableColorConfirmModifier(color));
                     spec.AddModifier(new SelectableNumberModifier());
                     spec.AddModifier(new SelectableNumberConfirmModifier(i));
 
@@ -52,7 +53,8 @@ namespace Cardevil.Cards.Utils
 
                 // 오망성 Number Data
                 spec = new StageCardSpec(CardKind.Attack, id);
-                spec.AddModifier(new ColorModifier(color));
+                spec.AddModifier(new SelectableColorModifier());
+                spec.AddModifier(new SelectableColorConfirmModifier(color));
                 for (int i = 0; i < 9; i++) 
                     spec.AddModifier(new SelectableNumberModifier());
 

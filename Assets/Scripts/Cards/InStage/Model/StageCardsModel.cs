@@ -384,7 +384,7 @@ namespace Cardevil.Cards.InStage
         private static int ColorOrder(CardData cardData)
         {
             if (!cardData.IsAttack) return 0;
-            return (int)cardData.Color;
+            return (int)cardData.FinalColor;
         }
 
         /// <summary>
