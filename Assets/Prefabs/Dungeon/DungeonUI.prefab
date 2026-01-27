@@ -180,66 +180,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 55388671689453536}
     m_Modifications:
-    - target: {fileID: 375945846049176300, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 880501279978758098, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 1563636530186296270, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
       propertyPath: m_Name
       value: DungeonStage01
-      objectReference: {fileID: 0}
-    - target: {fileID: 1781339127129105615, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 21
-      objectReference: {fileID: 0}
-    - target: {fileID: 2577145307151882350, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 2808586484701977999, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 3083936594193300816, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 17
-      objectReference: {fileID: 0}
-    - target: {fileID: 4513516058558178078, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 18
-      objectReference: {fileID: 0}
-    - target: {fileID: 4683681876225731193, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5059054199896963178, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 5394814542964877764, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 5725015125210643105, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 6588535752349467489, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6902616585955811548, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
       propertyPath: dungeonUI
       value: 
       objectReference: {fileID: 7001122293710359863}
-    - target: {fileID: 6955987555872963869, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7051650735342189051, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -320,18 +268,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8364117119769241532, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 23
-      objectReference: {fileID: 0}
-    - target: {fileID: 8400578230938174685, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 22
-      objectReference: {fileID: 0}
-    - target: {fileID: 8681992064735388602, guid: 8869acd7e33477044945e112ed41a9f8, type: 3}
-      propertyPath: nodeId
-      value: 19
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -364,22 +300,6 @@ PrefabInstance:
     - target: {fileID: 2298217810387235589, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
       propertyPath: m_Name
       value: DungeonStage02
-      objectReference: {fileID: 0}
-    - target: {fileID: 3316969326858059062, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4787063767477468189, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5103965394091218137, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6516362957064670798, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7749482421912736048, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
       propertyPath: m_Pivot.x
@@ -490,9 +410,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3116604344084112292}
     m_Modifications:
+    - target: {fileID: 3100736379799477314, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4751236999838128814, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: m_Name
-      value: DungeonNode
+      value: NodeUI_01
       objectReference: {fileID: 0}
     - target: {fileID: 5763596952092352730, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: m_Pivot.x
@@ -572,6 +496,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5763596952092352730, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
+      propertyPath: nextNodes.Array.size
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
