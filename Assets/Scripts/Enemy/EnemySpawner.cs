@@ -1,4 +1,5 @@
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Utils;
 using Database;
 using UnityEngine;

@@ -11,7 +11,7 @@ namespace Cardevil.Cards.Core
     [Serializable]
     public sealed class ColorModifier : IModifier
     {
-        [SerializeField, VisibleOnly] private ModifierType type = ModifierType.AttackColorSelectable;
+        [SerializeField, VisibleOnly] private ModifierType type = ModifierType.AttackColor;
         [SerializeField, VisibleOnly] private CardColor color;
         
         public ModifierType Type => type;

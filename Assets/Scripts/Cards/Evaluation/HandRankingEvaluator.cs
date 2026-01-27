@@ -16,7 +16,7 @@ namespace Cardevil.Cards.Evaluation
         /// <returns>평가된 족보 결과</returns>
         public static HandRanking EvaluateHandRanking(IEnumerable<StageCard> selection)
         {
-            var handRanking = EvaluateHandRankingAndGetContainingCards(selection, out _);
+            var handRanking = EvaluateHandRanking(selection, out var _);
             return handRanking;
         }
         
@@ -27,7 +27,7 @@ namespace Cardevil.Cards.Evaluation
         /// <param name="selection">평가 대상 카드 목록</param>
         /// <param name="cardsInHandRanking">평가된 족보에 속한 카드 목록</param>
         /// <returns>평가된 족보 결과</returns>
-        public static HandRanking EvaluateHandRankingAndGetContainingCards(IEnumerable<StageCard> selection, out List<StageCard> cardsInHandRanking)
+        public static HandRanking EvaluateHandRanking(IEnumerable<StageCard> selection, out List<StageCard> cardsInHandRanking)
         {
             cardsInHandRanking = null;
             

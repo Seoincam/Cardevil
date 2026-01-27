@@ -1,4 +1,5 @@
 using Cardevil.Core.Turn;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
 using System;
 using System.Collections.Generic;

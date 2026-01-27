@@ -1,6 +1,5 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Core;
-using Cardevil.Cards.InStage;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
 using Cardevil.Dungeon;
@@ -23,6 +22,7 @@ namespace Cardevil.Core.Root
     {
         [SerializeField] private TurnManager turn;
         [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private CardFlowController cardFlowController;
 
         [Header("References")]
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
@@ -70,11 +70,11 @@ namespace Cardevil.Core.Root
                 LogEx.LogError($"Failed to spawn Enemy. stage Id: {_context.stageId}");
                 return;
             }
+            
+            cardFlowController = CardFlowController.Build();
+            
             enemy.Init(Field);
-            
-            var turnCardFlow = CreateTurnCardFlow();
-            
-            turn.Initialize(_enemySpawner, turnCardFlow, Player, enemy);
+            turn.Initialize(_enemySpawner, cardFlowController, Player, enemy);
             turn.EnterLoopAsync().Forget();
         }
 
@@ -92,27 +92,6 @@ namespace Cardevil.Core.Root
             var exitInfo = new NodeExitInfo() { IsCleared = true };
             CardevilCore.Instance.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
             SceneLoader.UnloadSceneAsync(Scenes.Stage).Forget();
-        }
-
-        private TurnCardFlow CreateTurnCardFlow()
-        {
-            var cardStatus = CardStatus.Current;
-            
-            var initialDeck = new CardData[cardStatus.Count];
-            for (int i = 0; i < cardStatus.Count; i++)
-            {
-                initialDeck[i] = cardStatus.GetCardDataById(i);
-                Debug.Assert(initialDeck[i] != null, $"[CardStatus] data[{i}] is null.");
-            }
-            var maxHand = CardevilCore.Instance.Game.PlayerStatus.MaxHand;
-            var discardRemain = CardevilCore.Instance.Game.PlayerStatus.DiscardCard;
-            
-            var model = new StageCardsModel(initialDeck, maxHand, discardRemain);
-            var rerollPresenter = new RerollPresenter(model);
-            var stageCardsPresenter = new StageCardsPresenter(model);
-            var cardUsingPresenter = new CardUsePresenter(model);
-
-            return new TurnCardFlow(model, stageCardsPresenter, cardUsingPresenter);
         }
     }
 }

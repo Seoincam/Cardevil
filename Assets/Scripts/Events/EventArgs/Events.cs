@@ -154,12 +154,4 @@ namespace Cardevil.Events
             base.Clear();
         }
     }
-
-    public class PlayerTurnStartArgs : ExecEventArgs<PlayerTurnStartArgs>
-    {
-        public enum Orders
-        {
-            DrawCards
-        }
-    }
 }
