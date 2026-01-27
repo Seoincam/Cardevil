@@ -51,8 +51,6 @@ namespace Cardevil.Cards.Evaluation
     {
         private EvaluationResultsModel _model;
         
-        private EvaluationSequence _seq;
-
         public IReadOnlyEvaluationResultsModel ResultsModel => _model;
 
         public CardDamageEvaluationArgs GetArgs() => CardDamageEvaluationArgs.Get(_toUseCards, _handRanking);

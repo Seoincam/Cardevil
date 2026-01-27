@@ -18,8 +18,6 @@ namespace Cardevil.Cards.InStage
         private StageCardsView _view;
         private DeckRemainView _deckRemainView;
         
-        private Action _deckChanged;
-
         private State _state;
         private bool _completePlayerInput;
 
@@ -34,8 +32,13 @@ namespace Cardevil.Cards.InStage
             Debug.Assert(model != null);
             _model = model;
 
-            int priority = (int)EnterStageArgs.Orders.Last;
-            ExecEventBus<EnterStageArgs>.RegisterStatic(priority, OnEnterStageAsync);
+            ExecEventBus<EnterStageArgs>.RegisterStatic(
+                (int)EnterStageArgs.Orders.Last, 
+                OnEnterStageAsync);
+            
+            ExecEventBus<PlayerTurnStartArgs>.RegisterStatic(
+                (int)PlayerTurnStartArgs.Orders.DrawCards, 
+                OnPlayerTurnStartAsync);
         }
         
         public void Dispose()
@@ -94,7 +97,7 @@ namespace Cardevil.Cards.InStage
         /// <summary>
         /// 플레이어의 인풋이 끝날 때까지 대기.
         /// </summary>
-        public async UniTask WaitPlayerInputCompleted()
+        public async UniTask WaitPlayerInputCompleted(CancellationToken cancellationToken)
         {
             _completePlayerInput = false;
             
@@ -130,6 +133,11 @@ namespace Cardevil.Cards.InStage
         private void OnSortByIconButtonClicked()
         {
             SortByIconAsync().Forget();
+        }
+
+        private async UniTask OnPlayerTurnStartAsync(PlayerTurnStartArgs args, CancellationToken cancellationToken)
+        {
+            await DrawUntilMaxHandAsync();
         }
 
         private async UniTask DiscardAndDrawAsync()

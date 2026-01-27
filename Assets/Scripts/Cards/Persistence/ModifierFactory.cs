@@ -13,7 +13,7 @@ namespace Cardevil.Cards.Persistence
         {
             IModifier mod = saveData.type switch
             {
-                ModifierType.AttackColor => new ColorModifier(CardColor.None),
+                ModifierType.AttackColorSelectable => new ColorModifier(CardColor.None),
                 ModifierType.AttackDamage => new DamageModifier(),
                 ModifierType.AttackNumSelectable => new SelectableNumberModifier(),
                 ModifierType.AttackNumSelectableConfirm => new SelectableNumberConfirmModifier(),

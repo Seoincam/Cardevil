@@ -2,7 +2,7 @@ namespace Cardevil.Cards.Core
 {
     public enum ModifierType
     {
-        AttackColor,
+        AttackColorSelectable,
         AttackDamage,
         AttackNumSelectable,
         AttackNumSelectableConfirm,

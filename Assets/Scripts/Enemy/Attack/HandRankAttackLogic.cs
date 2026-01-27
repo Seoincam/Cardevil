@@ -1,4 +1,3 @@
-using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Utils; // LogEx 사용 가정
 using UnityEngine;
 using System.Collections.Generic;

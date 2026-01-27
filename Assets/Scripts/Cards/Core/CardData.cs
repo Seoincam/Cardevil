@@ -16,9 +16,9 @@ namespace Cardevil.Cards.Core
         [SerializeField, VisibleOnly] private CardKind kind;
         
         [Header("Attack Card")]
-        [SerializeField, VisibleOnly] private CardColor color;
         [SerializeField, VisibleOnly] private float damageMultiplier;
         [SerializeField, VisibleOnly] private SelectState<int> numberSelectState;
+        [SerializeField, VisibleOnly] private SelectState<CardColor> colorSelectState;
 
         [Header("Move Card")]
         [SerializeField, VisibleOnly] private int length;
@@ -44,9 +44,9 @@ namespace Cardevil.Cards.Core
         public EnhancementData CurrentEnhancement { get; }
         
         // Attack Card
-        public CardColor Color => color;
         public float DamageMultiplier => damageMultiplier;
         public SelectState<int> NumberSelectState => numberSelectState;
+        public SelectState<CardColor> ColorSelectState => colorSelectState;
 
         // Move Card
         public int Length => length;
@@ -76,7 +76,9 @@ namespace Cardevil.Cards.Core
         /// 선택 가능한 값이 하나인 경우에도 <c>true</c>를 반환함.
         /// </summary>
         public bool CompleteSelectingValue =>
-            IsAttack ? numberSelectState.FinalValue.HasValue : directionSelectState.FinalValue.HasValue;
+            IsAttack 
+                ? numberSelectState.FinalValue.HasValue && colorSelectState.FinalValue.HasValue 
+                : directionSelectState.FinalValue.HasValue;
 
         /// <summary>
         /// 공격 카드의 최종 선택 숫자.
@@ -84,6 +86,10 @@ namespace Cardevil.Cards.Core
         public int FinalNumber => CompleteSelectingValue
                 ? (int)numberSelectState.FinalValue
                 : throw new ArgumentNullException(nameof(numberSelectState.FinalValue));
+        
+        public CardColor FinalColor => CompleteSelectingValue 
+            ? (CardColor)colorSelectState.FinalValue 
+            : throw new ArgumentNullException(nameof(colorSelectState.FinalValue));
 
         /// <summary>
         /// 이동 카드의 최종 선택 방향.
@@ -100,8 +106,8 @@ namespace Cardevil.Cards.Core
         {
             private readonly int _id;
             private readonly CardKind _kind;
-            
-            private CardColor _color = CardColor.None;
+
+            private readonly List<CardColor?> _colorSelectables = new();
             private float _damageMultiplier = 1f;
             private readonly List<int?> _numberSelectables = new();
 
@@ -122,7 +128,22 @@ namespace Cardevil.Cards.Core
 
             #region Setter
 
-            public void SetColor(CardColor color) => _color = color;
+            public void AddColorSelectable(CardColor? color)
+            {
+                if (!color.HasValue)
+                {
+                    _colorSelectables.Add(null);
+                    return;
+                }
+
+                // color.HasValue일 경우, 기존의 color를 number로 대체
+                for (int i = 0; i < _numberSelectables.Count; i++)
+                {
+                    if (_colorSelectables[i].HasValue) continue;
+                    _colorSelectables[i] = color;
+                    break;
+                }
+            }
             public void AddDamageMultiplier(float multiplier) => _damageMultiplier += multiplier;
             public void AddNumberSelectable(int? number)
             {
@@ -181,35 +202,39 @@ namespace Cardevil.Cards.Core
                     _directionSelectables.Clear();
                     _directionSelectables.AddRange(new Direction?[] { Direction.Up, Direction.Down, Direction.Left, Direction.Right });
                 }
-                
+
+                SelectState<CardColor> colorSelectState = null;
                 SelectState<int> numberSelectState = null;
                 SelectState<Direction> directionSelectState = null;
 
                 if (_kind == CardKind.Attack)
-                    numberSelectState = new(_numberSelectables);
+                {
+                    numberSelectState = new SelectState<int>(_numberSelectables);
+                    colorSelectState = new SelectState<CardColor>(_colorSelectables);
+                }
                 else if (_kind == CardKind.Move)
                 {
-                    directionSelectState = new(_directionSelectables);
+                    directionSelectState = new SelectState<Direction>(_directionSelectables);
                     
                     // Direction Flag 확정
                     foreach (var dir in directionSelectState.Selectables)
                         _directionFlag |= dir.value.ToDirectionFlag();
                 }
 
-                return new CardData(_id, _kind, _currentEnhancement, _color, _damageMultiplier, numberSelectState, _length, directionSelectState, _directionFlag);
+                return new CardData(_id, _kind, _currentEnhancement, colorSelectState, _damageMultiplier, numberSelectState, _length, directionSelectState, _directionFlag);
             }
         }
         
         private CardData(
             int id, CardKind kind, EnhancementData currentEnhancement, 
-            CardColor color, float damageMultiplier, SelectState<int> numberSelectState, 
+            SelectState<CardColor> colorSelectState, float damageMultiplier, SelectState<int> numberSelectState, 
             int length, SelectState<Direction> directionSelectState, DirectionFlag directionFlag)
         {
             this.id = id;
             this.kind = kind;
             CurrentEnhancement = currentEnhancement;
 
-            this.color = color;
+            this.colorSelectState = colorSelectState;
             this.damageMultiplier = damageMultiplier;
             this.numberSelectState = numberSelectState;
             

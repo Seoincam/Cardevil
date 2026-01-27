@@ -1,6 +1,4 @@
 using Cardevil.Core;
-using Cardevil.Events;
-using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -99,20 +97,20 @@ namespace Cardevil.Cards.InStage
 
         private void Initialize()
         {
-            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.First, OnDiscardChanged);
-            ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.Last, OnDiscardChanged);
-            ExecEventBus<CardDeckChangeArgs>.RegisterStatic(int.MaxValue, OnDeckChanged);
+            // ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.First, OnDiscardChanged);
+            // ExecEventBus<CardDiscardChangeArgs>.RegisterStatic((int)CardDiscardChangeArgs.Order.Last, OnDiscardChanged);
+            // ExecEventBus<CardDeckChangeArgs>.RegisterStatic(int.MaxValue, OnDeckChanged);
         }
 
-        private async UniTask OnDiscardChanged(CardDiscardChangeArgs eventArgs, CancellationToken cancellationToken)
-        {
-            discardCountText.text = eventArgs.ModifiedDiscard.ToString();
-        }
-
-        private async UniTask OnDeckChanged(CardDeckChangeArgs eventArgs, CancellationToken cancellationToken)
-        {
-            deckCountText.text = $"{eventArgs.NewDeckCount} / 50";
-        }
+        // private async UniTask OnDiscardChanged(CardDiscardChangeArgs eventArgs, CancellationToken cancellationToken)
+        // {
+        //     discardCountText.text = eventArgs.ModifiedDiscard.ToString();
+        // }
+        //
+        // private async UniTask OnDeckChanged(CardDeckChangeArgs eventArgs, CancellationToken cancellationToken)
+        // {
+        //     deckCountText.text = $"{eventArgs.NewDeckCount} / 50";
+        // }
 
 
         public async UniTask ExitHandBarAsync()

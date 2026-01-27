@@ -1,8 +1,9 @@
 using Cardevil.Attributes;
+using Cardevil.Cards.Core;
+using Cardevil.Cards.InStage;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using System;
-using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Enemy;
 using Cardevil.Utils;
 using UnityEngine;
@@ -91,32 +92,24 @@ namespace Cardevil.Core.Turn
             }
         }
         
+        // TODO: 손패를 다쓰면 게임 오버 - @seoincam
         private async UniTask CoreLoopAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {
                 TurnOrder++;
+                await ExecEventBus<PlayerTurnStartArgs>.InvokeMergedAndDispose(PlayerTurnStartArgs.Get(), cancellationToken);
                 
-                await _cardFlow.DrawCard();
-                if (_cardFlow.IsNoCard)
-                {
-                    // TODO: 게임 오버
-                    break;
-                }
-
-                await _cardFlow.WaitUserInput();
-                
-                // 플레이어가 사용한 모든 카드를 사용함.
-                // 이때 플레이어의 이동이 이루어짐.
+                await _cardFlow.WaitPlayerInputCompleted(cancellationToken);
                 await _cardFlow.UseAllCardsAsync(cancellationToken);
-                
-                // 공격 카드 데미지 계산. EvaluationResult에 모든 계산이 끝난 데미지,
-                // 플레이어 위치, 족보가 모두 포함되어 있음. 이 시점에선 result는 불변임.
-                var evaluationResult = await _cardFlow.EvaluateAsync(cancellationToken);
+                var evaluationResult = await _cardFlow.EvaluateDamageAsync(cancellationToken);
                 
                 // 플레이어의 공격 + 적의 피격
-                var playerAttackArgs = PlayerAttackArgs.Get(evaluationResult);
-                await ExecEventBus<PlayerAttackArgs>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
+                if (evaluationResult != null)
+                {
+                    var playerAttackArgs = PlayerAttackArgs.Get((EvaluationResult)evaluationResult);
+                    await ExecEventBus<PlayerAttackArgs>.InvokeMergedAndDispose(playerAttackArgs, cancellationToken);
+                }
                 
                 if (_targetEnemy.IsDead)
                 {
@@ -141,5 +134,6 @@ namespace Cardevil.Core.Turn
                 await ExecEventBus<EnemyTurnEndArgs>.InvokeMergedAndDispose(EnemyTurnEndArgs.Get(), cancellationToken);
             }
         }
+        
     }
 }

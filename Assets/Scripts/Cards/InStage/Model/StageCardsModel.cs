@@ -14,6 +14,8 @@ namespace Cardevil.Cards.InStage
         int MaxHand { get; }
         
         int DiscardRemain { get; }
+
+        event Action<StageCardsModel.EventType> Changed;
         
         IReadOnlyList<CardData> Deck { get; }
         
@@ -70,7 +72,9 @@ namespace Cardevil.Cards.InStage
         /// 남은 버리기 횟수.
         /// </summary>
         public int DiscardRemain { get; private set; }
-        
+
+        public event Action<EventType> Changed;
+
         public IReadOnlyList<CardData> Deck => deck;
         
         public IReadOnlyList<CardData> DiscardPile => discardPile;
@@ -135,6 +139,7 @@ namespace Cardevil.Cards.InStage
             var cardData = deck[^1];
             deck.RemoveAt(deck.Count - 1);
 
+            Changed?.Invoke(EventType.Deck);
             return cardData;
         }
         
@@ -144,11 +149,13 @@ namespace Cardevil.Cards.InStage
         public void AddHand(StageCard stageCard)
         {
             hand.Add(stageCard);
+            Changed?.Invoke(EventType.Hand);
         }
         
         public void InsertHand(StageCard stageCard, int index)
         {
             hand.Insert(index, stageCard);
+            Changed?.Invoke(EventType.Hand);
         }
 
         /// <summary>
@@ -157,6 +164,7 @@ namespace Cardevil.Cards.InStage
         public void RemoveHand(StageCard stageCard)
         {
             hand.Remove(stageCard);
+            Changed?.Invoke(EventType.Hand);
         }
 
         /// <summary>
@@ -167,6 +175,9 @@ namespace Cardevil.Cards.InStage
             hand.Remove(stageCard);
             _selection.Remove(stageCard);
             discardPile.Add(stageCard);
+            
+            Changed?.Invoke(EventType.Hand);
+            Changed?.Invoke(EventType.Selection);
         }
 
         /// <summary>
@@ -175,6 +186,7 @@ namespace Cardevil.Cards.InStage
         public void Select(StageCard stageCard)
         {
             _selection.Add(stageCard);
+            Changed?.Invoke(EventType.Selection);
         }
 
         /// <summary>
@@ -184,6 +196,7 @@ namespace Cardevil.Cards.InStage
         public void Deselect(StageCard stageCard)
         {
             _selection.Remove(stageCard);
+            Changed?.Invoke(EventType.Selection);
         }
 
         /// <summary>
@@ -209,6 +222,7 @@ namespace Cardevil.Cards.InStage
         {
             int indexA = GetIndexInHand(stageCardA);
             (hand[indexA], hand[indexB]) = (hand[indexB], hand[indexA]);
+            Changed?.Invoke(EventType.Hand);
         }
 
         /// <summary>
@@ -217,6 +231,7 @@ namespace Cardevil.Cards.InStage
         public void SortHandByNumber()
         {
             hand.Sort(CompareByNumber);
+            Changed?.Invoke(EventType.Hand);
         }
 
         /// <summary>
@@ -225,6 +240,7 @@ namespace Cardevil.Cards.InStage
         public void SortHandByIcon()
         {
             hand.Sort(CompareByIcon);
+            Changed?.Invoke(EventType.Hand);
         }
 
         /// <summary>
@@ -270,6 +286,24 @@ namespace Cardevil.Cards.InStage
             public static InteractingInfo Empty => new(null, Time.time, 0);
 
             public static implicit operator StageCard(InteractingInfo interacting) => interacting.StageCard;
+        }
+        
+        public enum EventType
+        {
+            /// <summary>
+            /// 덱이 변경되었음.
+            /// </summary>
+            Deck,
+            
+            /// <summary>
+            /// 손패가 변경되거나 순서가 바뀌었음.
+            /// </summary>
+            Hand,
+            
+            /// <summary>
+            /// 선택패가 변경되었음.
+            /// </summary>
+            Selection
         }
 
         #region Sorting Helper

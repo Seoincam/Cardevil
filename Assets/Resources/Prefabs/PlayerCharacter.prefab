@@ -141,6 +141,7 @@ MonoBehaviour:
   playerCharacterSetting: {fileID: 11400000, guid: 74d535166e29311479c7f27457430b66, type: 2}
   _entity: {fileID: 2032631788511929565}
   _playerVisual: {fileID: 739627054653589435}
+  debugReflect: 0
 --- !u!114 &2032631788511929565
 MonoBehaviour:
   m_ObjectHideFlags: 0
