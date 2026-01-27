@@ -1377,7 +1377,7 @@ PrefabInstance:
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodePreset
       value: 
-      objectReference: {fileID: 11400000, guid: dc52fcfaf171a8842a731bc02324d08a, type: 2}
+      objectReference: {fileID: 11400000, guid: 44468d5dca06a9841b9478b37441e4dd, type: 2}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nextNodes.Array.size
       value: 1
