@@ -1,5 +1,5 @@
-using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Cards.Config;
+using Cardevil.Cards.Utils;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Utils;
@@ -14,7 +14,7 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using Math = System.Math;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     public class RerollView : MonoBehaviour, IClearable
     {
@@ -40,9 +40,7 @@ namespace Cardevil.Cards.InStage.View
 
         private UniTask _ticketAnim = UniTask.CompletedTask;
         private Tween _ticketTween;
-
-        private const string SlotPath = "UI/CardUI/Slot";
-
+        
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -99,7 +97,7 @@ namespace Cardevil.Cards.InStage.View
         /// 배경 페이드인, 티켓 카운트 등장 애니메이션, 버튼 스케일 인 등을 순서대로 재생.
         /// </summary>
         /// <returns>연출이 모두 완료되면 완료되는 <see cref="UniTask"/>.</returns>
-        public async UniTask EnterRerollAsync()
+        public async UniTask EnterStageAsync()
         {
             var image = background.GetComponent<Image>();
             var color = image.color;
@@ -172,7 +170,7 @@ namespace Cardevil.Cards.InStage.View
         {
             while (_slots.Count < slotCount)
             {
-                var slot = AssetUtil.Instantiate(SlotPath, bar).GetComponent<RectTransform>();
+                var slot = AssetUtil.Instantiate(CardAssetPath.Slot, bar).GetComponent<RectTransform>();
                 _slots.Add(slot);
             }
 
@@ -187,12 +185,11 @@ namespace Cardevil.Cards.InStage.View
         /// <summary>
         /// 지정된 인덱스 슬롯에 카드를 배치, 시각적 인덱스를 갱신.
         /// </summary>
-        /// <param name="card">배치할 카드.</param>
+        /// <param name="stageCard">배치할 카드.</param>
         /// <param name="slotIndex">배치할 슬롯의 인덱스.</param>
-        public void SetCardToSlot(Card card, int slotIndex)
+        public void UpdateCardParentSlot(StageCard stageCard, int slotIndex)
         {
-            card.transform.SetParent(_slots[slotIndex]);
-            card.UpdatePosition();
+            stageCard.SetParent(_slots[slotIndex]);
         }
 
         #region Reroll Ticket Count

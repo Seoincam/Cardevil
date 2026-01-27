@@ -2,7 +2,6 @@ using Cardevil.Core.Bootstrap;
 using Cardevil.Relics;
 using Cardevil.Relics.OnEvaluation;
 using Cardevil.Utils;
-using Database;
 using Database.Generated;
 using System;
 using System.Collections.Generic;

@@ -1,10 +1,10 @@
-using Cardevil.Cards.Evaluations;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
-using Cardevil.Core.Turn.Interfaces;
 using Cardevil.DebugConsole;
+using Cardevil.Events;
 using Cardevil.Events.AsyncPriorityEvent;
 using Cardevil.Events.Core;
+using Cardevil.Events.ExecEvents;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Field;
 using Cardevil.Utils;
@@ -13,6 +13,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using JetBrains.Annotations;
 using System;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.Scripting;
@@ -24,7 +25,7 @@ namespace Cardevil.Ingame.Player
     /// <summary>
     /// 플레이어 캐릭터 클래스
     /// </summary>
-    public class PlayerCharacter : MonoBehaviour, IPlayerControl, ITurnPlayer
+    public class PlayerCharacter : MonoBehaviour, IPlayerControl, TurnManager.ITurnTarget
     {
         [Header("Debug")]
         [SerializeField] protected bool _isDebugMode = false;
@@ -92,6 +93,18 @@ namespace Cardevil.Ingame.Player
                 _entity.Init(_initialTile);
                 // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
+            
+            // 이벤트 등록
+            int movePriority = (int)PlayerMoveArgs.Orders.PlayerMove;
+            ExecStaticEventBus<PlayerMoveArgs>.Register(movePriority, OnTurnMoveAsync);
+
+            int attackPriority = (int)PlayerAttackArgs.Orders.PlayerAttack;
+            ExecStaticEventBus<PlayerAttackArgs>.Register(attackPriority, OnTurnAttackAsync);
+
+            int attackedPriority = (int)EnemyAttackArgs.Orders.PlayerAttacked;
+            ExecStaticEventBus<EnemyAttackArgs>.Register(attackedPriority, OnTurnAttackedAsync);
+
+            // TODO: 이벤트 해제하기
         }
 
         public void Update()
@@ -419,50 +432,34 @@ namespace Cardevil.Ingame.Player
         
         public bool IsDead { get; }
 
-        public async UniTask<AttackResult> TurnAttackAsync()
+        #endregion
+
+        #region 이벤트 기반 플레이어 행동
+
+        private async UniTask OnTurnMoveAsync(PlayerMoveArgs args, CancellationToken cancellationToken)
+        {
+            foreach (var moving in args.ToMove)
+            {
+                await MoveWithAnim(moving, 1);
+                await UniTask.Delay(300);
+            }
+            args.SetPlayerPositionAfterMove(Entity.Tile);
+        }
+
+        private async UniTask OnTurnAttackAsync(PlayerAttackArgs args, CancellationToken cancellationToken)
         {
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
 
-            var ctx = TurnManager.Context;
-            
-            var result = ctx.CardFlow.Result;
-            int damage = result.TotalDamage;
-            var handRanking = result.HandRanking;
-
-            LogEx.Log($"플레이어 공격 : {damage} 피해. 구현 아직");
+            LogEx.Log($"플레이어의 공격 : {args.EvaluationResult.TotalDamage} 피해. 구현 아직");
             PlayerVisual.PlayAttackAnimation();
-            // TODO: 공격 애니메이션도 await하기
-            
-            return new AttackResult(target: ctx.CurrentEnemy, handRanking, damage);
-        }
-        
-        public void TakeDamage(int amount)
-        {
-            LogEx.Log($"Player takes {amount} damage!");
-            PlayerStatus.TakeDamage((int)amount);
         }
 
-        public async UniTask<Vector2Int> TurnMove()
+        private async UniTask OnTurnAttackedAsync(EnemyAttackArgs args, CancellationToken cancellationToken)
         {
-            LogEx.Log("Player Moves!");
-
-            var ctx = TurnManager.Context;
-            
-            var result = ctx.CardFlow.Result;
-            //TODO 이동 로직 구현
-            foreach (var move in result.Moves)
-            {
-                if (!move.DirectionSelectState.FinalValue.HasValue)
-                    continue;
-                
-                await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
-                await UniTask.Delay(300);
-            }
-            LogEx.Log("Player Move Completed!");
-
-            return new Vector2Int(Entity.Tile.i, Entity.Tile.j);
+            LogEx.Log($"Player takes {args.TotalDamage} damage!");
+            PlayerStatus.TakeDamage(args.TotalDamage);
         }
 
         #endregion

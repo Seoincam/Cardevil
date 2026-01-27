@@ -62,7 +62,11 @@ namespace Cardevil.Title
         private void OnProfileClicked()
         {
             foreach (SaveSlot slot in Enum.GetValues(typeof(SaveSlot)))
+            {
+                if (slot == SaveSlot.DevSlot) continue;
                 UpdateProfile(slot);
+            }
+                
 
             dim.SetActive(true);
             profilePanel.SetActive(true);

@@ -49,8 +49,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e5e9fe0fe4ee464290cdff117bc4c1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animSO: {fileID: 11400000, guid: 86cca5790825e4f938459e939ac90ea1, type: 2}
-  main: {fileID: 8573174610368203753}
+  setting: {fileID: 11400000, guid: 86cca5790825e4f938459e939ac90ea1, type: 2}
+  rect: {fileID: 7712289223060569501}
 --- !u!1 &6871525242544917100
 GameObject:
   m_ObjectHideFlags: 0

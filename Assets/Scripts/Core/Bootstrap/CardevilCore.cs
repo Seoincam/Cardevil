@@ -1,4 +1,4 @@
-using Cardevil.Cards.Data.Enhancement;
+using Cardevil.Cards.Enhancements;
 using Cardevil.Pools;
 using Cardevil.Save;
 using Cardevil.Sound;

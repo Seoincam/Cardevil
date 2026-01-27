@@ -1,5 +1,4 @@
-using Cardevil.Cards.ScriptableObjects;
-using Cardevil.Utils;
+using Cardevil.Cards.Config;
 using UnityEngine;
 using System.Collections.Generic;
 using DG.Tweening;

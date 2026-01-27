@@ -1,9 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
-using Cardevil.Cards.InStage.Presenter;
-using Cardevil.Cards.ScriptableObjects;
-using Cardevil.Cards.Visual.Handler;
+using Cardevil.Cards.Config;
 using Cardevil.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
@@ -15,7 +11,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     public class CardValueSelectionView : MonoBehaviour, IClearable
     {
@@ -36,6 +32,7 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private ValueSelectionViewAnimSetting setting;
 
 
+        /*
         /// <summary>
         /// 값 선택 완료 이벤트.
         /// 선택된 카드와 선택 값(번호 또는 방향) 전달.
@@ -342,6 +339,11 @@ namespace Cardevil.Cards.InStage.View
             bar.raycastTarget = value;
             foreach (var visual in _visuals)
                 visual.CanvasGroup.blocksRaycasts = value;
+        }
+        */
+        public void Clear()
+        {
+            throw new NotImplementedException();
         }
     }
 }

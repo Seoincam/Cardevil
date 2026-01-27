@@ -1,5 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Data;
+using Cardevil.Cards.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Ingame;
 using UnityEngine;

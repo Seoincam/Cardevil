@@ -1,33 +1,32 @@
-using Cardevil.Cards.Visual.Base;
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 
-namespace Cardevil.Cards.Visual.StateMachine
+namespace Cardevil.Cards.Visual
 {
     public sealed class CardVisualPhaseStateMachine
     {
         private readonly Dictionary<VisualPhase, IPhaseState> _states;
         private IPhaseState _current;
 
-        public CardVisualPhaseStateMachine(CardVisualBase visual, CardVisualSpriteSet spriteSet)
+        public CardVisualPhaseStateMachine(ChangeableCardVisual visual, CardSpriteSet spriteSet)
         {
             _states = new Dictionary<VisualPhase, IPhaseState>()
             {
-                { VisualPhase.SpriteOne, new SpriteOnePhaseState(visual) },
-                { VisualPhase.SpriteTwo, new SpriteTwoPhaseState(visual) },
-                { VisualPhase.SpriteThree, new SpriteThreePhaseState(visual) }
+                { VisualPhase.One, new SpriteOnePhaseState(visual) },
+                { VisualPhase.Two, new SpriteTwoPhaseState(visual) },
+                { VisualPhase.Three, new SpriteThreePhaseState(visual) }
             };
-            _current = _states[VisualPhase.SpriteOne];
+            _current = _states[VisualPhase.One];
             _current.OnEnter(spriteSet);
         }
 
-        public async UniTaskVoid InitPhase(CardVisualSpriteSet spriteSet)
+        public async UniTaskVoid InitPhase(CardSpriteSet spriteSet)
         {
             _current = _states[spriteSet.Phase];
             await _current.OnEnter(spriteSet);
         }
 
-        public async UniTask SetPhase(CardVisualSpriteSet spriteSet)
+        public async UniTask SetPhase(CardSpriteSet spriteSet)
         {
             await _current.OnExit();
             await _current.SetPhase(spriteSet.Phase);

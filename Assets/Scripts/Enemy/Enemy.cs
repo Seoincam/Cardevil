@@ -1,4 +1,3 @@
-using Cardevil.Cards.Data;
 using Cardevil.Core.Turn;
 using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
@@ -13,6 +12,7 @@ using Cardevil.Events.ExecEvents;
 using Cardevil.Events;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Player;
+using System.Threading;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -31,7 +31,7 @@ namespace Cardevil.InGame.Enemy
         FourCard,
         StraightFlush
     }
-    public class Enemy : MonoBehaviour, ITurnEnemy, IAttackVisualizer
+    public class Enemy : MonoBehaviour, TurnManager.ITurnTarget, IAttackVisualizer
     {
 
         //-----HP UI-----///
@@ -68,7 +68,60 @@ namespace Cardevil.InGame.Enemy
             currentAttackStyle = AttackStyle.UnKnown;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
+
+            int showDescription = (int)EnterStageArgs.Orders.ShowEnemyDescription;
+            ExecStaticEventBus<EnterStageArgs>.Register(showDescription, OnShowDescriptionAsync);
+
+            int showInitialAttackAreaPriority = (int)EnterStageArgs.Orders.ShowEnemyInitialAttackArea;
+            ExecStaticEventBus<EnterStageArgs>.Register(showInitialAttackAreaPriority, OnShowInitialAttackAreaAsync);
+
+            int attackPriority = (int)EnemyAttackArgs.Orders.EnemyAttack;
+            ExecStaticEventBus<EnemyAttackArgs>.Register(attackPriority, OnTurnAttackAsync);
+
+            int attackedPriority = (int)PlayerAttackArgs.Orders.EnemyAttacked;
+            ExecStaticEventBus<PlayerAttackArgs>.Register(attackedPriority, OnTurnAttackedAsync);
+            
+            // TODO: 디스폰될 때 이벤트 해제
         }
+
+        #region 이벤트 기반 적 행동
+
+        private async UniTask OnShowDescriptionAsync(EnterStageArgs args, CancellationToken cancellationToken)
+        {
+            // TODO:
+            // 서인: 이거는 UI 관련된 거여서 Enemy 클래스에 있는게 맞는지는 모르겠음.
+            // 관련된 구조 만들면서 "맨 처음에 적에 대한 설명 표시"를 어디서 수행할지 정하고 수정해줘.
+        }
+
+        private async UniTask OnShowInitialAttackAreaAsync(EnterStageArgs args, CancellationToken cancellationToken)
+        {
+            // TODO: 첫 범위 표시하기
+        }
+
+        private async UniTask OnTurnAttackAsync(EnemyAttackArgs args, CancellationToken cancellationToken)
+        {
+            _enemyAttackInfo.attackSucess = false;
+            
+            // TODO:
+            // 적이 공격하기
+            // args.SetDamage(1);
+            
+            await UniTask.Delay(1200);
+        }
+
+        private async UniTask OnTurnAttackedAsync(PlayerAttackArgs args, CancellationToken cancellationToken)
+        {
+            // TODO: 적이 데미지 받기
+            
+            CurrentHp = HP - args.EvaluationResult.TotalDamage;
+            LogEx.Log($"{args.EvaluationResult.TotalDamage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
+            UpdateHPBar();
+            
+            // 유닛 사망
+            isEnemyDead = true;
+        }
+
+        #endregion
 
         // ITurnEnemy 변경 사항
         public async UniTask Replace()
@@ -76,33 +129,31 @@ namespace Cardevil.InGame.Enemy
             LogEx.LogWarning("<b>대윤</b>: 아직 enemy 교체가 구현되지 않음.");
         }
 
-        public async UniTask ShowInitialAttackArea(IReadOnlyTurnContext ctx)
+        public async UniTask ShowInitialAttackArea(TileVector playerPosition)
         {
-            AttackEnemyTurnStart(ctx);
+            AttackEnemyTurnStart(playerPosition);
         }
-       
-        // 플레이어 턴 -> Enemy턴 -> 종료 반복
-        public async UniTask<AttackResult> TurnAttackAsync()
-        {
-            _enemyAttackInfo.attackSucess = false;
-
-            var ctx = TurnManager.Context;
-
-            var target = ctx.Player;
-            // 이제 플레이어 위치 이렇게 받아오면 됨!
-            var playerPosition = ctx.PlayerPosition;
-
-            AttackEnemyTurnStart(ctx);
-
-            await UniTask.Delay(1200);
-           
-
-            // TODO: 필요하다면 족보도 받아오기
-            return _enemyAttackInfo.attackSucess
-                ? new AttackResult(target, HandRanking.None, (int)damage + enforcedAttackDamage)
-                : new AttackResult(target, HandRanking.None, 0);
-        }
-
+        
+        // public async UniTask<AttackResult> TurnAttackAsync()
+        // {
+        //     _enemyAttackInfo.attackSucess = false;
+        //
+        //     var ctx = TurnManager.Context;
+        //
+        //     var target = ctx.Player;
+        //     // 이제 플레이어 위치 이렇게 받아오면 됨!
+        //     var playerPosition = ctx.PlayerPosition;
+        //
+        //     AttackEnemyTurnStart(ctx);
+        //
+        //     await UniTask.Delay(1200);
+        //    
+        //
+        //     // TODO: 필요하다면 족보도 받아오기
+        //     return _enemyAttackInfo.attackSucess
+        //         ? new AttackResult(target, HandRanking.None, (int)damage + enforcedAttackDamage)
+        //         : new AttackResult(target, HandRanking.None, 0);
+        // }
 
         #region Attack 관련
 
@@ -127,18 +178,18 @@ namespace Cardevil.InGame.Enemy
         #endregion
 
 
-        public virtual void AttackEnemyAwake(IReadOnlyTurnContext ctx) // 처음으로 호출되었을때
+        public virtual void AttackEnemyAwake(TileVector playerPosition) // 처음으로 호출되었을때
         {
             if (aWakeFirst == true) // 처음에선 랜덤지정
             {
-                CreateAttack(ctx, true);
+                CreateAttack(playerPosition, true);
             }
             aWakeFirst = false;
         }
 
-        public void CreateAttack(IReadOnlyTurnContext ctx, bool firstCreate = false)
+        public void CreateAttack(TileVector playerPosition, bool firstCreate = false)
         {
-            Attack tmpAttack = new() { turnCtx = ctx };
+            Attack tmpAttack = new() { playerPosition = playerPosition };
 
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨공격인지 설정 
 
@@ -153,18 +204,18 @@ namespace Cardevil.InGame.Enemy
             SetAttack(tmpAttack, baseMobBossData.AttackPlayer);
             attackLists.Add(tmpAttack); // 리스트에 어택추가
         }
-        public void AttackEnemyTurnStart(IReadOnlyTurnContext ctx)
+        public void AttackEnemyTurnStart(TileVector playerPosition)
         {
             EnemyTurnClear();
             LogEx.Log("Enemy Turn!!");
-            AttackEnemyAwake(ctx); // Enemy Awake시 실행되는 함수
+            AttackEnemyAwake(playerPosition); // Enemy Awake시 실행되는 함수
 
             // 우선 시작할때 공격구역 설정하도록 해보기 Test
 
 
             AttackPatternEnemyTurning(); // Enemy가 수행하는 공격들의 TurnOrder 감소 후 공격
 
-            AttackEnemyTurnEnd(ctx); // Enemy 공격의 마무리 단계
+            AttackEnemyTurnEnd(playerPosition); // Enemy 공격의 마무리 단계
         }
 
 
@@ -215,7 +266,7 @@ namespace Cardevil.InGame.Enemy
 
 
 
-        void AttackEnemyTurnEnd(IReadOnlyTurnContext ctx)
+        void AttackEnemyTurnEnd(TileVector playerPosition)
         {
             // 공격이 끝난(TurnOrder == 0) 항목들에 대해 하이라이트 해제 먼저 수행
             foreach (var attack in attackLists)
@@ -231,7 +282,7 @@ namespace Cardevil.InGame.Enemy
             for (int i = 0; i < removedCount; i++)
             {
                 LogEx.Log("지워진 Attack 만큼 새로 생성");
-                CreateAttack(ctx);
+                CreateAttack(playerPosition);
             }
 
  

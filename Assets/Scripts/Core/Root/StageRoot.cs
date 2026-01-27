@@ -1,5 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.System;
+using Cardevil.Cards.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
 using Cardevil.Dungeon;
@@ -9,6 +9,7 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Player;
 using Cardevil.SceneManagement;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Cardevil.Core.Root
@@ -19,9 +20,9 @@ namespace Cardevil.Core.Root
     /// </summary>
     public class StageRoot : MonoBehaviour
     {
-        [field: SerializeField] public CardManager Card { get; private set; }
         [SerializeField] private TurnManager turn;
         [SerializeField] private EnemySpawner _enemySpawner;
+        [SerializeField] private CardFlowController cardFlowController;
 
         [Header("References")]
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
@@ -40,7 +41,7 @@ namespace Cardevil.Core.Root
             
             _enemySpawner = new EnemySpawner();
             turn = new TurnManager();
-            turn.TurnLoopEnded += OnTurnLoopEnded;
+            // turn.TurnLoopEnded += OnTurnLoopEnded;
             
             Player.Init(Field);
             await InitAsync();
@@ -50,12 +51,7 @@ namespace Cardevil.Core.Root
         private async UniTask InitAsync()
         {
             _context = CardevilCore.Instance.GameFlow.Context;
-            
-            var cardStatus = CardevilCore.Instance.Game.CardStatus;
-            await Card.InitAsync(cardStatus);
         }
-
-         
         
         /// <summary>
         /// 전투 스테이지 진입 비동기 처리.
@@ -75,17 +71,18 @@ namespace Cardevil.Core.Root
                 return;
             }
             
+            cardFlowController = CardFlowController.Build();
+            
             enemy.Init(Field);
-            turn.Init(_enemySpawner, Card.BuildFlow(), Player, enemy);
-            turn.StartLoop();
+            turn.Initialize(_enemySpawner, cardFlowController, Player, enemy);
+            turn.EnterLoopAsync().Forget();
         }
 
         /// <summary>
         /// 턴 루프 종료 처리.
         /// 던전 노드 퇴장 처리 및 스테이지 씬 언로드.
         /// </summary>
-        /// <param name="ctx">턴 컨텍스트</param>
-        private void OnTurnLoopEnded(TurnContext ctx)
+        private void OnTurnLoopEnded()
         {
             // TODO: 보상창 등 나와야함.
             // TODO: 변경사항 세이브 해야함.

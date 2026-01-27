@@ -1,6 +1,6 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.Evaluations;
-using Cardevil.Cards.InStage.Model.ReadOnly;
+using Cardevil.Cards.Core;
+using Cardevil.Cards.Evaluation;
+using Cardevil.Cards.InStage;
 
 namespace Cardevil.Relics.OnEvaluation
 {

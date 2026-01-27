@@ -1,4 +1,3 @@
-using Cardevil.Cards.Data.Save;
 using Cardevil.Ingame;
 using Cardevil.SceneManagement;
 using Cardevil.Utils;

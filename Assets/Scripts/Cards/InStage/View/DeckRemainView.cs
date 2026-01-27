@@ -1,7 +1,4 @@
-using Cardevil.Cards.Data;
-using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Cards.ScriptableObjects;
-using Cardevil.Cards.Visual.Handler;
+using Cardevil.Cards.Config;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -13,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class DeckRemainView : UI_Popup
@@ -25,9 +22,9 @@ namespace Cardevil.Cards.InStage.View
         [SerializeField] private SerializableDictionary<string, TextMeshProUGUI> countTexts;
         [SerializeField] private Button closeButton;
         
-        [Header("Cards Area")]
-        [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
-        
+        // [Header("Cards Area")]
+        // [SerializeField] private CardVisualDeckRemainView[] cardVisuals;
+        /*
         private IReadOnlyCardStatus _status;
         private IReadOnlyCardsModel _model;
         
@@ -206,6 +203,7 @@ namespace Cardevil.Cards.InStage.View
             if (animCanceled)
                 card.Rect.anchoredPosition = originalPos;
         }
+        */
     }
 }
 

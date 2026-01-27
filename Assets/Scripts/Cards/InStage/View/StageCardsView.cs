@@ -1,5 +1,3 @@
-using Cardevil.Cards.InStage.Model.ReadOnly;
-using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Core;
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
@@ -13,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Cardevil.Cards.InStage.View
+namespace Cardevil.Cards.InStage
 {
     public class StageCardsView: MonoBehaviour, IClearable
     {
@@ -32,12 +30,12 @@ namespace Cardevil.Cards.InStage.View
         
         public PointerAreaTrigger HandArea => handArea;
         
-        private IReadOnlyCardsModel _model;
+        private IReadOnlyStageCardsModel _model;
 
         private readonly List<RectTransform> _slots = new();
         private StageCardsViewState? _lastState; // 같은 값 재적용 방지
 
-        private float _widthFactor = 130;
+        private const float WidthFactor = 130;
         private const string SlotPath = "UI/CardUI/Slot";
         
 #if UNITY_EDITOR
@@ -52,7 +50,7 @@ namespace Cardevil.Cards.InStage.View
         }
 #endif
 
-        public void Init(IReadOnlyCardsModel model)
+        public void Init(IReadOnlyStageCardsModel model)
         {
             _model = model;
             ConfigureSlots(model.MaxHand);
@@ -189,25 +187,23 @@ namespace Cardevil.Cards.InStage.View
                 AssetUtil.Destroy(last.gameObject);
             }
         }
-
-        public void HoldCardOutsideBar(Card card)
+        
+        public void SetCardParentTemp(StageCard stageCard)
         {
-            card.transform.SetParent(transform);
+            stageCard.SetParent(transform);
         }
 
-
-        public void OnHandChanged()
+        public void UpdateAllCardsParentSlot()
         {
-            var count = _model.Hand.Count;
+            int count = _model.Hand.Count;
             for (int i = 0; i < count; i++)
             {
                 var slot = _slots[i];
-                
                 slot.gameObject.SetActive(true);
-                _model.Hand[i].transform.SetParent(slot);
-                _model.Hand[i].UpdatePosition();
+                
+                _model.Hand[i].SetParent(slot);
             }
-
+            
             if (count < _model.MaxHand)
             {
                 for (int i = count; i < _model.MaxHand; i++)
@@ -216,15 +212,9 @@ namespace Cardevil.Cards.InStage.View
                 }
             }
             
-            var width = _widthFactor * _model.Hand.Count;
+            var width = WidthFactor * _model.Hand.Count;
             var height = 200;
             bar.sizeDelta = new Vector2(width, height);
         }
     }
 }
-
-/*
- * DOPunchRotation(Vector3.forward * hoverPunchAngle, hoverTransition, 20, 1)
- *     [SerializeField] private float hoverPunchAngle = 5;
-    [SerializeField] private float hoverTransition = .15f;
- */

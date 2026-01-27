@@ -1,9 +1,9 @@
-namespace Cardevil.Cards.Visual.StateMachine
+namespace Cardevil.Cards.Visual
 {
     public enum VisualPhase
     {
-        SpriteOne = 1,
-        SpriteTwo = 2,
-        SpriteThree = 3,
+        One = 1,
+        Two = 2,
+        Three = 3,
     }
 }

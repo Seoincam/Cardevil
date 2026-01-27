@@ -1,4 +1,5 @@
 using Cardevil.Core.Turn;
+using Cardevil.Utils;
 
 namespace Cardevil.InGame.Enemy
 {
@@ -19,7 +20,7 @@ namespace Cardevil.InGame.Enemy
 
         // 상태 데이터
         public bool isPlayerAttack = true;
-        public IReadOnlyTurnContext turnCtx;
+        public TileVector playerPosition;
         public int excludedCornerIndex = -1;
 
         public void SetAttackCycle(int cycle)
