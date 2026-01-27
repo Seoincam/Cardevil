@@ -88,9 +88,9 @@ namespace Cardevil.InGame.Enemy
 
         private async UniTask OnShowDescriptionAsync(EnterStageArgs args, CancellationToken cancellationToken)
         {
+            // TODO:
             // 서인: 이거는 UI 관련된 거여서 Enemy 클래스에 있는게 맞는지는 모르겠음.
-            // 대윤이 형이 관련된 구조 만들면서 "맨 처음에 적에 대한 설명 표시"를
-            // 어디서 수행할지 정하고 수정해줘.
+            // 관련된 구조 만들면서 "맨 처음에 적에 대한 설명 표시"를 어디서 수행할지 정하고 수정해줘.
         }
 
         private async UniTask OnShowInitialAttackAreaAsync(EnterStageArgs args, CancellationToken cancellationToken)

@@ -161,11 +161,6 @@ namespace Cardevil.Cards.Evaluation
                     var movingArgs = PlayerMoveArgs.Get(card.Data.FinalDirection);
                     await ExecEventBus<PlayerMoveArgs>.InvokeMergedAndDispose(movingArgs, cancellationToken);
                     
-                    // TODO: 
-                    // Stage cards Presenter -> evaluation presenter로 넘어올 때
-                    // 모델에선 따로 보관해두어야할 듯.
-                    // Evaluation Presenter에선 단순 제거만.
-                    
                     // TODO:
                     // 제거되는 이펙트와 함께 제거되어야함.
                     _toUseCards[i] = null;
