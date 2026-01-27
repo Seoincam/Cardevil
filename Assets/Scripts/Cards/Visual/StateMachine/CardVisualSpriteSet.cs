@@ -9,6 +9,8 @@ namespace Cardevil.Cards.Visual.StateMachine
         public readonly List<Sprite> sprites;
         public readonly Sprite small;
 
+        public VisualPhase Phase => (VisualPhase)sprites.Count;
+
         public CardVisualSpriteSet(Sprite innerFrame, List<Sprite> sprites, Sprite small = null)
         {
             this.innerFrame = innerFrame;

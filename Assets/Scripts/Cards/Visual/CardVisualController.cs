@@ -23,15 +23,14 @@ namespace Cardevil.Cards.Visual
             var phase = (VisualPhase)spriteSet.sprites.Count;
             
             _fsm ??= new CardVisualPhaseStateMachine(_visual, spriteSet);
-            _fsm.InitPhase(phase, spriteSet).Forget();
+            _fsm.InitPhase(spriteSet).Forget();
         }
 
         public async UniTask UpdateData(CardData data)
         {
             var spriteSet = ConfigureSpriteSet(data);
-            var phase = (VisualPhase)spriteSet.sprites.Count;
 
-            await _fsm.SetPhase(phase, spriteSet);
+            await _fsm.SetPhase(spriteSet);
         }
 
         private CardVisualSpriteSet ConfigureSpriteSet(CardData data)

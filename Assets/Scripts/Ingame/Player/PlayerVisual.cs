@@ -1,4 +1,5 @@
 ﻿using Cardevil.Animation;
+using Cardevil.Core.Bootstrap;
 using Cardevil.DebugConsole;
 using Cardevil.Utils;
 using System;
@@ -12,6 +13,7 @@ namespace Cardevil.Ingame.Player
     {
         [SerializeField] private Animator _animator;
         [SerializeField] private SpriteRenderer _mainSpriteRenderer;
+        [SerializeField] private SpriteRenderer _shadowSpriteRenderer;
 
         public bool IsRunning
         {
@@ -41,6 +43,23 @@ namespace Cardevil.Ingame.Player
             set => SetFade(value);
         }
         
+        public float ShadowFadeAlpha
+        {
+            get => _shadowSpriteRenderer.color.a;
+            set
+            {
+                Color color = _shadowSpriteRenderer.color;
+                color.a = value;
+                _shadowSpriteRenderer.color = color;
+            }
+        }
+        
+        public float ShadowScale
+        {
+            get => _shadowSpriteRenderer.transform.localScale.x;
+            set => _shadowSpriteRenderer.transform.localScale = new Vector3(value, value, 1f);
+        }
+        
         public void PlayAttackAnimation()
         {
             _animator.SetTrigger(Utils.AnimatorHashes.Attack);
@@ -65,7 +84,7 @@ namespace Cardevil.Ingame.Player
             animEventReceived?.Invoke(eventName);
         }
 
-
+        /*
         [ConsoleCommand("PlayerVisual",
             "손님 플레이어 비주얼 테스트",
             "PlayerVisual <type>(run/idle/attack/hit/rotate)",
@@ -75,19 +94,19 @@ namespace Cardevil.Ingame.Player
             switch (type)
             {
                 case "run":
-                    Managers.Game.Player.PlayerVisual.IsRunning = true;
+                    Bootstrapper.Instance.Game.Player.PlayerVisual.IsRunning = true;
                     break;
                 case "idle":
-                    Managers.Game.Player.PlayerVisual.IsRunning = false;
+                    Bootstrapper.Instance.Game.Player.PlayerVisual.IsRunning = false;
                     break;
                 case "attack":
-                    Managers.Game.Player.PlayerVisual.PlayAttackAnimation();
+                    Bootstrapper.Instance.Game.Player.PlayerVisual.PlayAttackAnimation();
                     break;
                 case "hit":
-                    Managers.Game.Player.PlayerVisual.PlayHitAnimation();
+                    Bootstrapper.Instance.Game.Player.PlayerVisual.PlayHitAnimation();
                     break;
                 case "rotate":
-                    var pv = Managers.Game.Player.PlayerVisual;
+                    var pv = Bootstrapper.Instance.Game.Player.PlayerVisual;
                     Vector2 currentDir = pv.MoveDirection;
                     Vector2 newDir = new Vector2(-currentDir.y, currentDir.x); // 90도 회전
                     pv.MoveDirection = newDir;
@@ -98,6 +117,7 @@ namespace Cardevil.Ingame.Player
                     break;
             }
         }
+        */
         
         public void SetFade(float alpha)
         {

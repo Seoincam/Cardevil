@@ -281,8 +281,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB0B4\uAC8C <color=#4DE061>\uD589\uC6B4</color>\uC774 \uAE43\uB4E4\uAE38..!"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
-  m_sharedMaterial: {fileID: -2258944398638991181, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
+  m_sharedMaterial: {fileID: -8428527122610217140, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -384,8 +384,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 350.93, y: 50}
+  m_AnchoredPosition: {x: 61.7, y: 0}
+  m_SizeDelta: {x: 405.9, y: 50}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &7946247794611355527
 CanvasRenderer:
@@ -417,8 +417,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC778\uAC8C\uC784 \uBBF8\uB9AC\uBCF4\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 38e59f9962dc3423fbdcedb6b586e80d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
+  m_sharedMaterial: {fileID: -8428527122610217140, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -553,8 +553,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
-  m_sharedMaterial: {fileID: -2258944398638991181, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
+  m_sharedMaterial: {fileID: -8428527122610217140, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1111,7 +1111,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 215, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3698874130208919809
 CanvasRenderer:
@@ -1143,8 +1143,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC120\uD0DD\uD558\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
-  m_sharedMaterial: {fileID: -2258944398638991181, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
+  m_sharedMaterial: {fileID: -8428527122610217140, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1247,7 +1247,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 50}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 215, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3742841548000122230
 CanvasRenderer:
@@ -1279,8 +1279,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uB2E4\uC2DC\uBF51\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
-  m_sharedMaterial: {fileID: -2258944398638991181, guid: 9b39f639295d640f2b44c4b13c1c4ced, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
+  m_sharedMaterial: {fileID: -8428527122610217140, guid: 2f1aa8c16c5cf42519c381db04a3814f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

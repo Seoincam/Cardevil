@@ -1,7 +1,5 @@
 using Cardevil.Cards.Data;
-using Cardevil.Cards.Data.InStage;
 using Cardevil.Core;
-using Cardevil.Systems;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
@@ -9,15 +7,16 @@ using UnityEngine;
 using Cardevil.Cards.InStage.Model;
 using Cardevil.Cards.InStage.View;
 using Cardevil.Cards.ScriptableObjects;
+using Cardevil.Core.Bootstrap;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Cards.InStage.Presenter
 {
-    public class RerollPresenter : ITurnRerollInput, IClearable
+    public class RerollPresenter : IClearable
     {
-        private IReadOnlyCardLibrary _library;
+        private IReadOnlyCardStatus _status;
         
-        private StageCardsModel _model;
+        private CardsModel _model;
         private RerollView _view;
         private CardVisualSettingSO _visualSetting;
         
@@ -32,16 +31,16 @@ namespace Cardevil.Cards.InStage.Presenter
         /// model 참조를 저장, 카드 시각 효과 설정용 So를 로드.  
         /// 이미 초기화된 경우 중복 실행을 방지.
         /// </summary>
-        public void Init(IReadOnlyCardLibrary library, StageCardsModel model)
+        public void Init(IReadOnlyCardStatus status, CardsModel model)
         {
             if (_isInitialized) return;
 
-            if (library == null)
+            if (status == null)
             {
                 LogEx.LogError("library is null");
                 return;
             }
-            _library = library;
+            _status = status;
             
             if (model == null)
             {
@@ -77,9 +76,9 @@ namespace Cardevil.Cards.InStage.Presenter
             // Model
             _model.SetUp(maxHand, 3);
 
-            for (int i = 0; i < _library.Count; i++)
+            for (int i = 0; i < _status.Count; i++)
             {
-                var data = _library.GetCardDataById(i);
+                var data = _status.GetCardDataById(i);
                 if (data == null)
                 {
                     LogEx.LogError("data is null");
@@ -97,7 +96,7 @@ namespace Cardevil.Cards.InStage.Presenter
             else
             {
                 Transform canvas = GameObject.Find("CardCanvas").transform;
-                GameObject go = Managers.Resource.Instantiate("UI/CardUI/RerollView", canvas);
+                GameObject go = AssetUtil.Instantiate("UI/CardUI/RerollView", canvas);
                 _view = go.GetComponent<RerollView>();
             }
             
@@ -105,7 +104,7 @@ namespace Cardevil.Cards.InStage.Presenter
             _view.ConfigureSlots(maxHand);
             _view.BindButtonEvents(DoReroll, EndReroll);
             
-            Managers.Game.PlayerStatus.RerollTicket = 5; // 임시
+            CardevilCore.Instance.Game.PlayerStatus.RerollTicket = 5; // 임시
             await _view.EnterRerollAsync();
         }
         
@@ -131,7 +130,7 @@ namespace Cardevil.Cards.InStage.Presenter
             
             if (!_view) return;
             _view.Clear();
-            Managers.Resource.Destroy(_view.gameObject);
+            AssetUtil.Destroy(_view.gameObject);
         }
         
         // ITurnRerollInput
@@ -143,9 +142,9 @@ namespace Cardevil.Cards.InStage.Presenter
         
         private void DoReroll()
         {
-            var old = Managers.Game.PlayerStatus.RerollTicket;
-            Managers.Game.PlayerStatus.RerollTicket--;
-            _ = _view.AnimateTicketChangeAsync(old, Managers.Game.PlayerStatus.RerollTicket);
+            var old = CardevilCore.Instance.Game.PlayerStatus.RerollTicket;
+            CardevilCore.Instance.Game.PlayerStatus.RerollTicket--;
+            _ = _view.AnimateTicketChangeAsync(old, CardevilCore.Instance.Game.PlayerStatus.RerollTicket);
             _ = RerollAsync();
         }
 
@@ -186,7 +185,7 @@ namespace Cardevil.Cards.InStage.Presenter
                 }
 
                 // 리롤권 소진시 자동 종료
-                if (Managers.Game.PlayerStatus.RerollTicket <= 0)
+                if (CardevilCore.Instance.Game.PlayerStatus.RerollTicket <= 0)
                 {
                     await UniTask.Delay(TimeSpan.FromSeconds(autoEnd));
                     EndReroll();
@@ -207,7 +206,7 @@ namespace Cardevil.Cards.InStage.Presenter
             var cardData = _model.PopCard();
             if (cardData == null) return null;
             
-            var card = Managers.Resource.Instantiate("Cards/Card").GetComponent<Card>();
+            var card = AssetUtil.Instantiate("Cards/Card").GetComponent<Card>();
             card.Init(cardData, _model);
             card.SetRerollState(true);
 

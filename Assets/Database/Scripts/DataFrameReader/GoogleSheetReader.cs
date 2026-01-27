@@ -52,12 +52,12 @@ namespace Database.DataReader
         /// <returns></returns>
         public IEnumerator DownloadJsonFromUrlRoutine(string url, Action<bool> onComplete, float timeoutDuration = 10f)
         {
-            if(!Application.isPlaying)
-            {
-                Debug.LogWarning("[GoogleSheetReader] 에디터 모드에서는 DownloadJsonFromUrlRoutine 를 지원하지 않습니다.");
-                onComplete?.Invoke(false);
-                yield break;
-            }
+            // if(!Application.isPlaying)
+            // {
+            //     Debug.LogWarning("[GoogleSheetReader] 에디터 모드에서는 DownloadJsonFromUrlRoutine 를 지원하지 않습니다.");
+            //     onComplete?.Invoke(false);
+            //     yield break;
+            // }
             loadedJson = string.Empty;
             using (var www = UnityWebRequest.Get(url))
             {

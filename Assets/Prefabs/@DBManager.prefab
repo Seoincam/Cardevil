@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1910975237748545799
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7869872345705628910}
+  - component: {fileID: 750990558417630276}
+  m_Layer: 0
+  m_Name: '@DBManager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7869872345705628910
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910975237748545799}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &750990558417630276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1910975237748545799}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d383f07d75744cd7b1e58bc9cee3f540, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mcDatabase:
+    CustomClassTestList: []
+    RoomDataList: []
+    BaseMobBossDataList: []
+    HandRankingDataList: []
+    MachineRewardList: []
+    MachineProbabillityList: []
+    RelicDataList: []
+    RelicEffectOnEvaluationDataList: []
+  isInitialized: 0
+  googleSheetUrl: https://script.google.com/macros/s/AKfycbw9s6zpBPgh7E2ZwxNKnenvGCJsWQQvn-mdf2VCH6PHtRnsVsDJIBa_WUt_9gVk-oFG/exec
+  localJsonPath: Database/
+  streamingAssetPath: Json/
+  forceUseStreamingAsset: 0
+  timeoutSeconds: 10
+  spriteCacheIndex: {fileID: 0}
+  <SpriteCache>k__BackingField:
+    defaultKey: 
+    _items: []

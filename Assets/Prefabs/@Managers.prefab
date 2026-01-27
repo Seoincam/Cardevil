@@ -1,0 +1,102 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7842943897121389389
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 787731785238534445}
+  - component: {fileID: 4950758396732169664}
+  m_Layer: 0
+  m_Name: '@Managers'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &787731785238534445
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7842943897121389389}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4950758396732169664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7842943897121389389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16129f8d2ad92cd48ac65dcf2f94dd6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pool:
+    _initialSize: 3
+    _maxSize: 100
+    _factories:
+      defaultKey: 
+      _items: []
+    _pools:
+      defaultKey: 
+      _items: []
+  _card:
+    cardLibrary:
+      pipelineMap:
+        defaultKey: 0
+        _items: []
+      dataMap:
+        defaultKey: 0
+        _items: []
+    enhancementDataLibrary:
+      table:
+        _items: []
+  _relic:
+    all: []
+    ownedRelics: []
+  _dungeon:
+    dungeonConfigurations: []
+    dungeons: []
+    dungeonUI: {fileID: 0}
+    currentNode:
+      dungeon:
+        rid: -2
+      nodeInternalId: 0
+      floor: 0
+      preset: {fileID: 0}
+      state: 0
+      <IsBranchStart>k__BackingField: 0
+      <IsInBranch>k__BackingField: 0
+      <IsBranchEnd>k__BackingField: 0
+    previousNode:
+      dungeon:
+        rid: -2
+      nodeInternalId: 0
+      floor: 0
+      preset: {fileID: 0}
+      state: 0
+      <IsBranchStart>k__BackingField: 0
+      <IsInBranch>k__BackingField: 0
+      <IsBranchEnd>k__BackingField: 0
+    currentProgress:
+      rid: -2
+    savedProgresses: []
+    doInstantClear: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

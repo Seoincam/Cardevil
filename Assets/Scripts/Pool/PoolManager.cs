@@ -1,6 +1,7 @@
 using Cardevil.Core;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
+using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -19,7 +20,7 @@ namespace Cardevil.Pools
         
         [SerializeField] private SerializableDictionary<string, ICloneFactory<Poolable>> _factories = new();
         [SerializeField] private SerializableDictionary<string, IObjectPool<Poolable>> _pools = new();
-        
+        [SerializeField] private SerializableDictionary<Type, IObjectPool<Poolable>> _typePools = new();
         /// <summary>
         /// Root Transform임
         /// 필요시 각 Poolable의 부모로 변경 가능.
@@ -35,15 +36,15 @@ namespace Cardevil.Pools
         /// 1. RootTransform이 null일 경우, 새로운 GameObject를 생성하여 RootTransform으로 설정
         /// 2. 등록된 모든 팩토리에 대해 ObjectPool을 생성
         /// </remarks>
-        public void Init()
+        public void Init(Transform parent)
         {
             if (_RootTransform == null)
             {
                 _RootTransform = new GameObject("@Poolable_Root").transform;
-                _RootTransform.SetParent(null);
+                _RootTransform.SetParent(parent);
             }
             
-            PoolableFactoryContainerSO container = Managers.Resource.Load<PoolableFactoryContainerSO>("ScriptableObjects/PoolableFactoryContainer");
+            PoolableFactoryContainerSO container = AssetUtil.Load<PoolableFactoryContainerSO>("ScriptableObjects/PoolableFactoryContainer");
             if (container == null)
             {
                 Debug.LogError("PoolableFactoryContainerSO not found. Cannot initialize pools.");
@@ -74,6 +75,7 @@ namespace Cardevil.Pools
                 pool.Value.Clear();
             }
             _pools.Clear();
+            _typePools.Clear();
             _factories.Clear();
         }
         
@@ -139,6 +141,7 @@ namespace Cardevil.Pools
                     _initialSize,
                     _maxSize
                 );
+            _typePools[cloneFactory.Original.GetType()] = _pools[type];
         }
 
         private void ActionOnGet(Poolable poolable)
@@ -257,9 +260,25 @@ namespace Cardevil.Pools
             else
             {
                 Debug.LogError(
-                    $"Requested type {typeof(T)} does not match the poolable type {poolable.GetType()} from pool {type}");
+                    $"Requested type {typeof(T)} do`es not match the poolable type {poolable.GetType()} from pool {type}");
                 return null;
             }
+        }
+        
+        
+        /// <summary>
+        /// 타입으로 Poolable을 가져옴.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T Get<T> (Transform parent = null) where T : MonoBehaviour, IPoolableSubComponent
+        {
+            var pool = _typePools[typeof(T)];
+            _tempPoolParent = parent;
+            var poolable = pool.Get();
+            poolable._pool = pool;
+            return poolable.GetComponent<T>();
         }
         
         /// <summary>

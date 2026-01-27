@@ -1,10 +1,12 @@
 using Cardevil.Cards.Evaluations;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Turn;
+using Cardevil.Core.Turn.Interfaces;
 using Cardevil.DebugConsole;
 using Cardevil.Events.AsyncPriorityEvent;
 using Cardevil.Events.Core;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Field;
-using Cardevil.Systems;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
@@ -12,6 +14,7 @@ using DG.Tweening;
 using JetBrains.Annotations;
 using System;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.Scripting;
 using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
@@ -33,6 +36,7 @@ namespace Cardevil.Ingame.Player
         [SerializeField] protected Entity _entity;
         [SerializeField] protected PlayerVisual _playerVisual;
 
+        
 
         public float MoveSpeed => playerCharacterSetting.moveSpeed;
         private void Reset()
@@ -42,9 +46,11 @@ namespace Cardevil.Ingame.Player
         }
 
         public Entity Entity => _entity;
-        public Field.Field Field => Managers.Game.Field;
-        public PlayerStatus PlayerStatus => Managers.Game.PlayerStatus;
+        public Field.Field Field { get; private set; }
+        public PlayerStatus PlayerStatus => CardevilCore.Instance.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
+        public Transform VisualTransform => _playerVisual.transform;
+
         private void Awake()
         {
             if(_entity == null)
@@ -63,7 +69,28 @@ namespace Cardevil.Ingame.Player
                     return;
                 }
                 _entity.Init(_initialTile);
-                Managers.Game.Player = this; // 게임 매니저에 플레이어 설정
+                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
+            }
+        }
+
+        public void Init(Field.Field field)
+        {
+            Field = field;
+            
+            if(_entity == null)
+            {
+                _entity = GetComponent<Entity>();
+            }
+            
+            if (_initTileManually)
+            {
+                if (_initialTile == null)
+                {
+                    LogEx.LogError("Initial tile is not set. Please assign a tile in the inspector.");
+                    return;
+                }
+                _entity.Init(_initialTile);
+                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
             }
         }
 
@@ -84,7 +111,7 @@ namespace Cardevil.Ingame.Player
                         else if (vertical > 0) direction = Direction.Up;
                         else if (vertical < 0) direction = Direction.Down;
                         LogEx.Log($"Moving in direction: {direction}");
-                        MoveWithAnim(direction);
+                        MoveWithAnim(direction).Forget();
                     }
                 }
             }
@@ -109,6 +136,7 @@ namespace Cardevil.Ingame.Player
             await MoveWithAnim(direction, 1);
         }
 
+        public bool debugReflect = false;
         /// <summary>
         /// 플레이어를 해당 방향으로 distance 칸 이동시킵니다.
         /// </summary>
@@ -128,38 +156,64 @@ namespace Cardevil.Ingame.Player
              * 
              */
             bool wrapped = false;
-            Tile targetTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
-            Tile originalTile = _entity.CurrentTile;
-            _entity.MoveTo(targetTile, false);
+                
+            // 원래 타일
+            Tile originalTile = _entity.CurrentTile;    
+            // 이동하고 싶은 타일
+            Tile desiredTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
+            // 실제 이동 타일
+            using var listHandle = ListPool<IReflectorEntity>.Get(out var entityList);
+            bool reflected = desiredTile.GetEntitiesWithComponent<IReflectorEntity>(
+                (e) => e.DoReflect, ref entityList);
+            if (debugReflect)
+            {
+                reflected = true;
+            }
+            void NotifyReflect()
+            {
+                foreach (var reflecter in entityList)
+                {
+                    reflecter.OnReflect();
+                }
+            }
             
-            async UniTask MoveTask(Vector3 endPosition)
+            Tile movedTile = reflected ? Field.GetTileByDirectionWrap(desiredTile, direction.Opposite(), out _, distance) : desiredTile;
+            _entity.MoveTo(movedTile, false);
+            
+            // 단순한 이동 애니메이션
+            async UniTask MoveTask(Vector3 endPosition, Action<float> Update = null)
             {
                 PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
                 PlayerVisual.IsRunning = true;
                 var tween = transform.DOMove(endPosition, 1f / MoveSpeed).SetEase(Ease.Linear);
+                if (Update != null)
+                {
+                    tween.OnUpdate(() =>
+                    {
+                        float progress = tween.ElapsedPercentage();
+                        Update(progress);
+                    });
+                }
                 await tween.ToUniTask();
                 PlayerVisual.IsRunning = false;
             }
-
-            if (!wrapped)
+            
+            // 이동 후 떨어지는 애니메이션
+            async UniTask MoveFallTask()
             {
                 Vector3 startPosition = transform.position;
-                Vector3 targetPosition = _entity.CurrentTile.transform.position;
-                targetPosition.y = startPosition.y; // Y 축은 유지
-                await MoveTask(targetPosition);
-            }
-            else
-            {
-                Vector3 startPosition = transform.position;
-                // 여러칸 이동했더라도 한칸만 이동한 것으로 취급
+                // 여러칸 이동했더라도 한칸만 이동한 것으로 취급 TODO : 다수 이동시 문제 있음
                 Vector3 outPosition = Field.GetTileCenterWorld(originalTile.Coordinate + direction.ToTileVector());
-                Vector3 targetPosition = _entity.CurrentTile.transform.position;
+                Vector3 targetPosition = desiredTile.transform.position;
                 outPosition.y = targetPosition.y = startPosition.y; // Y 축은 유지
-                await MoveTask(outPosition);
+                await MoveTask(outPosition, (progress) =>
+                {
+                    PlayerVisual.ShadowFadeAlpha = 1f - Mathf.Clamp01(progress * 2f);
+                });
                 PlayerVisual.IsFalling = true;
-
+                PlayerVisual.ShadowFadeAlpha = 0f;
                 
-                await transform.DOShakePosition(playerCharacterSetting.coyoteTime,
+                await VisualTransform.DOShakePosition(playerCharacterSetting.coyoteTime,
                     strength:playerCharacterSetting.coyoteShakeStrength * new Vector3(1,0,1),
                     vibrato:playerCharacterSetting.coyoteShakeCount,
                     randomness:90,
@@ -169,7 +223,7 @@ namespace Cardevil.Ingame.Player
                 
                 var sequence = DOTween.Sequence();
                 // 떨어지는 시퀀스
-                sequence.Append(transform.DOMoveY(startPosition.y - playerCharacterSetting.fallHeight,
+                sequence.Append(VisualTransform.DOLocalMoveY(- playerCharacterSetting.fallHeight,
                     playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
                 // 떨어지는 페이드아웃
                 float fadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
@@ -177,16 +231,156 @@ namespace Cardevil.Ingame.Player
                 sequence.Insert(fadeoutStartTime,
                     DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,0, playerCharacterSetting.fallDuration-fadeoutStartTime));
                 
-               
                 // 다시 떨어지는 시퀀스
-                sequence.AppendCallback(() => transform.position = targetPosition + Vector3.up * playerCharacterSetting.fallHeight);
-                sequence.Append(transform.DOMoveY(targetPosition.y,
+                sequence.AppendCallback(() =>
+                {
+                    transform.position = targetPosition;
+                    VisualTransform.localPosition = Vector3.up * playerCharacterSetting.fallHeight;
+                });
+                sequence.Append(VisualTransform.DOLocalMoveY(0,
                     playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
                 float fadeinEndTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
                     playerCharacterSetting.fallFadeEndRatio);
                 sequence.Join(DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,1,fadeinEndTime));
+                sequence.Join(DOTween.To(() => PlayerVisual.ShadowFadeAlpha, value => PlayerVisual.ShadowFadeAlpha = value,1,fadeinEndTime));
                 await sequence.ToUniTask();
                 PlayerVisual.IsFalling = false;
+            }
+            
+            // 이동하다 반사되는 애니메이션
+            async UniTask MoveReflectTask()
+            {
+                Vector3 startPosition = transform.position;
+                Vector3 desiredTilePosition = desiredTile.transform.position;
+                desiredTilePosition.y = startPosition.y;
+                PlayerVisual.MoveDirection = direction.ToTileVector().ToVector2IntDirect();
+                PlayerVisual.IsRunning = true;
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(transform.DOMove(desiredTilePosition, 1f / MoveSpeed).SetEase(Ease.Linear));
+                sequence.AppendCallback(NotifyReflect);
+                sequence.Append(transform.DOMove(startPosition, 0.5f / MoveSpeed).SetEase(Ease.Linear));
+                sequence.Join(VisualTransform.DOLocalJump(
+                    Vector3.zero,
+                    0.25f,
+                 1,
+                    1f / MoveSpeed).SetEase(Ease.Linear));
+                await sequence.ToUniTask();
+                PlayerVisual.IsRunning = false;
+            }
+
+            async UniTask MoveReflectFallTask()
+            {
+                // 시작 위치
+                Vector3 startPosition = transform.position;
+                // 첫번째 삐져나간 위치
+                // 여러칸 이동했더라도 한칸만 이동한 것으로 취급 TODO : 다수 이동시 문제 있음
+                Vector3 outPosition = Field.GetTileCenterWorld(originalTile.Coordinate + direction.ToTileVector());
+                // 가고자 했던 위치
+                Vector3 desiredTilePosition = desiredTile.transform.position;
+                // 두번째 삐져나간 위치
+                Vector3 out2Position = Field.GetTileCenterWorld(desiredTile.Coordinate + direction.Opposite().ToTileVector());
+                outPosition.y = desiredTilePosition.y = startPosition.y; // Y 축은 유지
+                await MoveTask(outPosition, (progress) =>
+                {
+                    PlayerVisual.ShadowFadeAlpha = 1f - Mathf.Clamp01(progress * 2f);
+                });
+                PlayerVisual.IsFalling = true;
+                PlayerVisual.ShadowFadeAlpha = 0f;
+                
+                await VisualTransform.DOShakePosition(playerCharacterSetting.coyoteTime,
+                    strength:playerCharacterSetting.coyoteShakeStrength * new Vector3(1,0,1),
+                    vibrato:playerCharacterSetting.coyoteShakeCount,
+                    randomness:90,
+                    snapping:false,
+                    fadeOut:true).ToUniTask();
+                await UniTask.Delay(playerCharacterSetting.fallDelayAfterCoyoteTimeMs);
+                
+                // 1차 추락
+                var sequence = DOTween.Sequence();
+                // 떨어지기
+                sequence.Append(VisualTransform.DOLocalMoveY(- playerCharacterSetting.fallHeight,
+                    playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                // 떨어지는 페이드아웃
+                float fadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
+                    playerCharacterSetting.fallFadeStartRatio);
+                sequence.Insert(fadeoutStartTime,
+                    DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,0, playerCharacterSetting.fallDuration-fadeoutStartTime));
+                
+                // 다시 떨어지는 시퀀스
+                sequence.AppendCallback(() =>
+                {
+                    transform.position = desiredTilePosition;
+                    VisualTransform.localPosition = Vector3.up * playerCharacterSetting.fallHeight;
+                });
+                sequence.Append(VisualTransform.DOLocalMoveY(0,
+                    playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                float fadeinEndTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
+                    playerCharacterSetting.fallFadeEndRatio);
+                sequence.Join(DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,1,fadeinEndTime));
+                sequence.Join(DOTween.To(() => PlayerVisual.ShadowFadeAlpha, value => PlayerVisual.ShadowFadeAlpha = value,1,fadeinEndTime));
+                await sequence.ToUniTask();
+                
+                // 충돌함. 반사
+                NotifyReflect();
+                var reflectSequence = DOTween.Sequence();
+                // 튕기는중
+                reflectSequence.Append(VisualTransform.DOLocalJump(
+                    Vector3.zero,
+                    0.25f,
+                 1,
+                    1f / MoveSpeed).SetEase(Ease.Linear));
+                reflectSequence.Join(transform.DOMove(out2Position, 0.5f / MoveSpeed).SetEase(Ease.Linear));
+                // 이후 추락
+                reflectSequence.Append(
+                    VisualTransform.DOLocalMoveY(- playerCharacterSetting.fallHeight,
+                        playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                // 떨어지는 페이드아웃
+                float reflectFadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
+                    playerCharacterSetting.fallFadeStartRatio);
+                reflectSequence.Insert(reflectFadeoutStartTime,
+                    DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,0, playerCharacterSetting.fallDuration-reflectFadeoutStartTime));
+                // 다시 떨어지는 시퀀스
+                reflectSequence.AppendCallback(() =>
+                {
+                    transform.position = movedTile.transform.position;
+                    VisualTransform.localPosition = Vector3.up * playerCharacterSetting.fallHeight;
+                });
+                reflectSequence.Append(VisualTransform.DOLocalMoveY(0,
+                    playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                float reflectFadeinEndTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
+                    playerCharacterSetting.fallFadeEndRatio);
+                reflectSequence.Join(DOTween.To(() => PlayerVisual.FadeAlpha, value => PlayerVisual.FadeAlpha = value,1,reflectFadeinEndTime));
+                reflectSequence.Join(DOTween.To(() => PlayerVisual.ShadowFadeAlpha, value => PlayerVisual.ShadowFadeAlpha = value,1,reflectFadeinEndTime));
+                await reflectSequence.ToUniTask();
+                
+                
+                PlayerVisual.IsFalling = false;
+            }
+
+            if (!wrapped)
+            {
+                if (reflected)
+                {
+                    await MoveReflectTask();
+                }
+                else
+                {
+                    Vector3 startPosition = transform.position;
+                    Vector3 targetPosition = desiredTile.transform.position;
+                    targetPosition.y = startPosition.y; // Y 축은 유지
+                    await MoveTask(targetPosition);
+                }
+            }
+            else
+            {
+                if (reflected)
+                {
+                    await MoveReflectFallTask();
+                }
+                else
+                {
+                    await MoveFallTask();
+                }
             }
             
         }
@@ -222,47 +416,54 @@ namespace Cardevil.Ingame.Player
         }
 
         #region ITurnPlayerAction 구현
-        public bool IsDead => Managers.Game.PlayerStatus.CurrentHp <= 0;
-        public async UniTask TurnAttack()
+        
+        public bool IsDead { get; }
+
+        public async UniTask<AttackResult> TurnAttackAsync()
         {
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
-            // TODO : 적에 대한 공격 구현
-            var result = Managers.Card.EvaluationResults.CurrentResult;
-            LogEx.Log($"플레이어 공격 : {result.TotalDamage} 피해. 구현 아직");
-            void DealDamageToEnemies()
-            {
-                Managers.Game.Enemy.GetDamage(result.TotalDamage);
-            }
-            DealDamageToEnemies();
+
+            var ctx = TurnManager.Context;
+            
+            var result = ctx.CardFlow.Result;
+            int damage = result.TotalDamage;
+            var handRanking = result.HandRanking;
+
+            LogEx.Log($"플레이어 공격 : {damage} 피해. 구현 아직");
             PlayerVisual.PlayAttackAnimation();
-      
+            // TODO: 공격 애니메이션도 await하기
+            
+            return new AttackResult(target: ctx.CurrentEnemy, handRanking, damage);
         }
         
-        public void PlayerGetDamage(float amount)
+        public void TakeDamage(int amount)
         {
             LogEx.Log($"Player takes {amount} damage!");
             PlayerStatus.TakeDamage((int)amount);
-            
         }
 
-        public async UniTask TurnMove()
+        public async UniTask<Vector2Int> TurnMove()
         {
             LogEx.Log("Player Moves!");
-            var result = Managers.Card.EvaluationResults.CurrentResult;
+
+            var ctx = TurnManager.Context;
+            
+            var result = ctx.CardFlow.Result;
             //TODO 이동 로직 구현
             foreach (var move in result.Moves)
             {
                 if (!move.DirectionSelectState.FinalValue.HasValue)
                     continue;
-
+                
                 await MoveWithAnim((Direction)move.DirectionSelectState.FinalValue, move.Length);
                 await UniTask.Delay(300);
             }
             LogEx.Log("Player Move Completed!");
+
+            return new Vector2Int(Entity.Tile.i, Entity.Tile.j);
         }
-        
 
         #endregion
 

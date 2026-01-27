@@ -1,10 +1,12 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Relics.OnEvaluation;
 using System.Collections.Generic;
 using System.Linq;
 using Cardevil.Utils;
+using Database;
 
 namespace Cardevil.Cards.Evaluations
 {
@@ -26,7 +28,7 @@ namespace Cardevil.Cards.Evaluations
             var attackCards = new List<Card>();
             var moveCards = new List<Card>();
             foreach (var c in selection)
-                (c.Data.Kind == CardKind.Attack ? attackCards : moveCards).Add(c);
+                (c.Data.IsAttack ? attackCards : moveCards).Add(c);
 
             // Move Only
             if (attackCards.Count == 0 && moveCards.Count > 0)
@@ -47,7 +49,7 @@ namespace Cardevil.Cards.Evaluations
             var plusEffects = new List<IRelicEffectOnEvaluation>();
             var mulEffects = new List<IRelicEffectOnEvaluation>();
 
-            
+            /*
             foreach (var owned in Managers.Relic.OwnedRelics)
             foreach (var eff in owned.Relic.Effects)
             {
@@ -59,11 +61,12 @@ namespace Cardevil.Cards.Evaluations
                     default: (onEval.IsPlus ? plusEffects : mulEffects).Add(onEval); break;
                 }
             }
+            */
             
             // 족보
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(attackCards, out var inRankCards);
             // TODO: db 접근 처음에 일괄적으로 하도록 바꾸기
-            var data = Managers.Database.Database.HandRankingDataList
+            var data = CardevilCore.Instance.Database.Database.HandRankingDataList
                 .FirstOrDefault(d => d.Ranking == handRanking);
             if (data == null)
                 LogEx.LogWarning($"Database에 족보 데이터가 존재하지 않음! : {handRanking}");

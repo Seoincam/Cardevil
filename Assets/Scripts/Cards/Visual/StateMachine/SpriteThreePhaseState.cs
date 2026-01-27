@@ -9,7 +9,6 @@ namespace Cardevil.Cards.Visual.StateMachine
     {
         private readonly CardVisualBase _visual;
         private CardVisualBase.SelectionGroup _group;
-        private const int Count = 3;
         
         public VisualPhase Kind => VisualPhase.SpriteTwo;
 
@@ -23,7 +22,7 @@ namespace Cardevil.Cards.Visual.StateMachine
         {
             _visual.InnerFrame.sprite = spriteSet.innerFrame;
 
-            _group ??= _visual.GetSelectionGroup(Count);
+            _group ??= _visual.GetSelectionGroup(Kind);
             _group.NumberGroup.SetActive(true);
 
             _group.NumberMap[CardVisualBase.Position.Top].sprite = spriteSet.sprites[0];

@@ -1,6 +1,7 @@
 using Cardevil.Cards.Data;
 using Cardevil.Cards.Data.InStage;
 using Cardevil.Cards.InStage.Model;
+using Cardevil.Cards.InStage.Model.ReadOnly;
 using Cardevil.Cards.InStage.Presenter;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
@@ -37,6 +38,11 @@ namespace Cardevil.Cards.Evaluations
         /// 단계별 평가 및 뷰 연출 처리.
         /// </summary>
         UniTask ExcuteSequenceAsync();
+        
+        /// <returns>가장 최근의 평과 결과를 반환.</returns>
+        EvaluationResult GetCurrentEvaluationResult();
+        
+        IReadOnlyEvaluationResultsModel ResultsModel { get; }
     }
     
     public class EvaluationPresenter : IEvaluationPresenter
@@ -47,6 +53,8 @@ namespace Cardevil.Cards.Evaluations
         
         private EvaluationSequence _seq;
         private EvaluationResult.Builder _resultBuilder;
+
+        public IReadOnlyEvaluationResultsModel ResultsModel => _model;
 
         public void Init(EvaluationResultsModel model)
         {
@@ -69,7 +77,7 @@ namespace Cardevil.Cards.Evaluations
             }
             
             string path = "UI/CardUI/Evaluation View";
-            var go = Managers.Resource.Instantiate(path, canvas).gameObject;
+            var go = AssetUtil.Instantiate(path, canvas).gameObject;
             if (!go)
             {
                 LogEx.LogError($"Evaluation UI Animator가 존재하지 않음! path: {path}");
@@ -93,12 +101,17 @@ namespace Cardevil.Cards.Evaluations
         {
             var handRanking = HandRankingEvaluator.EvaluateHandRanking(sortedCards);
 
+            List<CardData> attacks = sortedCards
+                .Where(c => c.Data.IsAttack)
+                .Select(c => c.Data).ToList();
+
             List<CardData> moves = sortedCards
-                .Where(c => c.Data.Kind == CardKind.Move)
+                .Where(c => c.Data.IsMove)
                 .Select(c => c.Data).ToList();
 
             _resultBuilder = EvaluationResult.CreateBuilder()
                 .SetHandRanking(handRanking)
+                .SetAttacks(attacks)
                 .SetMoves(moves);
             
             _seq = _factory.ConfigureSequence(sortedCards);
@@ -135,6 +148,11 @@ namespace Cardevil.Cards.Evaluations
                 .SetDamage((int)Math.Round(totalDamage))
                 .Build();
             _model.Add(result);
+        }
+
+        public EvaluationResult GetCurrentEvaluationResult()
+        {
+            return _model.CurrentResult;
         }
     }
 }

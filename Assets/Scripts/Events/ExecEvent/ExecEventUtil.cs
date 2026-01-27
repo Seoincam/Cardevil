@@ -1,4 +1,5 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Cards.Evaluations;
+using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -22,6 +23,8 @@ namespace Cardevil.Events.ExecEvents
         public static IReadOnlyList<Type> EventTypes;
         public static IReadOnlyList<Type> EventBusTypes;
         public static IReadOnlyList<Type> StaticEventBusTypes;
+        
+        private static bool _initialized;
 
         #if UNITY_EDITOR
         public static PlayModeStateChange PlayModeState { get; private set; }
@@ -43,13 +46,15 @@ namespace Cardevil.Events.ExecEvents
         }
         #endif
         
-        [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void Initialize()
+        public static void Initialize()
         {
+            if (_initialized) return;
+            
             LogEx.Log("Initializing ExecEventUtil");
             EventTypes = ReflectionUtil.GetTypes(typeof(ExecEventArgs<>));
             EventBusTypes = InitializeAllBus();
             StaticEventBusTypes = InitializeAllStaticBus();
+            _initialized = true;
         }
 
         private static List<Type> InitializeAllBus()
@@ -107,5 +112,16 @@ namespace Cardevil.Events.ExecEvents
                 }
             }
         }
+
+        /// <summary>
+        /// EventArgs의 타입 이름을 네임스페이스를 제거해 반환합니다.
+        /// </summary>
+        public static string GetEventArgsName(Type eventType)
+        {
+            const string prefix = "Cardevil.Events.";
+            string name = eventType.FullName ?? eventType.Name;
+            return name.StartsWith(prefix) ? name[prefix.Length..] : name;
+        }
+
     }
 }

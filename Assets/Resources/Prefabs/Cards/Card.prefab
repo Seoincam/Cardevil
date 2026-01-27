@@ -106,6 +106,7 @@ MonoBehaviour:
       selectedValue:
         hasValue: 0
         value: 0
+    directionFlag: 0
   visual: {fileID: 0}
   state:
     isSelected: 0

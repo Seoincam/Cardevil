@@ -21,17 +21,17 @@ namespace Cardevil.Cards.Visual.StateMachine
             _current.OnEnter(spriteSet);
         }
 
-        public async UniTaskVoid InitPhase(VisualPhase phase, CardVisualSpriteSet spriteSet)
+        public async UniTaskVoid InitPhase(CardVisualSpriteSet spriteSet)
         {
-            _current = _states[phase];
+            _current = _states[spriteSet.Phase];
             await _current.OnEnter(spriteSet);
         }
 
-        public async UniTask SetPhase(VisualPhase phase, CardVisualSpriteSet spriteSet)
+        public async UniTask SetPhase(CardVisualSpriteSet spriteSet)
         {
             await _current.OnExit();
-            await _current.SetPhase(phase);
-            _current = _states[phase];
+            await _current.SetPhase(spriteSet.Phase);
+            _current = _states[spriteSet.Phase];
             await _current.OnEnter(spriteSet);
         }
     }

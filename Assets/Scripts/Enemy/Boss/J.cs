@@ -24,6 +24,7 @@ namespace Cardevil.InGame.Enemy.Boss
             }
             // 살아 있다면
 
+            /*
             var handRanking = Managers.Card.EvaluationResults.CurrentResult.HandRanking;
             Debug.Log($"Jack이 생존하여 {handRanking} 에 대한 반격을 진행한다");
 
@@ -34,6 +35,7 @@ namespace Cardevil.InGame.Enemy.Boss
                 AttackOrderDiscount(); // 공격 턴 1 추가 감소
             }
            
+           */
 
 
             return false; // 아직 살아있다.
