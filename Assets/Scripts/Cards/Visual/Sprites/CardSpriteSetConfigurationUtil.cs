@@ -24,15 +24,15 @@ namespace Cardevil.Cards.Visual
 
         private static CardSpriteSet ConfigureAttack(CardData data)
         {
-            var innerFrame = CardSpriteCache.GetInnerFrame(data.FinalColor);
+            var innerFrame = CardSpriteCache.GetInnerFrame(data.Color);
             
             // 값이 하나거나, 선택이 완료됐을 경우.
             if (data.CompleteSelectingValue)
             {
                 return CardSpriteSet.SingleWithSmall(
                     innerFrame,
-                    mainSprite: CardSpriteCache.GetNumber(data.FinalColor, data.FinalNumber),
-                    smallNumber: CardSpriteCache.GetSmallNumber(data.FinalColor, data.FinalNumber));
+                    mainSprite: CardSpriteCache.GetNumber(data.Color, data.FinalNumber),
+                    smallNumber: CardSpriteCache.GetSmallNumber(data.Color, data.FinalNumber));
             }
             
             // 오망성인 경우.
@@ -40,8 +40,8 @@ namespace Cardevil.Cards.Visual
             {
                 return CardSpriteSet.SingleWithSmall(
                     innerFrame,
-                    mainSprite: CardSpriteCache.GetStar(data.FinalColor),
-                    smallNumber: CardSpriteCache.GetSmallStar(data.FinalColor));
+                    mainSprite: CardSpriteCache.GetStar(data.Color),
+                    smallNumber: CardSpriteCache.GetSmallStar(data.Color));
             }
             
             // 그 외 경우 (값이 여러개고, 선택이 안 된 경우).
@@ -51,8 +51,8 @@ namespace Cardevil.Cards.Visual
             {
                 var number = data.NumberSelectState.Selectables[i];
                 mainSprites[i] = number.hasValue
-                    ? CardSpriteCache.GetNumber(data.FinalColor, number.value)
-                    : CardSpriteCache.GetQuestionMark(data.FinalColor);
+                    ? CardSpriteCache.GetNumber(data.Color, number.value)
+                    : CardSpriteCache.GetQuestionMark(data.Color);
             }
             
             return CardSpriteSet.Multiple(innerFrame, mainSprites);

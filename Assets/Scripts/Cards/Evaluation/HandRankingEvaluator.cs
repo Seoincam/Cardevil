@@ -48,7 +48,7 @@ namespace Cardevil.Cards.Evaluation
 
             if (IsFlush(attackCards, out cardsInHandRanking))
             {
-                var handRanking = attackCards[0].Data.FinalColor switch
+                var handRanking = attackCards[0].Data.Color switch
                 {
                     CardColor.Red => HandRanking.RedFlush,
                     CardColor.Green => HandRanking.GreenFlush,
@@ -105,7 +105,7 @@ namespace Cardevil.Cards.Evaluation
             bool allSameColor = true;
             for (int i = 1; i < numberCards.Count; i++)
             {
-                if (numberCards[i].Data.FinalColor == numberCards[i - 1].Data.FinalColor)
+                if (numberCards[i].Data.Color == numberCards[i - 1].Data.Color)
                     continue;
 
                 allSameColor = false;
