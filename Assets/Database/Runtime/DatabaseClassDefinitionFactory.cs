@@ -23,10 +23,10 @@ namespace Database
             sb.AppendLine("    {");
             foreach (var name in classNames)
             {
-                sb.AppendLine($"        public List<{name}> {name}List = new List<{name}>();");
+                sb.AppendLine($"        public List<Database.Generated.{name}> {name}List = new List<Database.Generated.{name}>();");
             }
             sb.AppendLine("        public readonly List<string> ClassNames = new List<string> {");
-            for (int i = 0; i < classNames.Count-1; i++)
+            for (int i = 0; i < classNames.Count - 1; i++)
             {
                 var name = classNames[i];
                 sb.Append($"            \"{name}\"");
@@ -39,13 +39,13 @@ namespace Database
                 sb.AppendLine();
             }
             sb.AppendLine("        };");
-            
+
 
             sb.AppendLine();
             sb.AppendLine();
-            
+
             sb.Append(GetFindTargetMethod(classNames, findTargetVariables));
-            
+
             sb.AppendLine("        public void ClearAll()");
             sb.AppendLine("        {");
             foreach (var name in classNames)
@@ -80,7 +80,7 @@ namespace Database
             foreach (var name in classNames)
             {
                 sb.AppendLine($"                    case \"{name}\":");
-                sb.AppendLine($"                        {name}List = CreateInstance<{name}>(df);");
+                sb.AppendLine($"                        {name}List = CreateInstance<Database.Generated.{name}>(df);");
                 sb.AppendLine("                        break;");
             }
             sb.AppendLine("                    default:");
@@ -99,14 +99,14 @@ namespace Database
             sb.AppendLine("}");
             return sb.ToString();
         }
-        
+
         private static StringBuilder GetFindTargetMethod(List<string> classNames, List<string> findTargetVariables)
         {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
             bool IsValidVarName(string varName)
-            { 
-                if(string.IsNullOrEmpty(varName)) return false;
-                if(!char.IsLetter(varName[0])) return false;
+            {
+                if (string.IsNullOrEmpty(varName)) return false;
+                if (!char.IsLetter(varName[0])) return false;
                 string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
                 foreach (var c in varName)
                 {
@@ -114,7 +114,7 @@ namespace Database
                 }
                 return true;
             }
-            
+
             foreach (var varName in findTargetVariables)
             {
                 string pascalVarName = char.ToUpper(varName[0]) + varName.Substring(1);
@@ -124,7 +124,7 @@ namespace Database
                     Debug.LogWarning($"[MDatabase] FindTargetVariables에 유효하지 않은 변수명이 포함되어 있습니다: '{varName}'");
                     continue;
                 }
-                
+
                 sb.AppendLine($"        public T FindBy{pascalVarName}<T>(string {varName}) where T : class");
                 sb.AppendLine("        {");
                 sb.AppendLine("            if (typeof(T) == null) return null;");
@@ -156,7 +156,7 @@ namespace Database
 
             return sb;
         }
-        
+
         private static StringBuilder GetAddInstancesFromJsonListMethod(List<string> classNames)
         {
             StringBuilder sb = new StringBuilder();
@@ -168,8 +168,8 @@ namespace Database
             foreach (var name in classNames)
             {
                 sb.AppendLine($"                case \"{name}\":");
-                
-                sb.AppendLine($"                    var new{name}Items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<{name}>>(json);");
+
+                sb.AppendLine($"                    var new{name}Items = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Database.Generated.{name}>>(json);");
 
                 sb.AppendLine($"                    {name}List.AddRange(new{name}Items);");
                 sb.AppendLine("                    break;");
@@ -192,7 +192,7 @@ namespace Database
             foreach (var name in classNames)
             {
                 sb.AppendLine($"                case \"{name}\":");
-                sb.AppendLine($"                    return typeof({name});");
+                sb.AppendLine($"                    return typeof(Database.Generated.{name});");
             }
             sb.AppendLine("                default:");
             sb.AppendLine("                    Debug.LogWarning($\"[MDatabase] 정의되지 않은 클래스 이름: {className}\");");

@@ -9,15 +9,15 @@ using UnityEngine;
 
 namespace Database.Generated
 {
-    
+
 }
 namespace Database
 {
     [CreateAssetMenu(fileName = "DBInitializer", menuName = "Database/DBInitializer")]
     public class DBInitializerSO : ScriptableObject
     {
-        
-        
+
+
 #if UNITY_EDITOR
         private string ThisDirPath => Path.GetDirectoryName(AssetDatabase.GetAssetPath(this));
 
@@ -114,9 +114,6 @@ namespace Database
                 {
                     if(!onProcessing.Contains(df.name))
                         return;
-                    Debug.Log($"Creating {df.name}.json");
-                    _modifiedFiles.Remove(df.name);
-                    WriteJson(df);
                     Debug.Log("Creating .df");
                     WriteDf(df);
                     if(_modifiedFiles.Count == 0)
@@ -199,20 +196,6 @@ namespace Database
             Debug.Log($"Database Class Generated: {fileName}");
         }
         
-        private void WriteJson(DataFrame df)
-        {
-            if(!Directory.Exists(TargetDirPath))
-                Directory.CreateDirectory(TargetDirPath);
-            string fileName = Path.Combine(TargetDirPath, df.name + ".json");
-            object[] obj = ClassInstanceFactory.CreateInstance(df) ?? throw new Exception($"Failed to create instance for {df.name}");
-
-            var json = Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
-
-            File.WriteAllText(fileName, json);
-            Debug.Log($"Json : {json}");
-            Debug.Log($"Json Generated: {fileName}");
-        }
-
         private void WriteDf(DataFrame df)
         {
             if(!Directory.Exists(TargetDirPath))

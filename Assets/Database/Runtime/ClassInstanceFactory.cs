@@ -10,6 +10,8 @@ namespace Database
 {
     public class ClassInstanceFactory
     {
+
+
         public static object[] CreateInstance(DataFrame df)
         {
             var type = ReflectionUtil.FindTypeByFullName("Database.Generated." + df.name);
@@ -56,6 +58,12 @@ namespace Database
         {
             // 널/공백 정리
             value = value?.Trim() ?? string.Empty;
+
+            // 문자열 양쪽에 따옴표가 있을 경우 제거
+            if (value.Length >= 2 && value.StartsWith("\"") && value.EndsWith("\""))
+            {
+                value = value.Substring(1, value.Length - 2);
+            }
 
             // 배열
             if (targetType.IsArray)
@@ -225,7 +233,13 @@ namespace Database
 
             // 문자열
             if (targetType == typeof(string))
+            {
+                if (value.Length >= 2 && value.StartsWith("\"") && value.EndsWith("\""))
+                {
+                    return value.Substring(1, value.Length - 2);
+                }
                 return value;
+            }
 
             // 불리언(0/1도 허용)
             if (targetType == typeof(bool))

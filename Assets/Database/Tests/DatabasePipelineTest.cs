@@ -95,5 +95,6 @@ namespace Machamy.McDatabase.Tests
             Assert.AreEqual("Hello, World", list[0]); // Quotes should be stripped by ConvertValue
             Assert.AreEqual("Bye", list[1]);
         }
+
     }
 }
