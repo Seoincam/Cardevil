@@ -225,6 +225,44 @@ namespace Database
                 return "string";
             }
 
+            // Dictionary<K, V>
+            if (typeNameLower.StartsWith("dictionary<") && typeNameLower.EndsWith(">"))
+            {
+                 // Extract inner content: "K, V"
+                string inner = typeName.Substring(11, typeName.Length - 12).Trim();
+
+                // Split K and V by finding the comma at depth 0
+                int splitIndex = -1;
+                int depthCount = 0;
+                for (int i = 0; i < inner.Length; i++)
+                {
+                    if (inner[i] == '<') depthCount++;
+                    else if (inner[i] == '>') depthCount--;
+                    else if (inner[i] == ',' && depthCount == 0)
+                    {
+                        splitIndex = i;
+                        break;
+                    }
+                }
+
+                if (splitIndex != -1)
+                {
+                    string keyTypeRaw = inner.Substring(0, splitIndex).Trim();
+                    string valueTypeRaw = inner.Substring(splitIndex + 1).Trim();
+
+                    string keyType = DecideType(keyTypeRaw, out bool keyIsKnown, depth + 1);
+                    string valueType = DecideType(valueTypeRaw, out bool valueIsKnown, depth + 1);
+
+                    if (keyIsKnown && valueIsKnown)
+                    {
+                        isKnown = true;
+                        return $"System.Collections.Generic.Dictionary<{keyType}, {valueType}>";
+                    }
+                }
+
+                return "string";
+            }
+
             return "string";
         }
 
