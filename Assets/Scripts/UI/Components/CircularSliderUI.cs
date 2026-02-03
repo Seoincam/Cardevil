@@ -5,50 +5,60 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-
 namespace Cardevil.UI.Components
 {
-    /// <summary>
-    /// 원형 슬라이더
-    /// 내부값은 Value(0~1)로 저장되며, 이를 각도로 변환하여 표시
-    /// </summary>
     public class CircularSliderUI : MonoBehaviour, ICircularUI
     {
+        [Header("References")]
+        [SerializeField] private RectTransform rotateBase;
         [SerializeField] private Image maskImage;
         [SerializeField] private Image fillImage;
-        
-        [SerializeField] private float handleRadius = 1f;
         [SerializeField] private RectTransform handleTransform;
 
+        [Header("Settings")]
+        [SerializeField] private float handleRadius = 1f;
         [SerializeField] private bool clockwise = false;
 
-        // [SerializeField] private Direction startDirection = Direction.Up;
         [SerializeField] private float startAngle = 0;
         [SerializeField] private float endAngle = 360;
 
-        public float StartAngle => startAngle;
-        public float EndAngle => endAngle;
-        public float CurrentAngle => startAngle + (endAngle - startAngle) * value;
-
         [SerializeField, Range(0, 1)] private float value = 0.5f;
 
+        public float StartAngle => startAngle;
+        public float EndAngle => endAngle;
+
+        /// <summary>
+        /// 현재 Value에 따른 실제 각도를 반환합니다.
+        /// </summary>
+        public float CurrentAngle
+        {
+            get
+            {
+                float range = Mathf.Abs(endAngle - startAngle);
+                float offset = range * value;
+
+                return clockwise ? (startAngle - offset) : (startAngle + offset);
+            }
+        }
+
         public float Value { get => value; set => SetValue(value); }
-        public float AbsAngle { get => GetAbsAngle(value); }
 
         private void Reset()
         {
             maskImage = GetComponentInChildren<Image>();
+            
+            if (maskImage) maskImage.fillOrigin = 1; 
         }
 
         public void Initialize(float startAngle, float endAngle, bool clockwise)
         {
-
             this.startAngle = startAngle;
             this.endAngle = endAngle;
             this.clockwise = clockwise;
+
             if (maskImage)
             {
-                maskImage.fillOrigin = 1;
+                maskImage.fillOrigin = 1; 
                 maskImage.fillClockwise = clockwise;
             }
 
@@ -60,89 +70,95 @@ namespace Cardevil.UI.Components
             UpdateBaseRotation();
         }
 
-        private void SetValue(float value)
+        private void SetValue(float newValue)
         {
-            this.value = value;
-            float fillValue = GetAbsAngle(value);
+            this.value = Mathf.Clamp01(newValue);
+            
+            float range = Mathf.Abs(endAngle - startAngle);
+            float fillAmountAngle = range * this.value;
+            
             if (maskImage)
             {
-                maskImage.fillAmount = fillValue / 360;
-            }
+                maskImage.fillAmount = fillAmountAngle / 360f;
+            } 
+            
             if (handleTransform)
             {
-                float angle = CurrentAngle;
-                if (clockwise)
-                {
-                    angle = 360 - angle;
-                }
-                float rad = angle * Mathf.Deg2Rad;
-                Vector3 handlePos = new Vector3(handleRadius * Mathf.Cos(rad), handleRadius * Mathf.Sin(rad), 0);
+                float finalAngle = CurrentAngle - startAngle;
+                
+                float rad = finalAngle * Mathf.Deg2Rad;
+                
+                Vector3 handlePos = new Vector3(
+                    handleRadius * Mathf.Cos(rad), 
+                    handleRadius * Mathf.Sin(rad), 
+                    0
+                );
                 handleTransform.anchoredPosition = handlePos;
-            }
-            // if (fillImage)
-            // {
-            //     fillImage.fillAmount = fillValue / 360;
-            // }
-        }
 
-        /// <summary>
-        /// 0~1 사이의 값을 받아서 원형 슬라이더 위의 각도로 변환
-        /// </summary>
-        /// <param name="value">0~1의 값</param>
-        /// <returns></returns>
-        public float GetAbsAngle(float value)
-        {
-            float deltaAngle = endAngle - startAngle;
-            return Mathf.Lerp(0, deltaAngle, value);
+            }
         }
 
         private void UpdateBaseRotation()
         {
-            var originalImageRotation = fillImage.transform.localEulerAngles;
 
-            var currentRotation = maskImage.transform.localEulerAngles;
-            currentRotation.z = startAngle;
-            maskImage.transform.localEulerAngles = currentRotation;
-            fillImage.transform.localEulerAngles = originalImageRotation;
+            if (rotateBase)
+            {
+                Vector3 currentRotation = rotateBase.localEulerAngles;
+                currentRotation.z = startAngle;
+                rotateBase.localEulerAngles = currentRotation;
+            }
         }
-
 
         private void OnValidate()
         {
             Initialize(startAngle, endAngle, clockwise);
+            UpdateBaseRotation();
             SetValue(value);
         }
 
         private void OnDrawGizmosSelected()
         {
-            int segments = 100;
+            if (rotateBase == null) return;
+
+            int segments = 50;
             Gizmos.color = Color.red;
-            Vector3 prev = transform.position;
-            float radius = GetComponent<RectTransform>().rect.width / 2;
+            
+            Vector3 center = transform.position;
+            Vector3 prev = Vector3.zero;
+            
+            float radius = handleRadius > 0 ? handleRadius : 100f; 
+
+            float range = Mathf.Abs(endAngle - startAngle);
+
             for (int i = 0; i <= segments; i++)
             {
-                float angle = startAngle + (endAngle - startAngle) * i / segments;
-                float rad = (clockwise ? 360 - angle : angle) * Mathf.Deg2Rad;
-                Vector3 to = transform.position + new Vector3(radius * Mathf.Cos(rad), radius * Mathf.Sin(rad), 0);
-                Gizmos.DrawLine(prev, to);
-                prev = to;
-            }
+                float t = (float)i / segments;
+                float angleOffset = range * t;
+                
+                float angle = clockwise ? (startAngle - angleOffset) : (startAngle + angleOffset);
+                float rad = angle * Mathf.Deg2Rad;
 
-            Gizmos.DrawLine(prev, transform.position);
+                Vector3 pos = center + new Vector3(Mathf.Cos(rad) * radius, Mathf.Sin(rad) * radius, 0);
+
+                if (i > 0)
+                {
+                    Gizmos.DrawLine(prev, pos);
+                }
+                prev = pos;
+            }
             
-            void DrawAngleLine(float angle)
+            void DrawAngleLine(float angle, Color c)
             {
-                float rad = (clockwise ? 360 - angle : angle) * Mathf.Deg2Rad;
-                Vector3 to = transform.position + new Vector3(radius * Mathf.Cos(rad), radius * Mathf.Sin(rad), 0);
-                Gizmos.DrawLine(transform.position, to);
+                Gizmos.color = c;
+                float rad = angle * Mathf.Deg2Rad;
+                Vector3 to = center + new Vector3(Mathf.Cos(rad) * radius, Mathf.Sin(rad) * radius, 0);
+                Gizmos.DrawLine(center, to);
             }
-            
-            // 시작과 끝 각도 표시
-            Gizmos.color = Color.green;
-            DrawAngleLine(startAngle);
-            Gizmos.color = Color.blue;
-            DrawAngleLine(endAngle);    
 
+            DrawAngleLine(startAngle, Color.green);
+
+            float finalEndAngle = clockwise ? (startAngle - range) : (startAngle + range);
+            DrawAngleLine(finalEndAngle, Color.blue);
         }
     }
 }

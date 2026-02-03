@@ -7,7 +7,7 @@
     public interface ICircularUI
     {
         public void Initialize(float startAngle, float endAngle, bool clockwise);
-        public float AbsAngle { get; }
+        // public float AbsAngle { get; }
         public float Value { get; }
     }
 
