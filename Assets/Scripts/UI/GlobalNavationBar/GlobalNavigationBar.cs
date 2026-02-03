@@ -39,18 +39,18 @@ namespace Cardevil.UI.GlobalNavationBar
         
         [Space]
         [Header("Relics")]
-        [SerializeField] private Transform relicsParent;
-        [SerializeField] private List<RelicIcon> relicIcons;
+        [SerializeField] private RelicBar relicBar;
         
         [Space]
         [Header("Menu")]
         [SerializeField] private Button deckButton;
+        [SerializeField] private Button ranksButton;
         [SerializeField] private Button settingsButton;
         
         [Space(2f)]
         [Header("Settings")]
         [SerializeField] private ConsumableIcon consumableIconPrefab;
-        [SerializeField] private RelicIcon relicIconPrefab;
+        // [SerializeField] private RelicIcon relicIconPrefab;
         [SerializeField] private RectTransform hidePositionTransform;
         
         private RectTransform _rectTransform;
@@ -121,6 +121,18 @@ namespace Cardevil.UI.GlobalNavationBar
             _rectTransform.anchoredPosition = hidePositionTransform.anchoredPosition;
             var task = _rectTransform.DOAnchorPos(_initialPosition, 0.3f).SetEase(Ease.InOutCubic).ToUniTask(cancellationToken: cancellationToken, tweenCancelBehaviour: TweenCancelBehaviour.Complete);
             return task;
+        }
+        
+        [ContextMenu("Test Show")]
+        public void TestShow()
+        {
+            ShowAsync().Forget();
+        }
+
+        [ContextMenu("Test Hide")]
+        public void TestHide()
+        {
+            HideAsync().Forget();
         }
     }
 }

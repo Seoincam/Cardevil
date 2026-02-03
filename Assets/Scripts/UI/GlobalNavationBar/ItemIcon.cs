@@ -2,7 +2,7 @@
 
 namespace Cardevil.UI.GlobalNavationBar
 {
-    public class RelicIcon : MonoBehaviour
+    public class ItemIcon : MonoBehaviour
     {
         
     }
