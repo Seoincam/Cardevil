@@ -193,7 +193,7 @@ namespace Cardevil.Cards.Core
                     
                     // Direction Flag 확정
                     foreach (var dir in directionSelectState.Selectables)
-                        _directionFlag |= dir.value.ToDirectionFlag();
+                        _directionFlag |= ((Direction)dir.value).ToDirectionFlag();
                 }
 
                 return new CardData(_id, _kind, _currentEnhancement, _color, _damageMultiplier, numberSelectState, _length, directionSelectState, _directionFlag);
