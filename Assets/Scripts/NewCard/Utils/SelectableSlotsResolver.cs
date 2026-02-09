@@ -12,11 +12,11 @@ namespace Cardevil.NewCard.Utils
     /// 전투 시작 시 미정 슬롯을 실제 값으로 해소해주는 유틸.
     /// Spec -> State 빌드 시 호출됨.
     /// </summary>
-    public static class AlternativeSlotResolver
+    public static class SelectableSlotsResolver
     {
         public static IReadOnlyList<CardColor> ResolveColors(
             CardColor? defaultColor,
-            IReadOnlyList<CardStateBuilder.AlternativeSlot<CardColor>> slots)
+            IReadOnlyList<CardStateBuilder.SelectableSlot<CardColor>> slots)
         {
             if (!defaultColor.HasValue)
             {
@@ -55,7 +55,7 @@ namespace Cardevil.NewCard.Utils
         
         public static IReadOnlyList<int> ResolveNumbers(
             int? defaultNumber,
-            IReadOnlyList<CardStateBuilder.AlternativeSlot<int>> slots)
+            IReadOnlyList<CardStateBuilder.SelectableSlot<int>> slots)
         {
             if (!defaultNumber.HasValue)
             {
@@ -92,7 +92,7 @@ namespace Cardevil.NewCard.Utils
         }
 
         public static IReadOnlyList<Direction> ResolveDirections(
-            IReadOnlyList<CardStateBuilder.AlternativeSlot<Direction>> slots)
+            IReadOnlyList<CardStateBuilder.SelectableSlot<Direction>> slots)
         {
             var results = new List<Direction>();
             

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Cardevil.NewCard.Core
 {
+    /// <summary>
+    /// 카드의 플레이용 상태 데이터.
+    /// </summary>
     public interface ICardState
     {
         CardState.SelectableValues<CardColor> Colors { get; }
@@ -15,10 +18,16 @@ namespace Cardevil.NewCard.Core
         CardType Type { get; }
     }
     
+    /// <summary>
+    /// 카드의 플레이용 상태 데이터 클래스.
+    /// </summary>
     public sealed class CardState : ICardState
     {
+        // 해당 상태를 생성한 원본 CardSpec.
         private readonly CardSpec _spec;
 
+        // 카드에서 선택 가능한 값의 집함.
+        // CardType에 따라 필요한 것만 생성함.
         public SelectableValues<CardColor> Colors { get; set; }
         public SelectableValues<int> Numbers { get; set; }
         public SelectableValues<Direction> Directions { get; set; }
@@ -31,6 +40,9 @@ namespace Cardevil.NewCard.Core
             _spec = spec;
         }
 
+        /// <summary>
+        /// 기본값과 선택 가능 값들을 관리하는 컨테이너.
+        /// </summary>
         [Serializable]
         public sealed class SelectableValues<T> where T : struct
         {
@@ -71,13 +83,16 @@ namespace Cardevil.NewCard.Core
             }
             
             public void AddAlternative(T value) => alternatives.Add(value);
-
+            
             public void Select(T value)
             {
-                if (value.Equals(DefaultValue) || alternatives.Contains(value))
+                if (!value.Equals(DefaultValue) && !alternatives.Contains(value))
                 {
-                    _selected = value;   
+                    Debug.LogError($@"기본값과 선택 가능한 값 외에 값이 선택됐습니다: {value}\n기본값: {DefaultValue}, 선택 가능한 값: {alternatives}");
+                    return;
                 }
+                
+                _selected = value;   
             }
 
             public void Unselect()

@@ -6,21 +6,21 @@ namespace Cardevil.NewCard.Core
     [Serializable]
     public sealed class AlternativeColorElement : ISpecElement
     {
-        [SerializeField] private CardStateBuilder.AlternativeSlot<CardColor> color;
+        [SerializeField] private CardStateBuilder.SelectableSlot<CardColor> color;
         
         public static AlternativeColorElement Fixed(CardColor color) => new()
         {
-            color = CardStateBuilder.AlternativeSlot<CardColor>.Fixed(color)
+            color = CardStateBuilder.SelectableSlot<CardColor>.Fixed(color)
         };
         
         public static AlternativeColorElement Random() => new()
         {
-            color = CardStateBuilder.AlternativeSlot<CardColor>.Random()
+            color = CardStateBuilder.SelectableSlot<CardColor>.Random()
         };
         
         public void Apply(CardStateBuilder builder)
         {
-            builder.AddColorAlternative(color);
+            builder.AddColorSelectableSlot(color);
         }
     }
 }

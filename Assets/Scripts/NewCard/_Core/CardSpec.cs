@@ -1,20 +1,17 @@
 using Cardevil.Attributes;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Cardevil.NewCard.Core
 {
-
     [Serializable]
     public sealed class CardSpec
     {
         [field: SerializeField, VisibleOnly] public uint ID { get; private set; }
         [field: SerializeField, VisibleOnly] public CardType Type { get; private set; }
 
-        [field: SerializeReference, VisibleOnly]
-        private List<ISpecElement> elements = new();
+        [field: SerializeReference, VisibleOnly] private List<ISpecElement> elements = new();
 
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
@@ -22,6 +19,10 @@ namespace Cardevil.NewCard.Core
 
         public IReadOnlyList<ISpecElement> Elements => elements;
 
+        /// <summary>
+        /// 현재 Spec 기준으로 생성된 카드 상태.
+        /// Element 변경 시, 반환 전 재빌드함.
+        /// </summary>
         public CardState State
         {
             get
@@ -45,6 +46,10 @@ namespace Cardevil.NewCard.Core
             Type = type;
         }
 
-        public void AddElements(params ISpecElement[] specElements) => elements.AddRange(specElements);
+        public void AddElements(params ISpecElement[] specElements)
+        {
+            elements.AddRange(specElements);
+            _isDirty = true;
+        }
     }
 }

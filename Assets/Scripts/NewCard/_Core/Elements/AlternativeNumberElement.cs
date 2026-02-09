@@ -6,21 +6,21 @@ namespace Cardevil.NewCard.Core
     [Serializable]
     public sealed class AlternativeNumberElement : ISpecElement
     {
-        [SerializeField] private CardStateBuilder.AlternativeSlot<int> number;
+        [SerializeField] private CardStateBuilder.SelectableSlot<int> number;
         
         public static AlternativeNumberElement Fixed(int number) => new()
         {
-            number = CardStateBuilder.AlternativeSlot<int>.Fixed(number)
+            number = CardStateBuilder.SelectableSlot<int>.Fixed(number)
         };
         
         public static AlternativeNumberElement Random() => new()
         {
-            number = CardStateBuilder.AlternativeSlot<int>.Random()
+            number = CardStateBuilder.SelectableSlot<int>.Random()
         };
         
         public void Apply(CardStateBuilder builder)
         {
-            builder.AddNumberAlternative(number);
+            builder.AddNumberSelectableSlot(number);
         }
     }
 }
