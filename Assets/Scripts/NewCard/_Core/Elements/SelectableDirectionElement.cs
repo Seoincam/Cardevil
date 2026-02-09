@@ -5,16 +5,16 @@ using UnityEngine;
 namespace Cardevil.NewCard.Core
 {
     [Serializable]
-    public sealed class AlternativeDirectionElement : ISpecElement
+    public sealed class SelectableDirectionElement : ISpecElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<Direction> direction;
         
-        public static AlternativeDirectionElement Fixed(Direction direction) => new()
+        public static SelectableDirectionElement Fixed(Direction direction) => new()
         {
             direction = CardStateBuilder.SelectableSlot<Direction>.Fixed(direction)
         };
         
-        public static AlternativeDirectionElement Random() => new()
+        public static SelectableDirectionElement Random() => new()
         {
             direction = CardStateBuilder.SelectableSlot<Direction>.Random()
         };

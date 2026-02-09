@@ -73,10 +73,7 @@ namespace Cardevil.NewCard.Core
             T? defaultValue,
             IReadOnlyList<T> alternatives) where T : struct
         {
-            if (!defaultValue.HasValue)
-                throw new InvalidOperationException($"기본값을 미설정 : {typeof(T).Name}");
-            
-            var selectable = new CardState.SelectableValues<T>(defaultValue.Value);
+            var selectable = new CardState.SelectableValues<T>(defaultValue);
             
             foreach (var alternative in alternatives)
             {

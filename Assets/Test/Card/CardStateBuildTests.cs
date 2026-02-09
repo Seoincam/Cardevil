@@ -36,7 +36,7 @@ namespace Cardevil.Test.Card
             spec.AddElements(
                 new BaseColorElement(CardColor.Red),
                 new BaseNumberElement(3),
-                AlternativeColorElement.Fixed(CardColor.Blue)
+                SelectableColorElement.Fixed(CardColor.Blue)
             );
 
             var state = spec.State;

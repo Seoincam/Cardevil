@@ -1,3 +1,4 @@
+using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Cardevil.NewCard.Core
         [Serializable]
         public sealed class SelectableValues<T> where T : struct
         {
-            [field: SerializeField] public T DefaultValue { get; private set; }
+            [field: SerializeField] public Optional<T> DefaultValue { get; private set; }
             [SerializeField] private List<T> alternatives = new();
 
             private T? _selected;
@@ -57,7 +58,9 @@ namespace Cardevil.NewCard.Core
             /// 현재 유효한 값.
             /// 선택 가능하지만 아직 미선택했다면 null을 반환함.
             /// </summary>
-            public T? Current => HasAlternatives ? _selected : DefaultValue;
+            public T? Current => HasAlternatives 
+                ? _selected 
+                : (DefaultValue.hasValue ? DefaultValue.value : null);
 
             /// <summary>
             /// 기본값을 포함해, 선택 가능한 모든 값.
@@ -66,7 +69,11 @@ namespace Cardevil.NewCard.Core
             {
                 get
                 {
-                    yield return DefaultValue;
+                    if (DefaultValue.hasValue)
+                    {
+                        yield return DefaultValue.value;   
+                    }
+                    
                     foreach (var alternative in alternatives)
                     {
                         yield return alternative;
@@ -77,9 +84,9 @@ namespace Cardevil.NewCard.Core
             public bool HasAlternatives => alternatives.Count > 0;
             public bool HaSelected => Current != null;
             
-            public SelectableValues(T defaultValue)
+            public SelectableValues(T? defaultValue)
             {
-                DefaultValue = defaultValue;
+                DefaultValue = new Optional<T>(defaultValue);
             }
             
             public void AddAlternative(T value) => alternatives.Add(value);

@@ -40,16 +40,24 @@ namespace Cardevil.NewCard.Core
         public bool IsAttackCard => Type == CardType.Attack;
         public bool IsMoveCard => Type == CardType.Move;
 
-        public CardSpec(uint id, CardType type)
+        public CardSpec(uint id, CardType type) : this(id, type, null) { }
+
+        public CardSpec(uint id, CardType type, List<ISpecElement> elements)
         {
             ID = id;
             Type = type;
+
+            if (elements != null)
+            {
+                this.elements.AddRange(elements);
+            }
         }
 
-        public void AddElements(params ISpecElement[] specElements)
+        public CardSpec AddElements(params ISpecElement[] specElements)
         {
             elements.AddRange(specElements);
             _isDirty = true;
+            return this;
         }
     }
 }

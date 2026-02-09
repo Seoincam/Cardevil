@@ -4,16 +4,16 @@ using UnityEngine;
 namespace Cardevil.NewCard.Core
 {
     [Serializable]
-    public sealed class AlternativeNumberElement : ISpecElement
+    public sealed class SelectableNumberElement : ISpecElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<int> number;
         
-        public static AlternativeNumberElement Fixed(int number) => new()
+        public static SelectableNumberElement Fixed(int number) => new()
         {
             number = CardStateBuilder.SelectableSlot<int>.Fixed(number)
         };
         
-        public static AlternativeNumberElement Random() => new()
+        public static SelectableNumberElement Random() => new()
         {
             number = CardStateBuilder.SelectableSlot<int>.Random()
         };

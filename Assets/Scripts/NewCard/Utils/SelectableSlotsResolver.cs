@@ -57,12 +57,12 @@ namespace Cardevil.NewCard.Utils
             int? defaultNumber,
             IReadOnlyList<CardStateBuilder.SelectableSlot<int>> slots)
         {
-            if (!defaultNumber.HasValue)
+            var used = new HashSet<int>();
+            if (defaultNumber != null)
             {
-                throw new ArgumentNullException(nameof(defaultNumber));
+                used.Add(defaultNumber.Value);
             }
             
-            var used = new HashSet<int> { defaultNumber.Value };
             var results = new List<int>(slots.Count);
 
             foreach (var slot in slots)
