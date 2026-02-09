@@ -12,7 +12,7 @@ namespace Cardevil.NewCard.Config
     public class DeckConfig : ScriptableObject
     {
         [Header("Debug")] 
-        [SerializeField, VisibleOnly] private int debug_deckCount;
+        private int debug_deckCount;
         
         [Header("Attack Cards")]
         [SerializeField] private CardColor[] colors = { CardColor.Red, CardColor.Green, CardColor.Blue, CardColor.Black };
@@ -28,13 +28,29 @@ namespace Cardevil.NewCard.Config
         [SerializeField, Min(0)] private int moveCardsPerDirection = 2;
         [SerializeField, Min(0)] private int fourDirectionMoveCards = 2;
 
+        public int Debug_DeckCount
+        {
+            get
+            {
+                SyncCount();
+                return debug_deckCount;
+            }
+        }
+
         
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            SyncCount();
+        }
+        
+        private void SyncCount()
+        {
             debug_deckCount = (numberMax - numberMin + 1 + starCardForEachColor) * colors.Length +
                               4 * moveCardsPerDirection + fourDirectionMoveCards;
         }
+#else
+        private void SyncCount() { }
 #endif
 
         public List<CardSpec> CreateDefaultSpecs()
@@ -97,6 +113,5 @@ namespace Cardevil.NewCard.Config
 
             return specs;
         }
-        
     }
 }
