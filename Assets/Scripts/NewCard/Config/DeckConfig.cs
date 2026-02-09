@@ -12,7 +12,7 @@ namespace Cardevil.NewCard.Config
     public class DeckConfig : ScriptableObject
     {
         [Header("Debug")] 
-        [SerializeField] private int debug_deckCount;
+        [SerializeField, VisibleOnly] private int debug_deckCount;
         
         [Header("Attack Cards")]
         [SerializeField] private CardColor[] colors = { CardColor.Red, CardColor.Green, CardColor.Blue, CardColor.Black };
