@@ -11,7 +11,7 @@ namespace Cardevil.NewCard.Core
         [field: SerializeField, VisibleOnly] public uint ID { get; private set; }
         [field: SerializeField, VisibleOnly] public CardType Type { get; private set; }
 
-        [field: SerializeReference, VisibleOnly] private List<ISpecElement> elements = new();
+        [SerializeReference, VisibleOnly] private List<ISpecElement> elements = new();
 
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
@@ -21,7 +21,6 @@ namespace Cardevil.NewCard.Core
 
         /// <summary>
         /// 현재 Spec 기준으로 생성된 카드 상태.
-        /// Element 변경 시, 반환 전 재빌드함.
         /// </summary>
         public CardState State
         {
@@ -37,12 +36,10 @@ namespace Cardevil.NewCard.Core
             }
         }
 
-        public bool IsAttackCard => Type == CardType.Attack;
-        public bool IsMoveCard => Type == CardType.Move;
+        public bool IsAttack => Type == CardType.Attack;
+        public bool IsMove => Type == CardType.Move;
 
-        public CardSpec(uint id, CardType type) : this(id, type, null) { }
-
-        public CardSpec(uint id, CardType type, List<ISpecElement> elements)
+        public CardSpec(uint id, CardType type, List<ISpecElement> elements = null)
         {
             ID = id;
             Type = type;

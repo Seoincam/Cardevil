@@ -22,6 +22,7 @@ namespace Cardevil.NewCard.Core
     /// <summary>
     /// 카드의 플레이용 상태 데이터 클래스.
     /// </summary>
+    [Serializable]
     public sealed class CardState : ICardState
     {
         // 해당 상태를 생성한 원본 CardSpec.
