@@ -16,7 +16,7 @@ namespace Cardevil.NewCard.InStage
         {
             _view = view;
             _handBarPresenter = handBarPresenter;
-
+            
             // Tests
             var state1 = new CardSpec(1, CardType.Attack)
                 .AddElements(
@@ -61,6 +61,8 @@ namespace Cardevil.NewCard.InStage
             _handBarPresenter.AddCard(state4);
             _handBarPresenter.AddCard(state5);
             _handBarPresenter.AddCard(state6);
+            
+            handBarPresenter.CanInteract = true;
         }
     }
 }

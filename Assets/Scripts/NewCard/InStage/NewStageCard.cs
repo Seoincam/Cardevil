@@ -86,25 +86,25 @@ namespace Cardevil.NewCard.InStage
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Debug.Log("OnPointerEnter");
+            // Debug.Log("OnPointerEnter");
             PointerEnter?.Invoke(this);
         }
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            Debug.Log("OnPointerDown");
+            // Debug.Log("OnP ointerDown");
             PointerDown?.Invoke(this);
         }
         
         public void OnBeginDrag(PointerEventData eventData)
         {
-            Debug.Log("OnBeginDrag");
+            // Debug.Log("OnBeginDrag");
             DragStart?.Invoke(this);
         }
         
         public void OnDrag(PointerEventData eventData)
         {
-            Debug.Log("OnDrag");
+            // Debug.Log("OnDrag");
             Dragging?.Invoke(this);
             
             
@@ -112,19 +112,19 @@ namespace Cardevil.NewCard.InStage
         
         public void OnPointerUp(PointerEventData eventData)
         {
-            Debug.Log("OnPointerUp");
+            // Debug.Log("OnPointerUp");
             PointerUp?.Invoke(this);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            Debug.Log("OnEndDrag");
+            // Debug.Log("OnEndDrag");
             DragEnd?.Invoke(this);
         }
         
         public void OnPointerExit(PointerEventData eventData)
         {
-            Debug.Log("OnPointerExit");
+            // Debug.Log("OnPointerExit");
             PointerExit?.Invoke(this);
         }
 

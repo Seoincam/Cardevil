@@ -1,11 +1,17 @@
 using Cardevil.NewCard.Core;
+using System;
+using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
 {
+    [Serializable]
     public class HandBarPresenter
     {
-        private readonly HandBarModel _model = new();
-        private readonly HandBarView _view;
+        [SerializeField] private HandBarModel model = new();
+        
+        private HandBarView _view;
+        
+        [field: SerializeField] public bool CanInteract { private get; set; }
 
         public HandBarPresenter(HandBarView view)
         {
@@ -22,74 +28,83 @@ namespace Cardevil.NewCard.InStage
 
         public void AddCard(ICardState state)
         {
-            _model.Add(state);
+            model.Add(state);
             _view.CreateCard(state);
-            _view.ArrangeCards(_model.Hand);
+            _view.ArrangeCards(model.Hand);
         }
 
         public void RemoveCard(ICardState state)
         {
-            _model.Remove(state);
+            model.Remove(state);
             _view.DestroyCard(state);
-            _view.ArrangeCards(_model.Hand);
+            _view.ArrangeCards(model.Hand);
         }
 
         private void OnPointerEnter(ICardState state)
         {
-            
+            if (!CanInteract) return;
         }
 
         private void OnPointerDown(ICardState state)
         {
-            
+            if (!CanInteract) return;
         }
 
         private void OnDragStart(ICardState state)
         {
+            if (!CanInteract) return;
             
+            _view.StartDrag(state);
         }
 
         private void OnDragging(ICardState state)
         {
+            if (!CanInteract) return;
             TrySwap(state);
         }
 
         private void OnPointerUp(ICardState state)
         {
-            
+            if (!CanInteract) return;
         }
 
         private void OnDragEnd(ICardState state)
         {
-            
+            _view.EndDrag(state);
         }
 
         private void OnPointerExit(ICardState state)
         {
-            
+            if (!CanInteract) return;
         }
 
         private void TrySwap(ICardState dragging)
         {
-            int draggingIndex = _model.IndexOf(dragging);
+            int from = model.IndexOf(dragging);
             float draggingX = _view.GetCurrentX(dragging);
+            int count = model.Hand.Count;
 
-            for (int i = 0; i < _model.Hand.Count; i++)
+            // 오른쪽으로 밀기
+            while (from + 1 < count)
             {
-                if (i == draggingIndex) continue;
-                
-                float otherX = _view.GetCurrentX(_model.Hand[i]);
-                
-                bool shouldSwap = (draggingIndex < i && draggingX > otherX) ||
-                                  (draggingIndex > i && draggingX < otherX);
-
-                if (shouldSwap)
-                {
-                    _model.Swap(draggingIndex, i);
-                    _view.ArrangeCards(_model.Hand);
-                    break;
-                }
+                float nextX = _view.GetCurrentX(model.Hand[from + 1]);
+                if (draggingX <= nextX) break;
+        
+                model.Swap(from, from + 1);
+                from++;
             }
+
+            // 왼쪽으로 밀기
+            while (from - 1 >= 0)
+            {
+                float prevX = _view.GetCurrentX(model.Hand[from - 1]);
+                if (draggingX >= prevX) break;
+        
+                model.Swap(from, from - 1);
+                from--;
+            }
+
+            _view.ArrangeCards(model.Hand);
         }
     }
 }

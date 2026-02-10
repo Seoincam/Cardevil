@@ -2,21 +2,26 @@ using Cardevil.Attributes;
 using Cardevil.NewCard.Core;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
 {
     public class HandBarView : MonoBehaviour
     {
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private Camera cardCamera;
 
-        [Header("Settings")] 
-        [SerializeField, Range(0f, 0.5f)] private float anchorY = 0.08f;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private Transform anchor;
+
+        [Header("Settings")] [SerializeField, Range(0f, 0.5f)]
+        private float anchorY = 0.08f;
+
         [SerializeField, Range(0f, 1.5f)] private float cardSpacing = 0.75f;
-        
-        [Header("Prefabs")]
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
+
+        [Header("Prefabs")] [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private GameObject cardPrefab;
 
         public event Action<ICardState> CardPointerEnter;
         public event Action<ICardState> CardPointerDown;
@@ -31,7 +36,7 @@ namespace Cardevil.NewCard.InStage
         private Rect _safeArea;
         private Vector2 _viewportMin;
         private Vector2 _viewportMax;
-        
+
         private int _cachedWidth;
         private int _cachedHeight;
         private float _cachedAnchorY;
@@ -43,7 +48,7 @@ namespace Cardevil.NewCard.InStage
             {
                 _cachedWidth = Screen.width;
                 _cachedHeight = Screen.height;
-                
+
                 RefreshSafeArea();
                 UpdateAnchorPosition();
             }
@@ -60,7 +65,7 @@ namespace Cardevil.NewCard.InStage
                 // ArrangeCards();
             }
         }
-        
+
         private void RefreshSafeArea()
         {
             _safeArea = Screen.safeArea;
@@ -79,15 +84,15 @@ namespace Cardevil.NewCard.InStage
         private void UpdateAnchorPosition()
         {
             float y = Mathf.Lerp(_viewportMin.y, _viewportMax.y, anchorY);
-            
+
             Vector3 viewport = new(0.5f, y, 0f);
             Vector3 anchorPosition = cardCamera.ViewportToWorldPoint(viewport);
             anchorPosition.z = 0f;
-            
+
             anchor.position = anchorPosition;
         }
 
-        public NewStageCard CreateCard(ICardState state)
+        public void CreateCard(ICardState state)
         {
             var card = Instantiate(cardPrefab, anchor).GetComponent<NewStageCard>();
             card.Initialize(state, cardCamera);
@@ -102,7 +107,7 @@ namespace Cardevil.NewCard.InStage
             card.DragEnd += c => CardDragEnd?.Invoke(c.State);
             card.PointerExit += c => CardPointerExit?.Invoke(c.State);
 
-            return card;
+            card.GetComponentInChildren<TextMeshPro>().text = state.Id.ToString();
         }
 
         public void DestroyCard(ICardState state)
@@ -118,7 +123,7 @@ namespace Cardevil.NewCard.InStage
             for (int i = 0; i < cards.Count; i++)
             {
                 if (!_cardMap.TryGetValue(cards[i], out var card)) continue;
-                
+
                 float x = (i - (cards.Count - 1) * 0.5f) * cardSpacing;
                 card.LocalTarget = new Vector3(x, 0f, 0f);
             }
@@ -129,6 +134,25 @@ namespace Cardevil.NewCard.InStage
         public float GetCurrentX(ICardState state)
         {
             return _cardMap.TryGetValue(state, out var card) ? card.CurrentX : 0f;
+        }
+
+        public void StartDrag(ICardState state)
+        {
+            if (!_cardMap.TryGetValue(state, out var card)) return;
+
+            card.IsDragging = true;
+        }
+
+        public void EndDrag(ICardState state)
+        {
+            if (!_cardMap.TryGetValue(state, out var card)) return;
+            
+            card.IsDragging = false;
+        }
+
+        public float GetSlotX(int maxHand, int index)
+        {
+            return (index - (maxHand - 1) * 0.5f) * cardSpacing;
         }
     }
 }

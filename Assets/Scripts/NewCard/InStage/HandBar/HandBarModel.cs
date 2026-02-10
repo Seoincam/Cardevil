@@ -15,6 +15,15 @@ namespace Cardevil.NewCard.InStage
         
         public void Add(ICardState card) => hand.Add(card);
         public void Remove(ICardState card) => hand.Remove(card);
+
+        public void MoveTo(int fromIndex, int targetIndex)
+        {
+            if (fromIndex == targetIndex) return;
+            
+            var card = hand[fromIndex];
+            hand.RemoveAt(fromIndex);
+            hand.Insert(targetIndex, card);
+        }
         
         public int IndexOf(ICardState card) => hand.IndexOf(card);
 
