@@ -12,8 +12,8 @@ namespace Cardevil.NewCard.InStage
 
         private void Awake()
         {
-            _corePresenter = new StageCardCorePresenter(coreView);
             _handBarPresenter = new HandBarPresenter(handBarView);
+            _corePresenter = new StageCardCorePresenter(coreView, _handBarPresenter);
         }
     }
 }
