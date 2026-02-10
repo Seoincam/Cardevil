@@ -44,7 +44,7 @@ namespace Cardevil.NewCard.InStage
         /// View에서 설정된 로컬 타겟. 기존 Slot과 같은 역할을 함.
         /// 아무런 상호작용이 없다면 해당 위치로 이동함.
         /// </summary>
-        public Vector3 LocalTarget { private get; set; }
+        public Vector3 LocalTarget { get; set; }
         
         /// <summary>
         /// Presenter에서 설정되는 상호작용 타겟.

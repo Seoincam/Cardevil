@@ -1,5 +1,6 @@
 using Cardevil.NewCard.Core;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
@@ -48,12 +49,15 @@ namespace Cardevil.NewCard.InStage
         private void OnPointerDown(ICardState state)
         {
             if (!CanInteract) return;
+            
+            model.SetPointerDownData(state);
         }
 
         private void OnDragStart(ICardState state)
         {
             if (!CanInteract) return;
             
+            model.SetDraggingData(state);
             _view.StartDrag(state);
         }
 
@@ -63,12 +67,12 @@ namespace Cardevil.NewCard.InStage
 
             bool inZone = _view.IsInHandZone(state);
 
-            if (model.CurrentInteraction.Exists && inZone)
+            if (model.DetachData.Exists && inZone)
             {
                 // 핸드로 복귀
                 model.Reattach(state);
             }
-            else if (!model.CurrentInteraction.Exists && !inZone)
+            else if (!model.DetachData.Exists && !inZone)
             {
                 // 핸드에서 빠짐
                 model.Detach(state);
@@ -84,10 +88,27 @@ namespace Cardevil.NewCard.InStage
         private void OnPointerUp(ICardState state)
         {
             if (!CanInteract) return;
+            
+            // 드래그를 했다면 시간도 체크함.
+            if (model.PointerDownData.Exists && Time.time - model.PointerDownData.LastInteractionTime > 0.5f) return;
+            
+            if (model.Selection.Contains(state))
+            {
+                Debug.Log("Deselect");
+                model.Deselect(state);
+                _view.DeselectCard(state, model.Hand.Count, model.IndexOf(state));
+            }
+            else if (model.Selection.Count < 4)
+            {
+                Debug.Log("Select");
+                model.Select(state);
+                _view.SelectCard(state, model.Hand.Count, model.IndexOf(state));
+            }
         }
 
         private void OnDragEnd(ICardState state)
         {
+            model.ClearDraggingData();
             _view.EndDrag(state);
         }
 

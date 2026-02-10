@@ -7,13 +7,13 @@ namespace Cardevil.NewCard.InStage
         [SerializeField] private StageCardCoreView coreView;
         [SerializeField] private HandBarView handBarView;
         
-        private StageCardCorePresenter _corePresenter;
-        private HandBarPresenter _handBarPresenter;
+        [SerializeField] private StageCardCorePresenter corePresenter;
+        [SerializeField] private HandBarPresenter handBarPresenter;
 
         private void Awake()
         {
-            _handBarPresenter = new HandBarPresenter(handBarView);
-            _corePresenter = new StageCardCorePresenter(coreView, _handBarPresenter);
+            handBarPresenter = new HandBarPresenter(handBarView);
+            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter);
         }
     }
 }
