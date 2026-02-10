@@ -718,6 +718,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3264d905ebbd8fe459a4e26c51070721, type: 3}
+--- !u!1 &1270891070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1270891071}
+  m_Layer: 0
+  m_Name: --- Cards ---
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1270891071
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270891070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 960, y: 540, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1657458496
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,6 +781,7 @@ MonoBehaviour:
   cardCamera: {fileID: 569188176}
   anchor: {fileID: 1221663211}
   anchorY: 0.1
+  handZoneMaxY: 0.25
   cardSpacing: 0.75
   cardPrefab: {fileID: 5115970858542608410, guid: 4e9191c4a8bc6422f947f36faaf562c0, type: 3}
 --- !u!4 &1657458498
@@ -1319,7 +1351,8 @@ SceneRoots:
   - {fileID: 228952888761955563}
   - {fileID: 5752163451181496989}
   - {fileID: 1810907417}
+  - {fileID: 1270891071}
+  - {fileID: 1221857092}
   - {fileID: 1657458498}
   - {fileID: 1221663211}
-  - {fileID: 1221857092}
   - {fileID: 301036025}

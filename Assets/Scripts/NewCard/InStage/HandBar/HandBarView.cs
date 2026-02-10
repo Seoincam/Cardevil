@@ -9,16 +9,20 @@ namespace Cardevil.NewCard.InStage
 {
     public class HandBarView : MonoBehaviour
     {
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private Camera cardCamera;
 
-        [Header("Settings")] 
-        [SerializeField, Range(0f, 0.5f)] private float anchorY = 0.08f;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private Transform anchor;
+
+        [Header("Settings")] [SerializeField, Range(0f, 0.5f)]
+        private float anchorY = 0.08f;
+
         [SerializeField, Range(0f, 0.5f)] private float handZoneMaxY = 0.25f;
         [SerializeField, Range(0f, 1.5f)] private float cardSpacing = 0.75f;
 
-        [Header("Prefabs")] 
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
+        [Header("Prefabs")] [SerializeField, VisibleOnly(EditableIn.EditMode)]
+        private GameObject cardPrefab;
 
         public event Action<ICardState> CardPointerEnter;
         public event Action<ICardState> CardPointerDown;
@@ -63,32 +67,6 @@ namespace Cardevil.NewCard.InStage
             }
         }
 
-        private void RefreshSafeArea()
-        {
-            _safeArea = Screen.safeArea;
-
-            _viewportMin = new(
-                _safeArea.xMin / _cachedWidth,
-                _safeArea.yMin / _cachedHeight
-            );
-
-            _viewportMax = new(
-                _safeArea.xMax / _cachedWidth,
-                _safeArea.yMax / _cachedHeight
-            );
-        }
-
-        private void UpdateAnchorPosition()
-        {
-            float y = Mathf.Lerp(_viewportMin.y, _viewportMax.y, anchorY);
-
-            Vector3 viewport = new(0.5f, y, 0f);
-            Vector3 anchorPosition = cardCamera.ViewportToWorldPoint(viewport);
-            anchorPosition.z = 0f;
-
-            anchor.position = anchorPosition;
-        }
-
         public void CreateCard(ICardState state)
         {
             var card = Instantiate(cardPrefab, anchor).GetComponent<NewStageCard>();
@@ -120,9 +98,9 @@ namespace Cardevil.NewCard.InStage
             for (int i = 0; i < cards.Count; i++)
             {
                 if (!_cardMap.TryGetValue(cards[i], out var card)) continue;
-
-                float x = (i - (cards.Count - 1) * 0.5f) * cardSpacing;
-                card.LocalTarget = new Vector3(x, 0f, 0f);
+                
+                var x = GetSlotX(cards.Count, i);
+                card.LocalTarget = new Vector3(x, card.LocalTarget.y, 0f);
             }
         }
 
@@ -130,27 +108,26 @@ namespace Cardevil.NewCard.InStage
 
         public float GetCurrentX(ICardState state)
         {
-            return _cardMap.TryGetValue(state, out var card) ? card.CurrentX : 0f;
+            var card = GetCardInternal(state);
+            return card.CurrentX;
         }
 
         public Vector2 GetViewportPoint(ICardState state)
         {
-            if (!_cardMap.TryGetValue(state, out var card)) return Vector2.zero;
+            var card = GetCardInternal(state);
 
             return cardCamera.WorldToViewportPoint(card.transform.position);
         }
 
         public void StartDrag(ICardState state)
         {
-            if (!_cardMap.TryGetValue(state, out var card)) return;
-
+            var card = GetCardInternal(state);
             card.IsDragging = true;
         }
 
         public void EndDrag(ICardState state)
         {
-            if (!_cardMap.TryGetValue(state, out var card)) return;
-            
+            var card = GetCardInternal(state);
             card.IsDragging = false;
         }
 
@@ -166,6 +143,57 @@ namespace Cardevil.NewCard.InStage
         {
             var viewport = GetViewportPoint(state);
             return viewport.y < handZoneMaxY;
+        }
+
+        public void SelectCard(ICardState state, int maxHand, int index)
+        {
+            var card = GetCardInternal(state);
+            
+            var x = GetSlotX(maxHand, index);
+            card.LocalTarget = new Vector3(x, 0.5f, 0f);
+        }
+
+        public void DeselectCard(ICardState state, int maxHand, int index)
+        {
+            var card = GetCardInternal(state);
+            
+            var x = GetSlotX(maxHand, index);
+            card.LocalTarget = new Vector3(x, 0f, 0f);
+        }
+
+        private void RefreshSafeArea()
+        {
+            _safeArea = Screen.safeArea;
+
+            _viewportMin = new(
+                _safeArea.xMin / _cachedWidth,
+                _safeArea.yMin / _cachedHeight
+            );
+
+            _viewportMax = new(
+                _safeArea.xMax / _cachedWidth,
+                _safeArea.yMax / _cachedHeight
+            );
+        }
+
+        private void UpdateAnchorPosition()
+        {
+            float y = Mathf.Lerp(_viewportMin.y, _viewportMax.y, anchorY);
+
+            Vector3 viewport = new(0.5f, y, 0f);
+            Vector3 anchorPosition = cardCamera.ViewportToWorldPoint(viewport);
+            anchorPosition.z = 0f;
+
+            anchor.position = anchorPosition;
+        }
+
+        private NewStageCard GetCardInternal(ICardState state)
+        {
+            if (!_cardMap.TryGetValue(state, out var card))
+            {
+                throw new Exception("Card not found");
+            }
+            return card;
         }
     }
 }

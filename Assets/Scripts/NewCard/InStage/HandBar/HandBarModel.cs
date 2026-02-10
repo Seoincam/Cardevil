@@ -10,17 +10,29 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeReference] private List<ICardState> hand = new();
         [SerializeReference] private List<ICardState> selection = new();
-        
-        [field: Space]
-        [field: SerializeField] public InteractionData CurrentInteraction { get; private set; }
-        
+
+        [field: Space] [field: SerializeField] public InteractionData PointerDownData { get; private set; }
+        [field: SerializeField] public InteractionData DragData { get; private set; }
+        [field: SerializeField] public InteractionData DetachData { get; private set; }
+
         public IReadOnlyList<ICardState> Hand => hand;
-        
+        public IReadOnlyList<ICardState> Selection => selection;
+
         public void Add(ICardState state) => hand.Add(state);
 
         public void Remove(ICardState state)
         {
             hand.Remove(state);
+            selection.Remove(state);
+        }
+
+        public void Select(ICardState state)
+        {
+            if (!selection.Contains(state)) selection.Add(state);
+        }
+
+        public void Deselect(ICardState state)
+        {
             selection.Remove(state);
         }
 
@@ -30,8 +42,9 @@ namespace Cardevil.NewCard.InStage
         /// </summary>
         public void Detach(ICardState state)
         {
-            CurrentInteraction = new InteractionData(state, IndexOf(state), selection.Contains(state));
             Remove(state);
+
+            DetachData = new InteractionData(state, IndexOf(state), selection.Contains(state));
         }
 
         /// <summary>
@@ -40,13 +53,13 @@ namespace Cardevil.NewCard.InStage
         /// </summary>
         public void Reattach(ICardState state)
         {
-            Debug.Assert(state.Id == CurrentInteraction.Card.Id);
-            
+            Debug.Assert(state.Id == DragData.Card.Id);
+
             hand.Add(state);
-            if (CurrentInteraction.IsSelected)
+            if (DragData.IsSelected)
                 selection.Add(state);
-            
-            CurrentInteraction = InteractionData.Empty;
+
+            DetachData = InteractionData.Empty;
         }
 
         public int IndexOf(ICardState state) => hand.IndexOf(state);
@@ -54,6 +67,26 @@ namespace Cardevil.NewCard.InStage
         public void Swap(int indexA, int indexB)
         {
             (hand[indexA], hand[indexB]) = (hand[indexB], hand[indexA]);
+        }
+
+        public void SetPointerDownData(ICardState state)
+        {
+            PointerDownData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+        }
+
+        public void ClearPointerDownData()
+        {
+            PointerDownData = InteractionData.Empty;
+        }
+
+        public void SetDraggingData(ICardState state)
+        {
+            DragData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+        }
+
+        public void ClearDraggingData()
+        {
+            DragData = InteractionData.Empty;
         }
 
         [Serializable]
