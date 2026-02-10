@@ -29,6 +29,10 @@ namespace Cardevil.NewCard.InStage
         
         private Camera _cardCamera;
 
+        /// <summary>
+        /// 카드의 Local Position x 좌표.
+        /// Swap 등 카드끼리 비교용으로 사용함.
+        /// </summary>
         public float CurrentX => transform.localPosition.x;
         
         /// <summary>

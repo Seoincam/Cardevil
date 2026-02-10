@@ -60,7 +60,25 @@ namespace Cardevil.NewCard.InStage
         private void OnDragging(ICardState state)
         {
             if (!CanInteract) return;
-            TrySwap(state);
+
+            bool inZone = _view.IsInHandZone(state);
+
+            if (model.CurrentInteraction.Exists && inZone)
+            {
+                // 핸드로 복귀
+                model.Reattach(state);
+            }
+            else if (!model.CurrentInteraction.Exists && !inZone)
+            {
+                // 핸드에서 빠짐
+                model.Detach(state);
+                _view.ArrangeCards(model.Hand);
+            }
+
+            if (inZone)
+            {
+                TrySwap(state);   
+            }
         }
 
         private void OnPointerUp(ICardState state)

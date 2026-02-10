@@ -9,19 +9,16 @@ namespace Cardevil.NewCard.InStage
 {
     public class HandBarView : MonoBehaviour
     {
-        [SerializeField, VisibleOnly(EditableIn.EditMode)]
-        private Camera cardCamera;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
 
-        [SerializeField, VisibleOnly(EditableIn.EditMode)]
-        private Transform anchor;
-
-        [Header("Settings")] [SerializeField, Range(0f, 0.5f)]
-        private float anchorY = 0.08f;
-
+        [Header("Settings")] 
+        [SerializeField, Range(0f, 0.5f)] private float anchorY = 0.08f;
+        [SerializeField, Range(0f, 0.5f)] private float handZoneMaxY = 0.25f;
         [SerializeField, Range(0f, 1.5f)] private float cardSpacing = 0.75f;
 
-        [Header("Prefabs")] [SerializeField, VisibleOnly(EditableIn.EditMode)]
-        private GameObject cardPrefab;
+        [Header("Prefabs")] 
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
 
         public event Action<ICardState> CardPointerEnter;
         public event Action<ICardState> CardPointerDown;
@@ -136,6 +133,13 @@ namespace Cardevil.NewCard.InStage
             return _cardMap.TryGetValue(state, out var card) ? card.CurrentX : 0f;
         }
 
+        public Vector2 GetViewportPoint(ICardState state)
+        {
+            if (!_cardMap.TryGetValue(state, out var card)) return Vector2.zero;
+
+            return cardCamera.WorldToViewportPoint(card.transform.position);
+        }
+
         public void StartDrag(ICardState state)
         {
             if (!_cardMap.TryGetValue(state, out var card)) return;
@@ -153,6 +157,15 @@ namespace Cardevil.NewCard.InStage
         public float GetSlotX(int maxHand, int index)
         {
             return (index - (maxHand - 1) * 0.5f) * cardSpacing;
+        }
+
+        /// <summary>
+        /// 뷰포트 Y 기준으로 핸드 영역 내인지 판단함.
+        /// </summary>
+        public bool IsInHandZone(ICardState state)
+        {
+            var viewport = GetViewportPoint(state);
+            return viewport.y < handZoneMaxY;
         }
     }
 }
