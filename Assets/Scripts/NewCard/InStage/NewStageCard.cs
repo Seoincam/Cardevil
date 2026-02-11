@@ -17,6 +17,9 @@ namespace Cardevil.NewCard.InStage
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        
+        [field: Header("State")]
         [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
 
         public event Action<NewStageCard> PointerEnter;
@@ -41,16 +44,39 @@ namespace Cardevil.NewCard.InStage
         public bool IsDragging { private get; set; }
         
         /// <summary>
-        /// View에서 설정된 로컬 타겟. 기존 Slot과 같은 역할을 함.
-        /// 아무런 상호작용이 없다면 해당 위치로 이동함.
+        /// 카드가 손패 내에 존재할 때 목표 x 로컬 좌표.
         /// </summary>
-        public Vector3 LocalTarget { get; set; }
+        public float TargetLocalX { private get; set; }
         
         /// <summary>
-        /// Presenter에서 설정되는 상호작용 타겟.
-        /// 마우스 등으로 움직일 때 해당 위치로 움직임.
+        /// 카드가 손패 내에 존재할 때 목표 y 로컬 좌표.
         /// </summary>
-        public Vector3 InteractingTarget { private get; set; }
+        public float TargetLocalCurveY { private get; set; }
+        
+        /// <summary>
+        /// 카드가 손패 내에 존재할 때 선택 상태로 더해지는 목표 y 로컬 좌표. 
+        /// </summary>
+        public float TargetSelectionY { private get; set; }
+        
+        /// <summary>
+        /// 카드가 손패 내에 존재할 때 목표 z 로컬 커브.
+        /// </summary>
+        public float TargetCurveAngleZ { private get; set; }
+
+        private Vector3 TargetLocalPosition
+        {
+            get
+            {
+                var x = TargetLocalX;
+                var y = TargetLocalCurveY + TargetSelectionY;
+                
+                return new Vector3(x, y);
+            }
+        }
+
+        // 드래그 중일 때 갱신되는 포인터의 위치.
+        private Vector3 _targetPointerPosition;
+        
 
         public void Initialize(ICardState cardState, Camera cardCamera)
         {
@@ -64,7 +90,7 @@ namespace Cardevil.NewCard.InStage
             if (IsDragging)
             {
                 Vector2 screen = Pointer.current.position.ReadValue();
-                InteractingTarget = _cardCamera.ScreenToWorldPoint(
+                _targetPointerPosition = _cardCamera.ScreenToWorldPoint(
                     new Vector3(screen.x, screen.y, -_cardCamera.transform.position.z)
                 );
             }
@@ -75,17 +101,24 @@ namespace Cardevil.NewCard.InStage
             // TODO: 보간
             if (IsDragging)
             {
-                transform.position = InteractingTarget;
+                transform.position = _targetPointerPosition;
+                transform.localEulerAngles = Vector3.zero;
             }
             else
             {
-                transform.localPosition = LocalTarget;
+                transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
+                transform.localEulerAngles = new Vector3(0f, 0f, Mathf.LerpAngle(transform.localEulerAngles.z, TargetCurveAngleZ, Time.deltaTime * 10));
             }
         }
 
         public void Clear()
         {
             throw new System.NotImplementedException();
+        }
+
+        public void SetSortingOrder(int order)
+        {
+            spriteRenderer.sortingOrder = order;
         }
 
         public void OnPointerEnter(PointerEventData eventData)

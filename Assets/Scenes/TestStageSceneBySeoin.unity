@@ -636,6 +636,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coreView: {fileID: 65187913}
   handBarView: {fileID: 1657458497}
+  corePresenter:
+    model:
+      deck: []
+      discarded: []
+  handBarPresenter:
+    model:
+      hand: []
+      selection: []
+      <PointerDownData>k__BackingField:
+        <Card>k__BackingField:
+          rid: -2
+        <OriginalIndex>k__BackingField: 0
+        <IsSelected>k__BackingField: 0
+        <LastInteractionTime>k__BackingField: 0
+      <DragData>k__BackingField:
+        <Card>k__BackingField:
+          rid: -2
+        <OriginalIndex>k__BackingField: 0
+        <IsSelected>k__BackingField: 0
+        <LastInteractionTime>k__BackingField: 0
+      <DetachData>k__BackingField:
+        <Card>k__BackingField:
+          rid: -2
+        <OriginalIndex>k__BackingField: 0
+        <IsSelected>k__BackingField: 0
+        <LastInteractionTime>k__BackingField: 0
+    <CanInteract>k__BackingField: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!1001 &1252862672
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -780,9 +812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardCamera: {fileID: 569188176}
   anchor: {fileID: 1221663211}
-  anchorY: 0.1
-  handZoneMaxY: 0.25
-  cardSpacing: 0.75
+  config: {fileID: 11400000, guid: 85ad6131ebda842d5b46a9a42fba65b9, type: 2}
   cardPrefab: {fileID: 5115970858542608410, guid: 4e9191c4a8bc6422f947f36faaf562c0, type: 3}
 --- !u!4 &1657458498
 Transform:
