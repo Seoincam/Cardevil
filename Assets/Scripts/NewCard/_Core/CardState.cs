@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -26,20 +27,21 @@ namespace Cardevil.NewCard.Core
     public sealed class CardState : ICardState
     {
         // 해당 상태를 생성한 원본 CardSpec.
-        private readonly CardSpec _spec;
+        [SerializeField, VisibleOnly] private CardSpec spec;
 
         // 카드에서 선택 가능한 값의 집함.
         // CardType에 따라 필요한 것만 생성함.
-        public SelectableValues<CardColor> Colors { get; set; }
-        public SelectableValues<int> Numbers { get; set; }
-        public SelectableValues<Direction> Directions { get; set; }
+        [field: Space]
+        [field: SerializeField] public SelectableValues<CardColor> Colors { get; set; }
+        [field: SerializeField] public SelectableValues<int> Numbers { get; set; }
+        [field: SerializeField] public SelectableValues<Direction> Directions { get; set; }
 
-        public uint Id => _spec.ID;
-        public CardType Type => _spec.Type;
+        public uint Id => spec.ID;
+        public CardType Type => spec.Type;
         
         public CardState(CardSpec spec)
         {
-            _spec = spec;
+            this.spec = spec;
         }
 
         /// <summary>

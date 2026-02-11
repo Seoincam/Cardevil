@@ -17,6 +17,9 @@ namespace Cardevil.NewCard.InStage
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        
+        [field: Header("State")]
         [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
 
         public event Action<NewStageCard> PointerEnter;
@@ -86,6 +89,11 @@ namespace Cardevil.NewCard.InStage
         public void Clear()
         {
             throw new System.NotImplementedException();
+        }
+
+        public void SetSortingOrder(int order)
+        {
+            spriteRenderer.sortingOrder = order;
         }
 
         public void OnPointerEnter(PointerEventData eventData)

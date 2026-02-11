@@ -9,20 +9,16 @@ namespace Cardevil.NewCard.InStage
 {
     public class HandBarView : MonoBehaviour
     {
-        [SerializeField, VisibleOnly(EditableIn.EditMode)]
-        private Camera cardCamera;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
 
-        [SerializeField, VisibleOnly(EditableIn.EditMode)]
-        private Transform anchor;
-
-        [Header("Settings")] [SerializeField, Range(0f, 0.5f)]
-        private float anchorY = 0.08f;
-
+        [Header("Settings")] 
+        [SerializeField, Range(0f, 0.5f)] private float anchorY = 0.08f;
         [SerializeField, Range(0f, 0.5f)] private float handZoneMaxY = 0.25f;
         [SerializeField, Range(0f, 1.5f)] private float cardSpacing = 0.75f;
 
-        [Header("Prefabs")] [SerializeField, VisibleOnly(EditableIn.EditMode)]
-        private GameObject cardPrefab;
+        [Header("Prefabs")] 
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
 
         public event Action<ICardState> CardPointerEnter;
         public event Action<ICardState> CardPointerDown;
@@ -97,14 +93,16 @@ namespace Cardevil.NewCard.InStage
         {
             for (int i = 0; i < cards.Count; i++)
             {
-                if (!_cardMap.TryGetValue(cards[i], out var card)) continue;
-                
                 var x = GetSlotX(cards.Count, i);
+                
+                var card = GetCardInternal(cards[i]);
                 card.LocalTarget = new Vector3(x, card.LocalTarget.y, 0f);
+                
+                card.SetSortingOrder(i);
             }
         }
 
-        public NewStageCard GetCard(ICardState state) => _cardMap.GetValueOrDefault(state, null);
+        public NewStageCard GetCard(ICardState state) => GetCardInternal(state);
 
         public float GetCurrentX(ICardState state)
         {
@@ -115,7 +113,6 @@ namespace Cardevil.NewCard.InStage
         public Vector2 GetViewportPoint(ICardState state)
         {
             var card = GetCardInternal(state);
-
             return cardCamera.WorldToViewportPoint(card.transform.position);
         }
 
@@ -191,7 +188,7 @@ namespace Cardevil.NewCard.InStage
         {
             if (!_cardMap.TryGetValue(state, out var card))
             {
-                throw new Exception("Card not found");
+                throw new Exception("[HandBarView] Card not found");
             }
             return card;
         }
