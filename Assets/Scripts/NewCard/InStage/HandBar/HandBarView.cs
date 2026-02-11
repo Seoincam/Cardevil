@@ -11,6 +11,8 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
+
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private RectTransform valueSelectionZone;
         
         [Header("Config")] 
         [SerializeField] private HandBarConfig config;
@@ -140,6 +142,27 @@ namespace Cardevil.NewCard.InStage
         {
             var viewport = GetViewportPoint(state);
             return viewport.y < config.HandZoneMaxY;
+        }
+        
+        /// <summary>
+        /// 카드가 값 선택 영역 내에 있는지 판단함.
+        /// </summary>
+        public bool IsInValueSelectionZone(ICardState state)
+        {
+            var card = GetCardInternal(state);
+            Vector3 worldPos = card.transform.position;
+            Vector2 screenPos = cardCamera.WorldToScreenPoint(worldPos);
+            
+            Vector3[] corners = new Vector3[4];
+            valueSelectionZone.GetWorldCorners(corners);
+            
+            Vector2 min = RectTransformUtility.WorldToScreenPoint(cardCamera, corners[0]);
+            Vector2 max = RectTransformUtility.WorldToScreenPoint(cardCamera, corners[2]);
+            
+            var rect = new Rect(min, max - min);
+            
+            Debug.Log("IsInValueSelectionZone " + rect.Contains(screenPos));
+            return rect.Contains(screenPos);
         }
 
         public void SelectCard(ICardState state, int maxHand, int index)
