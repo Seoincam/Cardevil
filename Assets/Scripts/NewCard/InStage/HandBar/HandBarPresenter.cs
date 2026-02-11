@@ -64,6 +64,8 @@ namespace Cardevil.NewCard.InStage
         private void OnDragging(ICardState state)
         {
             if (!CanInteract) return;
+            
+            _view.IsInValueSelectionZone(state);
 
             bool inZone = _view.IsInHandZone(state);
 
@@ -108,6 +110,21 @@ namespace Cardevil.NewCard.InStage
 
         private void OnDragEnd(ICardState state)
         {
+            // TODO: 선택 가능하고, 영역 내에 있는지 체크
+
+            if (_view.IsInValueSelectionZone(state))
+            {
+                
+            }
+            else if (model.DetachData.Exists)
+            {
+                // 손패 영역 밖이고, 선택 영영도 아니라면 원래 위치로 복귀.
+                model.Insert(model.DragData.OriginalIndex, state);
+                model.ClearDetachData();
+                
+                _view.ArrangeCards(model.Hand);
+            }
+            
             model.ClearDraggingData();
             _view.EndDrag(state);
         }

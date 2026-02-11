@@ -19,6 +19,8 @@ namespace Cardevil.NewCard.InStage
         public IReadOnlyList<ICardState> Selection => selection;
 
         public void Add(ICardState state) => hand.Add(state);
+        
+        public void Insert(int index, ICardState state) => hand.Insert(index, state);
 
         public void Remove(ICardState state)
         {
@@ -87,6 +89,16 @@ namespace Cardevil.NewCard.InStage
         public void ClearDraggingData()
         {
             DragData = InteractionData.Empty;
+        }
+
+        public void SetDetachData(ICardState state)
+        {
+            DetachData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+        }
+
+        public void ClearDetachData()
+        {
+            DetachData = InteractionData.Empty;
         }
 
         [Serializable]
