@@ -11,11 +11,9 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
-
-        [Header("Settings")] 
-        [SerializeField, Range(0f, 0.5f)] private float anchorY = 0.08f;
-        [SerializeField, Range(0f, 0.5f)] private float handZoneMaxY = 0.25f;
-        [SerializeField, Range(0f, 1.5f)] private float cardSpacing = 0.75f;
+        
+        [Header("Config")] 
+        [SerializeField] private HandBarConfig config;
 
         [Header("Prefabs")] 
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
@@ -50,9 +48,9 @@ namespace Cardevil.NewCard.InStage
                 UpdateAnchorPosition();
             }
 
-            if (!Mathf.Approximately(_cachedAnchorY, anchorY))
+            if (!Mathf.Approximately(_cachedAnchorY, config.AnchorY))
             {
-                _cachedAnchorY = anchorY;
+                _cachedAnchorY = config.AnchorY;
                 UpdateAnchorPosition();
             }
 
@@ -93,11 +91,13 @@ namespace Cardevil.NewCard.InStage
         {
             for (int i = 0; i < cards.Count; i++)
             {
-                var x = GetSlotX(cards.Count, i);
-                
                 var card = GetCardInternal(cards[i]);
-                card.LocalTarget = new Vector3(x, card.LocalTarget.y, 0f);
+                var curve = config.GetCurve(i, cards.Count);
                 
+                card.TargetLocalX = GetSlotX(i, cards.Count);
+                card.TargetCurveAngleZ = curve.rotation;
+                card.TargetLocalCurveY = curve.yOffset;
+                    
                 card.SetSortingOrder(i);
             }
         }
@@ -128,9 +128,9 @@ namespace Cardevil.NewCard.InStage
             card.IsDragging = false;
         }
 
-        public float GetSlotX(int maxHand, int index)
+        public float GetSlotX(int index, int maxHand)
         {
-            return (index - (maxHand - 1) * 0.5f) * cardSpacing;
+            return (index - (maxHand - 1) * 0.5f) * config.CardSpacing;
         }
 
         /// <summary>
@@ -139,23 +139,19 @@ namespace Cardevil.NewCard.InStage
         public bool IsInHandZone(ICardState state)
         {
             var viewport = GetViewportPoint(state);
-            return viewport.y < handZoneMaxY;
+            return viewport.y < config.HandZoneMaxY;
         }
 
         public void SelectCard(ICardState state, int maxHand, int index)
         {
             var card = GetCardInternal(state);
-            
-            var x = GetSlotX(maxHand, index);
-            card.LocalTarget = new Vector3(x, 0.5f, 0f);
+            card.TargetSelectionY = 0.5f;
         }
 
         public void DeselectCard(ICardState state, int maxHand, int index)
         {
             var card = GetCardInternal(state);
-            
-            var x = GetSlotX(maxHand, index);
-            card.LocalTarget = new Vector3(x, 0f, 0f);
+            card.TargetSelectionY = 0f;
         }
 
         private void RefreshSafeArea()
@@ -175,7 +171,7 @@ namespace Cardevil.NewCard.InStage
 
         private void UpdateAnchorPosition()
         {
-            float y = Mathf.Lerp(_viewportMin.y, _viewportMax.y, anchorY);
+            float y = Mathf.Lerp(_viewportMin.y, _viewportMax.y, config.AnchorY);
 
             Vector3 viewport = new(0.5f, y, 0f);
             Vector3 anchorPosition = cardCamera.ViewportToWorldPoint(viewport);
