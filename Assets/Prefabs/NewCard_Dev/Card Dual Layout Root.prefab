@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 4312975593692199057}
   - component: {fileID: 5643349971918888384}
   m_Layer: 7
-  m_Name: Bottom Sprite
+  m_Name: Sub Sprite 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -183,6 +183,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 362240787881346309}
+  - component: {fileID: 1812218762953639239}
   m_Layer: 7
   m_Name: Card Dual Layout Root
   m_TagString: Untagged
@@ -208,6 +209,22 @@ Transform:
   - {fileID: 4312975593692199057}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1812218762953639239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4434865953819496618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 779324a6596149c2964e42bc5f10eefe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  innerFrame: {fileID: 0}
+  background: {fileID: 7302501255301354543}
+  subSprite0: {fileID: 2187596669980341050}
+  subSprite1: {fileID: 5643349971918888384}
 --- !u!1 &8085457490314140060
 GameObject:
   m_ObjectHideFlags: 0
@@ -219,7 +236,7 @@ GameObject:
   - component: {fileID: 7830883523978458885}
   - component: {fileID: 2187596669980341050}
   m_Layer: 7
-  m_Name: Top Sprite
+  m_Name: Sub Sprite 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

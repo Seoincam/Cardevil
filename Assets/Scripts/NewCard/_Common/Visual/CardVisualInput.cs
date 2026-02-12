@@ -46,7 +46,7 @@ namespace Cardevil.NewCard.Common.Visual
             DirectionSelected = directionSelected;
         }
 
-        public static CardVisualInput From(CardState state)
+        public static CardVisualInput From(ICardState state)
         {
             var color = CardColor.None;
             int[] numberOptions = null;

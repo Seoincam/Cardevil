@@ -26,7 +26,7 @@ namespace Cardevil.NewCard.InStage
                 .State;
             var state2 = new CardSpec(2, CardType.Attack)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
+                    new BaseColorElement(CardColor.Green),
                     new BaseNumberElement(3)
                 )
                 .State;
@@ -38,7 +38,7 @@ namespace Cardevil.NewCard.InStage
                 .State;
             var state4 = new CardSpec(4, CardType.Attack)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
+                    new BaseColorElement(CardColor.Blue),
                     new BaseNumberElement(5)
                 )
                 .State;
@@ -50,7 +50,7 @@ namespace Cardevil.NewCard.InStage
                 .State;
             var state6 = new CardSpec(6, CardType.Attack)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
+                    new BaseColorElement(CardColor.Black),
                     new BaseNumberElement(7)
                 )
                 .State;

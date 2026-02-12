@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5236167553530065324}
   - component: {fileID: 657418128253238748}
   m_Layer: 7
-  m_Name: Middle Sprite
+  m_Name: Sprite 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 9097245760922514967}
   - component: {fileID: 6598713333627070813}
   m_Layer: 7
-  m_Name: Top Sprite
+  m_Name: Sprite 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 5588072829173283537}
   - component: {fileID: 3361609385094884577}
   m_Layer: 7
-  m_Name: Middle Background
+  m_Name: Background 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -270,6 +270,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2652146487586327322}
+  - component: {fileID: 7489706158802945289}
   m_Layer: 7
   m_Name: Card Triple Layout Root
   m_TagString: Untagged
@@ -297,6 +298,23 @@ Transform:
   - {fileID: 8171765370481812451}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7489706158802945289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7847668747929552101}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb4fcb54587d41359ae8a009cf249777, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  background0: {fileID: 3361609385094884577}
+  background1: {fileID: 6513496845238227097}
+  subSprite0: {fileID: 6598713333627070813}
+  subSprite1: {fileID: 657418128253238748}
+  subSprite2: {fileID: 8330986366717039445}
 --- !u!1 &8037921094276999786
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +326,7 @@ GameObject:
   - component: {fileID: 8171765370481812451}
   - component: {fileID: 8330986366717039445}
   m_Layer: 7
-  m_Name: Bottom Sprite
+  m_Name: Sprite 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -395,7 +413,7 @@ GameObject:
   - component: {fileID: 7433296401577882513}
   - component: {fileID: 6513496845238227097}
   m_Layer: 7
-  m_Name: Bottom Background
+  m_Name: Background 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
