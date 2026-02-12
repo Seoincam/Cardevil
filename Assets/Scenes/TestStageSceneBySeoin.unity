@@ -923,7 +923,7 @@ MonoBehaviour:
   anchor: {fileID: 1221663211}
   valueSelectionZone: {fileID: 510418899}
   config: {fileID: 11400000, guid: 85ad6131ebda842d5b46a9a42fba65b9, type: 2}
-  cardPrefab: {fileID: 5115970858542608410, guid: 4e9191c4a8bc6422f947f36faaf562c0, type: 3}
+  cardPrefab: {fileID: 7493370066561514446, guid: ccf0cbb70d8cc4905a09df22f0755a55, type: 3}
 --- !u!4 &1657458498
 Transform:
   m_ObjectHideFlags: 0

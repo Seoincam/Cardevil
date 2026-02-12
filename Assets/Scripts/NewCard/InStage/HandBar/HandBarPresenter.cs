@@ -1,4 +1,4 @@
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -8,11 +8,11 @@ namespace Cardevil.NewCard.InStage
     [Serializable]
     public class HandBarPresenter
     {
+        [Header("States")]
         [SerializeField] private HandBarModel model = new();
+        [field: SerializeField] public bool CanInteract { private get; set; }
         
         private HandBarView _view;
-        
-        [field: SerializeField] public bool CanInteract { private get; set; }
 
         public HandBarPresenter(HandBarView view)
         {
@@ -92,7 +92,7 @@ namespace Cardevil.NewCard.InStage
             if (!CanInteract) return;
             
             // 드래그를 했다면 시간도 체크함.
-            if (model.PointerDownData.Exists && Time.time - model.PointerDownData.LastInteractionTime > 0.5f) return;
+            if (model.PointerDownData.Exists && Time.time - model.PointerDownData.LastInteractionTime > 0.2f) return;
             
             if (model.Selection.Contains(state))
             {

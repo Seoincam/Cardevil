@@ -1,4 +1,5 @@
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
+using Cardevil.Utils.Directions;
 using System;
 using UnityEngine;
 
@@ -21,37 +22,43 @@ namespace Cardevil.NewCard.InStage
             var state1 = new CardSpec(1, CardType.Attack)
                 .AddElements(
                     new BaseColorElement(CardColor.Red),
-                    new BaseNumberElement(2)
+                    new BaseNumberElement(2),
+                    SelectableNumberElement.Random()
                 )
                 .State;
             var state2 = new CardSpec(2, CardType.Attack)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
+                    new BaseColorElement(CardColor.Green),
+                    SelectableColorElement.Random(),
                     new BaseNumberElement(3)
                 )
                 .State;
-            var state3 = new CardSpec(3, CardType.Attack)
+            var state3 = new CardSpec(3, CardType.Move)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
-                    new BaseNumberElement(4)
+                    new BaseDirectionElement(Direction.Up),
+                    SelectableDirectionElement.Fixed(Direction.Down)
                 )
                 .State;
-            var state4 = new CardSpec(4, CardType.Attack)
+            var state4 = new CardSpec(6, CardType.Attack)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
-                    new BaseNumberElement(5)
+                    new BaseColorElement(CardColor.Black),
+                    new BaseNumberElement(7),
+                    SelectableNumberElement.Fixed(8),
+                    SelectableNumberElement.Fixed(9)
                 )
                 .State;
-            var state5 = new CardSpec(5, CardType.Attack)
+            var state5 = new CardSpec(5, CardType.Move)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
-                    new BaseNumberElement(6)
+                    new BaseDirectionElement(Direction.Up)
                 )
                 .State;
             var state6 = new CardSpec(6, CardType.Attack)
                 .AddElements(
+                    new BaseNumberElement(9),
                     new BaseColorElement(CardColor.Red),
-                    new BaseNumberElement(7)
+                    SelectableColorElement.Random(),
+                    SelectableColorElement.Random(),
+                    SelectableColorElement.Random()
                 )
                 .State;
             

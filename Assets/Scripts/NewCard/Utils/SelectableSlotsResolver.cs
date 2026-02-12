@@ -1,4 +1,4 @@
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -35,8 +35,7 @@ namespace Cardevil.NewCard.Utils
                 }
             }
             
-            var available = Enum.GetValues(typeof(CardColor))
-                .Cast<CardColor>()
+            var available = new[] { CardColor.Red, CardColor.Green, CardColor.Blue, CardColor.Black }
                 .Where(n => !used.Contains(n))
                 .ToList();
             

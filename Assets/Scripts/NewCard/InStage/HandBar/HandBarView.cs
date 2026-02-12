@@ -1,5 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -77,8 +77,6 @@ namespace Cardevil.NewCard.InStage
             card.PointerUp += c => CardPointerUp?.Invoke(c.State);
             card.DragEnd += c => CardDragEnd?.Invoke(c.State);
             card.PointerExit += c => CardPointerExit?.Invoke(c.State);
-
-            card.GetComponentInChildren<TextMeshPro>().text = state.Id.ToString();
         }
 
         public void DestroyCard(ICardState state)

@@ -39,5 +39,7 @@ namespace Cardevil.Utils
                 this.value = default;
             }
         }
+        
+        public static implicit operator T(Optional<T> optional) => optional.value;
     }
 }

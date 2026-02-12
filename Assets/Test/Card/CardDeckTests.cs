@@ -1,5 +1,5 @@
 using Cardevil.NewCard.Config;
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using Cardevil.Utils.Directions;
 using NUnit.Framework;
 using System.Linq;
