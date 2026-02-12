@@ -10,71 +10,83 @@ namespace Cardevil.NewCard.InStage.StageCard
         [SerializeField] private StageCardDualLayout dualPrefab;
         [SerializeField] private StageCardTripleLayout triplePrefab;
 
-        [Header("States")] 
+        [Header("States")]
         [SerializeField] private GameObject currentLayout;
 
         public GameObject GameObject => gameObject;
 
-        public void Apply(ICardLayoutProvider provider)
+        public void Apply(CardVisualData data)
         {
             if (currentLayout)
             {
                 Destroy(currentLayout);
             }
-            
+
             // TODO: Shared 적용하기
-            
-            ICardLayout layout = provider.Type switch
+
+            ICardLayout layout = data.Type switch
             {
-                LayoutType.Single => Instantiate(singlePrefab, transform).GetComponent<StageCardSingleLayout>(),
-                LayoutType.Dual => Instantiate(dualPrefab, transform).GetComponent<StageCardDualLayout>(),
-                LayoutType.Triple => Instantiate(triplePrefab, transform).GetComponent<StageCardTripleLayout>(),
+                CardLayoutType.Single => Instantiate(singlePrefab, transform).GetComponent<StageCardSingleLayout>(),
+                CardLayoutType.SingleWithCorner => Instantiate(singlePrefab, transform).GetComponent<StageCardSingleLayout>(),
+                CardLayoutType.Dual => Instantiate(dualPrefab, transform).GetComponent<StageCardDualLayout>(),
+                CardLayoutType.Triple => Instantiate(triplePrefab, transform).GetComponent<StageCardTripleLayout>(),
                 _ => throw new System.NotImplementedException()
             };
-            
-            layout.Apply(provider);
+
+            layout.Apply(data);
             currentLayout = layout.GameObject;
         }
     }
 
     public class StageCardSingleLayout : MonoBehaviour, ICardLayout
     {
-        [SerializeField] private SpriteRenderer cornerSprite;
+        [SerializeField] private SpriteRenderer innerFrame;
         [SerializeField] private SpriteRenderer mainSprite;
+        [SerializeField] private SpriteRenderer cornerSprite;
 
         public GameObject GameObject => gameObject;
 
-        public void Apply(ICardLayoutProvider provider)
+        public void Apply(CardVisualData data)
         {
-            /*
-             * 1. 숫자 1개, 선택이 된 숫자, 오망성
-             * 2. 방향 1개
-             * 3. 방향 여러개
-             */
-            
-            // if (provider.Numbers.cou)
-            
-            cornerSprite.sprite = CardSpriteCache.GetNumber(provider.Colors[0], provider.Numbers[0]);
+            innerFrame.sprite = data.InnerFrame;
+            mainSprite.sprite = data.MainSprite;
+
+            if (cornerSprite)
+                cornerSprite.sprite = data.CornerSprite;
         }
     }
 
     public class StageCardDualLayout : MonoBehaviour, ICardLayout
     {
+        [SerializeField] private SpriteRenderer innerFrame;
+        [SerializeField] private SpriteRenderer subSprite0;
+        [SerializeField] private SpriteRenderer subSprite1;
+
         public GameObject GameObject => gameObject;
 
-        public void Apply(ICardLayoutProvider provider)
+        public void Apply(CardVisualData data)
         {
-            throw new System.NotImplementedException();
+            innerFrame.sprite = data.InnerFrame;
+            subSprite0.sprite = data.SubSprites[0];
+            subSprite1.sprite = data.SubSprites[1];
         }
     }
 
     public class StageCardTripleLayout : MonoBehaviour, ICardLayout
     {
+        [SerializeField] private SpriteRenderer innerFrame;
+        [SerializeField] private SpriteRenderer subSprite0;
+        [SerializeField] private SpriteRenderer subSprite1;
+        [SerializeField] private SpriteRenderer subSprite2;
+
         public GameObject GameObject => gameObject;
 
-        public void Apply(ICardLayoutProvider provider)
+        public void Apply(CardVisualData data)
         {
-            throw new System.NotImplementedException();
+            innerFrame.sprite = data.InnerFrame;
+            subSprite0.sprite = data.SubSprites[0];
+            subSprite1.sprite = data.SubSprites[1];
+            subSprite2.sprite = data.SubSprites[2];
         }
     }
 }

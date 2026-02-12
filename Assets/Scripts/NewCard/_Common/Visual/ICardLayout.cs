@@ -5,6 +5,6 @@ namespace Cardevil.NewCard.Common.Visual
     public interface ICardLayout
     {
         GameObject GameObject { get; }
-        void Apply(ICardLayoutProvider provider);
+        void Apply(CardVisualData data);
     }
 }

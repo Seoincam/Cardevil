@@ -1,5 +1,4 @@
 using Cardevil.Attributes;
-using Cardevil.NewCard.Common.Visual;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -45,14 +44,6 @@ namespace Cardevil.NewCard.Common.Core
         public bool IsAttack => spec.IsAttack;
         public bool IsMove => spec.IsMove;
 
-        public ICardLayoutProvider Provider
-        {
-            get
-            {
-                return null;
-            }
-        }
-        
         public CardState(CardSpec spec)
         {
             this.spec = spec;
