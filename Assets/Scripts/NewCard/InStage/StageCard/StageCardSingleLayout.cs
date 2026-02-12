@@ -10,10 +10,14 @@ namespace Cardevil.NewCard.InStage.StageCard
 
         public GameObject GameObject => gameObject;
 
-        public void Apply(in CardVisualData data)
+        public void Apply(in CardLayoutData data)
         {
             mainSprite.sprite = data.MainSprite;
             cornerSprite.sprite = data.CornerSprite;
+        }
+
+        public void SetBackground(SpriteRenderer sharedBackgroundRenderer)
+        {
         }
 
         public void SetSortingOrder(int sortingOrder)

@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 14d6b7319f8f54719be541732d63223a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
+  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &3584490449294650367
 GameObject:
@@ -221,7 +221,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 779324a6596149c2964e42bc5f10eefe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  innerFrame: {fileID: 0}
   background: {fileID: 7302501255301354543}
   subSprite0: {fileID: 2187596669980341050}
   subSprite1: {fileID: 5643349971918888384}

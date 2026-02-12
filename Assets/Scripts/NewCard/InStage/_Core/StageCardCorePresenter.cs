@@ -1,4 +1,5 @@
 using Cardevil.NewCard.Common.Core;
+using Cardevil.Utils.Directions;
 using System;
 using UnityEngine;
 
@@ -42,16 +43,17 @@ namespace Cardevil.NewCard.InStage
                     new BaseNumberElement(5)
                 )
                 .State;
-            var state5 = new CardSpec(5, CardType.Attack)
+            var state5 = new CardSpec(5, CardType.Move)
                 .AddElements(
-                    new BaseColorElement(CardColor.Red),
-                    new BaseNumberElement(6)
+                    new BaseDirectionElement(Direction.Up)
                 )
                 .State;
             var state6 = new CardSpec(6, CardType.Attack)
                 .AddElements(
                     new BaseColorElement(CardColor.Black),
-                    new BaseNumberElement(7)
+                    new BaseNumberElement(7),
+                    SelectableNumberElement.Fixed(8),
+                    SelectableNumberElement.Fixed(9)
                 )
                 .State;
             

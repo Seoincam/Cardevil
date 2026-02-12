@@ -12,8 +12,12 @@ namespace Cardevil.NewCard.Common.Visual
     {
         public readonly CardType Type;
 
-        // Attack
-        public readonly CardColor Color;
+        // Attack - Color
+        public readonly CardColor[] ColorOptions;
+        public readonly CardColor CurrentColor;
+        public readonly bool ColorSelected;
+
+        // Attack - Number
         public readonly int[] NumberOptions;
         public readonly int CurrentNumber;
         public readonly bool NumberSelected;
@@ -26,7 +30,9 @@ namespace Cardevil.NewCard.Common.Visual
 
         private CardVisualInput(
             CardType type,
-            CardColor color,
+            CardColor[] colorOptions,
+            CardColor currentColor,
+            bool colorSelected,
             int[] numberOptions,
             int currentNumber,
             bool numberSelected,
@@ -36,7 +42,9 @@ namespace Cardevil.NewCard.Common.Visual
             bool directionSelected)
         {
             Type = type;
-            Color = color;
+            ColorOptions = colorOptions;
+            CurrentColor = currentColor;
+            ColorSelected = colorSelected;
             NumberOptions = numberOptions;
             CurrentNumber = currentNumber;
             NumberSelected = numberSelected;
@@ -48,13 +56,19 @@ namespace Cardevil.NewCard.Common.Visual
 
         public static CardVisualInput From(ICardState state)
         {
-            var color = CardColor.None;
+            CardColor[] colorOptions = null;
+            var currentColor = CardColor.None;
+            var colorSelected = false;
             int[] numberOptions = null;
             var currentNumber = 0;
             var numberSelected = false;
 
             if (state.Colors != null)
-                color = state.Colors.Current ?? state.Colors.DefaultValue;
+            {
+                colorOptions = state.Colors.AllOptions.ToArray();
+                currentColor = state.Colors.Current ?? state.Colors.DefaultValue;
+                colorSelected = state.Colors.HasSelected;
+            }
             if (state.Numbers != null)
             {
                 numberOptions = state.Numbers.AllOptions.ToArray();
@@ -75,7 +89,9 @@ namespace Cardevil.NewCard.Common.Visual
 
             return new CardVisualInput(
                 type: state.Type,
-                color: color,
+                colorOptions: colorOptions,
+                currentColor: currentColor,
+                colorSelected: colorSelected,
                 numberOptions: numberOptions,
                 currentNumber: currentNumber,
                 numberSelected: numberSelected,
@@ -90,7 +106,26 @@ namespace Cardevil.NewCard.Common.Visual
         {
             return new CardVisualInput(
                 type: CardType.Attack,
-                color: color,
+                colorOptions: new[] { color },
+                currentColor: color,
+                colorSelected: true,
+                numberOptions: numbers,
+                currentNumber: numbers.Length > 0 ? numbers[0] : 0,
+                numberSelected: numbers.Length <= 1,
+                currentDirection: Direction.None,
+                directionFlag: DirectionFlag.None,
+                directionOptionsCount: 0,
+                directionSelected: false
+            );
+        }
+
+        public static CardVisualInput Attack(CardColor[] colors, params int[] numbers)
+        {
+            return new CardVisualInput(
+                type: CardType.Attack,
+                colorOptions: colors,
+                currentColor: colors.Length > 0 ? colors[0] : CardColor.None,
+                colorSelected: colors.Length <= 1,
                 numberOptions: numbers,
                 currentNumber: numbers.Length > 0 ? numbers[0] : 0,
                 numberSelected: numbers.Length <= 1,
@@ -105,7 +140,9 @@ namespace Cardevil.NewCard.Common.Visual
         {
             return new CardVisualInput(
                 type: CardType.Move,
-                color: CardColor.None,
+                colorOptions: null,
+                currentColor: CardColor.None,
+                colorSelected: false,
                 numberOptions: null,
                 currentNumber: 0,
                 numberSelected: false,
@@ -120,7 +157,9 @@ namespace Cardevil.NewCard.Common.Visual
         {
             return new CardVisualInput(
                 type: CardType.Move,
-                color: CardColor.None,
+                colorOptions: null,
+                currentColor: CardColor.None,
+                colorSelected: false,
                 numberOptions: null,
                 currentNumber: 0,
                 numberSelected: false,

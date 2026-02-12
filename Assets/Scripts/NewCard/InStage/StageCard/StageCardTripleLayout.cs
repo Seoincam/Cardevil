@@ -12,14 +12,25 @@ namespace Cardevil.NewCard.InStage.StageCard
         [SerializeField] private SpriteRenderer subSprite0;
         [SerializeField] private SpriteRenderer subSprite1;
         [SerializeField] private SpriteRenderer subSprite2;
+        
+        private static readonly int TextureId = Shader.PropertyToID("_BackgroundTex");
 
         public GameObject GameObject => gameObject;
 
-        public void Apply(in CardVisualData data)
+        public void Apply(in CardLayoutData data)
         {
             subSprite0.sprite = data.SubSprites[0];
             subSprite1.sprite = data.SubSprites[1];
             subSprite2.sprite = data.SubSprites[2];
+        }
+
+        public void SetBackground(SpriteRenderer sharedBackgroundRenderer)
+        {
+            var backgroundPropertyBlock = new MaterialPropertyBlock();   
+            backgroundPropertyBlock.SetTexture(TextureId, sharedBackgroundRenderer.sprite.texture);
+            
+            background0.SetPropertyBlock(backgroundPropertyBlock);
+            background1.SetPropertyBlock(backgroundPropertyBlock);
         }
 
         public void SetSortingOrder(int sortingOrder)

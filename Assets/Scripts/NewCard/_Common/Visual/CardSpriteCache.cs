@@ -18,6 +18,7 @@ namespace Cardevil.NewCard.Common.Visual
         private const string PrefixEnhancement = "Card_Enhancement";
         private const string PrefixDirectionFrame = "Card_Direction_Frame";
         private const string PrefixDirectionIcon = "Card_Direction_Icon";
+        private const string PrefixColorJewel = "Color_Jewel";
 
         private static bool TryInitialize()
         {
@@ -69,6 +70,10 @@ namespace Cardevil.NewCard.Common.Visual
     
         public static SpriteReference GetArrow(DirectionFlag flag)
             => new($"{PrefixDirectionIcon}_{flag.ToCustomString()}");
+        
+        // Color Jewel Sprites
+        public static SpriteReference GetColorJewel(string color)
+            => new($"{PrefixColorJewel}_{color}");
         
         public static Sprite GetSprite(string key)
         {

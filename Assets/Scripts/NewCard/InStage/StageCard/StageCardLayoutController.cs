@@ -1,9 +1,10 @@
+using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage.StageCard
 {
-    public class StageCardLayoutController : MonoBehaviour, ICardLayoutSpriteRenderer
+    public class StageCardLayoutController : MonoBehaviour
     {
         [Header("Prefabs")]
         [SerializeField] private StageCardSingleLayout singlePrefab;
@@ -14,21 +15,21 @@ namespace Cardevil.NewCard.InStage.StageCard
         [SerializeField] private SpriteRenderer background;
         [SerializeField] private SpriteRenderer innerFrame;
 
-        [Header("States")]
-        [SerializeReference] private ICardLayoutSpriteRenderer currentLayout;
-
-        public GameObject GameObject => gameObject;
-
-        public void Apply(in CardVisualData data)
+        private ICardLayoutSpriteRenderer _currentLayout;
+        
+        public void Apply(ICardState state)
         {
-            if (currentLayout?.GameObject)
+            var visualInput = CardVisualInput.From(state);
+            var visualData = CardLayoutResolver.Resolve(visualInput);
+            
+            if (_currentLayout?.GameObject)
             {
-                Destroy(currentLayout.GameObject);
+                Destroy(_currentLayout.GameObject);
             }
 
-            innerFrame.sprite = data.InnerFrame;
+            innerFrame.sprite = visualData.InnerFrame;
             
-            ICardLayoutSpriteRenderer layout = data.Type switch
+            _currentLayout = visualData.LayoutType switch
             {
                 CardLayoutType.Single => Instantiate(singlePrefab, transform).GetComponent<StageCardSingleLayout>(),
                 CardLayoutType.SingleWithCorner => Instantiate(singlePrefab, transform).GetComponent<StageCardSingleLayout>(),
@@ -36,9 +37,9 @@ namespace Cardevil.NewCard.InStage.StageCard
                 CardLayoutType.Triple => Instantiate(triplePrefab, transform).GetComponent<StageCardTripleLayout>(),
                 _ => throw new System.NotImplementedException()
             };
-
-            layout.Apply(data);
-            currentLayout = layout;
+            
+            _currentLayout.SetBackground(background);
+            _currentLayout.Apply(in visualData);
         }
 
         public void SetSortingOrder(int sortingOrder)
@@ -46,7 +47,7 @@ namespace Cardevil.NewCard.InStage.StageCard
             innerFrame.sortingOrder = 100 * sortingOrder + 10;
             background.sortingOrder = 100 * sortingOrder + 0;
             
-            currentLayout.SetSortingOrder(sortingOrder);
+            _currentLayout.SetSortingOrder(sortingOrder);
         }
     }
 }
