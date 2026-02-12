@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     [Serializable]
     public sealed class SelectableNumberElement : ISpecElement

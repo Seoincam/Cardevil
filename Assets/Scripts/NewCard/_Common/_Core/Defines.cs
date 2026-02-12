@@ -1,4 +1,4 @@
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     public enum CardType
     {

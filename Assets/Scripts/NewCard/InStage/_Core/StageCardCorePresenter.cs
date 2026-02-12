@@ -1,4 +1,4 @@
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using System;
 using UnityEngine;
 

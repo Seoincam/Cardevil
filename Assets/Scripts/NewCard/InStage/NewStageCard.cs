@@ -1,6 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Core;
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;

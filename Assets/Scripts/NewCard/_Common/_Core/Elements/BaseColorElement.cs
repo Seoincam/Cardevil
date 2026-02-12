@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     [Serializable]
     public class BaseColorElement : ISpecElement

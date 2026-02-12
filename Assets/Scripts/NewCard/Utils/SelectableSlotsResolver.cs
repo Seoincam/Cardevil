@@ -1,4 +1,4 @@
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;

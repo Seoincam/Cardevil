@@ -2,7 +2,7 @@ using Cardevil.Utils.Directions;
 using System;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     [Serializable]
     public class BaseDirectionElement : ISpecElement

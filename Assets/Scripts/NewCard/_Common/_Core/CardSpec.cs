@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     [Serializable]
     public sealed class CardSpec

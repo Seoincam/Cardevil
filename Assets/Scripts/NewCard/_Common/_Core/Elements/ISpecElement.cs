@@ -1,4 +1,4 @@
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     /// <summary>
     /// 카드 상태를 구성하는 Spec 요소.

@@ -1,5 +1,5 @@
 using Cardevil.Attributes;
-using Cardevil.NewCard.Core;
+using Cardevil.NewCard.Common.Core;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
