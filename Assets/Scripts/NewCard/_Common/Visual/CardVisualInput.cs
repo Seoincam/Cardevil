@@ -24,8 +24,8 @@ namespace Cardevil.NewCard.Common.Visual
 
         // Move
         public readonly Direction CurrentDirection;
+        public readonly Direction[] DirectionOptions;
         public readonly DirectionFlag DirectionFlag;
-        public readonly int DirectionOptionsCount;
         public readonly bool DirectionSelected;
 
         private CardVisualInput(
@@ -37,8 +37,8 @@ namespace Cardevil.NewCard.Common.Visual
             int currentNumber,
             bool numberSelected,
             Direction currentDirection,
+            Direction[] directionOptions,
             DirectionFlag directionFlag,
-            int directionOptionsCount,
             bool directionSelected)
         {
             Type = type;
@@ -49,8 +49,8 @@ namespace Cardevil.NewCard.Common.Visual
             CurrentNumber = currentNumber;
             NumberSelected = numberSelected;
             CurrentDirection = currentDirection;
+            DirectionOptions = directionOptions;
             DirectionFlag = directionFlag;
-            DirectionOptionsCount = directionOptionsCount;
             DirectionSelected = directionSelected;
         }
 
@@ -77,13 +77,13 @@ namespace Cardevil.NewCard.Common.Visual
             }
 
             var currentDirection = Direction.None;
-            var directionOptionsCount = 0;
+            Direction[] directionOptions = null;
             var directionSelected = false;
 
             if (state.Directions != null)
             {
                 currentDirection = state.Directions.Current ?? state.Directions.DefaultValue;
-                directionOptionsCount = state.Directions.AllOptionsCount;
+                directionOptions = state.Directions.AllOptions.ToArray();
                 directionSelected = state.Directions.HasSelected;
             }
 
@@ -97,7 +97,7 @@ namespace Cardevil.NewCard.Common.Visual
                 numberSelected: numberSelected,
                 currentDirection: currentDirection,
                 directionFlag: state.DirectionFlag,
-                directionOptionsCount: directionOptionsCount,
+                directionOptions: directionOptions,
                 directionSelected: directionSelected
             );
         }
@@ -113,25 +113,25 @@ namespace Cardevil.NewCard.Common.Visual
                 currentNumber: numbers.Length > 0 ? numbers[0] : 0,
                 numberSelected: numbers.Length <= 1,
                 currentDirection: Direction.None,
+                directionOptions: null,
                 directionFlag: DirectionFlag.None,
-                directionOptionsCount: 0,
                 directionSelected: false
             );
         }
 
-        public static CardVisualInput Attack(CardColor[] colors, params int[] numbers)
+        public static CardVisualInput Attack(CardColor[] colors, int numbers)
         {
             return new CardVisualInput(
                 type: CardType.Attack,
                 colorOptions: colors,
                 currentColor: colors.Length > 0 ? colors[0] : CardColor.None,
                 colorSelected: colors.Length <= 1,
-                numberOptions: numbers,
-                currentNumber: numbers.Length > 0 ? numbers[0] : 0,
-                numberSelected: numbers.Length <= 1,
+                numberOptions: new[] { numbers },
+                currentNumber: numbers,
+                numberSelected: true,
                 currentDirection: Direction.None,
+                directionOptions: null,
                 directionFlag: DirectionFlag.None,
-                directionOptionsCount: 0,
                 directionSelected: false
             );
         }
@@ -147,8 +147,8 @@ namespace Cardevil.NewCard.Common.Visual
                 currentNumber: 0,
                 numberSelected: false,
                 currentDirection: direction,
+                directionOptions: new[] { direction },
                 directionFlag: direction.ToDirectionFlag(),
-                directionOptionsCount: 1,
                 directionSelected: true
             );
         }
@@ -164,8 +164,8 @@ namespace Cardevil.NewCard.Common.Visual
                 currentNumber: 0,
                 numberSelected: false,
                 currentDirection: directions.Length > 0 ? directions[0] : Direction.None,
+                directionOptions: directions,
                 directionFlag: flag,
-                directionOptionsCount: directions.Length,
                 directionSelected: false
             );
         }

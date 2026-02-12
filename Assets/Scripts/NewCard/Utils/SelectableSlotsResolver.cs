@@ -35,8 +35,7 @@ namespace Cardevil.NewCard.Utils
                 }
             }
             
-            var available = Enum.GetValues(typeof(CardColor))
-                .Cast<CardColor>()
+            var available = new[] { CardColor.Red, CardColor.Green, CardColor.Blue, CardColor.Black }
                 .Where(n => !used.Contains(n))
                 .ToList();
             

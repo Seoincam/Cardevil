@@ -156,15 +156,9 @@ MonoBehaviour:
   singlePrefab: {fileID: 1529222975977995294, guid: 995917307c1c845c9b37ddd0769ef9d4, type: 3}
   dualPrefab: {fileID: 1812218762953639239, guid: 76d9e7a15ad914b3bb45122999e22e15, type: 3}
   triplePrefab: {fileID: 7489706158802945289, guid: adab9a889037445eda1ca35bb4e2e0ac, type: 3}
+  colorJewel: {fileID: 973359786196114583, guid: a7525c3d0d81141b4959d3e9b0e3f05e, type: 3}
   background: {fileID: 273946579888129227}
   innerFrame: {fileID: 5797317074329174716}
-  currentLayout:
-    rid: -2
-  references:
-    version: 2
-    RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
 --- !u!1 &7792454409356232169
 GameObject:
   m_ObjectHideFlags: 0

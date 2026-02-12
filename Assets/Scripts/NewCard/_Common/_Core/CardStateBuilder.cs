@@ -65,7 +65,7 @@ namespace Cardevil.NewCard.Common.Core
                 var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_directionSelectableSlots);
                 state.Directions = BuildSelectable(_defaultDirection, resolvedDirection);
                 
-                var directionFlag = DirectionFlag.None;
+                var directionFlag = state.Directions.DefaultValue.value.ToDirectionFlag();
                 foreach (var direction in resolvedDirection)
                 {
                     directionFlag |= direction.ToDirectionFlag();
