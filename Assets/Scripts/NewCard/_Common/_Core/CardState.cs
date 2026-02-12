@@ -1,11 +1,12 @@
 using Cardevil.Attributes;
+using Cardevil.NewCard.Common.Visual;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     /// <summary>
     /// 카드의 플레이용 상태 데이터.
@@ -15,6 +16,7 @@ namespace Cardevil.NewCard.Core
         CardState.SelectableValues<CardColor> Colors { get; }
         CardState.SelectableValues<int> Numbers { get; }
         CardState.SelectableValues<Direction> Directions { get; }
+        DirectionFlag DirectionFlag { get; }
         
         uint Id { get; }
         CardType Type { get; }
@@ -35,9 +37,21 @@ namespace Cardevil.NewCard.Core
         [field: SerializeField] public SelectableValues<CardColor> Colors { get; set; }
         [field: SerializeField] public SelectableValues<int> Numbers { get; set; }
         [field: SerializeField] public SelectableValues<Direction> Directions { get; set; }
+        [field: SerializeField] public DirectionFlag DirectionFlag { get; set; }
 
         public uint Id => spec.ID;
         public CardType Type => spec.Type;
+
+        public bool IsAttack => spec.IsAttack;
+        public bool IsMove => spec.IsMove;
+
+        public ICardLayoutProvider Provider
+        {
+            get
+            {
+                return null;
+            }
+        }
         
         public CardState(CardSpec spec)
         {
@@ -85,7 +99,7 @@ namespace Cardevil.NewCard.Core
             }
             
             public bool HasAlternatives => alternatives.Count > 0;
-            public bool HaSelected => Current != null;
+            public bool HasSelected => Current != null;
             
             public SelectableValues(T? defaultValue)
             {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Core
+namespace Cardevil.NewCard.Common.Core
 {
     /// <summary>
     /// <see cref="CardSpec"/>을 기반으로 <see cref="CardState"/>를 생성하는 빌더.
@@ -64,6 +64,13 @@ namespace Cardevil.NewCard.Core
             {
                 var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_directionSelectableSlots);
                 state.Directions = BuildSelectable(_defaultDirection, resolvedDirection);
+                
+                var directionFlag = DirectionFlag.None;
+                foreach (var direction in resolvedDirection)
+                {
+                    directionFlag |= direction.ToDirectionFlag();
+                }
+                state.DirectionFlag = directionFlag;
             }
             
             return state;
