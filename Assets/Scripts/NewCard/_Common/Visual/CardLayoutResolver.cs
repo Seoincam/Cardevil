@@ -1,8 +1,6 @@
 using Cardevil.NewCard.Common.Core;
-using Cardevil.Utils.Directions;
 using System;
 using System.Linq;
-using UnityEngine;
 
 namespace Cardevil.NewCard.Common.Visual
 {
@@ -66,8 +64,6 @@ namespace Cardevil.NewCard.Common.Visual
             // 방향 여러개 + 미선택 -> 다중 화살표
             if (input.DirectionOptions.Length > 1 && !input.DirectionSelected)
             {
-                Debug.Log("DirectionFlag: " + input.DirectionFlag);
-                Debug.Log("ToString " + input.DirectionFlag.ToCustomString());
                 var innerFrame = CardSpriteCache.GetInnerFrame(input.DirectionFlag);
                 var mainSprite = CardSpriteCache.GetArrow(input.DirectionFlag);
 

@@ -1,8 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.NewCard.Common.Core;
 using System;
-using System.Collections.Generic;
-using TMPro;
+using System.Collections.Generic; 
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
@@ -11,9 +10,6 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
-
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private RectTransform valueSelectionZone;
-        
         [Header("Config")] 
         [SerializeField] private HandBarConfig config;
 
@@ -67,6 +63,7 @@ namespace Cardevil.NewCard.InStage
         {
             var card = Instantiate(cardPrefab, anchor).GetComponent<NewStageCard>();
             card.Initialize(state, cardCamera);
+            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
             _cardMap.Add(state, card);
 
             // TODO: 구독 정리하기
@@ -91,7 +88,7 @@ namespace Cardevil.NewCard.InStage
         {
             for (int i = 0; i < cards.Count; i++)
             {
-                var card = GetCardInternal(cards[i]);
+                var card = InternalGetCard(cards[i]);
                 var curve = config.GetCurve(i, cards.Count);
                 
                 card.TargetLocalX = GetSlotX(i, cards.Count);
@@ -102,30 +99,43 @@ namespace Cardevil.NewCard.InStage
             }
         }
 
-        public NewStageCard GetCard(ICardState state) => GetCardInternal(state);
+        public NewStageCard GetCard(ICardState state) => InternalGetCard(state);
 
         public float GetCurrentX(ICardState state)
         {
-            var card = GetCardInternal(state);
+            var card = InternalGetCard(state);
             return card.CurrentX;
         }
 
         public Vector2 GetViewportPoint(ICardState state)
         {
-            var card = GetCardInternal(state);
+            var card = InternalGetCard(state);
             return cardCamera.WorldToViewportPoint(card.transform.position);
         }
 
         public void StartDrag(ICardState state)
         {
-            var card = GetCardInternal(state);
-            card.IsDragging = true;
+            var card = InternalGetCard(state);
+            card.FollowTarget = NewStageCard.FollowTargetType.Pointer;
         }
 
         public void EndDrag(ICardState state)
         {
-            var card = GetCardInternal(state);
-            card.IsDragging = false;
+            var card = InternalGetCard(state);
+            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
+        }
+
+        public void SetWorldPosition(ICardState state, Vector3 worldPosition)
+        {
+            var card = InternalGetCard(state);
+            card.TargetWorldPosition = worldPosition;
+            card.FollowTarget = NewStageCard.FollowTargetType.WorldPosition;
+        }
+
+        public void UnsetWorldPosition(ICardState state)
+        {
+            var card = InternalGetCard(state);
+            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
         }
 
         public float GetSlotX(int index, int maxHand)
@@ -143,36 +153,30 @@ namespace Cardevil.NewCard.InStage
         }
         
         /// <summary>
-        /// 카드가 값 선택 영역 내에 있는지 판단함.
+        /// 카드의 월드 포지션을 반환함.
         /// </summary>
-        public bool IsInValueSelectionZone(ICardState state)
+        public Vector3 GetWorldPosition(ICardState state)
         {
-            var card = GetCardInternal(state);
-            Vector3 worldPos = card.transform.position;
-            Vector2 screenPos = cardCamera.WorldToScreenPoint(worldPos);
-            
-            Vector3[] corners = new Vector3[4];
-            valueSelectionZone.GetWorldCorners(corners);
-            
-            Vector2 min = RectTransformUtility.WorldToScreenPoint(cardCamera, corners[0]);
-            Vector2 max = RectTransformUtility.WorldToScreenPoint(cardCamera, corners[2]);
-            
-            var rect = new Rect(min, max - min);
-            
-            Debug.Log("IsInValueSelectionZone " + rect.Contains(screenPos));
-            return rect.Contains(screenPos);
+            var card = InternalGetCard(state);
+            return card.transform.position;
         }
 
         public void SelectCard(ICardState state, int maxHand, int index)
         {
-            var card = GetCardInternal(state);
+            var card = InternalGetCard(state);
             card.TargetSelectionY = 0.5f;
         }
 
         public void DeselectCard(ICardState state, int maxHand, int index)
         {
-            var card = GetCardInternal(state);
+            var card = InternalGetCard(state);
             card.TargetSelectionY = 0f;
+        }
+
+        public void UpdateVisual(ICardState state)
+        {
+            var card = InternalGetCard(state);
+            card.UpdateVisual();
         }
 
         private void RefreshSafeArea()
@@ -201,7 +205,7 @@ namespace Cardevil.NewCard.InStage
             anchor.position = anchorPosition;
         }
 
-        private NewStageCard GetCardInternal(ICardState state)
+        private NewStageCard InternalGetCard(ICardState state)
         {
             if (!_cardMap.TryGetValue(state, out var card))
             {

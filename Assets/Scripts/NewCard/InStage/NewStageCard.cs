@@ -1,7 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Core;
 using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.Common.Visual;
 using Cardevil.NewCard.InStage.StageCard;
 using System;
 using UnityEngine;
@@ -19,7 +18,7 @@ namespace Cardevil.NewCard.InStage
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        [SerializeField] private StateCardVisualController visualLayout;
+        [SerializeField] private CardVisualController visualController;
         
         [field: Header("State")]
         [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
@@ -39,11 +38,11 @@ namespace Cardevil.NewCard.InStage
         /// Swap 등 카드끼리 비교용으로 사용함.
         /// </summary>
         public float CurrentX => transform.localPosition.x;
-        
+
         /// <summary>
-        /// 드래그 되고 있는지 여부. Presenter가 업데이트함.
+        /// 카드의 이동 목표 타입.
         /// </summary>
-        public bool IsDragging { private get; set; }
+        public FollowTargetType FollowTarget { private get; set; } = FollowTargetType.LocalPosition;
         
         /// <summary>
         /// 카드가 손패 내에 존재할 때 목표 x 로컬 좌표.
@@ -64,6 +63,8 @@ namespace Cardevil.NewCard.InStage
         /// 카드가 손패 내에 존재할 때 목표 z 로컬 커브.
         /// </summary>
         public float TargetCurveAngleZ { private get; set; }
+        
+        public Vector3 TargetWorldPosition { private get; set; }
 
         private Vector3 TargetLocalPosition
         {
@@ -78,20 +79,21 @@ namespace Cardevil.NewCard.InStage
 
         // 드래그 중일 때 갱신되는 포인터의 위치.
         private Vector3 _targetPointerPosition;
-        
 
         public void Initialize(ICardState cardState, Camera cardCamera)
         {
             // Clear();
             State = cardState;
             _cardCamera = cardCamera;
-
-            visualLayout.Apply(cardState);
+            
+            UpdateVisual();
         }
+        
+        public void UpdateVisual() => visualController.Apply(State);
 
         private void Update()
         {
-            if (IsDragging)
+            if (FollowTarget == FollowTargetType.Pointer)
             {
                 Vector2 screen = Pointer.current.position.ReadValue();
                 _targetPointerPosition = _cardCamera.ScreenToWorldPoint(
@@ -103,14 +105,22 @@ namespace Cardevil.NewCard.InStage
         private void LateUpdate()
         {
             // TODO: 보간
-            if (IsDragging)
+            if (FollowTarget == FollowTargetType.Pointer)
             {
                 transform.position = _targetPointerPosition;
                 transform.localEulerAngles = Vector3.zero;
             }
             else
             {
-                transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
+                if (FollowTarget == FollowTargetType.LocalPosition)
+                {
+                    transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
+                }
+                else if (FollowTarget == FollowTargetType.WorldPosition)
+                {
+                    transform.position = Vector3.Lerp(transform.position, TargetWorldPosition, Time.deltaTime * 10);
+                }
+
                 transform.localEulerAngles = new Vector3(0f, 0f, Mathf.LerpAngle(transform.localEulerAngles.z, TargetCurveAngleZ, Time.deltaTime * 10));
             }
         }
@@ -120,7 +130,7 @@ namespace Cardevil.NewCard.InStage
             throw new System.NotImplementedException();
         }
 
-        public void SetSortingOrder(int order) => visualLayout.SetSortingOrder(order);
+        public void SetSortingOrder(int order) => visualController.SetSortingOrder(order);
         
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -176,7 +186,12 @@ namespace Cardevil.NewCard.InStage
         {
             
         }
-        
-        // 드래그 빼고는 모두 tween으로 움직이기.
+
+        public enum FollowTargetType
+        {
+            Pointer,
+            LocalPosition,
+            WorldPosition
+        }
     }
 }
