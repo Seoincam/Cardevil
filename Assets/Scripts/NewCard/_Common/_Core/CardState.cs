@@ -17,6 +17,10 @@ namespace Cardevil.NewCard.Common.Core
         CardState.SelectableValues<Direction> Directions { get; }
         DirectionFlag DirectionFlag { get; }
         
+        bool IsAttack { get; }
+        bool IsMove { get; }
+        CardState.ValueSelectableType SelectableType { get; }
+        
         uint Id { get; }
         CardType Type { get; }
     }
@@ -38,11 +42,22 @@ namespace Cardevil.NewCard.Common.Core
         [field: SerializeField] public SelectableValues<Direction> Directions { get; set; }
         [field: SerializeField] public DirectionFlag DirectionFlag { get; set; }
 
-        public uint Id => spec.ID;
-        public CardType Type => spec.Type;
-
         public bool IsAttack => spec.IsAttack;
         public bool IsMove => spec.IsMove;
+        public ValueSelectableType SelectableType
+        {
+            get
+            {
+                if (Colors != null && Colors.HasAlternatives) return ValueSelectableType.Color;
+                if (Numbers != null && Numbers.HasAlternatives) return ValueSelectableType.Number;
+                if (Directions is { HasAlternatives: true }) return ValueSelectableType.Direction;
+                
+                return ValueSelectableType.None;
+            }
+        }
+        
+        public uint Id => spec.ID;
+        public CardType Type => spec.Type;
 
         public CardState(CardSpec spec)
         {
@@ -94,7 +109,7 @@ namespace Cardevil.NewCard.Common.Core
                 }
             }
             
-            public bool HasAlternatives => alternatives.Count > 0;
+            public bool HasAlternatives => alternatives is { Count: > 0 };
             public bool HasSelected => Current != null;
             
             public SelectableValues(T? defaultValue)
@@ -119,6 +134,17 @@ namespace Cardevil.NewCard.Common.Core
             {
                 _selected = null;
             }
+        }
+        
+        /// <summary>
+        /// 카드의 선택 가능 종류.
+        /// </summary>
+        public enum ValueSelectableType
+        {
+            None,
+            Color,
+            Number,
+            Direction
         }
     }
 }

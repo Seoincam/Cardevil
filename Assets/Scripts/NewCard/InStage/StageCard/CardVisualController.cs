@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Cardevil.NewCard.InStage.StageCard
 {
-    public class StateCardVisualController : MonoBehaviour
+    public class CardVisualController : MonoBehaviour
     {
         [Header("Prefabs")]
-        [SerializeField] private StageCardSingleLayout singlePrefab;
-        [SerializeField] private StageCardDualLayout dualPrefab;
-        [SerializeField] private StageCardTripleLayout triplePrefab;
+        [SerializeField] private CardSingleLayout singlePrefab;
+        [SerializeField] private CardDualLayout dualPrefab;
+        [SerializeField] private CardTripleLayout triplePrefab;
 
         [Space] 
         [SerializeField] private ColorJewelDecoration colorJewel;
@@ -24,7 +24,11 @@ namespace Cardevil.NewCard.InStage.StageCard
         public void Apply(ICardState state)
         {
             var visualInput = CardVisualInput.From(state);
+            Apply(visualInput);
+        }
 
+        public void Apply(CardVisualInput visualInput)
+        {
             // Layout
             var layoutData = CardLayoutResolver.Resolve(visualInput);
 
@@ -37,11 +41,11 @@ namespace Cardevil.NewCard.InStage.StageCard
 
             _currentLayout = layoutData.LayoutType switch
             {
-                CardLayoutType.Single => Instantiate(singlePrefab, transform).GetComponent<StageCardSingleLayout>(),
+                CardLayoutType.Single => Instantiate(singlePrefab, transform).GetComponent<CardSingleLayout>(),
                 CardLayoutType.SingleWithCorner => Instantiate(singlePrefab, transform)
-                    .GetComponent<StageCardSingleLayout>(),
-                CardLayoutType.Dual => Instantiate(dualPrefab, transform).GetComponent<StageCardDualLayout>(),
-                CardLayoutType.Triple => Instantiate(triplePrefab, transform).GetComponent<StageCardTripleLayout>(),
+                    .GetComponent<CardSingleLayout>(),
+                CardLayoutType.Dual => Instantiate(dualPrefab, transform).GetComponent<CardDualLayout>(),
+                CardLayoutType.Triple => Instantiate(triplePrefab, transform).GetComponent<CardTripleLayout>(),
                 _ => throw new System.NotImplementedException()
             };
 

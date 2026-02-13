@@ -1,7 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Core;
 using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.Common.Visual;
 using Cardevil.NewCard.InStage.StageCard;
 using System;
 using UnityEngine;
@@ -19,7 +18,7 @@ namespace Cardevil.NewCard.InStage
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        [SerializeField] private StateCardVisualController visualLayout;
+        [SerializeField] private CardVisualController visualController;
         
         [field: Header("State")]
         [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
@@ -86,7 +85,7 @@ namespace Cardevil.NewCard.InStage
             State = cardState;
             _cardCamera = cardCamera;
 
-            visualLayout.Apply(cardState);
+            visualController.Apply(cardState);
         }
 
         private void Update()
@@ -120,7 +119,7 @@ namespace Cardevil.NewCard.InStage
             throw new System.NotImplementedException();
         }
 
-        public void SetSortingOrder(int order) => visualLayout.SetSortingOrder(order);
+        public void SetSortingOrder(int order) => visualController.SetSortingOrder(order);
         
 
         public void OnPointerEnter(PointerEventData eventData)

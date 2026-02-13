@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Cardevil.NewCard.InStage.StageCard
 {
-    public class StageCardSingleLayout : MonoBehaviour, ICardLayoutSpriteRenderer
+    public class CardSingleLayout : MonoBehaviour, ICardLayoutSpriteRenderer
     {
         [SerializeField] private SpriteRenderer mainSprite;
         [SerializeField] private SpriteRenderer cornerSprite;

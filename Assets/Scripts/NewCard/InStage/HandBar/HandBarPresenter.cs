@@ -1,4 +1,5 @@
 using Cardevil.NewCard.Common.Core;
+using Cardevil.NewCard.InStage.ValueSelection;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -13,10 +14,12 @@ namespace Cardevil.NewCard.InStage
         [field: SerializeField] public bool CanInteract { private get; set; }
         
         private HandBarView _view;
+        private ValueSelectionPresenter _valueSelectionPresenter;
 
-        public HandBarPresenter(HandBarView view)
+        public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
             _view = view;
+            _valueSelectionPresenter = valueSelectionPresenter;
             
             _view.CardPointerEnter += OnPointerEnter;
             _view.CardPointerDown += OnPointerDown;
@@ -59,13 +62,13 @@ namespace Cardevil.NewCard.InStage
             
             model.SetDraggingData(state);
             _view.StartDrag(state);
+            
+            _valueSelectionPresenter.TryOpenValueSelectionZone(state);
         }
 
         private void OnDragging(ICardState state)
         {
             if (!CanInteract) return;
-            
-            _view.IsInValueSelectionZone(state);
 
             bool inZone = _view.IsInHandZone(state);
 
@@ -110,15 +113,21 @@ namespace Cardevil.NewCard.InStage
 
         private void OnDragEnd(ICardState state)
         {
-            // TODO: 선택 가능하고, 영역 내에 있는지 체크
-
-            if (_view.IsInValueSelectionZone(state))
+            var cardWorldPos = _view.GetWorldPosition(state);
+            var isOnValueSelectionZone = _valueSelectionPresenter.IsOnValueSelectionZone(cardWorldPos);
+            
+            if (isOnValueSelectionZone)
             {
+                _valueSelectionPresenter.OpenValueSelection(state);
                 
+                model.ClearDraggingData();
+                _view.EndDrag(state);
+                return;
             }
-            else if (model.DetachData.Exists)
+            
+            if (model.DetachData.Exists)
             {
-                // 손패 영역 밖이고, 선택 영영도 아니라면 원래 위치로 복귀.
+                // 선택 존 아니고, 손패 영역 밖이면 복귀 처리
                 model.Insert(model.DragData.OriginalIndex, state);
                 model.ClearDetachData();
                 
