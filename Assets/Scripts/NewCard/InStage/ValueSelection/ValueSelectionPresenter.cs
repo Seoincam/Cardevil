@@ -107,7 +107,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
             _view.ArrangeCards(state.Directions.AllOptions.ToArray());
         }
 
-        private void OnValueSelected(ValueSelectionView.Values values)
+        private void OnValueSelected(in ValueSelectionView.Values values)
         {
             switch (SelectableType)
             {
@@ -124,6 +124,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
                     break;
             }
             
+            _view.Clear();
             ValueSelected?.Invoke(_targetState);
             _targetState = null;
         }

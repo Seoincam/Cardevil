@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Cardevil.NewCard.InStage.ValueSelection
 {
+    public delegate void ValueSelectAction(in ValueSelectionView.Values values);
     public class ValueSelectionView : MonoBehaviour
     {
         [Header("Prefabs")]
@@ -21,7 +22,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
         [SerializeField] private float spacing = 2f;
         
         public Vector3 ZoneWorldPosition => zoneSpriteRenderer.bounds.center;
-        public event Action<Values> ValueSelected;
+        public event ValueSelectAction ValueSelected;
 
         private Dictionary<InteractionCard, CardColor> _cardToColor;
         private Dictionary<CardColor, InteractionCard> _colorToCard;
@@ -104,6 +105,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
             for (int i = 0; i < colors.Length; i++)
             {
                 var card = _colorToCard[colors[i]];
+                card.SetSortingOrder(i);
                 card.TargetLocalX = GetSlotX(i, colors.Length);
                 card.TargetLocalY = GetSlotY(i, colors.Length);
             }
@@ -114,6 +116,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
             for (int i = 0; i < numbers.Length; i++)
             {
                 var card = _numberToCard[numbers[i]];
+                card.SetSortingOrder(i);
                 card.TargetLocalX = GetSlotX(i, numbers.Length);
                 card.TargetLocalY = GetSlotY(i, numbers.Length);
             }
@@ -124,6 +127,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
             for (int i = 0; i < directions.Length; i++)
             {
                 var card = _directionToCard[directions[i]];
+                card.SetSortingOrder(i);
                 card.TargetLocalX = GetSlotX(i, directions.Length);
                 card.TargetLocalY = GetSlotY(i, directions.Length);
             }

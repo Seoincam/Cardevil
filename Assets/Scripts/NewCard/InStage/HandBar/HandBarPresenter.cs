@@ -176,11 +176,11 @@ namespace Cardevil.NewCard.InStage
 
         private void OnValueSelected(ICardState state)
         {
-            Debug.Log("원래 인덱스: " + model.DetachData.OriginalIndex);
             model.Insert(model.DetachData.OriginalIndex, state);
             model.ClearDetachData();
                 
             _view.UpdateVisual(state);
+            _view.UnsetWorldPosition(state);
             _view.ArrangeCards(model.Hand);
         }
     }

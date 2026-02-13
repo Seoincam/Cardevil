@@ -39,6 +39,11 @@ namespace Cardevil.NewCard.Common
             visualController.Apply(visualInput);
             _cardCamera = cardCamera;
         }
+
+        public void SetSortingOrder(int sortingOrder)
+        {
+            visualController.SetSortingOrder(sortingOrder);
+        }
         
         public void OnPointerEnter(PointerEventData eventData)
         {
