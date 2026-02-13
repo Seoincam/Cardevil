@@ -23,6 +23,13 @@ namespace Cardevil.NewCard.InStage
                 .AddElements(
                     new BaseColorElement(CardColor.Red),
                     new BaseNumberElement(2),
+                    SelectableNumberElement.Random(),
+                    SelectableNumberElement.Random(),
+                    SelectableNumberElement.Random(),
+                    SelectableNumberElement.Random(),
+                    SelectableNumberElement.Random(),
+                    SelectableNumberElement.Random(),
+                    SelectableNumberElement.Random(),
                     SelectableNumberElement.Random()
                 )
                 .State;

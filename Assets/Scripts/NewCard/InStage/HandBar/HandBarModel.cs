@@ -46,7 +46,7 @@ namespace Cardevil.NewCard.InStage
         {
             Remove(state);
 
-            DetachData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+            DetachData = new InteractionData(state, DragData.OriginalIndex, selection.Contains(state));
         }
 
         /// <summary>

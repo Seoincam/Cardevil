@@ -63,6 +63,7 @@ namespace Cardevil.NewCard.InStage
         {
             var card = Instantiate(cardPrefab, anchor).GetComponent<NewStageCard>();
             card.Initialize(state, cardCamera);
+            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
             _cardMap.Add(state, card);
 
             // TODO: 구독 정리하기
@@ -115,13 +116,26 @@ namespace Cardevil.NewCard.InStage
         public void StartDrag(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.IsDragging = true;
+            card.FollowTarget = NewStageCard.FollowTargetType.Pointer;
         }
 
         public void EndDrag(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.IsDragging = false;
+            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
+        }
+
+        public void SetWorldPosition(ICardState state, Vector3 worldPosition)
+        {
+            var card = InternalGetCard(state);
+            card.TargetWorldPosition = worldPosition;
+            card.FollowTarget = NewStageCard.FollowTargetType.WorldPosition;
+        }
+
+        public void UnsetWorldPosition(ICardState state)
+        {
+            var card = InternalGetCard(state);
+            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
         }
 
         public float GetSlotX(int index, int maxHand)
@@ -157,6 +171,12 @@ namespace Cardevil.NewCard.InStage
         {
             var card = InternalGetCard(state);
             card.TargetSelectionY = 0f;
+        }
+
+        public void UpdateVisual(ICardState state)
+        {
+            var card = InternalGetCard(state);
+            card.UpdateVisual();
         }
 
         private void RefreshSafeArea()

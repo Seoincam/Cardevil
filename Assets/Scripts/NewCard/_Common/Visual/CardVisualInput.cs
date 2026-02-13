@@ -63,13 +63,13 @@ namespace Cardevil.NewCard.Common.Visual
             var currentNumber = 0;
             var numberSelected = false;
 
-            if (state.Colors != null)
+            if (state.Colors is { Initialized: true })
             {
                 colorOptions = state.Colors.AllOptions.ToArray();
                 currentColor = state.Colors.Current ?? state.Colors.DefaultValue;
                 colorSelected = state.Colors.HasSelected;
             }
-            if (state.Numbers != null)
+            if (state.Numbers is { Initialized: true})
             {
                 numberOptions = state.Numbers.AllOptions.ToArray();
                 currentNumber = state.Numbers.Current ?? state.Numbers.DefaultValue;
@@ -80,7 +80,7 @@ namespace Cardevil.NewCard.Common.Visual
             Direction[] directionOptions = null;
             var directionSelected = false;
 
-            if (state.Directions != null)
+            if (state.Directions is { Initialized: true })
             {
                 currentDirection = state.Directions.Current ?? state.Directions.DefaultValue;
                 directionOptions = state.Directions.AllOptions.ToArray();

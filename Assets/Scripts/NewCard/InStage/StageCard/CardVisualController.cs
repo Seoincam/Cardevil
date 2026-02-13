@@ -24,6 +24,7 @@ namespace Cardevil.NewCard.InStage.StageCard
         public void Apply(ICardState state)
         {
             var visualInput = CardVisualInput.From(state);
+            Debug.Log(visualInput.CurrentColor);
             Apply(visualInput);
         }
 

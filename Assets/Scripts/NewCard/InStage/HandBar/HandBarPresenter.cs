@@ -19,8 +19,6 @@ namespace Cardevil.NewCard.InStage
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
             _view = view;
-            _valueSelectionPresenter = valueSelectionPresenter;
-            
             _view.CardPointerEnter += OnPointerEnter;
             _view.CardPointerDown += OnPointerDown;
             _view.CardDragStart += OnDragStart;
@@ -28,6 +26,9 @@ namespace Cardevil.NewCard.InStage
             _view.CardPointerUp += OnPointerUp;
             _view.CardDragEnd += OnDragEnd;
             _view.CardPointerExit += OnPointerExit;
+            
+            _valueSelectionPresenter = valueSelectionPresenter;
+            _valueSelectionPresenter.ValueSelected += OnValueSelected;
         }
 
         public void AddCard(ICardState state)
@@ -64,6 +65,7 @@ namespace Cardevil.NewCard.InStage
             _view.StartDrag(state);
             
             _valueSelectionPresenter.TryOpenValueSelectionZone(state);
+            _valueSelectionPresenter.CloseValueSelection();
         }
 
         private void OnDragging(ICardState state)
@@ -113,15 +115,15 @@ namespace Cardevil.NewCard.InStage
 
         private void OnDragEnd(ICardState state)
         {
+            _valueSelectionPresenter.CloseValueSelectionZone();
+            
             var cardWorldPos = _view.GetWorldPosition(state);
             var isOnValueSelectionZone = _valueSelectionPresenter.IsOnValueSelectionZone(cardWorldPos);
             
-            if (isOnValueSelectionZone)
+            if (isOnValueSelectionZone && _valueSelectionPresenter.TryOpenValueSelection(state))
             {
-                _valueSelectionPresenter.OpenValueSelection(state);
-                
                 model.ClearDraggingData();
-                _view.EndDrag(state);
+                _view.SetWorldPosition(state, _valueSelectionPresenter.ZoneWorldPosition);
                 return;
             }
             
@@ -169,6 +171,16 @@ namespace Cardevil.NewCard.InStage
                 from--;
             }
 
+            _view.ArrangeCards(model.Hand);
+        }
+
+        private void OnValueSelected(ICardState state)
+        {
+            Debug.Log("원래 인덱스: " + model.DetachData.OriginalIndex);
+            model.Insert(model.DetachData.OriginalIndex, state);
+            model.ClearDetachData();
+                
+            _view.UpdateVisual(state);
             _view.ArrangeCards(model.Hand);
         }
     }

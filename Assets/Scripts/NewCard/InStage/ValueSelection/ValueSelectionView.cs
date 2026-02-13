@@ -2,6 +2,7 @@ using Cardevil.NewCard.Common;
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using Cardevil.Utils.Directions;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,19 +19,32 @@ namespace Cardevil.NewCard.InStage.ValueSelection
 
         [Header("Settings")] 
         [SerializeField] private float spacing = 2f;
+        
+        public Vector3 ZoneWorldPosition => zoneSpriteRenderer.bounds.center;
+        public event Action<Values> ValueSelected;
 
-        private Dictionary<CardColor, InteractionCard> _colorMap;
-        private Dictionary<int, InteractionCard> _numberMap;
-        private Dictionary<Direction, InteractionCard> _directionMap;
+        private Dictionary<InteractionCard, CardColor> _cardToColor;
+        private Dictionary<CardColor, InteractionCard> _colorToCard;
+        private Dictionary<InteractionCard, int> _cardToNumber;
+        private Dictionary<int, InteractionCard> _numberToCard;
+        private Dictionary<InteractionCard, Direction> _cardToDirection;
+        private Dictionary<Direction, InteractionCard> _directionToCard;
+
+        private float _pointerDownTime;
+        
+        private void Awake()
+        {
+            CloseValueSelectionZone();
+        }
 
         public void OpenValueSelectionZone()
         {
-            
+            zoneSpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
         }
 
         public void CloseValueSelectionZone()
         {
-            
+            zoneSpriteRenderer.color = new Color(1f, 1f, 1f, 0f);
         }
 
         /// <summary>
@@ -42,46 +56,54 @@ namespace Cardevil.NewCard.InStage.ValueSelection
             
             return zoneSpriteRenderer.bounds.Contains(worldPosition);
         }
-
         
         public void AddColorSelectable(CardColor color, int number)
         {
-            _colorMap ??= new Dictionary<CardColor, InteractionCard>();
+            _cardToColor ??= new Dictionary<InteractionCard, CardColor>();
+            _colorToCard ??= new Dictionary<CardColor, InteractionCard>();
 
             var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
             var visualInput = CardVisualInput.Attack(color, number);
-            
+
             card.Initialize(visualInput, cardCamera);
-            _colorMap.Add(color, card);
+            BindCard(card);
+            _cardToColor.Add(card, color);
+            _colorToCard.Add(color, card);
         }
 
         public void AddNumberSelectable(CardColor color, int number)
         {
-            _numberMap ??= new Dictionary<int, InteractionCard>();
+            _cardToNumber ??= new Dictionary<InteractionCard, int>();
+            _numberToCard ??= new Dictionary<int, InteractionCard>();
 
             var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
             var visualInput = CardVisualInput.Attack(color, number);
-            
+
             card.Initialize(visualInput, cardCamera);
-            _numberMap.Add(number, card);
+            BindCard(card);
+            _cardToNumber.Add(card, number);
+            _numberToCard.Add(number, card);
         }
 
         public void AddDirectionSelectable(Direction direction)
         {
-            _directionMap ??= new Dictionary<Direction, InteractionCard>();
-            
+            _cardToDirection ??= new Dictionary<InteractionCard, Direction>();
+            _directionToCard ??= new Dictionary<Direction, InteractionCard>();
+
             var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
             var visualInput = CardVisualInput.Move(direction);
-            
+
             card.Initialize(visualInput, cardCamera);
-            _directionMap.Add(direction, card);
+            BindCard(card);
+            _cardToDirection.Add(card, direction);
+            _directionToCard.Add(direction, card);
         }
 
         public void ArrangeCards(CardColor[] colors)
         {
             for (int i = 0; i < colors.Length; i++)
             {
-                var card = _colorMap[colors[i]];
+                var card = _colorToCard[colors[i]];
                 card.TargetLocalX = GetSlotX(i, colors.Length);
                 card.TargetLocalY = GetSlotY(i, colors.Length);
             }
@@ -91,7 +113,7 @@ namespace Cardevil.NewCard.InStage.ValueSelection
         {
             for (int i = 0; i < numbers.Length; i++)
             {
-                var card = _numberMap[numbers[i]];
+                var card = _numberToCard[numbers[i]];
                 card.TargetLocalX = GetSlotX(i, numbers.Length);
                 card.TargetLocalY = GetSlotY(i, numbers.Length);
             }
@@ -101,12 +123,77 @@ namespace Cardevil.NewCard.InStage.ValueSelection
         {
             for (int i = 0; i < directions.Length; i++)
             {
-                var card = _directionMap[directions[i]];
+                var card = _directionToCard[directions[i]];
                 card.TargetLocalX = GetSlotX(i, directions.Length);
                 card.TargetLocalY = GetSlotY(i, directions.Length);
             }
         }
 
+        public void Clear()
+        {
+            if (_cardToColor != null)
+            {
+                foreach (var card in _cardToColor.Keys)
+                {
+                    UnbindCard(card);
+                    Destroy(card.gameObject);
+                }
+                _cardToColor = null;
+                _colorToCard = null;
+            }
+
+            if (_cardToNumber != null)
+            {
+                foreach (var card in _cardToNumber.Keys)
+                {
+                    UnbindCard(card);
+                    Destroy(card.gameObject);
+                }
+                _cardToNumber = null;
+                _numberToCard = null;
+            }
+
+            if (_cardToDirection != null)
+            {
+                foreach (var card in _cardToDirection.Keys)
+                {
+                    UnbindCard(card);
+                    Destroy(card.gameObject);
+                }
+                _cardToDirection = null;
+                _directionToCard = null;
+            }
+        }
+
+        public readonly struct Values
+        {
+            public readonly CardColor Color;
+            public readonly int Number;
+            public readonly Direction Direction;
+
+            public static Values CreateColor(CardColor color)
+            {
+                return new Values(color, -1, Direction.None);
+            }
+
+            public static Values CreateNumber(int number)
+            {
+                return new Values(CardColor.None, number, Direction.None);
+            }
+
+            public static Values CreateDirection(Direction direction)
+            {
+                return new Values(CardColor.None, -1, direction);
+            }
+
+            private Values(CardColor color, int number, Direction direction)
+            {
+                Color = color;
+                Number = number;
+                Direction = direction;
+            }
+        }
+        
         private float GetSlotX(int index, int cardCount)
         {
             return (index - (cardCount - 1) * 0.5f) * spacing;
@@ -115,6 +202,52 @@ namespace Cardevil.NewCard.InStage.ValueSelection
         private float GetSlotY(int index, int cardCount)
         {
             return 0f;
+        }
+
+        private void BindCard(InteractionCard card)
+        {
+            card.PointerDown += OnPointerDown;
+            card.PointerUp += OnPointerUp;
+        }
+
+        private void UnbindCard(InteractionCard card)
+        {
+            card.PointerDown -= OnPointerDown;
+            card.PointerUp -= OnPointerUp;
+        }
+
+        private void OnPointerDown(InteractionCard card)
+        {
+            _pointerDownTime = Time.time;
+        }
+
+        private void OnPointerUp(InteractionCard card)
+        {
+            if (Time.time - _pointerDownTime > 0.2f) return;
+            
+            OnValueSelected(card);
+        }
+
+        private void OnValueSelected(InteractionCard card)
+        {
+            Values values = default;
+            
+            if (_cardToColor != null)
+            {
+                values = Values.CreateColor(_cardToColor[card]);
+            }
+
+            if (_cardToNumber != null)
+            {
+                values = Values.CreateNumber(_cardToNumber[card]);
+            }
+
+            if (_cardToDirection != null)
+            {
+                values = Values.CreateDirection(_cardToDirection[card]);
+            }
+            
+            ValueSelected?.Invoke(values);
         }
     }
 }
