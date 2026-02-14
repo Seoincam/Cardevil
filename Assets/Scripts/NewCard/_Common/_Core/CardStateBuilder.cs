@@ -1,4 +1,3 @@
-using Cardevil.NewCard.Utils;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;

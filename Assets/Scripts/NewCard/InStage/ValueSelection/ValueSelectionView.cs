@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.NewCard.InStage.ValueSelection
+namespace Cardevil.NewCard.InStage
 {
     public delegate void ValueSelectAction(in ValueSelectionView.Values values);
     public class ValueSelectionView : MonoBehaviour

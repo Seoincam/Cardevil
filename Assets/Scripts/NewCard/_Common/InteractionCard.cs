@@ -1,5 +1,5 @@
 using Cardevil.NewCard.Common.Visual;
-using Cardevil.NewCard.InStage.StageCard;
+using Cardevil.NewCard.Visual.Controller;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;

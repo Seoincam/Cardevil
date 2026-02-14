@@ -1,4 +1,3 @@
-using Cardevil.NewCard.Common.Core;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -6,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Utils
+namespace Cardevil.NewCard.Common.Core
 {
     /// <summary>
     /// 전투 시작 시 미정 슬롯을 실제 값으로 해소해주는 유틸.

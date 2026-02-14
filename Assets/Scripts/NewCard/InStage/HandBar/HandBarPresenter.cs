@@ -1,5 +1,5 @@
 using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.InStage.ValueSelection;
+using Cardevil.NewCard.InStage;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -98,18 +98,27 @@ namespace Cardevil.NewCard.InStage
             
             // 드래그를 했다면 시간도 체크함.
             if (model.PointerDownData.Exists && Time.time - model.PointerDownData.LastInteractionTime > 0.2f) return;
-            
+
+            bool changed = false;
             if (model.Selection.Contains(state))
             {
                 Debug.Log("Deselect");
                 model.Deselect(state);
                 _view.DeselectCard(state, model.Hand.Count, model.IndexOf(state));
+                changed = true;
             }
             else if (model.Selection.Count < 4)
             {
                 Debug.Log("Select");
                 model.Select(state);
                 _view.SelectCard(state, model.Hand.Count, model.IndexOf(state));
+                changed = true;
+            }
+
+            if (changed)
+            {
+                var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
+                Debug.Log("HandRankData: " + handRankData.HandRank);
             }
         }
 

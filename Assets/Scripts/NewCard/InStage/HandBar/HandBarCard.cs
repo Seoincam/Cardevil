@@ -1,7 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Core;
 using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.InStage.StageCard;
+using Cardevil.NewCard.Visual.Controller;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,12 +9,7 @@ using UnityEngine.InputSystem;
 
 namespace Cardevil.NewCard.InStage
 {
-    public interface IStageCard
-    {
-        ICardState State { get; }
-    }
-    
-    public class NewStageCard : MonoBehaviour, IStageCard, IClearable, 
+    public class HandBarCard : MonoBehaviour, IClearable, 
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
@@ -23,13 +18,13 @@ namespace Cardevil.NewCard.InStage
         [field: Header("State")]
         [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
 
-        public event Action<NewStageCard> PointerEnter;
-        public event Action<NewStageCard> PointerDown;
-        public event Action<NewStageCard> DragStart;
-        public event Action<NewStageCard> Dragging;
-        public event Action<NewStageCard> PointerUp;
-        public event Action<NewStageCard> DragEnd;
-        public event Action<NewStageCard> PointerExit;
+        public event Action<HandBarCard> PointerEnter;
+        public event Action<HandBarCard> PointerDown;
+        public event Action<HandBarCard> DragStart;
+        public event Action<HandBarCard> Dragging;
+        public event Action<HandBarCard> PointerUp;
+        public event Action<HandBarCard> DragEnd;
+        public event Action<HandBarCard> PointerExit;
         
         private Camera _cardCamera;
 

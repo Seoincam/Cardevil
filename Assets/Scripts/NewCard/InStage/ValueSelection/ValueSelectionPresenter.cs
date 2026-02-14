@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-namespace Cardevil.NewCard.InStage.ValueSelection
+namespace Cardevil.NewCard.InStage
 {
     public class ValueSelectionPresenter
     {
