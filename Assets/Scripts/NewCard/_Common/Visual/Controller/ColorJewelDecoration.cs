@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.NewCard.InStage.StageCard
+namespace Cardevil.NewCard.Visual.Controller
 {
     public class ColorJewelDecoration : MonoBehaviour
     {

@@ -24,7 +24,7 @@ namespace Cardevil.NewCard.InStage
         public event Action<ICardState> CardDragEnd;
         public event Action<ICardState> CardPointerExit;
 
-        private readonly Dictionary<ICardState, NewStageCard> _cardMap = new();
+        private readonly Dictionary<ICardState, HandBarCard> _cardMap = new();
 
         private Rect _safeArea;
         private Vector2 _viewportMin;
@@ -61,9 +61,9 @@ namespace Cardevil.NewCard.InStage
 
         public void CreateCard(ICardState state)
         {
-            var card = Instantiate(cardPrefab, anchor).GetComponent<NewStageCard>();
+            var card = Instantiate(cardPrefab, anchor).GetComponent<HandBarCard>();
             card.Initialize(state, cardCamera);
-            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
+            card.FollowTarget = HandBarCard.FollowTargetType.LocalPosition;
             _cardMap.Add(state, card);
 
             // TODO: 구독 정리하기
@@ -99,7 +99,7 @@ namespace Cardevil.NewCard.InStage
             }
         }
 
-        public NewStageCard GetCard(ICardState state) => InternalGetCard(state);
+        public HandBarCard GetCard(ICardState state) => InternalGetCard(state);
 
         public float GetCurrentX(ICardState state)
         {
@@ -116,26 +116,26 @@ namespace Cardevil.NewCard.InStage
         public void StartDrag(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.FollowTarget = NewStageCard.FollowTargetType.Pointer;
+            card.FollowTarget = HandBarCard.FollowTargetType.Pointer;
         }
 
         public void EndDrag(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
+            card.FollowTarget = HandBarCard.FollowTargetType.LocalPosition;
         }
 
         public void SetWorldPosition(ICardState state, Vector3 worldPosition)
         {
             var card = InternalGetCard(state);
             card.TargetWorldPosition = worldPosition;
-            card.FollowTarget = NewStageCard.FollowTargetType.WorldPosition;
+            card.FollowTarget = HandBarCard.FollowTargetType.WorldPosition;
         }
 
         public void UnsetWorldPosition(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.FollowTarget = NewStageCard.FollowTargetType.LocalPosition;
+            card.FollowTarget = HandBarCard.FollowTargetType.LocalPosition;
         }
 
         public float GetSlotX(int index, int maxHand)
@@ -205,7 +205,7 @@ namespace Cardevil.NewCard.InStage
             anchor.position = anchorPosition;
         }
 
-        private NewStageCard InternalGetCard(ICardState state)
+        private HandBarCard InternalGetCard(ICardState state)
         {
             if (!_cardMap.TryGetValue(state, out var card))
             {

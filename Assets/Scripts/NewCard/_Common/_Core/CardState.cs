@@ -3,7 +3,6 @@ using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.NewCard.Common.Core
@@ -20,7 +19,9 @@ namespace Cardevil.NewCard.Common.Core
         
         bool IsAttack { get; }
         bool IsMove { get; }
+        
         CardState.ValueSelectableType SelectableType { get; }
+        bool ValueSelected { get; }
         
         uint Id { get; }
         CardType Type { get; }
@@ -45,15 +46,33 @@ namespace Cardevil.NewCard.Common.Core
 
         public bool IsAttack => spec.IsAttack;
         public bool IsMove => spec.IsMove;
+
         public ValueSelectableType SelectableType
         {
             get
             {
-                if (Colors != null && Colors.HasAlternatives) return ValueSelectableType.Color;
-                if (Numbers != null && Numbers.HasAlternatives) return ValueSelectableType.Number;
+                if (Colors is { HasAlternatives: true }) return ValueSelectableType.Color;
+                if (Numbers is { HasAlternatives: true }) return ValueSelectableType.Number;
                 if (Directions is { HasAlternatives: true }) return ValueSelectableType.Direction;
                 
                 return ValueSelectableType.None;
+            }
+        }
+        
+        public bool ValueSelected
+        {
+            get
+            {
+                switch (spec.Type)
+                {
+                    case CardType.Attack: 
+                        return Colors.HasSelected && Numbers.HasSelected;
+                    
+                    case CardType.Move: 
+                        return Directions.HasSelected;
+                    
+                    default: throw new ArgumentOutOfRangeException(nameof(CardState));
+                }
             }
         }
         
@@ -88,6 +107,7 @@ namespace Cardevil.NewCard.Common.Core
                 {
                     if (HasAlternatives && selected.hasValue) return selected;
                     if (HasAlternatives && !selected.hasValue) return null;
+                    
                     if (DefaultValue.hasValue) return DefaultValue;
                     return null;
                 }

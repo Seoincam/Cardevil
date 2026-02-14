@@ -1,5 +1,5 @@
 using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.InStage.ValueSelection;
+using Cardevil.NewCard.InStage;
 using System;
 using System.Linq;
 using UnityEngine;

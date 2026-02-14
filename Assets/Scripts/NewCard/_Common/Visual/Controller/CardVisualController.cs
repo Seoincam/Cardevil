@@ -2,7 +2,7 @@ using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using UnityEngine;
 
-namespace Cardevil.NewCard.InStage.StageCard
+namespace Cardevil.NewCard.Visual.Controller
 {
     public class CardVisualController : MonoBehaviour
     {

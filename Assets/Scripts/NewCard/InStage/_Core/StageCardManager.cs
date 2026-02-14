@@ -1,4 +1,4 @@
-using Cardevil.NewCard.InStage.ValueSelection;
+using Cardevil.NewCard.InStage;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
