@@ -1,9 +1,11 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,6 +24,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private Ease _moveEase = Ease.InOutSine;
         
         [SerializeField,VisibleOnly] private int currentDungeonId = -1;
+        private DungeonChapterUI CurrentDungeonUI => _dungeonChapters.Find(chapter => chapter.DungeonId == currentDungeonId);
         
         public Canvas Canvas
         {
@@ -69,6 +72,11 @@ namespace Cardevil.Dungeon.UI
             if (_rectTransform == null)
             {
                 _rectTransform = GetComponent<RectTransform>();
+            }
+            
+            foreach (DungeonChapterUI chapterUI in _dungeonChapters)
+            {
+                chapterUI.gameObject.SetActive(false);
             }
         }
 
@@ -123,6 +131,19 @@ namespace Cardevil.Dungeon.UI
                     chapterUI.gameObject.SetActive(chapterUI == toShow);
                 }
             });
+        }
+        
+        public async UniTask AnimateHidingDungeon(CancellationToken cancellationToken = default)
+        {
+            // 현재 지도 내리는 애니메이션
+            await UniTask.CompletedTask;
+        }
+        
+        public UniTask AnimateShowingDungeon(int id, CancellationToken cancellationToken = default)
+        {
+            // 다음 지도 올리는 애니메이션
+            
+            return UniTask.CompletedTask;
         }
         
         private float GetPosY(int currentChapterIndex)
