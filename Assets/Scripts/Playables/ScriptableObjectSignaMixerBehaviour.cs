@@ -12,7 +12,7 @@ namespace Cardevil.InGame.SlotMachine.Playables
 
         public override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
-            var channel = playerData as PlayableSignalChanel;
+            var channel = playerData as PlayableSignalChannel;
             if (channel == null)
             {
                 return;

@@ -689,7 +689,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852ee956ecfd4dd192534d62a52689b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Core.CameraSorter
-  stackOrder: 11
+  stackOrder: 8
   baseInEditMode: 1
   cam: {fileID: 924990120}
   cameraSceneName: 

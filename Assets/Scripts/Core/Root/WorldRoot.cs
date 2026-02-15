@@ -82,7 +82,7 @@ namespace Cardevil.Core.Root
         /// <param name="ct">취소 토큰</param>
         private async UniTask PlayStageEnterAnimation(CancellationToken ct)
         {
-            var transitionUI = Dungeon.TransitionUI;
+            var transitionUI = Dungeon.Transition;
             if (transitionUI)
             {
                 await transitionUI.ShowTransition(ct);

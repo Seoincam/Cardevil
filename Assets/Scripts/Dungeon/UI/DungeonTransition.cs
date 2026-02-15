@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace Cardevil.Dungeon.UI
 {
-    public class DungeonTransitionUI : MonoBehaviour
+    public class DungeonTransition : MonoBehaviour
     {
         [SerializeField] private Image environmentImage;
         [SerializeField] private RectTransform transitionPanel;
@@ -43,11 +43,11 @@ namespace Cardevil.Dungeon.UI
 
         private void Awake()
         {
-            _initialEnvironmentImagePosition = Instantiate(environmentImage, transform).rectTransform;
-            _initialPanelPosition = Instantiate(transitionPanel, transform);
+            // _initialEnvironmentImagePosition = Instantiate(environmentImage, transform).rectTransform;
+            // _initialPanelPosition = Instantiate(transitionPanel, transform);
             
-            _initialPanelPosition.gameObject.SetActive(false);
-            _initialEnvironmentImagePosition.gameObject.SetActive(false);
+            // _initialPanelPosition.gameObject.SetActive(false);
+            // _initialEnvironmentImagePosition.gameObject.SetActive(false);
             
             ExecEventBus<NodeEnteredEventArgs>.RegisterStatic(-1000, OnNodeEntered);
         }

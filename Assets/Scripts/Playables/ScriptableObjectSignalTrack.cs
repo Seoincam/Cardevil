@@ -6,7 +6,7 @@ namespace Cardevil.InGame.SlotMachine.Playables
 {
     [TrackColor(0.855f, 0.8623f, 0.87f)]
     [TrackClipType(typeof(ScriptableObjectSignalPlayableAsset))]
-    [TrackBindingType(typeof(PlayableSignalChanel))]
+    [TrackBindingType(typeof(PlayableSignalChannel))]
     public class ScriptableObjectSignalTrack : TrackAsset
     {
         private ScriptableObjectSignalMixerBehaviour _signalMixer;
