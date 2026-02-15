@@ -116,7 +116,7 @@ namespace Cardevil.NewCard.Common.Core
             /// <summary>
             /// 선택 가능한 모든 값의 개수. 선택이 불가능한 카드일 경우 1임.
             /// </summary>
-            public int AllOptionsCount => alternatives?.Count ?? 0 + 1;
+            public int AllOptionsCount => (alternatives?.Count ?? 0) + 1;
 
             /// <summary>
             /// 기본값을 포함해, 선택 가능한 모든 값.

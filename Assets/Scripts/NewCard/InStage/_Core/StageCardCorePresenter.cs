@@ -23,14 +23,14 @@ namespace Cardevil.NewCard.InStage
                 .AddElements(
                     new BaseColorElement(CardColor.Red),
                     new BaseNumberElement(2),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random(),
-                    SelectableNumberElement.Random()
+                    SelectableNumberElement.Fixed(3),
+                    SelectableNumberElement.Fixed(4),
+                    SelectableNumberElement.Fixed(5),
+                    SelectableNumberElement.Fixed(6),
+                    SelectableNumberElement.Fixed(7),
+                    SelectableNumberElement.Fixed(8),
+                    SelectableNumberElement.Fixed(9),
+                    SelectableNumberElement.Fixed(10)
                 )
                 .State;
             var state2 = new CardSpec(2, CardType.Attack)
@@ -63,9 +63,9 @@ namespace Cardevil.NewCard.InStage
                 .AddElements(
                     new BaseNumberElement(9),
                     new BaseColorElement(CardColor.Red),
-                    SelectableColorElement.Random(),
-                    SelectableColorElement.Random(),
-                    SelectableColorElement.Random()
+                    SelectableColorElement.Fixed(CardColor.Green),
+                    SelectableColorElement.Fixed(CardColor.Blue),
+                    SelectableColorElement.Fixed(CardColor.Black)
                 )
                 .State;
             
