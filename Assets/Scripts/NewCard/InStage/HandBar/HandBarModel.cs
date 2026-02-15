@@ -71,6 +71,11 @@ namespace Cardevil.NewCard.InStage
             (hand[indexA], hand[indexB]) = (hand[indexB], hand[indexA]);
         }
 
+        public void Sort(IComparer<ICardState> comparer)
+        {
+            hand.Sort(comparer.Compare);
+        }
+
         public void SetPointerDownData(ICardState state)
         {
             PointerDownData = new InteractionData(state, IndexOf(state), selection.Contains(state));

@@ -19,6 +19,9 @@ namespace Cardevil.NewCard.InStage
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
             _view = view;
+            _view.SortByNumberClicked += SortByNumber;
+            _view.SortByIconClicked += SortByIcon;
+            
             _view.CardPointerEnter += OnPointerEnter;
             _view.CardPointerDown += OnPointerDown;
             _view.CardDragStart += OnDragStart;
@@ -190,6 +193,22 @@ namespace Cardevil.NewCard.InStage
                 
             _view.UpdateVisual(state);
             _view.UnsetWorldPosition(state);
+            _view.ArrangeCards(model.Hand);
+        }
+
+        private void SortByNumber()
+        {
+            if (!CanInteract) return;
+            
+            model.Sort(CardStateComparers.ByNumber);
+            _view.ArrangeCards(model.Hand);
+        }
+
+        private void SortByIcon()
+        {
+            if (!CanInteract) return;
+            
+            model.Sort(CardStateComparers.ByIcon);
             _view.ArrangeCards(model.Hand);
         }
     }

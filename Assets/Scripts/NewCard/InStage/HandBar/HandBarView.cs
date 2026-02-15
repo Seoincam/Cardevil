@@ -3,6 +3,8 @@ using Cardevil.NewCard.Common.Core;
 using System;
 using System.Collections.Generic; 
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Cardevil.NewCard.InStage
 {
@@ -10,11 +12,19 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform anchor;
+        
+        [Header("Buttons")]
+        [SerializeField] private Button sortByNumberButton;
+        [SerializeField] private Button sortByIconButton;
+        
         [Header("Config")] 
         [SerializeField] private HandBarConfig config;
 
         [Header("Prefabs")] 
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
+
+        public event UnityAction SortByNumberClicked;
+        public event UnityAction SortByIconClicked;
 
         public event Action<ICardState> CardPointerEnter;
         public event Action<ICardState> CardPointerDown;
@@ -34,6 +44,12 @@ namespace Cardevil.NewCard.InStage
         private int _cachedHeight;
         private float _cachedAnchorY;
         private float _cachedCardSpacing;
+
+        private void Awake()
+        {
+            sortByNumberButton.onClick.AddListener(SortByNumberClicked);
+            sortByIconButton.onClick.AddListener(SortByIconClicked);
+        }
 
         private void LateUpdate()
         {
