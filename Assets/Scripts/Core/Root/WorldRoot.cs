@@ -3,6 +3,7 @@ using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Dungeon;
 using Cardevil.Dungeon.UI;
+using Cardevil.Save;
 using Cardevil.SceneManagement;
 using Cardevil.UI.GlobalNavationBar;
 using Cysharp.Threading.Tasks;
@@ -16,14 +17,14 @@ namespace Cardevil.Core.Root
     /// 월드 루트 컨트롤러.
     /// 던전 관리 및 스테이지 진입 흐름 제어.
     /// </summary>
-    public class WorldRoot : MonoBehaviour
+    public class WorldRoot : MonoBehaviour, ISaveLoadRoot
     {
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
 
         private CardSpecModifierService _cardModifierService;
         private CardEnhancementPresenter _cardEnhancementPresenter;
 
-        private void Awake()
+        private void Start()
         {
             Init();
         }
@@ -87,6 +88,21 @@ namespace Cardevil.Core.Root
             {
                 await transitionUI.ShowTransition(ct);
             }
+        }
+
+        public void Save(GameSave currentSave)
+        {
+            
+        }
+
+        public void Load(GameSave currentSave)
+        {
+           
+        }
+
+        public void SetUpNewGame(GameSave save)
+        {
+            
         }
     }
 }

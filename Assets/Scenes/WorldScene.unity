@@ -194,7 +194,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475689324}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &475689327
 Camera:
   m_ObjectHideFlags: 0
@@ -694,6 +694,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonUI
       objectReference: {fileID: 0}
+    - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: blackPanel
+      value: 
+      objectReference: {fileID: 1403253439}
+    - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: blackPanelText
+      value: 
+      objectReference: {fileID: 1775464933}
+    - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: <PlayableDirector>k__BackingField
+      value: 
+      objectReference: {fileID: 1400307604}
     - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_SceneBindings.Array.data[1].value
       value: 
@@ -706,6 +718,42 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[4].value
       value: 
       objectReference: {fileID: 1779707145}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[1].key
+      value: 
+      objectReference: {fileID: -6415619364506530192, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[2].key
+      value: 
+      objectReference: {fileID: 4787136102720438916, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[3].key
+      value: 
+      objectReference: {fileID: -594490438940142959, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].key
+      value: 
+      objectReference: {fileID: 8575956135597378323, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].key
+      value: 
+      objectReference: {fileID: 4077329632234576030, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[6].key
+      value: 
+      objectReference: {fileID: -5108008552445619804, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[7].key
+      value: 
+      objectReference: {fileID: -1456024475884479198, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 5862218655291088821, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: _dungeonUICanvas
       value: 
@@ -798,6 +846,11 @@ PrefabInstance:
 --- !u!224 &1400307603 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 1400307602}
+  m_PrefabAsset: {fileID: 0}
+--- !u!320 &1400307604 stripped
+PlayableDirector:
+  m_CorrespondingSourceObject: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
   m_PrefabInstance: {fileID: 1400307602}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1403253437
@@ -1222,7 +1275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1779707146
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1471,7 +1524,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 223.99}
+  m_SizeDelta: {x: 447.98, y: 223.99}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2021929855
 MonoBehaviour:

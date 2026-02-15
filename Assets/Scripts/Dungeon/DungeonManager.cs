@@ -5,10 +5,12 @@ using Cardevil.Dungeon.NodePresets;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
 using Cardevil.Events.ExecEvents;
+using Cardevil.Save;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
 using Object = UnityEngine.Object;
@@ -118,7 +120,7 @@ namespace Cardevil.Dungeon
         private void CreateDungeons()
         {
             dungeons.Clear();
-            var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>();
+            var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>(true);
             foreach (DungeonBuildHelperUI buildHelper in buildHelpers)
             {
                 Dungeon dungeon = buildHelper.BuildDungeon();
@@ -555,7 +557,7 @@ namespace Cardevil.Dungeon
         */
         #endregion
 
-
+        
     }
 }
 
