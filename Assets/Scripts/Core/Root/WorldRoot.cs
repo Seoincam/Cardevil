@@ -72,7 +72,6 @@ namespace Cardevil.Core.Root
             await SceneLoader.WaitSceneActivationAsync(Scenes.Stage, op, LoadSceneMode.Additive, ct);
             SceneLoader.SetActiveScene(Scenes.Stage);
             
-            // TODO: StageRoot에 알리기
         }
 
         

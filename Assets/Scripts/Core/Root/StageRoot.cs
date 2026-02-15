@@ -32,6 +32,7 @@ namespace Cardevil.Core.Root
         
         private GameFlowManager.StageEnterContext _context;
 
+        bool isInitialized = false;
         
         private async void Awake()
         {
@@ -45,21 +46,26 @@ namespace Cardevil.Core.Root
             
             Player.Init(Field);
             await InitAsync();
-            await EnterStageAsync();
+            
         }
 
         private async UniTask InitAsync()
         {
             _context = CardevilCore.Instance.GameFlow.Context;
+            
+            isInitialized = true;
         }
         
         /// <summary>
         /// 전투 스테이지 진입 비동기 처리.
         /// 스테이지 ID 기반 적 스폰, 필드 및 턴 매니저 구성 후 턴 루프 시작.
         /// </summary>
-        private async UniTask EnterStageAsync()
+        public async UniTask EnterStageAsync()
         {
             // TODO: 얘를 외부에서 호출되도록 해야겠음.
+            // @machamy : GameFlow -> StageRoot.EnterStageAsync() 이렇게 해둠
+            await UniTask.WaitUntil(() => isInitialized);
+            
             
             // TODO : 필드 초기화 - @machamy
             Field.InitField(3,3, Random.Range(0,4));

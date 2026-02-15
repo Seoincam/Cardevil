@@ -120,6 +120,7 @@ namespace Cardevil.Dungeon
         private void CreateDungeons()
         {
             dungeons.Clear();
+            //TODO : 귀찮니즘의 잔재. DungeonBuildHelperUI를 최적화해서 찾는 방법으로 바꾸는게 좋긴함
             var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>(true);
             foreach (DungeonBuildHelperUI buildHelper in buildHelpers)
             {

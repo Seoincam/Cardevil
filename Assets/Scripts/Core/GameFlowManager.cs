@@ -49,7 +49,8 @@ namespace Cardevil.Core
                 return;
             }
 
-            World.EnterStageAsync(Context, ct).Forget();
+            await World.EnterStageAsync(Context, ct);
+            await Stage.EnterStageAsync();
         }
     }
 }
