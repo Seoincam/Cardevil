@@ -2,7 +2,9 @@ using Cardevil.Cards.Enhancements;
 using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Dungeon;
+using Cardevil.Dungeon.UI;
 using Cardevil.SceneManagement;
+using Cardevil.UI.GlobalNavationBar;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
@@ -42,6 +44,10 @@ namespace Cardevil.Core.Root
             _cardModifierService = new CardSpecModifierService(cardStatus);
             var enhancementData = CardevilCore.Instance.CardEnhancementData;
             _cardEnhancementPresenter = new CardEnhancementPresenter(cardStatus, enhancementData, _cardModifierService);
+            
+            // TODO : 세이브 로드시 해당 페이지 보여주는걸로
+            GlobalNavigationBar.Instance.gameObject.SetActive(true);
+            Dungeon.UI.UpdateShowingDungeon(1);
         }
 
         /// <summary>
@@ -56,7 +62,7 @@ namespace Cardevil.Core.Root
             var op = SceneLoader.LoadSceneHandle(Scenes.Stage, LoadSceneMode.Additive);
 
             var loadReadyTask = UniTask.WaitUntil(() => op.progress >= .9f, cancellationToken: ct);
-            var worldAnimTask = PlayDungeonEnterAnimation(ct);
+            var worldAnimTask = PlayStageEnterAnimation(ct);
 
             await UniTask.WhenAll(loadReadyTask, worldAnimTask);
 
@@ -74,9 +80,13 @@ namespace Cardevil.Core.Root
         /// 스테이지 진입 전 월드 연출 처리.
         /// </summary>
         /// <param name="ct">취소 토큰</param>
-        private async UniTask PlayDungeonEnterAnimation(CancellationToken ct)
+        private async UniTask PlayStageEnterAnimation(CancellationToken ct)
         {
-            // TODO: 던전 입장 연출
+            var transitionUI = Dungeon.TransitionUI;
+            if (transitionUI)
+            {
+                await transitionUI.ShowTransition(ct);
+            }
         }
     }
 }

@@ -103,10 +103,10 @@ namespace Cardevil.UI.GlobalNavationBar
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public UniTask HideAsync(CancellationToken cancellationToken = default)
+        public UniTask HideAsync(float time = 0.3f, CancellationToken cancellationToken = default)
         {
             _rectTransform.anchoredPosition = _initialPosition;
-            var task = _rectTransform.DOAnchorPos(hidePositionTransform.anchoredPosition, 0.3f).SetEase(Ease.InOutCubic)
+            var task = _rectTransform.DOAnchorPos(hidePositionTransform.anchoredPosition, time).SetEase(Ease.InOutCubic)
                 .ToUniTask(cancellationToken: cancellationToken, tweenCancelBehaviour: TweenCancelBehaviour.Complete);
             return task;
         }
@@ -116,10 +116,10 @@ namespace Cardevil.UI.GlobalNavationBar
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public UniTask ShowAsync(CancellationToken cancellationToken = default)
+        public UniTask ShowAsync(float time = 0.3f, CancellationToken cancellationToken = default)
         {
             _rectTransform.anchoredPosition = hidePositionTransform.anchoredPosition;
-            var task = _rectTransform.DOAnchorPos(_initialPosition, 0.3f).SetEase(Ease.InOutCubic).ToUniTask(cancellationToken: cancellationToken, tweenCancelBehaviour: TweenCancelBehaviour.Complete);
+            var task = _rectTransform.DOAnchorPos(_initialPosition, time).SetEase(Ease.InOutCubic).ToUniTask(cancellationToken: cancellationToken, tweenCancelBehaviour: TweenCancelBehaviour.Complete);
             return task;
         }
         

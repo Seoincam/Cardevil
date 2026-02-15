@@ -1,8 +1,11 @@
 ﻿using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Root;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Playables;
 #if UNITY_EDITOR
@@ -22,10 +25,6 @@ namespace Cardevil.Dungeon.UI
         // [SerializeField] private DungeonNodeUI nodeUiPrefab;
         [SerializeField] private List<DungeonNodeUI> nodeUis = new List<DungeonNodeUI>();
         [field:SerializeField] public CanvasGroup CanvasGroup { get; private set; }
-        [field:SerializeField] public Animator Animator { get; private set; }
-        [field:SerializeField] public PlayableDirector PlayableDirector { get; private set; }
-        [field:SerializeField] public RectTransform LeftArm { get; private set; }
-        [field:SerializeField] public RectTransform RightArm { get; private set; }
         
         public int DungeonId => dungeonId;
         public Dungeon Dungeon => CardevilCore.Instance.GameFlow.World.Dungeon.GetDungeonById(dungeonId);
@@ -83,5 +82,6 @@ namespace Cardevil.Dungeon.UI
             Debug.LogWarning($"No DungeonNodeUI found for node ID {nodeId} in dungeon {dungeonId}");
             return null;
         }
+        
     }
 }

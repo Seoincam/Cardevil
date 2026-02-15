@@ -22,6 +22,7 @@ namespace Cardevil.Dungeon
         
         [SerializeReference] private List<Dungeon> dungeons = new List<Dungeon>();
         [SerializeField] private DungeonUI dungeonUI;
+        [SerializeField] private DungeonTransitionUI dungeonTransitionUI;
         [SerializeField, VisibleOnly] private DungeonNode currentNode;
         [SerializeField, VisibleOnly] private DungeonNode previousNode;
         [SerializeReference, VisibleOnly] private DungeonProgress currentProgress;
@@ -60,6 +61,23 @@ namespace Cardevil.Dungeon
                 return dungeonUI;
             }
         }
+
+        public DungeonTransitionUI TransitionUI
+        {
+            get
+            {
+                if (dungeonTransitionUI == null)
+                {
+                    dungeonTransitionUI = Object.FindAnyObjectByType<DungeonTransitionUI>(FindObjectsInactive.Include);
+                    if (dungeonTransitionUI == null)
+                    {
+                        LogEx.LogError("No DungeonTransitionUI found in the scene");
+                    }
+                }
+                return dungeonTransitionUI;
+            }
+        }
+        
         public int CurrentDungeonId
         {
             get => currentDungeonIndex;

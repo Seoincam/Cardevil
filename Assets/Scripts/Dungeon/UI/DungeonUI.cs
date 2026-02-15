@@ -109,42 +109,13 @@ namespace Cardevil.Dungeon.UI
             }
             currentDungeonId = id;
             
-            //현재와 다음 던전을 활성화
-            fromUI.gameObject.SetActive(true);
-            toShow.gameObject.SetActive(true);
-            
-            // Camera.MoveTo(toShow.transform.position).OnComplete(() =>
-            // {
-            //     foreach (DungeonChapterUI chapterUI in _dungeonChapters)
-            //     {
-            //         chapterUI.gameObject.SetActive(chapterUI == toShow);
-            //     }
-            // });
-            
-            // 카메라가 아니라 던전 UI 자체를 이동시키는 방식으로 변경
-            float posY = GetPosY(_dungeonChapters.IndexOf(toShow));
-            _rectTransform.DOKill();
-            _rectTransform.DOAnchorPosY(posY, 0.5f).SetEase(DG.Tweening.Ease.InOutSine).OnComplete(() =>
+            if (fromUI != null)
             {
-                foreach (DungeonChapterUI chapterUI in _dungeonChapters)
-                {
-                    chapterUI.gameObject.SetActive(chapterUI == toShow);
-                }
-            });
+                fromUI.gameObject.SetActive(false);
+            }
+            toShow.gameObject.SetActive(true);
         }
         
-        public async UniTask AnimateHidingDungeon(CancellationToken cancellationToken = default)
-        {
-            // 현재 지도 내리는 애니메이션
-            await UniTask.CompletedTask;
-        }
-        
-        public UniTask AnimateShowingDungeon(int id, CancellationToken cancellationToken = default)
-        {
-            // 다음 지도 올리는 애니메이션
-            
-            return UniTask.CompletedTask;
-        }
         
         private float GetPosY(int currentChapterIndex)
         {
