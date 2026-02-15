@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Cardevil.Utils.Directions
 {
-    
     public enum Direction
     {
         None = -1,
@@ -11,14 +10,6 @@ namespace Cardevil.Utils.Directions
         Right,
         Down,
         Left,
-    }
-
-    public enum RareType
-    {
-        Noraml,
-        Rare,
-        Epic,
-        Legend
     }
 
     [Flags]
