@@ -5,10 +5,12 @@ using Cardevil.Dungeon.NodePresets;
 using Cardevil.Dungeon.UI;
 using Cardevil.Utils;
 using Cardevil.Events.ExecEvents;
+using Cardevil.Save;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
 using Object = UnityEngine.Object;
@@ -22,6 +24,7 @@ namespace Cardevil.Dungeon
         
         [SerializeReference] private List<Dungeon> dungeons = new List<Dungeon>();
         [SerializeField] private DungeonUI dungeonUI;
+        [FormerlySerializedAs("dungeonTransitionUI")] [SerializeField] private DungeonTransition dungeonTransition;
         [SerializeField, VisibleOnly] private DungeonNode currentNode;
         [SerializeField, VisibleOnly] private DungeonNode previousNode;
         [SerializeReference, VisibleOnly] private DungeonProgress currentProgress;
@@ -60,6 +63,23 @@ namespace Cardevil.Dungeon
                 return dungeonUI;
             }
         }
+
+        public DungeonTransition Transition
+        {
+            get
+            {
+                if (dungeonTransition == null)
+                {
+                    dungeonTransition = Object.FindAnyObjectByType<DungeonTransition>(FindObjectsInactive.Include);
+                    if (dungeonTransition == null)
+                    {
+                        LogEx.LogError("No DungeonTransitionUI found in the scene");
+                    }
+                }
+                return dungeonTransition;
+            }
+        }
+        
         public int CurrentDungeonId
         {
             get => currentDungeonIndex;
@@ -100,7 +120,8 @@ namespace Cardevil.Dungeon
         private void CreateDungeons()
         {
             dungeons.Clear();
-            var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>();
+            //TODO : 귀찮니즘의 잔재. DungeonBuildHelperUI를 최적화해서 찾는 방법으로 바꾸는게 좋긴함
+            var buildHelpers = UI.GetComponentsInChildren<DungeonBuildHelperUI>(true);
             foreach (DungeonBuildHelperUI buildHelper in buildHelpers)
             {
                 Dungeon dungeon = buildHelper.BuildDungeon();
@@ -537,7 +558,7 @@ namespace Cardevil.Dungeon
         */
         #endregion
 
-
+        
     }
 }
 

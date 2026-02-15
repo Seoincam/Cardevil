@@ -1,6 +1,8 @@
 using Cardevil.Attributes;
 using Cardevil.Cards.Core;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Root;
+using Cardevil.Dungeon;
 using Cardevil.Ingame;
 using UnityEngine;
 using Cardevil.Save;
@@ -13,7 +15,7 @@ namespace Cardevil.Core
         [Header("State")] 
         [field: SerializeField, VisibleOnly] public PlayerStatus PlayerStatus { get; private set; }
         [field: SerializeField, VisibleOnly] public CardStatus CardStatus { get; private set; }
-        
+
         public void Init()
         {
             CardevilCore.Instance.SaveLoad.Register(this);

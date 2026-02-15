@@ -1,4 +1,5 @@
 using Cardevil.Cards.Persistence;
+using Cardevil.Dungeon;
 using Cardevil.Ingame;
 using System;
 
@@ -12,6 +13,7 @@ namespace Cardevil.Save
         public long RawSaveTime;
         public PlayerStatus PlayerStatus;
         public CardStatusSaveData cardStatusData;
+        public DungeonProgress DungeonProgress;
         
         public GameSave(string fileName, string name)
         {
@@ -20,6 +22,7 @@ namespace Cardevil.Save
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
             cardStatusData = new CardStatusSaveData();
+            DungeonProgress = new DungeonProgress(1,1);
         }
         public GameSave()
         {
@@ -27,6 +30,7 @@ namespace Cardevil.Save
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
             cardStatusData = new CardStatusSaveData();
+            DungeonProgress = new DungeonProgress(1,1);
         }
         
         public DateTime SaveTime

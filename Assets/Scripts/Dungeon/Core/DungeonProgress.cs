@@ -1,3 +1,4 @@
+using Cardevil.Core;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace Cardevil.Dungeon
     /// 세이브/로드 기능에 사용됩니다.
     /// </summary>
     [Serializable]
-    public class DungeonProgress
+    public class DungeonProgress : ICopy<DungeonProgress>
     {
         /// <summary>
         /// 던전 ID
@@ -91,6 +92,20 @@ namespace Cardevil.Dungeon
         public bool HasPassed(int nodeId)
         {
             return passedNodeIds.Contains(nodeId);
+        }
+
+        public void CopyFrom(DungeonProgress other)
+        {
+            dungeonId = other.dungeonId;
+            currentNodeId = other.currentNodeId;
+            visitedNodeIds = new List<int>(other.visitedNodeIds);
+            passedNodeIds = new List<int>(other.passedNodeIds);
+            isCompleted = other.isCompleted;
+        }
+
+        public void CopyTo(DungeonProgress other)
+        {
+            CopyFrom(other);
         }
     }
 }

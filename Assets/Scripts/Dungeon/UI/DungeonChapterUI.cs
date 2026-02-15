@@ -1,9 +1,13 @@
 ﻿using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Root;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Playables;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -12,13 +16,15 @@ namespace Cardevil.Dungeon.UI
     /// <summary>
     /// 던전 챕터 UI 클래스
     /// </summary>
+    [RequireComponent(typeof(CanvasGroup))]
     public class DungeonChapterUI : MonoBehaviour
     {
         [SerializeField] private int dungeonId = -1;
         [Header("References")]
         [SerializeField] private DungeonUI dungeonUI;
-        [SerializeField] private DungeonNodeUI nodeUiPrefab;
+        // [SerializeField] private DungeonNodeUI nodeUiPrefab;
         [SerializeField] private List<DungeonNodeUI> nodeUis = new List<DungeonNodeUI>();
+        [field:SerializeField] public CanvasGroup CanvasGroup { get; private set; }
         
         public int DungeonId => dungeonId;
         public Dungeon Dungeon => CardevilCore.Instance.GameFlow.World.Dungeon.GetDungeonById(dungeonId);
@@ -76,5 +82,6 @@ namespace Cardevil.Dungeon.UI
             Debug.LogWarning($"No DungeonNodeUI found for node ID {nodeId} in dungeon {dungeonId}");
             return null;
         }
+        
     }
 }

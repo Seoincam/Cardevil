@@ -2,7 +2,10 @@ using Cardevil.Cards.Enhancements;
 using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Dungeon;
+using Cardevil.Dungeon.UI;
+using Cardevil.Save;
 using Cardevil.SceneManagement;
+using Cardevil.UI.GlobalNavationBar;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine;
@@ -14,14 +17,14 @@ namespace Cardevil.Core.Root
     /// 월드 루트 컨트롤러.
     /// 던전 관리 및 스테이지 진입 흐름 제어.
     /// </summary>
-    public class WorldRoot : MonoBehaviour
+    public class WorldRoot : MonoBehaviour, ISaveLoadRoot
     {
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
 
         private CardSpecModifierService _cardModifierService;
         private CardEnhancementPresenter _cardEnhancementPresenter;
 
-        private void Awake()
+        private void Start()
         {
             Init();
         }
@@ -42,6 +45,10 @@ namespace Cardevil.Core.Root
             _cardModifierService = new CardSpecModifierService(cardStatus);
             var enhancementData = CardevilCore.Instance.CardEnhancementData;
             _cardEnhancementPresenter = new CardEnhancementPresenter(cardStatus, enhancementData, _cardModifierService);
+            
+            // TODO : 세이브 로드시 해당 페이지 보여주는걸로
+            GlobalNavigationBar.Instance.gameObject.SetActive(true);
+            Dungeon.UI.UpdateShowingDungeon(1);
         }
 
         /// <summary>
@@ -56,7 +63,7 @@ namespace Cardevil.Core.Root
             var op = SceneLoader.LoadSceneHandle(Scenes.Stage, LoadSceneMode.Additive);
 
             var loadReadyTask = UniTask.WaitUntil(() => op.progress >= .9f, cancellationToken: ct);
-            var worldAnimTask = PlayDungeonEnterAnimation(ct);
+            var worldAnimTask = PlayStageEnterAnimation(ct);
 
             await UniTask.WhenAll(loadReadyTask, worldAnimTask);
 
@@ -65,7 +72,6 @@ namespace Cardevil.Core.Root
             await SceneLoader.WaitSceneActivationAsync(Scenes.Stage, op, LoadSceneMode.Additive, ct);
             SceneLoader.SetActiveScene(Scenes.Stage);
             
-            // TODO: StageRoot에 알리기
         }
 
         
@@ -74,9 +80,28 @@ namespace Cardevil.Core.Root
         /// 스테이지 진입 전 월드 연출 처리.
         /// </summary>
         /// <param name="ct">취소 토큰</param>
-        private async UniTask PlayDungeonEnterAnimation(CancellationToken ct)
+        private async UniTask PlayStageEnterAnimation(CancellationToken ct)
         {
-            // TODO: 던전 입장 연출
+            var transitionUI = Dungeon.Transition;
+            if (transitionUI)
+            {
+                await transitionUI.ShowTransition(ct);
+            }
+        }
+
+        public void Save(GameSave currentSave)
+        {
+            
+        }
+
+        public void Load(GameSave currentSave)
+        {
+           
+        }
+
+        public void SetUpNewGame(GameSave save)
+        {
+            
         }
     }
 }

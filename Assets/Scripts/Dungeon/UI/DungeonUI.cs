@@ -1,9 +1,11 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.DebugConsole;
 using Cardevil.Utils;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -22,6 +24,7 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private Ease _moveEase = Ease.InOutSine;
         
         [SerializeField,VisibleOnly] private int currentDungeonId = -1;
+        private DungeonChapterUI CurrentDungeonUI => _dungeonChapters.Find(chapter => chapter.DungeonId == currentDungeonId);
         
         public Canvas Canvas
         {
@@ -70,6 +73,11 @@ namespace Cardevil.Dungeon.UI
             {
                 _rectTransform = GetComponent<RectTransform>();
             }
+            
+            foreach (DungeonChapterUI chapterUI in _dungeonChapters)
+            {
+                chapterUI.gameObject.SetActive(false);
+            }
         }
 
         public void Initialize()
@@ -101,29 +109,13 @@ namespace Cardevil.Dungeon.UI
             }
             currentDungeonId = id;
             
-            //현재와 다음 던전을 활성화
-            fromUI.gameObject.SetActive(true);
-            toShow.gameObject.SetActive(true);
-            
-            // Camera.MoveTo(toShow.transform.position).OnComplete(() =>
-            // {
-            //     foreach (DungeonChapterUI chapterUI in _dungeonChapters)
-            //     {
-            //         chapterUI.gameObject.SetActive(chapterUI == toShow);
-            //     }
-            // });
-            
-            // 카메라가 아니라 던전 UI 자체를 이동시키는 방식으로 변경
-            float posY = GetPosY(_dungeonChapters.IndexOf(toShow));
-            _rectTransform.DOKill();
-            _rectTransform.DOAnchorPosY(posY, 0.5f).SetEase(DG.Tweening.Ease.InOutSine).OnComplete(() =>
+            if (fromUI != null)
             {
-                foreach (DungeonChapterUI chapterUI in _dungeonChapters)
-                {
-                    chapterUI.gameObject.SetActive(chapterUI == toShow);
-                }
-            });
+                fromUI.gameObject.SetActive(false);
+            }
+            toShow.gameObject.SetActive(true);
         }
+        
         
         private float GetPosY(int currentChapterIndex)
         {
