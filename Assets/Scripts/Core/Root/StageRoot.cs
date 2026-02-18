@@ -102,7 +102,7 @@ namespace Cardevil.Core.Root
             
             var completeSource = new UniTaskCompletionSource();
             // StageCameraCanvas.Instance.OnCompleteShowRock += () => completeSource.TrySetResult();
-            // completeSource.TrySetResult(); // TODO : 버튼 누르면 되도록 바꿔야함
+            completeSource.TrySetResult(); // TODO : 버튼 누르면 되도록 바꿔야함
             await completeSource.Task;
             
 
