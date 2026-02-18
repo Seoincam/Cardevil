@@ -10,7 +10,7 @@ using Cardevil.Save;
 namespace Cardevil.Core
 {
     [System.Serializable]
-    public class GameManager : ISaveLoadRoot
+    public class GameManager : ISaveLoadRoot, INewGameInitializable
     {
         [Header("State")] 
         [field: SerializeField, VisibleOnly] public PlayerStatus PlayerStatus { get; private set; }
