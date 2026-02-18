@@ -14,6 +14,8 @@ namespace Cardevil.NewCard.InStage
             var attacks = selection
                 .Where(c => c.IsAttack)
                 .ToArray();
+            
+            if (attacks.Length == 0) return new HandRankData(HandRank.None);
 
             foreach (var card in attacks)
             {

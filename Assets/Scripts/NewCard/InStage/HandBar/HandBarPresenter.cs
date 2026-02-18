@@ -1,5 +1,6 @@
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.InStage;
+using Cardevil.NewCard.InStage.Score;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Cardevil.NewCard.InStage
         
         private HandBarView _view;
         private ValueSelectionPresenter _valueSelectionPresenter;
+
+        public event Action<HandRank> HandRankChanged;
 
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
@@ -121,7 +124,7 @@ namespace Cardevil.NewCard.InStage
             if (changed)
             {
                 var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
-                Debug.Log("HandRankData: " + handRankData.HandRank);
+                HandRankChanged?.Invoke(handRankData.HandRank);
             }
         }
 
@@ -186,16 +189,6 @@ namespace Cardevil.NewCard.InStage
             _view.ArrangeCards(model.Hand);
         }
 
-        private void OnValueSelected(ICardState state)
-        {
-            model.Insert(model.DetachData.OriginalIndex, state);
-            model.ClearDetachData();
-                
-            _view.UpdateVisual(state);
-            _view.UnsetWorldPosition(state);
-            _view.ArrangeCards(model.Hand);
-        }
-
         private void SortByNumber()
         {
             if (!CanInteract) return;
@@ -210,6 +203,17 @@ namespace Cardevil.NewCard.InStage
             
             model.Sort(CardStateComparers.ByIcon);
             _view.ArrangeCards(model.Hand);
+        }
+        private void OnValueSelected(ICardState state)
+        {
+            model.Reattach(state);
+                
+            _view.UpdateVisual(state);
+            _view.UnsetWorldPosition(state);
+            _view.ArrangeCards(model.Hand);
+            
+            var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
+            HandRankChanged?.Invoke(handRankData.HandRank);
         }
     }
 }
