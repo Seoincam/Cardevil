@@ -74,7 +74,12 @@ namespace Cardevil.Save
         {
             var newSave = new GameSave(GetSlotFileName(slot), name);
             foreach (var saveRoot in _saveLoadRoots)
-                saveRoot.SetUpNewGame(newSave);
+            {
+                if (saveRoot is INewGameInitializable newGameInitializable)
+                {
+                    newGameInitializable.SetUpNewGame(newSave);
+                }
+            }
             
             _currentSlot = new Optional<SaveSlot>(slot);
             _currentSave = newSave;

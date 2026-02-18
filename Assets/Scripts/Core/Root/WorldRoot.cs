@@ -98,10 +98,5 @@ namespace Cardevil.Core.Root
         {
            
         }
-
-        public void SetUpNewGame(GameSave save)
-        {
-            
-        }
     }
 }
