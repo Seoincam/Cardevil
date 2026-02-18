@@ -102,6 +102,7 @@ namespace Cardevil.Core.Root
             
             var completeSource = new UniTaskCompletionSource();
             // StageCameraCanvas.Instance.OnCompleteShowRock += () => completeSource.TrySetResult();
+            // completeSource.TrySetResult(); // TODO : 버튼 누르면 되도록 바꿔야함
             await completeSource.Task;
             
 
@@ -115,6 +116,7 @@ namespace Cardevil.Core.Root
             
             
             turn.Initialize(_enemySpawner, cardFlowController, Player, enemy);
+            LogEx.Log("턴 루프 시작");
             turn.EnterLoopAsync().Forget();
         }
 
