@@ -99,8 +99,14 @@ namespace Cardevil.Core.Root
             await UniTask.WhenAll(blakcFade, rock);
             
             // TODO : 가운데에 적 정보 보이기
+            
+            var completeSource = new UniTaskCompletionSource();
+            // StageCameraCanvas.Instance.OnCompleteShowRock += () => completeSource.TrySetResult();
+            await completeSource.Task;
+            
 
-            await UniTask.Delay(300);
+
+            await UniTask.Delay(200);
             
             // GNB 보이기
             GlobalNavigationBar gnb = GlobalNavigationBar.Instance;
