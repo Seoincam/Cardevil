@@ -23,5 +23,8 @@ namespace Cardevil.UI
             _instance = this;
         }
         
+        
+        [field:SerializeField] public TransitionPanel Transition{ get; set; }
+        [field:SerializeField] public BlackPanel BlackPanel { get; set; }
     }
 }
