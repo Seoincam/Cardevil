@@ -12,6 +12,7 @@ using Cardevil.SceneManagement;
 using Cardevil.UI;
 using Cardevil.UI.GlobalNavationBar;
 using DG.Tweening;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -99,10 +100,35 @@ namespace Cardevil.Core.Root
             await UniTask.WhenAll(blakcFade, rock);
             
             // TODO : 가운데에 적 정보 보이기
+            // 지금은 버튼 만들어서 누르면 넘어가도록 해둠.
             
             var completeSource = new UniTaskCompletionSource();
             // StageCameraCanvas.Instance.OnCompleteShowRock += () => completeSource.TrySetResult();
-            completeSource.TrySetResult(); // TODO : 버튼 누르면 되도록 바꿔야함
+            var obj = new GameObject("ConfirmButton");
+            var rect = obj.AddComponent<RectTransform>();
+            var button = obj.AddComponent<UnityEngine.UI.Button>();
+            var Canvas = GameObject.Find("CardCanvas");
+            var Image = obj.AddComponent<UnityEngine.UI.Image>();
+
+            Image.color = Color.white;
+            rect.sizeDelta = new Vector2(200, 100);
+            button.image = Image;
+            var textObj = new GameObject("Text");
+            var textRect = textObj.AddComponent<RectTransform>();
+            var text = textObj.AddComponent<TextMeshProUGUI>();
+            text.text = "Confirm";
+            text.color = Color.yellow;
+            textRect.parent = rect;
+            textRect.anchoredPosition = Vector2.zero;
+            
+            button.transform.SetParent(StageCameraCanvas.Instance.transform, false);
+            obj.transform.SetParent(Canvas.transform, false);
+            rect.anchoredPosition = Vector2.zero;
+            button.onClick.AddListener(() => completeSource.TrySetResult());
+            button.onClick.AddListener(() => Destroy(obj, 0.1f));
+
+            
+            
             await completeSource.Task;
             
 
