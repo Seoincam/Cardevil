@@ -15,28 +15,43 @@ namespace Cardevil.NewCard.InStage
         [field: SerializeField] public InteractionData PointerDownData { get; private set; }
         [field: SerializeField] public InteractionData DragData { get; private set; }
         [field: SerializeField] public InteractionData DetachData { get; private set; }
+        
+        private readonly HashSet<ICardState> handSet = new();
+        private readonly HashSet<ICardState> selectionSet = new();
 
         public IReadOnlyList<ICardState> Hand => hand;
         public IReadOnlyList<ICardState> Selection => selection;
 
-        public void Add(ICardState state) => hand.Add(state);
-        
-        public void Insert(int index, ICardState state) => hand.Insert(index, state);
+        public void Add(ICardState state)
+        {
+            if (!handSet.Add(state)) return;
+            hand.Add(state);
+        }
+
+        public void Insert(int index, ICardState state)
+        {
+            if (!handSet.Add(state)) return;
+            hand.Insert(index, state);
+        }
 
         public void Remove(ICardState state)
         {
+            if (!handSet.Remove(state)) return;
             hand.Remove(state);
-            selection.Remove(state);
+            if (selectionSet.Remove(state))
+                selection.Remove(state);
         }
 
         public void Select(ICardState state)
         {
-            if (!selection.Contains(state)) selection.Add(state);
+            if (selectionSet.Add(state))
+                selection.Add(state);
         }
 
         public void Deselect(ICardState state)
         {
-            selection.Remove(state);
+            if (selectionSet.Remove(state))
+                selection.Remove(state);
         }
 
         /// <summary>
@@ -58,8 +73,9 @@ namespace Cardevil.NewCard.InStage
         {
             Debug.Assert(state.Id == DetachData.Card.Id);
 
-            hand.Insert(DetachData.OriginalIndex, state);
-            if (DetachData.IsSelected)
+            if (handSet.Add(state))
+                hand.Insert(DetachData.OriginalIndex, state);
+            if (DetachData.IsSelected && selectionSet.Add(state))
                 selection.Add(state);
 
             ClearDetachData();
@@ -79,7 +95,7 @@ namespace Cardevil.NewCard.InStage
 
         public void SetPointerDownData(ICardState state)
         {
-            PointerDownData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+            PointerDownData = new InteractionData(state, IndexOf(state), selectionSet.Contains(state));
         }
 
         public void ClearPointerDownData()
@@ -89,7 +105,7 @@ namespace Cardevil.NewCard.InStage
 
         public void SetDraggingData(ICardState state)
         {
-            DragData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+            DragData = new InteractionData(state, IndexOf(state), selectionSet.Contains(state));
         }
 
         public void ClearDraggingData()
@@ -99,7 +115,7 @@ namespace Cardevil.NewCard.InStage
 
         public void SetDetachData(ICardState state)
         {
-            DetachData = new InteractionData(state, IndexOf(state), selection.Contains(state));
+            DetachData = new InteractionData(state, IndexOf(state), selectionSet.Contains(state));
         }
 
         public void ClearDetachData()
