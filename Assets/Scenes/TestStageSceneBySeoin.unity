@@ -449,7 +449,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0.5
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -601,6 +601,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 25864733697473832, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
   m_PrefabInstance: {fileID: 6987152603015076503}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &990767044 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+  m_PrefabInstance: {fileID: 6987152603015076503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 036c740765094e5485d3fee978d3ceac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.NewCard.InStage.Score.CardScoreView
 --- !u!1 &1017476365
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,6 +841,7 @@ MonoBehaviour:
   coreView: {fileID: 0}
   handBarView: {fileID: 1657458497}
   valueSelectionView: {fileID: 873814044}
+  cardScoreView: {fileID: 990767044}
   corePresenter:
     model:
       deck: []
@@ -857,6 +869,13 @@ MonoBehaviour:
         <IsSelected>k__BackingField: 0
         <LastInteractionTime>k__BackingField: 0
     <CanInteract>k__BackingField: 0
+  scorePresenter:
+    model:
+      score: 0
+      handRankData:
+        <HandRank>k__BackingField: 0
+        <CardColor>k__BackingField: 0
+      scoreOperators: []
   references:
     version: 2
     RefIds:
@@ -986,6 +1005,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1497801899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1754520288685535441, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+  m_PrefabInstance: {fileID: 6987152603015076503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1657458496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1247,6 +1277,11 @@ PrefabInstance:
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6312063680711257611, guid: a3763e41cc58f40bcb352db75dbc5c09, type: 3}
   m_PrefabInstance: {fileID: 1815240979}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &1954431247 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+  m_PrefabInstance: {fileID: 6987152603015076503}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &228952888761955563
 PrefabInstance:
@@ -1539,12 +1574,102 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1238830816736378469, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1238830816736378469, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1238830816736378469, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1238830816736378469, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1356936350370410421, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
       propertyPath: m_Name
       value: InStage Card Scroe UI
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: bottomY
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: spacing
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: scoreText
+      value: 
+      objectReference: {fileID: 1497801899}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: scrollArea
+      value: 
+      objectReference: {fileID: 1954431247}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: textAreaRect
+      value: 
+      objectReference: {fileID: 1954431247}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: animationType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: elementTextPrefab
+      value: 
+      objectReference: {fileID: 2742943035431144654, guid: 135b9b61978734ad1965c78d7e29708a, type: 3}
+    - target: {fileID: 5537775115432333032, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Name
+      value: Text Area
+      objectReference: {fileID: 0}
+    - target: {fileID: 5586385623199701817, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Name
+      value: Score Text
+      objectReference: {fileID: 0}
+    - target: {fileID: 6554702266001593901, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5849056
+      objectReference: {fileID: 0}
+    - target: {fileID: 6554702266001593901, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Color.g
+      value: 0.5849056
+      objectReference: {fileID: 0}
+    - target: {fileID: 6554702266001593901, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Color.r
+      value: 0.5849056
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Pivot.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7423815354980659838, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 7457953225464449939, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+    m_RemovedGameObjects:
+    - {fileID: 6160972260196039463, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}

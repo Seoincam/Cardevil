@@ -1,18 +1,23 @@
 using Cardevil.NewCard.Common.Core;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
 {
-    public readonly struct HandRankData
+    [Serializable]
+    public struct HandRankData
     {
-        public HandRank HandRank { get; }
+        [field: SerializeField] public HandRank HandRank { get; private set; }
         
         /// <summary>
         /// 플러시 계열일 경우 대표색도 저장함.
         /// </summary>
-        public CardColor CardColor { get; }
+        [field: SerializeField] public CardColor CardColor { get; private set; }
+        
         public IReadOnlyList<ICardState> RankedCards { get; }
+        
+        public static HandRankData None = new(HandRank.None);
 
         public HandRankData(
             HandRank handRank,
