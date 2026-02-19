@@ -5,13 +5,12 @@ namespace Cardevil.NewCard.InStage.Score
 {
     public enum ScoreOperatorType : byte
     {
-        Plus = 0,
-        Multiply = 1,
+        Plus,
+        Multiply,
     }
 
     public interface IScoreOperator
     {
-        uint Index { get; }
         ScoreOperatorType Type { get; }
         float Value { get; }
         
@@ -21,7 +20,6 @@ namespace Cardevil.NewCard.InStage.Score
     [Serializable]
     public class ScoreOperator : IScoreOperator
     {
-        [field: SerializeField] public uint Index { get; set; }
         [field: SerializeField] public ScoreOperatorType Type { get; set; }
         [field: SerializeField] public float Value { get; set; }
         

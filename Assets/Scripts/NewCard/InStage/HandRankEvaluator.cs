@@ -75,7 +75,6 @@ namespace Cardevil.NewCard.InStage
             public int PairCount { get; }
             public CardColor Color { get; }
 
-            // 카드 참조를 유지하는 그룹
             public IReadOnlyList<IGrouping<int, ICardState>> Groups { get; }
             public IReadOnlyList<ICardState> All { get; }
 

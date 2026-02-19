@@ -1,3 +1,4 @@
+using Cardevil.Attributes;
 using Cardevil.NewCard.Common.Core;
 using System;
 using System.Collections.Generic;
@@ -9,11 +10,9 @@ namespace Cardevil.NewCard.InStage.Score
     [Serializable]
     public class ScoreModel
     {
-        [SerializeField] private float score;
-        [SerializeField] private HandRankData handRankData;
-        [SerializeReference] private List<IScoreOperator> scoreOperators = new();
-
-        private uint _nextIndex;
+        [SerializeField, VisibleOnly] private float score;
+        [SerializeField, VisibleOnly] private HandRankData handRankData;
+        [SerializeReference, VisibleOnly] private List<IScoreOperator> scoreOperators = new();
         
         public float Score => score;
         public HandRank HandRank => handRankData.HandRank;
@@ -35,7 +34,6 @@ namespace Cardevil.NewCard.InStage.Score
         {
             var scoreOperator = new ScoreOperator
             {
-                Index = _nextIndex++,
                 Type = operatorType, 
                 Value = value
             };

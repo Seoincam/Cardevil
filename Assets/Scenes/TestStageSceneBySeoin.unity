@@ -871,8 +871,11 @@ MonoBehaviour:
     <CanInteract>k__BackingField: 0
   scorePresenter:
     model:
-      elements: []
-    testLoopCount: 20
+      score: 0
+      handRankData:
+        <HandRank>k__BackingField: 0
+        <CardColor>k__BackingField: 0
+      scoreOperators: []
   references:
     version: 2
     RefIds:
@@ -1002,6 +1005,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1497801899 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1754520288685535441, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+  m_PrefabInstance: {fileID: 6987152603015076503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &1657458496
 GameObject:
   m_ObjectHideFlags: 0
@@ -1589,7 +1603,15 @@ PrefabInstance:
       value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: scoreText
+      value: 
+      objectReference: {fileID: 1497801899}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
       propertyPath: scrollArea
+      value: 
+      objectReference: {fileID: 1954431247}
+    - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: textAreaRect
       value: 
       objectReference: {fileID: 1954431247}
     - target: {fileID: 1774239807374673668, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
@@ -1600,6 +1622,14 @@ PrefabInstance:
       propertyPath: elementTextPrefab
       value: 
       objectReference: {fileID: 2742943035431144654, guid: 135b9b61978734ad1965c78d7e29708a, type: 3}
+    - target: {fileID: 5537775115432333032, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Name
+      value: Text Area
+      objectReference: {fileID: 0}
+    - target: {fileID: 5586385623199701817, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
+      propertyPath: m_Name
+      value: Score Text
+      objectReference: {fileID: 0}
     - target: {fileID: 6554702266001593901, guid: 13e840d5884c9443b9507b622f1a771a, type: 3}
       propertyPath: m_Color.b
       value: 0.5849056
