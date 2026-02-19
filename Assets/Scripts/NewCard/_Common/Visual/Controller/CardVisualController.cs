@@ -24,7 +24,6 @@ namespace Cardevil.NewCard.Visual.Controller
         public void Apply(ICardState state)
         {
             var visualInput = CardVisualInput.From(state);
-            Debug.Log(visualInput.CurrentColor);
             Apply(visualInput);
         }
 
@@ -43,10 +42,10 @@ namespace Cardevil.NewCard.Visual.Controller
             _currentLayout = layoutData.LayoutType switch
             {
                 CardLayoutType.Single => Instantiate(singlePrefab, transform).GetComponent<CardSingleLayout>(),
-                CardLayoutType.SingleWithCorner => Instantiate(singlePrefab, transform)
-                    .GetComponent<CardSingleLayout>(),
+                CardLayoutType.SingleWithCorner => Instantiate(singlePrefab, transform).GetComponent<CardSingleLayout>(),
                 CardLayoutType.Dual => Instantiate(dualPrefab, transform).GetComponent<CardDualLayout>(),
                 CardLayoutType.Triple => Instantiate(triplePrefab, transform).GetComponent<CardTripleLayout>(),
+                
                 _ => throw new System.NotImplementedException()
             };
 

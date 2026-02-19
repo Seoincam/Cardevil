@@ -7,6 +7,8 @@ using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
 {
+    public delegate void HandRankAction(in HandRankData handRank);
+    
     [Serializable]
     public class HandBarPresenter
     {
@@ -17,7 +19,7 @@ namespace Cardevil.NewCard.InStage
         private HandBarView _view;
         private ValueSelectionPresenter _valueSelectionPresenter;
 
-        public event Action<HandRank> HandRankChanged;
+        public event HandRankAction HandRankChanged;
 
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
@@ -124,7 +126,7 @@ namespace Cardevil.NewCard.InStage
             if (changed)
             {
                 var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
-                HandRankChanged?.Invoke(handRankData.HandRank);
+                HandRankChanged?.Invoke(handRankData);
             }
         }
 
@@ -213,7 +215,7 @@ namespace Cardevil.NewCard.InStage
             _view.ArrangeCards(model.Hand);
             
             var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
-            HandRankChanged?.Invoke(handRankData.HandRank);
+            HandRankChanged?.Invoke(handRankData);
         }
     }
 }
