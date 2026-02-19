@@ -57,7 +57,7 @@ namespace Cardevil.Ingame.Field
         {
             if (zeroIndexStage < 0 || zeroIndexStage >= Materials.Length)
             {
-                LogEx.LogError($"Invalid stage index {zeroIndexStage}. Returning default material.");
+                LogEx.LogWarning($"Invalid stage index {zeroIndexStage}. Returning default material.");
                 return Materials[0]; // 기본 머티리얼 반환
             }
             return Materials[zeroIndexStage];

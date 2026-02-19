@@ -9,6 +9,10 @@ using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Player;
 using Cardevil.SceneManagement;
+using Cardevil.UI;
+using Cardevil.UI.GlobalNavationBar;
+using DG.Tweening;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -53,6 +57,8 @@ namespace Cardevil.Core.Root
         {
             _context = CardevilCore.Instance.GameFlow.Context;
             
+            StageCameraCanvas.Instance.InitRock(); // 돌 끄기
+            
             isInitialized = true;
         }
         
@@ -65,6 +71,10 @@ namespace Cardevil.Core.Root
             // TODO: 얘를 외부에서 호출되도록 해야겠음.
             // @machamy : GameFlow -> StageRoot.EnterStageAsync() 이렇게 해둠
             await UniTask.WaitUntil(() => isInitialized);
+            
+            CameraManager.Instance.DisableSceneCameras(Scenes.World);
+            
+
             
             
             // TODO : 필드 초기화 - @machamy
@@ -80,7 +90,59 @@ namespace Cardevil.Core.Root
             cardFlowController = CardFlowController.Build();
             
             enemy.Init(Field);
+            
+            // 페이드아웃 + 돌 가져오기
+            var blakcFade = OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.8f)
+                .ToUniTask(TweenCancelBehaviour.Complete);
+
+            var rock = StageCameraCanvas.Instance.AnimShowRock(0.8f);
+            
+            await UniTask.WhenAll(blakcFade, rock);
+            
+            // TODO : 가운데에 적 정보 보이기
+            // 지금은 버튼 만들어서 누르면 넘어가도록 해둠.
+            
+            var completeSource = new UniTaskCompletionSource();
+            // StageCameraCanvas.Instance.OnCompleteShowRock += () => completeSource.TrySetResult();
+            var obj = new GameObject("ConfirmButton");
+            var rect = obj.AddComponent<RectTransform>();
+            var button = obj.AddComponent<UnityEngine.UI.Button>();
+            var Canvas = GameObject.Find("CardCanvas");
+            var Image = obj.AddComponent<UnityEngine.UI.Image>();
+
+            Image.color = Color.white;
+            rect.sizeDelta = new Vector2(200, 100);
+            button.image = Image;
+            var textObj = new GameObject("Text");
+            var textRect = textObj.AddComponent<RectTransform>();
+            var text = textObj.AddComponent<TextMeshProUGUI>();
+            text.text = "Confirm";
+            text.color = Color.yellow;
+            textRect.parent = rect;
+            textRect.anchoredPosition = Vector2.zero;
+            
+            button.transform.SetParent(StageCameraCanvas.Instance.transform, false);
+            obj.transform.SetParent(Canvas.transform, false);
+            rect.anchoredPosition = Vector2.zero;
+            button.onClick.AddListener(() => completeSource.TrySetResult());
+            button.onClick.AddListener(() => Destroy(obj, 0.1f));
+
+            
+            
+            await completeSource.Task;
+            
+
+
+            await UniTask.Delay(200);
+            
+            // GNB 보이기
+            GlobalNavigationBar gnb = GlobalNavigationBar.Instance;
+            gnb.gameObject.SetActive(true);
+            await gnb.ShowAsync(0.4f);
+            
+            
             turn.Initialize(_enemySpawner, cardFlowController, Player, enemy);
+            LogEx.Log("턴 루프 시작");
             turn.EnterLoopAsync().Forget();
         }
 

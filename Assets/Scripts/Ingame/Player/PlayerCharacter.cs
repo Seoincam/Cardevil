@@ -30,7 +30,7 @@ namespace Cardevil.Ingame.Player
         [Header("Debug")]
         [SerializeField] protected bool _isDebugMode = false;
         [SerializeField] protected bool _initTileManually = false;
-        [SerializeField] protected Tile _initialTile;
+        [SerializeField] protected TileVector _initialTile;
         [Header("Settings")] 
         [SerializeField] protected PlayerCharacterSettingSO playerCharacterSetting;
         [Header("References")]
@@ -60,19 +60,14 @@ namespace Cardevil.Ingame.Player
             }
         }
         
-        private void Start()
-        {
-            if (_initTileManually)
-            {
-                if (_initialTile == null)
-                {
-                    LogEx.LogError("Initial tile is not set. Please assign a tile in the inspector.");
-                    return;
-                }
-                _entity.Init(_initialTile);
-                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
-            }
-        }
+        // private void Start()
+        // {
+        //     if (_initTileManually)
+        //     {
+        //         // _entity.Init(Field.GetTile(_initialTile));
+        //         // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
+        //     }
+        // }
 
         public void Init(Field.Field field)
         {
@@ -85,13 +80,7 @@ namespace Cardevil.Ingame.Player
             
             if (_initTileManually)
             {
-                if (_initialTile == null)
-                {
-                    LogEx.LogError("Initial tile is not set. Please assign a tile in the inspector.");
-                    return;
-                }
-                _entity.Init(_initialTile);
-                // Bootstrapper.Instance.Game.Player = this; // 게임 매니저에 플레이어 설정
+                _entity.Init(Field.GetTile(_initialTile));
             }
             
             // 이벤트 등록

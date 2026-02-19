@@ -129,8 +129,8 @@ GameObject:
   m_Component:
   - component: {fileID: 78232451}
   - component: {fileID: 78232454}
-  - component: {fileID: 78232453}
   - component: {fileID: 78232452}
+  - component: {fileID: 78232455}
   m_Layer: 5
   m_Name: Mask
   m_TagString: Untagged
@@ -171,36 +171,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Mask
   m_ShowMaskGraphic: 0
---- !u!114 &78232453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 78232450}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cc1b1ceeffada7c45922c65c9c356cac, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &78232454
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -209,6 +179,28 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 78232450}
   m_CullTransparentMesh: 1
+--- !u!114 &78232455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 78232450}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef8b96895a0ec4ba685178a052544251, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.VectorGraphics::Unity.VectorGraphics.SVGImage
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 3286163911610860551, guid: c8a9e5f228508e04f87aa8e21c2375b9, type: 3}
+  m_PreserveAspect: 0
 --- !u!1 &188076903
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,7 +291,6 @@ GameObject:
   m_Component:
   - component: {fileID: 475689328}
   - component: {fileID: 475689327}
-  - component: {fileID: 475689326}
   - component: {fileID: 475689325}
   - component: {fileID: 475689329}
   m_Layer: 0
@@ -353,14 +344,6 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!81 &475689326
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 475689324}
-  m_Enabled: 0
 --- !u!20 &475689327
 Camera:
   m_ObjectHideFlags: 0
@@ -434,7 +417,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 475689324}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 852ee956ecfd4dd192534d62a52689b2, type: 3}
   m_Name: 
@@ -567,6 +550,8 @@ GameObject:
   - component: {fileID: 666554871}
   - component: {fileID: 666554870}
   - component: {fileID: 666554869}
+  - component: {fileID: 666554875}
+  - component: {fileID: 666554874}
   m_Layer: 5
   m_Name: TansitionPanel
   m_TagString: Untagged
@@ -664,6 +649,31 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 666554867}
   m_CullTransparentMesh: 1
+--- !u!114 &666554874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666554867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf552d7fe944490f91314e5c9601d43d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.TransitionPanel
+  <CanvasGroup>k__BackingField: {fileID: 666554875}
+--- !u!225 &666554875
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 666554867}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &704753092
 GameObject:
   m_ObjectHideFlags: 0
@@ -893,6 +903,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c32791454efe48908e9961fd2d357c62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Transition>k__BackingField: {fileID: 0}
+  <BlackPanel>k__BackingField: {fileID: 0}
 --- !u!1001 &1400307602
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -948,7 +960,7 @@ PrefabInstance:
     - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_SceneBindings.Array.data[7].value
       value: 
-      objectReference: {fileID: 11400000, guid: 92c0a2c09aa98b04b81febc45dbfa09e, type: 2}
+      objectReference: {fileID: 0}
     - target: {fileID: 5263441596306759007, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_SceneBindings.Array.size
       value: 8
@@ -1500,6 +1512,7 @@ GameObject:
   - component: {fileID: 1779707148}
   - component: {fileID: 1779707147}
   - component: {fileID: 1779707151}
+  - component: {fileID: 1779707152}
   m_Layer: 5
   m_Name: BlackPanel
   m_TagString: Untagged
@@ -1585,6 +1598,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1779707152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1779707145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f20b259755ab406d990b2a1a73e7f475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.BlackPanel
+  <CanvasGroup>k__BackingField: {fileID: 1779707147}
 --- !u!1 &1786338788
 GameObject:
   m_ObjectHideFlags: 0
@@ -1597,6 +1623,7 @@ GameObject:
   - component: {fileID: 1786338791}
   - component: {fileID: 1786338790}
   - component: {fileID: 1786338789}
+  - component: {fileID: 1786338793}
   m_Layer: 0
   m_Name: OverlayCanvas
   m_TagString: Untagged
@@ -1689,6 +1716,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1786338793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786338788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c32791454efe48908e9961fd2d357c62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.OverlayCanvas
+  <Transition>k__BackingField: {fileID: 666554874}
+  <BlackPanel>k__BackingField: {fileID: 1779707152}
 --- !u!1 &1918183294
 GameObject:
   m_ObjectHideFlags: 0
@@ -3226,10 +3267,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1975429045435983746, guid: 5e3b4a5c86b084776894bd18880cdd84, type: 3}
-      propertyPath: m_AllowMSAA
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2717952068811253571, guid: 5e3b4a5c86b084776894bd18880cdd84, type: 3}
       propertyPath: _dungeonUICanvas
       value: 
@@ -3281,33 +3318,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4133448838392727583, guid: 5e3b4a5c86b084776894bd18880cdd84, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4643059944773426320}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e3b4a5c86b084776894bd18880cdd84, type: 3}
---- !u!1 &4643059944773426319 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4133448838392727583, guid: 5e3b4a5c86b084776894bd18880cdd84, type: 3}
-  m_PrefabInstance: {fileID: 4643059944773426318}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &4643059944773426320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4643059944773426319}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 852ee956ecfd4dd192534d62a52689b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Core.CameraSorter
-  stackOrder: 9
-  baseInEditMode: 0
-  cam: {fileID: 2061991158}
-  cameraSceneName: 
-  scene: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

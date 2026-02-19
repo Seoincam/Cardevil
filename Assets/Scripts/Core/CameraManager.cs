@@ -48,26 +48,26 @@ namespace Cardevil.Core
             largestStackOrder = stack .Count > 0 ? stack[^1].GetComponent<CameraSorter>()?.StackOrder ?? 0 : 0;
         }
 
-        public void EnableSceneCameras(Scenes scene) => EnableSceneCameras(scene.ToString());
+        public void EnableSceneCameras(Scenes scene) => EnableSceneCameras(scene.GetSceneName());
 
         public void EnableSceneCameras(string sceneName)
         {
             var stack = MainCamera.GetUniversalAdditionalCameraData().cameraStack;
             foreach (var cam in stack)
             {
-                if (cam.scene.name == sceneName)
+                if (cam.gameObject.scene.name == sceneName)
                 {
                     cam.enabled = true;
                 }
             }
         }
-        public void DisableSceneCameras(Scenes scene) => DisableSceneCameras(scene.ToString());
+        public void DisableSceneCameras(Scenes scene) => DisableSceneCameras(scene.GetSceneName());
         public void DisableSceneCameras(string sceneName)
         {
             var stack = MainCamera.GetUniversalAdditionalCameraData().cameraStack;
             foreach (var cam in stack)
             {
-                if (cam.scene.name == sceneName)
+                if (cam.gameObject.scene.name == sceneName)
                 {
                     cam.enabled = false;
                 }
