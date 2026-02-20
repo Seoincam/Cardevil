@@ -90,6 +90,14 @@ namespace Cardevil.NewCard.InStage
             return state;
         }
 
+        public async UniTask DrawAsync(IReadOnlyList<ICardState> states)
+        {
+            foreach (var state in states)
+            {
+                AddCard(state);
+            }
+        }
+
         public async UniTask<IReadOnlyList<ICardState>> DiscardSelectionAsync()
         {
             var selection = Selection.ToList();

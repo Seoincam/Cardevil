@@ -119,6 +119,9 @@ namespace Cardevil.NewCard.InStage
                 
                 var discardedStates = await _handBarPresenter.DiscardSelectionAsync();
                 model.Discard(discardedStates);
+
+                var states = model.Draw(discardedStates.Count);
+                await _handBarPresenter.DrawAsync(states);
                 
                 _handBarPresenter.CanInteract = true;
             }

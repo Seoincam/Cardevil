@@ -15,8 +15,8 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Camera cardCamera;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform handBarAnchor;
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform discardTargetAnchor;
-        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform discardLastTargetAnchor;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform drawAnchor;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform discardAnchor;
         
         [Header("Buttons")]
         [SerializeField] private Button sortByNumberButton;
@@ -28,6 +28,7 @@ namespace Cardevil.NewCard.InStage
         [Space]
         [SerializeField, Min(1f)] private float discardSpeed = 11;
         [SerializeField, Min(0.3f)] private float jumpPowerBase = 2f;
+        [SerializeField] private Ease ease;
 
         [Header("Prefabs")] 
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
@@ -87,6 +88,7 @@ namespace Cardevil.NewCard.InStage
         public void CreateCard(ICardState state)
         {
             var card = Instantiate(cardPrefab, handBarAnchor).GetComponent<HandBarCard>();
+            card.transform.position = drawAnchor.position;
             
             card.Initialize(state, cardCamera);
             card.SetMovement(MovementType.LerpToLocal);
@@ -223,7 +225,7 @@ namespace Cardevil.NewCard.InStage
         public void UpdateCardVisual(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.UpdateVisual();
+            card.VisualController.SetLayout(state);
         }
 
         public async UniTask MoveCardToDiscardAnchor(ICardState state)
@@ -232,14 +234,19 @@ namespace Cardevil.NewCard.InStage
             
             card.SetMovement(MovementType.None);
             card.SetRotation(RotationType.None);
+            card.VisualController.SetTrail();
             
-            float distance = Vector3.Distance(card.transform.position, discardLastTargetAnchor.position);
+            float distance = Vector3.Distance(card.transform.position, discardAnchor.position);
             float duration = distance / discardSpeed;
 
-            card.transform.DOScale(0.3f, duration);
+            card.transform.DOScale(0.2f, duration);
             card.transform.DOLocalRotate(new Vector3(0f, 0f, 260f), duration, RotateMode.LocalAxisAdd);
-            card.DoFade(0f, duration, Ease.Unset);
-            card.transform.DOJump(discardLastTargetAnchor.position, jumpPowerBase * Random.Range(1f, 2f), 1, duration);
+            card.VisualController.DoFade(0f, duration, Ease.Unset);
+            card.transform.DOJump(discardAnchor.position, jumpPowerBase * Random.Range(1f, 2f), 1, duration)
+                .SetEase(ease);
+            
+            await UniTask.Delay(TimeSpan.FromSeconds(duration * 1.5f));
+            DestroyCard(state);
         }
 
         private void RefreshSafeArea()

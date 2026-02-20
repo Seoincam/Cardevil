@@ -27,7 +27,7 @@ namespace Cardevil.NewCard.InStage
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        [SerializeField] private CardVisualController visualController;
+        [field: SerializeField] public CardVisualController VisualController { get; private set; }
         
         [field: Header("State")]
         [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
@@ -84,20 +84,16 @@ namespace Cardevil.NewCard.InStage
             State = cardState;
             _cardCamera = cardCamera;
             
-            UpdateVisual();
+            VisualController.SetLayout(cardState);
         }
         
-        public void UpdateVisual() => visualController.Apply(State);
-        
-        public Tween DoFade(float targetAlpha, float duration, Ease ease) => 
-            visualController.SetAlpha(targetAlpha, duration, ease);
 
         public void Clear()
         {
             throw new System.NotImplementedException();
         }
         
-        public void SetSortingOrder(int order) => visualController.SetSortingOrder(order);
+        public void SetSortingOrder(int order) => VisualController.SetSortingOrder(order);
 
         public void SetMovement(MovementType type)
         {

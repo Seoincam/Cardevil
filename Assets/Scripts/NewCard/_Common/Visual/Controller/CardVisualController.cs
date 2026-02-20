@@ -12,6 +12,7 @@ namespace Cardevil.NewCard.Visual.Controller
         [SerializeField] private CardDualLayout dualPrefab;
         [SerializeField] private CardTripleLayout triplePrefab;
         [SerializeField] private ColorJewelDecoration colorJewelPrefab;
+        [SerializeField] private GameObject trailPrefab;
 
         [Header("References")] 
         [SerializeField] private SpriteRenderer background;
@@ -19,14 +20,21 @@ namespace Cardevil.NewCard.Visual.Controller
 
         private ICardLayoutSpriteRenderer _currentLayout;
         private ColorJewelDecoration _currentColorJewel;
+        private GameObject _currentTrail;
 
-        public void Apply(ICardState state)
+        /// <summary>
+        /// ICardState를 VisualInput으로 변환한 후, 레이아웃을 적용.
+        /// </summary>
+        public void SetLayout(ICardState state)
         {
             var visualInput = CardVisualInput.From(state);
-            Apply(visualInput);
+            SetLayout(visualInput);
         }
 
-        public void Apply(CardVisualInput visualInput)
+        /// <summary>
+        /// 레이아웃을 적용.
+        /// </summary>
+        public void SetLayout(CardVisualInput visualInput)
         {
             // Layout
             var layoutData = CardLayoutResolver.Resolve(visualInput);
@@ -65,6 +73,9 @@ namespace Cardevil.NewCard.Visual.Controller
             }
         }
 
+        /// <summary>
+        /// 모든 요소의 Sorting Order를 설정.
+        /// </summary>
         public void SetSortingOrder(int sortingOrder)
         {
             innerFrame.sortingOrder = 100 * sortingOrder + 10;
@@ -73,8 +84,24 @@ namespace Cardevil.NewCard.Visual.Controller
             _currentLayout?.SetSortingOrder(sortingOrder);
             _currentColorJewel?.SetSortingOrder(sortingOrder);
         }
+        
+        public void SetTrail()
+        {
+            Instantiate(trailPrefab, transform);
+        }
 
-        public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
+        public void ClearTrail()
+        {
+            if (_currentTrail)
+            {
+                Destroy(_currentTrail);
+            }
+        }
+
+        /// <summary>
+        /// 카드 내부 요소의 알파값을 변경하는 트윈을 반환.
+        /// </summary>
+        public Tween DoFade(float targetAlpha, float duration, Ease ease)
         {
             var innerFrameTween = innerFrame
                 .DOFade(targetAlpha, duration)
