@@ -1,6 +1,8 @@
+using Cardevil.NewCard.Common.Visual;
+using DG.Tweening;
 using UnityEngine;
 
-namespace Cardevil.NewCard.Common.Visual
+namespace Cardevil.NewCard.Visual.Controller
 {
     public interface ICardLayout
     {
@@ -12,5 +14,6 @@ namespace Cardevil.NewCard.Common.Visual
     {
         void SetBackground(SpriteRenderer sharedBackgroundRenderer);
         void SetSortingOrder(int sortingOrder);
+        Tween SetAlpha(float targetAlpha, float duration, Ease ease);
     }
 }

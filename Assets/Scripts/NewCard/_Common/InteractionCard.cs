@@ -36,7 +36,7 @@ namespace Cardevil.NewCard.Common
 
         public void Initialize(CardVisualInput visualInput, Camera cardCamera)
         {
-            visualController.Apply(visualInput);
+            visualController.SetLayout(visualInput);
             _cardCamera = cardCamera;
         }
 

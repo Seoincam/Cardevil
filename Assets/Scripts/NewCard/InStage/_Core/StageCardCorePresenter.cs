@@ -1,6 +1,8 @@
 using Cardevil.NewCard.Common.Core;
 using Cardevil.Utils.Directions;
+using Cysharp.Threading.Tasks;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
@@ -16,9 +18,22 @@ namespace Cardevil.NewCard.InStage
         public StageCardCorePresenter(StageCardCoreView view, HandBarPresenter handBarPresenter)
         {
             _view = view;
-            _handBarPresenter = handBarPresenter;
+            view.UseClicked += OnUseClicked;
+            view.DiscardClicked += OnDiscardClicked;
             
-            // Tests
+            view.SetAllButtonState(false);
+            
+            _handBarPresenter = handBarPresenter;
+            handBarPresenter.HandBarStateChanged += OnHandBarStateChanged;
+            
+            // Test();
+            var states = model.Draw(6);
+            _handBarPresenter.DrawAsync(states).Forget();
+            _handBarPresenter.CanInteract = true;
+        }
+
+        private void Test()
+        {
             var state1 = new CardSpec(1, CardType.Attack)
                 .AddElements(
                     new BaseColorElement(CardColor.Red),
@@ -76,7 +91,66 @@ namespace Cardevil.NewCard.InStage
             _handBarPresenter.AddCard(state5);
             _handBarPresenter.AddCard(state6);
             
-            handBarPresenter.CanInteract = true;
+            _handBarPresenter.CanInteract = true;
+        }
+        
+        private void OnHandBarStateChanged(in HandBarPresenter.SelectionState state)
+        {
+            _view.SetUseButtonState(state.CanUseSelection);
+            _view.SetDiscardButtonState(state.CanDiscard);
+        }
+
+        private void OnUseClicked()
+        {
+            Debug.Assert(_handBarPresenter.CanUseSelection, "카드를 사용할 수 없지만 사용 버튼이 눌렸음.");
+            
+            _view.SetAllButtonState(false);
+        }
+
+        private void OnDiscardClicked()
+        {
+            Debug.Assert(_handBarPresenter.CanDiscard, "카드를 버릴 수 없지만 버리기 버튼이 눌렸음.");
+            
+            _view.SetAllButtonState(false);
+            
+            DiscardAsync().Forget();
+            return;
+
+            async UniTaskVoid DiscardAsync()
+            {
+                _handBarPresenter.CanInteract = false;
+                
+                var discardedStates = await _handBarPresenter.DiscardSelectionAsync();
+                model.Discard(discardedStates);
+
+                var states = model.Draw(discardedStates.Count);
+                await _handBarPresenter.DrawAsync(states);
+                
+                _handBarPresenter.CanInteract = true;
+            }
+        }
+
+        private async UniTask UseAsync()
+        {
+            var handRankData = _handBarPresenter.HandRankData;
+            
+            foreach (var state in _handBarPresenter.Selection)
+            {
+                if (state.IsAttack && !handRankData.RankedCards.Contains(state))
+                {
+                    // TODO: 버리기
+                    continue;
+                }
+
+                if (state.IsMove)
+                {
+                    
+                }
+                else if (state.IsAttack)
+                {
+                    
+                }
+            }
         }
     }
 }

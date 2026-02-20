@@ -20,7 +20,7 @@ namespace Cardevil.NewCard.InStage.Score
             // Test 로직
             async UniTask TestAsync()
             {
-                const int testLoopCount = 30;
+                const int testLoopCount = 10;
                 for (int i = 0; i < testLoopCount; i++)
                 {
                     AddOperator(ScoreOperatorType.Plus, Random.Range(1, 30));
