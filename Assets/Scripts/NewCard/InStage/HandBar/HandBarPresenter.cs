@@ -282,11 +282,13 @@ namespace Cardevil.NewCard.InStage
             model.Sort(CardStateComparers.ByIcon);
             _view.ArrangeCards(model.Hand);
         }
-        private void OnValueSelected(ICardState state)
+        private void OnValueSelected(ICardState state, uint cardId)
         {
             model.Reattach(state);
                 
-            _view.UpdateCardVisual(state);
+            _view.DestroyCard(state);
+            _view.ConvertToHandCard(state, cardId);
+
             _view.EndValueSelection(state);
             _view.ArrangeCards(model.Hand);
             

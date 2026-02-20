@@ -38,6 +38,7 @@ namespace Cardevil.NewCard.InStage
         public event Action<ICardState> CardPointerExit;
 
         private readonly Dictionary<ICardState, HandBarCard> _cardMap = new();
+        private readonly Dictionary<HandBarCard, ICardState> _reverseCardMap = new();
 
         private Rect _safeArea;
         private Vector2 _viewportMin;
@@ -86,21 +87,32 @@ namespace Cardevil.NewCard.InStage
             card.Initialize(state, cardCamera);
             card.SetMode(HandBarCard.Mode.InHand);
             
-            _cardMap.Add(state, card);
-
-            // TODO: 구독 정리하기
-            card.PointerEnter += c => CardPointerEnter?.Invoke(c.State);
-            card.PointerDown += c => CardPointerDown?.Invoke(c.State);
-            card.DragStart += c => CardDragStart?.Invoke(c.State);
-            card.PointerUp += c => CardPointerUp?.Invoke(c.State);
-            card.DragEnd += c => CardDragEnd?.Invoke(c.State);
-            card.PointerExit += c => CardPointerExit?.Invoke(c.State);
+            AddMap(state, card);
+            BindCard(card);
+        }
+        
+        /// <summary>
+        /// Interaction Card를 HandBarCard로 전환합니다.
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="interactionCardId"></param>
+        public void ConvertToHandCard(ICardState state, uint interactionCardId)
+        {
+            var interactionCard = CardRegistry.GetInteractionCard(interactionCardId);
+            CardRegistry.Unregister(interactionCard);
+            
+            var handBarCard = interactionCard.ConvertToHandCard(state);
+            handBarCard.transform.SetParent(handBarAnchor);
+            
+            AddMap(state, handBarCard);
+            BindCard(handBarCard);
         }
 
         public void DestroyCard(ICardState state)
         {
             if (_cardMap.Remove(state, out var card))
             {
+                _reverseCardMap.Remove(card);
                 Destroy(card.gameObject);
             }
         }
@@ -227,6 +239,8 @@ namespace Cardevil.NewCard.InStage
         public async UniTask MoveCardToDiscardAnchor(ICardState state)
         {
             var card = InternalGetCard(state);
+            card.VisualController.SetSortingOrderLast();
+             
             float distance = Vector3.Distance(card.transform.position, discardAnchor.position);
             float duration = distance / discardParams.Speed;
 
@@ -282,6 +296,23 @@ namespace Cardevil.NewCard.InStage
         {
             var card = InternalGetCard(state);
             return cardCamera.WorldToViewportPoint(card.transform.position);
+        }
+
+        private void AddMap(ICardState state, HandBarCard card)
+        {
+            _cardMap.Add(state, card);
+            _reverseCardMap.Add(card, state);
+        }
+
+        private void BindCard(HandBarCard card)
+        {
+            // TODO: 구독 정리하기
+            card.PointerEnter += c => CardPointerEnter?.Invoke(_reverseCardMap[c]);
+            card.PointerDown += c => CardPointerDown?.Invoke(_reverseCardMap[c]);
+            card.DragStart += c => CardDragStart?.Invoke(_reverseCardMap[c]);
+            card.PointerUp += c => CardPointerUp?.Invoke(_reverseCardMap[c]);
+            card.DragEnd += c => CardDragEnd?.Invoke(_reverseCardMap[c]);
+            card.PointerExit += c => CardPointerExit?.Invoke(_reverseCardMap[c]);
         }
     }
 }

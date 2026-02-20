@@ -2,13 +2,12 @@ using Cardevil.NewCard.Common;
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using Cardevil.Utils.Directions;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
 {
-    public delegate void ValueSelectAction(in ValueSelectionView.Values values);
+    public delegate void ValueSelectAction(in ValueSelectionView.Values values, uint cardId);
     public class ValueSelectionView : MonoBehaviour
     {
         [Header("Prefabs")]
@@ -70,6 +69,8 @@ namespace Cardevil.NewCard.InStage
             BindCard(card);
             _cardToColor.Add(card, color);
             _colorToCard.Add(color, card);
+
+            CardRegistry.Register(card);
         }
 
         public void AddNumberSelectable(CardColor color, int number)
@@ -84,6 +85,8 @@ namespace Cardevil.NewCard.InStage
             BindCard(card);
             _cardToNumber.Add(card, number);
             _numberToCard.Add(number, card);
+            
+            CardRegistry.Register(card);
         }
 
         public void AddDirectionSelectable(Direction direction)
@@ -98,6 +101,8 @@ namespace Cardevil.NewCard.InStage
             BindCard(card);
             _cardToDirection.Add(card, direction);
             _directionToCard.Add(direction, card);
+            
+            CardRegistry.Register(card);
         }
 
         public void ArrangeCards(CardColor[] colors)
@@ -133,12 +138,16 @@ namespace Cardevil.NewCard.InStage
             }
         }
 
-        public void Clear()
+        public void Clear(uint except = 0)
         {
             if (_cardToColor != null)
             {
                 foreach (var card in _cardToColor.Keys)
                 {
+                    if (CardRegistry.GetId(card) == except) continue;
+                    
+                    CardRegistry.Unregister(card);
+                    
                     UnbindCard(card);
                     Destroy(card.gameObject);
                 }
@@ -150,6 +159,10 @@ namespace Cardevil.NewCard.InStage
             {
                 foreach (var card in _cardToNumber.Keys)
                 {
+                    if (CardRegistry.GetId(card) == except) continue;
+                    
+                    CardRegistry.Unregister(card);
+                    
                     UnbindCard(card);
                     Destroy(card.gameObject);
                 }
@@ -161,6 +174,10 @@ namespace Cardevil.NewCard.InStage
             {
                 foreach (var card in _cardToDirection.Keys)
                 {
+                    if (CardRegistry.GetId(card) == except) continue;
+                    
+                    CardRegistry.Unregister(card);
+                    
                     UnbindCard(card);
                     Destroy(card.gameObject);
                 }
@@ -251,7 +268,8 @@ namespace Cardevil.NewCard.InStage
                 values = Values.CreateDirection(_cardToDirection[card]);
             }
             
-            ValueSelected?.Invoke(values);
+            var id = CardRegistry.GetId(card);
+            ValueSelected?.Invoke(values, id);
         }
     }
 }

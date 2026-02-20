@@ -7,7 +7,10 @@ namespace Cardevil.NewCard.InStage
 {
     public class ValueSelectionPresenter
     {
-        public event Action<ICardState> ValueSelected;
+        /// <summary>
+        /// 타겟 ICardState와 Registry 상의 InteractionCard Id를 반환.
+        /// </summary>
+        public event Action<ICardState, uint> ValueSelected;
         
         private readonly ValueSelectionView _view;
         
@@ -107,7 +110,7 @@ namespace Cardevil.NewCard.InStage
             _view.ArrangeCards(state.Directions.AllOptions.ToArray());
         }
 
-        private void OnValueSelected(in ValueSelectionView.Values values)
+        private void OnValueSelected(in ValueSelectionView.Values values, uint cardId)
         {
             switch (SelectableType)
             {
@@ -124,8 +127,8 @@ namespace Cardevil.NewCard.InStage
                     break;
             }
             
-            _view.Clear();
-            ValueSelected?.Invoke(_targetState);
+            _view.Clear(except: cardId);
+            ValueSelected?.Invoke(_targetState, cardId);
             _targetState = null;
         }
     }

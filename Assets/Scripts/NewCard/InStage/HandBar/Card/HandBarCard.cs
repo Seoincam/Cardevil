@@ -1,4 +1,3 @@
-using Cardevil.Attributes;
 using Cardevil.Core;
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Visual.Controller;
@@ -12,15 +11,18 @@ using Random = UnityEngine.Random;
 
 namespace Cardevil.NewCard.InStage
 {
+    [RequireComponent(typeof(CardVisualController))]
     public class HandBarCard : MonoBehaviour, IClearable, 
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         [field: SerializeField] public CardVisualController VisualController { get; private set; }
-        
-        [field: Header("State")]
-        [field: SerializeReference, VisibleOnly] public ICardState State { get; private set; }
 
+#pragma warning disable 0414
+        [Header("Debug")]
+        [SerializeField] private ICardState debugState;
+#pragma warning restore 0414
+        
         public event Action<HandBarCard> PointerEnter;
         public event Action<HandBarCard> PointerDown;
         public event Action<HandBarCard> DragStart;
@@ -84,13 +86,21 @@ namespace Cardevil.NewCard.InStage
             _rotation?.UpdateRotation(transform, Time.deltaTime);
         }
 
-        public void Initialize(ICardState cardState, Camera cardCamera)
+        public void Initialize(ICardState cardState, Camera cardCamera, bool setLayout = true)
         {
-            // Clear();
-            State = cardState;
-            _cardCamera = cardCamera;
+            if (!VisualController)
+            {
+                VisualController = GetComponent<CardVisualController>();
+            }
             
-            VisualController.SetLayout(cardState);
+            // Clear();
+            debugState = cardState;
+            _cardCamera = cardCamera;
+
+            if (setLayout)
+            {
+                VisualController.SetLayout(cardState);   
+            }
         }
         
         public void Clear()
