@@ -1,13 +1,11 @@
 using Cardevil.Attributes;
 using Cardevil.NewCard.Common.Core;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using System;
 using System.Collections.Generic; 
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace Cardevil.NewCard.InStage
 {
@@ -107,22 +105,30 @@ namespace Cardevil.NewCard.InStage
             }
         }
 
-        public void ArrangeCards(IReadOnlyList<ICardState> cards)
+        public void ArrangeCards(IReadOnlyList<ICardState> cards, ICardState excluded = null)
         {
             for (int i = 0; i < cards.Count; i++)
             {
                 var card = InternalGetCard(cards[i]);
-                var curve = config.GetCurve(i, cards.Count);
+
+                if (excluded != cards[i])
+                {
+                    card.VisualController.SetSortingOrder(i);   
+                }
+                else
+                {
+                    Debug.Log("Excluded에 포함돼서 설정 안 함.");
+                }
                 
                 var slotX = GetSlotX(i, cards.Count);
                 card.LocalTargetPosition.SetOffset(OffsetKey.HandSlot, new Vector3(slotX, 0f));
+                
+                var curve = config.GetCurve(i, cards.Count);
 
                 var curveY = curve.yOffset;
                 card.LocalTargetPosition.SetOffset(OffsetKey.HandCurve, new Vector3(0f, curveY));
                 
                 card.TargetCurveAngleZ = curve.rotation;
-                    
-                card.SetSortingOrder(i);
             }
         }
 
@@ -144,6 +150,7 @@ namespace Cardevil.NewCard.InStage
         {
             var card = InternalGetCard(state);
             card.SetMode(HandBarCard.Mode.Dragging);
+            card.VisualController.SetSortingOrderLast();
         }
 
         /// <summary>

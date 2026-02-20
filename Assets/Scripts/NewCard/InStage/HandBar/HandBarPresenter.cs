@@ -226,12 +226,11 @@ namespace Cardevil.NewCard.InStage
                 // 선택 존 아니고, 손패 영역 밖이면 복귀 처리
                 model.Insert(model.DragData.OriginalIndex, state);
                 model.ClearDetachData();
-                
-                _view.ArrangeCards(model.Hand);
             }
             
             model.ClearDraggingData();
             _view.EndDrag(state);
+            _view.ArrangeCards(model.Hand);
         }
 
         private void OnPointerExit(ICardState state)
@@ -265,7 +264,7 @@ namespace Cardevil.NewCard.InStage
                 from--;
             }
 
-            _view.ArrangeCards(model.Hand);
+            _view.ArrangeCards(model.Hand, dragging);
         }
 
         private void SortByNumber()

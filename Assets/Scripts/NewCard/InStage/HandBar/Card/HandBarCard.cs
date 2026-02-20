@@ -93,13 +93,10 @@ namespace Cardevil.NewCard.InStage
             VisualController.SetLayout(cardState);
         }
         
-
         public void Clear()
         {
             throw new System.NotImplementedException();
         }
-        
-        public void SetSortingOrder(int order) => VisualController.SetSortingOrder(order);
         
         public enum Mode
         {
@@ -192,7 +189,7 @@ namespace Cardevil.NewCard.InStage
                 .SetEase(discardParams.ScaleEase);
 
             var rotationTween = transform
-                .DOLocalRotate(discardParams.Rotation, duration)
+                .DOLocalRotate(discardParams.Rotation, duration, RotateMode.LocalAxisAdd)
                 .SetEase(discardParams.RotationEase);
 
             float multiplier = Random.Range(discardParams.JumpPowerRandomRange.x, discardParams.JumpPowerRandomRange.y);
