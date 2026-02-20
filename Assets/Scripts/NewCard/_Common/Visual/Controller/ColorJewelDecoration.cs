@@ -1,7 +1,9 @@
 using Cardevil.NewCard.Common.Visual;
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Cardevil.NewCard.Visual.Controller
 {
@@ -55,6 +57,21 @@ namespace Cardevil.NewCard.Visual.Controller
             {
                 _colorJewels[i].GetComponent<SpriteRenderer>().sortingOrder = 100 * sortingOrder + 80 + i;
             }
+        }
+
+        public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
+        {
+            var sequence = DOTween.Sequence();
+            
+            foreach (var colorJewel in _colorJewels)
+            {
+                var tween = colorJewel.GetComponent<SpriteRenderer>()
+                    .DOFade(targetAlpha, duration)
+                    .SetEase(ease);
+                sequence.Join(tween);
+            }
+            
+            return sequence;
         }
 
         private float GetJewelX(int index, int jewelCount)

@@ -1,7 +1,8 @@
+using Cardevil.Attributes;
 using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.InStage;
-using Cardevil.NewCard.InStage.Score;
+using Cysharp.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,17 +10,43 @@ namespace Cardevil.NewCard.InStage
 {
     public delegate void HandRankAction(in HandRankData handRank);
     
+    public delegate void HandBarStateAction(in HandBarPresenter.SelectionState state);
+
     [Serializable]
     public class HandBarPresenter
     {
         [Header("States")]
-        [SerializeField] private HandBarModel model = new();
-        [field: SerializeField] public bool CanInteract { private get; set; }
+        [SerializeField, VisibleOnly] private HandBarModel model = new();
+        [field: SerializeField, VisibleOnly] public bool CanInteract { private get; set; }
         
         private HandBarView _view;
         private ValueSelectionPresenter _valueSelectionPresenter;
+        
+        private HandRankData _cachedHandRankData = HandRankData.None;
 
         public event HandRankAction HandRankChanged;
+        public event HandBarStateAction HandBarStateChanged;
+        
+        /// <summary>
+        /// 현재 선택 중인 카드.
+        /// </summary>
+        public IReadOnlyList<ICardState> Selection => model.Selection;
+
+        /// <summary>
+        /// 선택한 카드들을 사용할 수 있는지 여부를 반환.
+        /// </summary>
+        /// <remarks> 현재 검증 목록: 선택한 카드가 존재하고, 모든 값을 선택했는가. </remarks>
+        public bool CanUseSelection => Selection.Count > 0 && Selection.All(state => state.ValueSelected);
+
+        /// <summary>
+        /// 선택한 카드들을 버릴 수 있는지 여부를 반환.
+        /// </summary>
+        public bool CanDiscard => Selection.Count > 0;
+
+        /// <summary>
+        /// 현재 족보 평가 데이터.
+        /// </summary>
+        public HandRankData HandRankData => _cachedHandRankData;
 
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
@@ -51,6 +78,44 @@ namespace Cardevil.NewCard.InStage
             model.Remove(state);
             _view.DestroyCard(state);
             _view.ArrangeCards(model.Hand);
+        }
+
+        public async UniTask<ICardState> DiscardAsync(ICardState state)
+        {
+            model.Remove(state);
+            _view.ArrangeCards(model.Hand);
+            
+            await _view.MoveCardToDiscardAnchor(state);
+            
+            return state;
+        }
+
+        public async UniTask<IReadOnlyList<ICardState>> DiscardSelectionAsync()
+        {
+            var selection = Selection.ToList();
+            var toWait = new List<UniTask>(selection.Count);
+
+            foreach (var state in selection)
+            {
+                model.Remove(state);
+                _view.ArrangeCards(model.Hand);
+                toWait.Add(_view.MoveCardToDiscardAnchor(state));
+            }
+            
+            await UniTask.WhenAll(toWait);
+            return selection;
+        }
+        
+        public readonly struct SelectionState
+        {
+            public bool CanUseSelection { get; }
+            public bool CanDiscard { get; }
+
+            public SelectionState(bool canUseSelection, bool canDiscard)
+            {
+                CanUseSelection = canUseSelection;
+                CanDiscard = canDiscard;
+            }
         }
 
         private void OnPointerEnter(ICardState state)
@@ -112,21 +177,20 @@ namespace Cardevil.NewCard.InStage
             {
                 Debug.Log("Deselect");
                 model.Deselect(state);
-                _view.DeselectCard(state, model.Hand.Count, model.IndexOf(state));
+                _view.DeselectCard(state);
                 changed = true;
             }
             else if (model.Selection.Count < 4)
             {
                 Debug.Log("Select");
                 model.Select(state);
-                _view.SelectCard(state, model.Hand.Count, model.IndexOf(state));
+                _view.SelectCard(state);
                 changed = true;
             }
 
             if (changed)
             {
-                var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
-                HandRankChanged?.Invoke(handRankData);
+                PublishEvents();
             }
         }
 
@@ -140,7 +204,7 @@ namespace Cardevil.NewCard.InStage
             if (isOnValueSelectionZone && _valueSelectionPresenter.TryOpenValueSelection(state))
             {
                 model.ClearDraggingData();
-                _view.SetWorldPosition(state, _valueSelectionPresenter.ZoneWorldPosition);
+                _view.StartValueSelection(state, _valueSelectionPresenter.ZoneWorldPosition);
                 return;
             }
             
@@ -210,12 +274,20 @@ namespace Cardevil.NewCard.InStage
         {
             model.Reattach(state);
                 
-            _view.UpdateVisual(state);
-            _view.UnsetWorldPosition(state);
+            _view.UpdateCardVisual(state);
+            _view.EndValueSelection(state);
             _view.ArrangeCards(model.Hand);
             
-            var handRankData = HandRankEvaluator.GetHandRank(model.Selection);
-            HandRankChanged?.Invoke(handRankData);
+            PublishEvents();
+        }
+
+        private void PublishEvents()
+        {
+            _cachedHandRankData = HandRankEvaluator.GetHandRank(model.Selection);
+            HandRankChanged?.Invoke(_cachedHandRankData);
+            
+            var handBarState = new SelectionState(CanUseSelection, CanDiscard);
+            HandBarStateChanged?.Invoke(handBarState);
         }
     }
 }

@@ -1,4 +1,5 @@
 using Cardevil.NewCard.Common.Visual;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Cardevil.NewCard.Visual.Controller
@@ -41,6 +42,26 @@ namespace Cardevil.NewCard.Visual.Controller
             subSprite0.sortingOrder = 100 * sortingOrder + 50;
             subSprite1.sortingOrder = 100 * sortingOrder + 50;
             subSprite2.sortingOrder = 100 * sortingOrder + 50;
+        }
+
+        public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
+        {
+            var subSprite0Tween = subSprite0
+                .DOFade(targetAlpha, duration)
+                .SetEase(ease);
+            
+            var subSprite1Tween = subSprite1
+                .DOFade(targetAlpha, duration)
+                .SetEase(ease);
+            
+            var subSprite2Tween = subSprite2
+                .DOFade(targetAlpha, duration)
+                .SetEase(ease);
+            
+            return DOTween.Sequence()
+                .Join(subSprite0Tween)
+                .Join(subSprite1Tween)
+                .Join(subSprite2Tween);
         }
     }
 }

@@ -2,6 +2,8 @@ using Cardevil.Attributes;
 using Cardevil.Core;
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Visual.Controller;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,6 +11,18 @@ using UnityEngine.InputSystem;
 
 namespace Cardevil.NewCard.InStage
 {
+    /*
+     * [Position]
+     * 드래그 모드(Mouse Pos),
+     * 슬롯으로 돌아가는 모드(Local Position),
+     * 특정 위치로 가는 모드(World Position),
+     * 트윈으로 가는 모드(None)
+     *
+     * [Rotation]
+     * 고정 (Lerp),
+     * 트윈으로 제어 (None)
+     */
+    
     public class HandBarCard : MonoBehaviour, IClearable, 
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
@@ -28,52 +42,41 @@ namespace Cardevil.NewCard.InStage
         
         private Camera _cardCamera;
 
+        private ICardMovement _movement;
+        private ICardRotation _rotation;
+        
+        public LocalPositionResolver LocalTargetPosition { get; set; }
+        public Vector3 WorldTargetPosition { get; set; }
+        
+        public float TargetCurveAngleZ { get; set; }
+
         /// <summary>
         /// 카드의 Local Position x 좌표.
         /// Swap 등 카드끼리 비교용으로 사용함.
         /// </summary>
         public float CurrentX => transform.localPosition.x;
-
-        /// <summary>
-        /// 카드의 이동 목표 타입.
-        /// </summary>
-        public FollowTargetType FollowTarget { private get; set; } = FollowTargetType.LocalPosition;
         
-        /// <summary>
-        /// 카드가 손패 내에 존재할 때 목표 x 로컬 좌표.
-        /// </summary>
-        public float TargetLocalX { private get; set; }
-        
-        /// <summary>
-        /// 카드가 손패 내에 존재할 때 목표 y 로컬 좌표.
-        /// </summary>
-        public float TargetLocalCurveY { private get; set; }
-        
-        /// <summary>
-        /// 카드가 손패 내에 존재할 때 선택 상태로 더해지는 목표 y 로컬 좌표. 
-        /// </summary>
-        public float TargetSelectionY { private get; set; }
-        
-        /// <summary>
-        /// 카드가 손패 내에 존재할 때 목표 z 로컬 커브.
-        /// </summary>
-        public float TargetCurveAngleZ { private get; set; }
-        
-        public Vector3 TargetWorldPosition { private get; set; }
-
-        private Vector3 TargetLocalPosition
+        private Vector3 PointerPosition
         {
             get
             {
-                var x = TargetLocalX;
-                var y = TargetLocalCurveY + TargetSelectionY;
-                
-                return new Vector3(x, y);
+                Vector2 screen = Pointer.current.position.ReadValue();
+                return _cardCamera.ScreenToWorldPoint(
+                    new Vector3(screen.x, screen.y, -_cardCamera.transform.position.z)
+                );
             }
         }
 
-        // 드래그 중일 때 갱신되는 포인터의 위치.
-        private Vector3 _targetPointerPosition;
+        private void Awake()
+        {
+            LocalTargetPosition = new LocalPositionResolver();
+        }
+
+        private void LateUpdate()
+        {
+            _movement?.UpdatePosition(transform, Time.deltaTime);
+            _rotation?.UpdateRotation(transform, Time.deltaTime);
+        }
 
         public void Initialize(ICardState cardState, Camera cardCamera)
         {
@@ -85,49 +88,57 @@ namespace Cardevil.NewCard.InStage
         }
         
         public void UpdateVisual() => visualController.Apply(State);
-
-        private void Update()
-        {
-            if (FollowTarget == FollowTargetType.Pointer)
-            {
-                Vector2 screen = Pointer.current.position.ReadValue();
-                _targetPointerPosition = _cardCamera.ScreenToWorldPoint(
-                    new Vector3(screen.x, screen.y, -_cardCamera.transform.position.z)
-                );
-            }
-        }
-
-        private void LateUpdate()
-        {
-            // TODO: 보간
-            if (FollowTarget == FollowTargetType.Pointer)
-            {
-                transform.position = _targetPointerPosition;
-                transform.localEulerAngles = Vector3.zero;
-            }
-            else
-            {
-                if (FollowTarget == FollowTargetType.LocalPosition)
-                {
-                    transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
-                }
-                else if (FollowTarget == FollowTargetType.WorldPosition)
-                {
-                    transform.position = Vector3.Lerp(transform.position, TargetWorldPosition, Time.deltaTime * 10);
-                }
-
-                transform.localEulerAngles = new Vector3(0f, 0f, Mathf.LerpAngle(transform.localEulerAngles.z, TargetCurveAngleZ, Time.deltaTime * 10));
-            }
-        }
+        
+        public Tween DoFade(float targetAlpha, float duration, Ease ease) => 
+            visualController.SetAlpha(targetAlpha, duration, ease);
 
         public void Clear()
         {
             throw new System.NotImplementedException();
         }
-
-        public void SetSortingOrder(int order) => visualController.SetSortingOrder(order);
         
+        public void SetSortingOrder(int order) => visualController.SetSortingOrder(order);
 
+        public void SetMovement(MovementType type)
+        {
+            if (_movement != null && _movement.Type == type) return;
+
+            switch (type)
+            {
+                case MovementType.None:
+                    _movement = null;
+                    break;
+                
+                case MovementType.LerpToLocal:
+                    _movement = new LerpToLocalMovement(() => LocalTargetPosition.Resolve(), 10f);
+                    break;
+                
+                case MovementType.LerpToWorld:
+                    _movement = new LerpToWorldPosition(() => WorldTargetPosition, 10f);
+                    break;
+                
+                case MovementType.MoveToPointer:
+                    _movement = new MoveToPointerMovement(() => PointerPosition);
+                    break;
+            }
+        }
+
+        public void SetRotation(RotationType type)
+        {
+            if (_rotation != null && _rotation.Type == type) return;
+
+            switch (type)
+            {
+                case RotationType.None:
+                    _rotation = null;
+                    break;
+                
+                case RotationType.LerpToLocalZ:
+                    _rotation = new LerpToLocalZRotation(() => TargetCurveAngleZ, 10f);
+                    break;
+            }
+        }
+        
         public void OnPointerEnter(PointerEventData eventData)
         {
             // Debug.Log("OnPointerEnter");
@@ -150,8 +161,6 @@ namespace Cardevil.NewCard.InStage
         {
             // Debug.Log("OnDrag");
             Dragging?.Invoke(this);
-            
-            
         }
         
         public void OnPointerUp(PointerEventData eventData)
@@ -184,9 +193,18 @@ namespace Cardevil.NewCard.InStage
 
         public enum FollowTargetType
         {
+            None,
+            
             Pointer,
             LocalPosition,
-            WorldPosition
+            WorldPosition,
+        }
+
+        public async UniTask MoveToTargetAsync(Vector3 targetPosition, float speed, Ease ease)
+        {
+            await transform.DOMove(targetPosition, speed)
+                .SetSpeedBased()
+                .SetEase(ease);
         }
     }
 }

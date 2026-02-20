@@ -1,5 +1,6 @@
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Cardevil.NewCard.Visual.Controller
@@ -10,9 +11,7 @@ namespace Cardevil.NewCard.Visual.Controller
         [SerializeField] private CardSingleLayout singlePrefab;
         [SerializeField] private CardDualLayout dualPrefab;
         [SerializeField] private CardTripleLayout triplePrefab;
-
-        [Space] 
-        [SerializeField] private ColorJewelDecoration colorJewel;
+        [SerializeField] private ColorJewelDecoration colorJewelPrefab;
 
         [Header("References")] 
         [SerializeField] private SpriteRenderer background;
@@ -61,7 +60,7 @@ namespace Cardevil.NewCard.Visual.Controller
             var decorationData = CardDecorationResolver.Resolve(visualInput);
             if (decorationData.Decorations.HasFlag(CardDecorations.ColorJewel))
             {
-                _currentColorJewel = Instantiate(colorJewel, transform).GetComponent<ColorJewelDecoration>();
+                _currentColorJewel = Instantiate(colorJewelPrefab, transform).GetComponent<ColorJewelDecoration>();
                 _currentColorJewel.Apply(in decorationData);
             }
         }
@@ -73,6 +72,28 @@ namespace Cardevil.NewCard.Visual.Controller
             
             _currentLayout?.SetSortingOrder(sortingOrder);
             _currentColorJewel?.SetSortingOrder(sortingOrder);
+        }
+
+        public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
+        {
+            var innerFrameTween = innerFrame
+                .DOFade(targetAlpha, duration)
+                .SetEase(ease);
+
+            var sequence = DOTween.Sequence()
+                .Join(innerFrameTween);
+
+            if (_currentLayout != null)
+            {
+                sequence.Join(_currentLayout.SetAlpha(targetAlpha, duration, ease));
+            }
+
+            if (_currentColorJewel)
+            {
+                sequence.Join(_currentColorJewel.SetAlpha(targetAlpha, duration, ease));
+            }
+            
+            return sequence;
         }
     }
 }
