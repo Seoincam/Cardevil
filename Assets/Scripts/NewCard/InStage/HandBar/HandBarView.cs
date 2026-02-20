@@ -115,10 +115,6 @@ namespace Cardevil.NewCard.InStage
                 {
                     card.VisualController.SetSortingOrder(i);   
                 }
-                else
-                {
-                    Debug.Log("Excluded에 포함돼서 설정 안 함.");
-                }
                 
                 var slotX = GetSlotX(i, cards.Count);
                 card.LocalTargetPosition.SetOffset(OffsetKey.HandSlot, new Vector3(slotX, 0f));
