@@ -21,6 +21,8 @@ namespace Cardevil.NewCard.Visual.Controller
         private ICardLayoutSpriteRenderer _currentLayout;
         private ColorJewelDecoration _currentColorJewel;
         private TrailRenderer _currentTrail;
+
+        private const int LastSortingOrder = 100;
         
         public float TrailTime => _currentTrail?.time ?? 0f;
 
@@ -86,6 +88,11 @@ namespace Cardevil.NewCard.Visual.Controller
             _currentLayout?.SetSortingOrder(sortingOrder);
             _currentColorJewel?.SetSortingOrder(sortingOrder);
         }
+
+        /// <summary>
+        /// Sorting Order를 가장 위로 설정.
+        /// </summary>
+        public void SetSortingOrderLast() => SetSortingOrder(LastSortingOrder);
         
         public void SetTrail()
         {
