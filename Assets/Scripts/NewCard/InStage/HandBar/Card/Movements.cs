@@ -44,10 +44,11 @@ namespace Cardevil.NewCard.InStage
         private readonly Func<Vector3> _getTaget;
         private readonly float _speed;
 
-        public MovementType Type => MovementType.LerpToWorld;
+        public MovementType Type { get; }
 
-        public LerpToWorldPosition(Func<Vector3> getTaget, float speed)
+        public LerpToWorldPosition(MovementType type, Func<Vector3> getTaget, float speed)
         {
+            Type = type;
             _getTaget = getTaget;
             _speed = speed;
         }
@@ -59,22 +60,6 @@ namespace Cardevil.NewCard.InStage
                 _getTaget(),
                 _speed * deltaTime
             );
-        }
-    }
-
-    public class MoveToPointerMovement : ICardMovement
-    {
-        private readonly Func<Vector3> _getTaget;
-        public MovementType Type => MovementType.MoveToPointer;
-
-        public MoveToPointerMovement(Func<Vector3> getTaget)
-        {
-            _getTaget = getTaget;
-        }
-        
-        public void UpdatePosition(Transform cardTransform, float deltaTime)
-        {
-            cardTransform.position = _getTaget();
         }
     }
 }

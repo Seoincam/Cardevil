@@ -24,12 +24,8 @@ namespace Cardevil.NewCard.InStage
         
         [Header("Config")] 
         [SerializeField] private HandBarConfig config;
-
-        [Space]
-        [SerializeField, Min(1f)] private float discardSpeed = 11;
-        [SerializeField, Min(0.3f)] private float jumpPowerBase = 2f;
-        [SerializeField] private Ease ease;
-
+        [SerializeField] private DiscardParams discardParams;
+        
         [Header("Prefabs")] 
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private GameObject cardPrefab;
 
@@ -39,7 +35,6 @@ namespace Cardevil.NewCard.InStage
         public event Action<ICardState> CardPointerEnter;
         public event Action<ICardState> CardPointerDown;
         public event Action<ICardState> CardDragStart;
-        public event Action<ICardState> CardDragging;
         public event Action<ICardState> CardPointerUp;
         public event Action<ICardState> CardDragEnd;
         public event Action<ICardState> CardPointerExit;
@@ -91,8 +86,7 @@ namespace Cardevil.NewCard.InStage
             card.transform.position = drawAnchor.position;
             
             card.Initialize(state, cardCamera);
-            card.SetMovement(MovementType.LerpToLocal);
-            card.SetRotation(RotationType.LerpToLocalZ);
+            card.SetMode(HandBarCard.Mode.InHand);
             
             _cardMap.Add(state, card);
 
@@ -100,7 +94,6 @@ namespace Cardevil.NewCard.InStage
             card.PointerEnter += c => CardPointerEnter?.Invoke(c.State);
             card.PointerDown += c => CardPointerDown?.Invoke(c.State);
             card.DragStart += c => CardDragStart?.Invoke(c.State);
-            card.Dragging += c => CardDragging?.Invoke(c.State);
             card.PointerUp += c => CardPointerUp?.Invoke(c.State);
             card.DragEnd += c => CardDragEnd?.Invoke(c.State);
             card.PointerExit += c => CardPointerExit?.Invoke(c.State);
@@ -150,7 +143,7 @@ namespace Cardevil.NewCard.InStage
         public void StartDrag(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.SetMovement(MovementType.MoveToPointer);
+            card.SetMode(HandBarCard.Mode.Dragging);
         }
 
         /// <summary>
@@ -159,7 +152,7 @@ namespace Cardevil.NewCard.InStage
         public void EndDrag(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.SetMovement(MovementType.LerpToLocal);
+            card.SetMode(HandBarCard.Mode.InHand);
         }
 
         /// <summary>
@@ -170,7 +163,7 @@ namespace Cardevil.NewCard.InStage
             var card = InternalGetCard(state);
             
             card.WorldTargetPosition = worldPosition;
-            card.SetMovement(MovementType.LerpToWorld);
+            card.SetMode(HandBarCard.Mode.WorldTarget);
         }
 
         /// <summary>
@@ -180,7 +173,7 @@ namespace Cardevil.NewCard.InStage
         public void EndValueSelection(ICardState state)
         {
             var card = InternalGetCard(state);
-            card.SetMovement(MovementType.LerpToLocal);
+            card.SetMode(HandBarCard.Mode.InHand);
         }
 
         /// <summary>
@@ -231,21 +224,14 @@ namespace Cardevil.NewCard.InStage
         public async UniTask MoveCardToDiscardAnchor(ICardState state)
         {
             var card = InternalGetCard(state);
-            
-            card.SetMovement(MovementType.None);
-            card.SetRotation(RotationType.None);
-            card.VisualController.SetTrail();
-            
             float distance = Vector3.Distance(card.transform.position, discardAnchor.position);
-            float duration = distance / discardSpeed;
+            float duration = distance / discardParams.Speed;
 
-            card.transform.DOScale(0.2f, duration);
-            card.transform.DOLocalRotate(new Vector3(0f, 0f, 260f), duration, RotateMode.LocalAxisAdd);
-            card.VisualController.DoFade(0f, duration, Ease.Unset);
-            card.transform.DOJump(discardAnchor.position, jumpPowerBase * Random.Range(1f, 2f), 1, duration)
-                .SetEase(ease);
+            card.SetMode(HandBarCard.Mode.Unmanaged);
+            await card.PlayDiscardAsync(discardAnchor.position, duration, discardParams);
+            await UniTask.Delay(TimeSpan.FromSeconds(card.VisualController.TrailTime));
             
-            await UniTask.Delay(TimeSpan.FromSeconds(duration * 1.5f));
+            card.VisualController.ClearTrail();
             DestroyCard(state);
         }
 

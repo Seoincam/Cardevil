@@ -140,6 +140,8 @@ MonoBehaviour:
   <VisualController>k__BackingField: {fileID: -8963677850682684460}
   <State>k__BackingField:
     rid: -2
+  rotationAmount: 3
+  maxTilt: 40
   references:
     version: 2
     RefIds:

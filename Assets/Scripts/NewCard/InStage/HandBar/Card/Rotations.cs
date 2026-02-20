@@ -6,7 +6,8 @@ namespace Cardevil.NewCard.InStage
     public enum RotationType
     {
         None,
-        LerpToLocalZ
+        LerpToLocalZ,
+        LerpWithMovement
     }
     
     public interface ICardRotation
@@ -20,10 +21,11 @@ namespace Cardevil.NewCard.InStage
         private readonly Func<float> _getTargetZ;
         private readonly float _speed;
         
-        public RotationType Type => RotationType.LerpToLocalZ;
+        public RotationType Type { get; }
 
-        public LerpToLocalZRotation(Func<float> getTargetZ, float speed)
+        public LerpToLocalZRotation(RotationType type, Func<float> getTargetZ, float speed)
         {
+            Type = type;
             _getTargetZ = getTargetZ;
             _speed = speed;
         }

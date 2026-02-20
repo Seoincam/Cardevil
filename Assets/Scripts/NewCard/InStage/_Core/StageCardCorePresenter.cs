@@ -26,7 +26,10 @@ namespace Cardevil.NewCard.InStage
             _handBarPresenter = handBarPresenter;
             handBarPresenter.HandBarStateChanged += OnHandBarStateChanged;
             
-            Test();
+            // Test();
+            var states = model.Draw(6);
+            _handBarPresenter.DrawAsync(states).Forget();
+            _handBarPresenter.CanInteract = true;
         }
 
         private void Test()

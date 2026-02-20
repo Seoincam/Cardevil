@@ -8,21 +8,10 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 namespace Cardevil.NewCard.InStage
 {
-    /*
-     * [Position]
-     * 드래그 모드(Mouse Pos),
-     * 슬롯으로 돌아가는 모드(Local Position),
-     * 특정 위치로 가는 모드(World Position),
-     * 트윈으로 가는 모드(None)
-     *
-     * [Rotation]
-     * 고정 (Lerp),
-     * 트윈으로 제어 (None)
-     */
-    
     public class HandBarCard : MonoBehaviour, IClearable, 
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
@@ -35,7 +24,6 @@ namespace Cardevil.NewCard.InStage
         public event Action<HandBarCard> PointerEnter;
         public event Action<HandBarCard> PointerDown;
         public event Action<HandBarCard> DragStart;
-        public event Action<HandBarCard> Dragging;
         public event Action<HandBarCard> PointerUp;
         public event Action<HandBarCard> DragEnd;
         public event Action<HandBarCard> PointerExit;
@@ -45,7 +33,13 @@ namespace Cardevil.NewCard.InStage
         private ICardMovement _movement;
         private ICardRotation _rotation;
         
-        public LocalPositionResolver LocalTargetPosition { get; set; }
+        // Movement Rotation
+        private Vector3 _previousPosition;
+        
+        [SerializeField] private float rotationAmount = 10f;
+        [SerializeField] private float maxTilt = 50f;
+        
+        public LocalPositionResolver LocalTargetPosition { get; private set; }
         public Vector3 WorldTargetPosition { get; set; }
         
         public float TargetCurveAngleZ { get; set; }
@@ -64,6 +58,18 @@ namespace Cardevil.NewCard.InStage
                 return _cardCamera.ScreenToWorldPoint(
                     new Vector3(screen.x, screen.y, -_cardCamera.transform.position.z)
                 );
+            }
+        }
+        
+        private float MovementRotationZ
+        {
+            get
+            {
+                Vector3 velocity = (transform.position - _previousPosition) / Time.deltaTime;
+                _previousPosition = transform.position;
+                float targetZ = -velocity.x * rotationAmount;
+                
+                return Mathf.Clamp(targetZ, -maxTilt, maxTilt);
             }
         }
 
@@ -94,43 +100,37 @@ namespace Cardevil.NewCard.InStage
         }
         
         public void SetSortingOrder(int order) => VisualController.SetSortingOrder(order);
-
-        public void SetMovement(MovementType type)
+        
+        public enum Mode
         {
-            if (_movement != null && _movement.Type == type) return;
-
-            switch (type)
-            {
-                case MovementType.None:
-                    _movement = null;
-                    break;
-                
-                case MovementType.LerpToLocal:
-                    _movement = new LerpToLocalMovement(() => LocalTargetPosition.Resolve(), 10f);
-                    break;
-                
-                case MovementType.LerpToWorld:
-                    _movement = new LerpToWorldPosition(() => WorldTargetPosition, 10f);
-                    break;
-                
-                case MovementType.MoveToPointer:
-                    _movement = new MoveToPointerMovement(() => PointerPosition);
-                    break;
-            }
+            InHand,
+            Dragging,
+            WorldTarget,
+            Unmanaged
         }
 
-        public void SetRotation(RotationType type)
+        public void SetMode(Mode mode)
         {
-            if (_rotation != null && _rotation.Type == type) return;
-
-            switch (type)
+            switch (mode)
             {
-                case RotationType.None:
-                    _rotation = null;
+                case Mode.InHand:
+                    SetMovement(MovementType.LerpToLocal);
+                    SetRotation(RotationType.LerpToLocalZ);
                     break;
                 
-                case RotationType.LerpToLocalZ:
-                    _rotation = new LerpToLocalZRotation(() => TargetCurveAngleZ, 10f);
+                case Mode.Dragging:
+                    SetMovement(MovementType.MoveToPointer);
+                    SetRotation(RotationType.LerpWithMovement);
+                    break;
+                
+                case Mode.WorldTarget:
+                    SetMovement(MovementType.LerpToWorld);
+                    SetRotation(RotationType.LerpToLocalZ);
+                    break;
+                
+                case Mode.Unmanaged:
+                    SetMovement(MovementType.None);
+                    SetRotation(RotationType.None);
                     break;
             }
         }
@@ -143,7 +143,7 @@ namespace Cardevil.NewCard.InStage
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            // Debug.Log("OnP ointerDown");
+            // Debug.Log("OnPointerDown");
             PointerDown?.Invoke(this);
         }
         
@@ -153,11 +153,7 @@ namespace Cardevil.NewCard.InStage
             DragStart?.Invoke(this);
         }
         
-        public void OnDrag(PointerEventData eventData)
-        {
-            // Debug.Log("OnDrag");
-            Dragging?.Invoke(this);
-        }
+        public void OnDrag(PointerEventData eventData) { }
         
         public void OnPointerUp(PointerEventData eventData)
         {
@@ -187,20 +183,75 @@ namespace Cardevil.NewCard.InStage
             
         }
 
-        public enum FollowTargetType
+        public async UniTask PlayDiscardAsync(Vector3 discardPosition, float duration, DiscardParams discardParams)
         {
-            None,
-            
-            Pointer,
-            LocalPosition,
-            WorldPosition,
+            VisualController.SetTrail();
+
+            var scaleTween = transform
+                .DOScale(discardParams.TargetScale, duration)
+                .SetEase(discardParams.ScaleEase);
+
+            var rotationTween = transform
+                .DOLocalRotate(discardParams.Rotation, duration)
+                .SetEase(discardParams.RotationEase);
+
+            float multiplier = Random.Range(discardParams.JumpPowerRandomRange.x, discardParams.JumpPowerRandomRange.y);
+            float jumpPower = discardParams.JumpPower * multiplier;
+            var jumpTween = transform
+                .DOJump(discardPosition, jumpPower, 1, duration)
+                .SetEase(discardParams.JumpEase);
+
+            var fadeTween = VisualController.DoFade(0f, duration, discardParams.FadeEase);
+
+            await DOTween.Sequence()
+                .Join(scaleTween)
+                .Join(rotationTween)
+                .Join(jumpTween)
+                .Join(fadeTween);
+        }
+        
+        private void SetMovement(MovementType type)
+        {
+            if (_movement != null && _movement.Type == type) return;
+
+            switch (type)
+            {
+                case MovementType.None:
+                    _movement = null;
+                    break;
+                
+                case MovementType.LerpToLocal:
+                    _movement = new LerpToLocalMovement(() => LocalTargetPosition.Resolve(), 10f);
+                    break;
+                
+                case MovementType.LerpToWorld:
+                    _movement = new LerpToWorldPosition(type, () => WorldTargetPosition, 10f);
+                    break;
+                
+                case MovementType.MoveToPointer:
+                    _movement = new LerpToWorldPosition(type, () => PointerPosition, 20f);
+                    break;
+            }
         }
 
-        public async UniTask MoveToTargetAsync(Vector3 targetPosition, float speed, Ease ease)
+        private void SetRotation(RotationType type)
         {
-            await transform.DOMove(targetPosition, speed)
-                .SetSpeedBased()
-                .SetEase(ease);
+            if (_rotation != null && _rotation.Type == type) return;
+
+            switch (type)
+            {
+                case RotationType.None:
+                    _rotation = null;
+                    break;
+                
+                case RotationType.LerpToLocalZ:
+                    _rotation = new LerpToLocalZRotation(type, () => TargetCurveAngleZ, 10f);
+                    break;
+                
+                case RotationType.LerpWithMovement:
+                    _rotation = new LerpToLocalZRotation(type, () => MovementRotationZ, 10f);
+                    break;
+            }
         }
     }
 }

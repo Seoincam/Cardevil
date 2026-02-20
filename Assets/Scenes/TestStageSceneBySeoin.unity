@@ -1132,9 +1132,7 @@ MonoBehaviour:
   sortByNumberButton: {fileID: 222574533}
   sortByIconButton: {fileID: 1232025180}
   config: {fileID: 11400000, guid: 85ad6131ebda842d5b46a9a42fba65b9, type: 2}
-  discardSpeed: 10
-  jumpPowerBase: 5
-  ease: 35
+  discardParams: {fileID: 11400000, guid: 473daabd5b1aa45edba9fe3aa2c8b748, type: 2}
   cardPrefab: {fileID: 7493370066561514446, guid: ccf0cbb70d8cc4905a09df22f0755a55, type: 3}
 --- !u!4 &1657458498
 Transform:

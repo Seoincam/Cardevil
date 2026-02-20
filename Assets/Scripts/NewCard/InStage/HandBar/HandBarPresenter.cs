@@ -4,6 +4,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
@@ -23,6 +24,7 @@ namespace Cardevil.NewCard.InStage
         private ValueSelectionPresenter _valueSelectionPresenter;
         
         private HandRankData _cachedHandRankData = HandRankData.None;
+        private CancellationTokenSource _dragLoopCancellationTokenSource;
 
         public event HandRankAction HandRankChanged;
         public event HandBarStateAction HandBarStateChanged;
@@ -57,7 +59,6 @@ namespace Cardevil.NewCard.InStage
             _view.CardPointerEnter += OnPointerEnter;
             _view.CardPointerDown += OnPointerDown;
             _view.CardDragStart += OnDragStart;
-            _view.CardDragging += OnDragging;
             _view.CardPointerUp += OnPointerUp;
             _view.CardDragEnd += OnDragEnd;
             _view.CardPointerExit += OnPointerExit;
@@ -147,6 +148,8 @@ namespace Cardevil.NewCard.InStage
             
             _valueSelectionPresenter.TryOpenValueSelectionZone(state);
             _valueSelectionPresenter.CloseValueSelection();
+            
+            StartDragLoop(state);
         }
 
         private void OnDragging(ICardState state)
@@ -204,6 +207,8 @@ namespace Cardevil.NewCard.InStage
 
         private void OnDragEnd(ICardState state)
         {
+            StopDragLoop();
+            
             _valueSelectionPresenter.CloseValueSelectionZone();
             
             var cardWorldPos = _view.GetWorldPosition(state);
@@ -296,6 +301,29 @@ namespace Cardevil.NewCard.InStage
             
             var handBarState = new SelectionState(CanUseSelection, CanDiscard);
             HandBarStateChanged?.Invoke(handBarState);
+        }
+
+        private void StartDragLoop(ICardState state)
+        {
+            StopDragLoop();
+            _dragLoopCancellationTokenSource = new CancellationTokenSource();
+            DragLoopAsync(state, _dragLoopCancellationTokenSource.Token).Forget();
+        }
+
+        private void StopDragLoop()
+        {
+            _dragLoopCancellationTokenSource?.Cancel();
+            _dragLoopCancellationTokenSource?.Dispose();
+            _dragLoopCancellationTokenSource = null;
+        }
+
+        private async UniTaskVoid DragLoopAsync(ICardState state, CancellationToken cancellationToken)
+        {
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                OnDragging(state);
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
         }
     }
 }

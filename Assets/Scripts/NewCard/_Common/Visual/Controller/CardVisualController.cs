@@ -20,7 +20,9 @@ namespace Cardevil.NewCard.Visual.Controller
 
         private ICardLayoutSpriteRenderer _currentLayout;
         private ColorJewelDecoration _currentColorJewel;
-        private GameObject _currentTrail;
+        private TrailRenderer _currentTrail;
+        
+        public float TrailTime => _currentTrail?.time ?? 0f;
 
         /// <summary>
         /// ICardState를 VisualInput으로 변환한 후, 레이아웃을 적용.
@@ -87,7 +89,7 @@ namespace Cardevil.NewCard.Visual.Controller
         
         public void SetTrail()
         {
-            Instantiate(trailPrefab, transform);
+            _currentTrail = Instantiate(trailPrefab, transform).GetComponent<TrailRenderer>();
         }
 
         public void ClearTrail()
