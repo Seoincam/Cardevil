@@ -50,7 +50,7 @@ namespace Cardevil.NewCard.InStage
         /// <summary>
         /// 카드가 Value Selectable일 경우 값 선택창을 염.
         /// </summary>
-        public bool TryOpenValueSelection(ICardState state)
+        public bool TryOpenValueSelection(ICardState state, uint handBarCardId)
         {
             _targetState = state;
 
@@ -86,6 +86,7 @@ namespace Cardevil.NewCard.InStage
                 _view.AddColorSelectable(color, number);
             }   
             
+            _view.SetDimActive(true);
             _view.ArrangeCards(state.Colors.AllOptions.ToArray());
         }
 
@@ -97,6 +98,7 @@ namespace Cardevil.NewCard.InStage
                 _view.AddNumberSelectable(color, number);
             }
             
+            _view.SetDimActive(true);
             _view.ArrangeCards(state.Numbers.AllOptions.ToArray());
         }
 
@@ -107,6 +109,7 @@ namespace Cardevil.NewCard.InStage
                 _view.AddDirectionSelectable(direction);
             }
             
+            _view.SetDimActive(true);
             _view.ArrangeCards(state.Directions.AllOptions.ToArray());
         }
 
@@ -128,6 +131,7 @@ namespace Cardevil.NewCard.InStage
             }
             
             _view.Clear(except: cardId);
+            _view.SetDimActive(false);
             ValueSelected?.Invoke(_targetState, cardId);
             _targetState = null;
         }

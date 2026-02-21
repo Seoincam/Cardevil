@@ -21,9 +21,12 @@ namespace Cardevil.NewCard.Visual.Controller
         {
         }
 
-        public void SetSortingOrder(int sortingOrder)
+        public void SetSortingOrder(int sortingOrder, int layerId)
         {
+            mainSprite.sortingLayerID = layerId;
             mainSprite.sortingOrder = 100 * sortingOrder + 50;
+            
+            cornerSprite.sortingLayerID = layerId;
             cornerSprite.sortingOrder = 100 * sortingOrder + 50;
         }
 

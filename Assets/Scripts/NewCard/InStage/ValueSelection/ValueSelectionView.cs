@@ -1,6 +1,7 @@
 using Cardevil.NewCard.Common;
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
+using Cardevil.NewCard.Visual.Controller;
 using Cardevil.Utils.Directions;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +20,9 @@ namespace Cardevil.NewCard.InStage
 
         [Header("Settings")] 
         [SerializeField] private float spacing = 2f;
+
+        [SerializeField] private GameObject debugObject;
+        [SerializeField] private GameObject dim;
         
         public Vector3 ZoneWorldPosition => zoneSpriteRenderer.bounds.center;
         public event ValueSelectAction ValueSelected;
@@ -35,6 +39,7 @@ namespace Cardevil.NewCard.InStage
         private void Awake()
         {
             CloseValueSelectionZone();
+            dim.SetActive(false);
         }
 
         public void OpenValueSelectionZone()
@@ -45,6 +50,11 @@ namespace Cardevil.NewCard.InStage
         public void CloseValueSelectionZone()
         {
             zoneSpriteRenderer.color = new Color(1f, 1f, 1f, 0f);
+        }
+
+        public void SetDimActive(bool active)
+        {
+            dim.SetActive(active);
         }
 
         /// <summary>
@@ -104,37 +114,134 @@ namespace Cardevil.NewCard.InStage
             
             CardRegistry.Register(card);
         }
+        
+        private struct EllipseConfig
+        {
+            public float RadiusX;
+            public float RadiusY;
+            public float RadiusJitter;
+            public float MinGapRatio;
+            public float StartAngleOffset;
+            public float MinDistance;  // 추가
+        }
+
+        private static readonly Dictionary<int, EllipseConfig> Configs = new()
+        {
+            { 2, new EllipseConfig { RadiusX = 5f,  RadiusY = 3f, RadiusJitter = 0.05f, MinGapRatio = 0.6f, MinDistance = 2.0f } },
+            { 3, new EllipseConfig { RadiusX = 6f,  RadiusY = 4f, RadiusJitter = 0.08f, MinGapRatio = 0.5f, MinDistance = 2.0f } },
+            { 4, new EllipseConfig { RadiusX = 6.5f,RadiusY = 4f, RadiusJitter = 0.08f, MinGapRatio = 0.5f, MinDistance = 2.0f, StartAngleOffset = Mathf.PI / 4f } },
+            { 9, new EllipseConfig { RadiusX = 9f,  RadiusY = 6f, RadiusJitter = 0.03f, MinGapRatio = 0.4f, MinDistance = 1.5f } },
+        };
+
+        private Vector3[] MakeCirclePoints(Vector3 center, int count)
+        {
+            if (!Configs.TryGetValue(count, out var config))
+                config = new EllipseConfig { RadiusX = 8f, RadiusY = 5f, RadiusJitter = 0.08f, MinGapRatio = 0.3f };
+
+            var points = new Vector3[count];
+            float baseAngle = Mathf.PI * 2 / count;
+            float startAngle = Mathf.PI / 2 + config.StartAngleOffset;
+            float maxAngleJitter = baseAngle * 0.5f * (1f - config.MinGapRatio);
+
+            for (int i = 0; i < count; i++)
+            {
+                float angle = startAngle + (i * baseAngle + Random.Range(-maxAngleJitter, maxAngleJitter));
+
+                // rx, ry 독립 랜덤 → 단일 jitter로 통일 (타원 형태 유지)
+                float jitter = Random.Range(1f - config.RadiusJitter, 1f + config.RadiusJitter);
+                points[i] = center + new Vector3(
+                    Mathf.Cos(angle) * config.RadiusX * jitter * 0.6f,
+                    Mathf.Sin(angle) * config.RadiusY * jitter * 0.6f
+                );
+            }
+
+            // 겹침 방지: 너무 가까운 점들을 밀어냄
+            SeparatePoints(points, config.MinDistance, iterations: 5);
+
+            return points;
+        }
+
+        private void SeparatePoints(Vector3[] points, float minDistance, int iterations)
+        {
+            for (int iter = 0; iter < iterations; iter++)
+            {
+                for (int i = 0; i < points.Length; i++)
+                {
+                    for (int j = i + 1; j < points.Length; j++)
+                    {
+                        Vector3 delta = points[j] - points[i];
+                        float dist = delta.magnitude;
+
+                        if (dist < minDistance && dist > 0.0001f)
+                        {
+                            // 두 점을 서로 반대 방향으로 밀어냄
+                            Vector3 push = delta.normalized * (minDistance - dist) * 0.5f;
+                            points[i] -= push;
+                            points[j] += push;
+                        }
+                    }
+                }
+            }
+        }
+        
+        private Vector3[] MakeCirclePoints(Vector3 center, float radiusX, float radiusY, int count)
+        {
+            var points = new Vector3[count];
+            for (int i = 0; i < count; i++)
+            {
+                float angle = i * Mathf.PI * 2 / count;
+                points[i] = center + new Vector3(Mathf.Cos(angle) * radiusX, Mathf.Sin(angle) * radiusY);
+            }
+    
+            return points;
+        }
 
         public void ArrangeCards(CardColor[] colors)
         {
+            var points = MakeCirclePoints(Vector3.zero, colors.Length);
+            
             for (int i = 0; i < colors.Length; i++)
             {
                 var card = _colorToCard[colors[i]];
-                card.SetSortingOrder(i);
-                card.TargetLocalX = GetSlotX(i, colors.Length);
-                card.TargetLocalY = GetSlotY(i, colors.Length);
+                card.VisualController.SetSortingOrder(i, CardLayer.PopUp);
+                // card.TargetLocalX = GetSlotX(i, colors.Length);
+                // card.TargetLocalY = GetSlotY(i, colors.Length);
+                
+                card.TargetLocalX = points[i].x;
+                card.TargetLocalY = points[i].y;
             }
         }
 
         public void ArrangeCards(int[] numbers)
         {
+            // var points = MakeCirclePoints(Vector3.zero, 5.4f, 3.6f, numbers.Length);
+            var points = MakeCirclePoints(Vector3.zero, numbers.Length);
+
             for (int i = 0; i < numbers.Length; i++)
             {
                 var card = _numberToCard[numbers[i]];
-                card.SetSortingOrder(i);
-                card.TargetLocalX = GetSlotX(i, numbers.Length);
-                card.TargetLocalY = GetSlotY(i, numbers.Length);
+                card.VisualController.SetSortingOrder(i, CardLayer.PopUp);
+                // card.TargetLocalX = GetSlotX(i, numbers.Length);
+                // card.TargetLocalY = GetSlotY(i, numbers.Length);
+                
+                card.TargetLocalX = points[i].x;
+                card.TargetLocalY = points[i].y;
             }
         }
 
         public void ArrangeCards(Direction[] directions)
         {
+            var points = MakeCirclePoints(Vector3.zero, directions.Length);
+
             for (int i = 0; i < directions.Length; i++)
             {
                 var card = _directionToCard[directions[i]];
-                card.SetSortingOrder(i);
+                card.VisualController.SetSortingOrder(i, CardLayer.PopUp);
                 card.TargetLocalX = GetSlotX(i, directions.Length);
                 card.TargetLocalY = GetSlotY(i, directions.Length);
+                
+                card.TargetLocalX = points[i].x;
+                card.TargetLocalY = points[i].y;
             }
         }
 

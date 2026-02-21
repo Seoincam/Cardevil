@@ -213,8 +213,9 @@ namespace Cardevil.NewCard.InStage
             
             var cardWorldPos = _view.GetWorldPosition(state);
             var isOnValueSelectionZone = _valueSelectionPresenter.IsOnValueSelectionZone(cardWorldPos);
-            
-            if (isOnValueSelectionZone && _valueSelectionPresenter.TryOpenValueSelection(state))
+
+            var cardId = _view.GetCardId(state);
+            if (isOnValueSelectionZone && _valueSelectionPresenter.TryOpenValueSelection(state, cardId))
             {
                 model.ClearDraggingData();
                 _view.StartValueSelection(state, _valueSelectionPresenter.ZoneWorldPosition);

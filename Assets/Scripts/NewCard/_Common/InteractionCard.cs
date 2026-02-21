@@ -12,7 +12,7 @@ namespace Cardevil.NewCard.Common
     public class InteractionCard : MonoBehaviour,
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
-        [SerializeField] private CardVisualController visualController;
+        [field: SerializeField] public CardVisualController VisualController { get; private set; }
 
         private Camera _cardCamera;
 
@@ -28,7 +28,7 @@ namespace Cardevil.NewCard.Common
 
         private void Reset()
         {
-            visualController = GetComponent<CardVisualController>();
+            VisualController = GetComponent<CardVisualController>();
         }
 
         private void LateUpdate()
@@ -38,13 +38,8 @@ namespace Cardevil.NewCard.Common
 
         public void Initialize(CardVisualInput visualInput, Camera cardCamera)
         {
-            visualController.SetLayout(visualInput);
+            VisualController.SetLayout(visualInput);
             _cardCamera = cardCamera;
-        }
-
-        public void SetSortingOrder(int sortingOrder)
-        {
-            visualController.SetSortingOrder(sortingOrder);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

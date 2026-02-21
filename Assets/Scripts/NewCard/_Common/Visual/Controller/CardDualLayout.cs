@@ -29,11 +29,15 @@ namespace Cardevil.NewCard.Visual.Controller
             background.SetPropertyBlock(backgroundPropertyBlock);
         }
 
-        public void SetSortingOrder(int sortingOrder)
+        public void SetSortingOrder(int sortingOrder, int layerId)
         {
+            background.sortingLayerID = layerId;
             background.sortingOrder = 100 * sortingOrder + 1;
             
+            subSprite0.sortingLayerID = layerId;
             subSprite0.sortingOrder = 100 * sortingOrder + 50;
+            
+            subSprite1.sortingLayerID = layerId;
             subSprite1.sortingOrder = 100 * sortingOrder + 50;
         }
 

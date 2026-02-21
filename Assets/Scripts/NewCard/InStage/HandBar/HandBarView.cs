@@ -89,6 +89,7 @@ namespace Cardevil.NewCard.InStage
             
             AddMap(state, card);
             BindCard(card);
+            CardRegistry.Register(card);
         }
         
         /// <summary>
@@ -106,6 +107,7 @@ namespace Cardevil.NewCard.InStage
             
             AddMap(state, handBarCard);
             BindCard(handBarCard);
+            CardRegistry.Register(handBarCard);
         }
 
         public void DestroyCard(ICardState state)
@@ -113,6 +115,7 @@ namespace Cardevil.NewCard.InStage
             if (_cardMap.Remove(state, out var card))
             {
                 _reverseCardMap.Remove(card);
+                CardRegistry.Unregister(card);
                 Destroy(card.gameObject);
             }
         }
@@ -139,8 +142,12 @@ namespace Cardevil.NewCard.InStage
                 card.TargetCurveAngleZ = curve.rotation;
             }
         }
-
-        public HandBarCard GetCard(ICardState state) => InternalGetCard(state);
+        
+        public uint GetCardId(ICardState state)
+        {
+            var card = InternalGetCard(state);
+            return CardRegistry.GetId(card);
+        }
 
         /// <summary>
         /// 카드의 핸드바 내 LocalPosition X를 반환. 
