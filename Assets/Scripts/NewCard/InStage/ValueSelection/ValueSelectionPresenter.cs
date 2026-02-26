@@ -57,7 +57,7 @@ namespace Cardevil.NewCard.InStage
             switch (SelectableType)
             {
                 case CardState.ValueSelectableType.Color:
-                    OnColorSelectable(state);
+                    OnColorSelectable(state, handBarCardId);
                     return true;
                 
                 case CardState.ValueSelectableType.Number:
@@ -78,7 +78,7 @@ namespace Cardevil.NewCard.InStage
             _view.Clear();
         }
 
-        private void OnColorSelectable(ICardState state)
+        private void OnColorSelectable(ICardState state, uint handBarCardId)
         {
             int number = state.Numbers.DefaultValue;
             foreach (var color in state.Colors.AllOptions)
@@ -87,7 +87,7 @@ namespace Cardevil.NewCard.InStage
             }   
             
             _view.SetDimActive(true);
-            _view.ArrangeCards(state.Colors.AllOptions.ToArray());
+            _view.ArrangeCards(state.Colors.AllOptions.ToArray(), handBarCardId);
         }
 
         private void OnNumberSelectable(ICardState state)

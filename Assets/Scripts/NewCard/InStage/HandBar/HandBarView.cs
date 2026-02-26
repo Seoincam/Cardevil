@@ -182,10 +182,10 @@ namespace Cardevil.NewCard.InStage
         /// </summary>
         public void StartValueSelection(ICardState state, Vector3 worldPosition)
         {
-            var card = InternalGetCard(state);
-            
-            card.WorldTargetPosition = worldPosition;
-            card.SetMode(HandBarCard.Mode.WorldTarget);
+            // var card = InternalGetCard(state);
+            //
+            // card.WorldTargetPosition = worldPosition;
+            // card.SetMode(HandBarCard.Mode.WorldTarget);
         }
 
         /// <summary>

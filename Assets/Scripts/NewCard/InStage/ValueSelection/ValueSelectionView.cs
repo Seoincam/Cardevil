@@ -3,6 +3,7 @@ using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using Cardevil.NewCard.Visual.Controller;
 using Cardevil.Utils.Directions;
+using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -196,9 +197,10 @@ namespace Cardevil.NewCard.InStage
             return points;
         }
 
-        public void ArrangeCards(CardColor[] colors)
+        public void ArrangeCards(CardColor[] colors, uint handBarCardId)
         {
-            var points = MakeCirclePoints(Vector3.zero, colors.Length);
+            var center = Vector3.zero;
+            var points = MakeCirclePoints(center, colors.Length);
             
             for (int i = 0; i < colors.Length; i++)
             {
@@ -210,6 +212,13 @@ namespace Cardevil.NewCard.InStage
                 card.TargetLocalX = points[i].x;
                 card.TargetLocalY = points[i].y;
             }
+            
+            var handBarCard = CardRegistry.GetHandBarCard(handBarCardId);
+            
+            handBarCard.SetMode(HandBarCard.Mode.Unmanaged);
+            handBarCard.transform.DOLocalRotate(Vector3.zero, 0.5f);
+            handBarCard.transform.DOMove(center, 10f).SetSpeedBased();
+            handBarCard.VisualController.SetSortingOrderLast(CardLayer.PopUp);
         }
 
         public void ArrangeCards(int[] numbers)
