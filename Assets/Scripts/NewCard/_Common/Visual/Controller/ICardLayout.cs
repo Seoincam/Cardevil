@@ -13,7 +13,7 @@ namespace Cardevil.NewCard.Visual.Controller
     public interface ICardLayoutSpriteRenderer : ICardLayout
     {
         void SetBackground(SpriteRenderer sharedBackgroundRenderer);
-        void SetSortingOrder(int sortingOrder);
+        void SetSortingOrder(int sortingOrder, int layerId);
         Tween SetAlpha(float targetAlpha, float duration, Ease ease);
     }
 }

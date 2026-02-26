@@ -7,7 +7,10 @@ namespace Cardevil.NewCard.InStage
 {
     public class ValueSelectionPresenter
     {
-        public event Action<ICardState> ValueSelected;
+        /// <summary>
+        /// 타겟 ICardState와 Registry 상의 InteractionCard Id를 반환.
+        /// </summary>
+        public event Action<ICardState, uint> ValueSelected;
         
         private readonly ValueSelectionView _view;
         
@@ -47,14 +50,14 @@ namespace Cardevil.NewCard.InStage
         /// <summary>
         /// 카드가 Value Selectable일 경우 값 선택창을 염.
         /// </summary>
-        public bool TryOpenValueSelection(ICardState state)
+        public bool TryOpenValueSelection(ICardState state, uint handBarCardId)
         {
             _targetState = state;
 
             switch (SelectableType)
             {
                 case CardState.ValueSelectableType.Color:
-                    OnColorSelectable(state);
+                    OnColorSelectable(state, handBarCardId);
                     return true;
                 
                 case CardState.ValueSelectableType.Number:
@@ -75,7 +78,7 @@ namespace Cardevil.NewCard.InStage
             _view.Clear();
         }
 
-        private void OnColorSelectable(ICardState state)
+        private void OnColorSelectable(ICardState state, uint handBarCardId)
         {
             int number = state.Numbers.DefaultValue;
             foreach (var color in state.Colors.AllOptions)
@@ -83,7 +86,8 @@ namespace Cardevil.NewCard.InStage
                 _view.AddColorSelectable(color, number);
             }   
             
-            _view.ArrangeCards(state.Colors.AllOptions.ToArray());
+            _view.SetDimActive(true);
+            _view.ArrangeCards(state.Colors.AllOptions.ToArray(), handBarCardId);
         }
 
         private void OnNumberSelectable(ICardState state)
@@ -94,6 +98,7 @@ namespace Cardevil.NewCard.InStage
                 _view.AddNumberSelectable(color, number);
             }
             
+            _view.SetDimActive(true);
             _view.ArrangeCards(state.Numbers.AllOptions.ToArray());
         }
 
@@ -104,10 +109,11 @@ namespace Cardevil.NewCard.InStage
                 _view.AddDirectionSelectable(direction);
             }
             
+            _view.SetDimActive(true);
             _view.ArrangeCards(state.Directions.AllOptions.ToArray());
         }
 
-        private void OnValueSelected(in ValueSelectionView.Values values)
+        private void OnValueSelected(in ValueSelectionView.Values values, uint cardId)
         {
             switch (SelectableType)
             {
@@ -124,8 +130,9 @@ namespace Cardevil.NewCard.InStage
                     break;
             }
             
-            _view.Clear();
-            ValueSelected?.Invoke(_targetState);
+            _view.Clear(except: cardId);
+            _view.SetDimActive(false);
+            ValueSelected?.Invoke(_targetState, cardId);
             _targetState = null;
         }
     }

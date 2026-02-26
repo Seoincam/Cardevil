@@ -49,13 +49,16 @@ namespace Cardevil.NewCard.Visual.Controller
             }
         }
 
-        public void SetSortingOrder(int sortingOrder)
+        public void SetSortingOrder(int sortingOrder, int layerId)
         {
             if (_colorJewels == null) return;
             
             for (int i = 0; i < _colorJewels.Count; i++)
             {
-                _colorJewels[i].GetComponent<SpriteRenderer>().sortingOrder = 100 * sortingOrder + 80 + i;
+                var spriteRenderer = _colorJewels[i].GetComponent<SpriteRenderer>();
+                
+                spriteRenderer.sortingLayerID = layerId;
+                spriteRenderer.sortingOrder = 100 * sortingOrder + 80 + i;
             }
         }
 

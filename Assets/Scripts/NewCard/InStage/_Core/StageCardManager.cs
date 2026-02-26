@@ -15,7 +15,7 @@ namespace Cardevil.NewCard.InStage
         [SerializeField] private ValueSelectionPresenter valueSelectionPresenter;
         [SerializeField] private ScorePresenter scorePresenter;
 
-        private void Awake()
+        private void Start()
         {
             valueSelectionPresenter = new ValueSelectionPresenter(valueSelectionView);
             scorePresenter = new ScorePresenter(cardScoreView);

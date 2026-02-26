@@ -1,10 +1,18 @@
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using DG.Tweening;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.NewCard.Visual.Controller
 {
+    public enum CardLayer
+    {
+        Default,
+        PopUp
+    }
+    
     public class CardVisualController : MonoBehaviour
     {
         [Header("Prefabs")]
@@ -23,8 +31,16 @@ namespace Cardevil.NewCard.Visual.Controller
         private TrailRenderer _currentTrail;
 
         private const int LastSortingOrder = 100;
+        private static Dictionary<CardLayer, int> _layerIdMap;
         
         public float TrailTime => _currentTrail?.time ?? 0f;
+
+        private void Awake()
+        {
+            _layerIdMap ??= new Dictionary<CardLayer, int>();
+            _layerIdMap.TryAdd(CardLayer.Default, SortingLayer.NameToID("Card Default"));
+            _layerIdMap.TryAdd(CardLayer.PopUp, SortingLayer.NameToID("Card PopUp"));
+        }
 
         /// <summary>
         /// ICardState를 VisualInput으로 변환한 후, 레이아웃을 적용.
@@ -78,21 +94,28 @@ namespace Cardevil.NewCard.Visual.Controller
         }
 
         /// <summary>
-        /// 모든 요소의 Sorting Order를 설정.
+        /// 모든 하위 요소의 Sorting Order를 설정.
         /// </summary>
-        public void SetSortingOrder(int sortingOrder)
+        public void SetSortingOrder(int sortingOrder, CardLayer layer = CardLayer.Default)
         {
+            var layerId = _layerIdMap[layer];
+            Debug.Log($"솔팅오더: {layerId}");
+            
+            innerFrame.sortingLayerID = layerId;
             innerFrame.sortingOrder = 100 * sortingOrder + 10;
+            
+            background.sortingLayerID = layerId;
             background.sortingOrder = 100 * sortingOrder + 0;
             
-            _currentLayout?.SetSortingOrder(sortingOrder);
-            _currentColorJewel?.SetSortingOrder(sortingOrder);
+            _currentLayout?.SetSortingOrder(sortingOrder, layerId);
+            _currentColorJewel?.SetSortingOrder(sortingOrder, layerId);
         }
 
         /// <summary>
         /// Sorting Order를 가장 위로 설정.
         /// </summary>
-        public void SetSortingOrderLast() => SetSortingOrder(LastSortingOrder);
+        public void SetSortingOrderLast(CardLayer layer = CardLayer.Default) => 
+            SetSortingOrder(LastSortingOrder, layer);
         
         public void SetTrail()
         {

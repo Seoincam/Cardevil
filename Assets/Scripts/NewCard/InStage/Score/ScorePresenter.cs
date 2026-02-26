@@ -29,7 +29,7 @@ namespace Cardevil.NewCard.InStage.Score
             
                 ApplyOperators().Forget();
             }
-            TestAsync().Forget();
+            // TestAsync().Forget();
         }
         
         public void AddOperator(ScoreOperatorType operatorType, float value)

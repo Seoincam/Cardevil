@@ -213,8 +213,9 @@ namespace Cardevil.NewCard.InStage
             
             var cardWorldPos = _view.GetWorldPosition(state);
             var isOnValueSelectionZone = _valueSelectionPresenter.IsOnValueSelectionZone(cardWorldPos);
-            
-            if (isOnValueSelectionZone && _valueSelectionPresenter.TryOpenValueSelection(state))
+
+            var cardId = _view.GetCardId(state);
+            if (isOnValueSelectionZone && _valueSelectionPresenter.TryOpenValueSelection(state, cardId))
             {
                 model.ClearDraggingData();
                 _view.StartValueSelection(state, _valueSelectionPresenter.ZoneWorldPosition);
@@ -282,11 +283,13 @@ namespace Cardevil.NewCard.InStage
             model.Sort(CardStateComparers.ByIcon);
             _view.ArrangeCards(model.Hand);
         }
-        private void OnValueSelected(ICardState state)
+        private void OnValueSelected(ICardState state, uint cardId)
         {
             model.Reattach(state);
                 
-            _view.UpdateCardVisual(state);
+            _view.DestroyCard(state);
+            _view.ConvertToHandCard(state, cardId);
+
             _view.EndValueSelection(state);
             _view.ArrangeCards(model.Hand);
             
