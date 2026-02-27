@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92113d19c6ca44568e863173db6a3a74, type: 3}
   m_Name: Discard Params
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.NewCard.InStage.DiscardParams
-  <Speed>k__BackingField: 13
+  <Speed>k__BackingField: 12
   <TargetScale>k__BackingField: 0.15
   <ScaleEase>k__BackingField: 12
   <Rotation>k__BackingField: {x: 0, y: 0, z: 260}
-  <RotationEase>k__BackingField: 13
+  <RotationEase>k__BackingField: 4
   <JumpPower>k__BackingField: 5
-  <JumpPowerRandomRange>k__BackingField: {x: 0.75, y: 1.5}
+  <JumpPowerRandomRange>k__BackingField: {x: 0.75, y: 1.25}
   <JumpEase>k__BackingField: 35
   <FadeEase>k__BackingField: 2

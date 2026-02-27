@@ -55,6 +55,13 @@ namespace Cardevil.NewCard.InStage.Score
             ScaleAsync().Forget();
         }
 
+        public async UniTask PlayAddOperator(IScoreOperator scoreOperator)
+        {
+            var text = CreateText(scoreOperator);
+            operatorTexts.Add(scoreOperator, text);
+            await ScaleAsync();
+        }
+
         public async UniTask ApplyOperator(IScoreOperator scoreOperator, float previousScore, float currentScore)
         {
             var targetText = operatorTexts[scoreOperator];

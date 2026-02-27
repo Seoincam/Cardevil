@@ -3,6 +3,10 @@ using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
 {
+    /// <summary>
+    /// Presenter들을 생성하며 연결해줌.
+    /// 상위 로직은 하위 로직을 직접 제어, 하위 로직은 이벤트만 발행하고 상위 로직을 모르도록 설계함.
+    /// </summary>
     public class StageCardManager : MonoBehaviour
     {
         [SerializeField] private StageCardCoreView coreView;
@@ -18,9 +22,9 @@ namespace Cardevil.NewCard.InStage
         private void Start()
         {
             valueSelectionPresenter = new ValueSelectionPresenter(valueSelectionView);
-            scorePresenter = new ScorePresenter(cardScoreView);
             handBarPresenter = new HandBarPresenter(handBarView, valueSelectionPresenter);
-            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter);
+            scorePresenter = new ScorePresenter(cardScoreView); 
+            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter, scorePresenter);
             
             handBarPresenter.HandRankChanged += scorePresenter.OnHandRankChanged;
         }

@@ -23,6 +23,12 @@ namespace Cardevil.NewCard.InStage
         public IReadOnlyList<ICardState> Hand => hand;
         public IReadOnlyList<ICardState> Selection => selection;
 
+        /// <summary>
+        /// 손패 상에 위치한 순서대로 정렬된 선택 목록.
+        /// 호출 시 새로운 객체를 반환함.
+        /// </summary>
+        public IReadOnlyList<ICardState> SortedSelection => selection.OrderBy(s => hand.IndexOf(s)).ToList();
+
         public void Add(ICardState state)
         {
             if (!handSet.Add(state)) return;

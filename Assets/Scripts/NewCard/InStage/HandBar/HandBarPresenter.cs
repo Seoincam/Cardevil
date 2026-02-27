@@ -28,11 +28,12 @@ namespace Cardevil.NewCard.InStage
 
         public event HandRankAction HandRankChanged;
         public event HandBarStateAction HandBarStateChanged;
-        
+
         /// <summary>
-        /// 현재 선택 중인 카드.
+        /// 손패 상에 위치한 순서대로 정렬된 선택 카드.
+        /// 호출 시 새로운 객체를 반환함.
         /// </summary>
-        public IReadOnlyList<ICardState> Selection => model.Selection;
+        public IReadOnlyList<ICardState> SortedSelection => model.SortedSelection;
 
         /// <summary>
         /// 선택한 카드들을 사용할 수 있는지 여부를 반환.
@@ -49,6 +50,8 @@ namespace Cardevil.NewCard.InStage
         /// 현재 족보 평가 데이터.
         /// </summary>
         public HandRankData HandRankData => _cachedHandRankData;
+        
+        private IReadOnlyList<ICardState> Selection => model.Selection;
 
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
@@ -96,6 +99,7 @@ namespace Cardevil.NewCard.InStage
             foreach (var state in states)
             {
                 AddCard(state);
+                await UniTask.Delay(TimeSpan.FromSeconds(.15f));
             }
         }
 
