@@ -1,23 +1,17 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
 using Cardevil.DebugConsole;
-using Cardevil.Events;
-using Cardevil.Events.AsyncPriorityEvent;
-using Cardevil.Events.Core;
-using Cardevil.Events.ExecEvents;
 using Cardevil.Ingame.Entities;
 using Cardevil.Ingame.Field;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using JetBrains.Annotations;
 using System;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.Scripting;
-using UnityEngine.Serialization;
 using Console = Cardevil.DebugConsole.Console;
 
 namespace Cardevil.Ingame.Player
@@ -25,7 +19,7 @@ namespace Cardevil.Ingame.Player
     /// <summary>
     /// 플레이어 캐릭터 클래스
     /// </summary>
-    public class PlayerCharacter : MonoBehaviour, IPlayerControl, TurnManager.ITurnTarget
+    public class PlayerCharacter : MonoBehaviour, IPlayerControl, ITurnPlayer
     {
         [Header("Debug")]
         [SerializeField] protected bool _isDebugMode = false;
@@ -82,18 +76,6 @@ namespace Cardevil.Ingame.Player
             {
                 _entity.Init(Field.GetTile(_initialTile));
             }
-            
-            // 이벤트 등록
-            int movePriority = (int)PlayerMoveArgs.Orders.PlayerMove;
-            ExecStaticEventBus<PlayerMoveArgs>.Register(movePriority, OnTurnMoveAsync);
-
-            int attackPriority = (int)PlayerAttackArgs.Orders.PlayerAttack;
-            ExecStaticEventBus<PlayerAttackArgs>.Register(attackPriority, OnTurnAttackAsync);
-
-            int attackedPriority = (int)EnemyAttackArgs.Orders.PlayerAttacked;
-            ExecStaticEventBus<EnemyAttackArgs>.Register(attackedPriority, OnTurnAttackedAsync);
-
-            // TODO: 이벤트 해제하기
         }
 
         public void Update()
@@ -417,38 +399,31 @@ namespace Cardevil.Ingame.Player
             return Entity.Tile.j;
         }
 
-        #region ITurnPlayerAction 구현
+        #region ITurnPlayer
         
         public bool IsDead { get; }
-
-        #endregion
-
-        #region 이벤트 기반 플레이어 행동
-
-        private async UniTask OnTurnMoveAsync(PlayerMoveArgs args, CancellationToken cancellationToken)
+        public TileVector Position { get; }
+        
+        public async UniTask OnMoveAsync(NewCard.InStage.PlayerMoveArgs args, CancellationToken cancellationToken)
         {
-            foreach (var moving in args.ToMove)
-            {
-                await MoveWithAnim(moving, 1);
-                await UniTask.Delay(300);
-            }
-            args.SetPlayerPositionAfterMove(Entity.Tile);
+            await MoveWithAnim(args.Direction, 1);
+            await UniTask.Delay(300, cancellationToken: cancellationToken);
         }
 
-        private async UniTask OnTurnAttackAsync(PlayerAttackArgs args, CancellationToken cancellationToken)
+        public async UniTask AttackAsync(float damage)
         {
             LogEx.Log("Player Attacks!");
 
             await UniTask.Delay(100);
 
-            LogEx.Log($"플레이어의 공격 : {args.EvaluationResult.TotalDamage} 피해. 구현 아직");
+            LogEx.Log($"플레이어의 공격 : {damage} 피해. 구현 아직");
             PlayerVisual.PlayAttackAnimation();
         }
 
-        private async UniTask OnTurnAttackedAsync(EnemyAttackArgs args, CancellationToken cancellationToken)
+        public async UniTask TakeDamageAsync(float damage)
         {
-            LogEx.Log($"Player takes {args.TotalDamage} damage!");
-            PlayerStatus.TakeDamage(args.TotalDamage);
+            LogEx.Log($"Player takes {damage} damage!");
+            PlayerStatus.TakeDamage((int)damage);
         }
 
         #endregion

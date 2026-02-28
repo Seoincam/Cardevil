@@ -22,7 +22,8 @@ namespace Cardevil.Core.Turn
         bool IsDead { get; }
         TileVector Position { get; }
 
-        UniTask OnMove(PlayerMoveArgs args, CancellationToken cancellationToken);
+        UniTask OnMoveAsync(PlayerMoveArgs args, CancellationToken cancellationToken);
+        UniTask AttackAsync(float damage);
         UniTask TakeDamageAsync(float damage);
     }
     
@@ -34,7 +35,7 @@ namespace Cardevil.Core.Turn
 
         private void Initialize()
         {
-            ExecEventBus<PlayerMoveArgs>.RegisterStatic(0, _player.OnMove);
+            ExecEventBus<PlayerMoveArgs>.RegisterStatic(0, _player.OnMoveAsync);
         }
         
         private async UniTask CoreLoopAsync(CancellationToken cancellationToken = default)
@@ -46,6 +47,7 @@ namespace Cardevil.Core.Turn
 
                 if (finalScore > 0f)
                 {
+                    await _player.AttackAsync(finalScore);
                     await _enemy.TakeDamageAsync(finalScore);
                 }
 
