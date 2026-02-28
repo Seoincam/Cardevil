@@ -23,19 +23,22 @@ namespace Cardevil.NewCard.InStage.Score
                 const int testLoopCount = 10;
                 for (int i = 0; i < testLoopCount; i++)
                 {
-                    AddOperator(ScoreOperatorType.Plus, Random.Range(1, 30));
-                    await UniTask.Delay(TimeSpan.FromSeconds(.5f));
+                    await AddOperatorAsync(new ScoreOperator
+                    {
+                        Type = ScoreOperatorType.Plus, Value = Random.Range(1f, 120f)
+                    });
                 }   
             
                 ApplyOperators().Forget();
             }
             // TestAsync().Forget();
         }
-        
-        public void AddOperator(ScoreOperatorType operatorType, float value)
+
+        public async UniTask AddOperatorAsync(IScoreOperator scoreOperator)
         {
-            var scoreOperator = model.AddOperator(operatorType, value);
-            _view.AddOperator(scoreOperator);
+            model.AddOperator(scoreOperator);
+            await _view.PlayAddOperator(scoreOperator);
+            await UniTask.Delay(TimeSpan.FromSeconds(0.3f)); // 임시 대기
         }
 
         /// <summary>

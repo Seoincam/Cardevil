@@ -1,8 +1,10 @@
 using Cardevil.NewCard.Common.Core;
+using Cardevil.NewCard.InStage.Calculator;
+using Cardevil.NewCard.InStage.Score;
 using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.NewCard.InStage
@@ -12,10 +14,20 @@ namespace Cardevil.NewCard.InStage
     {
         [SerializeField] private StageCardCoreModel model = new();
         
+        // 외부 주입
         private HandBarPresenter _handBarPresenter;
+        private ScorePresenter _scorePresenter;
         private StageCardCoreView _view;
         
-        public StageCardCorePresenter(StageCardCoreView view, HandBarPresenter handBarPresenter)
+        // 생성
+        private CardUsingSequencer _sequencer = new()
+        {
+            // TODO: 실제 유물 받아오기
+            EachCardScoreOperatorProviders = new List<IEachCardScoreOperatorProvider>(),
+            TotalScoreOperatorProviders = new List<ITotalScoreOperatorProvider>()
+        };
+        
+        public StageCardCorePresenter(StageCardCoreView view, HandBarPresenter handBarPresenter, ScorePresenter scorePresenter)
         {
             _view = view;
             view.UseClicked += OnUseClicked;
@@ -24,6 +36,7 @@ namespace Cardevil.NewCard.InStage
             view.SetAllButtonState(false);
             
             _handBarPresenter = handBarPresenter;
+            _scorePresenter = scorePresenter;
             handBarPresenter.HandBarStateChanged += OnHandBarStateChanged;
             
             // Test();
@@ -105,6 +118,48 @@ namespace Cardevil.NewCard.InStage
             Debug.Assert(_handBarPresenter.CanUseSelection, "카드를 사용할 수 없지만 사용 버튼이 눌렸음.");
             
             _view.SetAllButtonState(false);
+            UseAsync().Forget();
+            
+            return;
+            async UniTask UseAsync()
+            {
+                var count = _handBarPresenter.SortedSelection.Count;
+                
+                var steps = _sequencer.Build(
+                    _handBarPresenter.SortedSelection,
+                    _handBarPresenter.HandRankData
+                );
+            
+                foreach (var step in steps)
+                {
+                    switch (step)
+                    {
+                        case ScoreStep scoreStep: 
+                            await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
+                            continue;
+                        
+                        case DiscardStep discardStep: 
+                            await _handBarPresenter.DiscardAsync(discardStep.Card);
+                            continue;
+                        
+                        case MoveStep moveStep:
+                            continue;
+                    }
+                }
+
+                var finalScore = await _scorePresenter.ApplyOperators();
+
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+                await _handBarPresenter.DiscardSelectionAsync();
+                
+                // 임시 뽑기
+                await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
+                
+                var states = model.Draw(count);
+                await _handBarPresenter.DrawAsync(states);
+                
+                _handBarPresenter.CanInteract = true;
+            }
         }
 
         private void OnDiscardClicked()
@@ -112,10 +167,9 @@ namespace Cardevil.NewCard.InStage
             Debug.Assert(_handBarPresenter.CanDiscard, "카드를 버릴 수 없지만 버리기 버튼이 눌렸음.");
             
             _view.SetAllButtonState(false);
-            
             DiscardAsync().Forget();
+            
             return;
-
             async UniTaskVoid DiscardAsync()
             {
                 _handBarPresenter.CanInteract = false;
@@ -127,29 +181,6 @@ namespace Cardevil.NewCard.InStage
                 await _handBarPresenter.DrawAsync(states);
                 
                 _handBarPresenter.CanInteract = true;
-            }
-        }
-
-        private async UniTask UseAsync()
-        {
-            var handRankData = _handBarPresenter.HandRankData;
-            
-            foreach (var state in _handBarPresenter.Selection)
-            {
-                if (state.IsAttack && !handRankData.RankedCards.Contains(state))
-                {
-                    // TODO: 버리기
-                    continue;
-                }
-
-                if (state.IsMove)
-                {
-                    
-                }
-                else if (state.IsAttack)
-                {
-                    
-                }
             }
         }
     }

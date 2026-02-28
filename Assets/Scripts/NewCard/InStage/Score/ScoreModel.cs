@@ -3,6 +3,7 @@ using Cardevil.NewCard.Common.Core;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = System.Object;
 using Random = UnityEngine.Random;
 
 namespace Cardevil.NewCard.InStage.Score
@@ -30,18 +31,10 @@ namespace Cardevil.NewCard.InStage.Score
             SetScore(HandRankScore);
         }
 
-        public IScoreOperator AddOperator(ScoreOperatorType operatorType, float value)
+        public void AddOperator(IScoreOperator scoreOperator)
         {
-            var scoreOperator = new ScoreOperator
-            {
-                Type = operatorType, 
-                Value = value
-            };
-            
             scoreOperators.Add(scoreOperator);
-            return scoreOperator;
         }
-
         public void Clear()
         {
             score = 0;

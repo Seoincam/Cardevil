@@ -228,7 +228,7 @@ namespace Cardevil.NewCard.InStage
                     break;
                 
                 case MovementType.LerpToLocal:
-                    _movement = new LerpToLocalMovement(() => LocalTargetPosition.Resolve(), 10f);
+                    _movement = new LerpToLocalMovement(() => LocalTargetPosition.Resolve(), 8f);
                     break;
                 
                 case MovementType.LerpToWorld:

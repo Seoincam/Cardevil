@@ -1,7 +1,6 @@
 using Cardevil.NewCard.Common.Core;
 using Cardevil.NewCard.Common.Visual;
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,9 +36,12 @@ namespace Cardevil.NewCard.Visual.Controller
 
         private void Awake()
         {
-            _layerIdMap ??= new Dictionary<CardLayer, int>();
-            _layerIdMap.TryAdd(CardLayer.Default, SortingLayer.NameToID("Card Default"));
-            _layerIdMap.TryAdd(CardLayer.PopUp, SortingLayer.NameToID("Card PopUp"));
+            if (_layerIdMap == null)
+            {
+                _layerIdMap = new Dictionary<CardLayer, int>(2);
+                _layerIdMap.TryAdd(CardLayer.Default, SortingLayer.NameToID("Card Default"));
+                _layerIdMap.TryAdd(CardLayer.PopUp, SortingLayer.NameToID("Card PopUp"));
+            }
         }
 
         /// <summary>
@@ -99,7 +101,6 @@ namespace Cardevil.NewCard.Visual.Controller
         public void SetSortingOrder(int sortingOrder, CardLayer layer = CardLayer.Default)
         {
             var layerId = _layerIdMap[layer];
-            Debug.Log($"솔팅오더: {layerId}");
             
             innerFrame.sortingLayerID = layerId;
             innerFrame.sortingOrder = 100 * sortingOrder + 10;
