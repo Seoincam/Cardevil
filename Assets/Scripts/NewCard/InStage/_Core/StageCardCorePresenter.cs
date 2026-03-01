@@ -52,6 +52,7 @@ namespace Cardevil.NewCard.InStage
 
         /// <summary>
         /// 플레이어가 사용하기 버튼을 누를 때까지 대기.
+        /// 이때 플레이어는 카드 선택, 값 변경, 순서변경 등을 수행할 수 있음.
         /// </summary>
         public async UniTask WaitUntilPlayerInputAsync()
         {
@@ -62,7 +63,111 @@ namespace Cardevil.NewCard.InStage
         }
 
         /// <summary>
+        /// 선택된 카드들 중, 왼쪽에 위치한 카드부터 1장씩 사용 처리.
+        /// </summary>
+        public async UniTask StepEachCardAsync()
+        {
+            var steps = _sequencer.BuildPlayerSteps(
+                _handBarPresenter.SortedSelection,
+                _handBarPresenter.HandRankData
+            );
+            
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 내부 발동 순서에 따라, 조건에 맞는 합연산 유물 처리.
+        /// </summary>
+        public async UniTask StepPlusRelicAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 칸 조건에 맞는 합연산 처리.
+        /// </summary>
+        public async UniTask StepPlusFieldAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 플레이어 상태창에 아이콘으로 존재하는 합연산을 처리.
+        /// </summary>
+        public async UniTask StepPlusPlayerStatusAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 카드의 최종 데미지 증폭률에 따라 곱연산을 처리.
+        /// </summary>
+        public async UniTask StepMultiplyCardFinalDamageAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 내부 발동 순서에 따라, 조건에 맞는 곱연산 유물 처리.
+        /// </summary>
+        public async UniTask StepMultiplyRelicAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 내부 발동 순서에 따라, 조건에 맞는 골드 획득 유물 처리.
+        /// </summary>
+        public async UniTask StepGoldRelicAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 칸 조건에 맞는 곱연산 처리.
+        /// </summary>
+        public async UniTask StepMultiplyFieldAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 플레이어 상태창에 아이콘으로 존재하는 곱연산을 처리.
+        /// </summary>
+        public async UniTask StepMultiplyPlayerStatusAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 적 상태창에 아이콘으로 존재하는 기믹을 처리.
+        /// </summary>
+        public async UniTask StepEnemyStatusAsync()
+        {
+            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            await InternalStepAsync(steps);
+        }
+
+        /// <summary>
+        /// 추가된 ScoreOperator들을 모두 계산함.
+        /// </summary>
+        public async UniTask<float> ApplyScoreOperatorsAsync()
+        {
+            return await _scorePresenter.ApplyOperatorsAsync();
+        }
+        
+
+        /// <summary>
         /// 플레이어의 카드를 사용함. 모든 유물과 적 로직 포함.
+        /// 이때 플러시 효과 등도 발동됨.
         /// </summary>
         /// <returns> 계산된 최종 데미지. </returns>
         public async UniTask<float> UseAsync()
@@ -117,6 +222,13 @@ namespace Cardevil.NewCard.InStage
             //
             // _handBarPresenter.CanInteract = true;
         }
+
+        public async UniTask DiscardSelectionAsync() => await _handBarPresenter.DiscardSelectionAsync();
+
+        public async UniTask DrawAsync()
+        {
+            
+        }
         
         private void OnHandBarStateChanged(in HandBarPresenter.SelectionState state)
         {
@@ -151,6 +263,28 @@ namespace Cardevil.NewCard.InStage
                 _handBarPresenter.CanInteract = true;
             }
             DiscardAsync().Forget();
+        }
+
+        private async UniTask InternalStepAsync(IReadOnlyList<ICardStep> steps)
+        {
+            foreach (var step in steps)
+            {
+                switch (step)
+                {
+                    case ScoreStep scoreStep: 
+                        await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
+                        continue;
+                    
+                    case MoveStep moveStep:
+                        await ExecEventBus<PlayerMoveArgs>.InvokeMergedAndDispose(moveStep.Args);
+                        await _handBarPresenter.DiscardAsync(moveStep.Card);
+                        continue;
+                    
+                    case DiscardStep discardStep: 
+                        await _handBarPresenter.DiscardAsync(discardStep.Card);
+                        continue;
+                }
+            }
         }
     }
 }

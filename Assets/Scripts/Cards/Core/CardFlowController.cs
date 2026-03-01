@@ -3,7 +3,6 @@ using Cardevil.Cards.Evaluation;
 using Cardevil.Cards.InStage;
 using Cysharp.Threading.Tasks;
 using Cardevil.Core.Bootstrap;
-using Cardevil.Core.Turn.Interfaces;
 using System;
 using System.Threading;
 using UnityEngine;
@@ -11,7 +10,7 @@ using UnityEngine;
 namespace Cardevil.Cards.Core
 {
     [Serializable]
-    public sealed class CardFlowController : ITurnCardFlow
+    public sealed class CardFlowController
     {
         [SerializeField, VisibleOnly] private StageCardsModel cardsModel;
         private RerollPresenter _rerollPresenter;

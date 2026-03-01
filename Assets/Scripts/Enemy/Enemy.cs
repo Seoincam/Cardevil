@@ -1,5 +1,4 @@
 using Cardevil.Core.Turn;
-using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
 using System;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace Cardevil.InGame.Enemy
         FourCard,
         StraightFlush
     }
-    public class Enemy : MonoBehaviour, IAttackVisualizer
+    public class Enemy : MonoBehaviour, IAttackVisualizer, ITurnEnemy
     {
         //-----HP UI-----///
         [SerializeField] private Slider hpBar; // Inspector에서 UI Slider를 드래그하여 연결합니다.
@@ -69,6 +68,57 @@ namespace Cardevil.InGame.Enemy
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
         }
 
+        #region ITurnEnemey 관련
+
+        public bool IsDead { get; }
+        
+        public async UniTask OnStartTurnAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnTakeDamageAsync(float damage)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnDieAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnReplaceAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask<bool> CheckAttackCountAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask<(bool success, int damage)> TryAttackAsync(IEnemyContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnAttackSuccessAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnEndTurnAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask UpdateAttackAsync(IEnemyContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+        
         #region Attack 관련
 
         #region IAttackVisualizer 구현
