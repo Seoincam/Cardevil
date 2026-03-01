@@ -1,4 +1,3 @@
-using Cardevil.Cards;
 using Cardevil.Core;
 using UnityEngine;
 using UnityEngine.UI;

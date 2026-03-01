@@ -1,4 +1,3 @@
-using Cardevil.Cards.InStage;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Utils;
 
@@ -42,55 +41,6 @@ namespace Cardevil.Events
             /// 입장 시의 모든 이벤트가 끝나고 코어 루프로 넘어갈 때 호출됨.
             /// </summary>
             Last = int.MaxValue,
-        }
-    }
-    
-    /// <summary>
-    /// 플레이어의 공격 시전 이벤트 인자.
-    /// </summary>
-    public class PlayerAttackArgs : ExecEventArgs<PlayerAttackArgs>
-    {
-        public EvaluationResult EvaluationResult { get; private set; }
-
-        public static PlayerAttackArgs Get(EvaluationResult evaluationResult)
-        {
-            var args = Get();
-            args.EvaluationResult = evaluationResult;
-            return args;
-        }
-
-        public enum Orders
-        {
-            PlayerAttack,
-            EnemyAttacked
-        }
-
-        public override void Clear()
-        {
-            base.Clear();
-            EvaluationResult = default;
-        }
-    }
-
-    /// <summary>
-    /// 적의 공격 시전 이벤트 인자.
-    /// </summary>
-    public class EnemyAttackArgs : ExecEventArgs<EnemyAttackArgs>
-    {
-        public int TotalDamage { get; private set; }
-
-        public void SetDamage(int totalDamage) => TotalDamage = totalDamage;
-        
-        public enum Orders
-        {
-            EnemyAttack,
-            PlayerAttacked
-        }
-
-        public override void Clear()
-        {
-            base.Clear();
-            TotalDamage = 0;
         }
     }
 }

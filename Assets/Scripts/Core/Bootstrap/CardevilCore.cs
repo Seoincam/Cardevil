@@ -1,4 +1,3 @@
-using Cardevil.Cards.Enhancements;
 using Cardevil.Pools;
 using Cardevil.Save;
 using Cardevil.Sound;
@@ -26,8 +25,6 @@ namespace Cardevil.Core.Bootstrap
         [field: SerializeField] public SoundManager Sound { get; private set; }
         [field: SerializeField] public PoolManager Pool { get; private set; }
         
-        [field: SerializeField] public EnhancementDataLibrary CardEnhancementData { get; private set; } 
-
         [Header("References")]
         [SerializeField] private EventSystem eventSystem;
         [field: SerializeField] public DatabaseManager Database { get; private set; }

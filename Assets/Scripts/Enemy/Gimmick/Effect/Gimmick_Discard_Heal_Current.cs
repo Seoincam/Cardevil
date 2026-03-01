@@ -21,21 +21,21 @@ namespace Cardevil.InGame.Enemy
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<CardDiscardChangeArgs>.RegisterDynamic(ActionFunction);
+            // ExecEventBus<CardDiscardChangeArgs>.RegisterDynamic(ActionFunction);
         }
 
 
-        // 턴이 끝난뒤 체력을 회복합니다.
-        private void ActionFunction(ExecQueue<CardDiscardChangeArgs> queue, CardDiscardChangeArgs args)
-        {
-            _targetEnemy.CurrentHp = Mathf.Min(_targetEnemy.CurrentHp * _targetEnemy.baseMobBossData.GimmickValue[0] + _targetEnemy.CurrentHp, _targetEnemy.maxHP);
-            Debug.Log($"{_targetEnemy.name} : 카드를 버려 체력을 { _targetEnemy.maxHP * _targetEnemy.baseMobBossData.GimmickValue[0]} 만큼 회복하였습니다 ");
-        }
+        // // 턴이 끝난뒤 체력을 회복합니다.
+        // private void ActionFunction(ExecQueue<CardDiscardChangeArgs> queue, CardDiscardChangeArgs args)
+        // {
+        //     _targetEnemy.CurrentHp = Mathf.Min(_targetEnemy.CurrentHp * _targetEnemy.baseMobBossData.GimmickValue[0] + _targetEnemy.CurrentHp, _targetEnemy.maxHP);
+        //     Debug.Log($"{_targetEnemy.name} : 카드를 버려 체력을 { _targetEnemy.maxHP * _targetEnemy.baseMobBossData.GimmickValue[0]} 만큼 회복하였습니다 ");
+        // }
 
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<CardDiscardChangeArgs>.UnregisterDynamic(ActionFunction);
+            // ExecEventBus<CardDiscardChangeArgs>.UnregisterDynamic(ActionFunction);
         }
     }
 }

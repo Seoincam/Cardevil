@@ -1,5 +1,4 @@
 using Cardevil.Attributes;
-using Cardevil.Cards.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
 using Cardevil.Dungeon;
@@ -31,7 +30,6 @@ namespace Cardevil.Core.Root
         [SerializeField] private TurnManager turnManager;
         
         [SerializeField] private EnemySpawner _enemySpawner;
-        [SerializeField] private CardFlowController cardFlowController;
 
         [Header("References")]
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
@@ -94,8 +92,6 @@ namespace Cardevil.Core.Root
                 LogEx.LogError($"Failed to spawn Enemy. stage Id: {_context.stageId}");
                 return;
             }
-            
-            cardFlowController = CardFlowController.Build();
             
             enemy.Init(Field);
             

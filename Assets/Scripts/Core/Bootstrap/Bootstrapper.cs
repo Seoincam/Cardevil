@@ -61,7 +61,6 @@ namespace Cardevil.Core.Bootstrap
             
             // 2. Database
             await ctx.Database.InitializeAsync();
-            ctx.CardEnhancementData.Init();
             Loaded++;
             
             // 3. Save data

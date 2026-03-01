@@ -15,21 +15,21 @@ namespace Cardevil.InGame.Enemy
         {
             _targetEnemy = enemy;
 
-            ExecEventBus<EachCardDiscardedArgs>.RegisterDynamic(CalculateAttackDamage);
+            // ExecEventBus<EachCardDiscardedArgs>.RegisterDynamic(CalculateAttackDamage);
         }
 
-        private void CalculateAttackDamage(ExecQueue<EachCardDiscardedArgs> queue, EachCardDiscardedArgs args)
-        {
-            float newHP;
-            newHP = _targetEnemy.HP + (_targetEnemy.HP * (float)args.CardData.NumberSelectState.FinalValue/100);
-            _targetEnemy.CurrentHp = Mathf.Min(newHP, _targetEnemy.maxHP);
-
-        }
+        // private void CalculateAttackDamage(ExecQueue<EachCardDiscardedArgs> queue, EachCardDiscardedArgs args)
+        // {
+        //     float newHP;
+        //     newHP = _targetEnemy.HP + (_targetEnemy.HP * (float)args.CardData.NumberSelectState.FinalValue/100);
+        //     _targetEnemy.CurrentHp = Mathf.Min(newHP, _targetEnemy.maxHP);
+        //
+        // }
 
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<EachCardDiscardedArgs>.UnregisterDynamic(CalculateAttackDamage);
+            // ExecEventBus<EachCardDiscardedArgs>.UnregisterDynamic(CalculateAttackDamage);
         }
     }
 }
