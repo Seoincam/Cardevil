@@ -21,19 +21,19 @@ namespace Cardevil.InGame.Enemy
             Debug.Log($"{enemy.name} : 랭크 업그레이드 기믹 적용됨");
 
 
-            ExecEventBus<PlayerAttackArgs>.RegisterDynamic(CalculateCardUsingDamage);
+            // ExecEventBus<PlayerAttackArgs>.RegisterDynamic(CalculateCardUsingDamage);
         }
 
-        private void CalculateCardUsingDamage(ExecQueue<PlayerAttackArgs> queue, PlayerAttackArgs args)
-        {
-            // TODO: 구현
-            
-        }
+        // private void CalculateCardUsingDamage(ExecQueue<PlayerAttackArgs> queue, PlayerAttackArgs args)
+        // {
+        //     // TODO: 구현
+        //     
+        // }
 
         // 구독해제
         public void Remove()
         {
-            ExecEventBus<PlayerAttackArgs>.UnregisterDynamic(CalculateCardUsingDamage);
+            // ExecEventBus<PlayerAttackArgs>.UnregisterDynamic(CalculateCardUsingDamage);
         }
     }
 }

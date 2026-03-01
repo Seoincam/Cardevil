@@ -20,7 +20,7 @@ namespace Database.Generated
         /// <summary> 실행 횟수 </summary>
         public int ExecutionCount;
         /// <summary> 발동 족보 </summary>
-        public Cardevil.Cards.Core.HandRanking TriggerHandRanking;
+        // public Cardevil.Cards.Core.HandRanking TriggerHandRanking;
         /// <summary> 발동 Hp </summary>
         public int TriggerHp;
         /// <summary> 발동 확률 </summary>

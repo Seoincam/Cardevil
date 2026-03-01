@@ -1,4 +1,4 @@
-using Cardevil.NewCard.InStage;
+using Cardevil.Card.InStage;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System.Threading;

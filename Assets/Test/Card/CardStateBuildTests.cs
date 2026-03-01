@@ -1,4 +1,4 @@
-using Cardevil.NewCard.Common.Core;
+using Cardevil.Card.Common.Core;
 using Cardevil.Utils.Directions;
 using NUnit.Framework;
 

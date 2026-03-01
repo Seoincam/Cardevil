@@ -1,5 +1,5 @@
-using Cardevil.NewCard.Common.Core;
-using Cardevil.NewCard.InStage;
+using Cardevil.Card.Common.Core;
+using Cardevil.Card.InStage;
 using Cardevil.Utils.Directions;
 using NUnit.Framework;
 using System.Collections.Generic;

@@ -1,8 +1,5 @@
-using Cardevil.Cards.Enhancements;
-using Cardevil.Cards.Utils;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Dungeon;
-using Cardevil.Dungeon.UI;
 using Cardevil.Save;
 using Cardevil.SceneManagement;
 using Cardevil.UI.GlobalNavationBar;
@@ -21,9 +18,6 @@ namespace Cardevil.Core.Root
     {
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
 
-        private CardSpecModifierService _cardModifierService;
-        private CardEnhancementPresenter _cardEnhancementPresenter;
-
         private void Start()
         {
             Init();
@@ -40,11 +34,6 @@ namespace Cardevil.Core.Root
             
             Dungeon = new DungeonManager();
             Dungeon.Init();
-
-            var cardStatus = CardevilCore.Instance.Game.CardStatus;
-            _cardModifierService = new CardSpecModifierService(cardStatus);
-            var enhancementData = CardevilCore.Instance.CardEnhancementData;
-            _cardEnhancementPresenter = new CardEnhancementPresenter(cardStatus, enhancementData, _cardModifierService);
             
             // TODO : 세이브 로드시 해당 페이지 보여주는걸로
             GlobalNavigationBar.Instance.gameObject.SetActive(true);
