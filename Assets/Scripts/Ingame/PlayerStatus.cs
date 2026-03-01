@@ -4,7 +4,7 @@ using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
 using Cardevil.Events;
 using Cardevil.Events.ExecEvents;
-using Cardevil.NewCard.Common.Core;
+using Cardevil.Card.Common.Core;
 using Cardevil.Save;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;

@@ -7,7 +7,7 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Player;
-using Cardevil.NewCard.InStage;
+using Cardevil.Card.InStage;
 using Cardevil.SceneManagement;
 using Cardevil.UI;
 using Cardevil.UI.GlobalNavationBar;

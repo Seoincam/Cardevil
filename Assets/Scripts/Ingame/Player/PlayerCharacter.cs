@@ -404,7 +404,7 @@ namespace Cardevil.Ingame.Player
         public bool IsDead { get; }
         public TileVector Position { get; }
         
-        public async UniTask OnMoveAsync(NewCard.InStage.PlayerMoveArgs args, CancellationToken cancellationToken)
+        public async UniTask OnMoveAsync(Card.InStage.PlayerMoveArgs args, CancellationToken cancellationToken)
         {
             await MoveWithAnim(args.Direction, 1);
             await UniTask.Delay(300, cancellationToken: cancellationToken);
