@@ -29,7 +29,7 @@ namespace Cardevil.NewCard.InStage.Score
                     });
                 }   
             
-                ApplyOperators().Forget();
+                ApplyOperatorsAsync().Forget();
             }
             // TestAsync().Forget();
         }
@@ -44,7 +44,7 @@ namespace Cardevil.NewCard.InStage.Score
         /// <summary>
         /// 모든 Operator를 적용하고, 최종 점수를 반환함.
         /// </summary>
-        public async UniTask<float> ApplyOperators()
+        public async UniTask<float> ApplyOperatorsAsync()
         {
             foreach (var scoreOperator in model.ScoreOperators)
             {

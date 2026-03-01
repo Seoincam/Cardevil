@@ -8,12 +8,12 @@ using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using Cardevil.Ingame.Field;
 using Cardevil.Ingame.Player;
+using Cardevil.NewCard.InStage;
 using Cardevil.SceneManagement;
 using Cardevil.UI;
 using Cardevil.UI.GlobalNavationBar;
 using DG.Tweening;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Cardevil.Core.Root
@@ -24,7 +24,12 @@ namespace Cardevil.Core.Root
     /// </summary>
     public class StageRoot : MonoBehaviour
     {
-        [SerializeField] private TurnManager turn;
+        [Header("References")] 
+        [SerializeField] private StageCardManager cardManager;
+
+        [Header("")] 
+        [SerializeField] private TurnManager turnManager;
+        
         [SerializeField] private EnemySpawner _enemySpawner;
         [SerializeField] private CardFlowController cardFlowController;
 
@@ -42,10 +47,13 @@ namespace Cardevil.Core.Root
         {
             CardevilCore.Instance.GameFlow.Stage = this;
             
-            // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
-            
             _enemySpawner = new EnemySpawner();
-            turn = new TurnManager();
+            
+            cardManager.Initialize();
+            turnManager = new TurnManager(cardManager.Core, Player, _enemySpawner);
+            
+            
+            // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
             // turn.TurnLoopEnded += OnTurnLoopEnded;
             
             Player.Init(Field);
@@ -107,7 +115,7 @@ namespace Cardevil.Core.Root
             var obj = new GameObject("ConfirmButton");
             var rect = obj.AddComponent<RectTransform>();
             var button = obj.AddComponent<UnityEngine.UI.Button>();
-            var Canvas = GameObject.Find("CardCanvas");
+            var Canvas = GameObject.Find("Card Canvas");
             var Image = obj.AddComponent<UnityEngine.UI.Image>();
 
             Image.color = Color.white;
@@ -141,9 +149,8 @@ namespace Cardevil.Core.Root
             await gnb.ShowAsync(0.4f);
             
             
-            turn.Initialize(_enemySpawner, cardFlowController, Player, enemy);
             LogEx.Log("턴 루프 시작");
-            turn.EnterLoopAsync().Forget();
+            turnManager.StartLoop();
         }
 
         /// <summary>
@@ -156,6 +163,11 @@ namespace Cardevil.Core.Root
             // TODO: 변경사항 세이브 해야함.
             
             LogEx.Log("스테이지 종료");
+            
+            CardevilCore.Instance.GameFlow.Stage = null;
+            
+            turnManager?.Dispose();
+            turnManager = null;
             
             var exitInfo = new NodeExitInfo() { IsCleared = true };
             CardevilCore.Instance.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);

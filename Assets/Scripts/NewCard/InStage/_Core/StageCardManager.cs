@@ -19,7 +19,9 @@ namespace Cardevil.NewCard.InStage
         [SerializeField] private ValueSelectionPresenter valueSelectionPresenter;
         [SerializeField] private ScorePresenter scorePresenter;
 
-        private void Start()
+        public StageCardCorePresenter Core => corePresenter;
+
+        public void Initialize()
         {
             valueSelectionPresenter = new ValueSelectionPresenter(valueSelectionView);
             handBarPresenter = new HandBarPresenter(handBarView, valueSelectionPresenter);

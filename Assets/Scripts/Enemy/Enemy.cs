@@ -1,5 +1,4 @@
 using Cardevil.Core.Turn;
-using Cardevil.Core.Turn.Interfaces;
 using Cardevil.Ingame.Field;
 using System;
 using System.Collections.Generic;
@@ -31,9 +30,8 @@ namespace Cardevil.InGame.Enemy
         FourCard,
         StraightFlush
     }
-    public class Enemy : MonoBehaviour, TurnManager.ITurnTarget, IAttackVisualizer
+    public class Enemy : MonoBehaviour, IAttackVisualizer, ITurnEnemy
     {
-
         //-----HP UI-----///
         [SerializeField] private Slider hpBar; // Inspector에서 UI Slider를 드래그하여 연결합니다.
         public float maxHP = 100;
@@ -68,93 +66,59 @@ namespace Cardevil.InGame.Enemy
             currentAttackStyle = AttackStyle.UnKnown;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
-
-            int showDescription = (int)EnterStageArgs.Orders.ShowEnemyDescription;
-            ExecStaticEventBus<EnterStageArgs>.Register(showDescription, OnShowDescriptionAsync);
-
-            int showInitialAttackAreaPriority = (int)EnterStageArgs.Orders.ShowEnemyInitialAttackArea;
-            ExecStaticEventBus<EnterStageArgs>.Register(showInitialAttackAreaPriority, OnShowInitialAttackAreaAsync);
-
-            int attackPriority = (int)EnemyAttackArgs.Orders.EnemyAttack;
-            ExecStaticEventBus<EnemyAttackArgs>.Register(attackPriority, OnTurnAttackAsync);
-
-            int attackedPriority = (int)PlayerAttackArgs.Orders.EnemyAttacked;
-            ExecStaticEventBus<PlayerAttackArgs>.Register(attackedPriority, OnTurnAttackedAsync);
-            
-            // TODO: 디스폰될 때 이벤트 해제
         }
 
-        #region 이벤트 기반 적 행동
+        #region ITurnEnemey 관련
 
-        private async UniTask OnShowDescriptionAsync(EnterStageArgs args, CancellationToken cancellationToken)
+        public bool IsDead { get; }
+        
+        public async UniTask OnStartTurnAsync()
         {
-            // TODO:
-            // 서인: 이거는 UI 관련된 거여서 Enemy 클래스에 있는게 맞는지는 모르겠음.
-            // 관련된 구조 만들면서 "맨 처음에 적에 대한 설명 표시"를 어디서 수행할지 정하고 수정해줘.
+            throw new NotImplementedException();
         }
 
-        private async UniTask OnShowInitialAttackAreaAsync(EnterStageArgs args, CancellationToken cancellationToken)
+        public async UniTask OnTakeDamageAsync(float damage)
         {
-            // TODO: 첫 범위 표시하기
+            throw new NotImplementedException();
         }
 
-        private async UniTask OnTurnAttackAsync(EnemyAttackArgs args, CancellationToken cancellationToken)
+        public async UniTask OnDieAsync()
         {
-            _enemyAttackInfo.attackSucess = false;
-            
-            // TODO:
-            // 적이 공격하기
-            // args.SetDamage(1);
-            
-            await UniTask.Delay(1200);
+            throw new NotImplementedException();
         }
 
-        private async UniTask OnTurnAttackedAsync(PlayerAttackArgs args, CancellationToken cancellationToken)
+        public async UniTask OnReplaceAsync()
         {
-            // TODO: 적이 데미지 받기
-            
-            CurrentHp = HP - args.EvaluationResult.TotalDamage;
-            LogEx.Log($"{args.EvaluationResult.TotalDamage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
-            UpdateHPBar();
-            
-            // 유닛 사망
-            isEnemyDead = true;
+            throw new NotImplementedException();
+        }
+
+        public async UniTask<bool> CheckAttackCountAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask<(bool success, int damage)> TryAttackAsync(IEnemyContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnAttackSuccessAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask OnEndTurnAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async UniTask UpdateAttackAsync(IEnemyContext context)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
-
-        // ITurnEnemy 변경 사항
-        public async UniTask Replace()
-        {
-            LogEx.LogWarning("<b>대윤</b>: 아직 enemy 교체가 구현되지 않음.");
-        }
-
-        public async UniTask ShowInitialAttackArea(TileVector playerPosition)
-        {
-            AttackEnemyTurnStart(playerPosition);
-        }
         
-        // public async UniTask<AttackResult> TurnAttackAsync()
-        // {
-        //     _enemyAttackInfo.attackSucess = false;
-        //
-        //     var ctx = TurnManager.Context;
-        //
-        //     var target = ctx.Player;
-        //     // 이제 플레이어 위치 이렇게 받아오면 됨!
-        //     var playerPosition = ctx.PlayerPosition;
-        //
-        //     AttackEnemyTurnStart(ctx);
-        //
-        //     await UniTask.Delay(1200);
-        //    
-        //
-        //     // TODO: 필요하다면 족보도 받아오기
-        //     return _enemyAttackInfo.attackSucess
-        //         ? new AttackResult(target, HandRanking.None, (int)damage + enforcedAttackDamage)
-        //         : new AttackResult(target, HandRanking.None, 0);
-        // }
-
         #region Attack 관련
 
         #region IAttackVisualizer 구현
@@ -334,11 +298,6 @@ namespace Cardevil.InGame.Enemy
             }
 
             return false; // 아직 살아있다
-        }
-
-        public bool IsDead
-        {
-            get { return isEnemyDead; }
         }
 
         public void TakeDamage(int amount)
@@ -607,7 +566,5 @@ namespace Cardevil.InGame.Enemy
 
 
         #endregion
-
-
     }
 }

@@ -20,7 +20,7 @@ namespace Cardevil.NewCard.InStage
 
 #pragma warning disable 0414
         [Header("Debug")]
-        [SerializeField] private ICardState debugState;
+        [SerializeReference] private ICardState debugState;
 #pragma warning restore 0414
         
         public event Action<HandBarCard> PointerEnter;
