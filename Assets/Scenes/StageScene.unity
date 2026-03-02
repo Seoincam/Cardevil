@@ -469,15 +469,6 @@ MonoBehaviour:
   cardManager: {fileID: 1753595122}
   turnManager:
     turnOrder: 0
-  cardFlowController:
-    cardsModel:
-      deck: []
-      discardPile: []
-      hand: []
-      <CurrentInteracting>k__BackingField:
-        <StageCard>k__BackingField: {fileID: 0}
-        <LastInteractionTime>k__BackingField: 0
-        <OriginalIndex>k__BackingField: 0
   <Field>k__BackingField: {fileID: 401468742}
   <Player>k__BackingField: {fileID: 1012406964}
 --- !u!1 &273489078
@@ -742,18 +733,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2922330312404836317, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4413329487596435072, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5997851413399570637, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 6312396336716997636, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.586
@@ -798,20 +777,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: Field
       objectReference: {fileID: 0}
-    - target: {fileID: 8456292762444462130, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.743
-      objectReference: {fileID: 0}
-    - target: {fileID: 8456292762444462130, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.128
-      objectReference: {fileID: 0}
-    - target: {fileID: 8628245001577542127, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 7810034296938116380, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 5337178728071519532, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 5293545763936965248, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 5708197717054782793, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 1702750051626100727, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 186448586928627940, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 8425056389870057617, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 5565257751895322103, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
+    - {fileID: 6064498977511556135, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
@@ -1007,17 +983,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &443747252 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 528607092563820123, guid: d0a7057ac0be38f4181b25080ace1b69, type: 3}
-  m_PrefabInstance: {fileID: 401468740}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f201b42e3a474fb29894d465169a0ea6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &496353166
 GameObject:
   m_ObjectHideFlags: 0
@@ -1666,7 +1631,7 @@ PrefabInstance:
     - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
       propertyPath: _initialTile
       value: 
-      objectReference: {fileID: 443747252}
+      objectReference: {fileID: 0}
     - target: {fileID: 1727844534192120184, guid: af0e1e780849dbc4aa8ef7f05e3d8469, type: 3}
       propertyPath: _initialTile._i
       value: 1

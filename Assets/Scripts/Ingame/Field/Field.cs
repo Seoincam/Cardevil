@@ -34,6 +34,7 @@ namespace Cardevil.Ingame.Field
         [SerializeField, VisibleOnly(EditableIn.EditMode)] Tile _tilePrefab;
         [SerializeField] private bool _initOnAwake = true;
         [Header("References")]
+        [SerializeField] private FieldDisplay fieldDisplay;
         [SerializeField] private Grid grid;
         
         [SerializeField] private FieldSubFloorObject[] _subFloorObjects;
