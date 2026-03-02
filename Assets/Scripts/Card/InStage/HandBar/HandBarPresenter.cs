@@ -1,5 +1,7 @@
 using Cardevil.Attributes;
 using Cardevil.Card.Common.Core;
+using Cardevil.Events.ExecEvents;
+using Cardevil.Utils.Directions;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -205,6 +207,9 @@ namespace Cardevil.Card.InStage
 
             if (changed)
             {
+                if (state.IsMove) 
+                    PublishMoveCardEvent();
+                
                 PublishEvents();
             }
         }
@@ -307,6 +312,25 @@ namespace Cardevil.Card.InStage
             
             var handBarState = new SelectionState(CanUseSelection, CanDiscard);
             HandBarStateChanged?.Invoke(handBarState);
+        }
+
+        private void PublishMoveCardEvent()
+        {
+            var moveCards = model.Selection.Where(s => s.IsMove).ToList();
+            bool shouldShow = moveCards.Any() && moveCards.All(s => s.Directions.HasSelected);
+
+            List<Direction> directions = null;
+            if (shouldShow)
+            {
+                directions = model.Selection
+                    .Where(s => s.IsMove)
+                    .Select(s => s.Directions)
+                    .Select(d => d.Current!.Value)
+                    .ToList();
+            }
+
+            var args = SelectedMoveChangedArgs.Get(shouldShow, directions);
+            ExecEventBus<SelectedMoveChangedArgs>.InvokeMergedAndDispose(args).Forget();
         }
 
         private void StartDragLoop(ICardState state)

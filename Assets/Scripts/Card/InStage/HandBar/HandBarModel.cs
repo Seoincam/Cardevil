@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +100,28 @@ namespace Cardevil.Card.InStage
         {
             hand.Sort(comparer.Compare);
         }
+        
+        [Serializable]
+        public struct InteractionData
+        {
+            [field: SerializeReference] public ICardState Card { get; private set; }
+            [field: SerializeField] public int OriginalIndex { get; private set; }
+            [field: SerializeField] public bool IsSelected { get; private set; }
+            [field: SerializeField] public float LastInteractionTime { get; private set; }
 
+            public InteractionData(ICardState card, int originalIndex, bool isSelected)
+            {
+                Card = card;
+                OriginalIndex = originalIndex;
+                IsSelected = isSelected;
+                LastInteractionTime = Time.time;
+            }
+            
+            public bool Exists => Card != null;
+            
+            public static InteractionData Empty => new(null, -1, false);
+        }
+        
         public void SetPointerDownData(ICardState state)
         {
             PointerDownData = new InteractionData(state, IndexOf(state), selectionSet.Contains(state));
@@ -128,27 +150,6 @@ namespace Cardevil.Card.InStage
         public void ClearDetachData()
         {
             DetachData = InteractionData.Empty;
-        }
-
-        [Serializable]
-        public struct InteractionData
-        {
-            [field: SerializeReference] public ICardState Card { get; private set; }
-            [field: SerializeField] public int OriginalIndex { get; private set; }
-            [field: SerializeField] public bool IsSelected { get; private set; }
-            [field: SerializeField] public float LastInteractionTime { get; private set; }
-
-            public InteractionData(ICardState card, int originalIndex, bool isSelected)
-            {
-                Card = card;
-                OriginalIndex = originalIndex;
-                IsSelected = isSelected;
-                LastInteractionTime = Time.time;
-            }
-            
-            public bool Exists => Card != null;
-            
-            public static InteractionData Empty => new(null, -1, false);
         }
     }
 }

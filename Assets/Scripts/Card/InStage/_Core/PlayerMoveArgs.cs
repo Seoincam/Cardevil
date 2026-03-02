@@ -15,6 +15,7 @@ namespace Cardevil.Card.InStage
         {
             var args = Get();
             args.Direction = direction;
+            
             return args;
         }
 
