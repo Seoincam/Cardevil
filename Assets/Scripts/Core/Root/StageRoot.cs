@@ -21,8 +21,9 @@ namespace Cardevil.Core.Root
     /// 전투 스테이지 루트 컨트롤러.
     /// 카드, 턴, 적, 필드, 플레이어 초기화 및 전투 흐름 제어.
     /// </summary>
-    public class StageRoot : MonoBehaviour
+    public class StageRoot : Singleton<StageRoot>
     {
+
         [Header("References")] 
         [SerializeField] private StageCardManager cardManager;
 
@@ -35,6 +36,7 @@ namespace Cardevil.Core.Root
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public PlayerCharacter Player { get; set; } // 임시 플레이어
 
+
         // public int TurnOrder => _turn.TurnOrder;
         
         private GameFlowManager.StageEnterContext _context;
@@ -44,7 +46,6 @@ namespace Cardevil.Core.Root
         private async void Awake()
         {
             CardevilCore.Instance.GameFlow.Stage = this;
-            
             _enemySpawner = new EnemySpawner();
             
             cardManager.Initialize();
