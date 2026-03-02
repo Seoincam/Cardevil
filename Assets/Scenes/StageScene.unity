@@ -469,15 +469,6 @@ MonoBehaviour:
   cardManager: {fileID: 1753595122}
   turnManager:
     turnOrder: 0
-  cardFlowController:
-    cardsModel:
-      deck: []
-      discardPile: []
-      hand: []
-      <CurrentInteracting>k__BackingField:
-        <StageCard>k__BackingField: {fileID: 0}
-        <LastInteractionTime>k__BackingField: 0
-        <OriginalIndex>k__BackingField: 0
   <Field>k__BackingField: {fileID: 401468742}
   <Player>k__BackingField: {fileID: 1012406964}
 --- !u!1 &273489078

@@ -1,4 +1,5 @@
 using Cardevil.Attributes;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Utils;
 using Cardevil.Utils.Directions;
 using System;
@@ -10,7 +11,7 @@ namespace Cardevil.Card.Common.Core
     /// <summary>
     /// 카드의 플레이용 상태 데이터.
     /// </summary>
-    public interface ICardState
+    public interface ICardState : IScoreSource
     {
         CardState.SelectableValues<CardColor> Colors { get; }
         CardState.SelectableValues<int> Numbers { get; }

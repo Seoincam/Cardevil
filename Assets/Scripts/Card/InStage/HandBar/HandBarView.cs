@@ -1,5 +1,6 @@
 using Cardevil.Attributes;
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.InStage.Score.Step;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic; 
@@ -90,6 +91,7 @@ namespace Cardevil.Card.InStage
             AddMap(state, card);
             BindCard(card);
             CardRegistry.Register(card);
+            ScoreVisualRegistry.Register(state, card);
         }
         
         /// <summary>
@@ -108,6 +110,7 @@ namespace Cardevil.Card.InStage
             AddMap(state, handBarCard);
             BindCard(handBarCard);
             CardRegistry.Register(handBarCard);
+            ScoreVisualRegistry.Unregister(state);
         }
 
         public void DestroyCard(ICardState state)
@@ -117,6 +120,7 @@ namespace Cardevil.Card.InStage
                 _reverseCardMap.Remove(card);
                 CardRegistry.Unregister(card);
                 Destroy(card.gameObject);
+                ScoreVisualRegistry.Unregister(state);
             }
         }
 

@@ -1,5 +1,5 @@
-using Cardevil.Card.InStage.Calculator;
 using Cardevil.Card.InStage.Score;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Events.ExecEvents;
 using Cysharp.Threading.Tasks;
 using System;
@@ -13,14 +13,8 @@ namespace Cardevil.Card.InStage
     {
         [SerializeField] private StageCardCoreModel model = new();
         
+        private StepElementBuilder _elementBuilder = new();
         private UniTaskCompletionSource _playerInputWaiter;
-        
-        private StepSequencer _sequencer = new()
-        {
-            // TODO: 실제 유물 받아오기
-            EachCardScoreOperatorProviders = new List<IEachCardScoreOperatorProvider>(),
-            TotalScoreOperatorProviders = new List<ITotalScoreOperatorProvider>()
-        };
         
         // 외부 주입
         private HandBarPresenter _handBarPresenter;
@@ -61,166 +55,28 @@ namespace Cardevil.Card.InStage
 
             _playerInputWaiter = null;
         }
-
-        /// <summary>
-        /// 선택된 카드들 중, 왼쪽에 위치한 카드부터 1장씩 사용 처리.
-        /// </summary>
-        public async UniTask StepEachCardAsync()
+        
+        public async UniTask AddStepAsync(ScoreStepType type)
         {
-            var steps = _sequencer.BuildPlayerSteps(
-                _handBarPresenter.SortedSelection,
-                _handBarPresenter.HandRankData
-            );
-            
+            var steps = _elementBuilder.BuildSteps(type);
             await InternalStepAsync(steps);
         }
-
-        /// <summary>
-        /// 내부 발동 순서에 따라, 조건에 맞는 합연산 유물 처리.
-        /// </summary>
-        public async UniTask StepPlusRelicAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
-        /// <summary>
-        /// 칸 조건에 맞는 합연산 처리.
-        /// </summary>
-        public async UniTask StepPlusFieldAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
-        /// <summary>
-        /// 플레이어 상태창에 아이콘으로 존재하는 합연산을 처리.
-        /// </summary>
-        public async UniTask StepPlusPlayerStatusAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
-        /// <summary>
-        /// 카드의 최종 데미지 증폭률에 따라 곱연산을 처리.
-        /// </summary>
-        public async UniTask StepMultiplyCardFinalDamageAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
-        /// <summary>
-        /// 내부 발동 순서에 따라, 조건에 맞는 곱연산 유물 처리.
-        /// </summary>
-        public async UniTask StepMultiplyRelicAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
+        
         /// <summary>
         /// 내부 발동 순서에 따라, 조건에 맞는 골드 획득 유물 처리.
         /// </summary>
         public async UniTask StepGoldRelicAsync()
         {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
+            IReadOnlyList<IStepElement> steps = new List<IStepElement>();
             await InternalStepAsync(steps);
         }
-
-        /// <summary>
-        /// 칸 조건에 맞는 곱연산 처리.
-        /// </summary>
-        public async UniTask StepMultiplyFieldAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
-        /// <summary>
-        /// 플레이어 상태창에 아이콘으로 존재하는 곱연산을 처리.
-        /// </summary>
-        public async UniTask StepMultiplyPlayerStatusAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
-        /// <summary>
-        /// 적 상태창에 아이콘으로 존재하는 기믹을 처리.
-        /// </summary>
-        public async UniTask StepEnemyStatusAsync()
-        {
-            IReadOnlyList<ICardStep> steps = new List<ICardStep>();
-            await InternalStepAsync(steps);
-        }
-
+        
         /// <summary>
         /// 추가된 ScoreOperator들을 모두 계산함.
         /// </summary>
         public async UniTask<float> ApplyScoreOperatorsAsync()
         {
             return await _scorePresenter.ApplyOperatorsAsync();
-        }
-        
-
-        /// <summary>
-        /// 플레이어의 카드를 사용함. 모든 유물과 적 로직 포함.
-        /// 이때 플러시 효과 등도 발동됨.
-        /// </summary>
-        /// <returns> 계산된 최종 데미지. </returns>
-        public async UniTask<float> UseAsync()
-        {
-            // 플레이어 로직
-            var playerSteps = _sequencer.BuildPlayerSteps(
-                _handBarPresenter.SortedSelection,
-                _handBarPresenter.HandRankData
-            );
-        
-            foreach (var step in playerSteps)
-            {
-                switch (step)
-                {
-                    case ScoreStep scoreStep: 
-                        await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
-                        continue;
-                    
-                    case MoveStep moveStep:
-                        await ExecEventBus<PlayerMoveArgs>.InvokeMergedAndDispose(moveStep.Args);
-                        await _handBarPresenter.DiscardAsync(moveStep.Card);
-                        continue;
-                    
-                    case DiscardStep discardStep: 
-                        await _handBarPresenter.DiscardAsync(discardStep.Card);
-                        continue;
-                }
-            }
-
-            await _scorePresenter.ApplyOperatorsAsync();
-            
-            await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-            await _handBarPresenter.DiscardSelectionAsync();
-            
-            // 적 로직
-            var enemySteps = _sequencer.BuildEnemySteps();
-
-            foreach (var step in enemySteps)
-            {
-                
-            }
-
-            return await _scorePresenter.ApplyOperatorsAsync();
-            
-            
-            // 임시 뽑기
-            
-            // await UniTask.Delay(TimeSpan.FromSeconds(0.5f));
-            //
-            // var states = model.Draw(count);
-            // await _handBarPresenter.DrawAsync(states);
-            //
-            // _handBarPresenter.CanInteract = true;
         }
 
         public async UniTask DiscardSelectionAsync() => await _handBarPresenter.DiscardSelectionAsync();
@@ -241,6 +97,8 @@ namespace Cardevil.Card.InStage
             Debug.Assert(_handBarPresenter.CanUseSelection, "카드를 사용할 수 없지만 사용 버튼이 눌렸음.");
             
             _view.SetAllButtonState(false);
+            
+            _elementBuilder.BuildContext(_handBarPresenter.SortedSelection, _handBarPresenter.HandRankData);
             _playerInputWaiter?.TrySetResult();
         }
 
@@ -265,22 +123,22 @@ namespace Cardevil.Card.InStage
             DiscardAsync().Forget();
         }
 
-        private async UniTask InternalStepAsync(IReadOnlyList<ICardStep> steps)
+        private async UniTask InternalStepAsync(IReadOnlyList<IStepElement> steps)
         {
             foreach (var step in steps)
             {
                 switch (step)
                 {
-                    case ScoreStep scoreStep: 
+                    case ScoreStepElement scoreStep: 
                         await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
                         continue;
                     
-                    case MoveStep moveStep:
+                    case MoveStepElement moveStep:
                         await ExecEventBus<PlayerMoveArgs>.InvokeMergedAndDispose(moveStep.Args);
                         await _handBarPresenter.DiscardAsync(moveStep.Card);
                         continue;
                     
-                    case DiscardStep discardStep: 
+                    case DiscardStepElement discardStep: 
                         await _handBarPresenter.DiscardAsync(discardStep.Card);
                         continue;
                 }

@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.InStage.Score.Step;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -55,10 +56,15 @@ namespace Cardevil.Card.InStage.Score
             ScaleAsync().Forget();
         }
 
-        public async UniTask PlayAddOperator(IScoreOperator scoreOperator)
+        public async UniTask PlayAddOperatorAsync(IScoreOperator scoreOperator)
         {
             var text = CreateText(scoreOperator);
             operatorTexts.Add(scoreOperator, text);
+            
+            if (ScoreVisualRegistry.TryGet(scoreOperator.Source, out var target))
+            {
+                await target.PlayScoreReactionAsync();
+            }
             await ScaleAsync();
         }
 

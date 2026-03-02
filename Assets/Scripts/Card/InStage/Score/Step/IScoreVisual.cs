@@ -7,6 +7,6 @@ namespace Cardevil.Card.InStage.Score.Step
     {
         Vector3 WorldPosition { get; }
 
-        UniTask PlayReactionAsync();
+        UniTask PlayScoreReactionAsync();
     }
 }

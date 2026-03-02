@@ -2,6 +2,7 @@ using Cardevil.Attributes;
 using Cardevil.Enemy;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Card.InStage;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
@@ -66,29 +67,29 @@ namespace Cardevil.Core.Turn
                 
                 await _cardCore.WaitUntilPlayerInputAsync();
 
+                // 각 카드 연산
+                await _cardCore.AddStepAsync(ScoreStepType.EachCard);
+
                 // 합 연산
-                await _cardCore.StepEachCardAsync();
-                await _cardCore.StepPlusRelicAsync();
-                await _cardCore.StepPlusFieldAsync();
-                await _cardCore.StepPlusPlayerStatusAsync();
+                await _cardCore.AddStepAsync(ScoreStepType.PlusRelic);
+                await _cardCore.AddStepAsync(ScoreStepType.PlusField);
+                await _cardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
                 await _cardCore.ApplyScoreOperatorsAsync();
 
                 // 곱 연산, 골드 연산
-                await _cardCore.StepMultiplyCardFinalDamageAsync();
-                await _cardCore.StepMultiplyRelicAsync();
+                await _cardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
+                await _cardCore.AddStepAsync(ScoreStepType.MultiplyRelic);
                 await _cardCore.StepGoldRelicAsync();
-                await _cardCore.StepMultiplyFieldAsync();
-                await _cardCore.StepMultiplyPlayerStatusAsync();
+                await _cardCore.AddStepAsync(ScoreStepType.MultiplyField);
+                await _cardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
                 float score = await _cardCore.ApplyScoreOperatorsAsync();
-                
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
                 await _cardCore.DiscardSelectionAsync();
                 
                 // 적 기믹 연산
-                await _cardCore.StepEnemyStatusAsync();
+                await _cardCore.AddStepAsync(ScoreStepType.EnemyStatus);
                 float finalScore = await _cardCore.ApplyScoreOperatorsAsync();
-                
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
                 await _player.AttackAsync(finalScore);
