@@ -42,9 +42,10 @@ namespace Cardevil.Core.Root
         private GameFlowManager.StageEnterContext _context;
 
         bool isInitialized = false;
-        
-        private async void Awake()
+
+        protected override async void Awake()
         {
+            base.Awake();
             CardevilCore.Instance.GameFlow.Stage = this;
             _enemySpawner = new EnemySpawner();
             
@@ -86,6 +87,7 @@ namespace Cardevil.Core.Root
             
             // TODO : 필드 초기화 - @machamy
             Field.InitField(3,3, Random.Range(0,4));
+            Player.Init(Field);
             
             _enemySpawner.ConfigStageMobData(_context.stageId);
             if (!_enemySpawner.TrySpawn(out var enemy))

@@ -121,6 +121,41 @@ namespace Cardevil.Ingame.Player
         }
 
         public bool debugReflect = false;
+        
+        
+        /// <summary>
+        /// 실제로 이동하지 않고, MoveWithAnim과 동일한 로직으로 플레이어가 최종적으로 도착할 타일을 계산합니다.
+        /// </summary>
+        /// <param name="field">현재 필드</param>
+        /// <param name="startTile">출발 타일</param>
+        /// <param name="direction">이동 방향</param>
+        /// <param name="distance">이동 거리</param>
+        /// <returns>
+        /// (resultTile: 최종 도착 타일, wrapped: wrap 발생 여부, reflected: 반사 발생 여부)
+        /// </returns>
+        public static (Tile resultTile, bool wrapped, bool reflected) GetTrueTileInDirection(
+            Field.Field field, Tile startTile, Direction direction, int distance = 1)
+        {
+            // wrap 여부와 함께 이동하려는 타일을 가져옴
+            Tile desiredTile = field.GetTileByDirectionWrap(startTile, direction, out bool wrapped, distance);
+
+            // 해당 타일에 반사 엔티티가 있는지 확인
+            bool reflected = desiredTile.HasEntity(e =>
+                e.TryGetComponent<IReflectorEntity>(out var reflector) && reflector.DoReflect);
+
+            // 반사가 없으면 desiredTile이 최종 목적지
+            if (!reflected)
+            {
+                return (desiredTile, wrapped, false);
+            }
+
+            // 반사가 있으면 반대 방향으로 distance만큼 이동한 타일이 최종 목적지
+            //   -            반사: 제자리(startTile)로 돌아옴
+            //   - Wrap + 반사: wrap된 desiredTile에서 반대방향으로 이동
+            Tile reflectedTile = field.GetTileByDirectionWrap(desiredTile, direction.Opposite(), out _, distance);
+            return (reflectedTile, wrapped, true);
+        }
+        
         /// <summary>
         /// 플레이어를 해당 방향으로 distance 칸 이동시킵니다.
         /// </summary>
@@ -131,28 +166,24 @@ namespace Cardevil.Ingame.Player
         /// <param name="distance"></param>
         public async UniTask MoveWithAnim(Direction direction, int distance)
         {
-            /*
-             * 1. 이동할 위치를 받아온다.
-             * 2. Wrap이 아니라면, 평범하게 이동
-             * 3. Wrap이라면, 특수 애니메이션
-             *
-             * A. 원래 가려고 했던 위치 받아오기
-             * 
-             */
-            bool wrapped = false;
-                
             // 원래 타일
-            Tile originalTile = _entity.CurrentTile;    
-            // 이동하고 싶은 타일
-            Tile desiredTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out wrapped, distance);
-            // 실제 이동 타일
-            using var listHandle = ListPool<IReflectorEntity>.Get(out var entityList);
-            bool reflected = desiredTile.GetEntitiesWithComponent<IReflectorEntity>(
-                (e) => e.DoReflect, ref entityList);
-            if (debugReflect)
+            Tile originalTile = _entity.CurrentTile;
+            // 이동하고 싶은 타일 (반사 판정 전)
+            Tile desiredTile = Field.GetTileByDirectionWrap(_entity.CurrentTile, direction, out bool wrapped, distance);
+
+            // GetTrueTileInDirection과 동일한 로직으로 최종 목적지 계산
+            var (movedTile, _, reflected) = GetTrueTileInDirection(Field, originalTile, direction, distance);
+
+            // debugReflect 플래그 처리 (디버그 전용)
+            if (debugReflect && !reflected)
             {
                 reflected = true;
+                movedTile = originalTile;
             }
+
+            using var listHandle = ListPool<IReflectorEntity>.Get(out var entityList);
+            desiredTile.GetEntitiesWithComponent<IReflectorEntity>((e) => e.DoReflect, ref entityList);
+
             void NotifyReflect()
             {
                 foreach (var reflecter in entityList)
@@ -160,8 +191,7 @@ namespace Cardevil.Ingame.Player
                     reflecter.OnReflect();
                 }
             }
-            
-            Tile movedTile = reflected ? Field.GetTileByDirectionWrap(desiredTile, direction.Opposite(), out _, distance) : desiredTile;
+
             _entity.MoveTo(movedTile, false);
             
             // 단순한 이동 애니메이션
