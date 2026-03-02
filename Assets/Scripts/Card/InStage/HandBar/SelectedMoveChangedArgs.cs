@@ -9,6 +9,9 @@ namespace Cardevil.Card.InStage
     /// </summary>
     public class SelectedMoveChangedArgs : ExecEventArgs<SelectedMoveChangedArgs>
     {
+        /// <summary>
+        /// 선택된 이동 카드가 존재하고, 모든 이동 카드의 값이 선택됐다면 <c>true</c>를 반환.
+        /// </summary>
         public bool ShouldShow { get; private set; }
         public IReadOnlyList<Direction> Directions { get; private set; }
 
