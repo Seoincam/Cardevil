@@ -16,6 +16,9 @@ namespace Cardevil.Core.Bootstrap
     /// </summary>
     public static class Bootstrapper
     {
+        public const string EditorStartScenePathKey = "Bootstrapper.EditorStartScenePath";
+        public const string EditorStartSceneNameKey = "Bootstrapper.EditorStartSceneName";
+
         /// <summary>
         /// 부트스트랩 진행률 변경 이벤트.
         /// 로드 완료 개수와 전체 개수 전달.
