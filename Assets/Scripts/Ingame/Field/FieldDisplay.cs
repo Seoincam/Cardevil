@@ -87,6 +87,7 @@ namespace Cardevil.Ingame.Field
                     // 이전 위치에서 살짝 떨어진 위치에 색이 바뀌는 지점을 표시
                     Vector3 colorChangePosition = Vector3.Lerp(prevPosition, position, 0.01f);
                     positions.Add((prevDistance + Vector3.Distance(prevPosition, colorChangePosition), colorChangePosition, color));
+                    accumulatedDistance += Vector3.Distance(prevPosition, colorChangePosition);
                     prevPosition = colorChangePosition;
                     prevDistance += Vector3.Distance(prevPosition, colorChangePosition);
                     prevColor = color;
@@ -106,20 +107,17 @@ namespace Cardevil.Ingame.Field
                 if (wrapped)
                 {
                     TileVector airTile = currentTile.Coordinate + move.ToTileVector();
-                    currentMoveRawPosition.Add(airTile);
                     AddPosition(field.GetTileCenterWorld(airTile), Color.blue);
                     break;
                 }
                 if (reflected)
                 {
                     TileVector reflectorTile = currentTile.Coordinate + move.ToTileVector();
-                    currentMoveRawPosition.Add(reflectorTile);
                     AddPosition(field.GetTileCenterWorld(reflectorTile), Color.red);
                     break;
                 }
                 
                 currentMoveTiles.Add(resultTile);
-                currentMoveRawPosition.Add(resultTile.Coordinate);
                 AddPosition(resultTile.transform.position, Color.green);
                 currentTile = resultTile;
             }
