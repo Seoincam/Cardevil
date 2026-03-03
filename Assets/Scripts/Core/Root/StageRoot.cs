@@ -23,6 +23,7 @@ namespace Cardevil.Core.Root
     /// </summary>
     public class StageRoot : MonoBehaviour
     {
+
         [Header("References")] 
         [SerializeField] private StageCardManager cardManager;
 
@@ -35,16 +36,16 @@ namespace Cardevil.Core.Root
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public PlayerCharacter Player { get; set; } // 임시 플레이어
 
+
         // public int TurnOrder => _turn.TurnOrder;
         
         private GameFlowManager.StageEnterContext _context;
 
         bool isInitialized = false;
-        
-        private async void Awake()
+
+        protected async void Awake()
         {
             CardevilCore.Instance.GameFlow.Stage = this;
-            
             _enemySpawner = new EnemySpawner();
             
             cardManager.Initialize();
@@ -85,6 +86,7 @@ namespace Cardevil.Core.Root
             
             // TODO : 필드 초기화 - @machamy
             Field.InitField(3,3, Random.Range(0,4));
+            Player.Init(Field);
             
             _enemySpawner.ConfigStageMobData(_context.stageId);
             if (!_enemySpawner.TrySpawn(out var enemy))
