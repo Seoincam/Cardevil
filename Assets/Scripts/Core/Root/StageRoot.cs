@@ -21,7 +21,7 @@ namespace Cardevil.Core.Root
     /// 전투 스테이지 루트 컨트롤러.
     /// 카드, 턴, 적, 필드, 플레이어 초기화 및 전투 흐름 제어.
     /// </summary>
-    public class StageRoot : Singleton<StageRoot>
+    public class StageRoot : MonoBehaviour
     {
 
         [Header("References")] 
@@ -45,7 +45,6 @@ namespace Cardevil.Core.Root
 
         protected override async void Awake()
         {
-            base.Awake();
             CardevilCore.Instance.GameFlow.Stage = this;
             _enemySpawner = new EnemySpawner();
             

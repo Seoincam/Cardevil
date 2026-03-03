@@ -1,5 +1,6 @@
 ﻿using Cardevil.Attributes;
 using Cardevil.Card.InStage;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Root;
 using Cardevil.Events.ExecEvents;
 using Cardevil.Ingame.Player;
@@ -58,8 +59,9 @@ namespace Cardevil.Ingame.Field
                 return;
             }
 
-            var field = StageRoot.Instance.Field;
-            var player = StageRoot.Instance.Player;
+            var root = CardevilCore.Instance.GameFlow.Stage;
+            var field = root.Field;
+            var player = root.Player;
             var moves = eventArgs.Directions;
             Tile currentTile = player.Entity.CurrentTile;
             
