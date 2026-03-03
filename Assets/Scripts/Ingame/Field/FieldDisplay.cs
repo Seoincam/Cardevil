@@ -72,48 +72,71 @@ namespace Cardevil.Ingame.Field
             currentMoveTiles.Add(currentTile);
             currentMoveRawPosition.Add(currentTile.Coordinate);
             
-            foreach (var move in moves)
+            List<(float distance, Vector3 Position, Color color)> positions = new ();
+            positions.Add((0, currentTile.transform.position, Color.clear));
+            
+            
+            float accumulatedDistance = 0f;
+            
+            void AddPosition(Vector3 position, Color color)
             {
+                var (prevDistance, prevPosition, prevColor) = positions[positions.Count - 1];
+                Debug.DrawLine(prevPosition, position, color, 1f);
+                if (prevColor != color)
+                {
+                    // 이전 위치에서 살짝 떨어진 위치에 색이 바뀌는 지점을 표시
+                    Vector3 colorChangePosition = Vector3.Lerp(prevPosition, position, 0.01f);
+                    positions.Add((prevDistance + Vector3.Distance(prevPosition, colorChangePosition), colorChangePosition, color));
+                    prevPosition = colorChangePosition;
+                    prevDistance += Vector3.Distance(prevPosition, colorChangePosition);
+                    prevColor = color;
+                }
+                
+                accumulatedDistance += Vector3.Distance(prevPosition, position);
+                positions.Add((accumulatedDistance, position, color));
+                currentMoveRawPosition.Add(currentTile.Coordinate);
+            }
+            
+            for(int i = 0; i < moves.Count; i++)
+            {
+                var move = moves[i];
                 var (resultTile, wrapped, reflected) = PlayerCharacter.GetTrueTileInDirection(field, currentTile, move,1);
-
-
+                
                 // 두개가 같은 내용이지만, 추후 바뀔 수 있으니 분리
                 if (wrapped)
                 {
                     TileVector airTile = currentTile.Coordinate + move.ToTileVector();
                     currentMoveRawPosition.Add(airTile);
+                    AddPosition(field.GetTileCenterWorld(airTile), Color.blue);
                     break;
                 }
                 if (reflected)
                 {
-                    TileVector reflecterTile = currentTile.Coordinate + move.ToTileVector();
-                    currentMoveRawPosition.Add(reflecterTile);
+                    TileVector reflectorTile = currentTile.Coordinate + move.ToTileVector();
+                    currentMoveRawPosition.Add(reflectorTile);
+                    AddPosition(field.GetTileCenterWorld(reflectorTile), Color.red);
                     break;
                 }
                 
                 currentMoveTiles.Add(resultTile);
                 currentMoveRawPosition.Add(resultTile.Coordinate);
+                AddPosition(resultTile.transform.position, Color.green);
                 currentTile = resultTile;
             }
-        }
-
-
-        private void OnDrawGizmos()
-        {
-            if (currentMoveTiles == null || currentMoveTiles.Count == 0)
+            var gradient = new Gradient();
+            List<GradientColorKey> colorKeys = new List<GradientColorKey>();
+            for(int i = 0; i < positions.Count; i++)
             {
-                return;
+                var (distance, position, color) = positions[i];
+                colorKeys.Add(new GradientColorKey(color, distance / accumulatedDistance));
             }
+            currentMoveLineRenderer.positionCount = positions.Count;
+            currentMoveLineRenderer.SetPositions(positions.ConvertAll(p => p.Position).ToArray());
+            gradient.SetKeys(colorKeys.ToArray(), new GradientAlphaKey[] { new GradientAlphaKey(1, 0), new GradientAlphaKey(1, 1) });
+            currentMoveLineRenderer.colorGradient = gradient;
             
-            Vector3 prevPos = currentMoveTiles[0].transform.position;
-            for (int i = 1; i < currentMoveTiles.Count; i++)
-            {
-                Vector3 currentPos = currentMoveTiles[i].transform.position;
-                Gizmos.color = Color.red;
-                Gizmos.DrawLine(prevPos, currentPos);
-                prevPos = currentPos;
-            }
         }
+        
 
         #endregion
     }

@@ -43,7 +43,7 @@ namespace Cardevil.Core.Root
 
         bool isInitialized = false;
 
-        protected override async void Awake()
+        protected async void Awake()
         {
             CardevilCore.Instance.GameFlow.Stage = this;
             _enemySpawner = new EnemySpawner();
