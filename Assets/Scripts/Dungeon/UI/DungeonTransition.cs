@@ -1,13 +1,18 @@
 ﻿using Cardevil.Core.Bootstrap;
 using Cardevil.Events.ExecEvents;
+using Cardevil.InGame.SlotMachine.Playables;
 using Cardevil.UI.GlobalNavationBar;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.Timeline;
 using UnityEngine.UI;
 
 namespace Cardevil.Dungeon.UI
@@ -19,6 +24,8 @@ namespace Cardevil.Dungeon.UI
         [SerializeField] private Image blackPanel;
         [SerializeField] private TextMeshProUGUI blackPanelText;
         [field:SerializeField] public PlayableDirector PlayableDirector { get; private set; }
+        [field:SerializeField] public SkippableTimelinePlayableDirector SkippableTimelinePlayableDirector{ get; private set; }
+        
         private RectTransform _initialEnvironmentImagePosition;
         private RectTransform _initialPanelPosition;
         // [Space(2f)]
@@ -62,9 +69,34 @@ namespace Cardevil.Dungeon.UI
         public async UniTask ShowTransition(CancellationToken cancellationToken = default)
         {
             PlayableDirector.Play();
+            var timeline = PlayableDirector.playableAsset as TimelineAsset;
+
             var durationTask = UniTask.WaitForSeconds((float)PlayableDirector.duration, cancellationToken: cancellationToken);
             var stopTask = UniTask.WaitUntil(() => PlayableDirector.state != PlayState.Playing, cancellationToken: cancellationToken);
+            
+            PlayerSkipCheckTask(cancellationToken).Forget();
+            
             await UniTask.WhenAny(durationTask, stopTask);
+        }
+
+        /// <summary>
+        /// 플레이어 입력을 감지하여 타임라인을 스킵하는 비동기 작업.
+        /// TODO : 입력 감지를 다른곳에서 일임하도록 리팩토링할 수 있을듯. 일단은 간단하게 여기서 처리.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        private async UniTask PlayerSkipCheckTask(CancellationToken cancellationToken = default)
+        {
+            // 입력 버퍼가 남아 있는거 방지
+            await UniTask.DelayFrame(2, cancellationToken: cancellationToken); 
+            
+            while (PlayableDirector.state == PlayState.Playing)
+            {
+                if (Keyboard.current.anyKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    SkippableTimelinePlayableDirector.SkipToNextMarker();
+                }
+                await UniTask.Yield(cancellationToken);
+            }
         }
     }
 }
