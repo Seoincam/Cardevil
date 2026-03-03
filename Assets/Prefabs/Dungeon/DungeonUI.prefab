@@ -253,6 +253,7 @@ GameObject:
   - component: {fileID: 7001122293710359863}
   - component: {fileID: 2175256954114535303}
   - component: {fileID: 4582846023241870710}
+  - component: {fileID: 5115092642535421116}
   m_Layer: 5
   m_Name: DungeonUI
   m_TagString: Untagged
@@ -319,7 +320,8 @@ MonoBehaviour:
   transitionPanel: {fileID: 0}
   blackPanel: {fileID: 0}
   blackPanelText: {fileID: 0}
-  <PlayableDirector>k__BackingField: {fileID: 0}
+  <PlayableDirector>k__BackingField: {fileID: 4582846023241870710}
+  <SkippableTimelinePlayableDirector>k__BackingField: {fileID: 5115092642535421116}
 --- !u!320 &4582846023241870710
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -349,10 +351,21 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 4077329632234576030, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
     value: {fileID: 0}
-  - key: {fileID: -2279532778718822883, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
-    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
+--- !u!114 &5115092642535421116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310750160403465949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 38e040e994bd4a8080dda26eccb6c85e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.InGame.SlotMachine.Playables.SkippableTimelinePlayableDirector
+  playableDirector: {fileID: 4582846023241870710}
 --- !u!1 &2687607710537004407
 GameObject:
   m_ObjectHideFlags: 0
@@ -5298,6 +5311,38 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 3b1c0db05f7cfd34a94e2c7f265a81e9, type: 3}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.size
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[1].key
+      value: 
+      objectReference: {fileID: -6415619364506530192, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[2].key
+      value: 
+      objectReference: {fileID: 4787136102720438916, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[3].key
+      value: 
+      objectReference: {fileID: -594490438940142959, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[4].key
+      value: 
+      objectReference: {fileID: 8575956135597378323, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[5].key
+      value: 
+      objectReference: {fileID: 4077329632234576030, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[6].key
+      value: 
+      objectReference: {fileID: -5108008552445619804, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 3727276949824087122, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
+      propertyPath: m_SceneBindings.Array.data[7].key
+      value: 
+      objectReference: {fileID: -1456024475884479198, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
     - target: {fileID: 4280487609471920850, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
       propertyPath: m_SizeDelta.x
       value: 162
