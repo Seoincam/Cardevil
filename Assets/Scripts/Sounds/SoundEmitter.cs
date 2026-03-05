@@ -45,12 +45,6 @@ namespace Cardevil.Pools
             {
                 // 메인 오디오 소스 pitch 조절
                 _audioSource.pitch = _initialPitch * Time.timeScale;
-                
-                // 인트로도 타임스케일 적용
-                if (_introAudioSource != null && _introAudioSource.isPlaying)
-                {
-                    _introAudioSource.pitch = _initialPitch * Time.timeScale;
-                }
             }
         }
         public void Resume()
