@@ -424,11 +424,18 @@ namespace Cardevil.Sound
                 return soundNames;
             }
            
-            var sounds = AssetUtil.LoadAll<AudioClip>("Sounds");
-            foreach (var sound in sounds)
+           var bgms = AssetUtil.LoadAll<AudioClip>("Sounds/Music");
+           foreach (var sound in bgms)
+           {
+                soundNames.Add("Music/" + sound.name);
+           }
+           
+            var sfxs = AssetUtil.LoadAll<AudioClip>("Sounds/SFX");
+            foreach (var sound in sfxs)
             {
-                soundNames.Add(sound.name);
+                soundNames.Add("SFX/" + sound.name);
             }
+            
             
             return soundNames;
         }

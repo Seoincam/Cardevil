@@ -109,6 +109,26 @@ namespace Cardevil.DebugConsole.Commands
             {
                 foreach (var type in assembly.GetTypes())
                 {
+                    var iConsoleCommandAttrs = type.GetCustomAttributes(typeof(ConsoleCommandClassAttribute), false);
+                    if (iConsoleCommandAttrs.Length > 0)
+                    {
+                        if (typeof(IConsoleCommand).IsAssignableFrom(type))
+                        {
+                            // IConsoleCommand 구현체인 경우, 인스턴스 생성 후 등록
+                            try
+                            {
+                                var instance = (IConsoleCommand)Activator.CreateInstance(type);
+                                RegisterCommand(instance);
+                            }
+                            catch (Exception ex)
+                            {
+                                LogEx.LogWarning($"Failed to create instance of console command class \"{type.FullName}\". Make sure it has a parameterless constructor. Exception: {ex}");
+                            }
+                        }
+                        
+                        continue;
+                    }
+                    
                     foreach (var method in type.GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic))
                     {
                         var attrs = method.GetCustomAttributes(typeof(ConsoleCommandAttribute), false);
