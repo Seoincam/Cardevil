@@ -38,6 +38,11 @@ namespace Cardevil.Sounds
 
             if (action == "play")
             {
+                if (args.Length < 2)
+                {
+                    Console.MessageInfo("Usage: sound play <soundName>");
+                    return;
+                }
                 string soundName = args[1];
                 var emitter = SoundManager.PlaySfxAt(soundName, Vector3.zero);
                 if (emitter != null)
