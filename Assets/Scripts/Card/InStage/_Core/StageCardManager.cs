@@ -1,4 +1,6 @@
+using Cardevil.Attributes;
 using Cardevil.Card.InStage.Score;
+using Cardevil.Card.InStage.Score.Step;
 using UnityEngine;
 
 namespace Cardevil.Card.InStage
@@ -9,11 +11,13 @@ namespace Cardevil.Card.InStage
     /// </summary>
     public class StageCardManager : MonoBehaviour
     {
-        [SerializeField] private StageCardCoreView coreView;
-        [SerializeField] private HandBarView handBarView;
-        [SerializeField] private ValueSelectionView valueSelectionView;
-        [SerializeField] private CardScoreView cardScoreView;
+        [Header("Views")]
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private StageCardCoreView coreView;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private HandBarView handBarView;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private ValueSelectionView valueSelectionView;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private CardScoreView cardScoreView;
         
+        [Header("Presenters")]
         [SerializeField] private StageCardCorePresenter corePresenter;
         [SerializeField] private HandBarPresenter handBarPresenter;
         [SerializeField] private ValueSelectionPresenter valueSelectionPresenter;
@@ -21,12 +25,12 @@ namespace Cardevil.Card.InStage
 
         public StageCardCorePresenter Core => corePresenter;
 
-        public void Initialize()
+        public void Initialize(IScoreProviderRegistry scoreProviderRegistry)
         {
             valueSelectionPresenter = new ValueSelectionPresenter(valueSelectionView);
             handBarPresenter = new HandBarPresenter(handBarView, valueSelectionPresenter);
             scorePresenter = new ScorePresenter(cardScoreView); 
-            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter, scorePresenter);
+            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter, scorePresenter, scoreProviderRegistry);
             
             handBarPresenter.HandRankChanged += scorePresenter.OnHandRankChanged;
         }

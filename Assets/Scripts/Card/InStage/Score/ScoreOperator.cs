@@ -30,8 +30,6 @@ namespace Cardevil.Card.InStage.Score
         /// Sequencer에서 구성되는 시점에 호출됨.
         /// </summary>
         float Apply(float previousScore);
-
-
     }
     
     [Serializable]
@@ -51,7 +49,8 @@ namespace Cardevil.Card.InStage.Score
             float newScore = Type switch
             {
                 ScoreOperatorType.Plus => previousScore + Value,
-                ScoreOperatorType.Multiply => previousScore + Value,
+                ScoreOperatorType.Multiply => previousScore * Value,
+                
                 _ => throw new ArgumentOutOfRangeException()
             };
 

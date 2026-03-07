@@ -48,7 +48,7 @@ namespace Cardevil.Core.Root
             CardevilCore.Instance.GameFlow.Stage = this;
             _enemySpawner = new EnemySpawner();
             
-            cardManager.Initialize();
+            cardManager.Initialize(CardevilCore.Instance.Game.ScoreProviderRegistry);
             turnManager = new TurnManager(cardManager.Core, Player, _enemySpawner);
             
             

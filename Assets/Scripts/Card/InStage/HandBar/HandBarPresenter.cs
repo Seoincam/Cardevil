@@ -322,10 +322,8 @@ namespace Cardevil.Card.InStage
             List<Direction> directions = null;
             if (shouldShow)
             {
-                directions = model.Selection
-                    .Where(s => s.IsMove)
-                    .Select(s => s.Directions)
-                    .Select(d => d.Current!.Value)
+                directions = moveCards
+                    .Select(c => c.Directions.Current!.Value)
                     .ToList();
             }
 

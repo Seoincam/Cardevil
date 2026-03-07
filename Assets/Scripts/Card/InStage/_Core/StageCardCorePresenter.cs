@@ -13,7 +13,7 @@ namespace Cardevil.Card.InStage
     {
         [SerializeField] private StageCardCoreModel model = new();
         
-        private StepElementBuilder _elementBuilder = new();
+        private StepElementBuilder _elementBuilder;
         private UniTaskCompletionSource _playerInputWaiter;
         
         // 외부 주입
@@ -21,7 +21,11 @@ namespace Cardevil.Card.InStage
         private ScorePresenter _scorePresenter;
         private StageCardCoreView _view;
         
-        public StageCardCorePresenter(StageCardCoreView view, HandBarPresenter handBarPresenter, ScorePresenter scorePresenter)
+        public StageCardCorePresenter(
+            StageCardCoreView view, 
+            HandBarPresenter handBarPresenter, 
+            ScorePresenter scorePresenter,
+            IScoreProviderRegistry scoreProviderRegistry)
         {
             _view = view;
             view.UseClicked += OnUseClicked;
@@ -32,6 +36,8 @@ namespace Cardevil.Card.InStage
             _handBarPresenter = handBarPresenter;
             _scorePresenter = scorePresenter;
             handBarPresenter.HandBarStateChanged += OnHandBarStateChanged;
+
+            _elementBuilder = new StepElementBuilder(scoreProviderRegistry);
             
             var states = model.Draw(6);
             _handBarPresenter.DrawAsync(states).Forget();
@@ -125,6 +131,8 @@ namespace Cardevil.Card.InStage
 
         private async UniTask InternalStepAsync(IReadOnlyList<IStepElement> steps)
         {
+            if (steps == null) return;
+            
             foreach (var step in steps)
             {
                 switch (step)

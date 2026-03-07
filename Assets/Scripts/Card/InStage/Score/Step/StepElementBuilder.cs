@@ -14,11 +14,35 @@ namespace Cardevil.Card.InStage.Score.Step
         ICardState CurrentCard { get; }
     }
     
+    public interface IScoreProviderRegistry
+    {
+        /// <summary>
+        /// Provider의 ScoreStepType을 확인해 적절한 리스트를 추가.
+        /// </summary>
+        /// <returns> 등록된 Id. 등록 해제에 사용됨. </returns>
+        int Register(IScoreProvider provider);
+        
+        /// <summary>
+        /// 리스트에서 제거.
+        /// </summary>
+        void SafeUnregister(int id, IScoreProvider provider);
+        
+        /// <summary>
+        /// 해당 타입의 모든 Provider 리스트를 반환.
+        /// </summary>
+        IReadOnlyList<IScoreProvider> GetProviders(ScoreStepType type);
+    }
+    
     public class StepElementBuilder
     {
-        private List<IScoreProvider> _providers;
-        private Dictionary<ScoreStepType, List<IScoreProvider>> _providerMap;
+        private readonly IScoreProviderRegistry _providerRegistry;
+        
         private ScoreContext _context;
+
+        public StepElementBuilder(IScoreProviderRegistry registry)
+        {
+            _providerRegistry = registry;
+        }
 
         public void BuildContext(IReadOnlyList<ICardState> cards, HandRankData handRankData)
         {
@@ -35,14 +59,30 @@ namespace Cardevil.Card.InStage.Score.Step
         {
             Debug.Assert(_context != null);
             
-            if (type == ScoreStepType.EachCard)
+            return type switch
             {
-                return InternalBuildEachCardSteps();
-            }
+                ScoreStepType.EachCard => InternalBuildEachCardSteps(),
+                _ => InternalBuildSteps(type)
+            };
+        }
+        
+        private class ScoreContext : IScoreContext
+        {
+            public IReadOnlyList<ICardState> Cards { get; set; }
+            public HandRankData HandRankData { get; set; }
+            public float CurrentScore { get; set; }
 
-            var list = new List<ScoreStepElement>();
+            public ICardState CurrentCard { get; set; }
+        }
+
+        private IReadOnlyList<IStepElement> InternalBuildSteps(ScoreStepType type)
+        {
+            var providers = _providerRegistry.GetProviders(type);
+            if (providers == null) return null;
             
-            foreach (var provider in GetSources(type))
+            var list = new List<IStepElement>();
+            
+            foreach (var provider in _providerRegistry.GetProviders(type))
             {
                 var scoreOperator = provider.GetScoreOperator(_context);
                 Apply(scoreOperator);
@@ -54,15 +94,6 @@ namespace Cardevil.Card.InStage.Score.Step
             return list;
         }
         
-        private class ScoreContext : IScoreContext
-        {
-            public IReadOnlyList<ICardState> Cards { get; set; }
-            public HandRankData HandRankData { get; set; }
-            public float CurrentScore { get; set; }
-
-            public ICardState CurrentCard { get; set; }
-        }
-        
         private IReadOnlyList<IStepElement> InternalBuildEachCardSteps()
         {
             Debug.Assert(_context != null);
@@ -71,8 +102,6 @@ namespace Cardevil.Card.InStage.Score.Step
 
             foreach (var card in _context.Cards)
             {
-                Debug.Assert(_context.Cards.Contains(card));
-                
                 _context.CurrentCard = card;
                 
                 if (card.IsMove)
@@ -97,8 +126,11 @@ namespace Cardevil.Card.InStage.Score.Step
                     };
                     Apply(cardScoreOperator);
                     list.Add((ScoreStepElement)cardScoreOperator);
-
-                    foreach (var provider in GetSources(ScoreStepType.EachCard))
+                    
+                    var providers = _providerRegistry.GetProviders(ScoreStepType.EachCard);
+                    if (providers == null) continue;
+                    
+                    foreach (var provider in providers)
                     {
                         var scoreOperator = provider.GetScoreOperator(_context);
                         Apply(scoreOperator);
@@ -112,20 +144,6 @@ namespace Cardevil.Card.InStage.Score.Step
             }
 
             return list;
-        }
-
-        private IReadOnlyList<IScoreProvider> GetSources(ScoreStepType type)
-        {
-            if (!_providerMap.TryGetValue(type, out List<IScoreProvider> sources))
-            {
-                sources = _providers
-                    .Where(s => s.ScoreStepType == type)
-                    .ToList();
-                
-                _providerMap.Add(type, sources);
-            }
-
-            return sources;
         }
 
         private void Apply(IScoreOperator scoreOperator)
