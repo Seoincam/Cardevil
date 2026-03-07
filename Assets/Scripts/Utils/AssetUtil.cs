@@ -1,5 +1,6 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.Pools;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
@@ -42,6 +43,27 @@ namespace Cardevil.Utils
             }
 
             return resource;
+        }
+        
+        public static List<T> LoadAll<T>(string path) where T : Object
+        {
+            List<T> resources = new List<T>(Resources.LoadAll<T>(path));
+            
+            try
+            {
+                var op = Addressables.LoadAssetsAsync<T>(path, null);
+                op.WaitForCompletion();
+                if (op.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+                {
+                    resources.AddRange(op.Result);
+                }
+            }
+            catch (System.Exception e)
+            {
+                LogEx.LogWarning($"Failed to load assets from Addressables with path: {path}. Exception: {e}");
+            }
+            
+            return resources;
         }
 
         public static GameObject Instantiate(string path, Transform parent = null)

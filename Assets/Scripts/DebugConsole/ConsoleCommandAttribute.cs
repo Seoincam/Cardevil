@@ -25,4 +25,13 @@ namespace Cardevil.DebugConsole
             Arg0AutoComplete = arg0AutoComplete;
         }
     }
+    
+    [Preserve]
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public class ConsoleCommandClassAttribute : Attribute
+    {
+        public ConsoleCommandClassAttribute()
+        {
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using Cardevil.Pools;
 using Cardevil.Sound;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -19,6 +20,9 @@ namespace Cardevil.Pools
         [SerializeField] private Poolable poolable;
         [SerializeField] private AudioSource _audioSource;
         
+        public bool followTimeScale = true;
+        private float _initialPitch = 1f;
+        
         public AudioSource AudioSource => _audioSource;
         private void Awake()
         {
@@ -28,21 +32,19 @@ namespace Cardevil.Pools
                 _audioSource = GetComponent<AudioSource>();
         }
 
-        // private void Start()
-        // {
-        //     if (audioSource == null)
-        //     {
-        //         Debug.LogError("AudioSource is not assigned.");
-        //         return;
-        //     }
-        // }
-
         private void Update()
         {
             // 음악 재생이 멈추고, 루프가 아니면 풀에 반환
             if(!_audioSource.isPlaying && !_audioSource.loop)
             {
                 ReleaseOrDestroy();
+                return;
+            }
+            
+            if (followTimeScale)
+            {
+                // 메인 오디오 소스 pitch 조절
+                _audioSource.pitch = _initialPitch * Time.timeScale;
             }
         }
         public void Resume()
@@ -69,11 +71,11 @@ namespace Cardevil.Pools
         {
             _audioSource.resource = clip;
             
-
             _audioSource.transform.position = pos;
             _audioSource.loop = isLoop;
             setting.ApplyTo(_audioSource);
             _audioSource.Play();
+            _initialPitch = _audioSource.pitch;
 
             // if (!isLoop)
             // {
@@ -81,26 +83,9 @@ namespace Cardevil.Pools
             // }
         }
         
-        /// <summary>
-        /// 간단하게 사운드 재생
-        /// TODO: 위에걸로 바꿔야함
-        /// </summary>
-        /// <param name="clip"></param>
-        /// <param name="isLoop"></param>
-        public void SimplePlayAudioClip(AudioClip clip, bool isLoop)
+        private async UniTask SoundTimer(float time)
         {
-            _audioSource.clip = clip;
-            _audioSource.loop = isLoop;
-            _audioSource.Play();
-            if (!isLoop)
-            {
-                StartCoroutine(SoundTimer(clip.length));
-            }
-        }
-        
-        private IEnumerator SoundTimer(float time)
-        {
-            yield return new WaitForSeconds(time);
+            await UniTask.Delay(TimeSpan.FromSeconds(time));
             ReleaseOrDestroy();
         }
         
