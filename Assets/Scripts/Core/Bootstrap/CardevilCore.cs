@@ -1,4 +1,5 @@
 using Cardevil.Pools;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Save;
 using Cardevil.Sound;
 using Cysharp.Threading.Tasks;
@@ -19,15 +20,34 @@ namespace Cardevil.Core.Bootstrap
         [Header("Settings")] 
         [field: SerializeField] public bool CanSelectSaveSlot { get; private set; }
         
-        [field: SerializeField] public GameManager Game { get; private set; }
-        [field: SerializeField] public GameFlowManager GameFlow { get; private set; }
-        [field: SerializeField] public SaveLoadManager SaveLoad { get; private set; }
-        [field: SerializeField] public SoundManager Sound { get; private set; }
-        [field: SerializeField] public PoolManager Pool { get; private set; }
+        [SerializeField] private GameManager game;
+        [SerializeField] private GameFlowManager gameFlow;
+        [SerializeField] private SaveLoadManager saveLoad;
+        [SerializeField] private SoundManager sound;
+        [SerializeField] private PoolManager pool;
+        [SerializeField] private DatabaseManager database;
+
+        // Bootstrapper 등 내부 로직용
+        public GameManager GameManager => game;
+        public GameFlowManager GameFlowManager => gameFlow;
+        public SaveLoadManager SaveLoadManager => saveLoad;
+        public SoundManager SoundManager => sound;
+        public PoolManager PoolManager => pool;
+        public DatabaseManager DatabaseManager => database;
+
+        // 외부 단축 접근용
+        public static GameManager Game => Instance.game;
+        public static GameFlowManager GameFlow => Instance.gameFlow;
+        public static SaveLoadManager SaveLoad => Instance.saveLoad;
+        public static SoundManager Sound => Instance.sound;
+        public static PoolManager Pool => Instance.pool;
+        public static DatabaseManager Database => Instance.database;
+        
+        // 자주 쓰는 깊은 계층 단축
+        public static ScoreProviderRegistry Score => Instance.game.ScoreProviderRegistry;
         
         [Header("References")]
         [SerializeField] private EventSystem eventSystem;
-        [field: SerializeField] public DatabaseManager Database { get; private set; }
         
         private int TotalToLoad => 6;
         private CancellationTokenSource _cts;

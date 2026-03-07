@@ -18,7 +18,7 @@ namespace Cardevil.Utils
                 {
                     name = name.Substring(index + 1);
                 }
-                if (CardevilCore.Instance.Pool.TryGetOriginal(name, out Poolable original))
+                if (CardevilCore.Pool.TryGetOriginal(name, out Poolable original))
                 {
                     return original.gameObject as T;
                 }
@@ -77,7 +77,7 @@ namespace Cardevil.Utils
 
             if (original.TryGetComponent<Poolable>(out Poolable poolable))
             {
-                return CardevilCore.Instance.Pool.GetFromOriginal(poolable, parent).gameObject;
+                return CardevilCore.Pool.GetFromOriginal(poolable, parent).gameObject;
             }
 
             GameObject go = Object.Instantiate(original, parent);

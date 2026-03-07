@@ -63,24 +63,24 @@ namespace Cardevil.Core.Bootstrap
             Loaded++;
             
             // 2. Database
-            await ctx.Database.InitializeAsync();
+            await ctx.DatabaseManager.InitializeAsync();
             Loaded++;
             
             // 3. Save data
-            ctx.SaveLoad.Init();
+            ctx.SaveLoadManager.Init();
             Loaded++;
             
             // 4. Object Pool
-            ctx.Pool.Init(ctx.transform);
+            ctx.PoolManager.Init(ctx.transform);
             Loaded++;
             
             // 5. Sound
-            ctx.Sound.Init(ctx.transform, ctx.Pool);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            ctx.SoundManager.Init(ctx.transform, ctx.PoolManager);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             Loaded++;
             
             // 6. Flow
-            ctx.Game.Init();
-            ctx.GameFlow.Init();
+            ctx.GameManager.Init();
+            ctx.GameFlowManager.Init();
             Loaded++;
 
             if (ctx.CanSelectSaveSlot)
@@ -91,8 +91,8 @@ namespace Cardevil.Core.Bootstrap
             {
                 // 개발용으로 세이브 로드 생략하고 항상 새 게임에 진입
                 var slot = SaveSlot.DevSlot;
-                ctx.SaveLoad.MakeNewSave(slot, "DevSave");
-                ctx.SaveLoad.LoadGame(slot);
+                ctx.SaveLoadManager.MakeNewSave(slot, "DevSave");
+                ctx.SaveLoadManager.LoadGame(slot);
                 await SceneLoader.LoadSceneAsync(Scenes.World, LoadSceneMode.Single);
             }
         }

@@ -42,7 +42,7 @@ namespace Cardevil.Ingame.Player
 
         public Entity Entity => _entity;
         public Field.Field Field { get; private set; }
-        public PlayerStatus PlayerStatus => CardevilCore.Instance.Game.PlayerStatus;
+        public PlayerStatus PlayerStatus => CardevilCore.Game.PlayerStatus;
         public PlayerVisual PlayerVisual => _playerVisual;
         public Transform VisualTransform => _playerVisual.transform;
 

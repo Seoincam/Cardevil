@@ -7,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            CardevilCore.Instance.Game.PlayerStatus.RerollTicket += 3;
+            CardevilCore.Game.PlayerStatus.RerollTicket += 3;
         }
     }
 }

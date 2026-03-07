@@ -7,7 +7,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            CardevilCore.Instance.Game.PlayerStatus.canRevive = true;
+            CardevilCore.Game.PlayerStatus.canRevive = true;
         }
        
     }

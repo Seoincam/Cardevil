@@ -45,10 +45,10 @@ namespace Cardevil.Core.Root
 
         protected async void Awake()
         {
-            CardevilCore.Instance.GameFlow.Stage = this;
+            CardevilCore.GameFlow.Stage = this;
             _enemySpawner = new EnemySpawner();
             
-            cardManager.Initialize();
+            cardManager.Initialize(CardevilCore.Game.ScoreProviderRegistry);
             turnManager = new TurnManager(cardManager.Core, Player, _enemySpawner);
             
             
@@ -62,7 +62,7 @@ namespace Cardevil.Core.Root
 
         private async UniTask InitAsync()
         {
-            _context = CardevilCore.Instance.GameFlow.Context;
+            _context = CardevilCore.GameFlow.Context;
             
             StageCameraCanvas.Instance.InitRock(); // 돌 끄기
             
@@ -162,13 +162,13 @@ namespace Cardevil.Core.Root
             
             LogEx.Log("스테이지 종료");
             
-            CardevilCore.Instance.GameFlow.Stage = null;
+            CardevilCore.GameFlow.Stage = null;
             
             turnManager?.Dispose();
             turnManager = null;
             
             var exitInfo = new NodeExitInfo() { IsCleared = true };
-            CardevilCore.Instance.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
+            CardevilCore.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
             SceneLoader.UnloadSceneAsync(Scenes.Stage).Forget();
         }
     }

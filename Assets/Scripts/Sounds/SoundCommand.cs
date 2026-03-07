@@ -24,7 +24,7 @@ namespace Cardevil.Sounds
                                      "sound list - Lists all available sound names.";
         public string Signature => "sound play <soundName>\nsound list [cached|all]";
 
-        private SoundManager SoundManager => CardevilCore.Instance.Sound;
+        private SoundManager SoundManager => CardevilCore.Sound;
         public void Execute(string[] args)
         {
             if (args.Length < 1)

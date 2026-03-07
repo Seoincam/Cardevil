@@ -37,7 +37,7 @@ namespace Cardevil.Card.InStage.Score
         public async UniTask AddOperatorAsync(IScoreOperator scoreOperator)
         {
             model.AddOperator(scoreOperator);
-            await _view.PlayAddOperator(scoreOperator);
+            await _view.PlayAddOperatorAsync(scoreOperator);
             await UniTask.Delay(TimeSpan.FromSeconds(0.3f)); // 임시 대기
         }
 

@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Card.Visual.Controller;
 using Cardevil.Core;
 using Cysharp.Threading.Tasks;
@@ -12,7 +13,7 @@ using Random = UnityEngine.Random;
 namespace Cardevil.Card.InStage
 {
     [RequireComponent(typeof(CardVisualController))]
-    public class HandBarCard : MonoBehaviour, IClearable, 
+    public class HandBarCard : MonoBehaviour, IClearable, IScoreVisual, 
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, 
         IPointerDownHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
@@ -74,6 +75,8 @@ namespace Cardevil.Card.InStage
                 return Mathf.Clamp(targetZ, -maxTilt, maxTilt);
             }
         }
+
+        public Vector3 WorldPosition => transform.position;
 
         private void Awake()
         {
@@ -215,6 +218,14 @@ namespace Cardevil.Card.InStage
                 .Join(rotationTween)
                 .Join(jumpTween)
                 .Join(fadeTween);
+        }
+        
+        public async UniTask PlayScoreReactionAsync()
+        {
+            // 임시
+            await transform
+                .DOScale(1.2f, 0.3f)
+                .SetLoops(2, LoopType.Yoyo);
         }
         
         private void SetMovement(MovementType type)

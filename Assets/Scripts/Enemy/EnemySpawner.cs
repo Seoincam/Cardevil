@@ -19,7 +19,7 @@ namespace Cardevil.Enemy
         
         public EnemySpawner()
         {
-            var db = CardevilCore.Instance.Database.Database;
+            var db = CardevilCore.Database.Database;
         
             var baseMobBossDataList = db.BaseMobBossDataList;
             var roomDataList = db.RoomDataList;

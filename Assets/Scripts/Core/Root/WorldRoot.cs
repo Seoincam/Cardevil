@@ -30,7 +30,7 @@ namespace Cardevil.Core.Root
         /// </summary>
         public void Init()
         {
-            CardevilCore.Instance.GameFlow.World = this;
+            CardevilCore.GameFlow.World = this;
             
             Dungeon = new DungeonManager();
             Dungeon.Init();
