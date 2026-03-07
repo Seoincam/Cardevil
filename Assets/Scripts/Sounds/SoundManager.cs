@@ -23,11 +23,10 @@ namespace Cardevil.Sound
         [SerializeField] public AudioMixerGroup[] audioMixerGroups;
         [SerializeField] private float defaultVolume = 0.75f;
 
-        [FormerlySerializedAs("_backgroundAudioConfiguration")] [Header("Config")] [SerializeField]
-        private AudioConfigurationSO _defaultBackgroundAudioConfiguration; // 사용하지 않음
+        [Header("Config")] 
+        [SerializeField,Obsolete] private AudioConfigurationSO _defaultBackgroundAudioConfiguration;
 
-        [FormerlySerializedAs("_soundEffectAudioConfiguration")] [SerializeField]
-        private AudioConfigurationSO _defaultSoundEffectAudioConfiguration;
+        [SerializeField] private AudioConfigurationSO _defaultSoundEffectAudioConfiguration;
 
         [Header("Audio Clips")] private SerializableDictionary<string, AudioResource> _cachedAudioClips = new();
         [Header("ETC")] [SerializeField] private List<SoundEmitter> _sfxEmitters = new List<SoundEmitter>();
@@ -401,6 +400,45 @@ namespace Cardevil.Sound
         }
 
 
+        public IEnumerable<string> GetCachedSoundNames()
+        {
+
+            // 캐시된 오디오 클립 이름 추가
+            foreach (var kvp in _cachedAudioClips)
+            {
+                yield return kvp.Key;
+            }
+
+            // 캐시된 배경음악 이름 추가
+            foreach (var kvp in _cachedBackgroundSoundEmitters)
+            {
+                yield return kvp.Key;
+            }
+        }
+        
+        HashSet<string> soundNames = new HashSet<string>();
+        public IEnumerable<string> GetAllSoundNames()
+        {
+           if (soundNames.Count > 0)
+            {
+                return soundNames;
+            }
+           
+           var bgms = AssetUtil.LoadAll<AudioClip>("Sounds/Music");
+           foreach (var sound in bgms)
+           {
+                soundNames.Add("Music/" + sound.name);
+           }
+           
+            var sfxs = AssetUtil.LoadAll<AudioClip>("Sounds/SFX");
+            foreach (var sound in sfxs)
+            {
+                soundNames.Add("SFX/" + sound.name);
+            }
+            
+            
+            return soundNames;
+        }
     }
 
 }
