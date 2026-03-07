@@ -11,12 +11,12 @@ namespace Cardevil.Card.InStage.Score.Step
     public class ScoreProviderRegistry : IScoreProviderRegistry
     {
         [SerializeReference, VisibleOnly] 
-        private SerializableDictionary<ScoreStepType, List<IScoreProvider>> providerMap;
+        private SerializableDictionary<ScoreStepType, List<IScoreProvider>> providerMap = new();
         
-        private Dictionary<int, IScoreProvider> _providerIdMap;
+        private Dictionary<int, IScoreProvider> _providerIdMap = new();
         private int _nextId;
 
-        private Dictionary<ScoreStepType, bool> _needSortMap;
+        private Dictionary<ScoreStepType, bool> _needSortMap = new();
         
         public int Register(IScoreProvider provider)
         {

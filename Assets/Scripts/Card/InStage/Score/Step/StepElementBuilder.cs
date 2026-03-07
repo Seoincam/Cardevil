@@ -57,7 +57,7 @@ namespace Cardevil.Card.InStage.Score.Step
 
         public IReadOnlyList<IStepElement> BuildSteps(ScoreStepType type)
         {
-            Debug.Assert(_context != null);
+            Debug.Assert(_context != null, "_context == null");
             
             return type switch
             {
