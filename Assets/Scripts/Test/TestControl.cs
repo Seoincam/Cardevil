@@ -72,9 +72,9 @@ namespace Cardevil.Test
         public void SetPlayerHp()
         {
             // 플레이어의 HP를 설정하는 테스트
-            if (CardevilCore.Instance.Game.PlayerStatus != null)
+            if (CardevilCore.Game.PlayerStatus != null)
             {
-                CardevilCore.Instance.Game.PlayerStatus.CurrentHp = setHp;
+                CardevilCore.Game.PlayerStatus.CurrentHp = setHp;
                 Debug.Log($"플레이어의 HP를 {setHp}로 설정했습니다.");
             }
             else
@@ -86,17 +86,17 @@ namespace Cardevil.Test
         
         public void PlayerGUI()
         {
-            if (CardevilCore.Instance.Game.PlayerStatus != null)
+            if (CardevilCore.Game.PlayerStatus != null)
             {
-                GUILayout.Label($"Player HP: {CardevilCore.Instance.Game.PlayerStatus.CurrentHp}");
+                GUILayout.Label($"Player HP: {CardevilCore.Game.PlayerStatus.CurrentHp}");
                 if (GUILayout.Button("Increase Player HP"))
                 {
-                    CardevilCore.Instance.Game.PlayerStatus.CurrentHp++;
+                    CardevilCore.Game.PlayerStatus.CurrentHp++;
                     Debug.Log("플레이어의 HP를 증가시켰습니다.");
                 }
                 if (GUILayout.Button("Decrease Player HP"))
                 {
-                    CardevilCore.Instance.Game.PlayerStatus.CurrentHp--;
+                    CardevilCore.Game.PlayerStatus.CurrentHp--;
                     Debug.Log("플레이어의 HP를 감소시켰습니다.");
                 }
             }
@@ -133,7 +133,7 @@ namespace Cardevil.Test
         public void GetTestPoolableFromPool()
         {
             // PoolManager를 통해 Poolable 객체를 가져오는 테스트
-            Poolable poolable = CardevilCore.Instance.Pool.Get(poolableType);
+            Poolable poolable = CardevilCore.Pool.Get(poolableType);
             if (poolable != null)
             {
                 Debug.Log("Poolable 객체를 성공적으로 가져왔습니다.");

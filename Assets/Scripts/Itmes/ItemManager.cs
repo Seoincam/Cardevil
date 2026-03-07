@@ -59,7 +59,7 @@ public class ItemManager
 
 
         // 이것들을 json에서 가져오기.
-        List<MachineReward> filteredList = CardevilCore.Instance.Database.Database.MachineRewardList
+        List<MachineReward> filteredList = CardevilCore.Database.Database.MachineRewardList
                                 .Where(item => item.Rank == thisRare)
                                 .ToList();
 

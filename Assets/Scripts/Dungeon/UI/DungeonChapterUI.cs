@@ -27,7 +27,7 @@ namespace Cardevil.Dungeon.UI
         [field:SerializeField] public CanvasGroup CanvasGroup { get; private set; }
         
         public int DungeonId => dungeonId;
-        public Dungeon Dungeon => CardevilCore.Instance.GameFlow.World.Dungeon.GetDungeonById(dungeonId);
+        public Dungeon Dungeon => CardevilCore.GameFlow.World.Dungeon.GetDungeonById(dungeonId);
 
 
         private void Awake()
@@ -57,7 +57,7 @@ namespace Cardevil.Dungeon.UI
 
         public void InitializeAfterDungeonCreated()
         {
-            Dungeon dungeon = CardevilCore.Instance.GameFlow.World.Dungeon.GetDungeonById(dungeonId);
+            Dungeon dungeon = CardevilCore.GameFlow.World.Dungeon.GetDungeonById(dungeonId);
             if (dungeon == null)
             {
                 LogEx.LogError($"Dungeon with ID {dungeonId} not found");

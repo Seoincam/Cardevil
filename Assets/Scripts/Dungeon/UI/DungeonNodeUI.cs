@@ -115,7 +115,7 @@ namespace Cardevil.Dungeon.UI
                 return;
             }
 
-            var dungeonManager = CardevilCore.Instance.GameFlow.World.Dungeon;
+            var dungeonManager = CardevilCore.GameFlow.World.Dungeon;
             if (dungeonManager != null)
             {
                 dungeonManager.EnterNode(dungeonNode);

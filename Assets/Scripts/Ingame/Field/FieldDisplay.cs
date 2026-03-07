@@ -59,7 +59,7 @@ namespace Cardevil.Ingame.Field
                 return;
             }
 
-            var root = CardevilCore.Instance.GameFlow.Stage;
+            var root = CardevilCore.GameFlow.Stage;
             var field = root.Field;
             var player = root.Player;
             var moves = eventArgs.Directions;

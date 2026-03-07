@@ -16,7 +16,7 @@ namespace Cardevil.Core
 
         public void Init()
         {
-            CardevilCore.Instance.SaveLoad.Register(this);
+            CardevilCore.SaveLoad.Register(this);
             
             PlayerStatus = new PlayerStatus();
             ScoreProviderRegistry = new ScoreProviderRegistry();

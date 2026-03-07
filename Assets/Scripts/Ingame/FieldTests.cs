@@ -22,7 +22,7 @@ namespace Cardevil.Ingame
                 return;
             }
 
-            var pm = CardevilCore.Instance.Pool;
+            var pm = CardevilCore.Pool;
             var pile = pm.Get<RockPile>("RockPile");
             pile.Init(3);
             field.SummonEntityComponent(pile, TileVector.One);

@@ -8,7 +8,7 @@ namespace Cardevil.Relics
     {
         public void OnAcquire()
         {
-            CardevilCore.Instance.Game.PlayerStatus.MaxHand = 7;
+            CardevilCore.Game.PlayerStatus.MaxHand = 7;
         }
     }
 }

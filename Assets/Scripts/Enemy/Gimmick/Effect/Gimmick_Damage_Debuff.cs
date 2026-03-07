@@ -20,7 +20,7 @@ namespace Cardevil.InGame.Enemy
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
-            _scoreProviderId = CardevilCore.Instance.Game.ScoreProviderRegistry.Register(this);
+            _scoreProviderId = CardevilCore.Score.Register(this);
             // TODO: View 등록하기
         }
         
@@ -46,7 +46,7 @@ namespace Cardevil.InGame.Enemy
 
         public void Remove()
         {
-            CardevilCore.Instance.Game.ScoreProviderRegistry.SafeUnregister(_scoreProviderId, this);
+            CardevilCore.Score.SafeUnregister(_scoreProviderId, this);
             _scoreProviderId = -1;
         }
     }
