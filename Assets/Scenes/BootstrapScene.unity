@@ -1301,6 +1301,14 @@ PrefabInstance:
       propertyPath: sound.audioMixer
       value: 
       objectReference: {fileID: 24100000, guid: b7946aa69d8f0c44eb00457500c7124a, type: 2}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: sound._defaultBackgroundAudioConfiguration
+      value: 
+      objectReference: {fileID: 11400000, guid: be3114e94ca4e5f4ab6cc2e36b64853a, type: 2}
+    - target: {fileID: 8408681180270395050, guid: d7ab4db47cc5e43c8a23497a5b6914ba, type: 3}
+      propertyPath: sound._defaultSoundEffectAudioConfiguration
+      value: 
+      objectReference: {fileID: 11400000, guid: 56ac9c7f61ed3d54f90ed9c266146ac9, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
