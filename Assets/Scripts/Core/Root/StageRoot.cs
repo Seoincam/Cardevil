@@ -47,6 +47,7 @@ namespace Cardevil.Core.Root
         {
             CardevilCore.GameFlow.Stage = this;
             _enemySpawner = new EnemySpawner();
+            _enemySpawner.ConfigureStageMobData(CardevilCore.GameFlow.Context.stageId);
             
             cardManager.Initialize(CardevilCore.Game.ScoreProviderRegistry);
             turnManager = new TurnManager(cardManager.Core, Player, _enemySpawner);
@@ -88,7 +89,7 @@ namespace Cardevil.Core.Root
             Field.InitField(3,3, Random.Range(0,4));
             Player.Init(Field);
             
-            _enemySpawner.ConfigStageMobData(_context.stageId);
+            _enemySpawner.ConfigureStageMobData(_context.stageId);
             if (!_enemySpawner.TrySpawn(out var enemy))
             {
                 LogEx.LogError($"Failed to spawn Enemy. stage Id: {_context.stageId}");

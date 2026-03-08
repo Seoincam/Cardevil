@@ -38,7 +38,7 @@ namespace Cardevil.Enemy
         /// <summary>
         /// 새로운 Stage로 진입할때 실행합니다.
         /// </summary>
-        public void ConfigStageMobData(string stageId)
+        public void ConfigureStageMobData(string stageId)
         {
             if (!_roomDataDict.TryGetValue(stageId, out RoomData roomData))
             {
