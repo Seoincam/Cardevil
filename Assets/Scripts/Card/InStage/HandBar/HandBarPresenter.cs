@@ -20,8 +20,12 @@ namespace Cardevil.Card.InStage
     {
         [Header("States")]
         [SerializeField, VisibleOnly] private HandBarModel model = new();
-        [field: SerializeField, VisibleOnly] public bool CanInteract { private get; set; }
         
+        [SerializeField, VisibleOnly] private bool isInputEnabled; // 외부(Turn)에서 허용했는가?
+        [SerializeField, VisibleOnly] private bool isBusy; // 내부(Animation 등)에서 작업 중인가?
+
+        public bool CanInteract => isInputEnabled && !isBusy;
+
         private HandBarView _view;
         private ValueSelectionPresenter _valueSelectionPresenter;
         
@@ -72,6 +76,11 @@ namespace Cardevil.Card.InStage
             _valueSelectionPresenter.ValueSelected += OnValueSelected;
         }
 
+        public void SetInputEnabled(bool enabled)
+        {
+            isInputEnabled = enabled;
+        }
+
         public void AddCard(ICardState state)
         {
             model.Add(state);
@@ -88,37 +97,46 @@ namespace Cardevil.Card.InStage
 
         public async UniTask<ICardState> DiscardAsync(ICardState state)
         {
-            model.Remove(state);
-            _view.ArrangeCards(model.Hand);
+            using (Busy())
+            {
+                model.Remove(state);
+                _view.ArrangeCards(model.Hand);
             
-            await _view.MoveCardToDiscardAnchor(state);
+                await _view.MoveCardToDiscardAnchor(state);
             
-            return state;
+                return state;
+            }
         }
 
         public async UniTask DrawAsync(IReadOnlyList<ICardState> states)
         {
-            foreach (var state in states)
+            using (Busy())
             {
-                AddCard(state);
-                await UniTask.Delay(TimeSpan.FromSeconds(.15f));
+                foreach (var state in states)
+                {
+                    AddCard(state);
+                    await UniTask.Delay(TimeSpan.FromSeconds(.15f));
+                }
             }
         }
 
         public async UniTask<IReadOnlyList<ICardState>> DiscardSelectionAsync()
         {
-            var selection = Selection.ToList();
-            var toWait = new List<UniTask>(selection.Count);
-
-            foreach (var state in selection)
+            using (Busy())
             {
-                model.Remove(state);
-                _view.ArrangeCards(model.Hand);
-                toWait.Add(_view.MoveCardToDiscardAnchor(state));
-            }
+                var selection = SortedSelection.ToList();
+                var toWait = new List<UniTask>(selection.Count);
+
+                foreach (var state in selection)
+                {
+                    model.Remove(state);
+                    _view.ArrangeCards(model.Hand);
+                    toWait.Add(_view.MoveCardToDiscardAnchor(state));
+                }
             
-            await UniTask.WhenAll(toWait);
-            return selection;
+                await UniTask.WhenAll(toWait);
+                return selection;
+            }
         }
         
         public readonly struct SelectionState
@@ -351,6 +369,24 @@ namespace Cardevil.Card.InStage
             {
                 OnDragging(state);
                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
+        }
+
+        private BusyScope Busy() => new(this);
+        
+        private readonly struct BusyScope : IDisposable
+        {
+            private readonly HandBarPresenter _presenter;
+
+            public BusyScope(HandBarPresenter presenter)
+            {
+                _presenter = presenter;
+                _presenter.isBusy = true;
+            }
+
+            public void Dispose()
+            {
+                _presenter.isBusy = false;
             }
         }
     }

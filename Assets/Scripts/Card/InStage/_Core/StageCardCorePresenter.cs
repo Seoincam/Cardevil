@@ -41,7 +41,6 @@ namespace Cardevil.Card.InStage
             
             var states = model.Draw(6);
             _handBarPresenter.DrawAsync(states).Forget();
-            _handBarPresenter.CanInteract = true;
         }
         
         public void Dispose()
@@ -56,10 +55,13 @@ namespace Cardevil.Card.InStage
         /// </summary>
         public async UniTask WaitUntilPlayerInputAsync()
         {
-            _playerInputWaiter = new UniTaskCompletionSource();
-            await _playerInputWaiter.Task;
-
-            _playerInputWaiter = null;
+            using (Interaction())
+            {
+                _playerInputWaiter = new UniTaskCompletionSource();
+                
+                await _playerInputWaiter.Task;
+                _playerInputWaiter = null;
+            }
         }
         
         public async UniTask AddStepAsync(ScoreStepType type)
@@ -116,7 +118,7 @@ namespace Cardevil.Card.InStage
 
             async UniTaskVoid DiscardAsync()
             {
-                _handBarPresenter.CanInteract = false;
+                _handBarPresenter.SetInputEnabled(false);
                 
                 var discardedStates = await _handBarPresenter.DiscardSelectionAsync();
                 model.Discard(discardedStates);
@@ -124,7 +126,7 @@ namespace Cardevil.Card.InStage
                 var states = model.Draw(discardedStates.Count);
                 await _handBarPresenter.DrawAsync(states);
                 
-                _handBarPresenter.CanInteract = true;
+                _handBarPresenter.SetInputEnabled(true);
             }
             DiscardAsync().Forget();
         }
@@ -150,6 +152,24 @@ namespace Cardevil.Card.InStage
                         await _handBarPresenter.DiscardAsync(discardStep.Card);
                         continue;
                 }
+            }
+        }
+
+        private InteractionScope Interaction() => new(_handBarPresenter);
+
+        private readonly struct InteractionScope : IDisposable
+        {
+            private readonly HandBarPresenter _handBarPresenter;
+            
+            public InteractionScope(HandBarPresenter handBarPresenter)
+            {
+                _handBarPresenter = handBarPresenter;
+                handBarPresenter.SetInputEnabled(true);
+            }
+            
+            public void Dispose()
+            {
+                _handBarPresenter.SetInputEnabled(false);
             }
         }
     }
