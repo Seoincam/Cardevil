@@ -457,9 +457,7 @@ namespace Cardevil.Ingame.Player
         }
 
         #endregion
-
-
-
+        
         [Preserve, ConsoleCommand("togglePlayerDebug", "Toggle player debug mode")]
         private static void TogglePlayerDebug()
         {

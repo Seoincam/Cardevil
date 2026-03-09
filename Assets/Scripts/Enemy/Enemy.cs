@@ -74,47 +74,49 @@ namespace Cardevil.InGame.Enemy
         
         public async UniTask OnStartTurnAsync()
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("OnStartTurnAsync가 구현되지 않음 - @대윤");
         }
 
         public async UniTask OnTakeDamageAsync(float damage)
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("OnTakeDamageAsync가 구현되지 않음 - @대윤");
         }
 
         public async UniTask OnDieAsync()
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("OnDieAsync가 구현되지 않음 - @대윤");
         }
 
         public async UniTask OnReplaceAsync()
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("OnReplaceAsync가 구현되지 않음 - @대윤");
         }
 
         public async UniTask<bool> CheckAttackCountAsync()
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("CheckAttackCountAsync가 구현되지 않음 - @대윤");
+            return false;
         }
 
         public async UniTask<(bool success, int damage)> TryAttackAsync(IEnemyContext context)
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("TryAttackAsync가 구현되지 않음 - @대윤");
+            return (false, 0);
         }
 
         public async UniTask OnAttackSuccessAsync()
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("OnAttackSuccessAsync가 구현되지 않음 - @대윤");
         }
 
         public async UniTask OnEndTurnAsync()
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("OnEndTurnAsync가 구현되지 않음 - @대윤");
         }
 
         public async UniTask UpdateAttackAsync(IEnemyContext context)
         {
-            throw new NotImplementedException();
+            LogEx.LogWarning("UpdateAttackAsync가 구현되지 않음 - @대윤");
         }
 
         #endregion

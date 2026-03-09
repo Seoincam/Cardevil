@@ -1,3 +1,4 @@
+using Cardevil.Events.ExecEvents;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
@@ -48,11 +49,10 @@ namespace Cardevil.Card.InStage.Score
         {
             foreach (var scoreOperator in model.ScoreOperators)
             {
-                var previousScore = model.Score;
-                var currentScore = scoreOperator.Apply(previousScore);
+                model.SetScore(scoreOperator.CurrentScore);
+                await _view.ApplyOperator(scoreOperator);
                 
-                model.SetScore(currentScore);
-                await _view.ApplyOperator(scoreOperator, previousScore, currentScore);
+                PublishScoreChangedEvent(scoreOperator.PreviousScore, scoreOperator.CurrentScore);
             }
 
             var totalScore = model.Score;
@@ -65,6 +65,12 @@ namespace Cardevil.Card.InStage.Score
         {
             model.SetHandRank(handRankData);
             _view.UpdateHandRank(model.HandRank, model.HandRankScore);
+        }
+
+        private static void PublishScoreChangedEvent(float previous, float current)
+        {
+            var args = ScoreChangedArgs.Get(previous, current);
+            ExecEventBus<ScoreChangedArgs>.InvokeMergedAndDispose(args).Forget();
         }
     }
 }

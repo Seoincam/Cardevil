@@ -23,9 +23,7 @@ namespace Cardevil.Card.InStage
         
         [SerializeField, VisibleOnly] private bool isInputEnabled; // 외부(Turn)에서 허용했는가?
         [SerializeField, VisibleOnly] private bool isBusy; // 내부(Animation 등)에서 작업 중인가?
-
-        public bool CanInteract => isInputEnabled && !isBusy;
-
+        
         private HandBarView _view;
         private ValueSelectionPresenter _valueSelectionPresenter;
         
@@ -40,6 +38,8 @@ namespace Cardevil.Card.InStage
         /// 호출 시 새로운 객체를 반환함.
         /// </summary>
         public IReadOnlyList<ICardState> SortedSelection => model.SortedSelection;
+
+        public int HandCardCount => model.Hand.Count;
 
         /// <summary>
         /// 선택한 카드들을 사용할 수 있는지 여부를 반환.
@@ -56,6 +56,8 @@ namespace Cardevil.Card.InStage
         /// 현재 족보 평가 데이터.
         /// </summary>
         public HandRankData HandRankData => _cachedHandRankData;
+        
+        private bool CanInteract => isInputEnabled && !isBusy;
         
         private IReadOnlyList<ICardState> Selection => model.Selection;
 
