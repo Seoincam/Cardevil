@@ -49,6 +49,17 @@ namespace Cardevil.Card.InStage
             _playerInputWaiter = null;
         }
 
+        public async UniTask DrawAsync()
+        {
+            var toDrawCount = 6 - _handBarPresenter.HandCardCount; // TODO: MaxHand 변수와 연결
+
+            if (toDrawCount > 0)
+            {
+                var toDraw = model.Draw(toDrawCount);
+                await _handBarPresenter.DrawAsync(toDraw);
+            }
+        }
+
         /// <summary>
         /// 플레이어가 사용하기 버튼을 누를 때까지 대기.
         /// 이때 플레이어는 카드 선택, 값 변경, 순서변경 등을 수행할 수 있음.
@@ -88,11 +99,6 @@ namespace Cardevil.Card.InStage
         }
 
         public async UniTask DiscardSelectionAsync() => await _handBarPresenter.DiscardSelectionAsync();
-
-        public async UniTask DrawAsync()
-        {
-            
-        }
         
         private void OnHandBarStateChanged(in HandBarPresenter.SelectionState state)
         {

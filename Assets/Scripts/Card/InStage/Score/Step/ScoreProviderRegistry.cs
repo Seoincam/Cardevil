@@ -50,13 +50,16 @@ namespace Cardevil.Card.InStage.Score.Step
 
         public IReadOnlyList<IScoreProvider> GetProviders(ScoreStepType type)
         {
-            var providers = providerMap[type];
-            if (_needSortMap[type])
+            if (!providerMap.TryGetValue(type, out var providers))
+            {
+                return null;
+            }
+
+            if (_needSortMap.TryGetValue(type, out bool needSort) && needSort)
             {
                 // TODO: 순서를 기획 측에서 정한다면 정렬 추가. - @Seoincam
             }
-            
-            return providerMap[type];
+            return providers;
         }
 
         private void Unregister(IScoreProvider provider)
