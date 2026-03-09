@@ -68,7 +68,7 @@ namespace Cardevil.Card.InStage.Score
             await ScaleAsync();
         }
 
-        public async UniTask ApplyOperator(IScoreOperator scoreOperator, float previousScore, float currentScore)
+        public async UniTask ApplyOperator(IScoreOperator scoreOperator)
         {
             var targetText = operatorTexts[scoreOperator];
             operatorTexts.Remove(scoreOperator);
@@ -84,9 +84,9 @@ namespace Cardevil.Card.InStage.Score
 
             await ScaleAsync();
             await DOTween.To(
-                getter: () => previousScore,
+                getter: () => scoreOperator.PreviousScore,
                 setter: value => scoreText.text = value.ToString("0"),
-                endValue: currentScore,
+                endValue: scoreOperator.CurrentScore,
                 0.35f
             );
             await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
