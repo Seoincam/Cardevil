@@ -6,11 +6,11 @@ using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
 using Cardevil.DataStructure;
-using Cardevil.DebugConsole;
+using Cardevil.Test.DebugConsole;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
-using Console = Cardevil.DebugConsole.Console;
+using Console = Cardevil.Test.DebugConsole.Console;
 
 namespace Cardevil.Gameplay
 {
@@ -254,17 +254,17 @@ namespace Cardevil.Gameplay
             {
                 if (!int.TryParse(args[0], out amount))
                 {
-                    DebugConsole.Console.MessageError("Invalid heal amount. Please provide a valid integer.");
+                    Console.MessageError("Invalid heal amount. Please provide a valid integer.");
                     return;
                 }
             }
             if (amount < 0)
             {
-                DebugConsole.Console.MessageWarning("Heal amount cannot be negative.");
+                Console.MessageWarning("Heal amount cannot be negative.");
                 return;
             }
             CardevilCore.Game.PlayerStatus.Heal(amount);
-            DebugConsole.Console.MessageInfo($"Healed {amount} HP. Current HP: {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp}");
+            Console.MessageInfo($"Healed {amount} HP. Current HP: {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp}");
         }
 
         [ConsoleCommand("deal", "Deal damage to the player by a specified amount.", "deal [int: amount]", new []{"0","1","2","3"})]
@@ -279,17 +279,17 @@ namespace Cardevil.Gameplay
             {
                 if (!int.TryParse(args[0], out amount))
                 {
-                    DebugConsole.Console.MessageError("Invalid damage amount. Please provide a valid integer.");
+                    Console.MessageError("Invalid damage amount. Please provide a valid integer.");
                     return;
                 }
             }
             if (amount < 0)
             {
-                DebugConsole.Console.MessageWarning("Damage amount cannot be negative.");
+                Console.MessageWarning("Damage amount cannot be negative.");
                 return;
             }
             int actualDamage = CardevilCore.Game.PlayerStatus.TakeDamage(amount);
-            DebugConsole.Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp}");
+            Console.MessageInfo($"Dealt {actualDamage} damage. Current HP: {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp}");
         }
 
         [ConsoleCommand("sethp", "플레이이어의 HP를 설정합니다.","sethp <int: amount> [bool: broadcast (optional, default: true)]", new []{"0","1","2","3"})]
@@ -297,7 +297,7 @@ namespace Cardevil.Gameplay
         {
             if (args.Length == 0)
             {
-                DebugConsole.Console.MessageError(Console.Instance.CurrentCommand.Description);
+                Console.MessageError(Console.Instance.CurrentCommand.Description);
                 return;
             }
             
@@ -305,14 +305,14 @@ namespace Cardevil.Gameplay
             {
                 int hp = CommandHelper.ParseArgument<int>(args[0]);
                 CardevilCore.Game.PlayerStatus.ForceSetCurrentHp(hp, true);
-                DebugConsole.Console.MessageInfo($"Set player HP to {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp}");
+                Console.MessageInfo($"Set player HP to {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp}");
             }
             else
             {
                 int hp = CommandHelper.ParseArgument<int>(args[0]);
                 bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
                 CardevilCore.Game.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
-                DebugConsole.Console.MessageInfo($"Set player HP to {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+                Console.MessageInfo($"Set player HP to {CardevilCore.Game.PlayerStatus.CurrentHp}/{CardevilCore.Game.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
             }
         }
 

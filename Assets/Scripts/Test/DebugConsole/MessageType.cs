@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.Test.DebugConsole
 {
     public struct MessageType
     {

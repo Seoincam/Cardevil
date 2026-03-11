@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cardevil.DebugConsole.Commands
+namespace Cardevil.Test.DebugConsole.Commands
 {
     /// <summary>
     /// 하위 명령어를 가질 수 있는 트리 구조의 콘솔 명령어입니다.

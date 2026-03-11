@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cardevil.DebugConsole.Commands
+namespace Cardevil.Test.DebugConsole.Commands
 {
     /// <summary>
     /// 리플렉션으로 등록되는 콘솔 명령어입니다.

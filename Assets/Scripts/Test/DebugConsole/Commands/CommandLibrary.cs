@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace Cardevil.DebugConsole.Commands
+namespace Cardevil.Test.DebugConsole.Commands
 {
     /// <summary>
     /// (eng) A static library that manages all console commands.<br/>

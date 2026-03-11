@@ -1,6 +1,6 @@
 ﻿using Cardevil.Core.Attributes;
 using Cardevil.Core.Utils;
-using Cardevil.DebugConsole;
+using Cardevil.Test.DebugConsole;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;

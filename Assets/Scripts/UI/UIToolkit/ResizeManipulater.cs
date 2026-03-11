@@ -1,7 +1,7 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UIElements;
-namespace Cardevil.UIToolkit
+
+namespace Cardevil.UI.UIToolkit
 {
     public enum ResizeEdge { East, South, SouthEast }
 

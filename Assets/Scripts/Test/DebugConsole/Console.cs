@@ -1,11 +1,11 @@
 ﻿using Cardevil.Core.Utils;
-using Cardevil.DebugConsole.Commands;
+using Cardevil.Test.DebugConsole.Commands;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.Test.DebugConsole
 {
     /// <summary>
     /// 디버그 콘솔의 메인 클래스입니다.

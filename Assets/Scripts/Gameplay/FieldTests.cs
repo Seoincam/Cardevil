@@ -1,8 +1,8 @@
 ﻿using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Utils;
-using Cardevil.DebugConsole;
 using Cardevil.Gameplay.Entities;
 using Cardevil.Gameplay.Field;
+using Cardevil.Test.DebugConsole;
 using UnityEngine;
 using UnityEngine.Scripting;
 

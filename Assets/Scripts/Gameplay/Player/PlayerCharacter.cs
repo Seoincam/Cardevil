@@ -1,10 +1,10 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Utils;
-using Cardevil.DebugConsole;
 using Cardevil.Gameplay.Core;
 using Cardevil.Gameplay.Entities;
 using Cardevil.Gameplay.Field;
 using Cardevil.Gameplay.Turn;
+using Cardevil.Test.DebugConsole;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -12,7 +12,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.Scripting;
-using Console = Cardevil.DebugConsole.Console;
+using Console = Cardevil.Test.DebugConsole.Console;
 
 namespace Cardevil.Gameplay.Player
 {

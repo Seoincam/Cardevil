@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace Cardevil.DebugConsole.Commands
+namespace Cardevil.Test.DebugConsole.Commands
 {
     /// <summary>
     /// (eng) Built-in console commands for the developer console.<br/>

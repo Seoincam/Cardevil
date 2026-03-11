@@ -1,11 +1,11 @@
 ﻿using Cardevil.Core.Bootstrap;
-using Cardevil.DebugConsole;
-using Cardevil.DebugConsole.Commands;
+using Cardevil.Test.DebugConsole;
+using Cardevil.Test.DebugConsole.Commands;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Scripting;
-using Console = Cardevil.DebugConsole.Console;
+using Console = Cardevil.Test.DebugConsole.Console;
 
 namespace Cardevil.Core.Systems.Sounds
 {

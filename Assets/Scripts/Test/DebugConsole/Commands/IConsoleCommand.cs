@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cardevil.DebugConsole.Commands
+namespace Cardevil.Test.DebugConsole.Commands
 {
     /// <summary>
     /// 콘솔 명령어 인터페이스입니다.
