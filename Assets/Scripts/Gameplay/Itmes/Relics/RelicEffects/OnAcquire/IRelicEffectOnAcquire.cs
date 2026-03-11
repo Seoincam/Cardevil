@@ -1,4 +1,4 @@
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items.RelicItem.RelicEffects.OnAcquire
 {
     public interface IRelicEffectOnAcquire
     {

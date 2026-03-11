@@ -2,7 +2,7 @@
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     [TrackColor(0.3f, 0.6f, 0.9f)]
     [TrackClipType(typeof(BoolValuePlayableAsset))]

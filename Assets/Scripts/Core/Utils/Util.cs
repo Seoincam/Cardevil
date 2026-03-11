@@ -1,7 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     /// <summary>
     /// 분류하기 힘든 유틸리티 함수들을 모아놓은 static 클래스.

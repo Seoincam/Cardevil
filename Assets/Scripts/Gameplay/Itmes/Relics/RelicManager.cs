@@ -1,10 +1,10 @@
-using Cardevil.Attributes;
-using Cardevil.Utils;
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items
 {
     [Serializable]
     public class RelicManager

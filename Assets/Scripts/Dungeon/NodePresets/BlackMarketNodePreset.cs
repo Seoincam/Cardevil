@@ -1,5 +1,5 @@
-﻿using Cardevil.Dungeon.UI;
-using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
+using Cardevil.Dungeon.UI;
 using UnityEngine;
 using UnityEngine.Serialization;
 

@@ -1,15 +1,15 @@
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.SceneManagement;
+using Cardevil.Core.Systems.Save;
+using Cardevil.Core.Utils;
 using Cardevil.DataStructure.Serializables;
-using Cardevil.Save;
-using Cardevil.SceneManagement;
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Cardevil.Title
+namespace Cardevil.UI.Title
 {
     public class TitleView : MonoBehaviour
     {

@@ -1,6 +1,6 @@
-using Cardevil.Attributes;
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using Cardevil.DataStructure.Serializables;
-using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

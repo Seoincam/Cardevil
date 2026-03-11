@@ -1,4 +1,4 @@
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

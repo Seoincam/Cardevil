@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Playables;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     [Serializable]
     public class ScriptableObjectSignalBehaviour : PlayableBehaviour

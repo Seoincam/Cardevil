@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     [CreateAssetMenu(fileName = "BoolValue", menuName = "Cardevil/Playable/BoolValue")]
     public class BoolValueSO : ScriptableObject

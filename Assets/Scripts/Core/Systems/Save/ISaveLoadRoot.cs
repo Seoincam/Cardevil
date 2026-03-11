@@ -1,4 +1,4 @@
-namespace Cardevil.Save
+namespace Cardevil.Core.Systems.Save
 {
     /// <summary>
     /// 세이브/로드 루트 인터페이스.

@@ -1,4 +1,4 @@
-﻿namespace Cardevil.Events.ExecEvents
+﻿namespace Cardevil.Core.Events.ExecEvent
 {
     public class TestExecEventArgs : ExecEventArgs<TestExecEventArgs>
     {

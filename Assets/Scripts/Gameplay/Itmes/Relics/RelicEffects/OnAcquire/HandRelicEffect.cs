@@ -1,8 +1,6 @@
 using Cardevil.Core.Bootstrap;
-using UnityEngine;
-using Cardevil.Relics;
 
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items.RelicItem.RelicEffects.OnAcquire
 {
     public class HandRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {

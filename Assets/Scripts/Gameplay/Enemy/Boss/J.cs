@@ -1,8 +1,4 @@
-using UnityEngine;
-using Cardevil.InGame.Enemy;
-
-
-namespace Cardevil.InGame.Enemy.Boss
+namespace Cardevil.Gameplay.Enemy.Boss
 {
 
     public class J : Enemy

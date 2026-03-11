@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.Attributes
+namespace Cardevil.Core.Attributes
 {
     /// <summary>
     /// Inspector에서 수정을 제한하는 Attribute.

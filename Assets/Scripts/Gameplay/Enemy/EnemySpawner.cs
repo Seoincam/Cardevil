@@ -1,11 +1,10 @@
 using Cardevil.Core.Bootstrap;
-using Cardevil.Utils;
-using Database;
-using UnityEngine;
-using System.Collections.Generic;
+using Cardevil.Core.Utils;
 using Database.Generated;
+using System.Collections.Generic;
+using UnityEngine;
 
-namespace Cardevil.Enemy
+namespace Cardevil.Gameplay.Enemy
 {
     public class EnemySpawner
     {
@@ -70,7 +69,7 @@ namespace Cardevil.Enemy
             }
         }
 
-        public bool TrySpawn(out InGame.Enemy.Enemy spawned)
+        public bool TrySpawn(out Enemy spawned)
         {
             spawned = null;
             
@@ -82,7 +81,7 @@ namespace Cardevil.Enemy
         }
         
         
-        private InGame.Enemy.Enemy SpawnEnemy(string mobID)
+        private Enemy SpawnEnemy(string mobID)
         {
             // 딕셔너리에서 데이터를 찾기
             if (!_mobBossDataDict.TryGetValue(mobID, out BaseMobBossData dataToSpawn))
@@ -120,7 +119,7 @@ namespace Cardevil.Enemy
             }
 
             var go = Object.Instantiate(enemyPrefab);
-            if (!go.TryGetComponent(out InGame.Enemy.Enemy enemy))
+            if (!go.TryGetComponent(out Enemy enemy))
             {
                 LogEx.LogError("스폰된 프리팹에 'Enemy' 컴포넌트가 없습니다.");
                 return null;

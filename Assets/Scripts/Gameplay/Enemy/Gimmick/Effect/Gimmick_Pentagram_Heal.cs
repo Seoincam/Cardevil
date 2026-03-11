@@ -1,9 +1,8 @@
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     /// <summary>
     /// # 턴이 종료될 때, 내 손패에 오망성 카드가 있다면, 적이 최대 체력의 X%만큼 회복합니다.

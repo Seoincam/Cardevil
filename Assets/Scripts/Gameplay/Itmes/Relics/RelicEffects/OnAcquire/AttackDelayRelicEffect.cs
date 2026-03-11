@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items.RelicItem.RelicEffects.OnAcquire
 {
     public class AttackDelayRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {

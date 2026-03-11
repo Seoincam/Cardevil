@@ -1,4 +1,5 @@
-﻿using Cardevil.SceneManagement;
+﻿using Cardevil.Core.SceneManagement;
+using Cardevil.Core.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;

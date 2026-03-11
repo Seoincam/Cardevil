@@ -1,9 +1,8 @@
 ﻿using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems.Pool;
+using Cardevil.Core.Utils;
 using Cardevil.DataStructure.Serializables;
 using Cardevil.Dungeon;
-using Cardevil.Manager;
-using Cardevil.Pools;
-using Cardevil.Utils;
 using Database;
 using NUnit.Framework;
 using System;
@@ -110,14 +109,14 @@ namespace Cardevil.Test
 
         #region Pool
         [Header("Pool Test")]
-        public List<Cardevil.Pools.Poolable> poolables = new List<Cardevil.Pools.Poolable>();
+        public List<Poolable> poolables = new List<Poolable>();
         [FormerlySerializedAs("poolableName")] public string resourcePoolableName = "TestPoolable";
         public Poolables poolableType = Poolables.TestPoolable;
         [ContextMenu("Get Test Poolable")]
         public void GetTestPoolableFromResource()
         {
             // PoolableFactorySO를 통해 Poolable 객체를 가져오는 테스트
-            var poolable = AssetUtil.Instantiate(resourcePoolableName, transform).GetComponent<Cardevil.Pools.Poolable>();
+            var poolable = AssetUtil.Instantiate(resourcePoolableName, transform).GetComponent<Poolable>();
             if (poolable != null)
             {
                 Debug.Log("Poolable 객체를 성공적으로 가져왔습니다.");

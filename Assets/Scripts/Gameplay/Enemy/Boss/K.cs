@@ -1,8 +1,7 @@
-using UnityEngine;
-using Cardevil.InGame.Enemy;
-using Cardevil.Utils; 
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Enemy.Attack;
 
-namespace Cardevil.InGame.Enemy.Boss
+namespace Cardevil.Gameplay.Enemy.Boss
 {
     public class K : Enemy
     {
@@ -18,7 +17,7 @@ namespace Cardevil.InGame.Enemy.Boss
         }
 
         // 공격 설정 (Setup)
-        public override void SetAttack(Attack attack, bool setPlayerAttack = false)
+        public override void SetAttack(Attack.Attack attack, bool setPlayerAttack = false)
         {
             // 플레이어 조준
             attack.isPlayerAttack = true;
@@ -29,7 +28,7 @@ namespace Cardevil.InGame.Enemy.Boss
         }
 
         // 공격 판정 (Check)
-        public override void AttackingCheck(Attack attack)
+        public override void AttackingCheck(Attack.Attack attack)
         {
 
             float damage = baseMobBossData.AttackDamage;

@@ -1,9 +1,9 @@
 using Cardevil.Core;
-using UnityEngine;
-using UnityEngine.UI;
+using Cardevil.Core.Utils;
 using Database.Generated;
+using UnityEngine;
 
-namespace Cardevil.Item
+namespace Cardevil.Gameplay.Items
 {
     public abstract class Item : IDeepClonable<Item>, IShallowClonable<Item>
     {

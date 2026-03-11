@@ -1,15 +1,11 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Cysharp.Threading.Tasks;
-
-
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
 
-namespace Cardevil.Events.ExecEvents
+namespace Cardevil.Core.Events.ExecEvent
 {
     public delegate void ExecEventHandler<TEvent>(ExecQueue<TEvent> queue, TEvent eventArgs) where TEvent : ExecEventArgs<TEvent>, new();
     public delegate UniTask ExecAction<TEvent>(TEvent eventArgs, CancellationToken cancellationToken) where TEvent : ExecEventArgs<TEvent>, new();

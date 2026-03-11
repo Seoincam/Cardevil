@@ -1,9 +1,8 @@
-﻿using Cardevil.Ingame.Field;
-using Cardevil.Utils;
-using Cardevil.Utils.Directions;
+﻿using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Field;
 using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Ingame.Player
+namespace Cardevil.Gameplay.Player
 {
     public interface IPlayerControl
     {

@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Player
+namespace Cardevil.Gameplay.Player
 {
     [CreateAssetMenu(fileName = "PlayerSettingSO", menuName = "Cardevil/Player/Player Setting SO")]
     public class PlayerCharacterSettingSO : ScriptableObject

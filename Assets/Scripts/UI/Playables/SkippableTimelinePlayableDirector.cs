@@ -1,11 +1,10 @@
-﻿using Cardevil.Utils;
-using System;
+﻿using Cardevil.Core.Utils;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     [RequireComponent(typeof(PlayableDirector))]
     public class SkippableTimelinePlayableDirector : MonoBehaviour

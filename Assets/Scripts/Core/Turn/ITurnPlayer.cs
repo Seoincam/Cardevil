@@ -1,5 +1,5 @@
 using Cardevil.Card.InStage;
-using Cardevil.Utils;
+using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 

@@ -1,8 +1,8 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
 using System;
 using UnityEngine;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     [CreateAssetMenu(fileName = "PlayableSignalChanel", menuName = "Cardevil/Playable/PlayableSignalChanel")]
     public class PlayableSignalChannel : ScriptableObject

@@ -1,4 +1,4 @@
-namespace Cardevil.Save
+namespace Cardevil.Core.Systems.Save
 {
     /// <summary>
     /// 신규 게임 초기화 인터페이스.

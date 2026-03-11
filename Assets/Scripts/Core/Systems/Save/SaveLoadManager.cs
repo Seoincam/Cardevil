@@ -1,12 +1,12 @@
-using Cardevil.Ingame;
-using Cardevil.SceneManagement;
-using Cardevil.Utils;
+using Cardevil.Core.SceneManagement;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Cardevil.Save
+namespace Cardevil.Core.Systems.Save
 { 
     /// <summary>
     /// 게임의 세이브와 로드를 관리하는 매니저 클래스

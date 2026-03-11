@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
-using UnityEngine;
-#if UNITY_EDITOR
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Callbacks;
-#endif
-namespace Cardevil.Utils
+using UnityEngine;
+
+namespace Cardevil.Core.Utils
 {
     public interface ILogExSupport
     {

@@ -1,4 +1,4 @@
-using Cardevil.Attributes;
+using Cardevil.Core.Attributes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

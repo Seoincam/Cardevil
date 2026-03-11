@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Events.Core
+namespace Cardevil.Core.Events.Core
 {
     public delegate UniTask AsyncEventHandler();
     public delegate UniTask AsyncEventHandler<T0>(T0 arg0);

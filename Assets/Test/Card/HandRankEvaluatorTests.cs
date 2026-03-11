@@ -1,6 +1,6 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.InStage;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Utils;
 using NUnit.Framework;
 using System.Collections.Generic;
 

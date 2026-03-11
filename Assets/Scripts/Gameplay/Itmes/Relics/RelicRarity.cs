@@ -1,4 +1,4 @@
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items
 {
     public enum RelicRarity
     {

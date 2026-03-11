@@ -1,7 +1,6 @@
 using UnityEngine;
 
-
-namespace Cardevil.Enemy
+namespace Cardevil.Gameplay.Enemy
 {
     [CreateAssetMenu(fileName = "New Enemy Data", menuName = "Cardevil/Enemy Data")]
     public class EnemyData : ScriptableObject

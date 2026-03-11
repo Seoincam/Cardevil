@@ -1,6 +1,6 @@
-using Cardevil.Attributes;
 using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
+using Cardevil.Core.Attributes;
 using UnityEngine;
 
 namespace Cardevil.Card.InStage

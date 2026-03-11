@@ -1,7 +1,4 @@
-using UnityEngine;
-using Cardevil.InGame.Enemy;
-
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy
 {
     public interface IGimmick
     {

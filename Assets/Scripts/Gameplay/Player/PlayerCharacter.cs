@@ -1,10 +1,10 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Turn;
+using Cardevil.Core.Utils;
 using Cardevil.DebugConsole;
-using Cardevil.Ingame.Entities;
-using Cardevil.Ingame.Field;
-using Cardevil.Utils;
-using Cardevil.Utils.Directions;
+using Cardevil.Gameplay.Core;
+using Cardevil.Gameplay.Entities;
+using Cardevil.Gameplay.Field;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -14,7 +14,7 @@ using UnityEngine.Pool;
 using UnityEngine.Scripting;
 using Console = Cardevil.DebugConsole.Console;
 
-namespace Cardevil.Ingame.Player
+namespace Cardevil.Gameplay.Player
 {
     /// <summary>
     /// 플레이어 캐릭터 클래스

@@ -1,9 +1,9 @@
-﻿using Cardevil.Attributes;
-using Cardevil.Pools;
-using System;
+﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.Systems.Pool;
+using Cardevil.Core.Utils;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     [RequireComponent(typeof(Poolable))]
     public class TileHighlight : MonoBehaviour

@@ -1,8 +1,8 @@
-﻿using Cardevil.Ingame.Entities;
-using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Core;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     public static class FieldExtension
     {

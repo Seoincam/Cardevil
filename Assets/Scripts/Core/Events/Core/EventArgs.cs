@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Events.Core
+namespace Cardevil.Core.Events.Core
 {
     public abstract class EventArgs : System.EventArgs
     {

@@ -1,8 +1,7 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     [CreateAssetMenu(fileName = "TileConfiguration", menuName = "Configuration/TileConfiguration")]
     public class FieldConfigurationSO : ScriptableObject

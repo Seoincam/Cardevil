@@ -1,14 +1,12 @@
-using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
-using System.Threading;      // CancellationToken 사용을 위해 필요
+
+
+// CancellationToken 사용을 위해 필요
 
 /// <summary>
 /// # 최대 체력의 X% 이상의 피해를 받으면, 초과된 피해량만큼을 0으로 만듭니다.
 /// </summary>
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     public class Gimmick_Damage_Limit : IGimmick
     {

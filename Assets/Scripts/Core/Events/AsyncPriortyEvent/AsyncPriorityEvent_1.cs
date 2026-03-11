@@ -1,9 +1,9 @@
-﻿using Cardevil.Events.Core;
+﻿using Cardevil.Core.Events.Core;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Events.AsyncPriorityEvent
+namespace Cardevil.Core.Events.AsyncPriortyEvent
 {
     [Obsolete("Use ExecEvent system instead.", true)]
     public class AsyncPriorityEvent<T0> : AsyncPriorityEventBase

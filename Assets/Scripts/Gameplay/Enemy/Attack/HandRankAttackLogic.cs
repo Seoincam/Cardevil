@@ -1,8 +1,10 @@
-using Cardevil.Utils; // LogEx 사용 가정
-using UnityEngine;
-using System.Collections.Generic;
+// LogEx 사용 가정
 
-namespace Cardevil.InGame.Enemy
+using Cardevil.Core.Utils;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Cardevil.Gameplay.Enemy.Attack
 {
     public static class HandRankAttackLogic
     {

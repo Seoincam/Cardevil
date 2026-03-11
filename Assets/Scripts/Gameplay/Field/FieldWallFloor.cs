@@ -1,7 +1,4 @@
-﻿using System;
-using UnityEngine;
-
-namespace Cardevil.Ingame.Field
+﻿namespace Cardevil.Gameplay.Field
 {
     // public class FieldWallFloor : MonoBehaviour
     // {

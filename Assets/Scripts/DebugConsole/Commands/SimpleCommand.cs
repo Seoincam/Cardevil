@@ -1,7 +1,7 @@
 
+using Cardevil.Core.Utils;
 using Cardevil.DebugConsole;
 using Cardevil.DebugConsole.Commands;
-using Cardevil.Utils;
 using System;
 using System.Collections.Generic;
 

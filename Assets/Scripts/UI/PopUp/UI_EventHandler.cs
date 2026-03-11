@@ -1,63 +1,64 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UI_EventHandler : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler, IPointerDownHandler
+namespace Cardevil.UI.PopUp
 {
-    public Action<PointerEventData> OnClickHandler = null;
-    public Action<PointerEventData> OnPointerUpHandler = null;
-    public Action<PointerEventData> BeginDragHandler = null;
-    public Action<PointerEventData> DragHandler = null;
-    public Action<PointerEventData> DragEndHandler = null;
-    public Action<PointerEventData> OnPointerDownHandler = null;
-
-    public void OnBeginDrag(PointerEventData eventData)
+    public class UI_EventHandler : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerUpHandler, IPointerDownHandler
     {
-        if (BeginDragHandler != null)
+        public Action<PointerEventData> OnClickHandler = null;
+        public Action<PointerEventData> OnPointerUpHandler = null;
+        public Action<PointerEventData> BeginDragHandler = null;
+        public Action<PointerEventData> DragHandler = null;
+        public Action<PointerEventData> DragEndHandler = null;
+        public Action<PointerEventData> OnPointerDownHandler = null;
+
+        public void OnBeginDrag(PointerEventData eventData)
         {
-            BeginDragHandler.Invoke(eventData);
+            if (BeginDragHandler != null)
+            {
+                BeginDragHandler.Invoke(eventData);
+            }
         }
-    }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (DragHandler != null)
+        public void OnDrag(PointerEventData eventData)
         {
-            DragHandler.Invoke(eventData);
+            if (DragHandler != null)
+            {
+                DragHandler.Invoke(eventData);
+            }
         }
-    }
 
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (DragEndHandler != null)
+        public void OnEndDrag(PointerEventData eventData)
         {
-            DragEndHandler.Invoke(eventData);
+            if (DragEndHandler != null)
+            {
+                DragEndHandler.Invoke(eventData);
+            }
         }
-    }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (OnClickHandler != null)
+        public void OnPointerClick(PointerEventData eventData)
         {
-            OnClickHandler.Invoke(eventData);
+            if (OnClickHandler != null)
+            {
+                OnClickHandler.Invoke(eventData);
+            }
         }
-    }
 
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        if (OnPointerDownHandler != null)
+        public void OnPointerDown(PointerEventData eventData)
         {
-            OnPointerDownHandler.Invoke(eventData);
+            if (OnPointerDownHandler != null)
+            {
+                OnPointerDownHandler.Invoke(eventData);
+            }
         }
-    }
 
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (OnPointerUpHandler != null)
+        public void OnPointerUp(PointerEventData eventData)
         {
-            OnPointerUpHandler.Invoke(eventData);
+            if (OnPointerUpHandler != null)
+            {
+                OnPointerUpHandler.Invoke(eventData);
+            }
         }
     }
 }

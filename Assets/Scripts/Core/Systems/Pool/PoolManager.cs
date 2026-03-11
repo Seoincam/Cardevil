@@ -1,13 +1,11 @@
-using Cardevil.Core;
-using Cardevil.DataStructure;
+using Cardevil.Core.Utils;
 using Cardevil.DataStructure.Serializables;
-using Cardevil.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace Cardevil.Pools
+namespace Cardevil.Core.Systems.Pool
 {
     [Serializable]
     public class PoolManager : IClearable

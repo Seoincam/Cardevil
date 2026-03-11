@@ -1,8 +1,8 @@
 using Cardevil.Dungeon;
-using Cardevil.Ingame;
+using Cardevil.Gameplay;
 using System;
 
-namespace Cardevil.Save
+namespace Cardevil.Core.Systems.Save
 {
     [Serializable]
     public class GameSave

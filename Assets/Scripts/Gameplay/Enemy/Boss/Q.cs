@@ -1,9 +1,6 @@
-using UnityEngine;
-using Cardevil.InGame.Enemy;
-using Cardevil.Utils;
-using Unity.VisualScripting;
+using Cardevil.Core.Utils;
 
-namespace Cardevil.InGame.Enemy.Boss
+namespace Cardevil.Gameplay.Enemy.Boss
 {
     public class Q : Enemy
     {

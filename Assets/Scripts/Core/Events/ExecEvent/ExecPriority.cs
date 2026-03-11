@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Cardevil.Events.ExecEvents
+namespace Cardevil.Core.Events.ExecEvent
 {
     public enum ExecPriority
     {

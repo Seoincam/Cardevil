@@ -1,9 +1,7 @@
-using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
 
 

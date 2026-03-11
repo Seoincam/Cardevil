@@ -1,8 +1,7 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     [Serializable]
     public struct TileVector

@@ -1,8 +1,7 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
-
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy
 {
     public class EnemyState : MonoBehaviour
     {

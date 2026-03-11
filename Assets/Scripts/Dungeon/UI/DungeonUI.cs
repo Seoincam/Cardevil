@@ -1,6 +1,6 @@
-﻿using Cardevil.Attributes;
+﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using Cardevil.DebugConsole;
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;

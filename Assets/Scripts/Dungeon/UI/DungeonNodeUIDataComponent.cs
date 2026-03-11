@@ -1,4 +1,4 @@
-﻿using Cardevil.Attributes;
+﻿using Cardevil.Core.Attributes;
 using System.Collections.Generic;
 using Cardevil.Dungeon;
 using System;

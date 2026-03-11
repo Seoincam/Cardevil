@@ -2,7 +2,7 @@
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     [TrackColor(0.855f, 0.8623f, 0.87f)]
     [TrackClipType(typeof(ScriptableObjectSignalPlayableAsset))]

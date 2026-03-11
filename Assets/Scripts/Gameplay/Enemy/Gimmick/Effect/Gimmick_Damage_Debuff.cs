@@ -3,7 +3,7 @@ using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Bootstrap;
 using UnityEngine;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     /// <summary>
 

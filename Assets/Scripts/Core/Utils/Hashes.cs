@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     public static class Hashes
     {

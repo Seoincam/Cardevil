@@ -1,9 +1,8 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
 using System.Collections.Generic;
-using Cardevil.Utils.Directions;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     /// <summary>
     /// 2D 타일 기반 타일 컨테이너 인터페이스.

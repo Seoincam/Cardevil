@@ -1,13 +1,12 @@
 ﻿using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Utils;
 using Cardevil.DebugConsole;
-using Cardevil.Ingame.Entities;
-using Cardevil.Ingame.Field;
-using Cardevil.Pools;
-using Cardevil.Utils;
+using Cardevil.Gameplay.Entities;
+using Cardevil.Gameplay.Field;
 using UnityEngine;
 using UnityEngine.Scripting;
 
-namespace Cardevil.Ingame
+namespace Cardevil.Gameplay
 {
     public static class FieldTests
     {

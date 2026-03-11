@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Cardevil.Utils.Directions
+namespace Cardevil.Core.Utils
 {
     public enum Direction
     {

@@ -1,4 +1,4 @@
-﻿namespace Cardevil.SceneManagement
+﻿namespace Cardevil.Core.SceneManagement
 {
     public enum Scenes
     {

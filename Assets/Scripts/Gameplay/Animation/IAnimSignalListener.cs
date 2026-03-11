@@ -1,4 +1,4 @@
-﻿namespace Cardevil.Animation
+﻿namespace Cardevil.Gameplay.Animation
 {
     public interface IAnimSignalListener
     {

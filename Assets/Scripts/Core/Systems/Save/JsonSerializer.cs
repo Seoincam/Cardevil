@@ -1,9 +1,6 @@
-﻿using Cardevil.DataStructure;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Cardevil.Save
+namespace Cardevil.Core.Systems.Save
 {
     public class JsonSerializer : ISerializer
     {

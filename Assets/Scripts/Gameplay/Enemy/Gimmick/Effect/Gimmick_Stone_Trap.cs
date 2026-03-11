@@ -1,9 +1,6 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     /// <summary>
     /// "# 돌무더기 (플레이어가 해당 칸으로 도착 시, 이동 과정 중 바로 직전에 위치했던 칸으로 되돌리는 기믹)

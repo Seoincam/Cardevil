@@ -1,9 +1,9 @@
-using Cardevil.Attributes;
+using Cardevil.Core.Attributes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items
 {
     [Serializable]
     public sealed class OwnedRelic

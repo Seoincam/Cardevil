@@ -1,9 +1,8 @@
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     // # 적이 공격을 성공하면, 최대 체력의 X%만큼을 회복합니다.
     public class Gimmick_Attack_Heal : IGimmick

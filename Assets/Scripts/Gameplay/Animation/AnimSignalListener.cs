@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.Animation
+namespace Cardevil.Gameplay.Animation
 {
     public class AnimSignalListener : MonoBehaviour, IAnimSignalListener
     {

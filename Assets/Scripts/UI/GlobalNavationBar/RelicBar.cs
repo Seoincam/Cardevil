@@ -1,5 +1,5 @@
-﻿using Cardevil.Attributes;
-using Cardevil.Manager;
+﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.Systems;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

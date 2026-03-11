@@ -1,114 +1,114 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class Define
+namespace Cardevil.Core.Utils
 {
-    public class ScoreData
+    public class Define
     {
-        public string player_ID;
-        public int maxScore;
-    }
-    public class VolumeData
-    {
-        public float masterVolume;
-        public float bgmVolume;
-        public float sfxVolume;
-        public VolumeData()
+        public class ScoreData
         {
-            masterVolume = 0.7f;
-            bgmVolume = 0.7f;
-            sfxVolume = 0.7f;
+            public string player_ID;
+            public int maxScore;
         }
-    }
-    [System.Serializable]
-    public class WholeGameData
-    {
-        public bool firstPlay;
-        public int maxScore;
-
-        public WholeGameData()
+        public class VolumeData
         {
-            firstPlay = false;
-            maxScore = 0;
+            public float masterVolume;
+            public float bgmVolume;
+            public float sfxVolume;
+            public VolumeData()
+            {
+                masterVolume = 0.7f;
+                bgmVolume = 0.7f;
+                sfxVolume = 0.7f;
+            }
         }
-    }
+        [System.Serializable]
+        public class WholeGameData
+        {
+            public bool firstPlay;
+            public int maxScore;
+
+            public WholeGameData()
+            {
+                firstPlay = false;
+                maxScore = 0;
+            }
+        }
 
 
-    public enum UseType
-    {
-        Active,
-        Passive
-    }
-    public enum WorldObject
-    {
-        Unknown,
-        Player,
-        Enemy,
-    }
-    public enum State
-    {
-        Idle,
-        Walk,
-        Crouch
-    }
-    public enum UIEvent
-    {
-        Click,
-        BeginDrag,
-        Drag,
-        DragEnd,
-        PointerDown,
-        PointerUP
-    }
-    public enum MouseEvent
-    {
-        Press,
-        Click,
-        End
-    }
+        public enum UseType
+        {
+            Active,
+            Passive
+        }
+        public enum WorldObject
+        {
+            Unknown,
+            Player,
+            Enemy,
+        }
+        public enum State
+        {
+            Idle,
+            Walk,
+            Crouch
+        }
+        public enum UIEvent
+        {
+            Click,
+            BeginDrag,
+            Drag,
+            DragEnd,
+            PointerDown,
+            PointerUP
+        }
+        public enum MouseEvent
+        {
+            Press,
+            Click,
+            End
+        }
     
-    [Obsolete("Pls Use Scenes instead.")]
-    public enum Scene
-    {
-        Unknown,
-        BaseScene,
-        TitleScene,
-        MainGame,
-    }
-    public enum Sound
-    {
-        Master,
-        BGM,
-        SFX,
-        MaxCount
-    }
+        [Obsolete("Pls Use Scenes instead.")]
+        public enum Scene
+        {
+            Unknown,
+            BaseScene,
+            TitleScene,
+            MainGame,
+        }
+        public enum Sound
+        {
+            Master,
+            BGM,
+            SFX,
+            MaxCount
+        }
     
-    public enum HighlightType
-    {
-        None,
-        DefaultAttack
-    }
+        public enum HighlightType
+        {
+            None,
+            DefaultAttack
+        }
 
-    public enum SlotRewardType
-    {
-        Heal,
-        FixedGold,
-        RandomGold,
-        DarkUpgrade,
-        StartReroll,
-        ExactUpgrade,
-        Relic,
-        Unknown
+        public enum SlotRewardType
+        {
+            Heal,
+            FixedGold,
+            RandomGold,
+            DarkUpgrade,
+            StartReroll,
+            ExactUpgrade,
+            Relic,
+            Unknown
 
-    }
+        }
 
-    public enum RareType
-    {
-        Normal,
-        Rare,
-        Epic,
-        Legend
+        public enum RareType
+        {
+            Normal,
+            Rare,
+            Epic,
+            Legend
+        }
     }
 }

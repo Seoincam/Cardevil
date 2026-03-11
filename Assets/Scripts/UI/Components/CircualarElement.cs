@@ -1,8 +1,6 @@
-﻿using System;
-using UnityEngine;
-using UnityEngine.Serialization;
+﻿using UnityEngine;
 
-namespace Cardevil.UI
+namespace Cardevil.UI.Components
 {
     
 
