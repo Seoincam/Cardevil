@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Cardevil.UI.GlobalNavationBar
+namespace Cardevil.UI.GlobalNavigationBar
 {
     public class ConsumableIcon : MonoBehaviour
     {

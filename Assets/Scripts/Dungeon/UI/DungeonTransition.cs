@@ -1,6 +1,5 @@
 ﻿using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Events.ExecEvent;
-using Cardevil.UI.GlobalNavationBar;
 using Cardevil.UI.Playables;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;

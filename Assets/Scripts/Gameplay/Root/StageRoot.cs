@@ -9,7 +9,7 @@ using Cardevil.Gameplay.Enemy;
 using Cardevil.Gameplay.Player;
 using Cardevil.Gameplay.Turn;
 using Cardevil.UI;
-using Cardevil.UI.GlobalNavationBar;
+using Cardevil.UI.GlobalNavigationBar;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;

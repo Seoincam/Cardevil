@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.UI.GlobalNavationBar
+namespace Cardevil.UI.GlobalNavigationBar
 {
     public class ItemIcon : MonoBehaviour
     {
