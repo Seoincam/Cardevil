@@ -117,9 +117,9 @@ namespace Cardevil.Events.ExecEvents
         /// </summary>
         public static string GetEventArgsName(Type eventType)
         {
-            const string prefix = "Cardevil.Events.";
             string name = eventType.FullName ?? eventType.Name;
-            return name.StartsWith(prefix) ? name[prefix.Length..] : name;
+            int lastIndex = name.LastIndexOf('.');
+            return lastIndex >= 0 ? name[(lastIndex + 1)..] : name;
         }
 
     }
