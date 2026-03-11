@@ -6,7 +6,7 @@ namespace Cardevil.Gameplay.Items.RelicItem.RelicEffects.OnAcquire
     {
         public void OnAcquire()
         {
-            CardevilCore.Game.PlayerStatus.DiscardCard += 1;
+            // CardevilCore.Game.PlayerStatus.DiscardCard += 1;
         }
     }
 }

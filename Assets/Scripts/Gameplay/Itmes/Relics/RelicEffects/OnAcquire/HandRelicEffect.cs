@@ -6,7 +6,7 @@ namespace Cardevil.Gameplay.Items.RelicItem.RelicEffects.OnAcquire
     {
         public void OnAcquire()
         {
-            CardevilCore.Game.PlayerStatus.MaxHand = 7;
+            // CardevilCore.Game.PlayerStatus.MaxHand = 7;
         }
     }
 }

@@ -20,7 +20,7 @@ namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
-            _scoreProviderId = CardevilCore.Score.Register(this);
+            _scoreProviderId = CardevilCore.Game.ScoreProviderRegistry.Register(this);
             // TODO: View 등록하기
         }
         
@@ -46,7 +46,7 @@ namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 
         public void Remove()
         {
-            CardevilCore.Score.SafeUnregister(_scoreProviderId, this);
+            CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(_scoreProviderId, this);
             _scoreProviderId = -1;
         }
     }
