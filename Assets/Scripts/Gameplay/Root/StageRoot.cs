@@ -1,21 +1,21 @@
-using Cardevil.Core.Bootstrap;
-using Cardevil.Core.Turn;
-using Cardevil.Dungeon;
-using Cysharp.Threading.Tasks;
 using Cardevil.Card.InStage;
+using Cardevil.Core;
 using Cardevil.Core.Attributes;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Utils;
+using Cardevil.Dungeon;
 using Cardevil.Gameplay.Enemy;
-using Cardevil.Gameplay.Field;
 using Cardevil.Gameplay.Player;
+using Cardevil.Gameplay.Turn;
 using Cardevil.UI;
 using Cardevil.UI.GlobalNavationBar;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-namespace Cardevil.Core.Root
+namespace Cardevil.Gameplay.Root
 {
     /// <summary>
     /// 전투 스테이지 루트 컨트롤러.
@@ -33,7 +33,7 @@ namespace Cardevil.Core.Root
         [SerializeField] private EnemySpawner _enemySpawner;
 
         [Header("References")]
-        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field Field { get; private set; }
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field.Field Field { get; private set; }
         [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public PlayerCharacter Player { get; set; } // 임시 플레이어
 
 

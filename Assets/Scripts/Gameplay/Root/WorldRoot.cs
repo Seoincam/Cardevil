@@ -1,3 +1,4 @@
+using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Systems.Save;
@@ -8,7 +9,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Cardevil.Core.Root
+namespace Cardevil.Gameplay.Root
 {
     /// <summary>
     /// 월드 루트 컨트롤러.

@@ -1,10 +1,10 @@
 using Cardevil.Core.Bootstrap;
-using Cardevil.Core.Turn;
 using Cardevil.Core.Utils;
 using Cardevil.DebugConsole;
 using Cardevil.Gameplay.Core;
 using Cardevil.Gameplay.Entities;
 using Cardevil.Gameplay.Field;
+using Cardevil.Gameplay.Turn;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
