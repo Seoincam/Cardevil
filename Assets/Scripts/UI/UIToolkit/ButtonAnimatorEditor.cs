@@ -1,11 +1,9 @@
 #if UNITY_EDITOR
-using Cardevil.UI;
 using Cardevil.UI.Components;
-using System;
 using UnityEditor;
 using UnityEngine.UIElements;
 
-namespace Cardevil.UIToolkit
+namespace Cardevil.UI.UIToolkit
 {
     [CustomEditor(typeof(ButtonAnimator))]
     public class ButtonAnimatorEditor : Editor

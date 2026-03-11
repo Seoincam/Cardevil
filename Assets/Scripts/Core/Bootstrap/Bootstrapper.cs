@@ -1,8 +1,8 @@
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Systems.Save;
-using Cardevil.DebugConsole.Commands;
 using Cardevil.Gameplay.Items;
+using Cardevil.Test.DebugConsole.Commands;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;

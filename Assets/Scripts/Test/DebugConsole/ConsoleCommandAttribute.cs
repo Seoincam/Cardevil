@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine.Scripting;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.Test.DebugConsole
 {
     /// <summary>
     /// 메서드에 적용하여 콘솔 명령어로 등록합니다.

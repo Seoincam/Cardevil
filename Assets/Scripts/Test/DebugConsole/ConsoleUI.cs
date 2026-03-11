@@ -1,18 +1,15 @@
 ﻿using Cardevil.Core.Attributes;
 using Cardevil.Core.ScreenHelper;
 using Cardevil.Core.Utils;
-using Cardevil.UIToolkit;
-using Cysharp.Threading.Tasks;
+using Cardevil.UI.UIToolkit;
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Pool;
 using UnityEngine.Scripting;
 using UnityEngine.UIElements;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.Test.DebugConsole
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(UIDocument))]

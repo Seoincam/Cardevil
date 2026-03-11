@@ -1,11 +1,8 @@
-
 using Cardevil.Core.Utils;
-using Cardevil.DebugConsole;
-using Cardevil.DebugConsole.Commands;
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.DebugConsole.Commands
+namespace Cardevil.Test.DebugConsole.Commands
 {
 
 

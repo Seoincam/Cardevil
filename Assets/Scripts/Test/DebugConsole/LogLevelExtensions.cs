@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.Test.DebugConsole
 {
     public static class LogLevelExtensions
     {

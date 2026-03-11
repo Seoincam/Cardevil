@@ -1,4 +1,4 @@
-﻿namespace Cardevil.DebugConsole
+﻿namespace Cardevil.Test.DebugConsole
 {
     public enum LogLevel
     {

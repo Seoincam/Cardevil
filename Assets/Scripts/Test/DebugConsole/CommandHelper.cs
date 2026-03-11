@@ -1,7 +1,7 @@
-﻿using Cardevil.DebugConsole.Commands;
+﻿using Cardevil.Test.DebugConsole.Commands;
 using System;
 
-namespace Cardevil.DebugConsole
+namespace Cardevil.Test.DebugConsole
 {
     public static class CommandHelper
     {

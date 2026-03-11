@@ -1,4 +1,4 @@
-﻿using Cardevil.DebugConsole;
+﻿using Cardevil.Test.DebugConsole;
 using System;
 using System.Collections.Generic;
 using System.Linq;
