@@ -1,4 +1,4 @@
-﻿namespace Cardevil.Save
+﻿namespace Cardevil.Core.Systems.Save
 {
     public interface ISerializer
     {

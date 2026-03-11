@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
-namespace Cardevil.InGame.SlotMachine.Playables
+namespace Cardevil.UI.Playables
 {
     public class ScriptableObjectSignalPlayableAsset : PlayableAsset, ITimelineClipAsset
     {

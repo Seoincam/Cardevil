@@ -1,6 +1,6 @@
-using Cardevil.Attributes;
 using Cardevil.Card.Common.Core;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

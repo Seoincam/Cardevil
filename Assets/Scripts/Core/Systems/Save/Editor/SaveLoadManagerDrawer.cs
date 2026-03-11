@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using UnityEditor;
+using UnityEngine;
 
-namespace Cardevil.Save.Editor
+namespace Cardevil.Core.Systems.Save.Editor
 {
     [CustomPropertyDrawer(typeof(SaveLoadManager))]
     public class SaveLoadManagerDrawer : PropertyDrawer

@@ -1,12 +1,12 @@
-﻿using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using System.Threading;
 using UnityEngine.Pool;
 
-namespace Cardevil.Events.ExecEvents
+namespace Cardevil.Core.Events.ExecEvent
 {
     /// <summary>
     /// 우선순위 실행 큐 클래스<br/>

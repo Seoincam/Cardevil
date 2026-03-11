@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace Cardevil.Pools
+namespace Cardevil.Core.Systems.Pool
 {
     public interface IPoolableSubComponent
     {

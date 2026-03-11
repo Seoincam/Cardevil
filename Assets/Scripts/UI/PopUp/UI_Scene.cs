@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Cardevil.Core.Systems;
 
-public class UI_Scene : UI_Base
+namespace Cardevil.UI.PopUp
 {
-    public override void Init()
+    public class UI_Scene : UI_Base
     {
-        Managers.UI.SetCanvas(gameObject, false);
-        SetResolution();
-    }
+        public override void Init()
+        {
+            Managers.UI.SetCanvas(gameObject, false);
+            SetResolution();
+        }
     
+    }
 }

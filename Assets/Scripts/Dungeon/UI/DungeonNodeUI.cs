@@ -1,7 +1,7 @@
-﻿using Cardevil.Attributes;
+﻿using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Root;
-using Cardevil.Utils;
+using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;

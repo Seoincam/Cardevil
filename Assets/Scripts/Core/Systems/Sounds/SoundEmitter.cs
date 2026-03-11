@@ -1,12 +1,10 @@
-﻿using Cardevil.Pools;
-using Cardevil.Sound;
+﻿using Cardevil.Core.Systems.Pool;
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Cardevil.Pools
+namespace Cardevil.Core.Systems.Sounds
 {
     [RequireComponent(typeof(AudioSource), typeof(Poolable))]
     public class SoundEmitter : MonoBehaviour

@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-using Cardevil.InGame.Enemy;
-
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy
 {
     // TODO : 사용하지않게되면 삭제
     public class EnemyGimmickManager : MonoBehaviour

@@ -1,8 +1,7 @@
+using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Root;
+using Cardevil.Core.Utils;
 using Cardevil.Dungeon;
-using Cardevil.Events.ExecEvents;
-using Cardevil.SceneManagement;
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;

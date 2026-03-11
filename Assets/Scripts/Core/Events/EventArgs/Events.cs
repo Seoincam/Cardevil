@@ -1,6 +1,7 @@
-using Cardevil.Events.ExecEvents;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Gameplay.Enemy;
 
-namespace Cardevil.Events
+namespace Cardevil.Core.Events.EventArgs
 {
     /// <summary>
     /// 플레이어의 체력 변화 이벤트 인자.
@@ -107,9 +108,9 @@ namespace Cardevil.Events
         public float OldHealth { get; private set; }
         public float NewHealth { get; private set; }
         public float ModifiedHealth { get; set; }
-        public Cardevil.InGame.Enemy.Enemy Owner;
+        public Enemy Owner;
 
-        public void Init(float currentHealth, float newHealth, Cardevil.InGame.Enemy.Enemy owner)
+        public void Init(float currentHealth, float newHealth, Enemy owner)
         {
             OldHealth = currentHealth;
             NewHealth = newHealth;

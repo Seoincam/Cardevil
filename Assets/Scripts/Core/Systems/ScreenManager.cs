@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Cardevil.Manager
+namespace Cardevil.Core.Systems
 {
     
     /// <summary>

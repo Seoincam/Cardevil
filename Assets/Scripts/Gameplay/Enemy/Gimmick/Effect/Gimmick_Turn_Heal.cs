@@ -1,9 +1,8 @@
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     public class Gimmick_Turn_Heal : IGimmick
     {

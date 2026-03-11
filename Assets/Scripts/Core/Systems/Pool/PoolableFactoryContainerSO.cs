@@ -1,11 +1,9 @@
-﻿using Cardevil.DataStructure;
-using Cardevil.DataStructure.Serializables;
-using Cardevil.Manager;
+﻿using Cardevil.DataStructure.Serializables;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Cardevil.Pools
+namespace Cardevil.Core.Systems.Pool
 {
     /// <summary>
     /// PoolableFactoryContainerSO는 PoolableFactorySO를 관리하는 ScriptableObject.

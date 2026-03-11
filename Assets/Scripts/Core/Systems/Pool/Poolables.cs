@@ -1,4 +1,4 @@
-﻿namespace Cardevil.Pools
+﻿namespace Cardevil.Core.Systems.Pool
 {
     /// <summary>
     /// Human Error 방지를 위한 enum

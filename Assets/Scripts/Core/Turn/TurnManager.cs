@@ -1,9 +1,9 @@
-using Cardevil.Attributes;
-using Cardevil.Enemy;
-using Cardevil.Events.ExecEvents;
 using Cardevil.Card.InStage;
 using Cardevil.Card.InStage.Score.Step;
-using Cardevil.Utils;
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Enemy;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;

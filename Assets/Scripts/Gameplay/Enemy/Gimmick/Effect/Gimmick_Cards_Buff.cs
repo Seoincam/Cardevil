@@ -1,9 +1,6 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 {
     /// <summary>
     /// # 카드를 여러 장 사용할수록, 완전한 데미지를 가할 수 있습니다. (4장 X% / 3장 X-25% / 2장 X-50% / 1장 X-75%)

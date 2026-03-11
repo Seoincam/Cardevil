@@ -5,7 +5,7 @@ using System.Linq;
 using UMRandom = Unity.Mathematics.Random;
 using URandom = UnityEngine.Random;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     public static class RandomUtil
     {

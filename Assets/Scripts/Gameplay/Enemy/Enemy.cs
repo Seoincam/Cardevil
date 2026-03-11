@@ -1,19 +1,16 @@
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Turn;
-using Cardevil.Ingame.Field;
-using System;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Enemy.Attack;
+using Cardevil.Gameplay.Enemy.Gimmick;
+using Cysharp.Threading.Tasks;
+using Database.Generated;
 using System.Collections.Generic;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using Cardevil.Utils;
 using UnityEngine.UI;
-using Database.Generated;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Events;
-using Cardevil.Ingame.Entities;
-using Cardevil.Ingame.Player;
-using System.Threading;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy
 {
     public enum AttackStyle
     {
@@ -37,7 +34,7 @@ namespace Cardevil.InGame.Enemy
         public float maxHP = 100;
         public BaseMobBossData baseMobBossData;
 
-        private Field field;
+        private Field.Field field;
         // ---- 기본 선언부 --- ///
         private float damage = 1; // Enemy의 공격력
         public float HP = 100; // Enemy의 체력
@@ -49,7 +46,7 @@ namespace Cardevil.InGame.Enemy
         private bool orderSettingGo = false;
         private int settingOrder = 3;
         public int delayAttackByRelic = 0;
-        public List<Attack> attackLists = new List<Attack>();
+        public List<Attack.Attack> attackLists = new List<Attack.Attack>();
         public (bool attackSucess, float damage) _enemyAttackInfo;
         private AttackStyle currentAttackStyle;
         private List<AttackStyle> attackStyles = new List<AttackStyle>(); // Enemy에게 지정된 공격할 AttackStyle
@@ -60,7 +57,7 @@ namespace Cardevil.InGame.Enemy
 
         // --------기믹 관련----------
         private IGimmick gimmick;
-        public void Init(Field field)
+        public void Init(Field.Field field)
         {
             this.field = field;
             currentAttackStyle = AttackStyle.UnKnown;
@@ -155,7 +152,7 @@ namespace Cardevil.InGame.Enemy
 
         public void CreateAttack(TileVector playerPosition, bool firstCreate = false)
         {
-            Attack tmpAttack = new() { playerPosition = playerPosition };
+            Attack.Attack tmpAttack = new() { playerPosition = playerPosition };
 
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨공격인지 설정 
 
@@ -193,7 +190,7 @@ namespace Cardevil.InGame.Enemy
             }
             // 다른 Enemy들이 더 존재하는지 확인 후 다음 스테이지로 
 
-            foreach (Attack attack in attackLists) // 현재 Enemy가 가지고 있는 Attack 
+            foreach (Attack.Attack attack in attackLists) // 현재 Enemy가 가지고 있는 Attack 
             {
                 attack.attackTurnOrder--; // 모든 Attack 들의 Turn Order 감소
                 LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
@@ -206,7 +203,7 @@ namespace Cardevil.InGame.Enemy
 
         }
 
-        virtual public void AttackingCheck(Attack attack)
+        virtual public void AttackingCheck(Attack.Attack attack)
         {
             float damage = baseMobBossData.AttackDamage; // 데미지 수치가 있다면 가져오기
 
@@ -265,7 +262,7 @@ namespace Cardevil.InGame.Enemy
         /// true 라면 Player 위치를 받아와서 공격
         /// </summary>
         /// <param name="setPlayerAttack"></param>
-        public virtual void SetAttack(Attack attack, bool setPlayerAttack = false)
+        public virtual void SetAttack(Attack.Attack attack, bool setPlayerAttack = false)
         {
             // 로직 클래스에게 설정 위임 (this는 IAttackVisualizer 구현체)
             HandRankAttackLogic.SetupAttack(attack, this);
@@ -335,7 +332,7 @@ namespace Cardevil.InGame.Enemy
         public void SetAllAttackOrderGo()
         {
             int i = settingOrder;
-            foreach (Attack attack in attackLists)
+            foreach (Attack.Attack attack in attackLists)
             {
                 if (i <= attack.attackTurnOrder)
                 {
@@ -351,7 +348,7 @@ namespace Cardevil.InGame.Enemy
 
         public void AttackOrderDiscount()
         {
-            foreach (Attack attack in attackLists)
+            foreach (Attack.Attack attack in attackLists)
             {
                 if (attack.attackTurnOrder <= 0)
                 {
@@ -458,7 +455,7 @@ namespace Cardevil.InGame.Enemy
 
         #region HighLight관련
         // 리팩토링 RemoveHighLight
-        public void RemoveHighLight(Attack attack)
+        public void RemoveHighLight(Attack.Attack attack)
         {
             if (attack == null) return;
 
@@ -525,7 +522,7 @@ namespace Cardevil.InGame.Enemy
         }
 
         // 스트레이트 플러시 전용 해제 로직 분리
-        private void RemoveHighLight_StraightFlush(Attack attack)
+        private void RemoveHighLight_StraightFlush(Attack.Attack attack)
         {
             // 정적 리스트로 관리하거나 상수로 빼는 것이 좋음 (메모리 할당 최적화)
             var corners = new[] { (0, 0), (0, 2), (2, 0), (2, 2) };

@@ -1,9 +1,9 @@
-using Cardevil.Attributes;
 using Cardevil.Card.InStage.Score.Step;
+using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
-using Cardevil.Ingame;
+using Cardevil.Core.Systems.Save;
+using Cardevil.Gameplay;
 using UnityEngine;
-using Cardevil.Save;
 
 namespace Cardevil.Core
 {

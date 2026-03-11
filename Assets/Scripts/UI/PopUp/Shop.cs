@@ -1,33 +1,35 @@
-using UnityEngine;
-
-using UnityEngine.UI;
+using Cardevil.Core.Utils;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class Shop : UI_Popup
+namespace Cardevil.UI.PopUp
 {
-    public override void Init()
+    public class Shop : UI_Popup
     {
-        base.Init();
+        public override void Init()
+        {
+            base.Init();
 
 
-        Bind<Button>(typeof(Buttons));
+            Bind<Button>(typeof(Buttons));
 
-        GetButton((int)Buttons.Close).gameObject.AddUIEvent(CloseButtonClicked);
-    }
+            GetButton((int)Buttons.Close).gameObject.AddUIEvent(CloseButtonClicked);
+        }
 
-    enum Buttons
-    {
-        Close
-    }
+        enum Buttons
+        {
+            Close
+        }
 
-    private void Start()
-    {
-        Init();
+        private void Start()
+        {
+            Init();
 
-    }
+        }
 
-    void CloseButtonClicked(PointerEventData eventData)
-    {
+        void CloseButtonClicked(PointerEventData eventData)
+        {
 
+        }
     }
 }

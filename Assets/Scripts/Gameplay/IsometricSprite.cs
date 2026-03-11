@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.Ingame
+namespace Cardevil.Gameplay
 {
     /// <summary>
     /// 아이소메트릭에서 스프라이트가 항상 카메라를 바라보도록 회전시키는 스크립트

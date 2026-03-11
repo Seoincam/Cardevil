@@ -1,4 +1,4 @@
-using Cardevil.Events.ExecEvents;
+using Cardevil.Core.Events.ExecEvent;
 
 namespace Cardevil.Card.InStage.Score
 {

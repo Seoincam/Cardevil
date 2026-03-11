@@ -13,7 +13,6 @@ using System.Text;
 using Cardevil.Scriptable.Cache;
 using Cardevil.DataStructure;
 using Cardevil.DataStructure.Serializables;
-using Cardevil.Manager;
 using Cysharp.Threading.Tasks;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;

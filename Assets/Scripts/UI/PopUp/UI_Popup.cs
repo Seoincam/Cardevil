@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Cardevil.Core.Systems;
 
-public class UI_Popup : UI_Base
+namespace Cardevil.UI.PopUp
 {
-    // Start is called before the first frame update
-    public override void Init()
+    public class UI_Popup : UI_Base
     {
-        Managers.UI.SetCanvas(gameObject, true);
-        SetResolution();
-    }
+        // Start is called before the first frame update
+        public override void Init()
+        {
+            Managers.UI.SetCanvas(gameObject, true);
+            SetResolution();
+        }
 
-    public virtual void ClosePopUPUI()
-    {
-        Managers.UI.ClosePopUpUI(this);
+        public virtual void ClosePopUPUI()
+        {
+            Managers.UI.ClosePopUpUI(this);
+        }
     }
 }

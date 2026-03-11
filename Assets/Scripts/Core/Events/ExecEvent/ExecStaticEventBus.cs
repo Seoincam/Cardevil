@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Events.ExecEvents
+namespace Cardevil.Core.Events.ExecEvent
 {
     /// <summary>
     /// 우선순위 실행 이벤트 버스 클래스.

@@ -1,19 +1,12 @@
-using Cardevil.Core;
-using Cardevil.DataStructure;
+using Cardevil.Core.Systems.Pool;
+using Cardevil.Core.Utils;
 using Cardevil.DataStructure.Serializables;
-using Cardevil.Pools;
-using Cardevil.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
-using Object = UnityEngine.Object;
 
-namespace Cardevil.Sound
+namespace Cardevil.Core.Systems.Sounds
 {
     [Serializable]
     public class SoundManager : IClearable

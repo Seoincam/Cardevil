@@ -1,7 +1,7 @@
-using Cardevil.Attributes;
 using Cardevil.Card.Common.Core;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;

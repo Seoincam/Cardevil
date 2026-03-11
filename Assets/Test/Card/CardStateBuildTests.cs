@@ -1,5 +1,5 @@
 using Cardevil.Card.Common.Core;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Utils;
 using NUnit.Framework;
 
 namespace Cardevil.Test.Card

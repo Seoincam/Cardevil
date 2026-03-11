@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Cardevil.SceneManagement
+namespace Cardevil.Core.SceneManagement
 {
     public static class SceneLoader
     {

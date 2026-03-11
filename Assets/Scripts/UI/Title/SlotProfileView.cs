@@ -1,9 +1,9 @@
-using Cardevil.Save;
+using Cardevil.Core.Systems.Save;
 using System;
 using TMPro;
 using UnityEngine.UI;
 
-namespace Cardevil.Title
+namespace Cardevil.UI.Title
 {
     [Serializable]
     public class SlotProfileView

@@ -1,5 +1,4 @@
-﻿using Cardevil.Attributes;
-using Cardevil.Dungeon.UI;
+﻿using Cardevil.Dungeon.UI;
 using System;
 using UnityEngine;
 using UnityEngine.UI;

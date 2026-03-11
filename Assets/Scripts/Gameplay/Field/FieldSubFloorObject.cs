@@ -1,8 +1,7 @@
-﻿using Cardevil.Utils;
-using System;
+﻿using Cardevil.Core.Utils;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     public class FieldSubFloorObject : MonoBehaviour
     {

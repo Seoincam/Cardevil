@@ -1,4 +1,4 @@
-﻿namespace Cardevil.Sounds
+﻿namespace Cardevil.Core.Systems.Sounds
 {
     public partial struct SoundReference
     {

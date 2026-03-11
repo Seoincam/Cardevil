@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     public static class ReflectionUtil
     {

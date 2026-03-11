@@ -1,12 +1,9 @@
-﻿using Cardevil.Animation;
-using Cardevil.Core.Bootstrap;
-using Cardevil.DebugConsole;
-using Cardevil.Utils;
-using System;
+﻿using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Animation;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Cardevil.Ingame.Player
+namespace Cardevil.Gameplay.Player
 {
     [RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
     public class PlayerVisual : MonoBehaviour, IAnimSignalListener
@@ -17,23 +14,23 @@ namespace Cardevil.Ingame.Player
 
         public bool IsRunning
         {
-            get => _animator.GetBool(Utils.AnimatorHashes.IsRunning);
-            set => _animator.SetBool(Utils.AnimatorHashes.IsRunning, value);
+            get => _animator.GetBool(AnimatorHashes.IsRunning);
+            set => _animator.SetBool(AnimatorHashes.IsRunning, value);
         }
         
         public bool IsFalling
         {
-            get => _animator.GetBool(Utils.AnimatorHashes.IsFalling);
-            set => _animator.SetBool(Utils.AnimatorHashes.IsFalling, value);
+            get => _animator.GetBool(AnimatorHashes.IsFalling);
+            set => _animator.SetBool(AnimatorHashes.IsFalling, value);
         }
         
         public Vector2 MoveDirection
         {
-            get => new Vector2(_animator.GetFloat(Utils.AnimatorHashes.LeftRight), _animator.GetFloat(Utils.AnimatorHashes.UpDown));
+            get => new Vector2(_animator.GetFloat(AnimatorHashes.LeftRight), _animator.GetFloat(AnimatorHashes.UpDown));
             set
             {
-                _animator.SetFloat(Utils.AnimatorHashes.LeftRight, value.x);
-                _animator.SetFloat(Utils.AnimatorHashes.UpDown, -value.y);
+                _animator.SetFloat(AnimatorHashes.LeftRight, value.x);
+                _animator.SetFloat(AnimatorHashes.UpDown, -value.y);
             }
         }
         
@@ -62,12 +59,12 @@ namespace Cardevil.Ingame.Player
         
         public void PlayAttackAnimation()
         {
-            _animator.SetTrigger(Utils.AnimatorHashes.Attack);
+            _animator.SetTrigger(AnimatorHashes.Attack);
         }
         
         public void PlayHitAnimation()
         {
-            _animator.SetTrigger(Utils.AnimatorHashes.Hit);
+            _animator.SetTrigger(AnimatorHashes.Hit);
         }
         
         public UnityEvent<string> animEventReceived = new UnityEvent<string>();

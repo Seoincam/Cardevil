@@ -1,8 +1,8 @@
-﻿using Cardevil.Events.Core;
+﻿using Cardevil.Core.Events.Core;
 using System;
 using System.Collections.Generic;
 
-namespace Cardevil.Events
+namespace Cardevil.Core.Events.PriorityEvent
 {
     public class PriorityEvent<T0,T1> : PriorityEventBase
     {

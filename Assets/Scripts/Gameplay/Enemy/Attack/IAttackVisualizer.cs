@@ -1,6 +1,4 @@
-using UnityEngine;
-
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Attack
 {
     public interface IAttackVisualizer
     {

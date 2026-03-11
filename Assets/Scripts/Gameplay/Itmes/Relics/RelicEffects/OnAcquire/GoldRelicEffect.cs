@@ -1,7 +1,4 @@
-using Cardevil.Core.Bootstrap;
-using UnityEngine;
-
-namespace Cardevil.Relics
+namespace Cardevil.Gameplay.Items.RelicItem.RelicEffects.OnAcquire
 {
     public class GoldRelicEffect : RelicEffectBase, IRelicEffectOnAcquire
     {

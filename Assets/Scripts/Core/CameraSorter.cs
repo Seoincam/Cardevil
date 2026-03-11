@@ -1,5 +1,5 @@
-﻿using Cardevil.Attributes;
-using Cardevil.SceneManagement;
+﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.SceneManagement;
 using System;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Audio;
 
-namespace Cardevil.Sound
+namespace Cardevil.Core.Systems.Sounds
 {
 
     [CreateAssetMenu(fileName = "NewAudioConfig", menuName = "Audio/AudioConfig")]

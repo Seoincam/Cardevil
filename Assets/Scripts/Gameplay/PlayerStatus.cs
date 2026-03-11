@@ -1,19 +1,17 @@
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Systems.Save;
+using Cardevil.Core.Utils;
 using Cardevil.DataStructure;
 using Cardevil.DebugConsole;
-using Cardevil.Events;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Card.Common.Core;
-using Cardevil.Save;
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using Console = Cardevil.DebugConsole.Console;
 
-namespace Cardevil.Ingame
+namespace Cardevil.Gameplay
 {
     /// <summary>
     /// 플레이어의 상태를 나타내는 클래스

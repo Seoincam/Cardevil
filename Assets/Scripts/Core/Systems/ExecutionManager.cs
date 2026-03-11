@@ -1,17 +1,13 @@
-using System.Threading;
 using Cysharp.Threading.Tasks;
+using JetBrains.Annotations;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
+using UnityEngine.Pool;
 
-namespace Cardevil.Manager
+namespace Cardevil.Core.Systems
 {
-
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
-    using JetBrains.Annotations;
-    using UnityEngine;
-    using UnityEngine.Pool;
-    using UnityEngine.SceneManagement;
-
     /// <summary>
     /// 액션을 순차적으로 실행하는 매니저
     /// actionQueue -> finalActionQueue -> (Exec 종료) -> postExecuteQueue 순으로 실행됨.

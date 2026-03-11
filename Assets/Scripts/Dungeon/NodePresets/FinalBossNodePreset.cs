@@ -1,5 +1,5 @@
 ﻿using Cardevil.Core.Bootstrap;
-using Cardevil.Utils;
+using Cardevil.Core.Utils;
 using UnityEngine;
 
 namespace Cardevil.Dungeon.NodePresets

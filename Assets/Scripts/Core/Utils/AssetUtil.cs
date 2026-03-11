@@ -1,10 +1,10 @@
 using Cardevil.Core.Bootstrap;
-using Cardevil.Pools;
+using Cardevil.Core.Systems.Pool;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     public static class AssetUtil
     {

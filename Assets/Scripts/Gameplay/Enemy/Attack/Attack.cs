@@ -1,7 +1,6 @@
-using Cardevil.Core.Turn;
-using Cardevil.Utils;
+using Cardevil.Core.Utils;
 
-namespace Cardevil.InGame.Enemy
+namespace Cardevil.Gameplay.Enemy.Attack
 {
     // Attack.cs 로 분리 추천
     public class Attack

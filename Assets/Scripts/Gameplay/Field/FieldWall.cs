@@ -1,11 +1,11 @@
-using Cardevil.Events;
-using Cardevil.Events.ExecEvents;
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     
     [Obsolete]

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Cardevil.Pools
+namespace Cardevil.Core.Systems.Pool
 {
     [CreateAssetMenu(fileName = "PoolableFactory", menuName = "Pool/PoolableFactory")]
     public class PoolableFactorySo : ScriptableObject, ICloneFactory<Poolable>

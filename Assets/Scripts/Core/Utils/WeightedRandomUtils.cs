@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Cardevil
+namespace Cardevil.Core.Utils
 {
     public class WeightedRandomUtils : MonoBehaviour
     {

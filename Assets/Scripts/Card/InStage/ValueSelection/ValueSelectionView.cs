@@ -2,7 +2,7 @@ using Cardevil.Card.Common;
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
 using Cardevil.Card.Visual.Controller;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Utils;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;

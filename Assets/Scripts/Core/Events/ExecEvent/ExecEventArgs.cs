@@ -1,6 +1,6 @@
-﻿using Cardevil.Events.Core;
+﻿using Cardevil.Core.Events.Core;
 
-namespace Cardevil.Events.ExecEvents
+namespace Cardevil.Core.Events.ExecEvent
 {
     /// <summary>
     /// Exec 이벤트 인자.

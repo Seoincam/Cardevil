@@ -1,4 +1,4 @@
-using System.Text;
+using Cardevil.Gameplay.Items;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +14,7 @@ namespace Database.Generated
         /// <summary> 게임상 설명 </summary>
         public string DisplayDescription;
         /// <summary> 유물 등급 </summary>
-        public Cardevil.Relics.RelicRarity Rarity;
+        public RelicRarity Rarity;
         /// <summary> ID </summary>
         public string RelicId;
         /// <summary> 레벨 </summary>

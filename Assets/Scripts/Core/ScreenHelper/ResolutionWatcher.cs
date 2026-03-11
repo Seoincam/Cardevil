@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Cardevil.Core.Utils;
+using UnityEngine;
 
-namespace Cardevil.ScreenHelper
+namespace Cardevil.Core.ScreenHelper
 {
     public class ResolutionWatcher : Singleton<ResolutionWatcher>
     {

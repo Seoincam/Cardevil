@@ -1,5 +1,5 @@
-using Cardevil.Events.ExecEvents;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Utils;
 using System.Collections.Generic;
 
 namespace Cardevil.Card.InStage

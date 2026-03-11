@@ -1,8 +1,7 @@
-using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems;
 using UnityEngine;
-using Cardevil.Item;
 
-namespace Cardevil.Item.gold
+namespace Cardevil.Gameplay.Items
 {
     public class FixedGold : Item
     {

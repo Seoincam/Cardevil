@@ -1,3 +1,4 @@
+using Cardevil.Gameplay.Enemy;
 using System.Text;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace Database.Generated
         /// <summary> 가중치 </summary>
         public List<int> AttackWeight;
         /// <summary> 사용 족보 순서(오타없이, 띄어쓰기없이) </summary>
-        public List<Cardevil.InGame.Enemy.AttackStyle> AttackPattern;
+        public List<AttackStyle> AttackPattern;
         /// <summary> 0 - 랜덤 / 1 - 유도 </summary>
         public bool AttackPlayer;
         /// <summary> 기믹이름 </summary>

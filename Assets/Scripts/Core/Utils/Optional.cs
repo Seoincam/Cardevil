@@ -1,6 +1,6 @@
 using System;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     /// <summary>
     /// Unity에서 직렬화할 수 없는 <see cref="Nullable{T}"/> (<c>T?</c>)를 대체하기 위한 구조체.  

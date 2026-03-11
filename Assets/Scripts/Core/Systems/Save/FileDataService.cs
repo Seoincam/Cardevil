@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
-namespace Cardevil.Save
+namespace Cardevil.Core.Systems.Save
 {
     public class FileDataService : IDataService
     {

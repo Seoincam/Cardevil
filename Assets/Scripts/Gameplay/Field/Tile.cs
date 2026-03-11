@@ -1,15 +1,14 @@
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems.Pool;
+using Cardevil.Core.Utils;
+using Cardevil.DebugConsole;
+using Cardevil.Gameplay.Core;
 using System;
 using System.Collections.Generic;
-using Cardevil.Attributes;
-using Cardevil.Core.Bootstrap;
-using Cardevil.DebugConsole;
-using Cardevil.Ingame.Entities;
-using Cardevil.Pools;
-using Cardevil.Utils;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     /// <summary>
     /// 타일 클래스.

@@ -1,5 +1,5 @@
 using Cardevil.Card.Common.Core;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Utils;
 using System.Linq;
 
 namespace Cardevil.Card.Common.Visual

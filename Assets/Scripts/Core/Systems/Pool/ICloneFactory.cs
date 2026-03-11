@@ -1,6 +1,4 @@
-﻿using Cardevil.Core;
-
-namespace Cardevil.Pools
+﻿namespace Cardevil.Core.Systems.Pool
 {
     public interface ICloneFactory<T> : IFactory<T> where T : class
     {

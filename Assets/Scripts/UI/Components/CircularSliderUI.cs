@@ -1,5 +1,4 @@
-﻿using Cardevil.Attributes;
-using Cardevil.UI;
+﻿using Cardevil.UI;
 using System;
 using UnityEngine;
 using UnityEngine.Serialization;

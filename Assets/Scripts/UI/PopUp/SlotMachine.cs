@@ -1,17 +1,17 @@
 using Cardevil.Core.Bootstrap;
-using UnityEngine;
-using UnityEngine.UI;
+using Cardevil.Core.Systems;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Items;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
-using Cardevil.Item;
-using DG.Tweening;
-using Cysharp.Threading.Tasks;
-using Database;
-using System;
+using UnityEngine.UI;
 
-namespace Cardevil.InGame.SlotMachine
+namespace Cardevil.UI.PopUp
 {
     public class SlotMachine : UI_Popup
     {
@@ -126,7 +126,7 @@ namespace Cardevil.InGame.SlotMachine
                 await UniTask.Delay(TimeSpan.FromSeconds(1.5f), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
 
                 // 미리 아이템을 결정합니다.
-                List<Item.Item> preDeterminedItemRandomList = new List<Item.Item>();
+                List<Item> preDeterminedItemRandomList = new List<Item>();
                 for (int i = 0; i < 3; i++)
                 {
                     preDeterminedItemRandomList.Add(SettingItem(probalityList));
@@ -140,7 +140,7 @@ namespace Cardevil.InGame.SlotMachine
                 int count = 0;
                 foreach (var slot in slots)
                 {
-                    Item.Item item = preDeterminedItemRandomList[count];
+                    Item item = preDeterminedItemRandomList[count];
                     int typeNumber = (((int)item.rareType) + 1);
                     RectTransform targetRect = slot.GetComponent<RectTransform>();
 
@@ -340,7 +340,7 @@ namespace Cardevil.InGame.SlotMachine
         /// </summary>
         /// <param name="probList"></param>
         /// <returns></returns>
-        public Item.Item SettingItem(int[] probList)
+        public Item SettingItem(int[] probList)
         {
             return Managers.Item.GetRandomItem(probList);
         }

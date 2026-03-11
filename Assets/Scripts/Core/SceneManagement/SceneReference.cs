@@ -1,13 +1,9 @@
-﻿
-using Cardevil.Attributes;
+﻿using Cardevil.Core.Attributes;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
-using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
+using UnityEngine;
 
-namespace Cardevil.SceneManagement
+namespace Cardevil.Core.SceneManagement
 {
     /// <summary>
     /// 씬 참조를 위한 ScriptableObject

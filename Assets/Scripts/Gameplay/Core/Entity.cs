@@ -1,9 +1,8 @@
-﻿using Cardevil.Ingame.Field;
-using Cardevil.Utils;
-using Cardevil.Utils.Directions;
+﻿using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Field;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Entities
+namespace Cardevil.Gameplay.Core
 {
     /// <summary>
     /// 엔티티의 서브 컴포넌트 인터페이스

@@ -5,7 +5,7 @@ using UnityEditor.Toolbars;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Cardevil.Utils
+namespace Cardevil.Core.Utils
 {
     /// <summary>
     /// 메인 툴바에서 부트스트래퍼 씬을 통해 게임을 시작할 수 있는 버튼을 제공합니다.

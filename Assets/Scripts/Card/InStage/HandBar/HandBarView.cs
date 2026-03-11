@@ -1,6 +1,6 @@
-using Cardevil.Attributes;
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.InStage.Score.Step;
+using Cardevil.Core.Attributes;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic; 

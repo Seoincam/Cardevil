@@ -1,7 +1,7 @@
-﻿using Cardevil.Attributes;
-using Cardevil.ScreenHelper;
+﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.ScreenHelper;
+using Cardevil.Core.Utils;
 using Cardevil.UIToolkit;
-using Cardevil.Utils;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;

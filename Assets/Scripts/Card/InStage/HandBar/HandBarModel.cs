@@ -1,5 +1,4 @@
 using Cardevil.Card.Common.Core;
-using Cardevil.Utils.Directions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

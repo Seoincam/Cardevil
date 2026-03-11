@@ -1,7 +1,6 @@
+using Cardevil.Core.Systems.Pool;
+using Cardevil.Core.Utils;
 using Cardevil.DebugConsole;
-using Cardevil.Pools;
-using Cardevil.Utils;
-using Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +9,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Scripting;
 using Console = Cardevil.DebugConsole.Console;
-using MessageType = Cardevil.DebugConsole.MessageType;
 using ReflectionUtil = Database.ReflectionUtil;
 
-namespace Cardevil.Item
+namespace Cardevil.Gameplay.Items
 {
     public class ItemLibrary
     {

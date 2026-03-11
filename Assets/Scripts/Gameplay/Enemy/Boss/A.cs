@@ -1,12 +1,13 @@
-using UnityEngine;
-using Cardevil.InGame.Enemy;
-using Cardevil.Utils; // LogEx 사용 시 필요
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Enemy.Attack;
 
-namespace Cardevil.InGame.Enemy.Boss
+// LogEx 사용 시 필요
+
+namespace Cardevil.Gameplay.Enemy.Boss
 {
     public class A : Enemy
     {
-        public override void SetAttack(Attack attack, bool setPlayerAttack = false)
+        public override void SetAttack(Attack.Attack attack, bool setPlayerAttack = false)
         {
             // 공격 대상 설정
             attack.isPlayerAttack = setPlayerAttack;
@@ -17,7 +18,7 @@ namespace Cardevil.InGame.Enemy.Boss
             LogEx.Log($"Ace Attack 설정 완료: {attack.currentAttackStyle} (PlayerTarget: {setPlayerAttack})");
         }
 
-        public override void AttackingCheck(Attack attack)
+        public override void AttackingCheck(Attack.Attack attack)
         {
             // 데미지 가져오기
             float damage = baseMobBossData != null ? baseMobBossData.AttackDamage : 1f;

@@ -1,12 +1,11 @@
-﻿using Cardevil.Animation;
-using Cardevil.Ingame.Entities;
-using Cardevil.Pools;
-using Cardevil.Utils;
-using System;
+﻿using Cardevil.Core.Systems.Pool;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Animation;
+using Cardevil.Gameplay.Core;
 using TMPro;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Entities
+namespace Cardevil.Gameplay.Entities
 {
     [RequireComponent(typeof(Entity), typeof(Poolable))]
     public class RockPile : MonoBehaviour, IReflectorEntity, IPoolableSubComponent

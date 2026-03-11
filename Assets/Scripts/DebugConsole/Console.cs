@@ -1,5 +1,5 @@
-﻿using Cardevil.DebugConsole.Commands;
-using Cardevil.Utils;
+﻿using Cardevil.Core.Utils;
+using Cardevil.DebugConsole.Commands;
 using System;
 using System.Collections.Generic;
 using UnityEngine;

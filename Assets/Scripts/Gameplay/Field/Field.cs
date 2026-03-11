@@ -1,18 +1,15 @@
+using Cardevil.Core.Attributes;
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Cardevil.Attributes;
-using Cardevil.Core.Bootstrap;
-using Cardevil.Events;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Utils;
-using Cardevil.Utils.Directions;
-using Cysharp.Threading.Tasks;
 using System.Threading;
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     /// <summary>
     /// 보드판.

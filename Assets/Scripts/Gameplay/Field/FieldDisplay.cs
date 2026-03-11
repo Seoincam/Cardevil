@@ -1,18 +1,15 @@
-﻿using Cardevil.Attributes;
-using Cardevil.Card.InStage;
+﻿using Cardevil.Card.InStage;
+using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
-using Cardevil.Core.Root;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Ingame.Player;
-using Cardevil.Utils;
-using Cardevil.Utils.Directions;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Player;
 using Cysharp.Threading.Tasks;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-namespace Cardevil.Ingame.Field
+namespace Cardevil.Gameplay.Field
 {
     public class FieldDisplay : MonoBehaviour
     {

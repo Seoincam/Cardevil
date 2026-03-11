@@ -1,7 +1,6 @@
-﻿using Cardevil.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace Cardevil.Events.Core
+namespace Cardevil.Core.Events.Core
 {
     /// <summary>
     /// 우선순위 이벤트

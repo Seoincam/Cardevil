@@ -1,4 +1,4 @@
-using Cardevil.Events.ExecEvents;
+using Cardevil.Core.Events.ExecEvent;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
