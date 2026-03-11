@@ -1,4 +1,4 @@
-﻿using Cardevil.DataStructure.Serializables;
+﻿using Cardevil.Core.DataStructure.Serializables;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;

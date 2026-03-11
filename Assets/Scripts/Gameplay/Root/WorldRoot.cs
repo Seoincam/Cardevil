@@ -2,7 +2,7 @@ using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Systems.Save;
-using Cardevil.Dungeon;
+using Cardevil.Gameplay.Dungeon;
 using Cardevil.UI.GlobalNavigationBar;
 using Cysharp.Threading.Tasks;
 using System.Threading;
