@@ -1,5 +1,5 @@
+using Cardevil.Core.DataStructure.Serializables;
 using Cardevil.Core.Utils;
-using Cardevil.DataStructure.Serializables;
 using System;
 using UnityEngine;
 using UnityEngine.Pool;

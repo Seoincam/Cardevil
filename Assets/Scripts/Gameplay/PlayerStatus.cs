@@ -1,5 +1,6 @@
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.DataStructure;
 using Cardevil.Core.Events.EventArgs;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Systems.Save;

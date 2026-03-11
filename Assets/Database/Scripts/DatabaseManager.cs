@@ -1,3 +1,4 @@
+using Cardevil.Core.DataStructure.Serializables;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Cardevil.Scriptable.Cache;
 using Cardevil.DataStructure;
-using Cardevil.DataStructure.Serializables;
 using Cysharp.Threading.Tasks;
 #if UNITY_EDITOR
 using Unity.EditorCoroutines.Editor;

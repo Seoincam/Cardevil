@@ -1,0 +1,25 @@
+﻿using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Dungeon.Core;
+using Cardevil.Gameplay.Dungeon.Node;
+using UnityEngine;
+
+namespace Cardevil.Gameplay.Dungeon.NodePresets
+{
+    [CreateAssetMenu(fileName = "MobNodePreset", menuName = "Cardevil/Dungeon/Node Presets/Mob", order = 1)]
+    [Icon("Assets/Sprites/Dungeon/Icon/Inactive/Mob_Inactive.png")]
+    public class MobNodePreset : DungeonNodePreset
+    {
+
+        public override bool RequiresClearToProgress => true;
+        
+        public override void OnEnter(DungeonNode node)
+        {
+            LogEx.Log($"몬스터 노드 진입 (ID: {node.NodeId}, 층: {node.Floor}): 몬스터와의 전투가 시작됩니다.");
+        }
+
+        public override void OnExit(DungeonNode node, NodeExitInfo exitInfo)
+        {
+            LogEx.Log($"몬스터 노드 탈출 (ID: {node.NodeId}): 몬스터를 처치했습니다.");
+        }
+    }
+}

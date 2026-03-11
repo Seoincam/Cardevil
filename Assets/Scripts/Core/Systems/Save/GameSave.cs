@@ -1,5 +1,5 @@
-using Cardevil.Dungeon;
 using Cardevil.Gameplay;
+using Cardevil.Gameplay.Dungeon.Core;
 using System;
 
 namespace Cardevil.Core.Systems.Save

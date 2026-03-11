@@ -1,8 +1,8 @@
 ﻿using Cardevil.Core.Bootstrap;
+using Cardevil.Core.DataStructure.Serializables;
 using Cardevil.Core.Systems.Pool;
 using Cardevil.Core.Utils;
-using Cardevil.DataStructure.Serializables;
-using Cardevil.Dungeon;
+using Cardevil.Gameplay.Dungeon.Node;
 using Database;
 using NUnit.Framework;
 using System;

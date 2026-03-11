@@ -1,8 +1,8 @@
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.DataStructure.Serializables;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
-using Cardevil.DataStructure.Serializables;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;

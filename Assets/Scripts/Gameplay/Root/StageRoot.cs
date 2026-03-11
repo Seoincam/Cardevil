@@ -4,7 +4,7 @@ using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Utils;
-using Cardevil.Dungeon;
+using Cardevil.Gameplay.Dungeon.Core;
 using Cardevil.Gameplay.Enemy;
 using Cardevil.Gameplay.Player;
 using Cardevil.Gameplay.Turn;
