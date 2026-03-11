@@ -1,11 +1,10 @@
 ﻿using Cardevil.Core.Attributes;
 using Cardevil.Core.Systems;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.UI.GlobalNavationBar
+namespace Cardevil.UI.GlobalNavigationBar
 {
     public class RelicBar : MonoBehaviour
     {

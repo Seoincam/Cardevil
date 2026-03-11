@@ -1,14 +1,13 @@
 ﻿using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Cardevil.UI.GlobalNavationBar
+namespace Cardevil.UI.GlobalNavigationBar
 {
     public class GlobalNavigationBar : MonoBehaviour
     {
