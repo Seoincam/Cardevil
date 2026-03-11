@@ -1,6 +1,6 @@
 using Cysharp.Threading.Tasks;
 
-namespace Cardevil.Core.Turn
+namespace Cardevil.Gameplay.Turn
 {
     public interface ITurnEnemy
     {

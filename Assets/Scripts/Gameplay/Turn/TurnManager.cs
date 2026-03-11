@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-namespace Cardevil.Core.Turn
+namespace Cardevil.Gameplay.Turn
 {
     public interface IEnemyContext
     {

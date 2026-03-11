@@ -1,9 +1,9 @@
 using Cardevil.Core.Events.EventArgs;
 using Cardevil.Core.Events.ExecEvent;
-using Cardevil.Core.Turn;
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Enemy.Attack;
 using Cardevil.Gameplay.Enemy.Gimmick;
+using Cardevil.Gameplay.Turn;
 using Cysharp.Threading.Tasks;
 using Database.Generated;
 using System.Collections.Generic;

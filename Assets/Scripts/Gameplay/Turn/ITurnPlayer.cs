@@ -3,7 +3,7 @@ using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using System.Threading;
 
-namespace Cardevil.Core.Turn
+namespace Cardevil.Gameplay.Turn
 {
     public interface ITurnPlayer
     {
