@@ -4,6 +4,7 @@ namespace Cardevil.Card.InStage.Score.Step
 
     public interface IScoreProvider : IScoreSource
     {
+        int Id { get; set; }
         ScoreStepType ScoreStepType { get; }
         IScoreOperator GetScoreOperator(IScoreContext context);
     }

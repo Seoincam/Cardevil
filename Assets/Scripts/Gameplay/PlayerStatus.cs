@@ -6,7 +6,7 @@ using Cardevil.Core.Events.EventArgs;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
-using Cardevil.Gameplay.Relic.Core;
+using Cardevil.Gameplay.Relics.Core;
 using Cardevil.Test.DebugConsole;
 using Cysharp.Threading.Tasks;
 using System;
@@ -329,6 +329,7 @@ namespace Cardevil.Gameplay
             [field: SerializeField] public PlayerStatType Type { get; private set; }
             [field: SerializeField] public int BaseValue { get; private set; }
             [field: SerializeField] public int FinalValue { get; private set; }
+            
             public StatEntry(PlayerStatType type) => Type = type;
             public void SetBaseValue(int value) => BaseValue = value;
             public void SetFinalValue(int value) => FinalValue = value;

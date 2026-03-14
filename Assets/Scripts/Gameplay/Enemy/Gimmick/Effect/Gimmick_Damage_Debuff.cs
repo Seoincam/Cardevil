@@ -12,15 +12,14 @@ namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
     {
         private Enemy _targetEnemy;
 
-        private int _scoreProviderId = -1;
-
+        public int Id { get; set; }
         public ScoreStepType ScoreStepType => ScoreStepType.EnemyStatus;
 
 
         public void Apply(Enemy enemy)
         {
             _targetEnemy = enemy;
-            _scoreProviderId = CardevilCore.Game.ScoreProviderRegistry.Register(this);
+            Id = CardevilCore.Game.ScoreProviderRegistry.Register(this);
             // TODO: View 등록하기
         }
         
@@ -46,8 +45,8 @@ namespace Cardevil.Gameplay.Enemy.Gimmick.Effect
 
         public void Remove()
         {
-            CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(_scoreProviderId, this);
-            _scoreProviderId = -1;
+            CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(Id, this);
+            Id = -1;
         }
     }
 }

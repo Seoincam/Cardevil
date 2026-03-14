@@ -3,6 +3,7 @@ using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Gameplay;
+using Cardevil.Gameplay.Items;
 using UnityEngine;
 
 namespace Cardevil.Core
@@ -12,6 +13,7 @@ namespace Cardevil.Core
     {
         [Header("State")] 
         [field: SerializeField, VisibleOnly] public PlayerStatus PlayerStatus { get; private set; }
+        [field: SerializeField, VisibleOnly] public RelicManager Relic { get; private set; }
         [field: SerializeField, VisibleOnly] public ScoreProviderRegistry ScoreProviderRegistry { get; private set; }
 
         public void Init()
@@ -19,6 +21,7 @@ namespace Cardevil.Core
             CardevilCore.SaveLoad.Register(this);
             
             PlayerStatus = new PlayerStatus();
+            Relic = new RelicManager();
             ScoreProviderRegistry = new ScoreProviderRegistry();
         }
         
