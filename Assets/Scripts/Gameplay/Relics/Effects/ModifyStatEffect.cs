@@ -10,6 +10,7 @@ namespace Cardevil.Gameplay.Relics.Effects
         [SerializeField] private PlayerStatType targetStatType;
         [SerializeField] private int value;
 
+        public ModifyStatEffect() { }
         public ModifyStatEffect(
             IRelicContext context, 
             PlayerStatType targetStatType, 

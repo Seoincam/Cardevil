@@ -15,6 +15,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
         
         private bool needToExecute;
         
+        public HandRankNextBonusEffect() { }
         public HandRankNextBonusEffect(
             IRelicContext context, 
             ScoreStepType scoreStepType,

@@ -18,7 +18,6 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         
         // Simple Info
         private readonly Image _iconImage;
-        private readonly Label _idLabel;
         
         // Text Info
         private readonly Label _titleLabel;
@@ -41,7 +40,6 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             visualTree.CloneTree(this);
 
             _iconImage = this.Q<Image>("Icon");
-            _idLabel = this.Q<Label>("IdText");
             
             _titleLabel = this.Q<Label>("Title");
             _descLabel = this.Q<Label>("Description");
@@ -57,11 +55,19 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         public void SetupData(Sprite icon, string id, string title, string description)
         {
             _currentRelicId = id;
-            
-            _iconImage.sprite = icon;
-            _idLabel.text = id;
-            _titleLabel.text = title;
+
+            if (icon)
+            {
+                _iconImage.sprite = icon;   
+            }
+
+            _titleLabel.text = $"{title} {GetIdRichText(id)}";
             _descLabel.text = description;
+        }
+
+        private string GetIdRichText(string id)
+        {
+            return $"<size=13><color=#32CD32>{id}</color></size>";
         }
     }
 }

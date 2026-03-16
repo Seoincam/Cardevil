@@ -1,20 +1,9 @@
 VisualElement {
 }
 
-.delete-button {
-    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%203%20Regular.otf?fileID=12800000&guid=a35ec5ba469fe453086b0aab3a48be3b&type=3#The Jamsil OTF 3 Regular");
-    color: rgb(255, 76, 76);
-    -unity-font-style: normal;
-}
-
-.management-container {
-    width: 75px;
-    height: 75px;
-    overflow: visible;
-}
-
 .title-font {
-    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/HakgyoansimDotbogiOTFR.otf?fileID=12800000&guid=14a744bbd366e404fb0caa9e0f225e95&type=3#HakgyoansimDotbogiOTFR");
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/RIDIBatang.otf?fileID=12800000&guid=a2232a0a087f14dc189a70b691194efb&type=3#RIDIBatang");
+    -unity-font-style: normal;
 }
 
 .description-font {
@@ -27,87 +16,180 @@ VisualElement {
     white-space: nowrap;
 }
 
+.management-container {
+    width: 75px;
+    height: 75px;
+    overflow: visible;
+}
+
 .border {
-    border-top-width: 0.75px;
-    border-right-width: 0.75px;
-    border-bottom-width: 0.75px;
-    border-left-width: 0.75px;
-    border-left-color: rgb(108, 108, 108);
-    border-right-color: rgb(108, 108, 108);
-    border-top-color: rgb(108, 108, 108);
-    border-bottom-color: rgb(108, 108, 108);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    padding-top: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    margin-top: 2px;
-    margin-right: 2px;
-    margin-bottom: 2px;
-    margin-left: 2px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 4px;
+    background-color: rgba(0, 0, 0, 0.15);
 }
 
 .out-border {
-    border-top-width: 0.9px;
-    border-right-width: 0.9px;
-    border-bottom-width: 0.9px;
-    border-left-width: 0.9px;
-    border-left-color: rgb(178, 178, 178);
-    border-right-color: rgb(178, 178, 178);
-    border-top-color: rgb(178, 178, 178);
-    border-bottom-color: rgb(178, 178, 178);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    padding-top: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    margin-left: 5px;
-    color: rgb(197, 197, 197);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    background-color: rgb(35, 35, 35);
+    color: rgb(210, 210, 210);
 }
 
 .outest-border {
-    border-top-width: 1px;
-    border-right-width: 1px;
-    border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-left-color: rgb(178, 178, 178);
-    border-right-color: rgb(178, 178, 178);
-    border-top-color: rgb(178, 178, 178);
-    border-bottom-color: rgb(178, 178, 178);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    padding-top: 10px;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    margin-top: 5px;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    margin-left: 5px;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    padding: 8px;
+    margin: 6px;
+    background-color: rgb(40, 40, 40);
 }
 
 .button {
-    border-top-width: 1px;
-    border-right-width: 1px;
+    border-width: 1px;
+    border-color: rgb(45, 60, 75);
+    border-radius: 6px;
+    padding: 6px 16px;
+    background-color: rgb(75, 75, 75);
+    color: rgb(240, 240, 240);
+    -unity-font-style: bold;
+    transition-property: background-color, border-color, scale;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in-out;
+    border-left-color: rgb(51, 51, 51);
+    border-right-color: rgb(51, 51, 51);
+    border-top-color: rgb(51, 51, 51);
+    border-bottom-color: rgb(51, 51, 51);
+    font-size: 15px;
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%203%20Regular.otf?fileID=12800000&guid=a35ec5ba469fe453086b0aab3a48be3b&type=3#The Jamsil OTF 3 Regular");
+}
+
+.button:hover {
+    background-color: rgb(80, 95, 115);
+    border-color: rgb(100, 115, 135);
+}
+
+.button:active {
+    background-color: rgb(45, 55, 70);
+    scale: 0.96;
+}
+
+.delete-button {
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%203%20Regular.otf?fileID=12800000&guid=a35ec5ba469fe453086b0aab3a48be3b&type=3#The Jamsil OTF 3 Regular");
+    -unity-font-style: bold;
+    background-color: rgb(200, 65, 65);
+    color: white;
+    border-width: 1px;
+    border-color: rgb(180, 50, 50);
+    border-radius: 6px;
+    padding: 4px 12px;
+    transition-property: background-color, border-color, scale;
+    transition-duration: 0.15s;
+}
+
+.delete-button:hover {
+    background-color: rgb(230, 80, 80);
+    border-color: rgb(255, 100, 100);
+}
+
+.delete-button:active {
+    background-color: rgb(160, 45, 45);
+    scale: 0.95;
+}
+
+.unity-base-field {
+    margin-bottom: 8px;
+}
+
+.unity-base-field__label {
+    min-width: 80px;
+    color: rgb(180, 180, 180);
+    -unity-text-align: middle-left;
+    -unity-font-style: bold;
+}
+
+.unity-base-text-field__input {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    color: rgb(220, 220, 220);
+    padding: 4px 6px;
+}
+
+.unity-base-text-field__input:focus {
+    border-color: rgb(100, 150, 200);
+}
+
+.unity-list-view {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.unity-list-view__item {
+    background-color: transparent;
     border-bottom-width: 1px;
-    border-left-width: 1px;
-    border-top-left-radius: 17.5px;
-    border-top-right-radius: 17.5px;
-    border-bottom-right-radius: 17.5px;
-    border-bottom-left-radius: 17.5px;
-    border-left-color: rgb(130, 130, 130);
-    border-right-color: rgb(130, 130, 130);
-    border-top-color: rgb(130, 130, 130);
-    border-bottom-color: rgb(130, 130, 130);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+    transition-property: background-color;
+    transition-duration: 0.1s;
+}
+
+.unity-list-view__item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.unity-list-view__item--selected {
+    background-color: rgba(60, 100, 150, 0.3);
+    border-left-width: 3px;
+    border-left-color: rgb(100, 150, 255);
+}
+
+.effect-item {
+    background-color: rgba(30, 30, 30, 0.8);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.effect-item-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+    padding-bottom: 6px;
+}
+
+.effect-item-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: rgb(200, 200, 200);
+}
+
+.unity-scroll-view {
+    padding-right: 5px;
+}
+
+.unity-collection-view__item--hover #RootContainer {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.unity-collection-view__item--selected #RootContainer {
+    background-color: rgba(44, 93, 135, 0.8);
+    border-color: rgb(88, 156, 214);
+    border-width: 1px;
+}
+
+.background-color {
+    transition-duration: 0.2s;
 }

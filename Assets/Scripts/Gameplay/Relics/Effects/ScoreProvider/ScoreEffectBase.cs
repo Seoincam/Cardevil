@@ -14,6 +14,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
         [SerializeField] protected ScoreOperatorType scoreOperatorType;
         [SerializeField] protected float value;
 
+        protected ScoreEffectBase() { }
         protected ScoreEffectBase(
             IRelicContext context, 
             ScoreStepType scoreStepType, 

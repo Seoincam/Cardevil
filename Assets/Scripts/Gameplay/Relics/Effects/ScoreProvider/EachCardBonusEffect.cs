@@ -10,7 +10,8 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
     public class EachCardBonusEffect : ScoreEffectBase
     {
         [SerializeField] private int targetNumber;
-        
+
+        public EachCardBonusEffect() { }
         public EachCardBonusEffect(
             IRelicContext context, 
             ScoreStepType scoreStepType, 

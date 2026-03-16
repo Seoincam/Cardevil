@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871ed7db8aaf4fb08111deb0e36a1c17, type: 3}
+  m_Name: Relic 3
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
+  data:
+    id: random_bonus
+    displayIcon: {fileID: 21300000, guid: 921cef11fc0199745bdaa1422557e252, type: 3}
+    displayName: "\uC0C8\uB85C\uC6B4 \uC720\uBB3C"
+    displayDescription: "\uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
+      \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uC720\uBB3C\uC5D0
+      \uB300\uD55C \uC124\uBA85\uC785\uB2C8\uB2E4."
+    effects:
+    - rid: 5725363041356218616
+    - rid: 5725363041356218617
+  references:
+    version: 2
+    RefIds:
+    - rid: 5725363041356218616
+      type: {class: RandomBonusEffect, ns: Cardevil.Gameplay.Relics.Effects.ScoreProvider, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 1
+        scoreOperatorType: 0
+        value: 30
+        probability: 0.5
+    - rid: 5725363041356218617
+      type: {class: HandRankBonusEffect, ns: Cardevil.Gameplay.Relics.Effects.ScoreProvider, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 0
+        scoreOperatorType: 0
+        value: 0
+        targetHandRank: 0

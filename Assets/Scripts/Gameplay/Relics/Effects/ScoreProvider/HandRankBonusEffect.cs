@@ -12,6 +12,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
     {
         [SerializeField] private HandRank targetHandRank;
 
+        public HandRankBonusEffect() { }
         public HandRankBonusEffect(
             IRelicContext context, 
             ScoreStepType scoreStepType, 

@@ -1,9 +1,13 @@
+using System;
+
 namespace Cardevil.Gameplay.Relics.Core
 {
+    [Serializable]
     public abstract class EffectBase
     {
         protected IRelicContext Context;
         
+        protected EffectBase() { }
         protected EffectBase(IRelicContext context)
         {
             Context = context;    

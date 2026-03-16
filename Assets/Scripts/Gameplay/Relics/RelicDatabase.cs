@@ -7,8 +7,6 @@ namespace Cardevil.Gameplay.Relics
     [CreateAssetMenu(fileName = "Relic Database", menuName = "Relic/Database")]
     public class RelicDatabase : ScriptableObject
     {
-        [SerializeField] private List<Relic> relics;
-
-        public IReadOnlyList<Relic> Relics => relics;
+        public List<RelicSO> relics;
     }
 }

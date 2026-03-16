@@ -10,6 +10,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
         [SerializeField] private PlayerStatType targetStatType;
         [SerializeField] private int targetValue;
 
+        public TargetStatBonusEffect() { }
         public TargetStatBonusEffect(
             IRelicContext context, 
             ScoreStepType scoreStepType, 

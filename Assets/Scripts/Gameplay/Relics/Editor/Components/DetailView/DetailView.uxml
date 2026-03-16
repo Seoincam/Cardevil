@@ -1,10 +1,10 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
-    <ui:VisualElement name="RootContainer" class="outest-border" style="flex-grow: 1;">
-        <ui:VisualElement name="ManagementContainer" style="flex-grow: 0; align-items: flex-end;">
+    <ui:VisualElement name="RootContainer" class="outest-border" style="flex-grow: 1; background-color: rgb(50, 50, 50);">
+        <ui:VisualElement name="ManagementContainer" style="flex-grow: 0; align-items: flex-end; margin-bottom: 5px;">
             <ui:Button text="닫기" name="Close" class="description-font button" style="width: 100px; height: 35px; font-size: 15px;"/>
         </ui:VisualElement>
-        <Cardevil.Gameplay.Relics.Editor.Components.RelicInformationBox/>
-        <Cardevil.Gameplay.Relics.Editor.Components.EffectList/>
+        <Cardevil.Gameplay.Relics.Editor.Components.RelicInformationBox style="background-color: rgba(0, 0, 0, 0.2); padding: 10px; margin-bottom: 10px;"/>
+        <Cardevil.Gameplay.Relics.Editor.Components.EffectList style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.2); padding: 10px;"/>
     </ui:VisualElement>
 </ui:UXML>

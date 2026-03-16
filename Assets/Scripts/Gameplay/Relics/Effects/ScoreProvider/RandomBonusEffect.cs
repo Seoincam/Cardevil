@@ -12,6 +12,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
     {
         [SerializeField, Range(0f, 1f)] private float probability;
 
+        public RandomBonusEffect() { }
         public RandomBonusEffect(
             IRelicContext context, 
             ScoreStepType scoreStepType, 

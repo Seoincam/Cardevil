@@ -8,6 +8,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
     [UxmlElement]
     public partial class DetailView : VisualElement
     {
+        public event Action DataChanged;
         public event Action CloseClicked;
         
         private readonly Button _closeButton;
@@ -28,13 +29,14 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             visualTree.CloneTree(this);
 
             _closeButton = this.Q<Button>("Close");
-            _relicInformationBox = this.Q<RelicInformationBox>("RelicInformationBox");
-            _effectList = this.Q<EffectList>("EffectList");
+            _relicInformationBox = this.Q<RelicInformationBox>();
+            _effectList = this.Q<EffectList>();
             
+            _relicInformationBox.DataChanged += () => DataChanged?.Invoke();
             if (_closeButton != null)
                 _closeButton.clicked += () => CloseClicked?.Invoke();
         }
-
+        
         public void BindRelic(SerializedObject serializedRelic)
         {
             _relicInformationBox.BindRelic(serializedRelic);

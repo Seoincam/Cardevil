@@ -15,7 +15,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         // Effect
         private readonly Label _nameLabel;
         private readonly Label _descLabel;
-        private readonly PropertyField _propertyField;
+        private readonly VisualElement _propertiesContainer;
         
         // Management
         private readonly Button _deleteButton;
@@ -40,7 +40,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             
             _nameLabel = this.Q<Label>("EffectName");
             _descLabel = this.Q<Label>("Description");
-            _propertyField = this.Q<PropertyField>("PropertyField");
+            _propertiesContainer = this.Q("PropertiesContainer");
             _deleteButton = this.Q<Button>("DeleteButton");
             
             if (_deleteButton != null)
@@ -48,9 +48,24 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         }
         
         public void BindEffect(SerializedProperty effectProp, int index)
-        { 
+        {
             _effectIndex = index;
-            _propertyField.BindProperty(effectProp);
+            
+            _propertiesContainer.Clear();
+
+            SerializedProperty iterator = effectProp.Copy();
+            SerializedProperty endProperty = iterator.GetEndProperty();
+
+            bool enterChildren = true;
+
+            while (iterator.NextVisible(enterChildren) && !SerializedProperty.EqualContents(iterator, endProperty))
+            {
+                enterChildren = false;
+
+                PropertyField field = new(iterator);
+                field.BindProperty(iterator);
+                _propertiesContainer.Add(field);
+            }
 
             object actualEffect = effectProp.managedReferenceValue;
             if (actualEffect != null)

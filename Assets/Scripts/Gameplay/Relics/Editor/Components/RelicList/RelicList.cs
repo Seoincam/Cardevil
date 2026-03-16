@@ -14,7 +14,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         /// <summary>
         /// 리스트 뷰에서 선택한 유물이 변했을 때 발행되는 이벤트.
         /// </summary>
-        public event Action<Relic> SelectionChanged;
+        public event Action<RelicSO> SelectionChanged;
         
         /// <summary>
         /// <see cref="RelicRow"/>에서 삭제 버튼이 눌렸을 때 발행되는 이벤트.
@@ -40,15 +40,16 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _listView = this.Q<ListView>("MainListView");
         }
 
-        public void Setup(List<Relic> relics)
+        public void Setup(List<RelicSO> relics)
         {
             _listView.Clear();
 
+            _listView.itemsSource = relics;
             _listView.makeItem = () => new RelicRow();
             _listView.bindItem = (element, index) =>
             {
                 var row = element as RelicRow;
-                var relicData = relics[index];
+                var relicData = relics[index].Data;
 
                 row!.SetupData(
                     relicData.DisplayIcon,
@@ -72,9 +73,25 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _listView.RefreshItems();
         }
 
+        public void RefreshSelectedRow()
+        {
+            int currentIndex = _listView.selectedIndex;
+            LogEx.Log($"Selected Row: {currentIndex}");
+
+            if (currentIndex >= 0)
+            {
+                _listView.RefreshItem(currentIndex);
+            }
+        }
+
+        public void ClearSelection()
+        {
+            _listView.ClearSelection();
+        }
+
         private void OnSelectionChanged(IEnumerable<object> selectedItems)
         {
-            var selectedRelic = selectedItems?.FirstOrDefault() as Relic;
+            var selectedRelic = selectedItems?.FirstOrDefault() as RelicSO;
             if (selectedRelic == null) 
                 return;
             
