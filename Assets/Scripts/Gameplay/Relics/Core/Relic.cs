@@ -7,13 +7,22 @@ namespace Cardevil.Gameplay.Relics.Core
     [Serializable]
     public class Relic
     {
-        [SerializeField] private string displayName;
-        [SerializeField] private string displayDescription;
+        [SerializeField] private string id;
+        public string Id => id;
+        
+        [Header("Display")]
         [SerializeField] private Sprite displayIcon;
+        public Sprite DisplayIcon => displayIcon;
+        
+        [SerializeField] private string displayName;
+        public string DisplayName => displayName;
+        
+        [SerializeField] private string displayDescription;
+        public string DisplayDescription => displayDescription;
         
         [SerializeReference] private List<EffectBase> effects;
         
-        public IReadOnlyList<EffectBase> Effects => effects;
+        public IReadOnlyList<EffectBase> Effects => effects; 
     }
 
     /// <summary>

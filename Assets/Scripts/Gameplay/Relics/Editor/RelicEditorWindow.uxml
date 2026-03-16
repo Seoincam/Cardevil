@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="RootContainer" style="flex-grow: 1; flex-direction: column;">
+        <Cardevil.Gameplay.Relics.Editor.Components.MainToolbar/>
+        <ui:VisualElement name="HorizontalContainer" style="flex-grow: 1; flex-direction: row;">
+            <Cardevil.Gameplay.Relics.Editor.Components.RelicList style="flex-grow: 0.6; flex-shrink: 0;"/>
+            <Cardevil.Gameplay.Relics.Editor.Components.DetailView style="flex-grow: 1; flex-shrink: 1;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
+    <ui:VisualElement name="RootContainer" class="out-border" style="flex-grow: 1; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
+        <ui:ScrollView name="EffectScrollView" vertical-scroller-visibility="AlwaysVisible" class="border" style="padding-top: 10px; padding-right: 2px; padding-bottom: 10px; padding-left: 10px; margin-top: 1px; margin-right: 1px; margin-bottom: 1px; margin-left: 1px;"/>
+        <ui:VisualElement name="ManagementContainer" style="flex-grow: 0; height: 50px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; padding-top: 32px; padding-right: 32px; padding-bottom: 32px; padding-left: 32px; justify-content: center;">
+            <ui:Button text="효과 추가하기" name="Add" class="description-font button" style="width: 175px; height: 40px; -unity-font-style: normal; font-size: 17.5px; align-self: center; justify-content: center; align-content: flex-start; flex-shrink: 0;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

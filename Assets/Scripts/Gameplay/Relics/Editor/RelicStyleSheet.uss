@@ -1,0 +1,113 @@
+VisualElement {
+}
+
+.delete-button {
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%203%20Regular.otf?fileID=12800000&guid=a35ec5ba469fe453086b0aab3a48be3b&type=3#The Jamsil OTF 3 Regular");
+    color: rgb(255, 76, 76);
+    -unity-font-style: normal;
+}
+
+.management-container {
+    width: 75px;
+    height: 75px;
+    overflow: visible;
+}
+
+.title-font {
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/HakgyoansimDotbogiOTFR.otf?fileID=12800000&guid=14a744bbd366e404fb0caa9e0f225e95&type=3#HakgyoansimDotbogiOTFR");
+}
+
+.description-font {
+    -unity-font-definition: url("project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&guid=4eceb5da313ff4718be4edd1c928520a&type=3#The Jamsil OTF 2 Light");
+}
+
+.none-overflow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.border {
+    border-top-width: 0.75px;
+    border-right-width: 0.75px;
+    border-bottom-width: 0.75px;
+    border-left-width: 0.75px;
+    border-left-color: rgb(108, 108, 108);
+    border-right-color: rgb(108, 108, 108);
+    border-top-color: rgb(108, 108, 108);
+    border-bottom-color: rgb(108, 108, 108);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    margin-top: 2px;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    margin-left: 2px;
+}
+
+.out-border {
+    border-top-width: 0.9px;
+    border-right-width: 0.9px;
+    border-bottom-width: 0.9px;
+    border-left-width: 0.9px;
+    border-left-color: rgb(178, 178, 178);
+    border-right-color: rgb(178, 178, 178);
+    border-top-color: rgb(178, 178, 178);
+    border-bottom-color: rgb(178, 178, 178);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    color: rgb(197, 197, 197);
+}
+
+.outest-border {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(178, 178, 178);
+    border-right-color: rgb(178, 178, 178);
+    border-top-color: rgb(178, 178, 178);
+    border-bottom-color: rgb(178, 178, 178);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+}
+
+.button {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 17.5px;
+    border-top-right-radius: 17.5px;
+    border-bottom-right-radius: 17.5px;
+    border-bottom-left-radius: 17.5px;
+    border-left-color: rgb(130, 130, 130);
+    border-right-color: rgb(130, 130, 130);
+    border-top-color: rgb(130, 130, 130);
+    border-bottom-color: rgb(130, 130, 130);
+}

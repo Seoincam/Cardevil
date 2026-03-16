@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Relic Database
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.RelicDatabase
   relics:
-  - displayName: dd
-    displayDescription: dd
+  - id: ddd_01
     displayIcon: {fileID: 21300000, guid: a268e18f102c92344bac85017540dbb6, type: 3}
+    displayName: dd
+    displayDescription: dd

@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
+    <ui:VisualElement name="RootContainer" class="outest-border" style="flex-grow: 1; justify-content: center; align-items: flex-start;">
+        <ui:Button text="추가하기" name="AddRelic" class="button description-font" style="width: 100px; height: 35px;"/>
+    </ui:VisualElement>
+</ui:UXML>

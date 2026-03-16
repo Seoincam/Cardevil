@@ -1,0 +1,84 @@
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Relics.Core;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
+using UnityEngine.UIElements;
+
+namespace Cardevil.Gameplay.Relics.Editor.Components
+{
+    [UxmlElement]
+    public partial class RelicList : VisualElement
+    {
+        /// <summary>
+        /// 리스트 뷰에서 선택한 유물이 변했을 때 발행되는 이벤트.
+        /// </summary>
+        public event Action<Relic> SelectionChanged;
+        
+        /// <summary>
+        /// <see cref="RelicRow"/>에서 삭제 버튼이 눌렸을 때 발행되는 이벤트.
+        /// 유물의 Id를 인자로 함.
+        /// </summary>
+        public event Action<string> DeleteClicked;
+        
+        private readonly ListView _listView;
+        
+        public RelicList()
+        {
+            const string uxmlPath = "Assets/Scripts/Gameplay/Relics/Editor/Components/RelicList/RelicList.uxml";
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
+
+            if (!visualTree)
+            {
+                LogEx.LogError($"UXML 패스를 찾을 수 없음. 경로: {uxmlPath}");
+                return;
+            }
+
+            visualTree.CloneTree(this);
+            
+            _listView = this.Q<ListView>("MainListView");
+        }
+
+        public void Setup(List<Relic> relics)
+        {
+            _listView.Clear();
+
+            _listView.makeItem = () => new RelicRow();
+            _listView.bindItem = (element, index) =>
+            {
+                var row = element as RelicRow;
+                var relicData = relics[index];
+
+                row!.SetupData(
+                    relicData.DisplayIcon,
+                    relicData.Id,
+                    relicData.DisplayName,
+                    relicData.DisplayDescription);
+
+                row.DeleteClicked = id => DeleteClicked?.Invoke(id);
+            };
+            _listView.unbindItem = (element, index) =>
+            {
+                var row = element as RelicRow;
+                row!.DeleteClicked = null;
+            };
+
+            _listView.selectionChanged += OnSelectionChanged;
+        }
+
+        public void Refresh()
+        {
+            _listView.RefreshItems();
+        }
+
+        private void OnSelectionChanged(IEnumerable<object> selectedItems)
+        {
+            var selectedRelic = selectedItems?.FirstOrDefault() as Relic;
+            if (selectedRelic == null) 
+                return;
+            
+            SelectionChanged?.Invoke(selectedRelic);
+        }
+    }
+}
