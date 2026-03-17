@@ -14,11 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
     id: handrank_01
+    rarity: 0
     displayIcon: {fileID: 21300000, guid: 7102fa28c8a0e6747a8f88aacac33072, type: 3}
     displayName: "\uC774\uB984\uC774\uB984"
     displayDescription: "\uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
       \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4."
-    effects: []
+    effects:
+    - rid: 5725363048709357568
+  isLocal: 0
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5725363048709357568
+      type: {class: TargetStatBonusEffect, ns: Cardevil.Gameplay.Relics.Effects.ScoreProvider, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 1
+        scoreOperatorType: 0
+        value: 50
+        targetStatType: 3
+        targetValue: 1

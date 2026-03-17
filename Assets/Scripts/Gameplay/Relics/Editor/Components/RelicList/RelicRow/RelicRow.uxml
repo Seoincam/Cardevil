@@ -5,10 +5,11 @@
     <ui:VisualElement name="RootContainer" class="border" style="flex-grow: 0; flex-direction: row; margin-bottom: 1px; margin-top: 1px; margin-right: 1px; margin-left: 1px; min-height: 80px; flex-shrink: 1; max-height: 80px;">
         <ui:VisualElement name="SimpleInfoContainer" style="flex-grow: 0; justify-content: center; width: 70px; padding-left: 0; padding-right: 7.5px; align-items: center; min-width: 55px; max-width: 55px;">
             <ui:Image source="project://database/Assets/Resources/Arts/GNB/Ex_GNB_Relic.png?fileID=21300000&amp;guid=1ff82655e2e561741a10d7a33b4b151b&amp;type=3#Ex_GNB_Relic" name="Icon" style="width: 45px; height: 70px; flex-shrink: 1; align-self: center; flex-grow: 0;"/>
+            <ui:Label text="Default" name="Rarity" class="description-font" style="-unity-font-style: normal;"/>
         </ui:VisualElement>
         <ui:VisualElement name="TextInfoContainer" style="flex-grow: 1; justify-content: center; overflow: hidden; visibility: visible; display: flex; opacity: 1;">
             <ui:Label text="유물 이름" name="Title" class="title-font" style="font-size: 17px; text-overflow: ellipsis; overflow: hidden; color: rgb(255, 255, 255);"/>
-            <ui:Label text="유물에 대한 설명입니다. 이곳에 이런저런 설명을 " name="Description" style="-unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&amp;guid=4eceb5da313ff4718be4edd1c928520a&amp;type=3#The Jamsil OTF 2 Light&quot;); font-size: 14px; text-overflow: ellipsis; overflow: hidden; color: rgb(204, 204, 204); white-space: normal; max-height: 45px;"/>
+            <ui:Label text="유물에 대한 설명입니다. 이곳에 이런저런 설명을 추가합니다. 필요한 정보를 입력합니다." name="Description" style="-unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&amp;guid=4eceb5da313ff4718be4edd1c928520a&amp;type=3#The Jamsil OTF 2 Light&quot;); font-size: 14px; text-overflow: ellipsis; overflow: hidden; color: rgb(204, 204, 204); white-space: normal; max-height: 45px;"/>
         </ui:VisualElement>
         <ui:Instance template="ManagementContainer" name="ManagementContainer" style="justify-content: center; flex-grow: 1; margin-right: 7.5px; margin-left: 0; align-items: flex-end;"/>
     </ui:VisualElement>

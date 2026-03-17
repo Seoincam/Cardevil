@@ -10,6 +10,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
     [Serializable]
     public class RandomBonusEffect : ScoreEffectBase
     {
+        [Header("Random Bonus")]
         [SerializeField, Range(0f, 1f)] private float probability;
 
         public RandomBonusEffect() { }

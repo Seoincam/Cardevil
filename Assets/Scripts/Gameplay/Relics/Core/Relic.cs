@@ -4,10 +4,21 @@ using UnityEngine;
 
 namespace Cardevil.Gameplay.Relics.Core
 {
+    public enum RelicRarity
+    {
+        Default,
+        MiddleBoss,
+        FinalBoss
+    }
+    
     [Serializable]
     public class Relic
     {
+        [Header("Database")]
         [SerializeField] private string id;
+
+        [Header("Setting")] 
+        [SerializeField] private RelicRarity rarity;
         
         [Header("Display")]
         [SerializeField] private Sprite displayIcon;
@@ -24,27 +35,10 @@ namespace Cardevil.Gameplay.Relics.Core
         }
         
         public string Id => id;
+        public RelicRarity Rarity => rarity;
         public Sprite DisplayIcon => displayIcon;
         public string DisplayName => displayName;
         public string DisplayDescription => displayDescription;
         public IReadOnlyList<EffectBase> Effects => effects; 
-    }
-
-    /// <summary>
-    /// 플레이어의 스탯을 변화시키는 객체가 구현해야함.
-    /// </summary>
-    public interface IStatModifier
-    {
-        int ModifierId { get; set; }
-        PlayerStatType TargetType { get; }
-        int Modify(int previousValue);
-    }
-
-    /// <summary>
-    /// 특정 이벤트에 반응하는 객체가 구현해야함.
-    /// </summary>
-    public interface IGameEventListener
-    {
-        
     }
 }

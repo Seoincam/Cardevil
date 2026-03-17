@@ -49,13 +49,17 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _listView.bindItem = (element, index) =>
             {
                 var row = element as RelicRow;
-                var relicData = (_listView.itemsSource as List<RelicSO>)![index].Data;
+                var relic = (_listView.itemsSource as List<RelicSO>)![index];
+                var relicData = relic.Data;
 
                 row!.SetupData(
                     relicData.DisplayIcon,
                     relicData.Id,
+                    relicData.Rarity,
                     relicData.DisplayName,
-                    relicData.DisplayDescription);
+                    relicData.DisplayDescription,
+                    relic.isLocal
+                );
 
                 row.DeleteClicked = id => DeleteClicked?.Invoke(id);
             };

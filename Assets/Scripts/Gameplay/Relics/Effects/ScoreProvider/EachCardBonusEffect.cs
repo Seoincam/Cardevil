@@ -9,6 +9,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
     [Serializable]
     public class EachCardBonusEffect : ScoreEffectBase
     {
+        [Header("Each Card Bonus")]
         [SerializeField] private int targetNumber;
 
         public EachCardBonusEffect() { }

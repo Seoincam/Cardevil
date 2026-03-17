@@ -10,14 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 871ed7db8aaf4fb08111deb0e36a1c17, type: 3}
-  m_Name: Relic 6
+  m_Name: Relic 10
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
-    id: test_id
+    id: local-test-02
+    rarity: 0
     displayIcon: {fileID: 0}
-    displayName: "\uC720\uC6B0\uBB3C"
-    displayDescription: "\uC124\uBA85\uC740 \uC5C6\uC2B5\uB2C8\uB2E4."
+    displayName: "\uC0C8\uB85C\uC6B4 \uC720\uBB3C"
+    displayDescription: "\uD14C\uC2A4\uD2B8\uC6A9 \uB85C\uCEEC \uC720\uBB3C\uC785\uB2C8\uB2E4."
     effects: []
+  isLocal: 1
   references:
     version: 2
     RefIds: []

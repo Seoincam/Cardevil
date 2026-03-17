@@ -38,26 +38,22 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
                 _addEffectBtn.clicked += ShowAddEffectMenu;
         }
 
-        public void BindRelic(SerializedObject serializedRelic)
+        public void BindRelic(RelicSO relic)
         {
+            var serializedRelic = new SerializedObject(relic);
             _currentRelic = serializedRelic;
-            // _effectsProp = serializedRelic.FindProperty("data.effects");
             
-            // 1. 먼저 부모인 'data'를 찾습니다.
             SerializedProperty dataProp = serializedRelic.FindProperty("data");
-
             if (dataProp == null)
             {
-                Debug.LogError("🚨 부모인 'data' 프로퍼티를 찾을 수 없습니다! (RelicSO 직렬화 문제)");
+                LogEx.LogError("부모인 data 프로퍼티를 찾을 수 없습니다");
                 return;
             }
 
-            // 2. 부모를 기준으로 자식인 'effects'를 찾습니다.
             _effectsProp = dataProp.FindPropertyRelative("effects");
-
             if (_effectsProp == null)
             {
-                Debug.LogError("🚨 자식인 'effects' 프로퍼티를 찾을 수 없습니다! (리스트 초기화 누락 의심)");
+                LogEx.LogError("자식인 effects 프로퍼티를 찾을 수 없습니다");
                 return;
             }
             

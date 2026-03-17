@@ -11,6 +11,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
     [Serializable]
     public class HandRankNextBonusEffect : ScoreEffectBase
     {
+        [Header("HandRank Next Bonus")]
         [SerializeField] private HandRank targetHandRank;
         
         private bool needToExecute;

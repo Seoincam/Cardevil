@@ -1,4 +1,5 @@
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Relics.Core;
 using System;
 using UnityEditor;
 using UnityEngine;
@@ -18,12 +19,14 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         
         // Simple Info
         private readonly Image _iconImage;
+        private readonly Label _rarityLabel;
         
         // Text Info
         private readonly Label _titleLabel;
         private readonly Label _descLabel;
         
         // Management
+        private readonly VisualElement _managementContainer;
         private readonly Button _deleteBtn;
         
         public RelicRow()
@@ -40,10 +43,12 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             visualTree.CloneTree(this);
 
             _iconImage = this.Q<Image>("Icon");
+            _rarityLabel = this.Q<Label>("Rarity");
             
             _titleLabel = this.Q<Label>("Title");
             _descLabel = this.Q<Label>("Description");
             
+            _managementContainer = this.Q("ManagementContainer");
             _deleteBtn = this.Q<Button>("DeleteButton");
 
             if (_deleteBtn != null)
@@ -52,13 +57,14 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             }
         }
 
-        public void SetupData(Sprite icon, string id, string title, string description)
+        public void SetupData(Sprite icon, string id, RelicRarity rarity, string title, string description, bool isLocal)
         {
             _currentRelicId = id;
 
             if (icon)
             {
-                _iconImage.sprite = icon;   
+                _iconImage.sprite = icon;
+                _iconImage.tintColor = Color.white;
             }
             else
             {
@@ -66,8 +72,24 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
                 _iconImage.tintColor = new Color(1, 1, 1, 0.5f);
             }
 
+            Color rarityColor = rarity switch
+            {
+                RelicRarity.Default => Color.softYellow,
+                RelicRarity.MiddleBoss => Color.lightCoral,
+                RelicRarity.FinalBoss => Color.lightBlue
+            };
+            var rarityString = rarity switch
+            {
+                RelicRarity.Default => "Default",
+                RelicRarity.MiddleBoss => "MidBoss",
+                RelicRarity.FinalBoss => "FinBoss"
+            };
+            _rarityLabel.text = $"<color=#{ColorUtility.ToHtmlStringRGB(rarityColor)}>{rarityString}</color>";
+            
             _titleLabel.text = $"{title} {GetIdRichText(id)}";
             _descLabel.text = description;
+            
+            _managementContainer.style.display = isLocal ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         private string GetIdRichText(string id)

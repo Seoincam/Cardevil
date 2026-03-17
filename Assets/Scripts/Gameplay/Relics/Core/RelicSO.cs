@@ -13,10 +13,16 @@ namespace Cardevil.Gameplay.Relics.Core
         public Relic Data => data;
         
 #if UNITY_EDITOR
-        public void Initialize(string id, string displayName)
+        public void Initialize(string id, string displayName, bool isLocal)
         {
             data = new Relic(id, displayName);
+            this.isLocal = isLocal;
         }
+
+        /// <summary>
+        /// 구글 시트로부터 생성된 것이 아닌, 로컬 테스트용 유물.
+        /// </summary>
+        public bool isLocal;
 #endif
     }
 }

@@ -78,6 +78,8 @@ namespace Cardevil.Gameplay.Relics.Editor
             _mainToolbar.AddRelicClicked += OnAdd;
             _mainToolbar.AlignChanged += OnAlignModeChanged;
             _mainToolbar.KeywordChanged += OnKeywordChanged;
+            
+            OnCloseDetail();
         }
 
         public void DestroyGUI()
@@ -106,7 +108,7 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             // 생성
             RelicSO newRelic = CreateInstance<RelicSO>();
-            newRelic.Initialize("test_id", "새로운 유물");
+            newRelic.Initialize("test_id", "새로운 유물", true);
 
             if (!AssetDatabase.IsValidFolder(RelicFolderPath))
             {
@@ -138,7 +140,7 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             // UI 갱신
             RefreshDisplayList();
-            _detailView.BindRelic(new SerializedObject(newRelic));
+            _detailView.BindRelic(newRelic);
         }
 
         private void OnSelectionChanged(RelicSO selectedRelic)
@@ -146,7 +148,7 @@ namespace Cardevil.Gameplay.Relics.Editor
             _selectedRelic = selectedRelic;
 
             ShowDetailPane(true);
-            _detailView.BindRelic(new SerializedObject(selectedRelic));
+            _detailView.BindRelic(selectedRelic);
         }
 
         private void OnDelete(string relicId)
@@ -217,7 +219,7 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             _detailView.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
 
-            _rightPane.style.flexGrow = isVisible ? 3.5f : 0f;
+            _rightPane.style.flexGrow = isVisible ? 3.5f : 2f;
 
             _rightPane.style.paddingTop = isVisible ? 10f : 0f;
             _rightPane.style.paddingBottom = isVisible ? 10f : 0f;

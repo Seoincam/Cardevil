@@ -1,4 +1,5 @@
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Relics.Core;
 using System;
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -37,10 +38,10 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
                 _closeButton.clicked += () => CloseClicked?.Invoke();
         }
         
-        public void BindRelic(SerializedObject serializedRelic)
+        public void BindRelic(RelicSO relic)
         {
-            _relicInformationBox.BindRelic(serializedRelic);
-            _effectList.BindRelic(serializedRelic);
+            _relicInformationBox.BindRelic(relic);
+            _effectList.BindRelic(relic);
         }
     }
 }

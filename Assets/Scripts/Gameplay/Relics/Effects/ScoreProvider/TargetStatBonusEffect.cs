@@ -1,12 +1,15 @@
 using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Gameplay.Relics.Core;
+using System;
 using UnityEngine;
 
 namespace Cardevil.Gameplay.Relics.Effects.ScoreProvider
 {
+    [Serializable]
     public class TargetStatBonusEffect : ScoreEffectBase
     {
+        [Header("Target Stat Bonus")]
         [SerializeField] private PlayerStatType targetStatType;
         [SerializeField] private int targetValue;
 

@@ -1,4 +1,5 @@
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Relics.Core;
 using System;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -19,6 +20,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         
         // 입력 필드
         private readonly TextField _idField;
+        private readonly EnumField _rarityField;
         private readonly ObjectField _iconField;
         private readonly TextField _nameField;
         private readonly TextField _descField;
@@ -41,6 +43,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _descPreview = this.Q<Label>("DescriptionPreview");
             
             _idField = this.Q<TextField>("IdField");
+            _rarityField = this.Q<EnumField>("RarityField");
             _iconField = this.Q<ObjectField>("IconField");
             _nameField = this.Q<TextField>("NameField");
             _descField = this.Q<TextField>("DescriptionField");
@@ -50,14 +53,21 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _descField.RegisterValueChangedCallback(evt => _descPreview.text = evt.newValue);
             
             _idField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
+            _rarityField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
             _iconField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
             _nameField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
             _descField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
         }
 
-        public void BindRelic(SerializedObject serializedRelic)
+        public void BindRelic(RelicSO relic)
         {
+            var serializedRelic = new SerializedObject(relic);
             this.Bind(serializedRelic);
+            
+            _idField.SetEnabled(relic.isLocal);
+            _rarityField.SetEnabled(relic.isLocal);
+            _nameField.SetEnabled(relic.isLocal);
+            _descField.SetEnabled(relic.isLocal);
         }
     }
 }

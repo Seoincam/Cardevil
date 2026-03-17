@@ -193,3 +193,7 @@ VisualElement {
 .background-color {
     transition-duration: 0.2s;
 }
+
+.readonly-field {
+    background-color: rgb(31, 31, 31);
+}

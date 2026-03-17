@@ -1,10 +1,13 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
     <ui:VisualElement name="RootContainer" class="outest-border" style="flex-grow: 1; justify-content: flex-start; align-items: center; flex-direction: row;">
-        <ui:Button text="유물 추가하기" name="AddRelic" icon-image="project://database/Packages/com.unity.render-pipelines.core/Editor/LookDev/Icons/d_Add@2x.png?fileID=2800000&amp;guid=daa49a1f06460a04b9827dd6f0bace08&amp;type=3#d_Add@2x" class="button description-font" style="width: 150px; height: 35px; margin-right: 45px;"/>
         <ui:Label text="정렬" class="description-font" style="font-size: 15px;"/>
         <ui:EnumField label="" value="Default" type="Cardevil.Gameplay.Relics.Editor.RelicEditorWindow+AlignMode, Assembly-CSharp-Editor" name="AlignDropDown" class="description-font" style="height: 35px; margin-top: 7px; width: 90px; -unity-text-align: upper-left; justify-content: flex-start; align-content: center; -unity-font-style: bold; margin-right: 45px; border-top-left-radius: 11px; border-top-right-radius: 11px; border-bottom-right-radius: 11px; border-bottom-left-radius: 11px;"/>
         <ui:Label text="검색" enable-rich-text="true" class="description-font" style="font-size: 15px;"/>
-        <ui:TextField label="" placeholder-text="찾으려는 이름, Id" name="SearchField" hide-placeholder-on-focus="true" class="description-font" style="min-width: 350px; max-width: 350px; height: 35px; margin-top: 7px; margin-left: 6px; margin-right: 30px;"/>
+        <ui:TextField label="" placeholder-text="찾으려는 이름, Id" name="SearchField" hide-placeholder-on-focus="true" class="description-font" style="min-width: 300px; max-width: 300px; height: 35px; margin-top: 7px; margin-left: 6px; margin-right: 30px;"/>
+        <ui:VisualElement name="ButtonContainers" style="flex-grow: 1; flex-direction: row; justify-content: flex-end; align-content: flex-end;">
+            <ui:Button text="구글 시트 연동하기" name="SyncSheet" class="button description-font" style="width: 220px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; -unity-text-align: middle-center;"/>
+            <ui:Button text="로컬 테스트 유물 추가" name="AddRelic" icon-image="" class="button description-font" style="width: 215px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
