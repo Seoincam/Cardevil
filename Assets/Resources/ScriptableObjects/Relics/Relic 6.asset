@@ -13,19 +13,10 @@ MonoBehaviour:
   m_Name: Relic 6
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
-    id: test_id_04
-    displayIcon: {fileID: 21300000, guid: aaac6919177364d4a9866326969c8e3b, type: 3}
-    displayName: "\uD14C\uC2A4\uD2B8 \uC720\uBB3C"
-    displayDescription: "\uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
-      \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8
-      \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4. \uC774\uB9CC\uD07C \uC124\uBA85\uC774
-      \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
-      \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8
-      \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4. \uC774\uB9CC\uD07C \uC124\uBA85\uC774
-      \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
-      \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8
-      \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4. \uC774\uB9CC\uD07C \uC124\uBA85\uC774
-      \uB4E4\uC5B4\uAC11\uB2C8\uB2E4."
+    id: test_id
+    displayIcon: {fileID: 0}
+    displayName: "\uC720\uC6B0\uBB3C"
+    displayDescription: "\uC124\uBA85\uC740 \uC5C6\uC2B5\uB2C8\uB2E4."
     effects: []
   references:
     version: 2

@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: Relic 5
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
-    id: test_id
+    id: handrank_02
     displayIcon: {fileID: 0}
-    displayName: "\uC0C8\uB85C\uC6B4 \uC720\uBB3C"
-    displayDescription: "\uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
-      \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8
-      \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4."
+    displayName: "\uB274 \uC720\uBB3C"
+    displayDescription: "\uC124\uBA85\uC785\uB2C8\uB2E4."
     effects: []
   references:
     version: 2

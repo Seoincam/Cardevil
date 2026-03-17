@@ -49,7 +49,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _listView.bindItem = (element, index) =>
             {
                 var row = element as RelicRow;
-                var relicData = relics[index].Data;
+                var relicData = (_listView.itemsSource as List<RelicSO>)![index].Data;
 
                 row!.SetupData(
                     relicData.DisplayIcon,
@@ -68,15 +68,38 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _listView.selectionChanged += OnSelectionChanged;
         }
 
+        public void UpdateSource(List<RelicSO> newSource)
+        {
+            _listView.itemsSource = newSource;
+            Refresh();
+        }
+
         public void Refresh()
         {
             _listView.RefreshItems();
         }
 
+        public void SelectItemByObject(RelicSO target)
+        {
+            if (!target || _listView.itemsSource == null) return;
+
+            var source = _listView.itemsSource as List<RelicSO>;
+            int newIndex = source!.IndexOf(target);
+
+            if (newIndex >= 0)
+            {
+                _listView.SetSelectionWithoutNotify(new[] { newIndex });
+                _listView.ScrollToItem(newIndex);
+            }
+            else
+            {
+                _listView.ClearSelection();
+            }
+        }
+
         public void RefreshSelectedRow()
         {
             int currentIndex = _listView.selectedIndex;
-            LogEx.Log($"Selected Row: {currentIndex}");
 
             if (currentIndex >= 0)
             {

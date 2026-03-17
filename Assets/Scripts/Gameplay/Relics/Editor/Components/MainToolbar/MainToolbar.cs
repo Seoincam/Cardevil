@@ -9,8 +9,12 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
     public partial class MainToolbar : VisualElement
     {
         public event Action AddRelicClicked;
+        public event Action<RelicEditorWindow.AlignMode> AlignChanged;
+        public event Action<string> KeywordChanged;
         
         private readonly Button _addRelicButton;
+        private readonly EnumField _alignDropDown;
+        private readonly TextField _searchField;
         
         public MainToolbar()
         {
@@ -26,9 +30,12 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             visualTree.CloneTree(this);
             
             _addRelicButton = this.Q<Button>("AddRelic");
-
-            if (_addRelicButton != null)
-                _addRelicButton.clicked += () => AddRelicClicked?.Invoke();
+            _alignDropDown = this.Q<EnumField>("AlignDropDown");
+            _searchField = this.Q<TextField>("SearchField");
+            
+            _addRelicButton.clicked += () => AddRelicClicked?.Invoke();
+            _alignDropDown.RegisterValueChangedCallback(evt => AlignChanged?.Invoke((RelicEditorWindow.AlignMode)evt.newValue));
+            _searchField.RegisterValueChangedCallback(evt => KeywordChanged?.Invoke(evt.newValue.ToString()));
         }
     }
 }

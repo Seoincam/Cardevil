@@ -1,5 +1,4 @@
 using Cardevil.Core.Utils;
-using Cardevil.Gameplay.Relics.Core;
 using System;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -59,7 +58,6 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         public void BindRelic(SerializedObject serializedRelic)
         {
             this.Bind(serializedRelic);
-            LogEx.Log((serializedRelic.targetObject as RelicSO)!.Data.DisplayName);
         }
     }
 }

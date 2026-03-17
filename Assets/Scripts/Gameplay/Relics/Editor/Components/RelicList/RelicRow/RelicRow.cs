@@ -60,6 +60,11 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             {
                 _iconImage.sprite = icon;   
             }
+            else
+            {
+                _iconImage.image = EditorGUIUtility.IconContent("d_Sprite Icon").image;
+                _iconImage.tintColor = new Color(1, 1, 1, 0.5f);
+            }
 
             _titleLabel.text = $"{title} {GetIdRichText(id)}";
             _descLabel.text = description;
