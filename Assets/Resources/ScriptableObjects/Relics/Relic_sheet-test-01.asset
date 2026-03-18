@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871ed7db8aaf4fb08111deb0e36a1c17, type: 3}
+  m_Name: Relic_sheet-test-01
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
+  data:
+    id: sheet-test-01
+    commentForEditor: "\uC2DC\uD2B8 \uC5F0\uB3D9\uC774 \uC798 \uB418\uB098 \uD14C\uC2A4\uD2B8\uD558\uAE30
+      \uC704\uD55C \uD14C\uC2A4\uD2B8 \uC720\uBB3C\uC785\uB2C8\uB2E4."
+    rarity: 1
+    displayIcon: {fileID: 21300000, guid: c3378dc5822b6d942b0c4b911051d3d1, type: 3}
+    displayName: "\uC2DC\uD2B8 \uC5F0\uB3D9 \uD14C\uC2A4\uD2B8 \uC720\uBB3C"
+    displayDescription: "\uC774\uB7F0 \uC720\uBB3C\uC740 \uC874\uC7AC\uD558\uC9C0
+      \uC54A\uC2B5\uB2C8\uB2E4. \uCF54\uBA58\uD2B8\uB97C \uCC38\uACE0\uD558\uC138\uC694."
+    effects:
+    - rid: 5725363067464450498
+    - rid: 5725363067464450499
+    - rid: 5725363067464450500
+  dataSource: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 5725363067464450498
+      type: {class: ModifyStatEffect, ns: Cardevil.Gameplay.Relics.Effects, asm: Assembly-CSharp}
+      data:
+        targetStatType: 0
+        value: 0
+    - rid: 5725363067464450499
+      type: {class: RandomBonusEffect, ns: Cardevil.Gameplay.Relics.Effects.ScoreProvider, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 0
+        scoreOperatorType: 0
+        value: 0
+        probability: 0
+    - rid: 5725363067464450500
+      type: {class: HandRankNextBonusEffect, ns: Cardevil.Gameplay.Relics.Effects.ScoreProvider, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 0
+        scoreOperatorType: 0
+        value: 0
+        targetHandRank: 0

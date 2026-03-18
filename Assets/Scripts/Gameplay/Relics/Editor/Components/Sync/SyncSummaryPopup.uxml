@@ -1,0 +1,24 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
+    <ui:VisualElement name="BackgroundContainer" style="flex-grow: 1; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.75); align-items: center; justify-content: center; align-self: center; align-content: center;">
+        <ui:VisualElement name="SummaryContainer" class="out-border" style="flex-grow: 0; width: 450px; padding-top: 20px; padding-right: 20px; padding-bottom: 20px; padding-left: 20px; background-color: rgb(26, 26, 26); height: 375px; flex-shrink: 0;">
+            <ui:Image source="project://database/Assets/Sprites/check%20mark.png?fileID=21300000&amp;guid=a3cbf3136abbb44d78980f2d2b68fb38&amp;type=3#check mark" name="CheckMark" style="flex-shrink: 0; width: 100px; height: 100px; align-self: center; margin-top: -18px; margin-right: -18px; margin-bottom: -18px; margin-left: -18px;"/>
+            <ui:Label text="구글 시트로부터 동기화 완료!" name="Title" enable-rich-text="true" class="title-font" style="-unity-text-align: upper-center; font-size: 18px;"/>
+            <ui:VisualElement name="DetailContainer" class="border" style="flex-grow: 1; margin-top: 20px; margin-right: 35px; margin-bottom: 6px; margin-left: 35px;">
+                <ui:VisualElement name="RowContainer" style="flex-grow: 1; justify-content: center;">
+                    <ui:Label text="신규 생성: 0건" name="CreatedCount" class="description-font" style="-unity-text-align: middle-center; color: rgb(136, 214, 62); font-size: 15px; -unity-font-style: bold;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="RowContainer" style="flex-grow: 1; justify-content: center;">
+                    <ui:Label text="신규 생성: 0건" name="UpdatedCount" class="description-font" style="-unity-text-align: middle-center; font-size: 15px; -unity-font-style: bold;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="RowContainer" style="flex-grow: 1; justify-content: center;">
+                    <ui:Label text="신규 생성: 0건" name="MissingCount" class="description-font" style="-unity-text-align: middle-center; color: rgb(243, 77, 77); font-size: 15px; -unity-font-style: bold;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="RowContainer" style="flex-grow: 1; justify-content: center;">
+                    <ui:Label text="신규 생성: 0건" name="RestoredCount" class="description-font" style="-unity-text-align: middle-center; font-size: 15px; -unity-font-style: bold;"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button text="확인" name="Confirm" class="button" style="align-self: center; margin-top: 9px; margin-bottom: 0; font-size: 15px; width: 95px; -unity-font-style: normal; height: 40px;"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

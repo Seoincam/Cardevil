@@ -9,20 +9,42 @@ namespace Cardevil.Gameplay.Relics.Core
     public class RelicSO : ScriptableObject
     {
         [SerializeField] private Relic data;
-
+        
         public Relic Data => data;
+
         
 #if UNITY_EDITOR
-        public void Initialize(string id, string displayName, bool isLocal)
+        [SerializeField] private DataSource dataSource;
+
+        public DataSource Source => dataSource;
+
+        public bool FromLocal => dataSource == DataSource.Local;
+        public bool FromSheet => dataSource == DataSource.Sheet;
+        public bool FromMissing => dataSource == DataSource.Missing;
+        
+        public enum DataSource
         {
-            data = new Relic(id, displayName);
-            this.isLocal = isLocal;
+            Local,
+            Sheet,
+            Missing
+        }
+        
+        public void InitializeFromSheet(
+            string id,
+            RelicRarity rarity,
+            string displayName, 
+            string displayDescription,
+            string commentForEditor)
+        {
+            data = new Relic(id, rarity, displayName, displayDescription, commentForEditor);
+            dataSource = DataSource.Sheet;
         }
 
-        /// <summary>
-        /// 구글 시트로부터 생성된 것이 아닌, 로컬 테스트용 유물.
-        /// </summary>
-        public bool isLocal;
+        public void InitializeFromLocal(string id, string displayName)
+        {
+            data = new Relic(id, displayName);
+            dataSource = DataSource.Local;
+        }
 #endif
     }
 }

@@ -17,6 +17,11 @@ namespace Cardevil.Gameplay.Relics.Core
         [Header("Database")]
         [SerializeField] private string id;
 
+#if UNITY_EDITOR
+        [SerializeField] private string commentForEditor;
+        public string CommentForEditor => commentForEditor;
+#endif
+
         [Header("Setting")] 
         [SerializeField] private RelicRarity rarity;
         
@@ -33,12 +38,28 @@ namespace Cardevil.Gameplay.Relics.Core
             this.id = id;
             this.displayName = displayName;
         }
+
+#if UNITY_EDITOR
+        public Relic(
+            string id, 
+            RelicRarity rarity, 
+            string displayName, 
+            string displayDescription,
+            string commentForEditor)
+        {
+            this.id = id;
+            this.rarity = rarity;
+            this.displayName = displayName;
+            this.displayDescription = displayDescription;
+            this.commentForEditor = commentForEditor;
+        }
+#endif
         
         public string Id => id;
         public RelicRarity Rarity => rarity;
         public Sprite DisplayIcon => displayIcon;
         public string DisplayName => displayName;
         public string DisplayDescription => displayDescription;
-        public IReadOnlyList<EffectBase> Effects => effects; 
+        public IReadOnlyList<EffectBase> Effects => effects;
     }
 }

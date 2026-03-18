@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
     id: id_test
+    commentForEditor: 
+    rarity: 0
     displayIcon: {fileID: 21300000, guid: f44cda5a24f3df1478d6de6ba8ca9614, type: 3}
     displayName: "\uD14C\uC2A4\uD2B8 \uC720\uBB3C"
     displayDescription: "\uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
@@ -29,6 +31,7 @@ MonoBehaviour:
     effects:
     - rid: 5725363027632718770
     - rid: 5725363027632718809
+  dataSource: 2
   references:
     version: 2
     RefIds:

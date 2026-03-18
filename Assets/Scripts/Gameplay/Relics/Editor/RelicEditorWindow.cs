@@ -1,6 +1,8 @@
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Relics.Core;
 using Cardevil.Gameplay.Relics.Editor.Components;
+using Cardevil.Gameplay.Relics.Editor.Components.Sync;
+using Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,29 +14,32 @@ namespace Cardevil.Gameplay.Relics.Editor
 {
     public class RelicEditorWindow : EditorWindow
     {
-        // Data
+        private DBInitializerSO _sheetDatabaseInitializer;
         private RelicDatabase _database;
+        private RelicSyncService _syncService;
+        
         private RelicSO _selectedRelic;
 
         // Filtering
         private List<RelicSO> _displayRelics = new();
         private AlignMode _currentAlign = AlignMode.Default;
         private string _currentSearchKeyword;
-
+        private (bool showSheet, bool showLocal, bool showMissing) _sourceFilters = new(true, true, true);
+        
         // UI View
         private MainToolbar _mainToolbar;
         private RelicList _relicList;
         private DetailView _detailView;
         private VisualElement _rightPane;
 
-        private const string RelicFolderPath = "Assets/Resources/ScriptableObjects/Relics";
+        private const string RelicSavePath = "Assets/Resources/ScriptableObjects/Relics";
 
         [MenuItem("Cardevil/Relic Editor")]
         private static void ShowWindow()
         {
             RelicEditorWindow wnd = GetWindow<RelicEditorWindow>();
             wnd.titleContent = new GUIContent("유물 편집기");
-            wnd.minSize = new Vector2(1300, 920);
+            wnd.minSize = new Vector2(1600, 920);
         }
 
         public enum AlignMode
@@ -46,9 +51,10 @@ namespace Cardevil.Gameplay.Relics.Editor
 
         public void CreateGUI()
         {
-            // Data
             _database = LoadRelicDatabase();
             if (!_database) return;
+
+            _syncService = new RelicSyncService(_database);
 
             // UI
             const string uxmlPath = "Assets/Scripts/Gameplay/Relics/Editor/RelicEditorWindow.uxml";
@@ -74,10 +80,18 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             _detailView.DataChanged += _relicList.RefreshSelectedRow;
             _detailView.CloseClicked += OnCloseDetail;
-
+            _detailView.DeleteClicked += OnDelete;
+            
             _mainToolbar.AddRelicClicked += OnAdd;
+            _mainToolbar.DownloadClicked += OnDownload;
+            _mainToolbar.SyncClicked += OnSync;
             _mainToolbar.AlignChanged += OnAlignModeChanged;
             _mainToolbar.KeywordChanged += OnKeywordChanged;
+            _mainToolbar.DataSourceChanged += (showSheet, showLocal, showMissing) =>
+            {
+                _sourceFilters = (showSheet, showLocal, showMissing);
+                RefreshDisplayList();
+            };
             
             OnCloseDetail();
         }
@@ -102,21 +116,52 @@ namespace Cardevil.Gameplay.Relics.Editor
             return AssetDatabase.LoadAssetAtPath<RelicDatabase>(path);
         }
 
+        private void OnDownload()
+        {
+            if (!_sheetDatabaseInitializer)
+            {
+                string[] guids = AssetDatabase.FindAssets("t:DBInitializerSO");
+
+                if (guids == null || guids.Length == 0)
+                {
+                    LogEx.LogError("DBInitializerSO를 찾지 못함.");
+                    return;
+                }
+
+                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                _sheetDatabaseInitializer = AssetDatabase.LoadAssetAtPath<DBInitializerSO>(path);
+            }
+            
+            _sheetDatabaseInitializer.DownloadGoogleSheet();
+        }
+        
+        private void OnSync()
+        {
+            var result = _syncService.ExecuteSync();
+            var popup = new SyncSummaryPopup(result);
+            rootVisualElement.Add(popup);
+
+            if (result.HasAnyChange)
+            {
+                RefreshDisplayList();
+            }
+        }
+
         private void OnAdd()
         {
             if (!_database) return;
 
             // 생성
             RelicSO newRelic = CreateInstance<RelicSO>();
-            newRelic.Initialize("test_id", "새로운 유물", true);
+            newRelic.InitializeFromLocal(GenerateLocalId(_database), "새 로컬 유물");
 
-            if (!AssetDatabase.IsValidFolder(RelicFolderPath))
+            if (!AssetDatabase.IsValidFolder(RelicSavePath))
             {
-                LogEx.LogError($"유물 폴더가 존재하지 않습니다. 폴더를 만들어주세요. path: {RelicFolderPath}");
+                LogEx.LogError($"유물 폴더가 존재하지 않습니다. 폴더를 만들어주세요. path: {RelicSavePath}");
                 return;
             }
 
-            string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{RelicFolderPath}/Relic.asset");
+            string assetPath = AssetDatabase.GenerateUniqueAssetPath($"{RelicSavePath}/Relic.asset");
             AssetDatabase.CreateAsset(newRelic, assetPath);
 
             SerializedObject serializedDb = new(_database);
@@ -140,7 +185,9 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             // UI 갱신
             RefreshDisplayList();
+            _relicList.SelectItemByObject(newRelic);
             _detailView.BindRelic(newRelic);
+            ShowDetailPane(true);
         }
 
         private void OnSelectionChanged(RelicSO selectedRelic)
@@ -191,6 +238,7 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             if (_selectedRelic)
             {
+                _relicList.SelectItemByObject(_selectedRelic);
                 OnSelectionChanged(_selectedRelic);
             }
         }
@@ -219,7 +267,7 @@ namespace Cardevil.Gameplay.Relics.Editor
 
             _detailView.style.display = isVisible ? DisplayStyle.Flex : DisplayStyle.None;
 
-            _rightPane.style.flexGrow = isVisible ? 3.5f : 2f;
+            _rightPane.style.flexGrow = isVisible ? 5f : 2.75f;
 
             _rightPane.style.paddingTop = isVisible ? 10f : 0f;
             _rightPane.style.paddingBottom = isVisible ? 10f : 0f;
@@ -231,9 +279,16 @@ namespace Cardevil.Gameplay.Relics.Editor
         {
             if (!_database || _database.relics == null) return;
 
-            // 검색 필터링
+            var (showSheet, showLocal, showMissing) = _sourceFilters;
             var filtered = _database.relics.Where(r =>
-                r &&
+                r && 
+    
+                // Source 
+                ((showSheet && r.FromSheet) || 
+                 (showLocal && r.FromLocal) || 
+                 (showMissing && r.FromMissing)) &&
+     
+                // 검색
                 (string.IsNullOrEmpty(_currentSearchKeyword) ||
                  r.Data.DisplayName.Contains(_currentSearchKeyword, StringComparison.OrdinalIgnoreCase) ||
                  r.Data.Id.Contains(_currentSearchKeyword, StringComparison.OrdinalIgnoreCase))
@@ -255,6 +310,23 @@ namespace Cardevil.Gameplay.Relics.Editor
             {
                 _relicList.SelectItemByObject(_selectedRelic);
             }
+        }
+
+        private static string GenerateLocalId(RelicDatabase database)
+        {
+            string timeStamp = DateTime.Now.ToString("yyMMdd-HH-mm-ss");
+            string candidateId = $"local-{timeStamp}";
+
+            int safetyIndex = 0;
+            string finalId = candidateId;
+
+            while (database.relics.Any(r => r.Data.Id == finalId))
+            {
+                safetyIndex++;
+                finalId = $"{finalId}-{safetyIndex}";
+            }
+
+            return finalId;
         }
     }
 }

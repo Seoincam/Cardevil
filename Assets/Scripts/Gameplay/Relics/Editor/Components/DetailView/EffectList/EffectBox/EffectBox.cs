@@ -20,6 +20,8 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         // Management
         private readonly Button _deleteButton;
 
+        private static VisualTreeAsset _cachedAsset;
+
         public EffectBox(SerializedProperty effectProp, int index) : this()
         {
             BindEffect(effectProp, index);
@@ -28,15 +30,19 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         public EffectBox()
         {
             const string uxmlPath = "Assets/Scripts/Gameplay/Relics/Editor/Components/DetailView/EffectList/EffectBox/EffectBox.uxml";
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
 
-            if (!visualTree)
+            if (!_cachedAsset)
+            {
+                _cachedAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
+            }
+
+            if (!_cachedAsset)
             {
                 LogEx.LogError($"$UXML 패스를 찾을 수 없음. 경로: {uxmlPath}");
                 return;
             }
             
-            visualTree.CloneTree(this);
+            _cachedAsset.CloneTree(this);
             
             _nameLabel = this.Q<Label>("EffectName");
             _descLabel = this.Q<Label>("Description");

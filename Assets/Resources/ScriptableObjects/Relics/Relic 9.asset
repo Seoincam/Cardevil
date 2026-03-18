@@ -14,15 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
     id: local-test-01
+    commentForEditor: 
     rarity: 1
-    displayIcon: {fileID: 21300000, guid: 211c01ef9ad3b457089097453e6913b2, type: 3}
+    displayIcon: {fileID: 21300000, guid: 1ff82655e2e561741a10d7a33b4b151b, type: 3}
     displayName: "\uC0C8\uB85C\uC6B4 \uC720\uBB3C"
     displayDescription: "\uD14C\uC2A4\uD2B8\uC6A9 \uB85C\uCEEC \uC720\uBB3C\uC785\uB2C8\uB2E4.
       \uD14C\uC2A4\uD2B8\uC6A9 \uB85C\uCEEC \uC720\uBB3C\uC785\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8\uC6A9
       \uB85C\uCEEC \uC720\uBB3C\uC785\uB2C8\uB2E4. \uD14C\uC2A4\uD2B8\uC6A9 \uB85C\uCEEC
       \uC720\uBB3C\uC785\uB2C8\uB2E4."
     effects: []
-  isLocal: 1
+  dataSource: 2
   references:
     version: 2
     RefIds: []

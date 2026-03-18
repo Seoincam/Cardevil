@@ -2,9 +2,7 @@
   {
     "stringVar": "1.1",
     "integerVar": 1,
-    "fullEnumList": [
-      1001
-    ],
+    "fullEnumList": "1001",
     "shortEnumList": 1,
     "CustomClass": {
       "a": 10,

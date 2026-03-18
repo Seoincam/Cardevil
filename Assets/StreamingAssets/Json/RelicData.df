@@ -31,7 +31,7 @@
       "DefaultRelic",
       "Relic_001",
       "0",
-      "[\r\n  \"EVAL_RED_FLUSH_NEXT_ATTACK\"\r\n]"
+      "[\n  \"EVAL_RED_FLUSH_NEXT_ATTACK\"\n]"
     ],
     [
       "유물1",
@@ -39,7 +39,7 @@
       "FinBoss",
       "Relic_001",
       "1",
-      "[\r\n  \"EVAL_RED_FLUSH_NEXT_ATTACK_ALT\"\r\n]"
+      "[\n  \"EVAL_RED_FLUSH_NEXT_ATTACK_ALT\"\n]"
     ],
     [
       "(기본 green 플러시)",
@@ -79,7 +79,7 @@
       "DefaultRelic",
       "Relic_004",
       "0",
-      "[\r\n  \"EVAL_BLACK_FLUSH_NEXT_ATTACK\"\r\n]"
+      "[\n  \"EVAL_BLACK_FLUSH_NEXT_ATTACK\"\n]"
     ],
     [
       "유물4",
@@ -87,7 +87,7 @@
       "FinBoss",
       "Relic_004",
       "1",
-      "[\r\n  \"EVAL_BLACK_FLUSH_NEXT_ATTACK_ALT\"\r\n]"
+      "[\n  \"EVAL_BLACK_FLUSH_NEXT_ATTACK_ALT\"\n]"
     ],
     [
       "유물5",
@@ -95,7 +95,7 @@
       "MidBoss",
       "Relic_005",
       "1",
-      "[\r\n  \"EVAL_RANK_ONEPAIR_BONUS\",\r\n  \"EVAL_RANK_TWOPAIR_BONUS\"\r\n]"
+      "[\n  \"EVAL_RANK_ONEPAIR_BONUS\",\n  \"EVAL_RANK_TWOPAIR_BONUS\"\n]"
     ],
     [
       "유물6",
@@ -103,7 +103,7 @@
       "MidBoss",
       "Relic_006",
       "1",
-      "[\r\n  \"EVAL_RANK_STRAIGHT_BONUS\",\r\n  \"EVAL_RED_FLUSH_BONUS\",\r\n  \"EVAL_GREEN_FLUSH_BONUS\",\r\n  \"EVAL_BLUE_FLUSH_BONUS\",\r\n  \"EVAL_BLACK_FLUSH_BONUS\",\r\n  \"EVAL_RANK_STRAIGHTFLUSH_BONUS\"\r\n]"
+      "[\n  \"EVAL_RANK_STRAIGHT_BONUS\",\n  \"EVAL_RED_FLUSH_BONUS\",\n  \"EVAL_GREEN_FLUSH_BONUS\",\n  \"EVAL_BLUE_FLUSH_BONUS\",\n  \"EVAL_BLACK_FLUSH_BONUS\",\n  \"EVAL_RANK_STRAIGHTFLUSH_BONUS\"\n]"
     ],
     [
       "유물7",
@@ -111,7 +111,7 @@
       "MidBoss",
       "Relic_007",
       "1",
-      "[\r\n  \"EVAL_RANK_TRIPLE_BONUS\",\r\n  \"EVAL_RANK_FOURCARD_BONUS\"\r\n]"
+      "[\n  \"EVAL_RANK_TRIPLE_BONUS\",\n  \"EVAL_RANK_FOURCARD_BONUS\"\n]"
     ],
     [
       "유물8",
@@ -119,7 +119,7 @@
       "MidBoss",
       "Relic_008",
       "1",
-      "[\r\n  \"EVAL_STATE_PREV_HIGH_NOW_ATTACK\"\r\n]"
+      "[\n  \"EVAL_STATE_PREV_HIGH_NOW_ATTACK\"\n]"
     ],
     [
       "유물9",
@@ -127,7 +127,7 @@
       "MidBoss",
       "Relic_009",
       "1",
-      "[\r\n  \"EVAL_RANDOM_3333\"\r\n]"
+      "[\n  \"EVAL_RANDOM_3333\"\n]"
     ],
     [
       "유물10",
@@ -135,7 +135,7 @@
       "MidBoss",
       "Relic_010",
       "1",
-      "[\r\n  \"EVAL_HP1\"\r\n]"
+      "[\n  \"EVAL_HP1\"\n]"
     ],
     [
       "유물11",
@@ -143,7 +143,7 @@
       "MidBoss",
       "Relic_011",
       "1",
-      "[\r\n  \"EVAL_STAT_BASE_DMG_PLUS\"\r\n]"
+      "[\n  \"EVAL_STAT_BASE_DMG_PLUS\"\n]"
     ],
     [
       "유물12",
@@ -151,7 +151,7 @@
       "MidBoss",
       "Relic_012",
       "1",
-      "[\r\n  \"EVAL_STACK_KILL_BONUS_DMG\"\r\n]"
+      "[\n  \"EVAL_STACK_KILL_BONUS_DMG\"\n]"
     ],
     [
       "유물13",
@@ -159,7 +159,7 @@
       "MidBoss",
       "Relic_013",
       "1",
-      "[\r\n  \"EVAL_RANK_COUNT\"\r\n]"
+      "[\n  \"EVAL_RANK_COUNT\"\n]"
     ],
     [
       "유물14",
@@ -167,7 +167,7 @@
       "MidBoss",
       "Relic_014",
       "1",
-      "[\r\n  \"EVAL_ON_HIGH_CARD\"\r\n]"
+      "[\n  \"EVAL_ON_HIGH_CARD\"\n]"
     ],
     [
       "유물15",
@@ -175,7 +175,7 @@
       "MidBoss",
       "Relic_015",
       "1",
-      "[\r\n  \"EVAL_PREV_RANK\"\r\n]"
+      "[\n  \"EVAL_PREV_RANK\"\n]"
     ],
     [
       "유물16",
@@ -183,7 +183,7 @@
       "MidBoss",
       "Relic_016",
       "1",
-      "[\r\n  \"EVAL_HP3\"\r\n]"
+      "[\n  \"EVAL_HP3\"\n]"
     ],
     [
       "유물17",
@@ -191,7 +191,7 @@
       "MidBoss",
       "Relic_017",
       "1",
-      "[\r\n  \"EVAL_RANDOM_6666\"\r\n]"
+      "[\n  \"EVAL_RANDOM_6666\"\n]"
     ],
     [
       "유물18",
@@ -199,7 +199,7 @@
       "MidBoss",
       "Relic_018",
       "1",
-      "[\r\n  \"EVAL_ON_6_7_8_9_10\"\r\n]"
+      "[\n  \"EVAL_ON_6_7_8_9_10\"\n]"
     ],
     [
       "유물19",
@@ -207,7 +207,7 @@
       "MidBoss",
       "Relic_019",
       "1",
-      "[\r\n  \"EVAL_ON_2_3_4_5\"\r\n]"
+      "[\n  \"EVAL_ON_2_3_4_5\"\n]"
     ]
   ]
 }

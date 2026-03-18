@@ -11,7 +11,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
     public partial class RelicRow : VisualElement
     {
         /// <summary>
-        /// 삭제 버튼이 클릭됐을 때 삭제할 유물의 Id를 인자로 이벤트를 발행.
+        /// 삭제 버튼이 클릭됐을 때 현재 유물의 Id를 인자로 이벤트를 발행.
         /// </summary>
         public Action<string> DeleteClicked;
 
@@ -28,19 +28,26 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         // Management
         private readonly VisualElement _managementContainer;
         private readonly Button _deleteBtn;
-        
+        private readonly VisualElement _missingContainer;
+
+        private static VisualTreeAsset _cachedAsset;
+
         public RelicRow()
         {
             const string uxmlPath = "Assets/Scripts/Gameplay/Relics/Editor/Components/RelicList/RelicRow/RelicRow.uxml";
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
 
-            if (!visualTree)
+            if (!_cachedAsset)
+            {
+                _cachedAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(uxmlPath);
+            }
+
+            if (!_cachedAsset)
             {
                 LogEx.LogError($"UXML 패스를 찾을 수 없음. 경로: {uxmlPath}");
                 return;
             }
 
-            visualTree.CloneTree(this);
+            _cachedAsset.CloneTree(this);
 
             _iconImage = this.Q<Image>("Icon");
             _rarityLabel = this.Q<Label>("Rarity");
@@ -50,6 +57,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             
             _managementContainer = this.Q("ManagementContainer");
             _deleteBtn = this.Q<Button>("DeleteButton");
+            _missingContainer = this.Q("MissingContainer");
 
             if (_deleteBtn != null)
             {
@@ -57,7 +65,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             }
         }
 
-        public void SetupData(Sprite icon, string id, RelicRarity rarity, string title, string description, bool isLocal)
+        public void SetupData(Sprite icon, string id, RelicRarity rarity, string title, string description, RelicSO.DataSource sourceType)
         {
             _currentRelicId = id;
 
@@ -89,7 +97,9 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _titleLabel.text = $"{title} {GetIdRichText(id)}";
             _descLabel.text = description;
             
-            _managementContainer.style.display = isLocal ? DisplayStyle.Flex : DisplayStyle.None;
+            _managementContainer.style.display = sourceType == RelicSO.DataSource.Local ? DisplayStyle.Flex : DisplayStyle.None;
+            _missingContainer.style.display = sourceType == RelicSO.DataSource.Missing ? DisplayStyle.Flex : DisplayStyle.None;
+            _missingContainer.tooltip = "구글 시트에서 데이터가 삭제된 유물입니다.";
         }
 
         private string GetIdRichText(string id)

@@ -114,15 +114,18 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         {
             if (_currentRelic == null || _effectsProp == null) return;
 
-            var targetProp = _effectsProp.GetArrayElementAtIndex(index);
+            if (index < 0 || index >= _effectsProp.arraySize) return;
+            
+            int initialSize = _effectsProp.arraySize;
+            
+            _effectsProp.DeleteArrayElementAtIndex(index);
 
-            // 리스트 요소가 객체인 경우, 삭제 명령은 해당 객체를 null로 만들기만 함.
-            // 따라서, 해당 칸 자체를 날리기 위해선 두 번 호출해야함.
-            if (targetProp.managedReferenceValue != null)
+            if (_effectsProp.arraySize == initialSize && index < _effectsProp.arraySize)
             {
+                // 리스트 요소가 객체인 경우, 삭제 명령은 해당 객체를 null로 만들기만 함.
+                // 따라서, 해당 칸 자체를 날리기 위해선 두 번 호출해야함.
                 _effectsProp.DeleteArrayElementAtIndex(index);
             }
-            _effectsProp.DeleteArrayElementAtIndex(index);
 
             _currentRelic.ApplyModifiedProperties();
             RefreshEffectListUI();

@@ -58,7 +58,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
                     relicData.Rarity,
                     relicData.DisplayName,
                     relicData.DisplayDescription,
-                    relic.isLocal
+                    relic.Source
                 );
 
                 row.DeleteClicked = id => DeleteClicked?.Invoke(id);

@@ -14,10 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
     id: test_id_01
+    commentForEditor: 
+    rarity: 0
     displayIcon: {fileID: 662689527, guid: 75ec82a29f238d84d9e18400cff3d6a1, type: 3}
     displayName: "\uBD84\uB178"
     displayDescription: "\uD654\uAC00 \uBA38\uB9AC\uB05D\uAE4C\uC9C0 \uB0A9\uB2C8\uB2E4."
     effects: []
+  dataSource: 2
   references:
     version: 2
     RefIds: []

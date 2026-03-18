@@ -1,0 +1,9 @@
+[
+  {
+    "Id": "sheet-test-01",
+    "Rarity": 1,
+    "DisplayName": "시트 연동 테스트 유물",
+    "DisplayDescription": "이런 유물은 존재하지 않습니다. 코멘트를 참고하세요.",
+    "CommentForEditor": "시트 연동이 잘 되나 테스트하기 위한 테스트 유물입니다."
+  }
+]

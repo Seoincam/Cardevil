@@ -5,9 +5,15 @@
         <ui:EnumField label="" value="Default" type="Cardevil.Gameplay.Relics.Editor.RelicEditorWindow+AlignMode, Assembly-CSharp-Editor" name="AlignDropDown" class="description-font" style="height: 35px; margin-top: 7px; width: 90px; -unity-text-align: upper-left; justify-content: flex-start; align-content: center; -unity-font-style: bold; margin-right: 45px; border-top-left-radius: 11px; border-top-right-radius: 11px; border-bottom-right-radius: 11px; border-bottom-left-radius: 11px;"/>
         <ui:Label text="검색" enable-rich-text="true" class="description-font" style="font-size: 15px;"/>
         <ui:TextField label="" placeholder-text="찾으려는 이름, Id" name="SearchField" hide-placeholder-on-focus="true" class="description-font" style="min-width: 300px; max-width: 300px; height: 35px; margin-top: 7px; margin-left: 6px; margin-right: 30px;"/>
+        <ui:ToggleButtonGroup label="" is-multiple-selection="true" value="111" allow-empty-selection="true" name="SourceFilter" class="description-font">
+            <ui:Button text="시트" name="Sheet" focusable="false" style="font-size: 14px;"/>
+            <ui:Button text="로컬" name="Local" focusable="false" style="font-size: 14px;"/>
+            <ui:Button text="시트에서 사라진" name="Missing" focusable="false" style="font-size: 14px;"/>
+        </ui:ToggleButtonGroup>
         <ui:VisualElement name="ButtonContainers" style="flex-grow: 1; flex-direction: row; justify-content: flex-end; align-content: flex-end;">
-            <ui:Button text="구글 시트 연동하기" name="SyncSheet" class="button description-font" style="width: 220px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; -unity-text-align: middle-center;"/>
-            <ui:Button text="로컬 테스트 유물 추가" name="AddRelic" icon-image="" class="button description-font" style="width: 215px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"/>
+            <ui:Button text="Google Sheet 다운로드" name="DownloadSheet" class="button description-font" style="width: 180px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; -unity-text-align: middle-center; font-size: 15px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&amp;guid=4eceb5da313ff4718be4edd1c928520a&amp;type=3#The Jamsil OTF 2 Light&quot;);"/>
+            <ui:Button text="다운로드한 Google Sheet 동기화" name="SyncSheet" class="button description-font" style="width: 220px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; -unity-text-align: middle-center; font-size: 15px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&amp;guid=4eceb5da313ff4718be4edd1c928520a&amp;type=3#The Jamsil OTF 2 Light&quot;); color: rgb(129, 255, 23);"/>
+            <ui:Button text="로컬 테스트 유물 추가" name="AddRelic" icon-image="" class="button description-font" style="width: 200px; height: 35px; margin-right: 10px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-left: 65px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&amp;guid=4eceb5da313ff4718be4edd1c928520a&amp;type=3#The Jamsil OTF 2 Light&quot;);"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

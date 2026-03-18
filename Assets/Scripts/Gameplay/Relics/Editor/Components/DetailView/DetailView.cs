@@ -11,10 +11,14 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
     {
         public event Action DataChanged;
         public event Action CloseClicked;
+        public event Action<string> DeleteClicked;
         
         private readonly Button _closeButton;
+        private readonly Button _deleteButton;
         private readonly RelicInformationBox _relicInformationBox;
         private readonly EffectList _effectList;
+
+        private RelicSO _currentRelic;
         
         public DetailView()
         {
@@ -30,16 +34,18 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             visualTree.CloneTree(this);
 
             _closeButton = this.Q<Button>("Close");
+            _deleteButton = this.Q<Button>("Delete");
             _relicInformationBox = this.Q<RelicInformationBox>();
             _effectList = this.Q<EffectList>();
             
             _relicInformationBox.DataChanged += () => DataChanged?.Invoke();
-            if (_closeButton != null)
-                _closeButton.clicked += () => CloseClicked?.Invoke();
+            _closeButton.clicked += () => CloseClicked?.Invoke();
+            _deleteButton.clicked += () => DeleteClicked?.Invoke(_currentRelic?.Data.Id);
         }
         
         public void BindRelic(RelicSO relic)
         {
+            _currentRelic = relic;
             _relicInformationBox.BindRelic(relic);
             _effectList.BindRelic(relic);
         }

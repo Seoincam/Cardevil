@@ -11,6 +11,9 @@
             <ui:Label text="유물 이름" name="Title" class="title-font" style="font-size: 17px; text-overflow: ellipsis; overflow: hidden; color: rgb(255, 255, 255);"/>
             <ui:Label text="유물에 대한 설명입니다. 이곳에 이런저런 설명을 추가합니다. 필요한 정보를 입력합니다." name="Description" style="-unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%202%20Light.otf?fileID=12800000&amp;guid=4eceb5da313ff4718be4edd1c928520a&amp;type=3#The Jamsil OTF 2 Light&quot;); font-size: 14px; text-overflow: ellipsis; overflow: hidden; color: rgb(204, 204, 204); white-space: normal; max-height: 45px;"/>
         </ui:VisualElement>
-        <ui:Instance template="ManagementContainer" name="ManagementContainer" style="justify-content: center; flex-grow: 1; margin-right: 7.5px; margin-left: 0; align-items: flex-end;"/>
+        <ui:Instance template="ManagementContainer" name="ManagementContainer" style="justify-content: space-between; flex-grow: 0; margin-right: 7.5px; margin-left: 0; align-items: flex-end; align-self: center; align-content: flex-end; flex-shrink: 0;"/>
+        <ui:VisualElement name="MissingContainer" style="flex-grow: 0; align-self: flex-end; align-items: flex-end; flex-shrink: 0; margin-right: 28px;">
+            <ui:Image source="project://database/Assets/Sprites/icon-warning-24.png?fileID=21300000&amp;guid=1be8a278c91b642f8bd6dc319288b014&amp;type=3#icon-warning-24" name="Error" style="flex-shrink: 0; width: 20px; margin-right: 0; margin-left: 10px;"/>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
     <ui:VisualElement name="ManagementContainer" style="flex-grow: 0; justify-content: center; width: 65px; padding-left: 7.5px; padding-right: 7.5px; margin-left: 5px;">
-        <ui:Button text="삭제하기" name="DeleteButton" class="button" style="-unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/The%20Jamsil%20OTF%203%20Regular.otf?fileID=12800000&amp;guid=a35ec5ba469fe453086b0aab3a48be3b&amp;type=3#The Jamsil OTF 3 Regular&quot;); color: rgb(255, 95, 95); padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; font-size: 8px; -unity-font-style: bold;"/>
+        <ui:Button text="삭제" name="DeleteButton" class="button description-font" style="color: rgb(255, 95, 95); padding-top: 10px; padding-bottom: 10px; padding-left: 10px; padding-right: 10px; font-size: 13px; -unity-font-style: normal; height: 25px; width: 52px;"/>
     </ui:VisualElement>
 </ui:UXML>

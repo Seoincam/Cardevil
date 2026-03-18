@@ -1,23 +1,26 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
     <ui:VisualElement name="RootContainer" class="out-border" style="flex-grow: 1; flex-direction: column; overflow: hidden; background-color: rgba(0, 0, 0, 0.1);">
-        <ui:VisualElement name="PreviewContainer" class="border" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.1); padding: 5px;">
+        <ui:VisualElement name="PreviewContainer" class="border" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.1); padding: 5px; max-height: 122px;">
             <ui:Label text="미리보기" class="description-font" style="color: rgb(200, 200, 200);"/>
             <ui:VisualElement name="PreviewArea" style="flex-grow: 1; flex-direction: row; visibility: visible; overflow: visible; align-items: center;">
                 <ui:Image source="project://database/Assets/Resources/Arts/GNB/Ex_GNB_Relic.png?fileID=21300000&amp;guid=1ff82655e2e561741a10d7a33b4b151b&amp;type=3#Ex_GNB_Relic" name="IconPreview" style="width: 75px; height: 75px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;"/>
-                <ui:VisualElement name="TextContainer" style="flex-grow: 1; justify-content: center; margin-left: 10px;">
+                <ui:VisualElement name="TextContainer" style="flex-grow: 1; justify-content: center; margin-left: 10px; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px;">
                     <ui:Label text="유물 이름" name="TitlePreview" class="title-font" style="font-size: 25px; color: rgb(220, 220, 220);"/>
-                    <ui:Label text="여기엔 설명 미리보기가 표시됩니다. 여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다. " name="DescriptionPreview" class="description-font" style="white-space: normal; font-size: 13px; color: rgb(180, 180, 180);"/>
+                    <ui:Label text="여기엔 설명 미리보기가 표시됩니다. 여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다. 여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다.  여기엔 설명 미리보기가 표시됩니다. " name="DescriptionPreview" enable-rich-text="true" class="description-font" style="white-space: normal; font-size: 13px; color: rgb(180, 180, 180); text-overflow: clip; max-width: 450px;"/>
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="Spacer" style="flex-grow: 1; min-height: 10px;"/>
-        <ui:VisualElement name="InputFeildContainer" class="border" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.1); padding: 10px;">
-            <ui:TextField label="Id" placeholder-text="아이디를 입력하세요." name="IdField" view-data-key="" binding-path="data.id" enabled="true" class="description-font"/>
+        <ui:VisualElement name="InputFeildContainer" class="border" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.1); padding: 10px; max-height: 240px;">
+            <uie:ObjectField label="아이콘" type="UnityEngine.Sprite, UnityEngine.CoreModule" allow-scene-objects="false" name="IconField" binding-path="data.displayIcon" class="description-font" style="margin-bottom: 20px;"/>
+            <ui:VisualElement name="IdContainer" style="flex-grow: 0; flex-direction: row;">
+                <ui:TextField label="Id" placeholder-text="아이디를 입력하세요." name="IdField" view-data-key="" binding-path="data.id" enabled="false" readonly="true" class="description-font"/>
+                <ui:Button text="클립보드에 복사하기" name="CopyId" icon-image="" class="description-font" style="height: 22px; justify-content: space-between; align-self: flex-start; width: 120px; min-width: 120px; max-width: 120px;"/>
+            </ui:VisualElement>
             <ui:EnumField label="희귀도" value="Center" type="Cardevil.Gameplay.Relics.Core.RelicRarity, Assembly-CSharp" name="RarityField" binding-path="data.rarity" class="description-font"/>
-            <uie:ObjectField label="아이콘" type="UnityEngine.Sprite, UnityEngine.CoreModule" allow-scene-objects="false" name="IconField" binding-path="data.displayIcon" class="description-font"/>
             <ui:TextField label="이름" placeholder-text="실제 게임에 표시될 유물의 이름을 입력하세요." name="NameField" binding-path="data.displayName" class="description-font"/>
             <ui:TextField label="설명" placeholder-text="실제 게임에 표시될 유물에 대한 설명을 입력하세요." name="DescriptionField" multiline="true" binding-path="data.displayDescription" class="description-font" style="flex-grow: 1; white-space: normal; min-height: 60px;"/>
         </ui:VisualElement>
+        <ui:VisualElement name="HelpBoxContainer" style="flex-grow: 1; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-bottom: 7px; flex-shrink: 0;"/>
     </ui:VisualElement>
 </ui:UXML>

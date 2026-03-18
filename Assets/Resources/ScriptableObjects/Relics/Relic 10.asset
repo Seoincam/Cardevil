@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: Relic 10
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
-    id: local-test-02
+    id: local-260318-15-20-59
+    commentForEditor: 
     rarity: 0
     displayIcon: {fileID: 0}
-    displayName: "\uC0C8\uB85C\uC6B4 \uC720\uBB3C"
-    displayDescription: "\uD14C\uC2A4\uD2B8\uC6A9 \uB85C\uCEEC \uC720\uBB3C\uC785\uB2C8\uB2E4."
+    displayName: "\uC0C8 \uB85C\uCEEC \uC720\uBB3C"
+    displayDescription: "\uD14C\uC2A4\uD2B8\uC6A9\uC73C\uB85C \uC0DD\uC131\uD55C
+      \uC720\uBB3C\uC785\uB2C8\uB2E4."
     effects: []
-  isLocal: 1
+  dataSource: 0
   references:
     version: 2
     RefIds: []
