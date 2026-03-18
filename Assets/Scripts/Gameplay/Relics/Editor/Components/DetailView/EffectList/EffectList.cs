@@ -88,13 +88,27 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             if (_currentRelic == null) return;
 
             var effectTypes = TypeCache
-                .GetTypesDerivedFrom<EffectBase>()
+                .GetTypesDerivedFrom<EffectDefinition>()
                 .Where(t => !t.IsAbstract).ToList();
 
             GenericMenu menu = new();
             foreach (Type type in effectTypes)
             {
-                menu.AddItem(new GUIContent(type.Name), false, () => AddNewEffect(type));
+                string displayName = type.Name;
+
+                try
+                {
+                    if (Activator.CreateInstance(type) is EffectDefinition tempInstance)
+                    {
+                        displayName = tempInstance.EditorName;
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogEx.LogWarning($"[{type.Name} 임시 인스턴스 생성 실패, 기본 이름을 사용함.");
+                }
+                
+                menu.AddItem(new GUIContent(displayName), false, () => AddNewEffect(type));
             }
 
             menu.ShowAsContext();

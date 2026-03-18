@@ -1,4 +1,5 @@
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Relics.Core;
 using System;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -63,21 +64,41 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             SerializedProperty endProperty = iterator.GetEndProperty();
 
             bool enterChildren = true;
-
             while (iterator.NextVisible(enterChildren) && !SerializedProperty.EqualContents(iterator, endProperty))
             {
                 enterChildren = false;
 
                 PropertyField field = new(iterator);
                 field.BindProperty(iterator);
+                
+                field.RegisterCallback<SerializedPropertyChangeEvent>(_ => 
+                {
+                    UpdateLabels(effectProp);
+                });
+                
                 _propertiesContainer.Add(field);
             }
 
+            UpdateLabels(effectProp);
+        }
+
+        private void UpdateLabels(SerializedProperty effectProp)
+        {
             object actualEffect = effectProp.managedReferenceValue;
-            if (actualEffect != null)
+            if (actualEffect is EffectDefinition effectDef)
             {
-                _nameLabel.text = actualEffect.GetType().Name;
-                _descLabel.text = "아직 설명 관련한 것은 추가하지 않았음.";
+                int slashIndex = effectDef.EditorName.LastIndexOf('/');
+                var trimmedName = slashIndex < 0 
+                    ? effectDef.EditorName 
+                    :effectDef.EditorName[(slashIndex + 1)..];
+                
+                _nameLabel.text = trimmedName;
+                _descLabel.text = effectDef.EditorDescription;
+            }
+            else
+            {
+                _nameLabel.text = "Empty Effect";
+                _descLabel.text = "이펙트가 할당되지 않았습니다.";
             }
         }
     }

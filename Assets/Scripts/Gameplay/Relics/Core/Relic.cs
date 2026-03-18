@@ -31,7 +31,7 @@ namespace Cardevil.Gameplay.Relics.Core
         [SerializeField] private string displayDescription;
         
         [Header("Effects")]
-        [SerializeReference] private List<EffectBase> effects = new();
+        [SerializeReference] private List<EffectDefinition> effects = new();
 
         public Relic(string id, string displayName)
         {
@@ -60,6 +60,6 @@ namespace Cardevil.Gameplay.Relics.Core
         public Sprite DisplayIcon => displayIcon;
         public string DisplayName => displayName;
         public string DisplayDescription => displayDescription;
-        public IReadOnlyList<EffectBase> Effects => effects;
+        public IReadOnlyList<EffectDefinition> Effects => effects;
     }
 }
