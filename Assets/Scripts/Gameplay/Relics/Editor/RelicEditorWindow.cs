@@ -40,13 +40,31 @@ namespace Cardevil.Gameplay.Relics.Editor
             RelicEditorWindow wnd = GetWindow<RelicEditorWindow>();
             wnd.titleContent = new GUIContent("유물 편집기");
             wnd.minSize = new Vector2(1600, 920);
+            wnd.Show();
+        }
+
+        public static void OpenRelicSO(RelicSO relicSo)
+        {
+            RelicEditorWindow wnd = GetWindow<RelicEditorWindow>();
+            wnd.titleContent = new GUIContent("유물 편집기");
+            wnd.minSize = new Vector2(1600, 920);
+
+            if (wnd._relicList != null)
+            {
+                wnd._selectedRelic = relicSo;
+                wnd.ApplyInitialSelection();
+            }
+            
+            wnd.Show();
         }
 
         public enum AlignMode
         {
             Default,
             Id,
-            Name
+            Name,
+            Rarity,
+            SourceType
         }
 
         public void CreateGUI()
@@ -92,8 +110,15 @@ namespace Cardevil.Gameplay.Relics.Editor
                 _sourceFilters = (showSheet, showLocal, showMissing);
                 RefreshDisplayList();
             };
-            
-            OnCloseDetail();
+
+            if (_selectedRelic)
+            {
+                ApplyInitialSelection();
+            }
+            else
+            {
+                OnCloseDetail();   
+            }
         }
 
         public void DestroyGUI()
@@ -145,6 +170,13 @@ namespace Cardevil.Gameplay.Relics.Editor
             {
                 RefreshDisplayList();
             }
+        }
+
+        private void ApplyInitialSelection()
+        {
+            _mainToolbar.ClearFilters();
+            _relicList.SelectItemByObject(_selectedRelic);
+            OnSelectionChanged(_selectedRelic);
         }
 
         private void OnAdd()
@@ -299,6 +331,8 @@ namespace Cardevil.Gameplay.Relics.Editor
             {
                 AlignMode.Id => filtered.OrderBy(r => r.Data.Id),
                 AlignMode.Name => filtered.OrderBy(r => r.Data.DisplayName),
+                AlignMode.Rarity => filtered.OrderBy(r => r.Data.Rarity),
+                AlignMode.SourceType => filtered.OrderBy(r => r.Source),
                 _ => filtered
             };
 

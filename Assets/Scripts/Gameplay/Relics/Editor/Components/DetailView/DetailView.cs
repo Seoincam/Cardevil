@@ -46,6 +46,9 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
         public void BindRelic(RelicSO relic)
         {
             _currentRelic = relic;
+            
+            _deleteButton.style.display = relic.FromSheet ? DisplayStyle.None : DisplayStyle.Flex;
+            
             _relicInformationBox.BindRelic(relic);
             _effectList.BindRelic(relic);
         }

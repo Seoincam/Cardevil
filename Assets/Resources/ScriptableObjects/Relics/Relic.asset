@@ -13,23 +13,25 @@ MonoBehaviour:
   m_Name: Relic
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
-    id: handrank_01
+    id: local-260318-19-13-59
+    commentForEditor: 
     rarity: 0
-    displayIcon: {fileID: 21300000, guid: 7102fa28c8a0e6747a8f88aacac33072, type: 3}
-    displayName: "\uC774\uB984\uC774\uB984"
-    displayDescription: "\uD14C\uC2A4\uD2B8 \uC124\uBA85\uB4E4\uC785\uB2C8\uB2E4.
-      \uC774\uB9CC\uD07C \uC124\uBA85\uC774 \uB4E4\uC5B4\uAC11\uB2C8\uB2E4."
+    displayIcon: {fileID: 21300000, guid: 1a8eb3e145531ef42b780cbb0a81b8ba, type: 3}
+    displayName: "\uC0C8 \uB85C\uCEEC \uC720\uBB3C"
+    displayDescription: "\uC774 \uC720\uBB3C\uC740 '\uB85C\uCEEC \uD14C\uC2A4\uD2B8
+      \uC720\uBB3C \uCD94\uAC00'\uB97C \uD1B5\uD574 \uC0DD\uC131\uB41C \uC608\uC2DC
+      \uC720\uBB3C\uC785\uB2C8\uB2E4. \uC2DC\uD2B8\uC5D0 \uC874\uC7AC\uD558\uC9C0
+      \uC54A\uC73C\uBA70, \uBE60\uB978 \uD14C\uC2A4\uD2B8\uB97C \uC704\uD574 \uC0DD\uC131\uD588\uC2B5\uB2C8\uB2E4.
+      'ModifyStatEffect'\uB97C \uD1B5\uD574 \uD574\uB2F9 \uC720\uBB3C\uC774 \uC874\uC7AC\uD558\uB294
+      \uB3D9\uC548 MaxHp\uB97C 1 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
     effects:
-    - rid: 5725363048709357568
-  isLocal: 0
+    - rid: 5725363067464450989
+  dataSource: 0
   references:
     version: 2
     RefIds:
-    - rid: 5725363048709357568
-      type: {class: TargetStatBonusEffect, ns: Cardevil.Gameplay.Relics.Effects.ScoreProvider, asm: Assembly-CSharp}
+    - rid: 5725363067464450989
+      type: {class: ModifyStatEffect, ns: Cardevil.Gameplay.Relics.Effects, asm: Assembly-CSharp}
       data:
-        scoreStepType: 1
-        scoreOperatorType: 0
-        value: 50
-        targetStatType: 3
-        targetValue: 1
+        targetStatType: 2
+        value: 1

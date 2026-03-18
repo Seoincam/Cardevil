@@ -70,5 +70,18 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
                 DataSourceChanged?.Invoke(showSheet, showLocal, showMissing);
             });
         }
+
+        public void ClearFilters()
+        {
+            _alignDropDown.value = RelicEditorWindow.AlignMode.Default;
+            
+            var initialState = _sourceFilter.value;
+            initialState[0] = true;
+            initialState[1] = true;
+            initialState[2] = true;
+            _sourceFilter.value = initialState;
+
+            _searchField.value = string.Empty;
+        }
     }
 }
