@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -10,16 +11,20 @@ namespace Database
 {
     public class ClassInstanceFactory
     {
+        private static readonly Dictionary<Type, Dictionary<string, FieldInfo>> FieldCache =
+            new Dictionary<Type, Dictionary<string, FieldInfo>>();
+
         public static object[] CreateInstance(DataFrame df)
         {
             var type = ReflectionUtil.FindTypeByFullName("Database.Generated." + df.name);
             if (type == null)
             {
-                Debug.LogError($"[ClassInstanceFactory] 타입을 찾을 수 없습니다: Database.Generated.{df.name}");
+                Debug.LogError($"[ClassInstanceFactory] ??낆쓣 李얠쓣 ???놁뒿?덈떎: Database.Generated.{df.name}");
                 return Array.Empty<object>();
             }
 
-            int maxRow = df.data.Length;
+            var fieldMap = GetFieldMap(type);
+            int maxRow = df.data?.Length ?? 0;
             object[] instances = new object[maxRow];
 
             for (int i = 0; i < maxRow; i++)
@@ -32,12 +37,8 @@ namespace Database
                     var value = row[j];
                     var varName = df.GetVarName(j);
 
-                    FieldInfo field = type.GetField(varName, BindingFlags.Public | BindingFlags.Instance);
-                    if (field == null)
-                    {
-                        // 정의되지 않은 필드는 스킵
+                    if (!fieldMap.TryGetValue(varName, out var field))
                         continue;
-                    }
 
                     Type varType = field.FieldType;
                     object convertedValue = ConvertValue(varType, value);
@@ -50,14 +51,22 @@ namespace Database
             return instances;
         }
 
+        private static Dictionary<string, FieldInfo> GetFieldMap(Type type)
+        {
+            if (FieldCache.TryGetValue(type, out var fieldMap))
+                return fieldMap;
 
+            fieldMap = type
+                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .ToDictionary(field => field.Name, StringComparer.Ordinal);
+            FieldCache[type] = fieldMap;
+            return fieldMap;
+        }
 
         public static object ConvertValue(Type targetType, string value, int depth = 0)
         {
-            // 널/공백 정리
             value = value?.Trim() ?? string.Empty;
 
-            // 배열
             if (targetType.IsArray)
             {
                 Type elementType = targetType.GetElementType()!;
@@ -68,7 +77,6 @@ namespace Database
                 {
                     try
                     {
-
                         object convertedValue = ConvertValue(elementType, elements[i], depth + 1);
                         arrayInstance.SetValue(convertedValue, i);
                     }
@@ -82,18 +90,18 @@ namespace Database
                         }
                         else
                         {
-                            Debug.LogError($"[ClassInstanceFactory] 배열 요소 변환 실패: {targetType.Name}, 값: '{elements[i]}', 예외: {e}");
+                            Debug.LogError($"[ClassInstanceFactory] 諛곗뿴 ?붿냼 蹂???ㅽ뙣: {targetType.Name}, 媛? '{elements[i]}', ?덉쇅: {e}");
                             throw;
                         }
                     }
                 }
+
                 return arrayInstance;
             }
 
-            // 제네릭 List<T>
             if (targetType.IsGenericType)
             {
-                if (targetType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.List<>))
+                if (targetType.GetGenericTypeDefinition() == typeof(List<>))
                 {
                     Type elementType = targetType.GetGenericArguments()[0];
                     string[] elements = SplitToList(value);
@@ -106,7 +114,6 @@ namespace Database
                             object convertedValue;
                             if (elementType == typeof(string) && element.StartsWith("\"") && element.EndsWith("\"") && element.Length >= 2)
                             {
-                                // 문자열 요소의 경우 양쪽 따옴표 제거
                                 convertedValue = ConvertValue(elementType, element.Substring(1, element.Length - 2), depth + 1);
                             }
                             else
@@ -120,19 +127,19 @@ namespace Database
                         {
                             if (element == elements[elements.Length - 1] && string.IsNullOrEmpty(element))
                             {
-                                // 마지막 요소가 빈 문자열인 경우 무시
                                 continue;
                             }
                             else
                             {
-                                Debug.LogError($"[ClassInstanceFactory] 리스트 요소 변환 실패: {targetType.Name}, 값: '{element}', 예외: {e}");
+                                Debug.LogError($"[ClassInstanceFactory] 由ъ뒪???붿냼 蹂???ㅽ뙣: {targetType.Name}, 媛? '{element}', ?덉쇅: {e}");
                                 throw;
                             }
-
                         }
                     }
+
                     return listInstance!;
                 }
+
                 if (targetType.GetGenericTypeDefinition() == typeof(Database.ListWrapper<>))
                 {
                     Type elementType = targetType.GetGenericArguments()[0];
@@ -150,25 +157,21 @@ namespace Database
                         {
                             if (element == elements[elements.Length - 1] && string.IsNullOrEmpty(element))
                             {
-                                // 마지막 요소가 빈 문자열인 경우 무시
                                 continue;
                             }
                             else
                             {
-                                Debug.LogError($"[ClassInstanceFactory] 리스트래퍼 요소 변환 실패: {targetType.Name}, 값: '{element}', 예외: {e}");
+                                Debug.LogError($"[ClassInstanceFactory] 由ъ뒪?몃옒???붿냼 蹂???ㅽ뙣: {targetType.Name}, 媛? '{element}', ?덉쇅: {e}");
                                 throw;
                             }
-
                         }
                     }
+
                     return listWrapperInstance!;
                 }
-
-
             }
 
-            // Dictionary<K,V>
-            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(System.Collections.Generic.Dictionary<,>))
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
                 Type keyType = targetType.GetGenericArguments()[0];
                 Type valueType = targetType.GetGenericArguments()[1];
@@ -176,22 +179,17 @@ namespace Database
                 var dictInstance = Activator.CreateInstance(targetType);
                 var addMethod = targetType.GetMethod("Add");
 
-                // Expecting JSON-like syntax: { KEY : VALUE , KEY : VALUE }
-                // Remove outer braces if present
                 value = value.Trim();
                 if (value.StartsWith("{") && value.EndsWith("}"))
-                {
                     value = value.Substring(1, value.Length - 2);
-                }
 
-                // Split by comma, respecting quotes/brackets/braces
                 string[] entries = SplitToList(value);
 
                 foreach (string entry in entries)
                 {
-                    if (string.IsNullOrWhiteSpace(entry)) continue;
+                    if (string.IsNullOrWhiteSpace(entry))
+                        continue;
 
-                    // Split by ':' (first one found at top level)
                     string[] kv = SplitToKV(entry);
                     if (kv.Length != 2)
                     {
@@ -210,10 +208,10 @@ namespace Database
                         Debug.LogError($"[ClassInstanceFactory] Dictionary Add Failed: {entry} / {e}");
                     }
                 }
+
                 return dictInstance!;
             }
 
-            // 열거형
             if (targetType.IsEnum)
             {
                 if (string.IsNullOrEmpty(value))
@@ -223,26 +221,27 @@ namespace Database
                 return Enum.Parse(targetType, value, ignoreCase: true);
             }
 
-            // 문자열
             if (targetType == typeof(string))
                 return value;
 
-            // 불리언(0/1도 허용)
             if (targetType == typeof(bool))
             {
-                if (value == "0") return false;
-                if (value == "1") return true;
-                if (bool.TryParse(value, out bool b)) return b;
+                if (value == "0")
+                    return false;
+                if (value == "1")
+                    return true;
+                if (bool.TryParse(value, out bool booleanValue))
+                    return booleanValue;
                 return false;
             }
 
-            // 숫자: 빈 문자열이면 0
-            if (string.IsNullOrEmpty(value)) value = "0";
-            else if (value == "null") value = "0";
+            if (string.IsNullOrEmpty(value))
+                value = "0";
+            else if (value == "null")
+                value = "0";
 
             var ci = CultureInfo.InvariantCulture;
 
-            // Debug.Log($"[ClassInstanceFactory] Converting '{value}' to {targetType.Name}");
             if (targetType == typeof(int))
                 return int.Parse(value, ci);
             if (targetType == typeof(float))
@@ -277,7 +276,7 @@ namespace Database
             }
             catch (Exception e)
             {
-                Debug.LogError($"[ClassInstanceFactory] IJsonUtilitySupport 변환 실패: {targetType.Name}, {e}");
+                Debug.LogError($"[ClassInstanceFactory] IJsonUtilitySupport 蹂???ㅽ뙣: {targetType.Name}, {e}");
             }
 
             try
@@ -292,25 +291,25 @@ namespace Database
             }
             catch (Exception e)
             {
-                Debug.LogError($"[ClassInstanceFactory] ILoadFromDatabaseString 변환 실패: {targetType.Name}, {e}");
+                Debug.LogError($"[ClassInstanceFactory] ILoadFromDatabaseString 蹂???ㅽ뙣: {targetType.Name}, {e}");
             }
 
             if (targetType == typeof(DateTime))
             {
-                if (DateTime.TryParse(value, ci, DateTimeStyles.None, out DateTime dt))
-                    return dt;
+                if (DateTime.TryParse(value, ci, DateTimeStyles.None, out DateTime dateTime))
+                    return dateTime;
                 return DateTime.MinValue;
             }
+
             if (targetType == typeof(TimeSpan))
             {
-                if (TimeSpan.TryParse(value, ci, out TimeSpan ts))
-                    return ts;
+                if (TimeSpan.TryParse(value, ci, out TimeSpan timeSpan))
+                    return timeSpan;
                 return TimeSpan.Zero;
             }
-            // 클래스 확인
+
             if (targetType.IsClass)
             {
-                // Serializable 클래스는 JsonUtility로 파싱 시도
                 if (Attribute.IsDefined(targetType, typeof(SerializableAttribute)))
                 {
                     try
@@ -320,7 +319,7 @@ namespace Database
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError($"[ClassInstanceFactory] Serializable 클래스 변환 실패: {targetType.Name}, {e}");
+                        Debug.LogError($"[ClassInstanceFactory] Serializable ?대옒??蹂???ㅽ뙣: {targetType.Name}, {e}");
                     }
                 }
 
@@ -333,40 +332,35 @@ namespace Database
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError($"[ClassInstanceFactory] JsonConverter 클래스 변환 실패: {targetType.Name}, {e}");
+                        Debug.LogError($"[ClassInstanceFactory] JsonConverter ?대옒??蹂???ㅽ뙣: {targetType.Name}, {e}");
                     }
                 }
-
             }
 
-            // 기타 타입은 ChangeType 시도
-            Debug.LogWarning($"[ClassInstanceFactory] 알 수 없는 타입 변환 시도: {targetType.Name}, 값: '{value}'");
+            Debug.LogWarning($"[ClassInstanceFactory] ?????녿뒗 ???蹂???쒕룄: {targetType.Name}, 媛? '{value}'");
             return Convert.ChangeType(value, targetType, ci);
         }
 
         internal static string[] SplitToList(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) return Array.Empty<string>();
+            if (string.IsNullOrWhiteSpace(value))
+                return Array.Empty<string>();
+
             value = value.Trim();
 
-            // Handle surrounding brackets [ ... ]
             if (value.StartsWith("[") && value.EndsWith("]"))
-            {
                 value = value.Substring(1, value.Length - 2);
-            }
 
-            if (string.IsNullOrWhiteSpace(value)) return Array.Empty<string>();
+            if (string.IsNullOrWhiteSpace(value))
+                return Array.Empty<string>();
 
-            // Remove trailing comma if exists (e.g. "a,b,")
             if (value.EndsWith(","))
-            {
                 value = value.Substring(0, value.Length - 1);
-            }
 
-            var elements = new System.Collections.Generic.List<string>();
-            int bracketCount = 0; // [ ]
-            int braceCount = 0;   // { }
-            bool inQuote = false; // " "
+            var elements = new List<string>();
+            int bracketCount = 0;
+            int braceCount = 0;
+            bool inQuote = false;
             int lastSplitIndex = 0;
 
             for (int i = 0; i < value.Length; i++)
@@ -374,19 +368,19 @@ namespace Database
                 char c = value[i];
 
                 if (c == '"')
-                {
-                    // Escape check could be added here if needed (e.g. \"), but basic flip is usually enough for simple DB
                     inQuote = !inQuote;
-                }
 
                 if (!inQuote)
                 {
-                    if (c == '[') bracketCount++;
-                    else if (c == ']') bracketCount--;
-                    else if (c == '{') braceCount++;
-                    else if (c == '}') braceCount--;
+                    if (c == '[')
+                        bracketCount++;
+                    else if (c == ']')
+                        bracketCount--;
+                    else if (c == '{')
+                        braceCount++;
+                    else if (c == '}')
+                        braceCount--;
 
-                    // Split on comma only if we are not inside quotes or brackets
                     if (c == ',' && bracketCount == 0 && braceCount == 0)
                     {
                         elements.Add(value.Substring(lastSplitIndex, i - lastSplitIndex).Trim());
@@ -395,18 +389,14 @@ namespace Database
                 }
             }
 
-            // Last element
             if (lastSplitIndex <= value.Length)
-            {
                 elements.Add(value.Substring(lastSplitIndex).Trim());
-            }
 
             return elements.ToArray();
         }
 
         internal static string[] SplitToKV(string entry)
         {
-            // Split string by the first top-level ':'
             int bracketCount = 0;
             int braceCount = 0;
             bool inQuote = false;
@@ -414,25 +404,31 @@ namespace Database
             for (int i = 0; i < entry.Length; i++)
             {
                 char c = entry[i];
-                if (c == '"') inQuote = !inQuote;
+                if (c == '"')
+                    inQuote = !inQuote;
 
                 if (!inQuote)
                 {
-                    if (c == '[') bracketCount++;
-                    else if (c == ']') bracketCount--;
-                    else if (c == '{') braceCount++;
-                    else if (c == '}') braceCount--;
+                    if (c == '[')
+                        bracketCount++;
+                    else if (c == ']')
+                        bracketCount--;
+                    else if (c == '{')
+                        braceCount++;
+                    else if (c == '}')
+                        braceCount--;
 
                     if (c == ':' && bracketCount == 0 && braceCount == 0)
                     {
-                        return new string[]
+                        return new[]
                         {
-                             entry.Substring(0, i).Trim(),
-                             entry.Substring(i + 1).Trim()
+                            entry.Substring(0, i).Trim(),
+                            entry.Substring(i + 1).Trim()
                         };
                     }
                 }
             }
+
             return Array.Empty<string>();
         }
     }

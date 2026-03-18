@@ -10,8 +10,8 @@ namespace Database
     public class DataFrame
     {
         public bool IsEmpty => data == null || data.Length == 0;
-        public int RowCount => data.Length;
-        public int MaxColumn => varNames.Length;
+        public int RowCount => data?.Length ?? 0;
+        public int MaxColumn => varNames?.Length ?? 0;
         public string name;
         public string[] varNames;
         public string[] types;
@@ -25,8 +25,11 @@ namespace Database
         
         public string GetVarName(int index)
         {
+            if (varNames == null || index < 0 || index >= varNames.Length)
+                return string.Empty;
+
             var tmp = varNames[index].Split('_');
-            if(tmp[0].StartsWith("arr"))
+            if(tmp.Length > 1 && tmp[0].StartsWith("arr", StringComparison.Ordinal))
             {
                 return tmp[1];
             }
@@ -42,6 +45,12 @@ namespace Database
             StringBuilder sb = new StringBuilder();
             void AppendArray(string[] array)
             {
+                if (array == null)
+                {
+                    sb.AppendLine();
+                    return;
+                }
+
                 for (int i = 0; i < array.Length; i++)
                 {
                     sb.Append(array[i]);
@@ -57,6 +66,12 @@ namespace Database
             for (int i = 0; i < data.Length; i++)
             {
                 var row = data[i];
+                if (row == null || row.Length == 0)
+                {
+                    sb.AppendLine();
+                    continue;
+                }
+
                 for (int j = 0; j < row.Length - 1; j++)
                 {
                     sb.Append(row[j]);

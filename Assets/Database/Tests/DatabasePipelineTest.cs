@@ -1,6 +1,9 @@
 using Database;
+using Database.DataReader;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -94,6 +97,92 @@ namespace Machamy.McDatabase.Tests
             Assert.AreEqual(2, list.Count);
             Assert.AreEqual("Hello, World", list[0]); // Quotes should be stripped by ConvertValue
             Assert.AreEqual("Bye", list[1]);
+        }
+
+        [Test]
+        public void ReflectionUtil_DerivedTypeCache_IsCreated_AndStable()
+        {
+            ReflectionUtil.ClearCachesForTests();
+
+            Assert.IsFalse(ReflectionUtil.HasDerivedTypeCache(typeof(IDBData)));
+
+            var first = ReflectionUtil.FindDerivedTypesWithCache<IDBData>();
+            var second = ReflectionUtil.FindDerivedTypesWithCache<IDBData>();
+
+            Assert.IsTrue(ReflectionUtil.HasDerivedTypeCache(typeof(IDBData)));
+            CollectionAssert.AreEquivalent(first, second);
+            Assert.IsTrue(first.Exists(type => type.Name == "CustomClassTest"));
+        }
+
+        [Test]
+        public void AutomaticWatcher_ChangeWatcherDir_RecreatesDisposedWatcher()
+        {
+            string firstDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            string secondDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(firstDir);
+            Directory.CreateDirectory(secondDir);
+
+            try
+            {
+                var watcher = new AutomaticWatcher(firstDir, new RawJsonReader(), ".json", "~$");
+                watcher.DisposeWatcher();
+                watcher.ChangeWatcherDir(secondDir);
+
+                var watcherField = typeof(AutomaticWatcher).GetField("_watcher", BindingFlags.NonPublic | BindingFlags.Instance);
+                var innerWatcher = watcherField?.GetValue(watcher);
+
+                Assert.NotNull(innerWatcher);
+                Assert.AreEqual(secondDir, watcher.Path);
+
+                watcher.DisposeWatcher();
+            }
+            finally
+            {
+                Directory.Delete(firstDir, true);
+                Directory.Delete(secondDir, true);
+            }
+        }
+
+        [Test]
+        public void DataFrame_ToString_HandlesEmptyRows()
+        {
+            var dataFrame = new DataFrame("Sample")
+            {
+                varNames = new[] { "value" },
+                types = new[] { "string" },
+                comments = new[] { string.Empty },
+                data = new[] { Array.Empty<string>() }
+            };
+
+            Assert.DoesNotThrow(() => dataFrame.ToString());
+        }
+
+        [Test]
+        public void GoogleSheetReader_Read_WithNonUrl_ReturnsEmptyList()
+        {
+            var reader = new GoogleSheetReader();
+            var dataFrames = reader.Read("not-a-url");
+
+            Assert.NotNull(dataFrames);
+            Assert.AreEqual(0, dataFrames.Count);
+        }
+
+        [Test]
+        public void GoogleSheetReader_FilterDataFrames_ReturnsOnlyRequestedSheet()
+        {
+            var frames = new List<DataFrame>
+            {
+                new DataFrame("Alpha"),
+                new DataFrame("Beta"),
+                new DataFrame("Gamma")
+            };
+
+            var method = typeof(GoogleSheetReader).GetMethod("FilterDataFrames", BindingFlags.NonPublic | BindingFlags.Static);
+            var filtered = method?.Invoke(null, new object[] { frames, "beta" }) as List<DataFrame>;
+
+            Assert.NotNull(filtered);
+            Assert.AreEqual(1, filtered.Count);
+            Assert.AreEqual("Beta", filtered[0].name);
         }
     }
 }

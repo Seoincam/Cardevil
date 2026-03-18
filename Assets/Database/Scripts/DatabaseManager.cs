@@ -162,11 +162,11 @@ namespace Database
 
         private IEnumerator LoadLocalDf()
         {
-            string json = null;
             List<string> targetClassNames = mcDatabase.ClassNames;
             List<DataFrame> dataFrames = new List<DataFrame>();
             foreach (var className in targetClassNames)
             {
+                string json = null;
                 string fileName = $"{className}.df";
                 string localPath = Path.Combine(FinalLocalPath, fileName);
                 string streamingPath = Path.Combine(FinalStreamingAssetPath, fileName);
@@ -201,10 +201,10 @@ namespace Database
         }
         private IEnumerator LoadLocalJson()
         {
-            string json = null;
             List<string> targetClassNames = mcDatabase.ClassNames;
             foreach (var className in targetClassNames)
             {
+                string json = null;
                 string fileName = $"{className}.json";
                 string localPath = Path.Combine(FinalLocalPath, fileName);
                 string streamingPath = Path.Combine(FinalStreamingAssetPath, fileName);
@@ -239,7 +239,6 @@ namespace Database
                     Debug.LogWarning($"[DatabaseManager] {className} 데이터 로드 실패. 파일이 존재하지 않음.");
                 }
             }
-            Debug.Log($"[DatabaseManager] 로컬 JSON 길이: {json?.Length ?? 0}");
             yield break;
         }
         private IEnumerator LoadSavedFile(string path, Action<string> onComplete)

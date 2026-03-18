@@ -9,27 +9,26 @@ using UnityEngine;
 
 namespace Database
 {
-
     public class AutomaticWatcher
     {
 #if UNITY_EDITOR
         public string Path { get; private set; }
         public string Extension { get; }
-        private string TempPrefix = null;
+
+        private readonly string _tempPrefix;
+        private readonly IDataReader _reader;
+        private readonly HashSet<string> _modifiedFiles = new HashSet<string>();
 
         private FileSystemWatcher _watcher;
-        private IDataReader reader;
-        private HashSet<string> _modifiedFiles = new HashSet<string>();
-        
+
         public Action<DataFrame> CreateCsharp;
 
-        public AutomaticWatcher(string path,IDataReader reader, string extension, string tempPrefix = null)
+        public AutomaticWatcher(string path, IDataReader reader, string extension, string tempPrefix = null)
         {
             Path = path;
             Extension = extension;
-            
-            this.reader = reader;
-            this.TempPrefix = tempPrefix;
+            _reader = reader;
+            _tempPrefix = tempPrefix;
 
             _watcher = CreateWatcher();
         }
@@ -55,7 +54,7 @@ namespace Database
             }
             else
             {
-                CreateWatcher();
+                _watcher = CreateWatcher();
             }
         }
 
@@ -71,38 +70,40 @@ namespace Database
 
         private void OnDataCreated(object sender, FileSystemEventArgs e)
         {
-            if (TempPrefix != null && e.Name.StartsWith(TempPrefix)) return;
+            if (IsTempFileEvent(e.Name))
+                return;
+
             Debug.Log($"File Created: {e.FullPath}");
 
-            var readPath = e.FullPath;
-            var dfs = reader.Read(readPath);
-            foreach (var df in dfs)
-            {
-                CreateCsharp(df);
-            }
+            var dataFrames = _reader.Read(e.FullPath) ?? new List<DataFrame>();
+            foreach (var dataFrame in dataFrames)
+                CreateCsharp?.Invoke(dataFrame);
 
             DelayedAssetRefresh();
         }
 
         private void OnDataChanged(object sender, FileSystemEventArgs e)
         {
-            if (TempPrefix == null)
+            if (string.IsNullOrEmpty(_tempPrefix))
             {
-                var dfs = reader.Read(e.FullPath);
-                foreach (var df in dfs)
-                {
-                    CreateCsharp(df);
-                }
+                var dataFrames = _reader.Read(e.FullPath) ?? new List<DataFrame>();
+                foreach (var dataFrame in dataFrames)
+                    CreateCsharp?.Invoke(dataFrame);
+
+                DelayedAssetRefresh();
                 return;
-            } 
-            if (e.Name.StartsWith("~$")) return;
+            }
+
+            if (IsTempFileEvent(e.Name))
+                return;
+
             Debug.Log($"File Changed: {e.FullPath}");
             _modifiedFiles.Add(e.FullPath);
         }
 
         private void OnDataDeleted(object sender, FileSystemEventArgs e)
         {
-            if (e.Name.StartsWith("~$"))
+            if (IsTempFileEvent(e.Name))
             {
                 OnTempFileRemoved(e.FullPath);
                 return;
@@ -113,21 +114,21 @@ namespace Database
 
         private void OnTempFileRemoved(string path)
         {
-            string realPath = path.Replace("~$", "");
+            string realPath = path.Replace(_tempPrefix, string.Empty);
 
             if (_modifiedFiles.Contains(realPath))
             {
                 EditorApplication.delayCall += () =>
                 {
-                    if (!_modifiedFiles.Contains(realPath)) return;
+                    if (!_modifiedFiles.Contains(realPath))
+                        return;
+
                     Debug.Log($"Creating {System.IO.Path.GetFileNameWithoutExtension(realPath)}.cs");
 
                     _modifiedFiles.Remove(realPath);
-                    var dfs = reader.Read(realPath);
-                    foreach (var df in dfs)
-                    {
-                        CreateCsharp(df);
-                    }
+                    var dataFrames = _reader.Read(realPath) ?? new List<DataFrame>();
+                    foreach (var dataFrame in dataFrames)
+                        CreateCsharp?.Invoke(dataFrame);
 
                     if (_modifiedFiles.Count == 0)
                         DelayedAssetRefresh();
@@ -135,7 +136,12 @@ namespace Database
             }
         }
 
-
+        private bool IsTempFileEvent(string fileName)
+        {
+            return !string.IsNullOrEmpty(_tempPrefix)
+                && !string.IsNullOrEmpty(fileName)
+                && fileName.StartsWith(_tempPrefix, StringComparison.Ordinal);
+        }
 
         private static void DelayedAssetRefresh()
         {
@@ -147,5 +153,4 @@ namespace Database
         }
 #endif
     }
-
 }

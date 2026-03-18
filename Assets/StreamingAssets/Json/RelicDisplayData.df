@@ -1,0 +1,33 @@
+{
+  "name": "RelicDisplayData",
+  "varNames": [
+    "Id",
+    "Rarity",
+    "DisplayName",
+    "DisplayDescription",
+    "CommentForEditor"
+  ],
+  "types": [
+    "string",
+    "Enum<Cardevil.Gameplay.Relics.Core.RelicRarity>",
+    "string",
+    "string",
+    "string"
+  ],
+  "comments": [
+    "식별용 아이디",
+    "희귀도 (수급 장소)",
+    "게임상 이름",
+    "게임상 설명",
+    "에디터용 코멘트"
+  ],
+  "data": [
+    [
+      "sheet-test-01",
+      "MiddleBoss",
+      "시트 연동 테스트 유물",
+      "이런 유물은 존재하지 않습니다. 코멘트를 참고하세요.",
+      "시트 연동이 잘 되나 테스트하기 위한 테스트 유물입니다."
+    ]
+  ]
+}

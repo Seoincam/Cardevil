@@ -10,8 +10,8 @@
     "URL"
   ],
   "types": [
-    "Enum<Define.SlotRewardType>",
-    "Enum<Define.RareType>",
+    "Enum<SlotRewardType>",
+    "Enum<RareType>",
     "string",
     "int",
     "int",
@@ -35,7 +35,7 @@
       "3",
       "1",
       "[]",
-      "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
+      "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
       "RandomGold",
@@ -44,7 +44,7 @@
       "4",
       "1",
       "[\r\n  25,\r\n  50,\r\n  25\r\n]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
       "DarkUpgrade",
@@ -53,7 +53,7 @@
       "2",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1Wh7A2RII6FbyC7rFCJ8MV1Wb_BjQwQVT/view?usp=drive_link"
     ],
     [
       "StartReroll",
@@ -62,7 +62,7 @@
       "3",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1or4zKu0Y-_D8OO8Ii_O0PM1YNbNTaCMB/view?usp=drive_link"
     ],
     [
       "Heal",
@@ -71,7 +71,7 @@
       "1",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1D5jxCcdhesE3EzG3mpyq98uPlFR0LOzY/view?usp=drive_link"
     ],
     [
       "FixedGold",
@@ -80,7 +80,7 @@
       "4",
       "1",
       "[]",
-      "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
+      "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
       "RandomGold",
@@ -89,7 +89,7 @@
       "6",
       "1",
       "[\r\n  25,\r\n  40,\r\n  20,\r\n  15\r\n]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
       "DarkUpgrade",
@@ -98,7 +98,7 @@
       "3",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1Wh7A2RII6FbyC7rFCJ8MV1Wb_BjQwQVT/view?usp=drive_link"
     ],
     [
       "StartReroll",
@@ -107,7 +107,7 @@
       "5",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1or4zKu0Y-_D8OO8Ii_O0PM1YNbNTaCMB/view?usp=drive_link"
     ],
     [
       "Heal",
@@ -116,7 +116,7 @@
       "2",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1D5jxCcdhesE3EzG3mpyq98uPlFR0LOzY/view?usp=drive_link"
     ],
     [
       "FixedGold",
@@ -125,7 +125,7 @@
       "7",
       "1",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
       "RandomGold",
@@ -134,7 +134,7 @@
       "10",
       "1",
       "[\r\n  25,\r\n  30,\r\n  25,\r\n  15,\r\n  5\r\n]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
       "DarkUpgrade",
@@ -143,7 +143,7 @@
       "5",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1Wh7A2RII6FbyC7rFCJ8MV1Wb_BjQwQVT/view?usp=drive_link"
     ],
     [
       "StartReroll",
@@ -152,7 +152,7 @@
       "8",
       "2",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1or4zKu0Y-_D8OO8Ii_O0PM1YNbNTaCMB/view?usp=drive_link"
     ],
     [
       "ExactUpgrade",
@@ -161,7 +161,7 @@
       "1",
       "1",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1nYqX9NdHIFRIioExq_66aQ-v49CnbGjK/view?usp=drive_link"
     ],
     [
       "Relic",
@@ -170,7 +170,7 @@
       "1",
       "1",
       "[]",
-      "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+      "https://drive.google.com/file/d/1nYqX9NdHIFRIioExq_66aQ-v49CnbGjK/view?usp=drive_link"
     ]
   ]
 }

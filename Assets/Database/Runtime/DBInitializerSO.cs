@@ -76,14 +76,25 @@ namespace Database
             thisDirPath = ThisDirPath;
             dataDirFullPath = DataDirPath;
             targetClassFullPath = TargetClassPath;
+            targetFullPath = TargetDirPath;
 
             if (autoLoadXlsx)
-                _xlsxWatcher?.ChangeWatcherDir(DataDirPath);
+            {
+                _xlsxWatcher ??= new AutomaticWatcher(DataDirPath, new XlsxReader(), xlsxExtension, "~$");
+                _xlsxWatcher.CreateCsharp -= WriteClassDefinition;
+                _xlsxWatcher.CreateCsharp += WriteClassDefinition;
+                _xlsxWatcher.ChangeWatcherDir(DataDirPath);
+            }
             else 
                 _xlsxWatcher?.DisposeWatcher();
 
             if (autoLoadJson)
-                _jsonWatcher?.ChangeWatcherDir(DataDirPath);
+            {
+                _jsonWatcher ??= new AutomaticWatcher(DataDirPath, new RawJsonReader(), jsonExtension);
+                _jsonWatcher.CreateCsharp -= WriteClassDefinition;
+                _jsonWatcher.CreateCsharp += WriteClassDefinition;
+                _jsonWatcher.ChangeWatcherDir(DataDirPath);
+            }
             else
                 _jsonWatcher?.DisposeWatcher();
         }
@@ -161,17 +172,35 @@ namespace Database
         
         public void DownloadGoogleSheet()
         {
+            DownloadGoogleSheet(null);
+        }
+
+        public bool DownloadGoogleSheet(string targetSheetName)
+        {
             autoLoadJson = false;
             
-            var dfs = new GoogleSheetReader().Read(googleSheetUrl);
+            var dfs = new GoogleSheetReader().Read(googleSheetUrl, targetSheetName);
+            if (dfs.Count == 0)
+            {
+                if (string.IsNullOrWhiteSpace(targetSheetName))
+                    Debug.LogWarning("No sheets were downloaded from Google Sheet.");
+                else
+                    Debug.LogWarning($"Sheet '{targetSheetName}' was not found in the Google Sheet response.");
+                return false;
+            }
+
             List<string> classNames = new List<string>();
             foreach (var df in dfs)
             {
                 WriteClassDefinition(df);
                 classNames.Add(df.name);
             }
-            WriteDatabaseClass(classNames);
+
+            if (string.IsNullOrWhiteSpace(targetSheetName))
+                WriteDatabaseClass(classNames);
+
             AssetDatabase.Refresh();
+            return true;
         }
         
         Dictionary<string, DataFrame> _modifiedFiles = new ();

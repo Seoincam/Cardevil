@@ -13,7 +13,7 @@ namespace Database.Generated
         /// <summary> 이름 </summary>
         public Define.SlotRewardType ItemName;
         /// <summary> 희귀도 </summary>
-        public Define.RareType Rank;
+        public Cardevil.Core.Utils.Define.RareType Rank;
         /// <summary> 특수 값 ( RandomGold에서는 최소값을 넣어주세요 ) </summary>
         public string Comment;
         /// <summary> 가치 </summary>

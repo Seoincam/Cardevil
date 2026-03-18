@@ -2,27 +2,27 @@
   {
     "DisplayName": "(기본 red 플러시)",
     "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
-    "Rarity": 0,
+    "Rarity": "DefaultRelic",
     "RelicId": "Relic_001",
     "Level": 0,
     "EffectIds": [
-      "\"EVAL_RED_FLUSH_NEXT_ATTACK\""
+      "EVAL_RED_FLUSH_NEXT_ATTACK"
     ]
   },
   {
     "DisplayName": "유물1",
     "DisplayDescription": "<color=red>레드 플러시</color>의 효과 증폭: 다음 <color=yellow>2회 공격</color>의 <color=#FF0000>피해량이 300%</color>로 증폭됩니다.",
-    "Rarity": 2,
+    "Rarity": "FinBoss",
     "RelicId": "Relic_001",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RED_FLUSH_NEXT_ATTACK_ALT\""
+      "EVAL_RED_FLUSH_NEXT_ATTACK_ALT"
     ]
   },
   {
     "DisplayName": "(기본 green 플러시)",
     "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
-    "Rarity": 0,
+    "Rarity": "DefaultRelic",
     "RelicId": "Relic_002",
     "Level": 0,
     "EffectIds": []
@@ -30,7 +30,7 @@
   {
     "DisplayName": "유물2",
     "DisplayDescription": "그린 플러시의 효과 증폭: 보호막 양이 2로 증가합니다.",
-    "Rarity": 2,
+    "Rarity": "FinBoss",
     "RelicId": "Relic_002",
     "Level": 1,
     "EffectIds": []
@@ -38,7 +38,7 @@
   {
     "DisplayName": "(기본 blue 플러시)",
     "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
-    "Rarity": 0,
+    "Rarity": "DefaultRelic",
     "RelicId": "Relic_003",
     "Level": 0,
     "EffectIds": []
@@ -46,7 +46,7 @@
   {
     "DisplayName": "유물3",
     "DisplayDescription": "블루 플러시의 효과 증폭: 버리기 횟수 5회 추가 또는 묘지 -> 덱으로 불러오는 카드가 5장으로",
-    "Rarity": 2,
+    "Rarity": "FinBoss",
     "RelicId": "Relic_003",
     "Level": 1,
     "EffectIds": []
@@ -54,178 +54,178 @@
   {
     "DisplayName": "(기본 black 플러시)",
     "DisplayDescription": "기본 효과. 유물은 아니지만, 내부적으로는 유물로 처리.",
-    "Rarity": 0,
+    "Rarity": "DefaultRelic",
     "RelicId": "Relic_004",
     "Level": 0,
     "EffectIds": [
-      "\"EVAL_BLACK_FLUSH_NEXT_ATTACK\""
+      "EVAL_BLACK_FLUSH_NEXT_ATTACK"
     ]
   },
   {
     "DisplayName": "유물4",
     "DisplayDescription": "검정 플러시의 효과 증폭: 영구적 데미지 증가가 250%로 늘어납니다.",
-    "Rarity": 2,
+    "Rarity": "FinBoss",
     "RelicId": "Relic_004",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_BLACK_FLUSH_NEXT_ATTACK_ALT\""
+      "EVAL_BLACK_FLUSH_NEXT_ATTACK_ALT"
     ]
   },
   {
     "DisplayName": "유물5",
     "DisplayDescription": "<color=yellow>원페어</color>일 시 <color=#FF0000>피해량이 50</color>, <color=yellow>투페어</color>일 시 <color=#FF0000>피해량이 80</color> 증가합니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_005",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RANK_ONEPAIR_BONUS\"",
-      "\"EVAL_RANK_TWOPAIR_BONUS\""
+      "EVAL_RANK_ONEPAIR_BONUS",
+      "EVAL_RANK_TWOPAIR_BONUS"
     ]
   },
   {
     "DisplayName": "유물6",
     "DisplayDescription": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가. (스티플이라면 +180)",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_006",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RANK_STRAIGHT_BONUS\"",
-      "\"EVAL_RED_FLUSH_BONUS\"",
-      "\"EVAL_GREEN_FLUSH_BONUS\"",
-      "\"EVAL_BLUE_FLUSH_BONUS\"",
-      "\"EVAL_BLACK_FLUSH_BONUS\"",
-      "\"EVAL_RANK_STRAIGHTFLUSH_BONUS\""
+      "EVAL_RANK_STRAIGHT_BONUS",
+      "EVAL_RED_FLUSH_BONUS",
+      "EVAL_GREEN_FLUSH_BONUS",
+      "EVAL_BLUE_FLUSH_BONUS",
+      "EVAL_BLACK_FLUSH_BONUS",
+      "EVAL_RANK_STRAIGHTFLUSH_BONUS"
     ]
   },
   {
     "DisplayName": "유물7",
     "DisplayDescription": "트리플(+60), 포카드 (+300) 증가시킵니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_007",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RANK_TRIPLE_BONUS\"",
-      "\"EVAL_RANK_FOURCARD_BONUS\""
+      "EVAL_RANK_TRIPLE_BONUS",
+      "EVAL_RANK_FOURCARD_BONUS"
     ]
   },
   {
     "DisplayName": "유물8",
     "DisplayDescription": "하이카드 공격이 다음 데미지를 125%로 증가시킵니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_008",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_STATE_PREV_HIGH_NOW_ATTACK\""
+      "EVAL_STATE_PREV_HIGH_NOW_ATTACK"
     ]
   },
   {
     "DisplayName": "유물9",
     "DisplayDescription": "33.33% 확률로, 매 공격의 데미지가 120%로 증가합니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_009",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RANDOM_3333\""
+      "EVAL_RANDOM_3333"
     ]
   },
   {
     "DisplayName": "유물10",
     "DisplayDescription": "체력이 1이라면, 모든 데미지를 150%로 증가시킵니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_010",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_HP1\""
+      "EVAL_HP1"
     ]
   },
   {
     "DisplayName": "유물11",
     "DisplayDescription": "각 카드의 기본 데미지를 +10 증가시킵니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_011",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_STAT_BASE_DMG_PLUS\""
+      "EVAL_STAT_BASE_DMG_PLUS"
     ]
   },
   {
     "DisplayName": "유물12",
     "DisplayDescription": "적을 처치할수록, 카드의 기본 데미지가 +1씩 증가합니다.",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_012",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_STACK_KILL_BONUS_DMG\""
+      "EVAL_STACK_KILL_BONUS_DMG"
     ]
   },
   {
     "DisplayName": "유물13",
     "DisplayDescription": "족보를 사용한 횟수만큼, 족보 보너스 점수가 영구히 증가",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_013",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RANK_COUNT\""
+      "EVAL_RANK_COUNT"
     ]
   },
   {
     "DisplayName": "유물14",
     "DisplayDescription": "하이카드 공격 시, 데미지 2배",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_014",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_ON_HIGH_CARD\""
+      "EVAL_ON_HIGH_CARD"
     ]
   },
   {
     "DisplayName": "유물15",
     "DisplayDescription": "가장 최근 족보 == 현재 족보 -> 데미지 10% 증가",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_015",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_PREV_RANK\""
+      "EVAL_PREV_RANK"
     ]
   },
   {
     "DisplayName": "유물16",
     "DisplayDescription": "체력이 3이라면, 모든 데미지 110%",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_016",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_HP3\""
+      "EVAL_HP3"
     ]
   },
   {
     "DisplayName": "유물17",
     "DisplayDescription": "66.66% 확률로 최종데미지 110%",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_017",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_RANDOM_6666\""
+      "EVAL_RANDOM_6666"
     ]
   },
   {
     "DisplayName": "유물18",
     "DisplayDescription": "6,7,8,9,10 기본 데미지 +15",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_018",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_ON_6_7_8_9_10\""
+      "EVAL_ON_6_7_8_9_10"
     ]
   },
   {
     "DisplayName": "유물19",
     "DisplayDescription": "2,3,4,5 기본 데미지 + 20",
-    "Rarity": 1,
+    "Rarity": "MidBoss",
     "RelicId": "Relic_019",
     "Level": 1,
     "EffectIds": [
-      "\"EVAL_ON_2_3_4_5\""
+      "EVAL_ON_2_3_4_5"
     ]
   }
 ]
