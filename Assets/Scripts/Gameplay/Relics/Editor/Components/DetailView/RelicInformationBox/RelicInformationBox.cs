@@ -55,23 +55,31 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             _nameField = this.Q<TextField>("NameField");
             _descField = this.Q<TextField>("DescriptionField");
             
+            // 텍스트/이미지 변경 시 미리보기 동기화
             _iconField.RegisterValueChangedCallback(evt => _iconPreview.sprite = evt.newValue as Sprite);
             _nameField.RegisterValueChangedCallback(evt => _titlePreview.text = evt.newValue);
             _descField.RegisterValueChangedCallback(evt => _descPreview.text = evt.newValue);
-            
-            _idField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
-            _rarityField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
-            _iconField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
-            _nameField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
-            _descField.RegisterValueChangedCallback(_ => DataChanged?.Invoke());
+
+            // 데이터가 사용자 입력으로 인해 변경될 때만 DataChanged 이벤트 발생
+            _idField.RegisterValueChangedCallback(evt => { if (evt.target == _idField) DataChanged?.Invoke(); });
+            _rarityField.RegisterValueChangedCallback(evt => { if (evt.target == _rarityField) DataChanged?.Invoke(); });
+            _iconField.RegisterValueChangedCallback(evt => { if (evt.target == _iconField) DataChanged?.Invoke(); });
+            _nameField.RegisterValueChangedCallback(evt => { if (evt.target == _nameField) DataChanged?.Invoke(); });
+            _descField.RegisterValueChangedCallback(evt => { if (evt.target == _descField) DataChanged?.Invoke(); });
 
             _copyIdButton.clicked += OnCopyIdButtonClicked;
         }
 
-        public void BindRelic(RelicSO relic)
+        public void BindRelic(SerializedObject serializedRelic)
         {
-            var serializedRelic = new SerializedObject(relic);
+            // 기존 바인딩 해제
+            this.Unbind();
+            
+            // 새로 선택된 SerializedObject로 바인딩
             this.Bind(serializedRelic);
+
+            var relic = serializedRelic.targetObject as RelicSO;
+            if (!relic) return;
 
             bool isLocal = relic.FromLocal;
             
@@ -86,6 +94,11 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             {
                 AddComment(_helpBoxContainer, relic.Data.CommentForEditor);
             }
+            
+            // 바인딩 직후에 미리보기 영역 수동 갱신 (선택이 바뀔 때 값이 채워지도록)
+            _iconPreview.sprite = relic.Data.DisplayIcon;
+            _titlePreview.text = relic.Data.DisplayName;
+            _descPreview.text = relic.Data.DisplayDescription;
         }
 
         private void OnCopyIdButtonClicked()

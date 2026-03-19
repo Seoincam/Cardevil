@@ -1,8 +1,10 @@
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Relics.Core;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,6 +18,9 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
 
         private readonly ScrollView _effectScrollView;
         private readonly Button _addEffectBtn;
+        
+        private readonly List<EffectBox> _effectBoxPool = new();
+        private static List<(string displayName, Type type)> _cachedEffectTypes;
 
         public EffectList()
         {
@@ -36,17 +41,62 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
 
             if (_addEffectBtn != null)
                 _addEffectBtn.clicked += ShowAddEffectMenu;
+                
+            CacheEffectTypes();
         }
 
-        public void BindRelic(RelicSO relic)
+        private void CacheEffectTypes()
         {
-            var serializedRelic = new SerializedObject(relic);
+            if (_cachedEffectTypes != null) return;
+            
+            _cachedEffectTypes = new List<(string, Type)>();
+            
+            var effectTypes = TypeCache
+                .GetTypesDerivedFrom<EffectDefinition>()
+                .Where(t => !t.IsAbstract).ToList();
+
+            foreach (Type type in effectTypes)
+            {
+                string displayName = type.Name;
+                try
+                {
+                    // 단 한 번만 생성하여 이름을 가져오고 캐싱함
+                    if (Activator.CreateInstance(type) is EffectDefinition tempInstance)
+                    {
+                        displayName = tempInstance.EditorName;
+                    }
+                }
+                catch (Exception e)
+                {
+                    LogEx.LogWarning($"[{type.Name} 임시 인스턴스 생성 실패, 기본 이름을 사용함.");
+                }
+                
+                _cachedEffectTypes.Add((displayName, type));
+            }
+        }
+
+        public void BindRelic(SerializedObject serializedRelic)
+        {
+            foreach (var box in _effectBoxPool)
+            {
+                box.ClearProperties();
+            }
+            this.Unbind();
+            
             _currentRelic = serializedRelic;
             
-            SerializedProperty dataProp = serializedRelic.FindProperty("data");
+            if (_currentRelic == null || _currentRelic.targetObject == null)
+            {
+                _effectsProp = null;
+                RefreshEffectListUI();
+                return;
+            }
+            
+            SerializedProperty dataProp = _currentRelic.FindProperty("data");
             if (dataProp == null)
             {
                 LogEx.LogError("부모인 data 프로퍼티를 찾을 수 없습니다");
+                _effectsProp = null;
                 return;
             }
 
@@ -62,53 +112,59 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
 
         private void RefreshEffectListUI()
         {
-            if (_currentRelic == null) return;
-
-            foreach (var child in _effectScrollView.Children())
+            if (_currentRelic == null || _effectsProp == null)
             {
-                if (child is EffectBox effectBox)
-                    effectBox.DeleteClicked = null;
+                // 선택된 유물이 없으면 모두 숨김
+                foreach (var box in _effectBoxPool)
+                {
+                    box.style.display = DisplayStyle.None;
+                }
+                return;
             }
 
-            _effectScrollView.Clear();
+            _currentRelic.Update();
+            int targetCount = _effectsProp.arraySize;
 
-            for (int i = 0; i < _effectsProp.arraySize; i++)
+            while (_effectBoxPool.Count < targetCount)
             {
-                var effectProp = _effectsProp.GetArrayElementAtIndex(i);
-
-                var effectBox = new EffectBox(effectProp, i);
-                effectBox.DeleteClicked += OnDeleteClicked;
-
-                _effectScrollView.Add(effectBox);
+                var newBox = new EffectBox();
+                newBox.DeleteClicked += OnDeleteClicked;
+                _effectBoxPool.Add(newBox);
+                _effectScrollView.Add(newBox); // 스크롤 뷰에 추가
             }
+
+            for (int i = 0; i < _effectBoxPool.Count; i++)
+            {
+                var effectBox = _effectBoxPool[i];
+
+                effectBox.ClearProperties();
+
+                if (i < targetCount)
+                {
+                    effectBox.style.display = DisplayStyle.Flex;
+                    var effectProp = _effectsProp.GetArrayElementAtIndex(i);
+                    effectBox.BindEffect(effectProp, i);
+                }
+                else
+                {
+                    effectBox.style.display = DisplayStyle.None;
+                }
+            }
+            
+            this.Bind(_currentRelic);
         }
 
         private void ShowAddEffectMenu()
         {
             if (_currentRelic == null) return;
 
-            var effectTypes = TypeCache
-                .GetTypesDerivedFrom<EffectDefinition>()
-                .Where(t => !t.IsAbstract).ToList();
-
             GenericMenu menu = new();
-            foreach (Type type in effectTypes)
+            
+            // 캐싱된 데이터를 사용하여 메뉴 구성
+            foreach (var cache in _cachedEffectTypes)
             {
-                string displayName = type.Name;
-
-                try
-                {
-                    if (Activator.CreateInstance(type) is EffectDefinition tempInstance)
-                    {
-                        displayName = tempInstance.EditorName;
-                    }
-                }
-                catch (Exception e)
-                {
-                    LogEx.LogWarning($"[{type.Name} 임시 인스턴스 생성 실패, 기본 이름을 사용함.");
-                }
-                
-                menu.AddItem(new GUIContent(displayName), false, () => AddNewEffect(type));
+                Type captureType = cache.type; 
+                menu.AddItem(new GUIContent(cache.displayName), false, () => AddNewEffect(captureType));
             }
 
             menu.ShowAsContext();
@@ -116,18 +172,24 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
 
         private void AddNewEffect(Type effectType)
         {
+            if (_currentRelic == null || _effectsProp == null) return;
+
+            _currentRelic.Update(); 
             object newEffect = Activator.CreateInstance(effectType);
             _effectsProp.arraySize++;
             _effectsProp.GetArrayElementAtIndex(_effectsProp.arraySize - 1).managedReferenceValue = newEffect;
 
             _currentRelic.ApplyModifiedProperties();
-            RefreshEffectListUI();
+            
+            this.Unbind();
+            RefreshEffectListUI(); 
         }
 
         private void OnDeleteClicked(int index)
         {
             if (_currentRelic == null || _effectsProp == null) return;
 
+            _currentRelic.Update();
             if (index < 0 || index >= _effectsProp.arraySize) return;
             
             int initialSize = _effectsProp.arraySize;
@@ -136,12 +198,12 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
 
             if (_effectsProp.arraySize == initialSize && index < _effectsProp.arraySize)
             {
-                // 리스트 요소가 객체인 경우, 삭제 명령은 해당 객체를 null로 만들기만 함.
-                // 따라서, 해당 칸 자체를 날리기 위해선 두 번 호출해야함.
                 _effectsProp.DeleteArrayElementAtIndex(index);
             }
 
             _currentRelic.ApplyModifiedProperties();
+            
+            this.Unbind();
             RefreshEffectListUI();
         }
     }
