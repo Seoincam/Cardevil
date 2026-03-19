@@ -13,9 +13,8 @@ namespace Database.Generated
         public string stringVar;
         /// <summary> 숫자 </summary>
         public int integerVar;
-        /// <summary> (Reference:List<Enum<Cardevil.Core.Utils.Define.SlotRewardType>>) 
-         /// 풀네임 enum리스트 </summary>
-        public string fullEnumList;
+        /// <summary> 풀네임 enum리스트 </summary>
+        public List<Cardevil.Core.Utils.Define.SlotRewardType> fullEnumList;
         /// <summary> 짧은 이름 enum 리스트 </summary>
         public Cardevil.Core.Utils.Define.SlotRewardType shortEnumList;
         /// <summary> 커스텀 클래스 </summary>

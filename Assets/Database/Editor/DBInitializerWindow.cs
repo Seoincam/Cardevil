@@ -108,6 +108,20 @@ namespace Database
                 SetInitializer(initializer);
         }
 
+        private void UseCurrentSelection()
+        {
+            if (TryGetSelectedInitializer(out var selectedInitializer))
+            {
+                SetInitializer(selectedInitializer, true);
+                return;
+            }
+
+            string message = _language == UiLanguage.Korean
+                ? "Project 창에서 DBInitializerSO 에셋을 먼저 선택하세요."
+                : "Select a DBInitializerSO asset in the Project window first.";
+            EditorUtility.DisplayDialog(L("dialog.title"), message, L("dialog.ok"));
+        }
+
         private string L(string key)
         {
             return DBInitializerWindowLocalization.Get(_language, key);
@@ -157,7 +171,7 @@ namespace Database
             var headerActions = new VisualElement();
             headerActions.AddToClassList("db-toolbar-actions");
             headerActions.Add(CreateLanguageDropdown());
-            headerActions.Add(CreateToolbarButton(L("button.useSelection"), L("tooltip.useSelection"), () => SetInitializer(Selection.activeObject as DBInitializerSO, true), false));
+            headerActions.Add(CreateToolbarButton(L("button.useSelection"), L("tooltip.useSelection"), UseCurrentSelection, false));
             headerActions.Add(CreateToolbarButton(L("button.reloadPreview"), L("tooltip.reloadPreview"), ReloadPreviewData, true));
             header.Add(headerActions);
 
@@ -197,7 +211,7 @@ namespace Database
             if (_initializer != null)
                 return;
 
-            if (Selection.activeObject is DBInitializerSO selectedInitializer)
+            if (TryGetSelectedInitializer(out var selectedInitializer))
             {
                 _initializer = selectedInitializer;
             }
@@ -215,6 +229,24 @@ namespace Database
             {
                 _initializerField.SetValueWithoutNotify(_initializer);
             }
+        }
+
+        private static bool TryGetSelectedInitializer(out DBInitializerSO initializer)
+        {
+            initializer = Selection.activeObject as DBInitializerSO;
+            if (initializer != null)
+            {
+                return true;
+            }
+
+            var selectedAssets = Selection.GetFiltered<DBInitializerSO>(SelectionMode.Assets);
+            if (selectedAssets != null && selectedAssets.Length > 0)
+            {
+                initializer = selectedAssets[0];
+                return true;
+            }
+
+            return false;
         }
 
         private DropdownField CreateLanguageDropdown()

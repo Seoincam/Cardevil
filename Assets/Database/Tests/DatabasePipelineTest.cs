@@ -184,5 +184,46 @@ namespace Machamy.McDatabase.Tests
             Assert.AreEqual(1, filtered.Count);
             Assert.AreEqual("Beta", filtered[0].name);
         }
+
+        [Test]
+        public void ClassDefinitionFactory_GenerateClassDefinition_PreservesFullEnumAndClassTypes()
+        {
+            var df = new DataFrame("Sample")
+            {
+                varNames = new[] { "fullEnumList", "shortEnum", "shortNestedEnum", "customClass" },
+                types = new[]
+                {
+                    "List<Enum<Cardevil.Core.Utils.Define.SlotRewardType>>",
+                    "Enum<SlotRewardType>",
+                    "Enum<RareType>",
+                    "Class<DBSampleEntryClassJson>"
+                },
+                comments = new[] { string.Empty, string.Empty, string.Empty, string.Empty },
+                data = Array.Empty<string[]>()
+            };
+
+            string generated = ClassDefinitionFactory.GenerateClassDefinition(df);
+
+            StringAssert.Contains("public List<Cardevil.Core.Utils.Define.SlotRewardType> fullEnumList;", generated);
+            StringAssert.Contains("public Cardevil.Core.Utils.Define.SlotRewardType shortEnum;", generated);
+            StringAssert.Contains("public Cardevil.Core.Utils.Define.RareType shortNestedEnum;", generated);
+            StringAssert.Contains("public Database.DBSampleEntryClassJson customClass;", generated);
+        }
+
+        [Test]
+        public void ClassDefinitionFactory_GenerateClassDefinition_NormalizesLegacyEnumNamespace()
+        {
+            var df = new DataFrame("Sample")
+            {
+                varNames = new[] { "Rarity" },
+                types = new[] { "Enum<Cardevil.Relics.RelicRarity>" },
+                comments = new[] { string.Empty },
+                data = Array.Empty<string[]>()
+            };
+
+            string generated = ClassDefinitionFactory.GenerateClassDefinition(df);
+
+            StringAssert.Contains("public Cardevil.Gameplay.Items.RelicRarity Rarity;", generated);
+        }
     }
 }

@@ -1,4 +1,3 @@
-using Cardevil.Core.Utils;
 using System.Text;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace Database.Generated
     public partial class MachineReward: IDBData {
 
         /// <summary> 이름 </summary>
-        public Define.SlotRewardType ItemName;
+        public Cardevil.Core.Utils.Define.SlotRewardType ItemName;
         /// <summary> 희귀도 </summary>
         public Cardevil.Core.Utils.Define.RareType Rank;
         /// <summary> 특수 값 ( RandomGold에서는 최소값을 넣어주세요 ) </summary>
