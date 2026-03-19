@@ -21,8 +21,16 @@ MonoBehaviour:
     displayName: "\uC2DC\uD2B8 \uC5F0\uB3D9 \uD14C\uC2A4\uD2B8 \uC720\uBB3C"
     displayDescription: "\uC774\uB7F0 \uC720\uBB3C\uC740 \uC874\uC7AC\uD558\uC9C0
       \uC54A\uC2B5\uB2C8\uB2E4. \uCF54\uBA58\uD2B8\uB97C \uCC38\uACE0\uD558\uC138\uC694."
-    effects: []
+    effects:
+    - rid: 5725363072088146292
   dataSource: 1
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 5725363072088146292
+      type: {class: RandomChanceScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 5
+        scoreOperatorType: 1
+        value: 1.2
+        probability: 0.3333
