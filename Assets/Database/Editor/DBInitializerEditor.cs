@@ -10,7 +10,10 @@ namespace Database
     public class DBInitializerEditor: UnityEditor.Editor
     {
         #region code
- private const string gsCode = @"/** Apps Script **/
+ internal const string GoogleAppsScriptCode = @"/** Apps Script **/
+/**
+ * 웹 앱으로 GET 요청이 오면 JSON을 출력합니다.
+ */
 function doGet() {
   const jsonOutput = exportSheetToJson_XlsxStyle();
   return ContentService.createTextOutput(jsonOutput).setMimeType(ContentService.MimeType.JSON);
@@ -22,7 +25,7 @@ const KEY_TYPE    = [""type"",""타입""];
 const KEY_VARNAME = [""varname"",""variablename"",""헤더"",""변수명"",""변수"",""header""];
 const KEY_DATA    = [""data"",""데이터"",""value"",""값""];
 
-/** 메인 */
+/** 메인 JSON 내보내기 함수 */
 function exportSheetToJson_XlsxStyle() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheets = ss.getSheets();
@@ -143,7 +146,7 @@ function exportSheetToJson_XlsxStyle() {
   return JSON.stringify(result, null, 2);
 }
 
-/* ================== 유틸 ================== */
+/* ================== 기존 유틸 함수들 (수정 없음) ================== */
 
 function toKey(v) {
   if (v == null) return """";
@@ -226,6 +229,44 @@ function compactOrNullPad(arr) {
   return out;
 }
 
+/* ================================================================
+ * * ▼▼▼ 여기에 드롭다운 누적 스크립트 추가 ▼▼▼
+ * * ================================================================ */
+
+/**
+ * 시트 편집 시 드롭다운 값 누적 기능
+ * @param {GoogleAppsScript.Events.SheetsOnEdit} e
+ */
+function onEdit(e) {
+  // --- ▼ 설정하실 부분 ▼ ---
+  const sheetName = ""Sheet1"";     // 이 기능이 작동하길 원하는 시트의 이름 (예: ""MySheet"")
+  const columnNumber = 1;       // 이 기능이 작동하길 원하는 열 번호 (A열=1, B열=2, C열=3)
+  const separator = "", "";       // 값을 구분할 문자 (예: "", "" 또는 "" -> "")
+  // --- ▲ 설정하실 부분 ▲ ---
+
+  const range = e.range;
+  const sheet = range.getSheet();
+  const newValue = e.value;     // 새로 선택된 값 (예: ""OnePair"")
+  const oldValue = e.oldValue;  // 덮어쓰기 전의 값 (예: ""OnePair, TwoPair"")
+
+
+  if (sheet.getName() !== sheetName || range.getColumn() !== columnNumber) {
+    return;
+  }
+
+  if (!newValue || !oldValue || (newValue && newValue.includes(separator))) {
+    return;
+  }
+
+  // 3. 위 조건들을 통과했다면 (예: A열, Sheet1, 셀에 ""값1""이 있는데 ""값2""를 선택)
+  //    -> 기존 값과 새 값을 합쳐서 셀에 다시 덮어씁니다.
+  const combinedValue = oldValue + separator + newValue;
+  
+  // 비동기 문제를 피하기 위해 setValue 직후 바로 return 합니다.
+  range.setValue(combinedValue);
+}
+
+
 
 ";
 
@@ -242,6 +283,12 @@ function compactOrNullPad(arr) {
             EditorGUILayout.Space(10); // 보기 좋게 간격 추가
 
             // 인스펙터에 Google Sheet 관련 버튼들을 그립니다.
+            if (GUILayout.Button("Open Toolkit Window"))
+            {
+                Selection.activeObject = target;
+                EditorApplication.ExecuteMenuItem("Tools/Database/Initializer Window");
+            }
+
             if (GUILayout.Button("Download Google Sheet JSON"))
             {
                 if (string.IsNullOrEmpty(target.googleSheetUrl))
@@ -266,7 +313,7 @@ function compactOrNullPad(arr) {
 
             if (GUILayout.Button("Get .gs code"))
             {
-                EditorGUIUtility.systemCopyBuffer = gsCode;
+                EditorGUIUtility.systemCopyBuffer = GoogleAppsScriptCode;
                 EditorUtility.DisplayDialog("Copy to Clipboard", "Google Apps Script code copied to clipboard", "OK");
             }
 
@@ -292,10 +339,7 @@ function compactOrNullPad(arr) {
                 }
             }
         }
-        // --- 수정된 부분 끝 ---
 
-
-        // --- 추가된 부분 시작: 상단 메뉴 및 캐시 관리 정적 메소드들 ---
 
         [MenuItem("Tools/Database/Open Cache Folder")]
         private static void OpenPersistentDataPath()
@@ -317,6 +361,5 @@ function compactOrNullPad(arr) {
                 Debug.Log("Image cache folder does not exist.");
             }
         }
-        // --- 추가된 부분 끝 ---
     }
 }

@@ -117,17 +117,16 @@ namespace Database
             
             foreach (var varName in findTargetVariables)
             {
-                string pascalVarName = char.ToUpper(varName[0]) + varName.Substring(1);
                 string trimmedVarName = varName.Trim();
                 if (!IsValidVarName(trimmedVarName))
                 {
                     Debug.LogWarning($"[MDatabase] FindTargetVariables에 유효하지 않은 변수명이 포함되어 있습니다: '{varName}'");
                     continue;
                 }
+                string pascalVarName = char.ToUpper(trimmedVarName[0]) + trimmedVarName.Substring(1);
                 
-                sb.AppendLine($"        public T FindBy{pascalVarName}<T>(string {varName}) where T : class");
+                sb.AppendLine($"        public T FindBy{pascalVarName}<T>(string {trimmedVarName}) where T : class");
                 sb.AppendLine("        {");
-                sb.AppendLine("            if (typeof(T) == null) return null;");
                 sb.AppendLine("            switch (typeof(T).Name)");
                 sb.AppendLine("            {");
                 foreach (var className in classNames)
@@ -140,7 +139,7 @@ namespace Database
                     sb.AppendLine($"                case \"{className}\":");
                     sb.AppendLine($"                    foreach (var instance in {className}List)");
                     sb.AppendLine($"                    {{");
-                    sb.AppendLine($"                        if (instance.{varName} == {varName.ToLower()})");
+                    sb.AppendLine($"                        if (instance.{trimmedVarName} == {trimmedVarName})");
                     sb.AppendLine($"                            return instance as T;");
                     sb.AppendLine($"                    }}");
                     sb.AppendLine("                    break;");

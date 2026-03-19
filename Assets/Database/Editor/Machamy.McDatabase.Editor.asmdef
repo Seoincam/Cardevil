@@ -2,7 +2,8 @@
     "name": "Machamy.McDatabase.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:a3efef3707fb8414eb543eb9cb093c2f"
+        "GUID:a3efef3707fb8414eb543eb9cb093c2f",
+        "UnityEditor.TestRunner"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

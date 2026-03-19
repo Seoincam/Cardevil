@@ -1,114 +1,145 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
+using System.Reflection;
 using UnityEngine;
 
 namespace Database
 {
-    public static class ReflectionUtil 
+    public static class ReflectionUtil
     {
-        private static readonly Dictionary<string, Type> TypeCache = new Dictionary<string, Type>();
-        
+        private static readonly Dictionary<string, Type> TypeLookupCache = new Dictionary<string, Type>();
+        private static readonly Dictionary<string, List<Type>> DerivedTypeCache = new Dictionary<string, List<Type>>();
+
         public static Type FindTypeByFullName(string fullName, bool searchAllAssembliesIfFailed = true)
         {
-            // Type.GetType 실패 시 모든 어셈블리 탐색
-            var t = Type.GetType(fullName);
-            if (t != null) return t;
-            if (!searchAllAssembliesIfFailed) return null;
+            if (string.IsNullOrWhiteSpace(fullName))
+                return null;
 
-            Debug.LogWarning($"[ReflectionUtil] Type.GetType 실패: {fullName}, 모든 어셈블리 탐색 시도");
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            if (TypeLookupCache.TryGetValue(fullName, out var cachedType))
+                return cachedType;
+
+            var type = Type.GetType(fullName);
+            if (type != null)
+            {
+                TypeLookupCache[fullName] = type;
+                return type;
+            }
+
+            if (!searchAllAssembliesIfFailed)
+                return null;
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
                 {
-                    t = asm.GetType(fullName, throwOnError: false, ignoreCase: false);
-                    if (t != null) return t;
+                    type = assembly.GetType(fullName, throwOnError: false, ignoreCase: false);
+                    if (type != null)
+                    {
+                        TypeLookupCache[fullName] = type;
+                        return type;
+                    }
                 }
-                catch { /* 일부 동적/에디터 어셈블리 접근 실패 무시 */ }
+                catch
+                {
+                }
             }
+
+            Debug.LogWarning($"[ReflectionUtil] Failed to resolve type '{fullName}'.");
             return null;
         }
-        
+
         public static Type FindTypeByName(string typeName, bool searchAllAssembliesIfFailed = true)
         {
-            Type t = null;
-            Debug.LogWarning($"[ReflectionUtil] Type 이름 탐색 실패: {typeName}, 모든 어셈블리 탐색 시도");
-            foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+            if (string.IsNullOrWhiteSpace(typeName))
+                return null;
+
+            if (TypeLookupCache.TryGetValue(typeName, out var cachedType))
+                return cachedType;
+
+            var type = Type.GetType(typeName);
+            if (type != null)
+            {
+                TypeLookupCache[typeName] = type;
+                return type;
+            }
+
+            if (!searchAllAssembliesIfFailed)
+                return null;
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 try
                 {
-                    t = asm.GetTypes().FirstOrDefault(type => type.Name == typeName);
-                    if (t != null) return t;
+                    type = GetLoadableTypes(assembly).FirstOrDefault(candidate =>
+                        candidate.Name == typeName || candidate.Name.Replace("+", ".") == typeName);
+
+                    if (type != null)
+                    {
+                        TypeLookupCache[typeName] = type;
+                        return type;
+                    }
                 }
-                catch { /* 일부 동적/에디터 어셈블리 접근 실패 무시 */ }
+                catch
+                {
+                }
             }
+
+            Debug.LogWarning($"[ReflectionUtil] Failed to resolve type name '{typeName}'.");
             return null;
         }
-        
+
         public static List<Type> FindDerivedTypes<T>() where T : class
         {
-            Type baseType = typeof(T);
-            
+            return FindDerivedTypes(typeof(T));
+        }
+
+        public static List<Type> FindDerivedTypes(Type baseType)
+        {
             return AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(t => t != baseType && baseType.IsAssignableFrom(t) && !t.IsAbstract)
+                .SelectMany(GetLoadableTypes)
+                .Where(type => type != baseType && baseType.IsAssignableFrom(type) && !type.IsAbstract)
                 .ToList();
         }
 
-        /// <summary>
-        /// 제네릭 타입 T를 상속하는 모든 타입을 캐시를 사용하여 찾음
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
         public static List<Type> FindDerivedTypesWithCache<T>()
         {
-            Type baseType = typeof(T);
-            return FindDerivedTypesWithCache(baseType);
+            return FindDerivedTypesWithCache(typeof(T));
         }
-        
+
         public static List<Type> FindDerivedTypesWithCache(Type baseType)
         {
             string cacheKey = baseType.FullName;
-            if(cacheKey == null)
-                throw new ArgumentException("Base type must have a full name.");
-            
-            if (TypeCache.ContainsKey(cacheKey))
-            {
-                return TypeCache.Values
-                    .Where(t => t != baseType && baseType.IsAssignableFrom(t) && !t.IsAbstract)
-                    .ToList();
-            }
+            if (cacheKey == null)
+                throw new ArgumentException("Base type must have a full name.", nameof(baseType));
 
-            var derivedTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
-                .Where(t => t != baseType && baseType.IsAssignableFrom(t) && !t.IsAbstract)
-                .ToList();
+            if (DerivedTypeCache.TryGetValue(cacheKey, out var cachedTypes))
+                return new List<Type>(cachedTypes);
 
-            foreach (var type in derivedTypes)
-            {
-                TypeCache[type.FullName] = type;
-            }
+            var derivedTypes = FindDerivedTypes(baseType);
+            DerivedTypeCache[cacheKey] = derivedTypes;
 
-            return derivedTypes;
+            foreach (var type in derivedTypes.Where(type => !string.IsNullOrEmpty(type.FullName)))
+                TypeLookupCache[type.FullName] = type;
+
+            return new List<Type>(derivedTypes);
         }
-        
-        public static Attribute GetAttribute<T>(Type type) where T : Attribute
+
+        public static T GetAttribute<T>(Type type) where T : Attribute
         {
             var attrs = type.GetCustomAttributes(typeof(T), inherit: false);
             if (attrs.Length > 0)
-            {
                 return attrs[0] as T;
-            }
+
             return null;
         }
-        
+
         public static bool IsDerivedFrom<T>(Type type) where T : class
         {
             Type baseType = typeof(T);
             return type != baseType && baseType.IsAssignableFrom(type);
         }
-        
+
         public static bool IsDerivedFrom(Type type, Type baseType)
         {
             return type != baseType && baseType.IsAssignableFrom(type);
@@ -116,19 +147,43 @@ namespace Database
 
         public static bool IsValidFullEnumType(string enumName)
         {
-            return FindTypeByFullName(enumName) is Type t && t.IsEnum;
+            return FindTypeByFullName(enumName) is Type type && type.IsEnum;
         }
-        
+
         public static bool IsValidEnumType(string enumName, out string @namespace)
         {
             @namespace = null;
-            Type t = FindTypeByName(enumName);
-            if (t != null && t.IsEnum)
+            Type type = FindTypeByName(enumName);
+            if (type != null && type.IsEnum)
             {
-                @namespace = t.Namespace;
+                @namespace = type.Namespace;
                 return true;
             }
+
             return false;
+        }
+
+        internal static bool HasDerivedTypeCache(Type baseType)
+        {
+            return baseType?.FullName != null && DerivedTypeCache.ContainsKey(baseType.FullName);
+        }
+
+        internal static void ClearCachesForTests()
+        {
+            TypeLookupCache.Clear();
+            DerivedTypeCache.Clear();
+        }
+
+        private static IEnumerable<Type> GetLoadableTypes(Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                return ex.Types.Where(type => type != null);
+            }
         }
     }
 }

@@ -12,7 +12,7 @@
   "types": [
     "string",
     "int",
-    "List<Enum<Define.SlotRewardType>>",
+    "List<Enum<Cardevil.Core.Utils.Define.SlotRewardType>>",
     "Enum<SlotRewardType>",
     "Class<DBSampleEntryClassJson>",
     "List<Class<DBSampleEntryClassJson>>",

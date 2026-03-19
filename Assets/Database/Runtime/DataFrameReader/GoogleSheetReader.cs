@@ -81,6 +81,11 @@ namespace Database.DataReader
         
         public List<DataFrame> Read(string link)
         {
+            return Read(link, null);
+        }
+
+        public List<DataFrame> Read(string link, string sheetName)
+        {
             if (string.IsNullOrEmpty(link))
             {
                 Debug.LogError("[GoogleSheetReader] path가 비었습니다.");
@@ -100,18 +105,29 @@ namespace Database.DataReader
                     {
                         wc.Encoding = Encoding.UTF8;
                         string json = wc.DownloadString(link);
-                        return _rawJsonReader.ReadJSON(json);
+                        return FilterDataFrames(_rawJsonReader.ReadJSON(json), sheetName);
                     }
-                    return null;
                 }
                 
-                return null;
+                return new List<DataFrame>();
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[GoogleSheetReader] Read 실패: {ex}");
                 return new List<DataFrame>();
             }
+        }
+
+        internal static List<DataFrame> FilterDataFrames(List<DataFrame> dataFrames, string sheetName)
+        {
+            if (dataFrames == null)
+                return new List<DataFrame>();
+
+            if (string.IsNullOrWhiteSpace(sheetName))
+                return new List<DataFrame>(dataFrames);
+
+            return dataFrames.FindAll(df =>
+                df != null && string.Equals(df.name, sheetName, StringComparison.OrdinalIgnoreCase));
         }
         
     }
