@@ -36,9 +36,10 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
                 
                 if (executeNext)
                 {
+                    float finalValue = Definition.GetCalculatedValue(Context);
                     scoreOperator = new ScoreOperator
                     {
-                        Type = Definition.OperatorType, Value = Definition.Value, Source = this
+                        Type = Definition.OperatorType, Value = finalValue, Source = this
                     };
                     executeNext = false;
                 }

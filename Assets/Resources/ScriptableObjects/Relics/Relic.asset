@@ -51,5 +51,10 @@ MonoBehaviour:
       data:
         scoreStepType: 1
         scoreOperatorType: 0
-        value: 30
+        baseValue: 30
+        valueResolver:
+          rid: 5725363090318164063
         targetHandRank: 1
+    - rid: 5725363090318164063
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 

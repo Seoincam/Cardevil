@@ -38,7 +38,7 @@ namespace Cardevil.Gameplay.Relics.Editor
         private const string RelicSavePath = "Assets/Resources/ScriptableObjects/Relics";
 
         [MenuItem("Cardevil/Relic Editor")]
-        private static void ShowWindow()
+        public static void ShowWindow()
         {
             RelicEditorWindow wnd = GetWindow<RelicEditorWindow>();
             wnd.titleContent = new GUIContent("유물 편집기");

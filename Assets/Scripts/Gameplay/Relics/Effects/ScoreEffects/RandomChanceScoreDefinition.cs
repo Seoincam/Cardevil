@@ -33,7 +33,8 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
             {
                 if (RandomUtil.GetRandomFloat(0f, 1f) < _definition.probability) return null;
                 
-                return new ScoreOperator { Type = Definition.OperatorType, Value = Definition.Value, Source = this };
+                float finalValue = Definition.GetCalculatedValue(Context);
+                return new ScoreOperator { Type = Definition.OperatorType, Value = finalValue, Source = this };
             }
         }
     }
