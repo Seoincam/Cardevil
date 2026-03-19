@@ -3,7 +3,7 @@ using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Gameplay;
-using Cardevil.Gameplay.Items;
+using Cardevil.Gameplay.Relics.Core;
 using UnityEngine;
 
 namespace Cardevil.Core
