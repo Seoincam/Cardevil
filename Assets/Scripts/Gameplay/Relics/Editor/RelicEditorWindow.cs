@@ -27,10 +27,13 @@ namespace Cardevil.Gameplay.Relics.Editor
         private (bool showSheet, bool showLocal, bool showMissing) _sourceFilters = new(true, true, true);
         
         // UI View
+        private VisualElement _rootContainer;
         private MainToolbar _mainToolbar;
         private RelicList _relicList;
         private DetailView _detailView;
         private VisualElement _rightPane;
+
+        private VisualElement _helpBoxContainer;
 
         private const string RelicSavePath = "Assets/Resources/ScriptableObjects/Relics";
 
@@ -56,6 +59,16 @@ namespace Cardevil.Gameplay.Relics.Editor
             }
             
             wnd.Show();
+        }
+
+        private void OnEnable()
+        {
+            EditorApplication.playModeStateChanged += HandlePlayModeChanged;
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.playModeStateChanged -= HandlePlayModeChanged;
         }
 
         public enum AlignMode
@@ -85,11 +98,13 @@ namespace Cardevil.Gameplay.Relics.Editor
             }
 
             visualTree.CloneTree(rootVisualElement);
+            _rootContainer = rootVisualElement.Q<VisualElement>("RootContainer");
             _mainToolbar = rootVisualElement.Q<MainToolbar>();
             _relicList = rootVisualElement.Q<RelicList>();
             _detailView = rootVisualElement.Q<DetailView>();
 
             _rightPane = rootVisualElement.Q<VisualElement>("RightPane");
+            _helpBoxContainer = rootVisualElement.Q<VisualElement>("HelpBoxContainer");
 
             RefreshDisplayList();
             _relicList.Setup(_displayRelics);
@@ -119,6 +134,8 @@ namespace Cardevil.Gameplay.Relics.Editor
             {
                 OnCloseDetail();   
             }
+            
+            HandlePlayModeChanged(EditorApplication.isPlaying);
         }
 
         public void DestroyGUI()
@@ -318,7 +335,7 @@ namespace Cardevil.Gameplay.Relics.Editor
                 // Source 
                 ((showSheet && r.FromSheet) || 
                  (showLocal && r.FromLocal) || 
-                 (showMissing && r.FromMissing)) &&
+                 (showMissing && r.IsMissing)) &&
      
                 // 검색
                 (string.IsNullOrEmpty(_currentSearchKeyword) ||
@@ -343,6 +360,28 @@ namespace Cardevil.Gameplay.Relics.Editor
             if (_selectedRelic)
             {
                 _relicList.SelectItemByObject(_selectedRelic);
+            }
+        }
+
+        private void HandlePlayModeChanged(PlayModeStateChange state)
+        {
+            bool isPlaying = EditorApplication.isPlaying || state == PlayModeStateChange.ExitingEditMode;
+            HandlePlayModeChanged(isPlaying);
+        }
+
+        private void HandlePlayModeChanged(bool isPlaying)
+        {
+            _helpBoxContainer.Clear();
+            if (isPlaying)
+            {
+                _rootContainer.SetEnabled(false);
+                _helpBoxContainer.Add(
+                    new HelpBox("플레이 모드에선 유물을 편집할 수 없습니다.", HelpBoxMessageType.Warning)
+                );
+            }
+            else
+            {
+                _rootContainer.SetEnabled(true);
             }
         }
 

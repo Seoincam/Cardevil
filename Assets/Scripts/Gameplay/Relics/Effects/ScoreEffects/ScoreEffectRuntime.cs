@@ -11,7 +11,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public int Id { get; set; } = -1;
         public ScoreStepType ScoreStepType => Definition.ScoreStepType;
         
-        protected ScoreEffectRuntime(ScoreEffectDefinition definition, IRelicContext context) : base(context)
+        protected ScoreEffectRuntime(ScoreEffectDefinition definition, RelicInstance context) : base(context)
         {
             Definition = definition;
         }
@@ -20,12 +20,12 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 
         public override void OnActive()
         {
-            Id = Context.ScoreProviderRegistry.Register(this);
+            Id = Context.CommonContext.ScoreProviderRegistry.Register(this);
         }
 
         public override void OnInactive()
         {
-            Context.ScoreProviderRegistry.SafeUnregister(Id, this);
+            Context.CommonContext.ScoreProviderRegistry.SafeUnregister(Id, this);
             Id = -1;
         }
     }

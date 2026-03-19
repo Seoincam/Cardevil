@@ -13,36 +13,41 @@ MonoBehaviour:
   m_Name: Relic
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
-    id: local-260318-19-13-59
+    id: local-260319-00-36-22
     commentForEditor: 
     rarity: 0
     displayIcon: {fileID: 21300000, guid: 1a8eb3e145531ef42b780cbb0a81b8ba, type: 3}
-    displayName: "\uB85C\uCEEC \uD14C\uC2A4\uD2B8 \uC720\uBB3C \uC608\uC2DC"
-    displayDescription: "<color=#FFD700><b>[\uC720\uBB3C \uD3B8\uC9D1 \uBC0F \uC0DD\uC131
-      \uAC00\uC774\uB4DC]</b></color>\n\n<color=#81FF17><b>1. \uB370\uC774\uD130
-      \uC124\uC815 (Definition)</b></color>\n\uC778\uC2A4\uD399\uD130\uC758 <b>'Score
-      Settings'</b>\uC640 <b>'Properties'</b> \uD56D\uBAA9\uB9CC \uC218\uC815\uD558\uC138\uC694.
-      \uC774\uACF3\uC5D0 \uC785\uB825\uD55C \uC218\uCE58\uB294 \uAC8C\uC784 \uB85C\uC9C1\uC5D0
-      \uC989\uC2DC \uBC18\uC601\uB418\uBA70, \uBCC4\uB3C4\uC758 \uCF54\uB529 \uC5C6\uC774
-      \uC720\uBB3C\uC758 \uBC38\uB7F0\uC2A4\uB97C \uC870\uC808\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\n<color=#81FF17><b>2.
-      \uC2E4\uC2DC\uAC04 \uC124\uBA85 \uBBF8\uB9AC\uBCF4\uAE30</b></color>\n\uC124\uBA85
-      \uCE78\uC5D0 \uC9C1\uC811 \uD14D\uC2A4\uD2B8\uB97C \uC801\uC9C0 \uC54A\uC544\uB3C4,
-      \uC124\uC815\uD55C <color=#FFFFFF>\uC218\uCE58(Value, Target)</color>\uC5D0
-      \uB530\uB77C \uD558\uB2E8 <color=#CECECE><i>Description</i></color> \uB77C\uBCA8\uC774
-      \uC2E4\uC2DC\uAC04\uC73C\uB85C \uAC31\uC2E0\uB429\uB2C8\uB2E4. \uC720\uC800\uC5D0\uAC8C
-      \uBCF4\uC5EC\uC9C8 \uCD5C\uC885 \uBB38\uAD6C\uB97C \uC5D0\uB514\uD130\uC5D0\uC11C
-      \uC989\uC2DC \uD655\uC778\uD558\uC138\uC694.\n\n<color=#81FF17><b>3. \uD6A8\uACFC(Effect)
-      \uCD94\uAC00 \uBC0F \uAD00\uB9AC</b></color>\n<color=#FFFFFF>'Add Effect'</color>
-      \uBC84\uD2BC\uC744 \uB20C\uB7EC \uC6D0\uD558\uB294 \uD6A8\uACFC\uB97C \uCE74\uD14C\uACE0\uB9AC\uBCC4\uB85C
-      \uC120\uD0DD\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4."
+    displayName: "\uB85C\uCEEC \uD14C\uC2A4\uD2B8 \uC720\uBB3C"
+    displayDescription: "\uD574\uB2F9 \uC720\uBB3C\uC740 <color=#81FF17>\uC608\uC2DC\uC758
+      \uBAA9\uC801</color>\uC73C\uB85C \uB9CC\uB4E4\uC5B4\uC9C4 \uC720\uBB3C\uC785\uB2C8\uB2E4.
+      \uC6B0\uCE21 \uC0C1\uB2E8\uC758 <u>'\uB85C\uCEEC \uD14C\uC2A4\uD2B8 \uC720\uBB3C
+      \uCD94\uAC00' \uBC84\uD2BC</u>\uC744 \uD1B5\uD574, \uC774\uC640 \uAC19\uC774
+      \uBE60\uB974\uAC8C \uC720\uBB3C\uC744 \uB9CC\uB4E4\uACE0 \uD14C\uC2A4\uD2B8
+      \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\n<b>\uC6B0\uCE21 \uD6A8\uACFC\uCC3D:</b>\n'\uD6A8\uACFC
+      \uCD94\uAC00\uD558\uAE30' \uBC84\uD2BC\uC744 \uD1B5\uD574 \uD6A8\uACFC\uB97C
+      \uCD94\uAC00\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\n<b>\uD604\uC7AC \uC608\uC2DC:</b>\n<i>'\uC2A4\uD0EF
+      \uC218\uC815'</i> \uD6A8\uACFC\uB97C \uD1B5\uD574 \uC2A4\uD0EF\uC744 \uBCC0\uACBD\uD558\uB294
+      \uD6A8\uACFC\uB97C \uCD94\uAC00\uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4. \uD574\uB2F9
+      \uC720\uBB3C\uC774 \uD65C\uC131\uD654\uB418\uC5B4 \uC788\uB294 \uB3D9\uC548
+      <color#81FF17>\uCD5C\uB300 \uCCB4\uB825</color>\uC744 <color#81FF17>1\uB9CC\uD07C</color>
+      \uB354\uD574 \uACC4\uC0B0\uD569\uB2C8\uB2E4."
     effects:
-    - rid: 5725363072088145986
+    - rid: 5725363072088146186
+    - rid: 5725363072088146289
   dataSource: 0
   references:
     version: 2
     RefIds:
-    - rid: 5725363072088145986
+    - rid: 5725363072088146186
       type: {class: ModifyStatDefinition, ns: Cardevil.Gameplay.Relics.Effects, asm: Assembly-CSharp}
       data:
         targetStat: 2
         delta: 1
+    - rid: 5725363072088146289
+      type: {class: StatMatchScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        scoreStepType: 0
+        scoreOperatorType: 1
+        value: 15
+        targetStat: 0
+        targetValue: 0

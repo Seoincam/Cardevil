@@ -5,10 +5,11 @@
             <ui:Label text="미리보기" class="description-font" style="color: rgb(200, 200, 200);"/>
             <ui:VisualElement name="PreviewArea" style="flex-grow: 1; flex-direction: row; visibility: visible; overflow: visible; align-items: flex-start;">
                 <ui:Image source="project://database/Assets/Resources/Arts/GNB/Ex_GNB_Relic.png?fileID=21300000&amp;guid=1ff82655e2e561741a10d7a33b4b151b&amp;type=3#Ex_GNB_Relic" name="IconPreview" style="width: 75px; height: 75px; margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px;"/>
-                <ui:VisualElement name="TextContainer" style="flex-grow: 1; justify-content: center; margin-left: 10px; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px;">
+                <ui:ScrollView style="max-height: 250px; margin-top: 4px; margin-right: 4px; margin-bottom: 4px; margin-left: 4px; padding-bottom: 7px;">
                     <ui:Label text="유물 이름" name="TitlePreview" class="title-font" style="font-size: 25px; color: rgb(220, 220, 220); margin-top: 20px;"/>
-                    <ui:Label text="&lt;b&gt;이&lt;/b&gt; 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. 이 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 " name="DescriptionPreview" enable-rich-text="true" class="description-font" style="white-space: normal; font-size: 13px; color: rgb(180, 180, 180); text-overflow: clip; max-width: 450px; margin-top: 3px;"/>
-                </ui:VisualElement>
+                    <ui:Label text="&lt;b&gt;이&lt;/b&gt; 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. 이 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를  &lt;b&gt;이&lt;/b&gt; 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. 이 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 " name="DescriptionPreview" enable-rich-text="true" class="description-font" style="white-space: normal; font-size: 13px; color: rgb(180, 180, 180); text-overflow: clip; margin-top: 3px; margin-bottom: 0;"/>
+                </ui:ScrollView>
+                <ui:VisualElement name="TextContainer" enabled="false" style="flex-grow: 1; justify-content: center; margin-left: 10px; padding-top: 4px; padding-right: 4px; padding-bottom: 4px; padding-left: 4px;"/>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="InputFeildContainer" class="border" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0.1); padding: 10px;">
@@ -19,7 +20,9 @@
             </ui:VisualElement>
             <ui:EnumField label="희귀도" value="Center" type="Cardevil.Gameplay.Relics.Core.RelicRarity, Assembly-CSharp" name="RarityField" binding-path="data.rarity" class="description-font"/>
             <ui:TextField label="이름" placeholder-text="실제 게임에 표시될 유물의 이름을 입력하세요." name="NameField" binding-path="data.displayName" class="description-font"/>
-            <ui:TextField label="설명" placeholder-text="실제 게임에 표시될 유물에 대한 설명을 입력하세요." name="DescriptionField" multiline="true" binding-path="data.displayDescription" value="&lt;b&gt;이&lt;/b&gt; 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. 이 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다." class="description-font" style="flex-grow: 1; white-space: normal; min-height: 60px;"/>
+            <ui:ScrollView style="max-height: 122px; min-height: 100px;">
+                <ui:TextField label="설명" placeholder-text="실제 게임에 표시될 유물에 대한 설명을 입력하세요." name="DescriptionField" multiline="true" binding-path="data.displayDescription" value="&lt;b&gt;이&lt;/b&gt; 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. 이 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. &lt;b&gt;이&lt;/b&gt; 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다. 이 유물은 &apos;로컬 테스트 유물 추가&apos;를 통해 생성된 예시 유물입니다. 시트에 존재하지 않으며, 빠른 테스트를 위해 생성됐습니다. &apos;ModifyStatEffect&apos;를 통해 해당 유물이 존재하는 동안 MaxHp를 1 증가시킵니다." max-length="-1" class="description-font" style="flex-grow: 1; white-space: normal; min-height: 60px;"/>
+            </ui:ScrollView>
         </ui:VisualElement>
         <ui:VisualElement name="HelpBoxContainer" style="flex-grow: 1; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; margin-bottom: 7px; flex-shrink: 0;"/>
     </ui:VisualElement>

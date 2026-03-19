@@ -13,17 +13,18 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         [SerializeField, Range(2f, 10f)] private int targetNumber;
 
         public override string EditorName => "점수/카드 숫자 보너스";
-        public override string EditorDescription => $"카드의 <color=#FFD700>숫자가 {targetNumber}</color>일 경우, <color=#FFD700>{Value}점({OperatorType})</color>을 부여합니다.";
+        public override string EditorDescription => $"카드의 <color=#FFD700>숫자가 {targetNumber}</color>일 경우, {CommonDescription}";
 
-        public override EffectRuntime CreateRuntimeInstance(IRelicContext context) => new Runtime(this, context);
+        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
 
         [Serializable]
         public class Runtime : ScoreEffectRuntime
         {
             private readonly CardNumberScoreDefinition _definition;
                 
-            public Runtime(ScoreEffectDefinition definition, IRelicContext context) : base(definition, context)
+            public Runtime(CardNumberScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
+                _definition = definition;
             }
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)

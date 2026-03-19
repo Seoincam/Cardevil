@@ -8,9 +8,9 @@ namespace Cardevil.Gameplay.Relics.Core
     [CreateAssetMenu(menuName = "Relic/RelicSO")]
     public class RelicSO : ScriptableObject
     {
-        [SerializeField] private Relic data;
+        [SerializeField] private RelicDefinition data;
         
-        public Relic Data => data;
+        public RelicDefinition Data => data;
 
         
 #if UNITY_EDITOR
@@ -20,7 +20,7 @@ namespace Cardevil.Gameplay.Relics.Core
 
         public bool FromLocal => dataSource == DataSource.Local;
         public bool FromSheet => dataSource == DataSource.Sheet;
-        public bool FromMissing => dataSource == DataSource.Missing;
+        public bool IsMissing => dataSource == DataSource.Missing;
         
         public enum DataSource
         {
@@ -36,13 +36,13 @@ namespace Cardevil.Gameplay.Relics.Core
             string displayDescription,
             string commentForEditor)
         {
-            data = new Relic(id, rarity, displayName, displayDescription, commentForEditor);
+            data = new RelicDefinition(id, rarity, displayName, displayDescription, commentForEditor);
             dataSource = DataSource.Sheet;
         }
 
         public void InitializeFromLocal(string id, string displayName)
         {
-            data = new Relic(id, displayName);
+            data = new RelicDefinition(id, displayName);
             dataSource = DataSource.Local;
         }
 #endif

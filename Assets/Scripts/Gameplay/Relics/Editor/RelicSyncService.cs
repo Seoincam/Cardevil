@@ -55,7 +55,7 @@ namespace Cardevil.Gameplay.Relics.Editor
                     SerializedObject serializedRelic = new(existingRelic);
 
                     // Missing 상태였다가 시트에 다시 나타난 유물 복구
-                    if (existingRelic.FromMissing)
+                    if (existingRelic.IsMissing)
                     {
                         serializedRelic.FindProperty("dataSource").enumValueIndex = (int)RelicSO.DataSource.Sheet;
                         summary.RestoredIds.Add(sheetItem.Id);

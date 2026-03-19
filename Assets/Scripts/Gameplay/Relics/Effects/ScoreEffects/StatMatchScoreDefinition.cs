@@ -14,24 +14,24 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         [SerializeField] private int targetValue;
 
         public override string EditorName => "점수/스탯 일치 보너스";
-        public override string EditorDescription => $"<color=#FFD700>{targetStat} 스탯</color>이 <color=#FFD700>{targetValue}</color>일 경우, <color=#FFD700>{Value}점({OperatorType})</color>을 부여합니다.";
+        public override string EditorDescription => $"<color=#FFD700>{targetStat} 스탯</color>이 <color=#FFD700>{targetValue}</color>일 경우, {CommonDescription}";
 
         
-        public override EffectRuntime CreateRuntimeInstance(IRelicContext context) => new Runtime(this, context);
+        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
 
         [Serializable]
         public class Runtime : ScoreEffectRuntime
         {
             private StatMatchScoreDefinition _definition;
             
-            public Runtime(StatMatchScoreDefinition definition, IRelicContext context) : base(definition, context)
+            public Runtime(StatMatchScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
                 _definition = definition;
             }
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)
             {
-                if (Context.PlayerStatus.GetFinalValue(_definition.targetStat) != _definition.targetValue)
+                if (Context.CommonContext.PlayerStatus.GetFinalValue(_definition.targetStat) != _definition.targetValue)
                 {
                     return null;
                 }

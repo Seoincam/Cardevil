@@ -12,7 +12,7 @@ namespace Cardevil.Gameplay.Relics.Core
     }
     
     [Serializable]
-    public class Relic
+    public class RelicDefinition
     {
         [Header("Database")]
         [SerializeField] private string id;
@@ -33,14 +33,14 @@ namespace Cardevil.Gameplay.Relics.Core
         [Header("Effects")]
         [SerializeReference] private List<EffectDefinition> effects = new();
 
-        public Relic(string id, string displayName)
+        public RelicDefinition(string id, string displayName)
         {
             this.id = id;
             this.displayName = displayName;
         }
 
 #if UNITY_EDITOR
-        public Relic(
+        public RelicDefinition(
             string id, 
             RelicRarity rarity, 
             string displayName, 

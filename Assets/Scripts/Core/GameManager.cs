@@ -5,6 +5,7 @@ using Cardevil.Core.Systems.Save;
 using Cardevil.Gameplay;
 using Cardevil.Gameplay.Relics.Core;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 namespace Cardevil.Core
 {
@@ -21,7 +22,7 @@ namespace Cardevil.Core
             CardevilCore.SaveLoad.Register(this);
             
             PlayerStatus = new PlayerStatus();
-            Relic = new RelicManager();
+            Relic = new RelicManager(PlayerStatus, ScoreProviderRegistry);
             ScoreProviderRegistry = new ScoreProviderRegistry();
         }
         
