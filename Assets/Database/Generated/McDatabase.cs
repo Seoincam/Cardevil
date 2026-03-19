@@ -31,7 +31,6 @@ namespace Database
 
         public T FindByName<T>(string name) where T : class
         {
-            if (typeof(T) == null) return null;
             switch (typeof(T).Name)
             {
                 default:
@@ -43,7 +42,6 @@ namespace Database
 
         public T FindByIdentifier<T>(string identifier) where T : class
         {
-            if (typeof(T) == null) return null;
             switch (typeof(T).Name)
             {
                 default:
