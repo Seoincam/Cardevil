@@ -28,15 +28,9 @@ MonoBehaviour:
       \uD6A8\uACFC\uB97C \uCD94\uAC00\uD588\uC2B5\uB2C8\uB2E4. \uD574\uB2F9 \uC720\uBB3C\uC774
       \uD65C\uC131\uD654\uB418\uC5B4 \uC788\uB294 \uB3D9\uC548 <color=#81FF17>\uCD5C\uB300
       \uCCB4\uB825</color>\uC744 <color=#81FF17>1\uB9CC\uD07C</color> \uB354\uD574
-      \uACC4\uC0B0\uD569\uB2C8\uB2E4.\n\n<i>'\uC871\uBCF4 \uBCF4\uB108\uC2A4'</i>
-      \uD6A8\uACFC\uB97C \uD1B5\uD574 \uC810\uC218 \uD6A8\uACFC\uB97C \uCD94\uAC00\uD588\uC2B5\uB2C8\uB2E4.
-      \uD574\uB2F9 \uC720\uBB3C\uC774 \uD65C\uC131\uD654\uB418\uC5B4 \uC788\uB294
-      \uB3D9\uC548 <color=#81FF17>\uD558\uC774 \uCE74\uB4DC</color> \uC871\uBCF4\uC77C
-      \uACBD\uC6B0 <color=#81FF17>+30</color>\uB9CC\uD07C \uCD94\uAC00\uD558\uB294
-      \uD6A8\uACFC\uB97C \uC81C\uACF5\uD569\uB2C8\uB2E4."
+      \uACC4\uC0B0\uD569\uB2C8\uB2E4."
     effects:
     - rid: 5725363072088146186
-    - rid: 5725363072088146291
   dataSource: 0
   references:
     version: 2
@@ -46,16 +40,3 @@ MonoBehaviour:
       data:
         targetStat: 2
         delta: 1
-    - rid: 5725363072088146291
-      type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data:
-        scoreStepType: 1
-        stepType: 0
-        operatorType: 0
-        baseValue: 30
-        valueResolver:
-          rid: 5725363090318164144
-        targetHandRank: 1
-    - rid: 5725363090318164144
-      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data: 

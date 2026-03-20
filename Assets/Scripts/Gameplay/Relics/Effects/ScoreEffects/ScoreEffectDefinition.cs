@@ -27,12 +27,14 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
                 
                 return operatorType switch
                 {
-                    ScoreOperatorType.Plus => $"<color=#FFD700>+{valueDesc}점</color>을 부여합니다.",
-                    ScoreOperatorType.Multiply => $"<color=#FFD700>x{valueDesc}</color>를 부여합니다.",
+                    ScoreOperatorType.Plus => $"<color=#FFD700>+{valueDesc}점</color>을 부여합니다. {CommonStepDescription}",
+                    ScoreOperatorType.Multiply => $"<color=#FFD700>x{valueDesc}</color>를 부여합니다. {CommonStepDescription}",
                     _ => "(정의되지 않음)"
                 };
             }
         }
+
+        private string CommonStepDescription => $" <color=#808080>({stepType} 단계에 발동)</color>";
 
         /// <summary>
         /// 에디터에서 사용하기 위한 실행 단계 열거형.

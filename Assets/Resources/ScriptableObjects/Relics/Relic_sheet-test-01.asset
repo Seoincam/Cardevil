@@ -20,7 +20,8 @@ MonoBehaviour:
     displayIcon: {fileID: 21300000, guid: 921cef11fc0199745bdaa1422557e252, type: 3}
     displayName: "\uC2DC\uD2B8 \uC5F0\uB3D9 \uD14C\uC2A4\uD2B8 \uC720\uBB3C"
     displayDescription: "\uC774\uB7F0 \uC720\uBB3C\uC740 \uC874\uC7AC\uD558\uC9C0
-      \uC54A\uC2B5\uB2C8\uB2E4. \uCF54\uBA58\uD2B8\uB97C \uCC38\uACE0\uD558\uC138\uC694."
+      \uC54A\uC2B5\uB2C8\uB2E4. <b>\uC5D0\uB514\uD130 \uCF54\uBA58\uD2B8</b>\uB97C
+      \uCC38\uACE0\uD558\uC138\uC694."
     effects:
     - rid: 5725363072088146292
   dataSource: 1
@@ -30,8 +31,8 @@ MonoBehaviour:
     - rid: 5725363072088146292
       type: {class: RandomChanceScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data:
-        scoreStepType: 5
-        scoreOperatorType: 1
+        stepType: 2
+        operatorType: 1
         baseValue: 2
         valueResolver:
           rid: 5725363090318164092

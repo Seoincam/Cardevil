@@ -17,81 +17,102 @@ MonoBehaviour:
     commentForEditor: 
     rarity: 0
     displayIcon: {fileID: 21300000, guid: 9aff3d19df1556d40a1a768f14d9a859, type: 3}
-    displayName: "\uC0C8 \uB85C\uCEEC \uC720\uBB3C"
-    displayDescription: "\uC124\uBA85\uC785\uB2C8\uB2E4."
+    displayName: "\uC810\uC218 \uC720\uBB3C \uC0D8\uD50C"
+    displayDescription: "\uC810\uC218 \uAD00\uB828 \uC720\uBB3C \uD6A8\uACFC\uB4E4\uC5D0
+      \uB300\uD55C \uC0D8\uD50C\uC785\uB2C8\uB2E4."
     effects:
-    - rid: 5725363096073535571
-    - rid: 5725363110145163264
-    - rid: 5725363110145163266
-    - rid: 5725363110145163268
-    - rid: 5725363110145163351
+    - rid: 5725363110145163900
+    - rid: 5725363110145163902
+    - rid: 5725363110145163904
+    - rid: 5725363110145163907
+    - rid: 5725363110145163909
+    - rid: 5725363110145163911
+    - rid: 5725363110145163913
   dataSource: 0
   references:
     version: 2
     RefIds:
-    - rid: 5725363096073535571
+    - rid: 5725363110145163900
+      type: {class: RandomChanceScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 2
+        operatorType: 1
+        baseValue: 1.2
+        valueResolver:
+          rid: 5725363110145163901
+        probability: 0.3333
+    - rid: 5725363110145163901
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 5725363110145163902
+      type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 1
+        operatorType: 0
+        baseValue: 100
+        valueResolver:
+          rid: 5725363110145163903
+        targetHandRank: 5
+    - rid: 5725363110145163903
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 5725363110145163904
       type: {class: CardNumberScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data:
-        scoreStepType: 0
         stepType: 0
         operatorType: 0
         baseValue: 1
         valueResolver:
-          rid: 5725363096073535573
-        targetNumbers: 02000000030000000400000005000000060000000700000008000000090000000a000000
-    - rid: 5725363096073535573
+          rid: 5725363110145163906
+        targetNumbers: 02000000030000000400000005000000
+    - rid: 5725363110145163906
       type: {class: PlayerStatResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data:
         targetStat: 9
-    - rid: 5725363110145163264
-      type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data:
-        scoreStepType: 5
-        stepType: 2
-        operatorType: 0
-        baseValue: 2
-        valueResolver:
-          rid: 5725363110145163265
-        targetHandRank: 1
-    - rid: 5725363110145163265
-      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data: 
-    - rid: 5725363110145163266
-      type: {class: StatMatchScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data:
-        scoreStepType: 5
-        stepType: 0
-        operatorType: 0
-        baseValue: 1.1
-        valueResolver:
-          rid: 5725363110145163267
-        targetStat: 3
-        targetValue: 3
-    - rid: 5725363110145163267
-      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data: 
-    - rid: 5725363110145163268
-      type: {class: CardNumberScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data:
-        scoreStepType: 0
-        stepType: 0
-        operatorType: 0
-        baseValue: 15
-        valueResolver:
-          rid: 5725363110145163269
-        targetNumbers: 02000000030000000400000005000000
-    - rid: 5725363110145163269
-      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
-      data: 
-    - rid: 5725363110145163351
+    - rid: 5725363110145163907
       type: {class: RepeatedHandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data:
-        scoreStepType: 5
+        stepType: 2
+        operatorType: 1
+        baseValue: 1.5
+        valueResolver:
+          rid: 5725363110145163908
+    - rid: 5725363110145163908
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 5725363110145163909
+      type: {class: StarCardScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
         stepType: 0
         operatorType: 0
-        baseValue: 1.1
+        baseValue: 50
         valueResolver:
-          rid: 5725363110145163352
-    - rid: 5725363110145163352
+          rid: 5725363110145163910
+    - rid: 5725363110145163910
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 5725363110145163911
+      type: {class: StatMatchScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 1
+        operatorType: 0
+        baseValue: 150
+        valueResolver:
+          rid: 5725363110145163912
+        targetStat: 3
+        targetValue: 1
+    - rid: 5725363110145163912
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 5725363110145163913
+      type: {class: DelayedHandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 1
+        operatorType: 0
+        baseValue: 100
+        valueResolver:
+          rid: 5725363110145163914
+        targetHandRank: 1
+    - rid: 5725363110145163914
       type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data: 

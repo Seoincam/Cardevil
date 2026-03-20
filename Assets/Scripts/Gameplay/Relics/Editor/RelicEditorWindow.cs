@@ -174,7 +174,7 @@ namespace Cardevil.Gameplay.Relics.Editor
                 _sheetDatabaseInitializer = AssetDatabase.LoadAssetAtPath<DBInitializerSO>(path);
             }
             
-            _sheetDatabaseInitializer.DownloadGoogleSheet();
+            _sheetDatabaseInitializer.DownloadGoogleSheet("RelicDisplayData");
         }
         
         private void OnSync()
