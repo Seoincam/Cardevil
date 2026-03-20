@@ -1,10 +1,10 @@
 namespace Cardevil.Gameplay.Relics.Core
 {
-    public abstract class EffectRuntime
+    public abstract class EffectInstance
     {
         protected readonly RelicInstance Context;
 
-        protected EffectRuntime(RelicInstance context)
+        protected EffectInstance(RelicInstance context)
         {
             Context = context;
         }

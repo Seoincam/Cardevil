@@ -16,14 +16,14 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public override string EditorName => "점수/카드 숫자 보너스";
         public override string EditorDescription => $"카드의 <color=#FFD700>숫자가 {string.Join(", ", targetNumbers)}</color>일 경우, {CommonDescription}";
 
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new Instance(this, context);
 
         [Serializable]
-        public class Runtime : ScoreEffectRuntime
+        public class Instance : ScoreEffectInstance
         {
             private readonly CardNumberScoreDefinition _definition;
                 
-            public Runtime(CardNumberScoreDefinition definition, RelicInstance context) : base(definition, context)
+            public Instance(CardNumberScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
                 _definition = definition;
             }

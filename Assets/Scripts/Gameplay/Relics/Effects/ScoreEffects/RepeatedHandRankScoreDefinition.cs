@@ -13,10 +13,10 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public override string EditorName => "점수/연속 족보 보너스";
         public override string EditorDescription => $"연속된 족보 사용시, {CommonDescription}";
         
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new Instance(this, context);
 
         [Serializable]
-        public class Runtime : ScoreEffectRuntime
+        public class Instance : ScoreEffectInstance
         {
             private HandRank _previousHandRank = HandRank.None;
 
@@ -26,7 +26,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
                 public HandRank previousHandRank;
             }
 
-            public Runtime(ScoreEffectDefinition definition, RelicInstance context) : base(definition, context)
+            public Instance(ScoreEffectDefinition definition, RelicInstance context) : base(definition, context)
             {
             }
 
