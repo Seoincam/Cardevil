@@ -2,6 +2,7 @@ using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Utils;
 using Cardevil.Test.DebugConsole;
+using Cardevil.UI.GlobalNavigationBar;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,6 +17,8 @@ namespace Cardevil.Gameplay.Relics.Core
         private readonly IRelicCommonContext _commonContext;
 
         public event Action<RelicInstance> RelicAdded;
+
+        private RelicBar RelicBar => GlobalNavigationBar.Instance.RelicBar;
 
         public RelicManager(PlayerStatus playerStatus, ScoreProviderRegistry scoreProviderRegistry)
         {
@@ -46,12 +49,16 @@ namespace Cardevil.Gameplay.Relics.Core
                 return;
             }
 
-            var instance = new RelicInstance(so.Data, _commonContext);
+            var definition = so.Data;
+
+            var instance = new RelicInstance(definition, _commonContext);
             _ownedRelics.Add(id, instance);
             instance.Activate();
             
+            var iconInstance = RelicBar.AddRelic(definition);
+            instance.SetIcon(iconInstance);
+            
             RelicAdded?.Invoke(instance);
-            // TODO: Relic Bar에 아이콘 추가
             
             LogEx.Log($"유물 '{instance.Data.DisplayName}({instance.Data.Id})'를 획득했습니다!");
         }

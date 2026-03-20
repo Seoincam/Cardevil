@@ -55,6 +55,8 @@ namespace Cardevil.UI.GlobalNavigationBar
         private RectTransform _rectTransform;
         private Vector2 _initialPosition;
 
+        public RelicBar RelicBar => relicBar;
+
         private void Awake()
         {
             if (_instance == null)
