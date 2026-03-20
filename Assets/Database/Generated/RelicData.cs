@@ -13,9 +13,8 @@ namespace Database.Generated
         public string DisplayName;
         /// <summary> 게임상 설명 </summary>
         public string DisplayDescription;
-        /// <summary> (Reference:Enum<Cardevil.Relics.RelicRarity>) 
-         /// 유물 등급 </summary>
-        public string Rarity;
+        /// <summary> 유물 등급 </summary>
+        public Cardevil.Gameplay.Items.RelicRarity Rarity;
         /// <summary> ID </summary>
         public string RelicId;
         /// <summary> 레벨 </summary>

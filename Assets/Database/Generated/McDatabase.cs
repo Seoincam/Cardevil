@@ -16,7 +16,6 @@ namespace Database
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
         public List<MachineProbabillity> MachineProbabillityList = new List<MachineProbabillity>();
         public List<RelicDisplayData> RelicDisplayDataList = new List<RelicDisplayData>();
-        public List<RelicData> RelicDataList = new List<RelicData>();
         public readonly List<string> ClassNames = new List<string> {
             "CustomClassTest",
             "RoomData",
@@ -24,8 +23,7 @@ namespace Database
             "Heal",
             "MachineReward",
             "MachineProbabillity",
-            "RelicDisplayData",
-            "RelicData"
+            "RelicDisplayData"
         };
 
 
@@ -60,7 +58,6 @@ namespace Database
             MachineRewardList.Clear();
             MachineProbabillityList.Clear();
             RelicDisplayDataList.Clear();
-            RelicDataList.Clear();
         }
 
 
@@ -106,9 +103,6 @@ namespace Database
                     case "RelicDisplayData":
                         RelicDisplayDataList = CreateInstance<RelicDisplayData>(df);
                         break;
-                    case "RelicData":
-                        RelicDataList = CreateInstance<RelicData>(df);
-                        break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
                         break;
@@ -149,10 +143,6 @@ namespace Database
                     var newRelicDisplayDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicDisplayData>>(json);
                     RelicDisplayDataList.AddRange(newRelicDisplayDataItems);
                     break;
-                case "RelicData":
-                    var newRelicDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicData>>(json);
-                    RelicDataList.AddRange(newRelicDataItems);
-                    break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     break;
@@ -178,8 +168,6 @@ namespace Database
                     return typeof(MachineProbabillity);
                 case "RelicDisplayData":
                     return typeof(RelicDisplayData);
-                case "RelicData":
-                    return typeof(RelicData);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

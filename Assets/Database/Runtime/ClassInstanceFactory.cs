@@ -218,7 +218,10 @@ namespace Database
                     return targetType.GetEnumValues().GetValue(0)!;
                 if (int.TryParse(value, out int enumInt))
                     return Enum.ToObject(targetType, enumInt);
-                return Enum.Parse(targetType, value, ignoreCase: true);
+                if (Enum.TryParse(targetType, value, true, out object enumValue))
+                    return enumValue;
+                Debug.LogWarning($"[ClassInstanceFactory] Enum parse failed: {targetType.Name}, '{value}'");
+                return targetType.GetEnumValues().GetValue(0)!;
             }
 
             if (targetType == typeof(string))

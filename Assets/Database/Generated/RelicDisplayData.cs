@@ -11,9 +11,8 @@ namespace Database.Generated
 
         /// <summary> 식별용 아이디 </summary>
         public string Id;
-        /// <summary> (Reference:Enum<Cardevil.Gameplay.Relics.Core.RelicRarity>) 
-         /// 희귀도 (수급 장소) </summary>
-        public string Rarity;
+        /// <summary> 희귀도 (수급 장소) </summary>
+        public Cardevil.Gameplay.Items.RelicRarity Rarity;
         /// <summary> 게임상 이름 </summary>
         public string DisplayName;
         /// <summary> 게임상 설명 </summary>
