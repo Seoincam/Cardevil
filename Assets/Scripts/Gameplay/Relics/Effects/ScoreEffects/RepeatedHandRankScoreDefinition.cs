@@ -3,6 +3,7 @@ using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Gameplay.Relics.Core;
 using System;
+using UnityEngine;
 
 namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 {
@@ -18,9 +19,33 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public class Runtime : ScoreEffectRuntime
         {
             private HandRank _previousHandRank = HandRank.None;
-            
+
+            [Serializable]
+            public class State
+            {
+                public HandRank previousHandRank;
+            }
+
             public Runtime(ScoreEffectDefinition definition, RelicInstance context) : base(definition, context)
             {
+            }
+
+            public override object CaptureState()
+            {
+                var state = new State { previousHandRank = _previousHandRank };
+                return state;
+            }
+
+            public override void RestoreState(object stateObj)
+            {
+                if (stateObj is string json)
+                {
+                    var state = JsonUtility.FromJson<State>(json);
+                    if (state != null)
+                    {
+                        _previousHandRank = state.previousHandRank;
+                    }
+                }
             }
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)

@@ -1,5 +1,6 @@
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
 using Cardevil.Test.DebugConsole;
 using Cardevil.UI.GlobalNavigationBar;
@@ -10,7 +11,7 @@ using System.Text;
 namespace Cardevil.Gameplay.Relics.Core
 {
     [Serializable]
-    public class RelicManager
+    public class RelicManager : ISaveLoad
     {
         private readonly Dictionary<string, RelicInstance> _ownedRelics = new();
         private readonly RelicDatabase _database;
@@ -42,15 +43,13 @@ namespace Cardevil.Gameplay.Relics.Core
                 return;
             }
 
-            var so = _database.Get(id);
-            if (!so)
+            var definition = _database.Get(id);
+            if (definition == null)
             {
                 LogEx.LogWarning($"DB에서 유물을 찾을 수 없습니다. id: {id}");
                 return;
             }
-
-            var definition = so.Data;
-
+            
             var instance = new RelicInstance(definition, _commonContext);
             _ownedRelics.Add(id, instance);
             instance.Activate();
@@ -97,6 +96,36 @@ namespace Cardevil.Gameplay.Relics.Core
             sb.AppendLine($"총 유물 개수: {relicManager._ownedRelics.Count}");
             
             LogEx.Log($"현재 획득한 유물들: {sb}");
+        }
+
+        public void Save(GameSave currentSave)
+        {
+            currentSave.OwnedRelics.Clear();
+            foreach (var relic in _ownedRelics.Values)
+            {
+                currentSave.OwnedRelics.Add(relic.CaptureSaveData());
+            }
+        }
+
+        public void Load(GameSave currentSave)
+        {
+            foreach (var instance in _ownedRelics.Values)
+            {
+                instance.Deactivate();
+            }
+            _ownedRelics.Clear();
+
+            foreach (var relicData in currentSave.OwnedRelics)
+            {
+                var definition = _database.Get(relicData.relicId);
+                if (definition == null) continue;
+                
+                var instance = new RelicInstance(definition, _commonContext);
+                instance.RestoreSaveData(relicData);
+                
+                _ownedRelics.Add(definition.Id, instance);
+                instance.Activate();
+            }
         }
     }
 

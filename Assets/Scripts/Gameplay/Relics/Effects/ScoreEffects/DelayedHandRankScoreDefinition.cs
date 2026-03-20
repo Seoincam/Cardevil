@@ -23,30 +23,54 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         {
             private readonly DelayedHandRankScoreDefinition _definition;
             
-            public bool executeNext;
+            private bool _executeNext;
+
+            [Serializable]
+            public class State
+            {
+                public bool executeNext;
+            }
             
             public RunTime(DelayedHandRankScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
                 _definition = definition;
             }
 
+            public override object CaptureState()
+            {
+                var state = new State { executeNext = _executeNext };
+                return JsonUtility.ToJson(state);
+            }
+
+            public override void RestoreState(object stateObj)
+            {
+                if (stateObj is string json)
+                {
+                    var state = JsonUtility.FromJson<State>(json);
+                    if (state != null)
+                    { 
+                        _executeNext = state.executeNext;
+                    }
+                }
+            }
+
             public override IScoreOperator GetScoreOperator(IScoreContext context)
             {
                 ScoreOperator scoreOperator = null; 
                 
-                if (executeNext)
+                if (_executeNext)
                 {
                     float finalValue = Definition.GetCalculatedValue(Context);
                     scoreOperator = new ScoreOperator
                     {
                         Type = Definition.OperatorType, Value = finalValue, Source = this
                     };
-                    executeNext = false;
+                    _executeNext = false;
                 }
                 
                 if (context.HandRankData.HandRank == _definition.targetHandRank)
                 {
-                    executeNext = true;
+                    _executeNext = true;
                 }
 
                 return scoreOperator;

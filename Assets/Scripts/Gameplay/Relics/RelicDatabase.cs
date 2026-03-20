@@ -17,9 +17,9 @@ namespace Cardevil.Gameplay.Relics
             _map = relics.ToDictionary(r => r.Data.Id, r => r);    
         }
 
-        public RelicSO Get(string id)
+        public RelicDefinition Get(string id)
         {
-            return _map.GetValueOrDefault(id);
+            return _map.GetValueOrDefault(id)?.Data;
         }
     }
 }
