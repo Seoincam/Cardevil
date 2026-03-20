@@ -25,18 +25,21 @@ namespace Database
         public string dataDirPath = "./Raw";
         public string targetClassPath = "./Generated";
         public string targetPath = "./Json";
+        public string downloadStateDirPath = "./State";
 
         [Header("Final Path (read only)")] 
         public string thisDirPath;
         public string dataDirFullPath;
         public string targetClassFullPath;
         public string targetFullPath;
+        public string downloadStateDirFullPath;
 
         private string prevDataDirPath;
 
         public string DataDirPath => !dataDirPath.StartsWith("./") ? dataDirPath : Path.Combine(ThisDirPath, dataDirPath.Substring(2));
         public string TargetClassPath => !targetClassPath.StartsWith("./") ? targetClassPath : Path.Combine(ThisDirPath, targetClassPath.Substring(2));
         public string TargetDirPath => !targetPath.StartsWith("./") ? targetPath : Path.Combine(Application.streamingAssetsPath, targetPath.Substring(2));
+        public string DownloadStateDirPath => ResolveEditorRelativePath(downloadStateDirPath);
         
         [Space]
         [Header("Config")]
@@ -55,6 +58,22 @@ namespace Database
 
         private AutomaticWatcher _xlsxWatcher;
         private AutomaticWatcher _jsonWatcher;
+
+        private string ResolveEditorRelativePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return ThisDirPath;
+            }
+
+            if (Path.IsPathRooted(path))
+            {
+                return path;
+            }
+
+            string relativePath = path.StartsWith("./") ? path.Substring(2) : path;
+            return Path.GetFullPath(Path.Combine(ThisDirPath, relativePath));
+        }
 
         private void OnEnable()
         {
@@ -77,6 +96,7 @@ namespace Database
             dataDirFullPath = DataDirPath;
             targetClassFullPath = TargetClassPath;
             targetFullPath = TargetDirPath;
+            downloadStateDirFullPath = DownloadStateDirPath;
 
             if (autoLoadXlsx)
             {

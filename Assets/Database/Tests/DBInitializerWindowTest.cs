@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -48,6 +50,41 @@ namespace Database.Tests
             Assert.That(firstCells[1], Is.EqualTo("Sword"));
             Assert.That(secondCells[0], Is.EqualTo("2"));
             Assert.That(secondCells[1], Is.EqualTo("Shield"));
+        }
+
+        [Test]
+        public void DownloadStateStore_SaveAndLoadFromPath_RoundTrips()
+        {
+            string stateFilePath = Path.Combine(Path.GetTempPath(), $"dbinitializer-state-{Path.GetRandomFileName()}.json");
+            var state = new DBInitializerDownloadState
+            {
+                InitializerGuid = "guid-123",
+                AssetPath = "Assets/Database/DBInitializer.asset",
+                LastFullDownloadUtc = "2026-03-19T12:34:56.0000000Z",
+                SheetDownloadsUtc = new Dictionary<string, string>
+                {
+                    ["MachineReward"] = "2026-03-19T12:40:00.0000000Z"
+                }
+            };
+
+            try
+            {
+                DBInitializerDownloadStateStore.SaveToPath(stateFilePath, state);
+                var loaded = DBInitializerDownloadStateStore.LoadFromPath(stateFilePath);
+
+                Assert.That(loaded, Is.Not.Null);
+                Assert.That(loaded.InitializerGuid, Is.EqualTo(state.InitializerGuid));
+                Assert.That(loaded.AssetPath, Is.EqualTo(state.AssetPath));
+                Assert.That(loaded.LastFullDownloadUtc, Is.EqualTo(state.LastFullDownloadUtc));
+                Assert.That(loaded.SheetDownloadsUtc["MachineReward"], Is.EqualTo(state.SheetDownloadsUtc["MachineReward"]));
+            }
+            finally
+            {
+                if (File.Exists(stateFilePath))
+                {
+                    File.Delete(stateFilePath);
+                }
+            }
         }
 
         private static IList InvokeList(MethodInfo method, params object[] args)

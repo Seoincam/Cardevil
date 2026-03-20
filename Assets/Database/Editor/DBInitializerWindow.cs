@@ -25,7 +25,8 @@ namespace Database
             "thisDirPath",
             "dataDirFullPath",
             "targetClassFullPath",
-            "targetFullPath"
+            "targetFullPath",
+            "downloadStateDirFullPath"
         };
 
         private DBInitializerSO _initializer;
@@ -47,6 +48,7 @@ namespace Database
         private bool _sortDescending;
         private int _rowHeight = 28;
         private DateTime _lastPreviewRefreshUtc = DateTime.MinValue;
+        private DBInitializerDownloadState _downloadState = DBInitializerDownloadState.CreateEmpty();
 
         private Label _pathSummaryLabel;
         private Label _sheetSummaryLabel;
@@ -67,6 +69,9 @@ namespace Database
         private Label _sheetRowsValueLabel;
         private Label _sheetColumnsValueLabel;
         private Label _sheetFileValueLabel;
+        private Label _previewRefreshValueLabel;
+        private Label _fullDownloadValueLabel;
+        private Label _sheetDownloadValueLabel;
         private VisualElement _previewEmptyState;
         private VisualElement _rowListContainer;
         private TextField _rowDetailField;
@@ -280,6 +285,7 @@ namespace Database
                 return;
 
             _initializer = initializer;
+            _downloadState = DBInitializerDownloadStateStore.Load(_initializer);
 
             if (_initializerField != null)
                 _initializerField.SetValueWithoutNotify(_initializer);
@@ -315,6 +321,7 @@ namespace Database
             grid.Add(CreatePathCard(L("path.raw"), _initializer.DataDirPath));
             grid.Add(CreatePathCard(L("path.generated"), _initializer.TargetClassPath));
             grid.Add(CreatePathCard(L("path.output"), _initializer.TargetDirPath));
+            grid.Add(CreatePathCard(_language == UiLanguage.Korean ? "상태 파일" : "State Files", _initializer.DownloadStateDirPath));
             section.Add(grid);
 
             _pathSummaryLabel = new Label();
@@ -536,6 +543,9 @@ namespace Database
             summaryGrid.Add(CreateSummaryCard(L("summary.rows"), out _sheetRowsValueLabel));
             summaryGrid.Add(CreateSummaryCard(L("summary.columns"), out _sheetColumnsValueLabel));
             summaryGrid.Add(CreateSummaryCard(L("summary.file"), out _sheetFileValueLabel));
+            summaryGrid.Add(CreateSummaryCard(_language == UiLanguage.Korean ? "마지막 새로고침" : "Last Refresh", out _previewRefreshValueLabel));
+            summaryGrid.Add(CreateSummaryCard(_language == UiLanguage.Korean ? "마지막 전체 다운로드" : "Last Full Download", out _fullDownloadValueLabel));
+            summaryGrid.Add(CreateSummaryCard(_language == UiLanguage.Korean ? "선택 시트 다운로드" : "Selected Sheet Download", out _sheetDownloadValueLabel));
             previewPane.Add(summaryGrid);
 
             _previewEmptyState = CreateInlineMessage(L("message.selectSheet"), out _previewEmptyStateLabel);
@@ -734,6 +744,7 @@ namespace Database
             _allSheets.Clear();
             _filteredSheets.Clear();
             _visibleRows.Clear();
+            _downloadState = DBInitializerDownloadStateStore.Load(_initializer);
 
             if (_sheetListView != null)
             {
@@ -1169,6 +1180,8 @@ namespace Database
                 return;
             }
 
+            DBInitializerDownloadStateStore.RecordSheetDownload(_initializer, selectedSheet.Name, DateTime.UtcNow);
+            _downloadState = DBInitializerDownloadStateStore.Load(_initializer);
             ReloadPreviewData();
         }
 
@@ -1180,7 +1193,15 @@ namespace Database
                 return;
             }
 
-            _initializer.DownloadGoogleSheet();
+            bool didDownload = _initializer.DownloadGoogleSheet((string)null);
+            if (!didDownload)
+            {
+                return;
+            }
+
+            DBInitializerDownloadStateStore.RecordFullDownload(_initializer, DateTime.UtcNow);
+            _downloadState = DBInitializerDownloadStateStore.Load(_initializer);
+            ReloadPreviewData();
         }
 
         private static void CopyGoogleAppsScript()
@@ -1346,7 +1367,10 @@ namespace Database
             if (_sheetSourceValueLabel == null
                 || _sheetRowsValueLabel == null
                 || _sheetColumnsValueLabel == null
-                || _sheetFileValueLabel == null)
+                || _sheetFileValueLabel == null
+                || _previewRefreshValueLabel == null
+                || _fullDownloadValueLabel == null
+                || _sheetDownloadValueLabel == null)
             {
                 return;
             }
@@ -1354,24 +1378,26 @@ namespace Database
             if (sheet == null)
             {
                 _sheetSourceValueLabel.text = GetSourceLabel();
-                _sheetSourceValueLabel.tooltip = GetSourceLabel();
+                _sheetSourceValueLabel.tooltip = BuildDownloadTooltip(null);
                 _sheetRowsValueLabel.text = "-";
                 _sheetRowsValueLabel.tooltip = L("preview.noSheet");
                 _sheetColumnsValueLabel.text = "-";
                 _sheetColumnsValueLabel.tooltip = L("preview.noSheet");
                 _sheetFileValueLabel.text = "-";
-                _sheetFileValueLabel.tooltip = string.Empty;
+                _sheetFileValueLabel.tooltip = BuildStateFileTooltip();
+                SetTimeSummaryValues(null);
                 return;
             }
 
             _sheetSourceValueLabel.text = GetSourceLabel();
-            _sheetSourceValueLabel.tooltip = GetSourceLabel();
+            _sheetSourceValueLabel.tooltip = BuildDownloadTooltip(sheet.Name);
             _sheetRowsValueLabel.text = sheet.Rows.Count.ToString(CultureInfo.InvariantCulture);
             _sheetRowsValueLabel.tooltip = LF("tooltip.rowsInSheet", sheet.Rows.Count, sheet.Name);
             _sheetColumnsValueLabel.text = sheet.Columns.Count.ToString(CultureInfo.InvariantCulture);
             _sheetColumnsValueLabel.tooltip = LF("tooltip.columnsInSheet", sheet.Columns.Count, sheet.Name);
             _sheetFileValueLabel.text = Path.GetFileName(sheet.FilePath);
-            _sheetFileValueLabel.tooltip = sheet.FilePath;
+            _sheetFileValueLabel.tooltip = $"{sheet.FilePath}\n{BuildStateFileTooltip()}";
+            SetTimeSummaryValues(sheet.Name);
         }
 
         private void UpdatePathSummary()
@@ -1404,6 +1430,99 @@ namespace Database
                 return LF("preview.metaEmpty", GetSourceLabel(), refreshText);
 
             return LF("preview.meta", GetSourceLabel(), sheet.Rows.Count, sheet.Columns.Count, refreshText);
+        }
+
+        private void SetTimeSummaryValues(string sheetName)
+        {
+            string previewRefreshText = GetPreviewRefreshText();
+            string fullDownloadText = GetFullDownloadText();
+            string sheetDownloadText = GetSheetDownloadText(sheetName);
+
+            _previewRefreshValueLabel.text = previewRefreshText;
+            _previewRefreshValueLabel.tooltip = _language == UiLanguage.Korean
+                ? $"마지막 미리보기 새로고침\n{previewRefreshText}"
+                : $"Last preview refresh\n{previewRefreshText}";
+
+            _fullDownloadValueLabel.text = fullDownloadText;
+            _fullDownloadValueLabel.tooltip = _language == UiLanguage.Korean
+                ? $"마지막 전체 Google Sheet 다운로드\n{fullDownloadText}"
+                : $"Last full Google Sheet download\n{fullDownloadText}";
+
+            _sheetDownloadValueLabel.text = sheetDownloadText;
+            _sheetDownloadValueLabel.tooltip = string.IsNullOrWhiteSpace(sheetName)
+                ? (_language == UiLanguage.Korean ? "시트를 선택하면 시트별 다운로드 시간이 표시됩니다." : "Select a sheet to see its per-sheet download time.")
+                : (_language == UiLanguage.Korean
+                    ? $"{sheetName} 시트 마지막 다운로드\n{sheetDownloadText}"
+                    : $"{sheetName} last sheet download\n{sheetDownloadText}");
+        }
+
+        private string BuildDownloadTooltip(string sheetName)
+        {
+            string fullText = GetFullDownloadText();
+            string sheetText = GetSheetDownloadText(sheetName);
+
+            return _language == UiLanguage.Korean
+                ? $"{GetSourceLabel()}\n마지막 전체 다운로드: {fullText}\n선택 시트 다운로드: {sheetText}"
+                : $"{GetSourceLabel()}\nLast full download: {fullText}\nSelected sheet download: {sheetText}";
+        }
+
+        private string BuildStateFileTooltip()
+        {
+            string statePath = DBInitializerDownloadStateStore.TryGetStateFilePath(_initializer, out var filePath)
+                ? filePath
+                : (_language == UiLanguage.Korean ? "상태 파일 없음" : "No state file");
+
+            return _language == UiLanguage.Korean
+                ? $"다운로드 상태 파일\n{statePath}"
+                : $"Download state file\n{statePath}";
+        }
+
+        private static bool TryFormatStoredUtc(string utcText, out string formattedText)
+        {
+            formattedText = null;
+            if (string.IsNullOrWhiteSpace(utcText))
+            {
+                return false;
+            }
+
+            if (!DateTime.TryParse(
+                    utcText,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal,
+                    out var utcTime))
+            {
+                return false;
+            }
+
+            formattedText = utcTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        private string GetPreviewRefreshText()
+        {
+            return _lastPreviewRefreshUtc == DateTime.MinValue
+                ? (_language == UiLanguage.Korean ? "없음" : "none")
+                : _lastPreviewRefreshUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+        }
+
+        private string GetFullDownloadText()
+        {
+            return TryFormatStoredUtc(_downloadState?.LastFullDownloadUtc, out var formattedFull)
+                ? formattedFull
+                : (_language == UiLanguage.Korean ? "없음" : "none");
+        }
+
+        private string GetSheetDownloadText(string sheetName)
+        {
+            if (string.IsNullOrWhiteSpace(sheetName) || _downloadState?.SheetDownloadsUtc == null)
+            {
+                return _language == UiLanguage.Korean ? "없음" : "none";
+            }
+
+            return _downloadState.SheetDownloadsUtc.TryGetValue(sheetName, out var sheetUtc)
+                   && TryFormatStoredUtc(sheetUtc, out var formattedSheet)
+                ? formattedSheet
+                : (_language == UiLanguage.Korean ? "없음" : "none");
         }
 
         private string BuildSortLabel(SheetPreview sheet)

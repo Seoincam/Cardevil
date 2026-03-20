@@ -301,8 +301,10 @@ function onEdit(e) {
                     {
                         // DBInitializerSO에 DownloadGoogleSheet 메소드가 public 이어야 합니다.
                         // 만약 public이 아니라면 아래 target.GetType() 코드를 사용하세요.
-                        var method = target.GetType().GetMethod("DownloadGoogleSheet", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-                        method?.Invoke(target, null);
+                        if (target.DownloadGoogleSheet((string)null))
+                        {
+                            DBInitializerDownloadStateStore.RecordFullDownload(target, DateTime.UtcNow);
+                        }
                     }
                     catch (Exception ex)
                     {
