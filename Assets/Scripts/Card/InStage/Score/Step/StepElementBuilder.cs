@@ -12,6 +12,7 @@ namespace Cardevil.Card.InStage.Score.Step
         float CurrentScore { get; }
             
         ICardState CurrentCard { get; }
+        HandRank HandRank { get; }
     }
     
     public interface IScoreProviderRegistry
@@ -73,6 +74,7 @@ namespace Cardevil.Card.InStage.Score.Step
             public float CurrentScore { get; set; }
 
             public ICardState CurrentCard { get; set; }
+            public HandRank HandRank => HandRankData.HandRank;
         }
 
         private IReadOnlyList<IStepElement> InternalBuildSteps(ScoreStepType type)

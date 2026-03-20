@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871ed7db8aaf4fb08111deb0e36a1c17, type: 3}
+  m_Name: Relic
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
+  data:
+    id: local-260319-00-36-22
+    commentForEditor: 
+    rarity: 2
+    displayIcon: {fileID: 21300000, guid: 1a8eb3e145531ef42b780cbb0a81b8ba, type: 3}
+    displayName: "\uC0D8\uD50C"
+    displayDescription: "\uD574\uB2F9 \uC720\uBB3C\uC740 <color=#81FF17>\uC608\uC2DC\uC758
+      \uBAA9\uC801</color>\uC73C\uB85C \uB9CC\uB4E4\uC5B4\uC9C4 \uC720\uBB3C\uC785\uB2C8\uB2E4.
+      \uC6B0\uCE21 \uC0C1\uB2E8\uC758 <u>'\uB85C\uCEEC \uD14C\uC2A4\uD2B8 \uC720\uBB3C
+      \uCD94\uAC00' \uBC84\uD2BC</u>\uC744 \uD1B5\uD574, \uC774\uC640 \uAC19\uC774
+      \uBE60\uB974\uAC8C \uC720\uBB3C\uC744 \uB9CC\uB4E4\uACE0 \uD14C\uC2A4\uD2B8
+      \uD560 \uC218 \uC788\uC2B5\uB2C8\uB2E4.\n\n<b>\uD604\uC7AC \uC608\uC2DC:</b>\n<i>'\uC2A4\uD0EF
+      \uC218\uC815'</i> \uD6A8\uACFC\uB97C \uD1B5\uD574 \uC2A4\uD0EF\uC744 \uBCC0\uACBD\uD558\uB294
+      \uD6A8\uACFC\uB97C \uCD94\uAC00\uD588\uC2B5\uB2C8\uB2E4. \uD574\uB2F9 \uC720\uBB3C\uC774
+      \uD65C\uC131\uD654\uB418\uC5B4 \uC788\uB294 \uB3D9\uC548 <color=#81FF17>\uCD5C\uB300
+      \uCCB4\uB825</color>\uC744 <color=#81FF17>1\uB9CC\uD07C</color> \uB354\uD574
+      \uACC4\uC0B0\uD569\uB2C8\uB2E4."
+    effects:
+    - rid: 5725363072088146186
+  dataSource: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 5725363072088146186
+      type: {class: ModifyStatDefinition, ns: Cardevil.Gameplay.Relics.Effects, asm: Assembly-CSharp}
+      data:
+        targetStat: 2
+        delta: 1

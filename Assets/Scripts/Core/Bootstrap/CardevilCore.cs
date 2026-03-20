@@ -1,7 +1,7 @@
-using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Systems.Pool;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Systems.Sounds;
+using Cardevil.Gameplay;
 using Cysharp.Threading.Tasks;
 using Database;
 using System.Threading;
@@ -20,31 +20,24 @@ namespace Cardevil.Core.Bootstrap
         [Header("Settings")] 
         [field: SerializeField] public bool CanSelectSaveSlot { get; private set; }
         
-        [SerializeField] private GameManager game;
-        [SerializeField] private GameFlowManager gameFlow;
-        [SerializeField] private SaveLoadManager saveLoad;
-        [SerializeField] private SoundManager sound;
-        [SerializeField] private PoolManager pool;
-        [SerializeField] private DatabaseManager database;
-
-        // Bootstrapper 등 내부 로직용
-        public GameManager GameManager => game;
-        public GameFlowManager GameFlowManager => gameFlow;
-        public SaveLoadManager SaveLoadManager => saveLoad;
-        public SoundManager SoundManager => sound;
-        public PoolManager PoolManager => pool;
-        public DatabaseManager DatabaseManager => database;
-
+        [field: Header("Managers")]
+        [field: SerializeField] public GameManager GameManager { get; private set; }
+        [field: SerializeField] public GameFlowManager GameFlowManager { get; private set; }
+        [field: SerializeField] public SaveLoadManager SaveLoadManager { get; private set; }
+        [field: SerializeField] public SoundManager SoundManager { get; private set; }
+        [field: SerializeField] public PoolManager PoolManager { get; private set; }
+        [field: SerializeField] public DatabaseManager DatabaseManager { get; private set; }
+        
         // 외부 단축 접근용
-        public static GameManager Game => Instance.game;
-        public static GameFlowManager GameFlow => Instance.gameFlow;
-        public static SaveLoadManager SaveLoad => Instance.saveLoad;
-        public static SoundManager Sound => Instance.sound;
-        public static PoolManager Pool => Instance.pool;
-        public static DatabaseManager Database => Instance.database;
+        public static GameManager Game => Instance.GameManager;
+        public static GameFlowManager GameFlow => Instance.GameFlowManager;
+        public static SaveLoadManager SaveLoad => Instance.SaveLoadManager;
+        public static SoundManager Sound => Instance.SoundManager;
+        public static PoolManager Pool => Instance.PoolManager;
+        public static DatabaseManager Database => Instance.DatabaseManager;
         
         // 자주 쓰는 깊은 계층 단축
-        public static ScoreProviderRegistry Score => Instance.game.ScoreProviderRegistry;
+        public static PlayerStatus PlayerStatus => Instance.GameManager.PlayerStatus;
         
         [Header("References")]
         [SerializeField] private EventSystem eventSystem;

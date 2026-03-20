@@ -1,5 +1,6 @@
 ﻿using Cardevil.Core.Attributes;
 using Cardevil.Core.Systems;
+using Cardevil.Gameplay.Relics.Core;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -76,11 +77,20 @@ namespace Cardevil.UI.GlobalNavigationBar
             ScreenManager.OnScreenResolutionChanged += OnResolutionChanged;
         }
         
-        public void OnDisable()
+        private void OnDisable()
         {
             previousButton.onClick.RemoveListener(OnPreviousButtonClicked);
             nextButton.onClick.RemoveListener(OnNextButtonClicked);
             ScreenManager.OnScreenResolutionChanged -= OnResolutionChanged;
+        }
+
+        public RelicIcon AddRelic(RelicDefinition definition)
+        {
+            var instance = Instantiate(relicIconPrefab, relicsParent);
+            relicIcons.Add(instance);
+            
+            instance.Initialize(definition);
+            return instance;
         }
         
         private void OnPreviousButtonClicked()

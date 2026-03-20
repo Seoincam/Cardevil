@@ -25,11 +25,14 @@ namespace Cardevil.Core.Events.EventArgs
         /// </summary>
         public int ModifiedHealth { get; set; }
 
-        public void Init(int currentHealth, int newHealth)
+        public static PlayerHealthChangeArgs Get(int currentHealth, int newHealth)
         {
-            OldHealth = currentHealth;
-            NewHealth = newHealth;
-            ModifiedHealth = newHealth;
+            var args = Get();
+            args.OldHealth = currentHealth;
+            args.NewHealth = newHealth;
+            args.ModifiedHealth = newHealth;
+            
+            return args;
         }
 
         public override void Clear()
@@ -55,11 +58,14 @@ namespace Cardevil.Core.Events.EventArgs
         /// </summary>
         public int ModifiedShield { get; set; }
 
-        public void Init(int currentShield, int newShield)
+        public static PlayerShieldChangeArgs Get(int currentShield, int newShield)
         {
-            OldShield = currentShield;
-            NewShield = newShield;
-            ModifiedShield = newShield;
+            var args = Get();
+            args.OldShield = currentShield;
+            args.NewShield = newShield;
+            args.ModifiedShield = newShield;
+
+            return args;
         }
 
         public override void Clear()
