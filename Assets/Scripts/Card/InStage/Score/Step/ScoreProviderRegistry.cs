@@ -23,8 +23,6 @@ namespace Cardevil.Card.InStage.Score.Step
         
         public int Register(IScoreProvider provider)
         {
-            LogEx.Log(provider.ScoreStepType.ToString());
-            
             if (!providerMap.TryGetValue(provider.ScoreStepType, out List<IScoreProvider> list))
             {
                 list = new List<IScoreProvider>();
@@ -35,10 +33,7 @@ namespace Cardevil.Card.InStage.Score.Step
 
             var id = _nextId++;
             _providerIdMap.Add(id, provider);
-
             _needSortMap[provider.ScoreStepType] = true;
-            
-            LogEx.Log(providerMap.Count + "개의 ScoreStepType이 존재함.");
             return id;
         }
 

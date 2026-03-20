@@ -168,7 +168,7 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
             foreach (var effect in effects)
             {
                 if (effect == null) continue;
-                sb.AppendLine($"- {effect.EditorDescription}");
+                sb.AppendLine($">> {effect.EditorDescription}");
             }
 
             _effectDescPreview.text = sb.ToString().TrimEnd();

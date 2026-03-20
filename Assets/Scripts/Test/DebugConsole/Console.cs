@@ -143,7 +143,7 @@ namespace Cardevil.Test.DebugConsole
                 }
                 catch (Exception ex)
                 {
-                    Message(MessageType.Error, $"Error executing command '{commandName}': {ex.Message}");
+                    Message(MessageType.Error, $"Error executing command '{commandName}': {ex.Message}\n{ex.StackTrace}");
                     _window.MessageInfo(_currentCommand.Signature);
                 }
                 _lastCommand = _currentCommand;

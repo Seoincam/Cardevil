@@ -18,8 +18,8 @@ namespace Cardevil.Gameplay.Relics.Effects
         public class Runtime : EffectRuntime, IStatModifier
         {
             private readonly ModifyStatDefinition _definition;
-
-            public int ModifierId { get; set; } = -1;
+            private int _modifierId;
+            
             public PlayerStatType TargetType => _definition.targetStat;
 
             public Runtime(ModifyStatDefinition definition, RelicInstance context) : base(context)
@@ -34,13 +34,13 @@ namespace Cardevil.Gameplay.Relics.Effects
             
             public override void OnActive()
             {
-                ModifierId = Context.CommonContext.PlayerStatus.AddModifier(this);
+                _modifierId = Context.CommonContext.PlayerStatus.AddModifier(this);
             }
 
             public override void OnInactive()
             {
-                Context.CommonContext.PlayerStatus.SafeRemoveModifier(ModifierId, this);
-                ModifierId = -1;
+                Context.CommonContext.PlayerStatus.SafeRemoveModifier(_modifierId, this);
+                _modifierId = -1;
             }
         }
     }
