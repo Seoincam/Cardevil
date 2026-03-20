@@ -10,8 +10,8 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
     public abstract class ScoreEffectDefinition : EffectDefinition
     {
         [Header("점수 기본 설정")]
-        [SerializeField] protected ScoreStepType scoreStepType;
-        [SerializeField] protected ScoreOperatorType scoreOperatorType;
+        [SerializeField] protected StepType stepType;
+        [SerializeField] protected ScoreOperatorType operatorType;
         
         [Header("동적 수치 설정")]
         [SerializeField] protected float baseValue;
@@ -25,7 +25,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
                     ? valueResolver.GetDescription(baseValue)
                     : baseValue.ToString();
                 
-                return scoreOperatorType switch
+                return operatorType switch
                 {
                     ScoreOperatorType.Plus => $"<color=#FFD700>+{valueDesc}점</color>을 부여합니다.",
                     ScoreOperatorType.Multiply => $"<color=#FFD700>x{valueDesc}</color>를 부여합니다.",
@@ -33,9 +33,27 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
                 };
             }
         }
-        
-        public ScoreStepType ScoreStepType => scoreStepType;
-        public ScoreOperatorType OperatorType => scoreOperatorType;
+
+        /// <summary>
+        /// 에디터에서 사용하기 위한 실행 단계 열거형.
+        /// 실제 사용시엔 <see cref="ScoreStepType"/>으로 변환함.
+        /// </summary>
+        public enum StepType
+        {
+            EachCard,
+            PlusRelic,
+            MultiplyRelic
+        }
+
+        public ScoreStepType ScoreStepType => stepType switch
+        {
+            StepType.EachCard => ScoreStepType.EachCard,
+            StepType.PlusRelic => ScoreStepType.PlusRelic,
+            StepType.MultiplyRelic => ScoreStepType.MultiplyRelic,
+            
+            _ => throw new ArgumentOutOfRangeException(nameof(stepType), stepType, null)
+        };
+        public ScoreOperatorType OperatorType => operatorType;
 
         public float GetCalculatedValue(RelicInstance context)
         {

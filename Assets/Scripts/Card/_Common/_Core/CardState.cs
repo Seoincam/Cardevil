@@ -19,6 +19,7 @@ namespace Cardevil.Card.Common.Core
         
         bool IsAttack { get; }
         bool IsMove { get; }
+        bool IsStar { get; }
         
         CardState.ValueSelectableType SelectableType { get; }
         bool ValueSelected { get; }
@@ -46,6 +47,7 @@ namespace Cardevil.Card.Common.Core
 
         public bool IsAttack => spec.IsAttack;
         public bool IsMove => spec.IsMove;
+        public bool IsStar => Numbers?.AllOptionsCount == 9;
 
         public ValueSelectableType SelectableType
         {

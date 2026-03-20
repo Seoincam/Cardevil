@@ -15,7 +15,7 @@ MonoBehaviour:
   data:
     id: local-260319-00-36-22
     commentForEditor: 
-    rarity: 0
+    rarity: 2
     displayIcon: {fileID: 21300000, guid: 1a8eb3e145531ef42b780cbb0a81b8ba, type: 3}
     displayName: "\uC0D8\uD50C"
     displayDescription: "\uD574\uB2F9 \uC720\uBB3C\uC740 <color=#81FF17>\uC608\uC2DC\uC758
@@ -50,11 +50,12 @@ MonoBehaviour:
       type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data:
         scoreStepType: 1
-        scoreOperatorType: 0
+        stepType: 0
+        operatorType: 0
         baseValue: 30
         valueResolver:
-          rid: 5725363090318164063
+          rid: 5725363090318164144
         targetHandRank: 1
-    - rid: 5725363090318164063
+    - rid: 5725363090318164144
       type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data: 

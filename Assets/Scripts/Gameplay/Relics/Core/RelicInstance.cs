@@ -5,14 +5,14 @@ namespace Cardevil.Gameplay.Relics.Core
     public class RelicInstance
     {
         public RelicDefinition Data { get; }
-        public IRelicContext CommonContext { get; }
+        public IRelicCommonContext CommonContext { get; }
         
         private readonly List<EffectRuntime> _runtimes = new();
 
-        public RelicInstance(RelicDefinition data, IRelicContext context)
+        public RelicInstance(RelicDefinition data, IRelicCommonContext commonContext)
         {
             Data = data;
-            CommonContext = context;
+            CommonContext = commonContext;
             
             foreach (var def in data.Effects)
             {

@@ -2,6 +2,7 @@ using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Gameplay.Relics.Core;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
@@ -10,10 +11,10 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
     public class CardNumberScoreDefinition : ScoreEffectDefinition
     {
         [Header("카드 숫자 보너스 설정")]
-        [SerializeField, Range(2f, 10f)] private int targetNumber;
+        [SerializeField] private List<int> targetNumbers;
 
         public override string EditorName => "점수/카드 숫자 보너스";
-        public override string EditorDescription => $"카드의 <color=#FFD700>숫자가 {targetNumber}</color>일 경우, {CommonDescription}";
+        public override string EditorDescription => $"카드의 <color=#FFD700>숫자가 {string.Join(", ", targetNumbers)}</color>일 경우, {CommonDescription}";
 
         public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
 
@@ -29,7 +30,8 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)
             {
-                if (context.CurrentCard.Numbers.Current!.Value != _definition.targetNumber)
+                var currentNumber = context.CurrentCard.Numbers.Current!.Value;
+                if (!_definition.targetNumbers.Contains(currentNumber))
                 {
                     return null;
                 }

@@ -32,5 +32,10 @@ MonoBehaviour:
       data:
         scoreStepType: 5
         scoreOperatorType: 1
-        value: 1.2
+        baseValue: 2
+        valueResolver:
+          rid: 5725363090318164092
         probability: 0.3333
+    - rid: 5725363090318164092
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 

@@ -2,8 +2,11 @@ using Cardevil.Core.Attributes;
 using Cardevil.Core.DataStructure.Serializables;
 using Cardevil.Core.Utils;
 using System;
+using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
+using Cardevil.Test.DebugConsole;
+using Cardevil.Core.Bootstrap;
 
 namespace Cardevil.Card.InStage.Score.Step
 {
@@ -20,6 +23,8 @@ namespace Cardevil.Card.InStage.Score.Step
         
         public int Register(IScoreProvider provider)
         {
+            LogEx.Log(provider.ScoreStepType.ToString());
+            
             if (!providerMap.TryGetValue(provider.ScoreStepType, out List<IScoreProvider> list))
             {
                 list = new List<IScoreProvider>();
@@ -32,6 +37,8 @@ namespace Cardevil.Card.InStage.Score.Step
             _providerIdMap.Add(id, provider);
 
             _needSortMap[provider.ScoreStepType] = true;
+            
+            LogEx.Log(providerMap.Count + "개의 ScoreStepType이 존재함.");
             return id;
         }
 
@@ -65,6 +72,26 @@ namespace Cardevil.Card.InStage.Score.Step
         private void Unregister(IScoreProvider provider)
         {
             providerMap[provider.ScoreStepType].Remove(provider);
+        }
+
+        [ConsoleCommand("printScoreProviders", "현재 등록된 모든 ScoreProvider를 출력합니다.")]
+        private static void PrintScoreProviders()
+        {
+            var registry = CardevilCore.Game.ScoreProviderRegistry;
+            var sb = new StringBuilder();
+            
+            foreach (var kvp in registry.providerMap)
+            {
+                sb.AppendLine($"[{kvp.Key}] 단계 (총 {kvp.Value.Count}개):");
+                foreach (var provider in kvp.Value)
+                {
+                    sb.AppendLine($"  - ID: {provider.Id}, Type: {provider.GetType().Name}");
+                }
+            }
+            
+            if (registry.providerMap.Count == 0) sb.AppendLine("등록된 Provider가 없습니다.");
+            
+            LogEx.Log(sb.ToString());
         }
     }
 }

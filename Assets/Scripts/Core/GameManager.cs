@@ -22,8 +22,8 @@ namespace Cardevil.Core
             CardevilCore.SaveLoad.Register(this);
             
             PlayerStatus = new PlayerStatus();
-            Relic = new RelicManager(PlayerStatus, ScoreProviderRegistry);
             ScoreProviderRegistry = new ScoreProviderRegistry();
+            Relic = new RelicManager(PlayerStatus, ScoreProviderRegistry);
         }
         
         public void SetUpNewGame(GameSave currentSave)

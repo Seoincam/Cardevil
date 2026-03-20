@@ -30,6 +30,8 @@ namespace Cardevil.Gameplay
         
         Gold,
         RerollTicket,
+        
+        StageClearCount,
     }
     
     /// <summary>

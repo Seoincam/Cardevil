@@ -1,7 +1,10 @@
 using Cardevil.Card.InStage.Score.Step;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Utils;
+using Cardevil.Test.DebugConsole;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Cardevil.Gameplay.Relics.Core
 {
@@ -10,28 +13,22 @@ namespace Cardevil.Gameplay.Relics.Core
     {
         private readonly Dictionary<string, RelicInstance> _ownedRelics = new();
         private readonly RelicDatabase _database;
-        private readonly IRelicContext _context;
-        
-        private PlayerStatus _playerStatus;
-        private ScoreProviderRegistry _scoreProviderRegistry;
+        private readonly IRelicCommonContext _commonContext;
 
         public event Action<RelicInstance> RelicAdded;
 
         public RelicManager(PlayerStatus playerStatus, ScoreProviderRegistry scoreProviderRegistry)
         {
-            const string databasePath = "Assets/Resources/ScriptableObjects/Relics/Relic Database.asset";
+            const string databasePath = "ScriptableObjects/Relics/Relic Database";
             _database = AssetUtil.Load<RelicDatabase>(databasePath);
             if (!_database)
             {
                 LogEx.LogError($"유물 데이터베이스를 찾을 수 없습니다. path: {databasePath}");
                 return;
             }
-            
-            _playerStatus = playerStatus;
-            _scoreProviderRegistry = scoreProviderRegistry;
-            
+
             _database.RuntimeInitialize();
-            _context = new RelicContext(_playerStatus, scoreProviderRegistry);
+            _commonContext = new RelicCommonContext(playerStatus, scoreProviderRegistry);
         }
 
         public void AddRelic(string id)
@@ -49,20 +46,22 @@ namespace Cardevil.Gameplay.Relics.Core
                 return;
             }
 
-            var instance = new RelicInstance(so.Data, _context);
+            var instance = new RelicInstance(so.Data, _commonContext);
             _ownedRelics.Add(id, instance);
             instance.Activate();
             
             RelicAdded?.Invoke(instance);
             // TODO: Relic Bar에 아이콘 추가
+            
+            LogEx.Log($"유물 '{instance.Data.DisplayName}({instance.Data.Id})'를 획득했습니다!");
         }
 
-        private class RelicContext : IRelicContext
+        private class RelicCommonContext : IRelicCommonContext
         {
             public PlayerStatus PlayerStatus { get; }
             public ScoreProviderRegistry ScoreProviderRegistry { get; }
             
-            public RelicContext(
+            public RelicCommonContext(
                 PlayerStatus playerStatus,
                 ScoreProviderRegistry scoreProviderRegistry)
             {
@@ -70,11 +69,35 @@ namespace Cardevil.Gameplay.Relics.Core
                 ScoreProviderRegistry = scoreProviderRegistry;
             }
         }
+        
+        [ConsoleCommand("addRelic", "유물을 획득합니다.", "addRelic <string: id>")]
+        private static void AddRelicCommand(string id)
+        {
+            var relicManager = CardevilCore.Instance.GameManager.Relic;
+            relicManager.AddRelic(id);
+        }
+
+        [ConsoleCommand("printAllOwnedRelics", "획득한 모든 유물을 출력합니다.")]
+        private static void PrintAllOwnedRelics()
+        {
+            var relicManager = CardevilCore.Instance.GameManager.Relic;
+            var sb = new StringBuilder();
+            
+            foreach (var instance in relicManager._ownedRelics.Values)
+            {
+                sb.Append($"[{instance.Data.DisplayName}({instance.Data.Id})], "); 
+            }
+            sb.AppendLine($"총 유물 개수: {relicManager._ownedRelics.Count}");
+            
+            LogEx.Log($"현재 획득한 유물들: {sb}");
+        }
     }
 
-    public interface IRelicContext
+    public interface IRelicCommonContext
     {
         PlayerStatus PlayerStatus { get; }
         ScoreProviderRegistry ScoreProviderRegistry { get; }
     }
+    
+
 }
