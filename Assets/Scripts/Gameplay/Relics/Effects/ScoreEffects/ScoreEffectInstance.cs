@@ -4,14 +4,14 @@ using Cardevil.Gameplay.Relics.Core;
 
 namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 {
-    public abstract class ScoreEffectRuntime : EffectRuntime, IScoreProvider
+    public abstract class ScoreEffectInstance : EffectInstance, IScoreProvider
     {
         protected readonly ScoreEffectDefinition Definition;
         
         public int Id { get; set; } = -1;
         public ScoreStepType ScoreStepType => Definition.ScoreStepType;
         
-        protected ScoreEffectRuntime(ScoreEffectDefinition definition, RelicInstance context) : base(context)
+        protected ScoreEffectInstance(ScoreEffectDefinition definition, RelicInstance context) : base(context)
         {
             Definition = definition;
         }

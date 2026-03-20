@@ -13,16 +13,16 @@ namespace Cardevil.Gameplay.Relics.Effects
         public override string EditorName => "스탯 수정";
         public override string EditorDescription => $"유물이 활성화되어 있는 동안 <color=#FFD700>{targetStat} 스탯</color>에 <color=#FFD700>{delta}</color>만큼 더해서 계산합니다.";
 
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new Instance(this, context);
         
-        public class Runtime : EffectRuntime, IStatModifier
+        public class Instance : EffectInstance, IStatModifier
         {
             private readonly ModifyStatDefinition _definition;
             private int _modifierId;
             
             public PlayerStatType TargetType => _definition.targetStat;
 
-            public Runtime(ModifyStatDefinition definition, RelicInstance context) : base(context)
+            public Instance(ModifyStatDefinition definition, RelicInstance context) : base(context)
             {
                 _definition = definition;
             }

@@ -17,14 +17,14 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public override string EditorDescription => $"<color=#FFD700>{probability * 100:f2}% 확률</color>로 {CommonDescription}";
 
 
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new Instance(this, context);
 
         [Serializable]
-        public class Runtime : ScoreEffectRuntime
+        public class Instance : ScoreEffectInstance
         {
             private readonly RandomChanceScoreDefinition _definition;
             
-            public Runtime(RandomChanceScoreDefinition definition, RelicInstance context) : base(definition, context)
+            public Instance(RandomChanceScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
                 _definition = definition;
             }

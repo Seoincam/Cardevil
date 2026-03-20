@@ -8,7 +8,7 @@ namespace Cardevil.Gameplay.Relics.Core
         public RelicDefinition Data { get; }
         public IRelicCommonContext CommonContext { get; }
         
-        private readonly List<EffectRuntime> _runtimeEffects = new();
+        private readonly List<EffectInstance> _runtimeEffects = new();
 
         private RelicIcon _iconInstance;
 

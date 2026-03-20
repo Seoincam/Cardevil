@@ -17,14 +17,14 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public override string EditorDescription => $"<color=#FFD700>{targetStat} 스탯</color>이 <color=#FFD700>{targetValue}</color>일 경우, {CommonDescription}";
 
         
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new Instance(this, context);
 
         [Serializable]
-        public class Runtime : ScoreEffectRuntime
+        public class Instance : ScoreEffectInstance
         {
             private StatMatchScoreDefinition _definition;
             
-            public Runtime(StatMatchScoreDefinition definition, RelicInstance context) : base(definition, context)
+            public Instance(StatMatchScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
                 _definition = definition;
             }

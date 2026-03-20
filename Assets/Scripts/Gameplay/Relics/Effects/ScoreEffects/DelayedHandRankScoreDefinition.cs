@@ -16,10 +16,10 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public override string EditorName => "점수/(지연) 족보 보너스";
         public override string EditorDescription => $"족보가 <color=#FFD700>{targetHandRank}</color>일 경우, <b>다음 턴</b>에 {CommonDescription}";
         
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new RunTime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new RunTime(this, context);
 
         [Serializable]
-        public class RunTime : ScoreEffectRuntime
+        public class RunTime : ScoreEffectInstance
         {
             private readonly DelayedHandRankScoreDefinition _definition;
             

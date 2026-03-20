@@ -17,14 +17,14 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
         public override string EditorDescription => $"족보가 <color=#FFD700>{targetHandRank}</color>일 경우, {CommonDescription}";
 
 
-        public override EffectRuntime CreateRuntimeInstance(RelicInstance context) => new Runtime(this, context);
+        public override EffectInstance CreateRuntimeInstance(RelicInstance context) => new Instance(this, context);
 
         [Serializable]
-        public class Runtime : ScoreEffectRuntime
+        public class Instance : ScoreEffectInstance
         {
             private readonly HandRankScoreDefinition _definition;
             
-            public Runtime(HandRankScoreDefinition definition, RelicInstance context) : base(definition, context)
+            public Instance(HandRankScoreDefinition definition, RelicInstance context) : base(definition, context)
             {
                 _definition = definition;
             }

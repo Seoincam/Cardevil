@@ -15,6 +15,6 @@ namespace Cardevil.Gameplay.Relics.Core
         /// </summary>
         public virtual string EditorDescription => "설명이 등록되지 않은 이펙트입니다.";
         
-        public abstract EffectRuntime CreateRuntimeInstance(RelicInstance context);
+        public abstract EffectInstance CreateRuntimeInstance(RelicInstance context);
     }
 }
