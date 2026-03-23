@@ -23,10 +23,11 @@ namespace Cardevil.Card.InStage
         private StageCardCoreView _view;
         
         public StageCardCorePresenter(
+            IScoreProviderRegistry scoreProviderRegistry,
             StageCardCoreView view, 
             HandBarPresenter handBarPresenter, 
-            ScorePresenter scorePresenter,
-            IScoreProviderRegistry scoreProviderRegistry)
+            ScorePresenter scorePresenter
+            )
         {
             _view = view;
             view.UseClicked += OnUseRequested;

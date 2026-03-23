@@ -1,6 +1,7 @@
 using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Attributes;
+using Cardevil.Gameplay;
 using UnityEngine;
 
 namespace Cardevil.Card.InStage
@@ -13,6 +14,7 @@ namespace Cardevil.Card.InStage
     {
         [Header("Views")]
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private StageCardCoreView coreView;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private RerollView rerollView; 
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private HandBarView handBarView;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private ValueSelectionView valueSelectionView;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private CardScoreView cardScoreView;
@@ -24,27 +26,18 @@ namespace Cardevil.Card.InStage
         [field: SerializeField] public ValueSelectionPresenter ValueSelection { get; private set; }
         [field: SerializeField] public ScorePresenter Score { get; private set; }
         
-        public void Initialize(IScoreProviderRegistry scoreProviderRegistry)
+        public void Initialize(PlayerStatus playerStatus, IScoreProviderRegistry scoreProviderRegistry)
         {
+            // 내부 로직
             ValueSelection = new ValueSelectionPresenter(valueSelectionView);
             HandBar = new HandBarPresenter(handBarView, ValueSelection);
             Score = new ScorePresenter(cardScoreView); 
-            Core = new StageCardCorePresenter(coreView, HandBar, Score, scoreProviderRegistry);
-            Reroll = new RerollPresenter(Core, HandBar);
+            
+            // 외부 클래스와 상호작용
+            Core = new StageCardCorePresenter(scoreProviderRegistry, coreView, HandBar, Score);
+            Reroll = new RerollPresenter(playerStatus, rerollView, Core, HandBar);
             
             HandBar.HandRankChanged += Score.OnHandRankChanged;
-        }
-
-        [ContextMenu("Reroll Presenter/Reroll")]
-        private void TestReroll()
-        {
-            Reroll.OnRerollRequested();
-        }
-
-        [ContextMenu("Reroll Presenter/Confirm")]
-        private void Confirm()
-        {
-            Reroll.OnConfirmRequested();
         }
     }
 }

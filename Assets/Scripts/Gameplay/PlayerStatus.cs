@@ -301,11 +301,11 @@ namespace Cardevil.Gameplay
             if (previousFinalValue != currentFinalValue)
             {
                 stat.SetFinalValue(currentFinalValue);
-                Notify(type, previousFinalValue, currentFinalValue);
+                OnValueChanged(type, previousFinalValue, currentFinalValue);
             }
         }
 
-        private void Notify(PlayerStatType statType, int previous, int current)
+        private void OnValueChanged(PlayerStatType statType, int previous, int current)
         {
             switch (statType)
             {
@@ -321,6 +321,9 @@ namespace Cardevil.Gameplay
                 case PlayerStatType.Shield:
                     var shieldArgs = PlayerShieldChangeArgs.Get(previous, current);
                     ExecEventBus<PlayerShieldChangeArgs>.InvokeMergedAndDispose(shieldArgs).Forget();
+                    break;
+                
+                case PlayerStatType.RerollTicket:
                     break;
             }
         }
