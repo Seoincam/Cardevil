@@ -17,22 +17,34 @@ namespace Cardevil.Card.InStage
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private ValueSelectionView valueSelectionView;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private CardScoreView cardScoreView;
         
-        [Header("Presenters")]
-        [SerializeField] private StageCardCorePresenter corePresenter;
-        [SerializeField] private HandBarPresenter handBarPresenter;
-        [SerializeField] private ValueSelectionPresenter valueSelectionPresenter;
-        [SerializeField] private ScorePresenter scorePresenter;
-
-        public StageCardCorePresenter Core => corePresenter;
-
+        [field: Header("Presenters")]
+        [field: SerializeField] public RerollPresenter Reroll { get; private set; }
+        [field: SerializeField] public StageCardCorePresenter Core { get; private set; }
+        [field: SerializeField] public HandBarPresenter HandBar { get; private set; }
+        [field: SerializeField] public ValueSelectionPresenter ValueSelection { get; private set; }
+        [field: SerializeField] public ScorePresenter Score { get; private set; }
+        
         public void Initialize(IScoreProviderRegistry scoreProviderRegistry)
         {
-            valueSelectionPresenter = new ValueSelectionPresenter(valueSelectionView);
-            handBarPresenter = new HandBarPresenter(handBarView, valueSelectionPresenter);
-            scorePresenter = new ScorePresenter(cardScoreView); 
-            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter, scorePresenter, scoreProviderRegistry);
+            ValueSelection = new ValueSelectionPresenter(valueSelectionView);
+            HandBar = new HandBarPresenter(handBarView, ValueSelection);
+            Score = new ScorePresenter(cardScoreView); 
+            Core = new StageCardCorePresenter(coreView, HandBar, Score, scoreProviderRegistry);
+            Reroll = new RerollPresenter(Core, HandBar);
             
-            handBarPresenter.HandRankChanged += scorePresenter.OnHandRankChanged;
+            HandBar.HandRankChanged += Score.OnHandRankChanged;
+        }
+
+        [ContextMenu("Reroll Presenter/Reroll")]
+        private void TestReroll()
+        {
+            Reroll.OnRerollRequested();
+        }
+
+        [ContextMenu("Reroll Presenter/Confirm")]
+        private void Confirm()
+        {
+            Reroll.OnConfirmRequested();
         }
     }
 }

@@ -64,8 +64,8 @@ namespace Cardevil.Card.InStage
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
             _view = view;
-            _view.SortByNumberClicked += SortByNumber;
-            _view.SortByIconClicked += SortByIcon;
+            _view.SortByNumberClicked += OnSortByNumberRequested;
+            _view.SortByIconClicked += OnSortByIconRequested;
             
             _view.CardPointerEnter += OnPointerEnter;
             _view.CardPointerDown += OnPointerDown;
@@ -104,9 +104,28 @@ namespace Cardevil.Card.InStage
                 model.Remove(state);
                 _view.ArrangeCards(model.Hand);
             
-                await _view.MoveCardToDiscardAnchor(state);
+                await _view.PlayDiscardAnimationAsync(state);
             
                 return state;
+            }
+        }
+
+        public async UniTask<IReadOnlyList<ICardState>> RerollAllCardToDeck()
+        {
+            using (Busy())
+            {
+                var hand = model.Hand.ToList();
+                var toWait = new List<UniTask>(model.Hand.Count);
+
+                foreach (var state in hand)
+                {
+                    model.Remove(state);
+                    _view.ArrangeCards(model.Hand);
+                    toWait.Add(_view.PlayRerollAnimationAsync(state));
+                }
+            
+                await UniTask.WhenAll(toWait);
+                return hand;
             }
         }
 
@@ -133,7 +152,7 @@ namespace Cardevil.Card.InStage
                 {
                     model.Remove(state);
                     _view.ArrangeCards(model.Hand);
-                    toWait.Add(_view.MoveCardToDiscardAnchor(state));
+                    toWait.Add(_view.PlayDiscardAnimationAsync(state));
                 }
             
                 await UniTask.WhenAll(toWait);
@@ -297,7 +316,7 @@ namespace Cardevil.Card.InStage
             _view.ArrangeCards(model.Hand, dragging);
         }
 
-        private void SortByNumber()
+        private void OnSortByNumberRequested()
         {
             if (!CanInteract) return;
             
@@ -305,7 +324,7 @@ namespace Cardevil.Card.InStage
             _view.ArrangeCards(model.Hand);
         }
 
-        private void SortByIcon()
+        private void OnSortByIconRequested()
         {
             if (!CanInteract) return;
             
@@ -365,6 +384,8 @@ namespace Cardevil.Card.InStage
             _dragLoopCancellationTokenSource = null;
         }
 
+        // HandBarPresenter는 MonoBehaviour가 아니므로 Update 이벤트를 사용 못함.
+        // 드래깅 중 위치 감지를 위해 내부적으로 구현한 Update.
         private async UniTaskVoid DragLoopAsync(ICardState state, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)

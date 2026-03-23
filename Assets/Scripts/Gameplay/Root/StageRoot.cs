@@ -50,7 +50,7 @@ namespace Cardevil.Gameplay.Root
             _enemySpawner.ConfigureStageMobData(CardevilCore.GameFlow.Context.stageId);
             
             cardManager.Initialize(CardevilCore.Game.ScoreProviderRegistry);
-            turnManager = new TurnManager(cardManager.Core, Player, _enemySpawner);
+            turnManager = new TurnManager(cardManager, Player, _enemySpawner);
             
             
             // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기

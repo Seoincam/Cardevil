@@ -247,16 +247,26 @@ namespace Cardevil.Card.InStage
             card.VisualController.SetLayout(state);
         }
 
-        public async UniTask MoveCardToDiscardAnchor(ICardState state)
+        public async UniTask PlayRerollAnimationAsync(ICardState state)
+        {
+            await MoveCardWithDiscardAnimationAsync(state, drawAnchor.position);
+        }
+
+        public async UniTask PlayDiscardAnimationAsync(ICardState state)
+        {
+            await MoveCardWithDiscardAnimationAsync(state, discardAnchor.position);
+        }
+
+        private async UniTask MoveCardWithDiscardAnimationAsync(ICardState state, Vector3 targetPosition)
         {
             var card = InternalGetCard(state);
             card.VisualController.SetSortingOrderLast();
              
-            float distance = Vector3.Distance(card.transform.position, discardAnchor.position);
+            float distance = Vector3.Distance(card.transform.position, targetPosition);
             float duration = distance / discardParams.Speed;
 
             card.SetMode(HandBarCard.Mode.Unmanaged);
-            await card.PlayDiscardAsync(discardAnchor.position, duration, discardParams);
+            await card.PlayDiscardAsync(targetPosition, duration, discardParams);
             await UniTask.Delay(TimeSpan.FromSeconds(card.VisualController.TrailTime));
             
             card.VisualController.ClearTrail();

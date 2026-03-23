@@ -1,3 +1,4 @@
+using Cardevil.Card.Common.Core;
 using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Events.ExecEvent;
@@ -28,8 +29,8 @@ namespace Cardevil.Card.InStage
             IScoreProviderRegistry scoreProviderRegistry)
         {
             _view = view;
-            view.UseClicked += OnUseClicked;
-            view.DiscardClicked += OnDiscardClicked;
+            view.UseClicked += OnUseRequested;
+            view.DiscardClicked += OnDiscardRequested;
             
             view.SetAllButtonState(false);
             
@@ -38,9 +39,6 @@ namespace Cardevil.Card.InStage
             handBarPresenter.HandBarStateChanged += OnHandBarStateChanged;
 
             _elementBuilder = new StepElementBuilder(scoreProviderRegistry);
-            
-            var states = model.Draw(6);
-            _handBarPresenter.DrawAsync(states).Forget();
         }
         
         public void Dispose()
@@ -74,6 +72,16 @@ namespace Cardevil.Card.InStage
                 _playerInputWaiter = null;
             }
         }
+
+        public async UniTask AddStepsAsync(params ScoreStepType[] types)
+        {
+            if (types == null) return;
+
+            foreach (var type in types)
+            {
+                await AddStepAsync(type);
+            }
+        }
         
         public async UniTask AddStepAsync(ScoreStepType type)
         {
@@ -99,6 +107,12 @@ namespace Cardevil.Card.InStage
         }
 
         public async UniTask DiscardSelectionAsync() => await _handBarPresenter.DiscardSelectionAsync();
+
+        public void Reroll(IReadOnlyList<ICardState> states)
+        {
+            model.Reroll(states);
+            model.ShuffleDeck();
+        }
         
         private void OnHandBarStateChanged(in HandBarPresenter.SelectionState state)
         {
@@ -106,7 +120,7 @@ namespace Cardevil.Card.InStage
             _view.SetDiscardButtonState(state.CanDiscard);
         }
 
-        private void OnUseClicked()
+        private void OnUseRequested()
         {
             Debug.Assert(_handBarPresenter.CanUseSelection, "카드를 사용할 수 없지만 사용 버튼이 눌렸음.");
             
@@ -116,7 +130,7 @@ namespace Cardevil.Card.InStage
             _playerInputWaiter?.TrySetResult();
         }
 
-        private void OnDiscardClicked()
+        private void OnDiscardRequested()
         {
             Debug.Assert(_handBarPresenter.CanDiscard, "카드를 버릴 수 없지만 버리기 버튼이 눌렸음.");
             
