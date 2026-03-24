@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Cardevil.Core.Utils;
+using System;
 using Cardevil.UI.Components;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +17,10 @@ namespace Cardevil.UI
         [field: SerializeField]
         [field: TextArea]
         public string Description { get; set; }
+        
+        [SerializeReference] private List<TooltipData> subTooltips = new List<TooltipData>();
+        
+        public List<TooltipData> SubTooltips => subTooltips;
     }
 
     public class HoverTooltip : MonoBehaviour
@@ -25,6 +31,7 @@ namespace Cardevil.UI
         [SerializeField] private TextMeshProUGUI _titleText;
         [SerializeField] private TextMeshProUGUI _descriptionText;
         [SerializeField] private TMPSizeFitter _descriptionSizeFitter;
+        [SerializeField] private LayoutGroup _subTooltipLayoutGroup;
 
         [Header("레이아웃 옵션")]
         [SerializeField, Range(1, 3), Tooltip("자동 크기 안정화를 위해 레이아웃 강제 재계산을 반복하는 횟수")]
@@ -55,7 +62,7 @@ namespace Cardevil.UI
             CacheReferences();
         }
 
-        public void ShowTooltip(TooltipData data, RectTransform target = null)
+        public void ShowTooltip(TooltipData data, RectTransform target = null, bool createSubTooltips = true)
         {
             CacheReferences();
             gameObject.SetActive(true);
@@ -112,6 +119,28 @@ namespace Cardevil.UI
 
             _rectTransform.pivot = new Vector2(pivotX, 1f);
             _rectTransform.position = bottomCenterWorld;
+            
+            if (createSubTooltips)
+            {
+                CreateSubTooltips(data);
+                ApplyLayoutNow();
+            }
+        }
+        
+        private void CreateSubTooltips(TooltipData data)
+        {
+            foreach (var subTooltipData in data.SubTooltips)
+            {
+                var subTooltipObj = AssetUtil.Instantiate("UI/HoverTooltip", _contentRoot);
+                var subTooltip = subTooltipObj.GetComponent<HoverTooltip>();
+                if (subTooltip != null)
+                {
+                    subTooltip.ShowTooltip(subTooltipData, null, createSubTooltips: false);
+                    subTooltip.transform.SetParent(_subTooltipLayoutGroup.transform, false);
+                }
+            }
+            
+            _subTooltipLayoutGroup.gameObject.SetActive(data.SubTooltips.Count > 0);
         }
 
         private void ApplyLayoutNow()
