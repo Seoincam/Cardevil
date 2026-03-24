@@ -12,6 +12,8 @@ namespace Cardevil.Gameplay.Relics
         
         private Dictionary<string, RelicSO> _map;
         
+        public IReadOnlyDictionary<string, RelicSO> Map => _map;
+        
         public void RuntimeInitialize()
         {
             _map = relics.ToDictionary(r => r.Data.Id, r => r);    
@@ -20,6 +22,11 @@ namespace Cardevil.Gameplay.Relics
         public RelicDefinition Get(string id)
         {
             return _map.GetValueOrDefault(id)?.Data;
+        }
+        
+        public IEnumerable<RelicDefinition> GetAll()
+        {
+            return _map.Values.Select(r => r.Data);
         }
     }
 }

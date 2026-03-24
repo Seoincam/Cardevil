@@ -3,6 +3,7 @@ using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
 using Cardevil.Test.DebugConsole;
+using Cardevil.Test.DebugConsole.Commands;
 using Cardevil.UI.GlobalNavigationBar;
 using System;
 using System.Collections.Generic;
@@ -76,12 +77,12 @@ namespace Cardevil.Gameplay.Relics.Core
             }
         }
         
-        [ConsoleCommand("addRelic", "유물을 획득합니다.", "addRelic <string: id>")]
-        private static void AddRelicCommand(string id)
-        {
-            var relicManager = CardevilCore.Instance.GameManager.Relic;
-            relicManager.AddRelic(id);
-        }
+        // [ConsoleCommand("addRelic", "유물을 획득합니다.", "addRelic <string: id>")]
+        // private static void AddRelicCommand(string id)
+        // {
+        //     var relicManager = CardevilCore.Instance.GameManager.Relic;
+        //     relicManager.AddRelic(id);
+        // }
 
         [ConsoleCommand("printAllOwnedRelics", "획득한 모든 유물을 출력합니다.")]
         private static void PrintAllOwnedRelics()
@@ -125,6 +126,43 @@ namespace Cardevil.Gameplay.Relics.Core
                 
                 _ownedRelics.Add(definition.Id, instance);
                 instance.Activate();
+            }
+        }
+
+
+        [ConsoleCommandClass]
+        public class AddRelicCommand : IConsoleCommand
+        {
+            public string Command => "addRelic";
+            public string Description => "유물을 획득합니다.";
+            public string Signature => "addRelic <string: id>";
+
+            public void Execute(params string[] args)
+            {
+                if (args.Length != 1)
+                {
+                    LogEx.LogWarning($"잘못된 명령어 사용법입니다. usage: {Signature}");
+                    return;
+                }
+                string id = args[0];
+                var relicManager = CardevilCore.Instance.GameManager.Relic;
+                relicManager.AddRelic(id);
+            }
+
+            public void AutoComplete(Span<string> args, ref List<string> suggestions)
+            {
+                if (args.Length == 1)
+                {
+                    string partialId = args[0];
+                    var relicManager = CardevilCore.Instance.GameManager.Relic;
+                    foreach (var relicId in relicManager._database.Map.Keys)
+                    {
+                        if (relicId.StartsWith(partialId, StringComparison.OrdinalIgnoreCase))
+                        {
+                            suggestions.Add(relicId);
+                        }
+                    }
+                }
             }
         }
     }
