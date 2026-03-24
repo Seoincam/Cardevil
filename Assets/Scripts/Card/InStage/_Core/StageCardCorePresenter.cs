@@ -161,7 +161,8 @@ namespace Cardevil.Card.InStage
                 switch (step)
                 {
                     case ScoreStepElement scoreStep: 
-                        await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
+                        if (scoreStep.Operator != null) 
+                            await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
                         continue;
                     
                     case MoveStepElement moveStep:
