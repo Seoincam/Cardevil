@@ -5,5 +5,12 @@
     "DisplayName": "시트 연동 테스트 유물",
     "DisplayDescription": "이런 유물은 존재하지 않습니다. <b>에디터 코멘트</b>를 참고하세요.",
     "CommentForEditor": "시트 연동이 잘 되나 테스트하기 위한 테스트 유물입니다."
+  },
+  {
+    "Id": "bonus-straight-flush",
+    "Rarity": 1,
+    "DisplayName": "유물6",
+    "DisplayDescription": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가 (스티플이라면 +180)",
+    "CommentForEditor": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가 (스티플이라면 +180)"
   }
 ]

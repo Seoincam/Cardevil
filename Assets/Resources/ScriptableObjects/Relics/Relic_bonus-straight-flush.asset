@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871ed7db8aaf4fb08111deb0e36a1c17, type: 3}
+  m_Name: Relic_bonus-straight-flush
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
+  data:
+    id: bonus-straight-flush
+    commentForEditor: "\uC2A4\uD2B8\uB808\uC774\uD2B8 (+80)\uC640 \uD50C\uB7EC\uC2DC(+100)\uC758
+      \uC871\uBCF4 \uBCF4\uB108\uC2A4 \uC810\uC218\uB97C \uC99D\uAC00 (\uC2A4\uD2F0\uD50C\uC774\uB77C\uBA74
+      +180)"
+    rarity: 1
+    displayIcon: {fileID: 21300000, guid: c97d2e52efe42bb4bac602cf22dec12b, type: 3}
+    displayName: "\uC720\uBB3C6"
+    displayDescription: "\uC2A4\uD2B8\uB808\uC774\uD2B8 (+80)\uC640 \uD50C\uB7EC\uC2DC(+100)\uC758
+      \uC871\uBCF4 \uBCF4\uB108\uC2A4 \uC810\uC218\uB97C \uC99D\uAC00 (\uC2A4\uD2F0\uD50C\uC774\uB77C\uBA74
+      +180)"
+    effects:
+    - rid: 3697062221459750912
+    - rid: 3697062221459750914
+    - rid: 3697062221459750916
+  dataSource: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 3697062221459750912
+      type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 1
+        operatorType: 0
+        baseValue: 80
+        valueResolver:
+          rid: 3697062221459750913
+        targetHandRank: 5
+    - rid: 3697062221459750913
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 3697062221459750914
+      type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 1
+        operatorType: 0
+        baseValue: 100
+        valueResolver:
+          rid: 3697062221459750915
+        targetHandRank: 6
+    - rid: 3697062221459750915
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
+    - rid: 3697062221459750916
+      type: {class: HandRankScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 1
+        operatorType: 0
+        baseValue: 180
+        valueResolver:
+          rid: 3697062221459750917
+        targetHandRank: 9
+    - rid: 3697062221459750917
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 
