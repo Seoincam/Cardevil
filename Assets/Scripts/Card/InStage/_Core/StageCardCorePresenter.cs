@@ -13,35 +13,35 @@ namespace Cardevil.Card.InStage
     public class StageCardCorePresenter : IDisposable
     {
         [SerializeField] private StageCardCoreModel model = new();
-        
-        private StepElementBuilder _elementBuilder;
+
+        private StepElementBuilder _stepBuilder;
         private UniTaskCompletionSource _playerInputWaiter;
-        
+
         // 외부 주입
         private HandBarPresenter _handBarPresenter;
         private ScorePresenter _scorePresenter;
         private StageCardCoreView _view;
-        
+
         public StageCardCorePresenter(
             IScoreProviderRegistry scoreProviderRegistry,
-            StageCardCoreView view, 
-            HandBarPresenter handBarPresenter, 
+            StageCardCoreView view,
+            HandBarPresenter handBarPresenter,
             ScorePresenter scorePresenter
-            )
+        )
         {
             _view = view;
             view.UseClicked += OnUseRequested;
             view.DiscardClicked += OnDiscardRequested;
-            
+
             view.SetAllButtonState(false);
-            
+
             _handBarPresenter = handBarPresenter;
             _scorePresenter = scorePresenter;
             handBarPresenter.HandBarStateChanged += OnHandBarStateChanged;
 
-            _elementBuilder = new StepElementBuilder(scoreProviderRegistry);
+            _stepBuilder = new StepElementBuilder(scoreProviderRegistry);
         }
-        
+
         public void Dispose()
         {
             _playerInputWaiter?.TrySetCanceled();
@@ -65,13 +65,21 @@ namespace Cardevil.Card.InStage
         /// </summary>
         public async UniTask WaitUntilPlayerInputAsync()
         {
+            _stepBuilder.ClearContext();
+            
             using (Interaction())
             {
                 _playerInputWaiter = new UniTaskCompletionSource();
-                
+
                 await _playerInputWaiter.Task;
                 _playerInputWaiter = null;
             }
+
+            _stepBuilder.BuildContext(
+                _handBarPresenter.SortedSelection,
+                _handBarPresenter.HandRankData,
+                _scorePresenter.CurrentScore
+            );
         }
 
         public async UniTask AddStepsAsync(params ScoreStepType[] types)
@@ -83,13 +91,13 @@ namespace Cardevil.Card.InStage
                 await AddStepAsync(type);
             }
         }
-        
+
         public async UniTask AddStepAsync(ScoreStepType type)
         {
-            var steps = _elementBuilder.BuildSteps(type);
+            var steps = _stepBuilder.BuildSteps(type);
             await InternalStepAsync(steps);
         }
-        
+
         /// <summary>
         /// 내부 발동 순서에 따라, 조건에 맞는 골드 획득 유물 처리.
         /// </summary>
@@ -98,7 +106,7 @@ namespace Cardevil.Card.InStage
             IReadOnlyList<IStepElement> steps = new List<IStepElement>();
             await InternalStepAsync(steps);
         }
-        
+
         /// <summary>
         /// 추가된 ScoreOperator들을 모두 계산함.
         /// </summary>
@@ -114,7 +122,7 @@ namespace Cardevil.Card.InStage
             model.Reroll(states);
             model.ShuffleDeck();
         }
-        
+
         private void OnHandBarStateChanged(in HandBarPresenter.SelectionState state)
         {
             _view.SetUseButtonState(state.CanUseSelection);
@@ -124,60 +132,61 @@ namespace Cardevil.Card.InStage
         private void OnUseRequested()
         {
             Debug.Assert(_handBarPresenter.CanUseSelection, "카드를 사용할 수 없지만 사용 버튼이 눌렸음.");
-            
+
             _view.SetAllButtonState(false);
-            
-            _elementBuilder.BuildContext(_handBarPresenter.SortedSelection, _handBarPresenter.HandRankData);
+
+            // _stepBuilder.BuildContext(_handBarPresenter.SortedSelection, _handBarPresenter.HandRankData);
             _playerInputWaiter?.TrySetResult();
         }
 
         private void OnDiscardRequested()
         {
             Debug.Assert(_handBarPresenter.CanDiscard, "카드를 버릴 수 없지만 버리기 버튼이 눌렸음.");
-            
+
             _view.SetAllButtonState(false);
 
             async UniTaskVoid DiscardAsync()
             {
                 _handBarPresenter.SetInputEnabled(false);
-                
+
                 var discardedStates = await _handBarPresenter.DiscardSelectionAsync();
                 model.Discard(discardedStates);
 
                 var states = model.Draw(discardedStates.Count);
                 await _handBarPresenter.DrawAsync(states);
-                
+
                 _handBarPresenter.SetInputEnabled(true);
             }
+
             DiscardAsync().Forget();
         }
 
         private async UniTask InternalStepAsync(IReadOnlyList<IStepElement> steps)
         {
             if (steps == null) return;
-            
+
             foreach (var step in steps)
             {
                 switch (step)
                 {
-                    case ScoreStepElement scoreStep: 
-                        if (scoreStep.Operator != null) 
+                    case ScoreStepElement scoreStep:
+                        if (scoreStep.Operator != null)
                             await _scorePresenter.AddOperatorAsync(scoreStep.Operator);
                         continue;
-                    
+
                     case MoveStepElement moveStep:
                         await ExecEventBus<PlayerMoveArgs>.InvokeMergedAndDispose(moveStep.Args);
                         await _handBarPresenter.DiscardAsync(moveStep.Card);
                         continue;
-                    
-                    case DiscardStepElement discardStep: 
+
+                    case DiscardStepElement discardStep:
                         await _handBarPresenter.DiscardAsync(discardStep.Card);
                         continue;
                 }
             }
         }
 
-        private InteractionScope Interaction() => new(_handBarPresenter);
+    private InteractionScope Interaction() => new(_handBarPresenter);
 
         private readonly struct InteractionScope : IDisposable
         {

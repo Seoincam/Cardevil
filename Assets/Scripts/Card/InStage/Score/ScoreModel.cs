@@ -18,7 +18,7 @@ namespace Cardevil.Card.InStage.Score
         public float Score => score;
         public HandRank HandRank => handRankData.HandRank;
         public IReadOnlyList<IScoreOperator> ScoreOperators => scoreOperators;
-        public float HandRankScore => Random.Range(0, 100f);
+        public float HandRankScore => HandRank == HandRank.None ? 0f : Random.Range(0, 100f);
         
         public void SetScore(float value)
         {
@@ -35,6 +35,12 @@ namespace Cardevil.Card.InStage.Score
         {
             scoreOperators.Add(scoreOperator);
         }
+
+        public void ClearOperators()
+        {
+            scoreOperators.Clear();
+        }
+        
         public void Clear()
         {
             score = 0;

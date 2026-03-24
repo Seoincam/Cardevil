@@ -94,7 +94,7 @@ namespace Cardevil.Gameplay.Turn
                 await CardCore.AddStepAsync(ScoreStepType.PlusRelic);
                 await CardCore.AddStepAsync(ScoreStepType.PlusField);
                 await CardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
-                float score0 = await CardCore.ApplyScoreOperatorsAsync();
+                await CardCore.ApplyScoreOperatorsAsync();
 
                 // 곱 연산, 골드 연산
                 await CardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
@@ -102,17 +102,15 @@ namespace Cardevil.Gameplay.Turn
                 await CardCore.StepGoldRelicAsync();
                 await CardCore.AddStepAsync(ScoreStepType.MultiplyField);
                 await CardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
-                float score1 = await CardCore.ApplyScoreOperatorsAsync();
+                await CardCore.ApplyScoreOperatorsAsync();
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
                 await CardCore.DiscardSelectionAsync();
                 
                 // 적 기믹 연산
                 await CardCore.AddStepAsync(ScoreStepType.EnemyStatus);
-                float finalScore = score0 + score1 + await CardCore.ApplyScoreOperatorsAsync();
+                float finalScore = await CardCore.ApplyScoreOperatorsAsync();
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
-                
-                // TODO: 임시로 고쳐놓음.
                 
                 await _player.AttackAsync(finalScore);
                 await _currentEnemy.OnTakeDamageAsync(finalScore);
