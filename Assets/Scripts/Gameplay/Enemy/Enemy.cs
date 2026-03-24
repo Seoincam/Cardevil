@@ -69,14 +69,14 @@ namespace Cardevil.Gameplay.Enemy
 
         public bool IsDead => isEnemyDead || CurrentHp <= 0;
 
-        public async UniTask OnEnemyCreateFirstAttackAsync()
+        public async UniTask OnEnemyCreateFirstAttackAsync(IEnemyContext context)
         {
             if (aWakeFirst)
             {
                 LogEx.Log("Enemy 최초 턴! 첫 공격 패턴을 생성합니다.");
                 // 적의 공격(SetupAttack)은 어차피 내부에서 Random.Range로 위치를 결정하므로,
                 // 플레이어의 실제 위치가 없어도 임시 위치(0, 0)를 넘겨 공격을 생성하고 하이라이트를 띄울 수 있습니다.
-                AttackEnemyAwake(new TileVector(0, 0));
+                AttackEnemyAwake(context.PlayerPosition);
                 aWakeFirst = false;
             }
             await UniTask.CompletedTask;
@@ -251,7 +251,7 @@ namespace Cardevil.Gameplay.Enemy
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨공격인지 설정 
 
             tmpAttack.SetAttackCycle(baseMobBossData.AttackCycle);
-
+            Debug.Log($"적의 {tmpAttack.currentAttackStyle} 공격!");
             if (firstCreate)
             {
                 tmpAttack.attackTurnOrder++;
@@ -358,6 +358,7 @@ namespace Cardevil.Gameplay.Enemy
         /// <param name="setPlayerAttack"></param>
         public virtual void SetAttack(Attack.Attack attack, bool setPlayerAttack = false)
         {
+            attack.isPlayerAttack = setPlayerAttack;
             // 로직 클래스에게 설정 위임 (this는 IAttackVisualizer 구현체)
             HandRankAttackLogic.SetupAttack(attack, this);
         }

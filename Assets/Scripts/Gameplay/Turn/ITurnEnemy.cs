@@ -7,10 +7,10 @@ namespace Cardevil.Gameplay.Turn
         bool IsDead { get; }
 
         /// <summary>
-        /// 처음 Enemy의 공격을 표시. 공격로직 첫번째 Init
+        /// 처음 Enemy의 공격을 표시하고 
         /// </summary>
         /// <returns></returns>
-        UniTask OnEnemyCreateFirstAttackAsync();
+        UniTask OnEnemyCreateFirstAttackAsync(IEnemyContext context);
         /// <summary>
         /// '턴 시작 시' 관련 적 기믹이 있다면, 적 상태정보 갱신 및 처리.
         /// </summary>

@@ -72,8 +72,12 @@ namespace Cardevil.Gameplay.Turn
         {
             await Reroll.WaitUntilRerollEndAsync();
 
+            var firstEnemyContext = new EnemyContext
+            {
+                PlayerPosition = _player.Position
+            };
             // Enemy의 공격 범위 띄우기
-            await _currentEnemy.OnEnemyCreateFirstAttackAsync();
+            await _currentEnemy.OnEnemyCreateFirstAttackAsync(firstEnemyContext);
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -113,6 +117,11 @@ namespace Cardevil.Gameplay.Turn
                 await _player.AttackAsync(finalScore);
                 await _currentEnemy.OnTakeDamageAsync(finalScore);
 
+                var enemyContext = new EnemyContext
+                {
+                    PlayerPosition = _player.Position
+                };
+
                 if (_currentEnemy.IsDead)
                 {
                     await _currentEnemy.OnDieAsync();
@@ -128,15 +137,12 @@ namespace Cardevil.Gameplay.Turn
                    
                     await _currentEnemy.OnReplaceAsync();
 
-                    await _currentEnemy.OnEnemyCreateFirstAttackAsync();
+                    await _currentEnemy.OnEnemyCreateFirstAttackAsync(enemyContext);
                 }
                 
                 // TODO: 플레이어 카드로 게임 오버 체크
                 
-                var enemyContext = new EnemyContext
-                {
-                    PlayerPosition = _player.Position
-                };
+              
 
                 bool enemyShouldAttack = await _currentEnemy.CheckAttackCountAsync();
                 if (enemyShouldAttack)
