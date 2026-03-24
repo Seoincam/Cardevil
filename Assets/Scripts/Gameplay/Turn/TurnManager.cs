@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
+using Cardevil.Gameplay.Field;
 
 namespace Cardevil.Gameplay.Turn
 {
@@ -29,23 +30,30 @@ namespace Cardevil.Gameplay.Turn
         private StageCardManager _card;
         private ITurnPlayer _player;
 
+        // 1. Field를 저장할 변수 추가
+        private Field.Field _field;
+
         private EnemySpawner _enemySpawner;
         private ITurnEnemy _currentEnemy;
 
         private RerollPresenter Reroll => _card.Reroll;
         private StageCardCorePresenter CardCore => _card.Core;
 
-        public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner)
+        public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner,Field.Field field)
         {
             _card = cardManager;
             _enemySpawner = enemySpawner;
             _player = player;
-            
+            _field = field;
+
             ExecEventBus<PlayerMoveArgs>.RegisterStatic(0, player.OnMoveAsync);
-            
-            // 임시 
-            enemySpawner.TrySpawn(out var enemy);
-            _currentEnemy = enemy;
+
+            //  적 생성 시 Init 호출
+            if (enemySpawner.TrySpawn(out var enemy))
+            {
+                enemy.Init(_field); // <-- 여기서 Field 전달
+                _currentEnemy = enemy;
+            }
         }
         
         public void Dispose()
@@ -63,7 +71,14 @@ namespace Cardevil.Gameplay.Turn
         private async UniTask CoreLoopAsync(CancellationToken cancellationToken = default)
         {
             await Reroll.WaitUntilRerollEndAsync();
-            
+
+            var firstEnemyContext = new EnemyContext
+            {
+                PlayerPosition = _player.Position
+            };
+            // Enemy의 공격 범위 띄우기
+            await _currentEnemy.OnEnemyCreateFirstAttackAsync(firstEnemyContext);
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 turnOrder++;
@@ -79,7 +94,7 @@ namespace Cardevil.Gameplay.Turn
                 await CardCore.AddStepAsync(ScoreStepType.PlusRelic);
                 await CardCore.AddStepAsync(ScoreStepType.PlusField);
                 await CardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
-                await CardCore.ApplyScoreOperatorsAsync();
+                float score0 = await CardCore.ApplyScoreOperatorsAsync();
 
                 // 곱 연산, 골드 연산
                 await CardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
@@ -87,18 +102,25 @@ namespace Cardevil.Gameplay.Turn
                 await CardCore.StepGoldRelicAsync();
                 await CardCore.AddStepAsync(ScoreStepType.MultiplyField);
                 await CardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
-                float score = await CardCore.ApplyScoreOperatorsAsync();
+                float score1 = await CardCore.ApplyScoreOperatorsAsync();
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
                 await CardCore.DiscardSelectionAsync();
                 
                 // 적 기믹 연산
                 await CardCore.AddStepAsync(ScoreStepType.EnemyStatus);
-                float finalScore = await CardCore.ApplyScoreOperatorsAsync();
+                float finalScore = score0 + score1 + await CardCore.ApplyScoreOperatorsAsync();
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
+                
+                // TODO: 임시로 고쳐놓음.
                 
                 await _player.AttackAsync(finalScore);
                 await _currentEnemy.OnTakeDamageAsync(finalScore);
+
+                var enemyContext = new EnemyContext
+                {
+                    PlayerPosition = _player.Position
+                };
 
                 if (_currentEnemy.IsDead)
                 {
@@ -110,16 +132,17 @@ namespace Cardevil.Gameplay.Turn
                         break;
                     }
 
+                    newEnemy.Init(_field);
                     _currentEnemy = newEnemy;
+                   
                     await _currentEnemy.OnReplaceAsync();
+
+                    await _currentEnemy.OnEnemyCreateFirstAttackAsync(enemyContext);
                 }
                 
                 // TODO: 플레이어 카드로 게임 오버 체크
                 
-                var enemyContext = new EnemyContext
-                {
-                    PlayerPosition = _player.Position
-                };
+              
 
                 bool enemyShouldAttack = await _currentEnemy.CheckAttackCountAsync();
                 if (enemyShouldAttack)
@@ -142,10 +165,7 @@ namespace Cardevil.Gameplay.Turn
                 await _currentEnemy.OnEndTurnAsync();
                 // TODO: 플레이어, 유물
 
-                if (enemyShouldAttack)
-                {
-                    await _currentEnemy.UpdateAttackAsync(enemyContext);
-                }
+                await _currentEnemy.UpdateAttackAsync(enemyContext);
 
                 await CardCore.DrawAsync();
             }
