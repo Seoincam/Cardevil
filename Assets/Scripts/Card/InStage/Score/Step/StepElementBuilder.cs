@@ -45,12 +45,13 @@ namespace Cardevil.Card.InStage.Score.Step
             _providerRegistry = registry;
         }
 
-        public void BuildContext(IReadOnlyList<ICardState> cards, HandRankData handRankData)
+        public void BuildContext(IReadOnlyList<ICardState> cards, HandRankData handRankData, float handRankScore)
         {
             _context = new ScoreContext
             {
                 Cards = cards, 
-                HandRankData = handRankData
+                HandRankData = handRankData,
+                CurrentScore = handRankScore
             };
         }
 
@@ -58,7 +59,7 @@ namespace Cardevil.Card.InStage.Score.Step
 
         public IReadOnlyList<IStepElement> BuildSteps(ScoreStepType type)
         {
-            Debug.Assert(_context != null, "_context == null");
+            Debug.Assert(_context != null, "_context != null");
             
             return type switch
             {

@@ -85,37 +85,41 @@ namespace Cardevil.Gameplay.Turn
                 
                 await _currentEnemy.OnStartTurnAsync();
                 
-                await CardCore.WaitUntilPlayerInputAsync();
-
-                // 각 카드 연산
+                bool isPlayerAttacking = await CardCore.WaitUntilPlayerInputAsync();
+                
+                // 각 카드 처리
                 await CardCore.AddStepAsync(ScoreStepType.EachCard);
 
-                // 합 연산
-                await CardCore.AddStepAsync(ScoreStepType.PlusRelic);
-                await CardCore.AddStepAsync(ScoreStepType.PlusField);
-                await CardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
-                float score0 = await CardCore.ApplyScoreOperatorsAsync();
+                if (isPlayerAttacking)
+                {
+                    // 합 연산
+                    await CardCore.AddStepAsync(ScoreStepType.PlusRelic);
+                    await CardCore.AddStepAsync(ScoreStepType.PlusField);
+                    await CardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
+                    await CardCore.ApplyScoreOperatorsAsync();
 
-                // 곱 연산, 골드 연산
-                await CardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
-                await CardCore.AddStepAsync(ScoreStepType.MultiplyRelic);
-                await CardCore.StepGoldRelicAsync();
-                await CardCore.AddStepAsync(ScoreStepType.MultiplyField);
-                await CardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
-                float score1 = await CardCore.ApplyScoreOperatorsAsync();
-                // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
+                    // 곱 연산, 골드 연산
+                    await CardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
+                    await CardCore.AddStepAsync(ScoreStepType.MultiplyRelic);
+                    await CardCore.StepGoldRelicAsync();
+                    await CardCore.AddStepAsync(ScoreStepType.MultiplyField);
+                    await CardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
+                    await CardCore.ApplyScoreOperatorsAsync();
+                    // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
+                }
                 
                 await CardCore.DiscardSelectionAsync();
+
+                if (isPlayerAttacking)
+                {
+                    // 적 기믹 연산
+                    await CardCore.AddStepAsync(ScoreStepType.EnemyStatus);
+                    float finalScore = await CardCore.ApplyScoreOperatorsAsync();
+                    // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
-                // 적 기믹 연산
-                await CardCore.AddStepAsync(ScoreStepType.EnemyStatus);
-                float finalScore = score0 + score1 + await CardCore.ApplyScoreOperatorsAsync();
-                // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
-                
-                // TODO: 임시로 고쳐놓음.
-                
-                await _player.AttackAsync(finalScore);
-                await _currentEnemy.OnTakeDamageAsync(finalScore);
+                    await _player.AttackAsync(finalScore);
+                    await _currentEnemy.OnTakeDamageAsync(finalScore);
+                }
 
                 var enemyContext = new EnemyContext
                 {

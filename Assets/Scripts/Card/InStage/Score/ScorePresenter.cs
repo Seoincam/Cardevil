@@ -2,7 +2,6 @@ using Cardevil.Core.Events.ExecEvent;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Cardevil.Card.InStage.Score
 {
@@ -13,26 +12,12 @@ namespace Cardevil.Card.InStage.Score
         
         private readonly CardScoreView _view;
 
+        public float CurrentScore => model.Score;
+
         public ScorePresenter(CardScoreView view)
         {
             _view = view;
             _view.ClearScore();
-            
-            // Test 로직
-            async UniTask TestAsync()
-            {
-                const int testLoopCount = 10;
-                for (int i = 0; i < testLoopCount; i++)
-                {
-                    await AddOperatorAsync(new ScoreOperator
-                    {
-                        Type = ScoreOperatorType.Plus, Value = Random.Range(1f, 120f)
-                    });
-                }   
-            
-                ApplyOperatorsAsync().Forget();
-            }
-            // TestAsync().Forget();
         }
 
         public async UniTask AddOperatorAsync(IScoreOperator scoreOperator)
@@ -56,7 +41,7 @@ namespace Cardevil.Card.InStage.Score
             }
 
             var totalScore = model.Score;
-            model.Clear();
+            model.ClearOperators();
 
             return totalScore;
         } 
