@@ -150,6 +150,8 @@ namespace Cardevil.Card.InStage.Score.Step
 
         private void Apply(IScoreOperator scoreOperator)
         {
+            if (scoreOperator == null) return;
+            
             _context.CurrentScore = scoreOperator.Apply(_context.CurrentScore);
         }
     }
