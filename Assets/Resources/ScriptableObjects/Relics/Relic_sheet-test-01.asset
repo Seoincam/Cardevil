@@ -33,10 +33,10 @@ MonoBehaviour:
       data:
         stepType: 2
         operatorType: 1
-        baseValue: 2
+        baseValue: 6
         valueResolver:
           rid: 5725363090318164092
-        probability: 0.3333
+        probability: 0.6666
     - rid: 5725363090318164092
       type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
       data: 
