@@ -101,7 +101,8 @@ namespace Cardevil.UI.Components
         {
             var tooltip = AssetUtil.Instantiate("UI/HoverTooltip");
             _hoverTooltip = tooltip.GetComponent<HoverTooltip>();
-            _hoverTooltip.transform.SetParent(transform, false);
+            
+            _hoverTooltip.transform.SetParent(transform.root, false);
             _hoverTooltip.ShowTooltip(TooltipData, _rectTransform);
         }
         

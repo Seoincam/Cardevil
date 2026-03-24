@@ -19,6 +19,7 @@ namespace Cardevil.UI.GlobalNavigationBar
         {
             definition = def;
             icon.sprite = def.DisplayIcon;
+            tooltipTrigger.TooltipData.Title = def.DisplayName;
             tooltipTrigger.TooltipData.Description = def.DisplayDescription;
         }
     }

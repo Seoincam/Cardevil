@@ -1939,6 +1939,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1786338792}
     m_Modifications:
+    - target: {fileID: 206377350005143077, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 206377350005143077, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 206377350005143077, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 206377350005143077, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1356468879810084121, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
       propertyPath: <TooltipData>k__BackingField.<Description>k__BackingField
       value: "\uAC15\uD654 \uD2F0\uCF13\uC774\uC9C0\uC694"
@@ -2027,28 +2043,130 @@ PrefabInstance:
       propertyPath: <TooltipData>k__BackingField.<Description>k__BackingField
       value: "\uBA40\uB9AC\uAC74 \uD2F0\uAC9F\uC774\uC5D0\uC6A9"
       objectReference: {fileID: 0}
+    - target: {fileID: 4057959147025969444, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057959147025969444, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057959147025969444, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4057959147025969444, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4923099220139949252, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5615313911542292106, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
       propertyPath: m_Name
       value: GNB UI
       objectReference: {fileID: 0}
+    - target: {fileID: 5690725408538307459, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5690725408538307459, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5690725408538307459, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5690725408538307459, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6268907296488431080, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
       propertyPath: <TooltipData>k__BackingField.<Description>k__BackingField
-      value: "\uC554\uC2DC\uC7A5 \uD2F0\uCF13\uC785\uB2C8\uB2E4"
+      value: "\uC554\uC2DC\uC7A5 \uD2F0\uCF13\uC774\uB2F7"
       objectReference: {fileID: 0}
     - target: {fileID: 6669860108629659550, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
       propertyPath: <TooltipData>k__BackingField.<Description>k__BackingField
-      value: "\uACE8\uB4DC\uC778\uAC83\uC785\uB2C8"
+      value: "\uACE8\uB4DC\uC778\uAC83\uC785\uB2C8\uB2E4"
+      objectReference: {fileID: 0}
+    - target: {fileID: 7081981829046040175, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224361948353074698, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6663111615831560862, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2682648631247123121}
+    - targetCorrespondingSourceObject: {fileID: 8769283537744945828, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2682648631247123120}
   m_SourcePrefab: {fileID: 100100000, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+--- !u!224 &2682648631247123116 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4152382110291353300, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+  m_PrefabInstance: {fileID: 2682648631247123115}
+  m_PrefabAsset: {fileID: 0}
 --- !u!95 &2682648631247123117 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 707134002777961311, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
   m_PrefabInstance: {fileID: 2682648631247123115}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2682648631247123118 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8769283537744945828, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+  m_PrefabInstance: {fileID: 2682648631247123115}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2682648631247123119 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6663111615831560862, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
+  m_PrefabInstance: {fileID: 2682648631247123115}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2682648631247123120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2682648631247123118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f386ae90f05e40bc97f45b0621e62e0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
+  _hoverTooltip: {fileID: 0}
+  _eventTrigger: {fileID: 0}
+  _target: {fileID: 2682648631247123116}
+  <TooltipData>k__BackingField:
+    <Title>k__BackingField: "\uB808\uBCA8"
+    <Description>k__BackingField: "\uB808\uBCA8\uC774\uC9C0\uB871"
+--- !u!114 &2682648631247123121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2682648631247123119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f386ae90f05e40bc97f45b0621e62e0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
+  _hoverTooltip: {fileID: 0}
+  _eventTrigger: {fileID: 0}
+  _target: {fileID: 2682648631247123116}
+  <TooltipData>k__BackingField:
+    <Title>k__BackingField: "\uCE90\uB9AD\uD130"
+    <Description>k__BackingField: "\uD604\uC7AC \uD50C\uB808\uC774\uC911\uC778 \uCE90\uB9AD\uD130\uC785\uB2C8\uB2E4.\n\uC8FC\uC704\uC758
+      \uBE68\uAC04 \uB3D9\uADF8\uB77C\uBBF8\uB294 \uD604\uC7AC \uACBD\uD5D8\uCE58\uC785\uB2C8\uB2E4."
 --- !u!1001 &4643059944773426318
 PrefabInstance:
   m_ObjectHideFlags: 0
