@@ -1,8 +1,7 @@
-﻿using Cardevil.UI.PopUp;
-using System;
+﻿using System;
+using Cardevil.UI.Components;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Cardevil.UI
@@ -11,98 +10,143 @@ namespace Cardevil.UI
     public class TooltipData
     {
         [field: SerializeField]
-        public string Title{ get; set; }
+        public string Title { get; set; }
+
         [field: SerializeField]
         [field: TextArea]
         public string Description { get; set; }
-        
-        
     }
-    
-    
+
     public class HoverTooltip : MonoBehaviour
     {
+        [Header("참조")]
         [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private RectTransform _contentRoot;
         [SerializeField] private TextMeshProUGUI _titleText;
         [SerializeField] private TextMeshProUGUI _descriptionText;
-        [SerializeField] private RectTransform _targetRectTransform;
+        [SerializeField] private TMPSizeFitter _descriptionSizeFitter;
+
+        [Header("레이아웃 옵션")]
+        [SerializeField, Range(1, 3), Tooltip("자동 크기 안정화를 위해 레이아웃 강제 재계산을 반복하는 횟수")]
+        private int _layoutRebuildPasses = 2;
+
+        private CanvasScaler _canvasScaler;
+        private readonly Vector3[] _targetCorners = new Vector3[4];
+        private readonly Vector3[] _canvasCorners = new Vector3[4];
 
         private void Reset()
         {
             _rectTransform = GetComponent<RectTransform>();
-            _descriptionText = GetComponentInChildren<TextMeshProUGUI>();
+            _canvasScaler = GetComponentInParent<CanvasScaler>();
+
+            if (_descriptionText == null)
+            {
+                _descriptionText = GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+
+            if (_descriptionSizeFitter == null)
+            {
+                _descriptionSizeFitter = GetComponentInChildren<TMPSizeFitter>(true);
+            }
         }
 
         private void Awake()
+        {
+            CacheReferences();
+        }
+
+        public void ShowTooltip(TooltipData data, RectTransform target = null)
+        {
+            CacheReferences();
+            gameObject.SetActive(true);
+
+            string title = data?.Title ?? string.Empty;
+            string description = data?.Description ?? string.Empty;
+
+            bool hasTitle = !string.IsNullOrEmpty(title);
+            bool hasDescription = !string.IsNullOrEmpty(description);
+
+            _titleText.gameObject.SetActive(hasTitle);
+            _descriptionText.gameObject.SetActive(hasDescription);
+
+            _titleText.text = title;
+            _descriptionText.text = description;
+
+            ApplyLayoutNow();
+
+            if (target == null)
+            {
+                _rectTransform.anchoredPosition = Vector2.zero;
+                return;
+            }
+
+            target.GetWorldCorners(_targetCorners);
+            Vector3 bottomCenterWorld = (_targetCorners[0] + _targetCorners[3]) * 0.5f;
+
+            if (_canvasScaler == null)
+            {
+                _canvasScaler = GetComponentInParent<CanvasScaler>();
+            }
+
+            RectTransform canvasRectTransform = _canvasScaler != null ? _canvasScaler.GetComponent<RectTransform>() : null;
+            if (canvasRectTransform == null)
+            {
+                _rectTransform.position = bottomCenterWorld;
+                return;
+            }
+
+            canvasRectTransform.GetWorldCorners(_canvasCorners);
+
+            float tooltipWorldWidth = _rectTransform.rect.width * _rectTransform.lossyScale.x;
+            float halfWidth = tooltipWorldWidth * 0.5f;
+            float pivotX = 0.5f;
+
+            if (bottomCenterWorld.x + halfWidth > _canvasCorners[3].x)
+            {
+                pivotX = 1f;
+            }
+            else if (bottomCenterWorld.x - halfWidth < _canvasCorners[0].x)
+            {
+                pivotX = 0f;
+            }
+
+            _rectTransform.pivot = new Vector2(pivotX, 1f);
+            _rectTransform.position = bottomCenterWorld;
+        }
+
+        private void ApplyLayoutNow()
+        {
+            _descriptionText.ForceMeshUpdate(ignoreActiveState: true, forceTextReparsing: true);
+            _descriptionSizeFitter?.Refresh(true);
+
+            int passCount = Mathf.Max(1, _layoutRebuildPasses);
+            for (int i = 0; i < passCount; i++)
+            {
+                if (_contentRoot != null)
+                {
+                    LayoutRebuilder.ForceRebuildLayoutImmediate(_contentRoot);
+                }
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate(_rectTransform);
+                _descriptionSizeFitter?.Refresh(false);
+            }
+        }
+
+        private void CacheReferences()
         {
             if (_rectTransform == null)
             {
                 _rectTransform = GetComponent<RectTransform>();
             }
-        }
 
-        public void ShowTooltip(TooltipData data, RectTransform target = null)
-        {
-            gameObject.SetActive(true);
-            if (string.IsNullOrEmpty(data.Title))
+            if (_contentRoot == null && transform.childCount > 0)
             {
-                _titleText.gameObject.SetActive(false);
-            }
-            else
-            {
-                _titleText.gameObject.SetActive(true);
-            }
-            _titleText.text = data.Title;
-            if (string.IsNullOrEmpty(data.Description))
-            {
-                _descriptionText.gameObject.SetActive(false);
-            }
-            else
-            {
-                _descriptionText.gameObject.SetActive(true);
+                _contentRoot = transform.GetChild(0) as RectTransform;
             }
 
-            _descriptionText.text = data.Description;
-            _targetRectTransform = target;
-            var halfScreenWidth = GetComponentInParent<CanvasScaler>().referenceResolution.x / 2f;
-            var tooltipWidth = _rectTransform.rect.width;
-            if (target == null)
+            if (_canvasScaler == null)
             {
-                _rectTransform.anchoredPosition = Vector2.zero;
-            }
-            else
-            {
-                // 타겟 위치에 따라 툴팁이 화면 밖으로 나가지 않도록 피벗과 위치 조정
-                // 타겟은 rect의 아래중앙
-                
-                // 0(좌하단), 1(좌상단), 2(우상단), 3(우하단)
-                Vector3[] targetCorners = new Vector3[4];
-                target.GetWorldCorners(targetCorners);
-                
-                Vector3 bottomCenterWorld = (targetCorners[0] + targetCorners[3]) / 2f;
-                
-                CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
-                Vector3[] canvasCorners = new Vector3[4];
-                canvasScaler.GetComponent<RectTransform>().GetWorldCorners(canvasCorners);
-
-                float tooltipWorldWidth = _rectTransform.rect.width * _rectTransform.lossyScale.x;
-                
-                float pivotX = 0.5f;
-
-                // 우측을 벗어나는 경우
-                if (bottomCenterWorld.x + (tooltipWorldWidth / 2f) > canvasCorners[3].x)
-                {
-                    pivotX = 1f;
-                }
-                // 좌측을 벗어나는 경우
-                else if (bottomCenterWorld.x - (tooltipWorldWidth / 2f) < canvasCorners[0].x)
-                {
-                    pivotX = 0f;
-                }
-                
-                _rectTransform.pivot = new Vector2(pivotX, 1f);
-                
-                _rectTransform.position = bottomCenterWorld;
+                _canvasScaler = GetComponentInParent<CanvasScaler>();
             }
         }
     }
