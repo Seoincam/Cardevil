@@ -1,6 +1,8 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Attributes;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems.Sounds;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic; 
@@ -227,6 +229,7 @@ namespace Cardevil.Card.InStage
         {
             var card = InternalGetCard(state);
             card.LocalTargetPosition.SetOffset(OffsetKey.Selection, new Vector3(0f, 0.5f));
+            CardevilCore.Sound.Play(SoundReference.SFX_CardPick);
         }
 
         /// <summary>
@@ -266,6 +269,7 @@ namespace Cardevil.Card.InStage
             float duration = distance / discardParams.Speed;
 
             card.SetMode(HandBarCard.Mode.Unmanaged);
+            CardevilCore.Sound.Play(SoundReference.SFX_CardDiscard);
             await card.PlayDiscardAsync(targetPosition, duration, discardParams);
             await UniTask.Delay(TimeSpan.FromSeconds(card.VisualController.TrailTime));
             

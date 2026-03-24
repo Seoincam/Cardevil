@@ -1,4 +1,6 @@
-﻿using Cardevil.Core.Utils;
+﻿using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems.Sounds;
+using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Animation;
 using UnityEngine;
 using UnityEngine.Events;
@@ -60,11 +62,13 @@ namespace Cardevil.Gameplay.Player
         public void PlayAttackAnimation()
         {
             _animator.SetTrigger(AnimatorHashes.Attack);
+            
         }
         
         public void PlayHitAnimation()
         {
             _animator.SetTrigger(AnimatorHashes.Hit);
+            
         }
         
         public UnityEvent<string> animEventReceived = new UnityEvent<string>();

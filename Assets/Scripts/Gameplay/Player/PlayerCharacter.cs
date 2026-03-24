@@ -1,4 +1,5 @@
 using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems.Sounds;
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Core;
 using Cardevil.Gameplay.Entities;
@@ -239,6 +240,10 @@ namespace Cardevil.Gameplay.Player
                 // 떨어지는 시퀀스
                 sequence.Append(VisualTransform.DOLocalMoveY(- playerCharacterSetting.fallHeight,
                     playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                sequence.JoinCallback(() =>
+                {
+                    CardevilCore.Sound.Play(SoundReference.SFX_PlayerFall);
+                });
                 // 떨어지는 페이드아웃
                 float fadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
                     playerCharacterSetting.fallFadeStartRatio);
@@ -348,6 +353,10 @@ namespace Cardevil.Gameplay.Player
                 reflectSequence.Append(
                     VisualTransform.DOLocalMoveY(- playerCharacterSetting.fallHeight,
                         playerCharacterSetting.fallDuration).SetEase(playerCharacterSetting.fallEase));
+                reflectSequence.JoinCallback(() =>
+                {
+                    CardevilCore.Sound.Play(SoundReference.SFX_PlayerFall);
+                });
                 // 떨어지는 페이드아웃
                 float reflectFadeoutStartTime = Mathf.Lerp(0, playerCharacterSetting.fallDuration,
                     playerCharacterSetting.fallFadeStartRatio);
@@ -454,6 +463,7 @@ namespace Cardevil.Gameplay.Player
         {
             LogEx.Log($"Player takes {damage} damage!");
             PlayerStatus.TakeDamage((int)damage);
+            PlayerVisual.PlayHitAnimation();
         }
 
         #endregion
