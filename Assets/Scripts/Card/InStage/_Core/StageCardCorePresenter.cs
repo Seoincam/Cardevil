@@ -63,10 +63,10 @@ namespace Cardevil.Card.InStage
         /// 플레이어가 사용하기 버튼을 누를 때까지 대기.
         /// 이때 플레이어는 카드 선택, 값 변경, 순서변경 등을 수행할 수 있음.
         /// </summary>
-        public async UniTask WaitUntilPlayerInputAsync()
+        public async UniTask<bool> WaitUntilPlayerInputAsync()
         {
             _stepBuilder.ClearContext();
-            
+
             using (Interaction())
             {
                 _playerInputWaiter = new UniTaskCompletionSource();
@@ -74,12 +74,15 @@ namespace Cardevil.Card.InStage
                 await _playerInputWaiter.Task;
                 _playerInputWaiter = null;
             }
-
+            
             _stepBuilder.BuildContext(
                 _handBarPresenter.SortedSelection,
                 _handBarPresenter.HandRankData,
                 _scorePresenter.CurrentScore
             );
+            
+            bool isPlayerAttacking = _handBarPresenter.HandRankData.HandRank != HandRank.None;
+            return isPlayerAttacking;
         }
 
         public async UniTask AddStepsAsync(params ScoreStepType[] types)
