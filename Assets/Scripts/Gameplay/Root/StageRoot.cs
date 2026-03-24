@@ -53,13 +53,15 @@ namespace Cardevil.Gameplay.Root
                 CardevilCore.PlayerStatus,
                 CardevilCore.Game.ScoreProviderRegistry
             );
-            turnManager = new TurnManager(cardManager, Player, _enemySpawner);
             
-            
+
+
             // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
             // turn.TurnLoopEnded += OnTurnLoopEnded;
-            
+            Field.InitField(3,3,0);// TODO: 스테이지 index 에 따라 받을 수 있게수정하기
             Player.Init(Field);
+
+            turnManager = new TurnManager(cardManager, Player, _enemySpawner, Field);
             await InitAsync();
             
         }
@@ -88,6 +90,7 @@ namespace Cardevil.Gameplay.Root
 
             
             
+            /*
             // TODO : 필드 초기화 - @machamy
             Field.InitField(3,3, Random.Range(0,4));
             Player.Init(Field);
@@ -98,9 +101,9 @@ namespace Cardevil.Gameplay.Root
                 LogEx.LogError($"Failed to spawn Enemy. stage Id: {_context.stageId}");
                 return;
             }
-            
+           
             enemy.Init(Field);
-            
+            */
             // 페이드아웃 + 돌 가져오기
             var blakcFade = OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.8f)
                 .ToUniTask(TweenCancelBehaviour.Complete);

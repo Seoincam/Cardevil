@@ -65,59 +65,153 @@ namespace Cardevil.Gameplay.Enemy
             UpdateHPBar(); // 시작 시 HP 바를 초기화합니다.
         }
 
-        #region ITurnEnemey 관련
+        #region ITurnEnemy 관련
 
-        public bool IsDead { get; }
-        
+        public bool IsDead => isEnemyDead || CurrentHp <= 0;
+
+        public async UniTask OnEnemyCreateFirstAttackAsync()
+        {
+            if (aWakeFirst)
+            {
+                LogEx.Log("Enemy 최초 턴! 첫 공격 패턴을 생성합니다.");
+                // 적의 공격(SetupAttack)은 어차피 내부에서 Random.Range로 위치를 결정하므로,
+                // 플레이어의 실제 위치가 없어도 임시 위치(0, 0)를 넘겨 공격을 생성하고 하이라이트를 띄울 수 있습니다.
+                AttackEnemyAwake(new TileVector(0, 0));
+                aWakeFirst = false;
+            }
+            await UniTask.CompletedTask;
+        }
+
         public async UniTask OnStartTurnAsync()
         {
-            LogEx.LogWarning("OnStartTurnAsync가 구현되지 않음 - @대윤");
+            // 턴 시작 시 상태/기믹 초기화
+            EnemyTurnClear();
+            LogEx.Log("EnemyTurn 시작!");
+
+            await UniTask.CompletedTask;
         }
 
         public async UniTask OnTakeDamageAsync(float damage)
         {
-            LogEx.LogWarning("OnTakeDamageAsync가 구현되지 않음 - @대윤");
+            // 기존 피격 데미지 처리 로직
+            GetDamage(damage);
+
+            await UniTask.CompletedTask;
         }
 
         public async UniTask OnDieAsync()
         {
-            LogEx.LogWarning("OnDieAsync가 구현되지 않음 - @대윤");
+            // 기존 사망 처리 로직
+            DeathAction();
+
+            await UniTask.CompletedTask;
         }
 
         public async UniTask OnReplaceAsync()
         {
-            LogEx.LogWarning("OnReplaceAsync가 구현되지 않음 - @대윤");
-        }
+            // 교체 기믹이 아직 없으므로 로깅만 유지
+            LogEx.LogWarning("OnReplaceAsync가 아직 구현되지 않음");
 
+            await UniTask.CompletedTask;
+        }
         public async UniTask<bool> CheckAttackCountAsync()
         {
-            LogEx.LogWarning("CheckAttackCountAsync가 구현되지 않음 - @대윤");
-            return false;
-        }
+            if (HP <= 0) return false;
 
+            bool isAnyAttackReady = false;
+
+            foreach (Attack.Attack attack in attackLists)
+            {
+                attack.attackTurnOrder--;
+                LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다.");
+
+                if (attack.attackTurnOrder <= 0)
+                {
+                    isAnyAttackReady = true;
+                }
+            }
+
+            return isAnyAttackReady;
+        }
         public async UniTask<(bool success, int damage)> TryAttackAsync(IEnemyContext context)
         {
-            LogEx.LogWarning("TryAttackAsync가 구현되지 않음 - @대윤");
-            return (false, 0);
+            bool isSuccess = false;
+            float totalDamage = 0f;
+
+            foreach (Attack.Attack attack in attackLists)
+            {
+                if (attack.attackTurnOrder <= 0)
+                {
+                    // [핵심 해결] CheckHit를 돌리기 전에, 플레이어의 최신 위치를 attack 객체에 반드시 갱신해야 합니다!
+                    attack.playerPosition = context.PlayerPosition;
+
+                    float damage = baseMobBossData.AttackDamage;
+
+                    // HandRankAttackLogic에서 반환하는 out var resultInfo 를 받아와서 처리합니다.
+                    if (HandRankAttackLogic.CheckHit(attack, damage, out var resultInfo))
+                    {
+                        if (resultInfo.success)
+                        {
+                            _enemyAttackInfo.attackSucess = true;
+                            isSuccess = true;
+                            totalDamage += resultInfo.dmg; // resultInfo에 담긴 데미지를 합산
+                        }
+                    }
+                    // 공격이 끝났으므로 해당 하이라이트 지우기
+                    RemoveHighLight(attack);
+                }
+            }
+
+            using (EnemyAttackAfterArgs args = EnemyAttackAfterArgs.Get())
+            {
+                ExecEventBus<EnemyAttackAfterArgs>.InvokeMerged(args).Forget();
+            }
+
+            return (isSuccess, (int)totalDamage);
         }
 
         public async UniTask OnAttackSuccessAsync()
         {
-            LogEx.LogWarning("OnAttackSuccessAsync가 구현되지 않음 - @대윤");
+            // TryAttackAsync에서 success가 true일 때 턴 시스템이 호출해주는 메서드.
+
+            //공격이 성공했을때 애니메이션이나 특별 기믹이 있다면 여기서구현.
+            // 혹은 공격이 성공했을때 디버프 거는 무언가가 있으면 여기서 구현
+
+
+            await UniTask.CompletedTask;
         }
 
         public async UniTask OnEndTurnAsync()
         {
-            LogEx.LogWarning("OnEndTurnAsync가 구현되지 않음 - @대윤");
+            // 턴 종료 시 관련 기믹 처리 공간
+            await UniTask.CompletedTask;
         }
-
         public async UniTask UpdateAttackAsync(IEnemyContext context)
         {
-            LogEx.LogWarning("UpdateAttackAsync가 구현되지 않음 - @대윤");
+            TileVector playerPosition = context.PlayerPosition;
+
+            // 턴 오더가 0 이하가 되어 방금 사용된 공격들을 지우고 새로 생성 (새 하이라이트 켜짐)
+            int removedCount = attackLists.RemoveAll(attack => attack.attackTurnOrder <= 0);
+            for (int i = 0; i < removedCount; i++)
+            {
+                CreateAttack(playerPosition);
+            }
+
+            if (attackLists.Count == 0 && !aWakeFirst)
+            {
+                CreateAttack(playerPosition);
+            }
+
+            if (orderSettingGo)
+            {
+                SetAllAttackOrderGo();
+            }
+
+            await UniTask.CompletedTask;
         }
 
         #endregion
-        
+
         #region Attack 관련
 
         #region IAttackVisualizer 구현
@@ -248,7 +342,7 @@ namespace Cardevil.Gameplay.Enemy
                 CreateAttack(playerPosition);
             }
 
- 
+
             if (orderSettingGo == true)
             {
                 SetAllAttackOrderGo();
@@ -282,13 +376,18 @@ namespace Cardevil.Gameplay.Enemy
         }
 
         #endregion
-      
+
         #region Player 상호작용 
         public virtual bool GetDamage(float damage)
         {
             CurrentHp = HP - damage;
             LogEx.Log($"{damage}만큼의 피해를 입러 HP가 {CurrentHp}로 감소하였다!");
             UpdateHPBar();
+            return false; // 아직은 살아있다 추후에 사망 처리
+        }
+
+        private bool DeathAction()
+        {
             if (CurrentHp <= 0)
             {
                 // 유닛 사망
@@ -299,10 +398,7 @@ namespace Cardevil.Gameplay.Enemy
             return false; // 아직 살아있다
         }
 
-        public void TakeDamage(int amount)
-        {
-            GetDamage(amount);
-        }
+
 
         #endregion
 
@@ -415,18 +511,18 @@ namespace Cardevil.Gameplay.Enemy
 
 
             attackCreateCycle = _baseMobBossData.AttackCycle;
-            
-            if(baseMobBossData.BoolAttackType)
+
+            if (baseMobBossData.BoolAttackType)
             {
                 attackStyles = baseMobBossData.AttackPattern;
             }
             else
             {
                 // 0이라면 가중치에따라 랜덤
-               attackStyles= Util.PickRandomPatterns(
-               baseMobBossData.AttackPattern,
-               baseMobBossData.AttackWeight,
-               15);
+                attackStyles = Util.PickRandomPatterns(
+                baseMobBossData.AttackPattern,
+                baseMobBossData.AttackWeight,
+                15);
             }
             isPlayerAttack = baseMobBossData.AttackPlayer;
 
@@ -445,7 +541,7 @@ namespace Cardevil.Gameplay.Enemy
             char trimText = '"';
             IGimmick igimmick = GimmickFactory.Instance.CreateGimmick(baseMobBossData.GimmickName[0].ToString().Trim(trimText));
             gimmick = igimmick;
-            if(igimmick==null)
+            if (igimmick == null)
             {
                 return;
             }
@@ -561,9 +657,10 @@ namespace Cardevil.Gameplay.Enemy
             currentAttackStyle = AttackStyle.AttackHorizontal; // 포인트 어택 형태로 저장
         }
 
-     
+
 
 
         #endregion
     }
 }
+

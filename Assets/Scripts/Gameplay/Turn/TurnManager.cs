@@ -8,6 +8,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
+using Cardevil.Gameplay.Field;
 
 namespace Cardevil.Gameplay.Turn
 {
@@ -29,23 +30,30 @@ namespace Cardevil.Gameplay.Turn
         private StageCardManager _card;
         private ITurnPlayer _player;
 
+        // 1. Field를 저장할 변수 추가
+        private Field.Field _field;
+
         private EnemySpawner _enemySpawner;
         private ITurnEnemy _currentEnemy;
 
         private RerollPresenter Reroll => _card.Reroll;
         private StageCardCorePresenter CardCore => _card.Core;
 
-        public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner)
+        public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner,Field.Field field)
         {
             _card = cardManager;
             _enemySpawner = enemySpawner;
             _player = player;
-            
+            _field = field;
+
             ExecEventBus<PlayerMoveArgs>.RegisterStatic(0, player.OnMoveAsync);
-            
-            // 임시 
-            enemySpawner.TrySpawn(out var enemy);
-            _currentEnemy = enemy;
+
+            //  적 생성 시 Init 호출
+            if (enemySpawner.TrySpawn(out var enemy))
+            {
+                enemy.Init(_field); // <-- 여기서 Field 전달
+                _currentEnemy = enemy;
+            }
         }
         
         public void Dispose()
@@ -63,7 +71,10 @@ namespace Cardevil.Gameplay.Turn
         private async UniTask CoreLoopAsync(CancellationToken cancellationToken = default)
         {
             await Reroll.WaitUntilRerollEndAsync();
-            
+
+            // Enemy의 공격 범위 띄우기
+            await _currentEnemy.OnEnemyCreateFirstAttackAsync();
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 turnOrder++;
@@ -110,8 +121,12 @@ namespace Cardevil.Gameplay.Turn
                         break;
                     }
 
+                    newEnemy.Init(_field);
                     _currentEnemy = newEnemy;
+                   
                     await _currentEnemy.OnReplaceAsync();
+
+                    await _currentEnemy.OnEnemyCreateFirstAttackAsync();
                 }
                 
                 // TODO: 플레이어 카드로 게임 오버 체크
@@ -142,10 +157,7 @@ namespace Cardevil.Gameplay.Turn
                 await _currentEnemy.OnEndTurnAsync();
                 // TODO: 플레이어, 유물
 
-                if (enemyShouldAttack)
-                {
-                    await _currentEnemy.UpdateAttackAsync(enemyContext);
-                }
+                await _currentEnemy.UpdateAttackAsync(enemyContext);
 
                 await CardCore.DrawAsync();
             }
