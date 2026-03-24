@@ -7,10 +7,108 @@
     "CommentForEditor": "시트 연동이 잘 되나 테스트하기 위한 테스트 유물입니다."
   },
   {
-    "Id": "bonus-straight-flush",
+    "Id": "Relic.rank_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물5",
+    "DisplayDescription": "원페어일시, 피해량이 50 증가합니다. 투페어일시 피해량이 80 증가합니다.",
+    "CommentForEditor": "<color=yellow>원페어</color>일 시 <color=#FF0000>피해량이 50</color>, <color=yellow>투페어</color>일 시 <color=#FF0000>피해량이 80</color> 증가합니다."
+  },
+  {
+    "Id": "Relic.rank_bonus_02",
     "Rarity": 1,
     "DisplayName": "유물6",
     "DisplayDescription": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가 (스티플이라면 +180)",
-    "CommentForEditor": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가 (스티플이라면 +180)"
+    "CommentForEditor": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가. (스티플이라면 +180)"
+  },
+  {
+    "Id": "Relic.rank_bonus_03",
+    "Rarity": 1,
+    "DisplayName": "유물7",
+    "DisplayDescription": "트리플(+60), 포카드(+300) 증가시킵니다.",
+    "CommentForEditor": "트리플(+60), 포카드 (+300) 증가시킵니다."
+  },
+  {
+    "Id": "Relic.delayed_rank_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물8",
+    "DisplayDescription": "하이카드 공격이 다음 공격의 최종 데미지를 125%로 증가시킵니다.",
+    "CommentForEditor": "하이카드 공격이 다음 공격의 최종 데미지를 125%로 증가시킵니다."
+  },
+  {
+    "Id": "Relic.random_chance_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물9",
+    "DisplayDescription": "33.33% 확률로, 매 공격의 데미지가 120%로 증가합니다.",
+    "CommentForEditor": "33.33% 확률로, 매 공격의 데미지가 120%로 증가합니다."
+  },
+  {
+    "Id": "Relic.health_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물10",
+    "DisplayDescription": "체력이 1이라면, 최종 데미지를 150%로 증가시킵니다.",
+    "CommentForEditor": "체력이 1이라면, 최종 데미지를 150%로 증가시킵니다."
+  },
+  {
+    "Id": "Relic.number_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물11",
+    "DisplayDescription": "모든 숫자 카드의 기본 데미지를 +10 증가시킵니다.",
+    "CommentForEditor": "모든 숫자 카드의 기본 데미지를 +10 증가시킵니다."
+  },
+  {
+    "Id": "Relic.number_bonus_02",
+    "Rarity": 1,
+    "DisplayName": "유물12",
+    "DisplayDescription": "모든 숫자 카드의 기본 데미지를 전투 스테이지를 클리어한 횟수만큼, 증가시킵니다.",
+    "CommentForEditor": "모든 숫자 카드의 기본 데미지를 전투 스테이지를 클리어한 횟수만큼, 증가시킵니다."
+  },
+  {
+    "Id": "Relic.rank_bonus_04",
+    "Rarity": 1,
+    "DisplayName": "유물14",
+    "DisplayDescription": "하이카드 공격 시, 최종 데미지 2배",
+    "CommentForEditor": "하이카드 공격 시, 최종 데미지 2배"
+  },
+  {
+    "Id": "Relic.repeated_handrank_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물15",
+    "DisplayDescription": "가장 최근 족보 == 현재 족보 -> 데미지 10% 증가",
+    "CommentForEditor": "가장 최근 족보 == 현재 족보 -> 데미지 10% 증가"
+  },
+  {
+    "Id": "Relic.health_bonus_02",
+    "Rarity": 1,
+    "DisplayName": "유물16",
+    "DisplayDescription": "체력이 3이라면, 최종 데미지를 110%로 증가시킵니다.",
+    "CommentForEditor": "체력이 3이라면, 최종 데미지를 110%로 증가시킵니다."
+  },
+  {
+    "Id": "Relic.random_chance_bonus_02",
+    "Rarity": 1,
+    "DisplayName": "유물17",
+    "DisplayDescription": "66.66% 확률로 최종데미지 110%",
+    "CommentForEditor": "66.66% 확률로 최종데미지 110%"
+  },
+  {
+    "Id": "Relic.number_bonus_03",
+    "Rarity": 1,
+    "DisplayName": "유물18",
+    "DisplayDescription": "6,7,8,9,10 기본 데미지 +15",
+    "CommentForEditor": "6,7,8,9,10 기본 데미지 +15"
+  },
+  {
+    "Id": "Relic.number_bonus_04",
+    "Rarity": 1,
+    "DisplayName": "유물19",
+    "DisplayDescription": "2,3,4,5 기본 데미지 + 20",
+    "CommentForEditor": "2,3,4,5 기본 데미지 + 20"
+  },
+  {
+    "Id": "Relic.star_bonus_01",
+    "Rarity": 1,
+    "DisplayName": "유물20",
+    "DisplayDescription": "오망성 카드 기본 데미지 + 50",
+    "CommentForEditor": "오망성 카드 기본 데미지 + 50"
   }
 ]
