@@ -31,7 +31,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)
             {
-                if (RandomUtil.GetRandomFloat(0f, 1f) < _definition.probability) return null;
+                if (RandomUtil.GetRandomFloat(0f, 1f) > _definition.probability) return null;
                 
                 float finalValue = Definition.GetCalculatedValue(Context);
                 return new ScoreOperator { Type = Definition.OperatorType, Value = finalValue, Source = this };
