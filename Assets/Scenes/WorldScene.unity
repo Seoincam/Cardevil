@@ -2110,11 +2110,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2682648631247123120}
   m_SourcePrefab: {fileID: 100100000, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
---- !u!224 &2682648631247123116 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4152382110291353300, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
-  m_PrefabInstance: {fileID: 2682648631247123115}
-  m_PrefabAsset: {fileID: 0}
 --- !u!95 &2682648631247123117 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 707134002777961311, guid: ca3cfbc52071e9f4db00b7934f237e0e, type: 3}
@@ -2144,10 +2139,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
   _hoverTooltip: {fileID: 0}
   _eventTrigger: {fileID: 0}
-  _target: {fileID: 2682648631247123116}
   <TooltipData>k__BackingField:
     <Title>k__BackingField: "\uB808\uBCA8"
     <Description>k__BackingField: "\uB808\uBCA8\uC774\uC9C0\uB871"
+    subTooltips:
+    - rid: 789472990714396763
+  references:
+    version: 2
+    RefIds:
+    - rid: 789472990714396763
+      type: {class: TooltipData, ns: Cardevil.UI, asm: Assembly-CSharp}
+      data:
+        <Title>k__BackingField: "\uB808\uBCA8\uC744 \uC62C\uB9AC\uBA74"
+        <Description>k__BackingField: "\uAC15\uD574\uC9C0\uC9C0\uB871"
+        subTooltips: []
 --- !u!114 &2682648631247123121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2162,11 +2167,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
   _hoverTooltip: {fileID: 0}
   _eventTrigger: {fileID: 0}
-  _target: {fileID: 2682648631247123116}
   <TooltipData>k__BackingField:
     <Title>k__BackingField: "\uCE90\uB9AD\uD130"
     <Description>k__BackingField: "\uD604\uC7AC \uD50C\uB808\uC774\uC911\uC778 \uCE90\uB9AD\uD130\uC785\uB2C8\uB2E4.\n\uC8FC\uC704\uC758
       \uBE68\uAC04 \uB3D9\uADF8\uB77C\uBBF8\uB294 \uD604\uC7AC \uACBD\uD5D8\uCE58\uC785\uB2C8\uB2E4."
+    subTooltips: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1001 &4643059944773426318
 PrefabInstance:
   m_ObjectHideFlags: 0

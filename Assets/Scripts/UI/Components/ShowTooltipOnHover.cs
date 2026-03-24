@@ -120,6 +120,17 @@ namespace Cardevil.UI.Components
             }
         }
 
+        [ContextMenu("Add Sub Tooltip")]
+        public void AddSubTooltip()
+        {
+            if (TooltipData == null)
+            {
+                TooltipData = new TooltipData { Title = "New Tooltip", Description = "Tooltip Description" };
+            }
+
+            TooltipData.SubTooltips.Add(new TooltipData { Title = "Sub Tooltip", Description = "Sub Tooltip Description" });
+        }
+
         private EventTrigger.Entry GetOrCreateEntry(EventTriggerType eventType)
         {
             foreach (var entry in _eventTrigger.triggers)
