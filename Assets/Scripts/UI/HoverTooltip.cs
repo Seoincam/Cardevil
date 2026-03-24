@@ -28,7 +28,7 @@ namespace Cardevil.UI
 
         [Header("레이아웃 옵션")]
         [SerializeField, Range(1, 3), Tooltip("자동 크기 안정화를 위해 레이아웃 강제 재계산을 반복하는 횟수")]
-        private int _layoutRebuildPasses = 2;
+        private int _layoutRebuildPasses = 1;
 
         private CanvasScaler _canvasScaler;
         private readonly Vector3[] _targetCorners = new Vector3[4];

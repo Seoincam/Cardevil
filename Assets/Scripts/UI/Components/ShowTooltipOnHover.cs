@@ -14,10 +14,6 @@ namespace Cardevil.UI.Components
         private RectTransform _rectTransform;
 
 #if UNITY_EDITOR
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-        }
 
         protected override void Reset()
         {

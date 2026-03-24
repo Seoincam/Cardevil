@@ -96,7 +96,7 @@ MonoBehaviour:
   _titleText: {fileID: 3691401080311937610}
   _descriptionText: {fileID: 4726434327397480208}
   _descriptionSizeFitter: {fileID: 1725642912548944664}
-  _layoutRebuildPasses: 2
+  _layoutRebuildPasses: 1
 --- !u!114 &1631279883522459086
 MonoBehaviour:
   m_ObjectHideFlags: 0
