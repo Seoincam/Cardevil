@@ -104,7 +104,8 @@ namespace Cardevil.Gameplay.Relics.Editor.Components
 
         private string GetIdRichText(string id)
         {
-            return $"<size=13><color=#32CD32>{id}</color></size>";
+            var trimmedID = id.StartsWith("Relic.") ? id.Substring(6) : id;
+            return $"<size=13><color=#32CD32>{trimmedID}</color></size>";
         }
     }
 }
