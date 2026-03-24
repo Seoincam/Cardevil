@@ -62,6 +62,8 @@ namespace Cardevil.Gameplay.Root
             await SceneLoader.WaitSceneActivationAsync(Scenes.Stage, op, LoadSceneMode.Additive, ct);
             SceneLoader.SetActiveScene(Scenes.Stage);
             
+            // @Seoincam - StageScene UI 입력이 안돼서 임시로 끄게 해둠.
+            Dungeon.UI.gameObject.SetActive(false);
         }
 
         

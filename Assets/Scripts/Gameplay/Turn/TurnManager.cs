@@ -25,16 +25,19 @@ namespace Cardevil.Gameplay.Turn
     public class TurnManager : IDisposable
     {
         [SerializeField, VisibleOnly] private int turnOrder;
-        
-        private StageCardCorePresenter _cardCore;
+
+        private StageCardManager _card;
         private ITurnPlayer _player;
 
         private EnemySpawner _enemySpawner;
         private ITurnEnemy _currentEnemy;
 
-        public TurnManager(StageCardCorePresenter cardCore, ITurnPlayer player, EnemySpawner enemySpawner)
+        private RerollPresenter Reroll => _card.Reroll;
+        private StageCardCorePresenter CardCore => _card.Core;
+
+        public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner)
         {
-            _cardCore = cardCore;
+            _card = cardManager;
             _enemySpawner = enemySpawner;
             _player = player;
             
@@ -59,37 +62,39 @@ namespace Cardevil.Gameplay.Turn
         
         private async UniTask CoreLoopAsync(CancellationToken cancellationToken = default)
         {
+            await Reroll.WaitUntilRerollEndAsync();
+            
             while (!cancellationToken.IsCancellationRequested)
             {
                 turnOrder++;
                 
                 await _currentEnemy.OnStartTurnAsync();
                 
-                await _cardCore.WaitUntilPlayerInputAsync();
+                await CardCore.WaitUntilPlayerInputAsync();
 
                 // 각 카드 연산
-                await _cardCore.AddStepAsync(ScoreStepType.EachCard);
+                await CardCore.AddStepAsync(ScoreStepType.EachCard);
 
                 // 합 연산
-                await _cardCore.AddStepAsync(ScoreStepType.PlusRelic);
-                await _cardCore.AddStepAsync(ScoreStepType.PlusField);
-                await _cardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
-                await _cardCore.ApplyScoreOperatorsAsync();
+                await CardCore.AddStepAsync(ScoreStepType.PlusRelic);
+                await CardCore.AddStepAsync(ScoreStepType.PlusField);
+                await CardCore.AddStepAsync(ScoreStepType.PlusPlayerStatus);
+                await CardCore.ApplyScoreOperatorsAsync();
 
                 // 곱 연산, 골드 연산
-                await _cardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
-                await _cardCore.AddStepAsync(ScoreStepType.MultiplyRelic);
-                await _cardCore.StepGoldRelicAsync();
-                await _cardCore.AddStepAsync(ScoreStepType.MultiplyField);
-                await _cardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
-                float score = await _cardCore.ApplyScoreOperatorsAsync();
+                await CardCore.AddStepAsync(ScoreStepType.MultiplyCardFinalDamage);
+                await CardCore.AddStepAsync(ScoreStepType.MultiplyRelic);
+                await CardCore.StepGoldRelicAsync();
+                await CardCore.AddStepAsync(ScoreStepType.MultiplyField);
+                await CardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
+                float score = await CardCore.ApplyScoreOperatorsAsync();
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
-                await _cardCore.DiscardSelectionAsync();
+                await CardCore.DiscardSelectionAsync();
                 
                 // 적 기믹 연산
-                await _cardCore.AddStepAsync(ScoreStepType.EnemyStatus);
-                float finalScore = await _cardCore.ApplyScoreOperatorsAsync();
+                await CardCore.AddStepAsync(ScoreStepType.EnemyStatus);
+                float finalScore = await CardCore.ApplyScoreOperatorsAsync();
                 // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 
                 await _player.AttackAsync(finalScore);
@@ -142,7 +147,7 @@ namespace Cardevil.Gameplay.Turn
                     await _currentEnemy.UpdateAttackAsync(enemyContext);
                 }
 
-                await _cardCore.DrawAsync();
+                await CardCore.DrawAsync();
             }
         }
     }

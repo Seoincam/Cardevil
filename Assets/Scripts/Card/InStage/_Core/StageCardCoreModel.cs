@@ -163,6 +163,16 @@ namespace Cardevil.Card.InStage
             discarded.AddRange(states);
         }
 
+        public void Reroll(IReadOnlyList<ICardState> states)
+        {
+            deck.AddRange(states);
+        }
+
+        public void ShuffleDeck()
+        {
+            deck.ShuffleListInPlace();
+        }
+
         private bool TryDraw(out ICardState state)
         {
             if (deck.Count == 0)

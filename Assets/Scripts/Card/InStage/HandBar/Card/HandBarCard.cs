@@ -205,8 +205,8 @@ namespace Cardevil.Card.InStage
                 .DOLocalRotate(discardParams.Rotation, duration, RotateMode.LocalAxisAdd)
                 .SetEase(discardParams.RotationEase);
 
-            float multiplier = Random.Range(discardParams.JumpPowerRandomRange.x, discardParams.JumpPowerRandomRange.y);
-            float jumpPower = discardParams.JumpPower * multiplier;
+            float randomMultiplier = Random.Range(discardParams.JumpPowerRandomRange.x, discardParams.JumpPowerRandomRange.y);
+            float jumpPower = discardParams.JumpPower * randomMultiplier;
             var jumpTween = transform
                 .DOJump(discardPosition, jumpPower, 1, duration)
                 .SetEase(discardParams.JumpEase);

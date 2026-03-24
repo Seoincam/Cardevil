@@ -1,6 +1,7 @@
 using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Attributes;
+using Cardevil.Gameplay;
 using UnityEngine;
 
 namespace Cardevil.Card.InStage
@@ -13,26 +14,30 @@ namespace Cardevil.Card.InStage
     {
         [Header("Views")]
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private StageCardCoreView coreView;
+        [SerializeField, VisibleOnly(EditableIn.EditMode)] private RerollView rerollView; 
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private HandBarView handBarView;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private ValueSelectionView valueSelectionView;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private CardScoreView cardScoreView;
         
-        [Header("Presenters")]
-        [SerializeField] private StageCardCorePresenter corePresenter;
-        [SerializeField] private HandBarPresenter handBarPresenter;
-        [SerializeField] private ValueSelectionPresenter valueSelectionPresenter;
-        [SerializeField] private ScorePresenter scorePresenter;
-
-        public StageCardCorePresenter Core => corePresenter;
-
-        public void Initialize(IScoreProviderRegistry scoreProviderRegistry)
+        [field: Header("Presenters")]
+        [field: SerializeField] public RerollPresenter Reroll { get; private set; }
+        [field: SerializeField] public StageCardCorePresenter Core { get; private set; }
+        [field: SerializeField] public HandBarPresenter HandBar { get; private set; }
+        [field: SerializeField] public ValueSelectionPresenter ValueSelection { get; private set; }
+        [field: SerializeField] public ScorePresenter Score { get; private set; }
+        
+        public void Initialize(PlayerStatus playerStatus, IScoreProviderRegistry scoreProviderRegistry)
         {
-            valueSelectionPresenter = new ValueSelectionPresenter(valueSelectionView);
-            handBarPresenter = new HandBarPresenter(handBarView, valueSelectionPresenter);
-            scorePresenter = new ScorePresenter(cardScoreView); 
-            corePresenter = new StageCardCorePresenter(coreView, handBarPresenter, scorePresenter, scoreProviderRegistry);
+            // 내부 로직
+            ValueSelection = new ValueSelectionPresenter(valueSelectionView);
+            HandBar = new HandBarPresenter(handBarView, ValueSelection);
+            Score = new ScorePresenter(cardScoreView); 
             
-            handBarPresenter.HandRankChanged += scorePresenter.OnHandRankChanged;
+            // 외부 클래스와 상호작용
+            Core = new StageCardCorePresenter(scoreProviderRegistry, coreView, HandBar, Score);
+            Reroll = new RerollPresenter(playerStatus, rerollView, Core, HandBar);
+            
+            HandBar.HandRankChanged += Score.OnHandRankChanged;
         }
     }
 }
