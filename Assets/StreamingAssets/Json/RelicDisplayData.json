@@ -9,106 +9,106 @@
   {
     "Id": "Relic.rank_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물5",
-    "DisplayDescription": "원페어일시, 피해량이 50 증가합니다. 투페어일시 피해량이 80 증가합니다.",
-    "CommentForEditor": "<color=yellow>원페어</color>일 시 <color=#FF0000>피해량이 50</color>, <color=yellow>투페어</color>일 시 <color=#FF0000>피해량이 80</color> 증가합니다."
+    "DisplayName": "원투펀치",
+    "DisplayDescription": "<color=yellow>원페어</color>일시, 데미지 <color=red>+50</color>,  <color=yellow>투페어</color>일시 데미지 <color=red>+80</color>",
+    "CommentForEditor": "원페어일시, 피해량이 50 증가합니다. 투페어일시 피해량이 80 증가합니다."
   },
   {
     "Id": "Relic.rank_bonus_02",
     "Rarity": 1,
-    "DisplayName": "유물6",
-    "DisplayDescription": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가 (스티플이라면 +180)",
-    "CommentForEditor": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가. (스티플이라면 +180)"
+    "DisplayName": "왕족의 패",
+    "DisplayDescription": "족보에 <color=yellow>스트레이트 포함</color>시, 데미지 <color=red>+80</color>, <color=yellow>플러시 포함</color>시, 데미지 <color=red>+100</color>",
+    "CommentForEditor": "스트레이트 (+80)와 플러시(+100)의 족보 보너스 점수를 증가 (스티플이라면 +180)"
   },
   {
     "Id": "Relic.rank_bonus_03",
     "Rarity": 1,
-    "DisplayName": "유물7",
-    "DisplayDescription": "트리플(+60), 포카드(+300) 증가시킵니다.",
-    "CommentForEditor": "트리플(+60), 포카드 (+300) 증가시킵니다."
+    "DisplayName": "잭팟",
+    "DisplayDescription": "<color=yellow>트리플</color>일시, 데미지 <color=red>+60</color>, <color=yellow>포카드</color>일시, 데미지  <color=red>+300</color>",
+    "CommentForEditor": "트리플(+60), 포카드(+300) 증가시킵니다."
   },
   {
     "Id": "Relic.delayed_rank_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물8",
-    "DisplayDescription": "하이카드 공격이 다음 공격의 최종 데미지를 125%로 증가시킵니다.",
-    "CommentForEditor": "하이카드 공격이 다음 공격의 최종 데미지를 125%로 증가시킵니다."
+    "DisplayName": "추진력 얻기",
+    "DisplayDescription": "<color=yellow>하이카드</color> 사용시, <b>다음 공격</b>의 데미지 <color=red>x1.25</color>",
+    "CommentForEditor": "하이카드 사용 시, 다음 공격의 데미지 x1.25"
   },
   {
     "Id": "Relic.random_chance_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물9",
-    "DisplayDescription": "33.33% 확률로, 매 공격의 데미지가 120%로 증가합니다.",
-    "CommentForEditor": "33.33% 확률로, 매 공격의 데미지가 120%로 증가합니다."
+    "DisplayName": "가위바위보",
+    "DisplayDescription": "<color=yellow>33.33%</color> 확률로, 최종 데미지 <color=red>x1.2</color>",
+    "CommentForEditor": "33.33% 확률로, 최종 데미지가 x1.2로 증가합니다."
   },
   {
     "Id": "Relic.health_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물10",
-    "DisplayDescription": "체력이 1이라면, 최종 데미지를 150%로 증가시킵니다.",
-    "CommentForEditor": "체력이 1이라면, 최종 데미지를 150%로 증가시킵니다."
+    "DisplayName": "버서커",
+    "DisplayDescription": "<color=yellow>체력</color>이 <color=yellow>1</color>일시, 최종 데미지 <color=red>x1.5</color>",
+    "CommentForEditor": "체력이 1이라면, 최종 데미지를 x1.5로 증가시킵니다."
   },
   {
     "Id": "Relic.number_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물11",
-    "DisplayDescription": "모든 숫자 카드의 기본 데미지를 +10 증가시킵니다.",
+    "DisplayName": "딜러의 카드",
+    "DisplayDescription": "모든 숫자 카드의 <b>기본 데미지</b> <color=red>+10</color>",
     "CommentForEditor": "모든 숫자 카드의 기본 데미지를 +10 증가시킵니다."
   },
   {
     "Id": "Relic.number_bonus_02",
     "Rarity": 1,
-    "DisplayName": "유물12",
-    "DisplayDescription": "모든 숫자 카드의 기본 데미지를 전투 스테이지를 클리어한 횟수만큼, 증가시킵니다.",
+    "DisplayName": "전투광의 카드",
+    "DisplayDescription": "모든 숫자 카드의 <b>기본 데미지</b>를 <color=red>전투 스테이지</color>를 <color=red>클리어한 횟수</color>만큼 증가",
     "CommentForEditor": "모든 숫자 카드의 기본 데미지를 전투 스테이지를 클리어한 횟수만큼, 증가시킵니다."
   },
   {
     "Id": "Relic.rank_bonus_04",
     "Rarity": 1,
-    "DisplayName": "유물14",
-    "DisplayDescription": "하이카드 공격 시, 최종 데미지 2배",
+    "DisplayName": "솔로 플레이",
+    "DisplayDescription": "<color=yellow>하이카드</color>일시, 최종 데미지 <color=red>x2</color>",
     "CommentForEditor": "하이카드 공격 시, 최종 데미지 2배"
   },
   {
     "Id": "Relic.repeated_handrank_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물15",
-    "DisplayDescription": "가장 최근 족보 == 현재 족보 -> 데미지 10% 증가",
-    "CommentForEditor": "가장 최근 족보 == 현재 족보 -> 데미지 10% 증가"
+    "DisplayName": "한 우물만 판다",
+    "DisplayDescription": "<b>한 족보</b>를 <color=yellow>연속</color>해서 사용할 시, 데미지 <color=red>x1.1</color>",
+    "CommentForEditor": "가장 최근 족보 == 현재 족보 -> 최종 데미지 x1.1"
   },
   {
     "Id": "Relic.health_bonus_02",
     "Rarity": 1,
-    "DisplayName": "유물16",
-    "DisplayDescription": "체력이 3이라면, 최종 데미지를 110%로 증가시킵니다.",
-    "CommentForEditor": "체력이 3이라면, 최종 데미지를 110%로 증가시킵니다."
+    "DisplayName": "안전 제일",
+    "DisplayDescription": "<color=yellow>체력</color>이 <color=yellow>3</color>일시, 최종 데미지 <color=red>x1.1</color>",
+    "CommentForEditor": "체력이 3이라면, 최종 데미지 x1.1"
   },
   {
     "Id": "Relic.random_chance_bonus_02",
     "Rarity": 1,
     "DisplayName": "유물17",
-    "DisplayDescription": "66.66% 확률로 최종데미지 110%",
-    "CommentForEditor": "66.66% 확률로 최종데미지 110%"
+    "DisplayDescription": "<color=yellow>66.66%</color> 확률로 최종데미지 <color=red>x1.1</color>",
+    "CommentForEditor": "66.66% 확률로 최종데미지 x1.1"
   },
   {
     "Id": "Relic.number_bonus_03",
     "Rarity": 1,
-    "DisplayName": "유물18",
-    "DisplayDescription": "6,7,8,9,10 기본 데미지 +15",
+    "DisplayName": "귀족의 카드",
+    "DisplayDescription": "6,,8,9,10 카드의 <b>기본 데미지</b> <color=red>+15</color>",
     "CommentForEditor": "6,7,8,9,10 기본 데미지 +15"
   },
   {
     "Id": "Relic.number_bonus_04",
     "Rarity": 1,
-    "DisplayName": "유물19",
-    "DisplayDescription": "2,3,4,5 기본 데미지 + 20",
+    "DisplayName": "농노의 카드",
+    "DisplayDescription": "2,3,4,5 카드의 <b>기본 데미지</b>를<color=red>+20</color>",
     "CommentForEditor": "2,3,4,5 기본 데미지 + 20"
   },
   {
     "Id": "Relic.star_bonus_01",
     "Rarity": 1,
-    "DisplayName": "유물20",
-    "DisplayDescription": "오망성 카드 기본 데미지 + 50",
+    "DisplayName": "빛나는 별",
+    "DisplayDescription": "오망성 카드의 <b>기본 데미지</b> <color=red>+50</color>",
     "CommentForEditor": "오망성 카드 기본 데미지 + 50"
   }
 ]

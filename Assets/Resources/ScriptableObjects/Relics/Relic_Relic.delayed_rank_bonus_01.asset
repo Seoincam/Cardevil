@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
     id: Relic.delayed_rank_bonus_01
-    commentForEditor: "\uD558\uC774\uCE74\uB4DC \uACF5\uACA9\uC774 \uB2E4\uC74C \uACF5\uACA9\uC758
-      \uCD5C\uC885 \uB370\uBBF8\uC9C0\uB97C 125%\uB85C \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+    commentForEditor: "\uD558\uC774\uCE74\uB4DC \uC0AC\uC6A9 \uC2DC, \uB2E4\uC74C
+      \uACF5\uACA9\uC758 \uB370\uBBF8\uC9C0 x1.25"
     rarity: 1
     displayIcon: {fileID: 21300000, guid: ea6676d4b217cc34d889ec96f9367318, type: 3}
-    displayName: "\uC720\uBB3C8"
-    displayDescription: "\uD558\uC774\uCE74\uB4DC \uACF5\uACA9\uC774 \uB2E4\uC74C
-      \uACF5\uACA9\uC758 \uCD5C\uC885 \uB370\uBBF8\uC9C0\uB97C 125%\uB85C \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+    displayName: "\uCD94\uC9C4\uB825 \uC5BB\uAE30"
+    displayDescription: "<color=yellow>\uD558\uC774\uCE74\uB4DC</color> \uC0AC\uC6A9\uC2DC,
+      <b>\uB2E4\uC74C \uACF5\uACA9</b>\uC758 \uB370\uBBF8\uC9C0 <color=red>x1.25</color>"
     effects:
     - rid: 3697062221459751011
   dataSource: 1
