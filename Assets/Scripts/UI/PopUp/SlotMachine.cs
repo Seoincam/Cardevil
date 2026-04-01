@@ -59,6 +59,16 @@ namespace Cardevil.UI.PopUp
             {
                 OnRerollClicked(null);
             }
+
+        }
+
+        /// <summary>
+        /// 슬롯머신 호출
+        /// </summary>
+        public void ActiveSlotMachine()
+        {
+            this.gameObject.SetActive(true);
+            UpdateLayout();
         }
 
         public override void Init()
@@ -111,7 +121,7 @@ namespace Cardevil.UI.PopUp
                 {
                     // SettingSlot이 설정되기 까지 무한대로 돌아갑니다.
                     slot.StartSpinning(probalityList);
-                }
+                }   
 
                 // 1.5초 대기 (Realtime)
                 // CancellationToken을 넣어주면 씬 이동 등으로 오브젝트 파괴 시 에러 방지
@@ -256,7 +266,7 @@ namespace Cardevil.UI.PopUp
             UpdateLayout();
 
         }
-        private void OnSelectClicked(PointerEventData eventData) { }
+        private void OnSelectClicked(PointerEventData eventData) { this.gameObject.SetActive(false); }
         private void OnItem1Clicked(PointerEventData eventData) { slots[0].item.OnClicked(); }
         private void OnItem2Clicked(PointerEventData eventData) { slots[1].item.OnClicked(); }
         private void OnItem3Clicked(PointerEventData eventData) { slots[2].item.OnClicked(); }
