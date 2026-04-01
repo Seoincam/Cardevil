@@ -1,4 +1,5 @@
 using Cardevil.Card.InStage;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
 using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
@@ -9,10 +10,7 @@ using Cardevil.Gameplay.Enemy;
 using Cardevil.Gameplay.Player;
 using Cardevil.Gameplay.Turn;
 using Cardevil.UI;
-using Cardevil.UI.GlobalNavigationBar;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
-using TMPro;
 using UnityEngine;
 
 namespace Cardevil.Gameplay.Root
@@ -23,13 +21,12 @@ namespace Cardevil.Gameplay.Root
     /// </summary>
     public class StageRoot : MonoBehaviour
     {
-
         [Header("References")] 
+        [SerializeField] private StageView view;
         [SerializeField] private StageCardManager cardManager;
 
-        [Header("")] 
+        [Header("States")] 
         [SerializeField] private TurnManager turnManager;
-        
         [SerializeField] private EnemySpawner _enemySpawner;
 
         [Header("References")]
@@ -41,39 +38,31 @@ namespace Cardevil.Gameplay.Root
         
         private GameFlowManager.StageEnterContext _context;
 
-        bool isInitialized = false;
 
-        protected async void Awake()
+        protected void Awake()
         {
             CardevilCore.GameFlow.Stage = this;
+        }
+
+        public void Initialize(
+            GameFlowManager.StageEnterContext context,
+            PlayerStatus playerStatus,
+            ScoreProviderRegistry scoreProviderRegistry
+            )
+        {
+            _context = context;
             _enemySpawner = new EnemySpawner();
             _enemySpawner.ConfigureStageMobData(CardevilCore.GameFlow.Context.stageId);
-
-            cardManager.Initialize(
-                CardevilCore.PlayerStatus,
-                CardevilCore.Game.ScoreProviderRegistry
-            );
+            cardManager.Initialize(playerStatus, scoreProviderRegistry);
             
-
-
-            // TODO: 로딩을 bootstrapper or stage에서 관리할지 고민하기
-            // turn.TurnLoopEnded += OnTurnLoopEnded;
             Field.InitField(3,3,0);// TODO: 스테이지 index 에 따라 받을 수 있게수정하기
             Player.Init(Field);
 
             turnManager = new TurnManager(cardManager, Player, _enemySpawner, Field);
-            await InitAsync();
-            
-        }
-
-        private async UniTask InitAsync()
-        {
-            _context = CardevilCore.GameFlow.Context;
             
             StageCameraCanvas.Instance.InitRock(); // 돌 끄기
-            
-            isInitialized = true;
         }
+
         
         /// <summary>
         /// 전투 스테이지 진입 비동기 처리.
@@ -81,15 +70,6 @@ namespace Cardevil.Gameplay.Root
         /// </summary>
         public async UniTask EnterStageAsync()
         {
-            // TODO: 얘를 외부에서 호출되도록 해야겠음.
-            // @machamy : GameFlow -> StageRoot.EnterStageAsync() 이렇게 해둠
-            await UniTask.WaitUntil(() => isInitialized);
-            
-            CameraManager.Instance.DisableSceneCameras(Scenes.World);
-            
-
-            
-            
             /*
             // TODO : 필드 초기화 - @machamy
             Field.InitField(3,3, Random.Range(0,4));
@@ -104,58 +84,13 @@ namespace Cardevil.Gameplay.Root
            
             enemy.Init(Field);
             */
-            // 페이드아웃 + 돌 가져오기
-            var blakcFade = OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.8f)
-                .ToUniTask(TweenCancelBehaviour.Complete);
-
-            var rock = StageCameraCanvas.Instance.AnimShowRock(0.8f);
-            
-            await UniTask.WhenAll(blakcFade, rock);
-            
-            // TODO : 가운데에 적 정보 보이기
-            // 지금은 버튼 만들어서 누르면 넘어가도록 해둠.
-            
-            var completeSource = new UniTaskCompletionSource();
-            // StageCameraCanvas.Instance.OnCompleteShowRock += () => completeSource.TrySetResult();
-            var obj = new GameObject("ConfirmButton");
-            var rect = obj.AddComponent<RectTransform>();
-            var button = obj.AddComponent<UnityEngine.UI.Button>();
-            var Canvas = GameObject.Find("Card Canvas");
-            var Image = obj.AddComponent<UnityEngine.UI.Image>();
-
-            Image.color = Color.white;
-            rect.sizeDelta = new Vector2(200, 100);
-            button.image = Image;
-            var textObj = new GameObject("Text");
-            var textRect = textObj.AddComponent<RectTransform>();
-            var text = textObj.AddComponent<TextMeshProUGUI>();
-            text.text = "Confirm";
-            text.color = Color.yellow;
-            textRect.parent = rect;
-            textRect.anchoredPosition = Vector2.zero;
-            
-            button.transform.SetParent(StageCameraCanvas.Instance.transform, false);
-            obj.transform.SetParent(Canvas.transform, false);
-            rect.anchoredPosition = Vector2.zero;
-            button.onClick.AddListener(() => completeSource.TrySetResult());
-            button.onClick.AddListener(() => Destroy(obj, 0.1f));
-
-            
-            
-            await completeSource.Task;
-            
 
 
-            await UniTask.Delay(200);
+            await view.PlayEnterStageAnimationAsync();
             
-            // GNB 보이기
-            GlobalNavigationBar gnb = GlobalNavigationBar.Instance;
-            gnb.gameObject.SetActive(true);
-            await gnb.ShowAsync(0.4f);
+            await turnManager.CoreLoopAsync();
             
-            
-            LogEx.Log("턴 루프 시작");
-            turnManager.StartLoop();
+            OnTurnLoopEnded();
         }
 
         /// <summary>

@@ -443,8 +443,9 @@ GameObject:
   m_Component:
   - component: {fileID: 198340543}
   - component: {fileID: 198340544}
+  - component: {fileID: 198340545}
   m_Layer: 0
-  m_Name: '@StageRoot'
+  m_Name: '@Stage Manager'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -477,11 +478,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55bc1da19c34465482c6303fe6955d7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  view: {fileID: 198340545}
   cardManager: {fileID: 1753595122}
   turnManager:
     turnOrder: 0
   <Field>k__BackingField: {fileID: 401468742}
   <Player>k__BackingField: {fileID: 1012406964}
+--- !u!114 &198340545
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 198340542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4405b9a1a09d4783aaba54a53e384745, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Root.StageView
 --- !u!1 &273489078
 GameObject:
   m_ObjectHideFlags: 0
