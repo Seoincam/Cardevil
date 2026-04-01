@@ -80,10 +80,10 @@ namespace Cardevil.Gameplay.Enemy
             await seq.AsyncWaitForCompletion();
         }
 
-        public async UniTask EnemyStartAnimation()
+        public async UniTask EnemyStartAnimation(string mob_ID)
         {
             // Enemy Transform 5.64,-0.89
-            _enemySpriteRenderer.sprite = Resources.Load<Sprite>("Enemy/Slave_Yellow");
+            _enemySpriteRenderer.sprite = Resources.Load<Sprite>($"Enemy/{mob_ID}");
             // 이미지 기준 Enemy Transform 할당 
             // Position (6, -2.6, 1)
             _enemyTransform.position = new Vector3(6f, -2.6f, 1f);

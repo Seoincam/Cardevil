@@ -499,7 +499,7 @@ namespace Cardevil.Gameplay.Enemy
             maxHP = _baseMobBossData.BaseHP;
             CurrentHp = maxHP;
 
-            _enemyAnimationController.EnemyStartAnimation().Forget();
+            _enemyAnimationController.EnemyStartAnimation(baseMobBossData.MobID).Forget();
 
             SettingGimmick(_baseMobBossData);
         }
