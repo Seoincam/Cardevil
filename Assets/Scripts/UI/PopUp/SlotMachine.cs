@@ -17,7 +17,8 @@ namespace Cardevil.UI.PopUp
     public class SlotMachine : UI_Popup
     {
         // 확대 설정을 위해
-        private Camera _mainCamera;
+        [SerializeField]
+        private Camera _renderCamera;
         private Vector3 _originCamPos;
         private float _originCamSize;
         private Tween _cameraTween; // 중복 실행 방지 및 관리용
@@ -62,7 +63,6 @@ namespace Cardevil.UI.PopUp
 
         public override void Init()
         {
-            base.Init();
 
             Bind<Button>(typeof(ItemButtons));
 
@@ -73,21 +73,12 @@ namespace Cardevil.UI.PopUp
             GetButton((int)ItemButtons.Select).gameObject.AddUIEvent(OnSelectClicked);
             GetButton((int)ItemButtons.Upgrade).gameObject.AddUIEvent(OnUpGradeClicked);
 
-            Canvas canvas = GetComponent<Canvas>();
+       
 
-            canvas.renderMode = RenderMode.WorldSpace;
-            canvas.worldCamera = Camera.main;
-
-
-            canvas.overrideSorting = true;
-            canvas.sortingOrder = 30000;
-
-            _mainCamera = Camera.main;
-
-            if (_mainCamera != null)
+            if (_renderCamera != null)
             {
-                _originCamPos = _mainCamera.transform.position;
-                _originCamSize = _mainCamera.orthographicSize;
+                _originCamPos = _renderCamera.transform.position;
+                _originCamSize = _renderCamera.orthographicSize;
 
             }
             // 슬롯머신 레벨 index 벗어남 처리
@@ -277,67 +268,70 @@ namespace Cardevil.UI.PopUp
 
         private Tween CameraAction(int index, RectTransform targetRect, System.Action onMiddleAction = null)
         {
-            if (_mainCamera == null || targetRect == null) return null;
-
-            // ... (기존 초기화 및 좌표 계산 로직 동일) ...
-            // ... (approachDistance 설정 등 동일) ...
+            if (_renderCamera == null || targetRect == null) return null;
 
             Vector3[] corners = new Vector3[4];
             targetRect.GetWorldCorners(corners);
             Vector3 targetCenterPos = (corners[0] + corners[2]) / 2f;
 
-            // ... (거리 계산 로직 생략, 위와 동일) ...
-            float approachDistance = 90f;
-            if (index == 2) approachDistance = 80f;
-            else if (index == 3) approachDistance = 90f;
-            else if (index >= 4) approachDistance = 85f;
+            // 💡 카메라가 이동할 X, Y 좌표 (Z축은 기존 카메라의 Z 유지)
+            Vector3 finalCamPos = new Vector3(targetCenterPos.x, targetCenterPos.y, _originCamPos.z);
 
-            Vector3 finalCamPos;
+            // 💡 줌인 될 때의 카메라 사이즈 (숫자가 작을수록 더 크게 확대됨. 필요에 따라 조절하세요)
+            float targetOrthoSize = _originCamSize * 0.4f;
 
             float duration = dropTiming * index;
             Sequence seq = DOTween.Sequence();
-            _mainCamera.transform.position = _originCamPos;
 
-            // 1. 줌인 (Zoom In)
+            // 연계 전 초기화
+            _renderCamera.transform.position = _originCamPos;
+            _renderCamera.orthographicSize = _originCamSize;
+
+            // 1. 줌인 (Zoom In) 및 이동 (Pan)
             switch (index)
             {
                 case 2:
                 case 3:
-                    finalCamPos = targetCenterPos - (_mainCamera.transform.forward * 90);
-                    seq.Append(_mainCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutQuad));
+                    // 위치 이동과 Size 변경을 동시에(Join) 실행합니다.
+                    seq.Append(_renderCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutQuad));
+                    seq.Join(_renderCamera.DOOrthoSize(targetOrthoSize, zoomInTime).SetEase(Ease.OutQuad));
                     break;
+
                 case 4:
-                    finalCamPos = targetCenterPos - (_mainCamera.transform.forward * 90);
-                    seq.Append(_mainCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
-                    finalCamPos = targetCenterPos - (_mainCamera.transform.forward * 60f);
-                    seq.Append(_mainCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
-                    seq.Join(_mainCamera.transform.DOShakePosition(duration, 0.3f, 20, 90, false, true).SetDelay(zoomInTime));
+                    // 4단계는 더 과격하게 줌인하는 연출 (예시)
+                    targetOrthoSize = _originCamSize * 0.25f;
+
+                    seq.Append(_renderCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
+                    seq.Join(_renderCamera.DOOrthoSize(targetOrthoSize, zoomInTime).SetEase(Ease.OutCubic));
+
+                    // 흔들림 연출 (Z축 흔들림을 빼고 X, Y만 흔들리게 조정하는 것이 좋습니다)
+                    seq.Join(_renderCamera.transform.DOShakePosition(duration, new Vector3(0.3f, 0.3f, 0f), 20, 90, false, true).SetDelay(zoomInTime));
                     duration = duration * 2;
                     break;
-                default:
 
+                default:
                     return null;
             }
 
             // 2. 머무르는 시간 계산
             float stayTime = Mathf.Max(0f, duration - zoomInTime);
-
-            // [핵심] 머무르는 시간의 절반 지점에서 함수 실행!
             seq.AppendInterval(stayTime * 0.2f);
 
-            // DataSet진행
+            // DataSet 진행
             seq.AppendCallback(() =>
             {
                 if (onMiddleAction != null) onMiddleAction.Invoke();
             });
 
-            // 남은 시간 대기
             seq.AppendInterval(stayTime * 0.5f);
 
             // 3. 복귀 (Zoom Out)
-            seq.Append(_mainCamera.transform.DOMove(_originCamPos, 0.4f).SetEase(Ease.OutQuad));
+            seq.Append(_renderCamera.transform.DOMove(_originCamPos, 0.4f).SetEase(Ease.OutQuad));
+            seq.Join(_renderCamera.DOOrthoSize(_originCamSize, 0.4f).SetEase(Ease.OutQuad));
 
             _cameraTween = seq;
+
+            
             return seq;
         }
 

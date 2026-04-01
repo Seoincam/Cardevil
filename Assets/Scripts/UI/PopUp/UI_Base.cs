@@ -12,6 +12,7 @@ namespace Cardevil.UI.PopUp
         Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
 
         public abstract void Init();
+   
         protected void Bind<T>(Type type) where T : UnityEngine.Object // Ÿ�Կ� �´� �������� ���� _objects �迭�� ���ε�
         {
             string[] names = Enum.GetNames(type);
