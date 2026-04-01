@@ -14,10 +14,11 @@ namespace Cardevil.Gameplay.Dungeon.UI
         public int nodeFloor;
         [VisibleOnly] public DungeonNodeTypes nodeType;
         public DungeonNodePreset nodePreset;
+        public string roomId;
+        public bool useAutoGenerateRoomId = true;
 
         public List<DungeonNodeUIDataComponent> nextNodes = new List<DungeonNodeUIDataComponent>();
-
-
+        
 
         private void Awake()
         {
@@ -58,6 +59,37 @@ namespace Cardevil.Gameplay.Dungeon.UI
             {
                 nodeType = DungeonNodeTypes.None;
             }
+
+            AutoSetRoomId();
+        }
+        
+        public void AutoSetRoomId(bool force = false)
+        {
+            if (force || useAutoGenerateRoomId)
+            {
+                DungeonChapterUI parentHelper = GetComponentInParent<DungeonChapterUI>();
+                string generatedId;
+                // switch (nodeType)
+                string bossPrefix = nodeType switch
+                {
+                    DungeonNodeTypes.FinalBoss => "FBoss",
+                    DungeonNodeTypes.MiniBoss => "MBoss",
+                    _ => ""
+                };
+                if (parentHelper == null)
+                {
+                    generatedId = $"{bossPrefix}Node{nodeId}";
+                }
+                else
+                {
+                    generatedId = $"{bossPrefix}{parentHelper.DungeonId}.{nodeId}";
+                }
+                roomId = generatedId;
+                #if UNITY_EDITOR
+                UnityEditor.EditorUtility.SetDirty(this);
+                #endif
+            }
+            
         }
 
 #if UNITY_EDITOR

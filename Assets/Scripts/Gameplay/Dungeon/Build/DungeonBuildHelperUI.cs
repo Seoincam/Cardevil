@@ -2,7 +2,9 @@
 using Cardevil.Gameplay.Dungeon.UI;
 using System;
 using System.Collections.Generic;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Cardevil.Gameplay.Dungeon.Build
@@ -147,8 +149,7 @@ namespace Cardevil.Gameplay.Dungeon.Build
                     prev.nextNodes.Add(next);
                 }
             }
-
-            // ...existing code...
+            
 
     /*
      * 재귀적으로 계층 구조를 탐색하여 노드를 연결합니다.
@@ -271,13 +272,13 @@ namespace Cardevil.Gameplay.Dungeon.Build
             }
             Debug.Log("Node texts have been updated to their types.");
         }
-        
+
         public void ClearNodeTexts()
         {
             foreach (var node in this)
             {
                 if (node == null) continue;
-                
+
                 if (node.GetComponentInChildren<TMPro.TextMeshProUGUI>() is { } text)
                 {
 #if UNITY_EDITOR
@@ -288,7 +289,34 @@ namespace Cardevil.Gameplay.Dungeon.Build
 #endif
                 }
             }
+
             Debug.Log("Node texts have been cleared.");
+        }
+
+        [ContextMenu("Auto generate Room IDs")]
+        public void AutoGenerateRoomIds()
+        {
+            foreach (var node in this)
+            {
+                if (node == null) continue;
+                node.AutoSetRoomId(force: true);
+#if UNITY_EDITOR
+                PrefabUtility.RecordPrefabInstancePropertyModifications(node);
+#endif
+            }
+        }
+
+        [ContextMenu("Force Auto generate Room IDs")]
+        public void ForceAutoGenerateRoomIds()
+        {
+            foreach (var node in this)
+            {
+                if (node == null) continue;
+                node.AutoSetRoomId(force: true);
+#if UNITY_EDITOR
+                PrefabUtility.RecordPrefabInstancePropertyModifications(node);
+#endif
+            }
         }
 
         public Core.Dungeon BuildDungeon()
@@ -319,6 +347,7 @@ namespace Cardevil.Gameplay.Dungeon.Build
                 DungeonNode dungeonNode = new DungeonNode(
                     node.nodeId,
                     node.nodeFloor,
+                    node.roomId,
                     node.nodePreset
                 );
                 nodes.Add(dungeonNode);
