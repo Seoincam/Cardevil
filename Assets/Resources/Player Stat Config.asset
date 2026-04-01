@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f0065bc4494c6d85e37786112ef4de, type: 3}
+  m_Name: Player Stat Config
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.PlayerStatConfig
+  entries:
+  - <Type>k__BackingField: 0
+    <Value>k__BackingField: 1
+  - <Type>k__BackingField: 1
+    <Value>k__BackingField: 1
+  - <Type>k__BackingField: 2
+    <Value>k__BackingField: 3
+  - <Type>k__BackingField: 3
+    <Value>k__BackingField: 3
+  - <Type>k__BackingField: 5
+    <Value>k__BackingField: 6
+  - <Type>k__BackingField: 6
+    <Value>k__BackingField: 3
+  - <Type>k__BackingField: 8
+    <Value>k__BackingField: 12

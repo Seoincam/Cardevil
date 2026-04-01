@@ -1,8 +1,7 @@
-using Cardevil.Core.Root;
-using Cardevil.Dungeon;
-using Cardevil.Events.ExecEvents;
-using Cardevil.SceneManagement;
-using Cardevil.Utils;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Dungeon.Core;
+using Cardevil.Gameplay.Root;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace Cardevil.Core
             // TODO: 성장 계수 등 다른 요소도 넣어야할 듯.
         }
 
-        [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "Test" };
+        [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "1.2" };
         
         [field: SerializeField] public WorldRoot World { get; set; }
         [field: SerializeField] public StageRoot Stage { get; set; }
@@ -49,7 +48,8 @@ namespace Cardevil.Core
                 return;
             }
 
-            World.EnterStageAsync(Context, ct).Forget();
+            await World.EnterStageAsync(Context, ct);
+            await Stage.EnterStageAsync();
         }
     }
 }

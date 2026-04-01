@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 871ed7db8aaf4fb08111deb0e36a1c17, type: 3}
+  m_Name: Relic_Relic.health_bonus_01
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
+  data:
+    id: Relic.health_bonus_01
+    commentForEditor: "\uCCB4\uB825\uC774 1\uC774\uB77C\uBA74, \uCD5C\uC885 \uB370\uBBF8\uC9C0\uB97C
+      150%\uB85C \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+    rarity: 1
+    displayIcon: {fileID: 21300000, guid: aa67c48063e801d4cb6019cdbc33a849, type: 3}
+    displayName: "\uC720\uBB3C10"
+    displayDescription: "\uCCB4\uB825\uC774 1\uC774\uB77C\uBA74, \uCD5C\uC885 \uB370\uBBF8\uC9C0\uB97C
+      150%\uB85C \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+    effects:
+    - rid: 3697062221459751016
+  dataSource: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 3697062221459751016
+      type: {class: StatMatchScoreDefinition, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data:
+        stepType: 2
+        operatorType: 1
+        baseValue: 1.5
+        valueResolver:
+          rid: 3697062221459751017
+        targetStat: 3
+        targetValue: 1
+    - rid: 3697062221459751017
+      type: {class: ConstantResolver, ns: Cardevil.Gameplay.Relics.Effects.ScoreEffects, asm: Assembly-CSharp}
+      data: 

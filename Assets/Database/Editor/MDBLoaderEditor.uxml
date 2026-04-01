@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="WindowRoot" class="db-window">
+        <ui:Label name="TitleLabel" text="Database Initializer" class="db-title" />
+        <ui:VisualElement name="Toolbar" class="db-toolbar" />
+        <ui:VisualElement name="Content" class="db-content" />
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,41 @@
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
+using Cysharp.Threading.Tasks;
+using System;
+using System.Threading;
+using UnityEngine;
+
+namespace Cardevil.Gameplay.Field
+{
+    
+    [Obsolete]
+    public class FieldWall : MonoBehaviour
+    {
+        [SerializeField] private GameObject[] _walls;
+        
+        private void OnEnable()
+        {
+            ExecEventBus<PlayerHealthChangeArgs>.RegisterStatic(10, OnPlayerHealthChanged);
+        }
+        
+        private void OnDisable()
+        {
+            ExecEventBus<PlayerHealthChangeArgs>.UnregisterStatic(OnPlayerHealthChanged);
+        }
+        
+        
+        private async UniTask OnPlayerHealthChanged(PlayerHealthChangeArgs args, CancellationToken cancellationToken)
+        {
+            for (int i = 0; i < _walls.Length; i++)
+            {
+                if (_walls[i] != null)
+                {
+                    bool isActive = i < args.ModifiedHealth;
+                    _walls[i].SetActive(isActive);
+                }
+            }
+            await UniTask.CompletedTask;
+        }
+
+    }
+}

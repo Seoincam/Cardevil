@@ -1,0 +1,17 @@
+{
+    "name": "Machamy.McDatabase.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a3efef3707fb8414eb543eb9cb093c2f",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

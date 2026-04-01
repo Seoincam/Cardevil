@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:Template name="ManagementContainer" src="project://database/Assets/Scripts/Gameplay/Relics/Editor/Components/ManagementContainer.uxml?fileID=9197481963319205126&amp;guid=b0f984270103a4a72bc166b103c50163&amp;type=3#ManagementContainer"/>
+    <Style src="project://database/Assets/Scripts/Gameplay/Relics/Editor/RelicStyleSheet.uss?fileID=7433441132597879392&amp;guid=5806975889ca54e2fa7911158d4d84fc&amp;type=3#RelicStyleSheet"/>
+    <ui:VisualElement name="RootContainer" class="border effect-item" style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="EffectContainer" class="none-overflow" style="flex-grow: 1; margin-right: 10px;">
+            <ui:Label text="카드별 데미지 효과" name="EffectName" class="title-font" style="font-size: 17px; color: rgb(220, 220, 220); margin-bottom: 2px;"/>
+            <ui:Label text="이곳에는 설명이 나타납니다. 해당 효과에 대한 설명들입니다. 이곳에는 설명이 나타납니다. 해당 효과에 대한 설명들입니다." name="Description" class="description-font" style="font-size: 13px; color: rgb(180, 180, 180); margin-bottom: 8px; white-space: normal; text-overflow: ellipsis; -unity-font-style: normal;"/>
+            <ui:VisualElement name="PropertiesContainer" style="flex-grow: 1;"/>
+        </ui:VisualElement>
+        <ui:Instance template="ManagementContainer" style="justify-content: center;"/>
+    </ui:VisualElement>
+</ui:UXML>

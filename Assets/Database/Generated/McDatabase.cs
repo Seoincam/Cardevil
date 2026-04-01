@@ -10,30 +10,25 @@ namespace Database
     public class McDatabase
     {
         public List<CustomClassTest> CustomClassTestList = new List<CustomClassTest>();
-        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
         public List<RoomData> RoomDataList = new List<RoomData>();
+        public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
         public List<Heal> HealList = new List<Heal>();
-        public List<HandRankingData> HandRankingDataList = new List<HandRankingData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
         public List<MachineProbabillity> MachineProbabillityList = new List<MachineProbabillity>();
-        public List<RelicData> RelicDataList = new List<RelicData>();
-        public List<RelicEffectOnEvaluationData> RelicEffectOnEvaluationDataList = new List<RelicEffectOnEvaluationData>();
+        public List<RelicDisplayData> RelicDisplayDataList = new List<RelicDisplayData>();
         public readonly List<string> ClassNames = new List<string> {
             "CustomClassTest",
-            "BaseMobBossData",
             "RoomData",
+            "BaseMobBossData",
             "Heal",
-            "HandRankingData",
             "MachineReward",
             "MachineProbabillity",
-            "RelicData",
-            "RelicEffectOnEvaluationData"
+            "RelicDisplayData"
         };
 
 
         public T FindByName<T>(string name) where T : class
         {
-            if (typeof(T) == null) return null;
             switch (typeof(T).Name)
             {
                 default:
@@ -45,7 +40,6 @@ namespace Database
 
         public T FindByIdentifier<T>(string identifier) where T : class
         {
-            if (typeof(T) == null) return null;
             switch (typeof(T).Name)
             {
                 default:
@@ -58,14 +52,12 @@ namespace Database
         public void ClearAll()
         {
             CustomClassTestList.Clear();
-            BaseMobBossDataList.Clear();
             RoomDataList.Clear();
+            BaseMobBossDataList.Clear();
             HealList.Clear();
-            HandRankingDataList.Clear();
             MachineRewardList.Clear();
             MachineProbabillityList.Clear();
-            RelicDataList.Clear();
-            RelicEffectOnEvaluationDataList.Clear();
+            RelicDisplayDataList.Clear();
         }
 
 
@@ -93,17 +85,14 @@ namespace Database
                     case "CustomClassTest":
                         CustomClassTestList = CreateInstance<CustomClassTest>(df);
                         break;
-                    case "BaseMobBossData":
-                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
-                        break;
                     case "RoomData":
                         RoomDataList = CreateInstance<RoomData>(df);
                         break;
+                    case "BaseMobBossData":
+                        BaseMobBossDataList = CreateInstance<BaseMobBossData>(df);
+                        break;
                     case "Heal":
                         HealList = CreateInstance<Heal>(df);
-                        break;
-                    case "HandRankingData":
-                        HandRankingDataList = CreateInstance<HandRankingData>(df);
                         break;
                     case "MachineReward":
                         MachineRewardList = CreateInstance<MachineReward>(df);
@@ -111,11 +100,8 @@ namespace Database
                     case "MachineProbabillity":
                         MachineProbabillityList = CreateInstance<MachineProbabillity>(df);
                         break;
-                    case "RelicData":
-                        RelicDataList = CreateInstance<RelicData>(df);
-                        break;
-                    case "RelicEffectOnEvaluationData":
-                        RelicEffectOnEvaluationDataList = CreateInstance<RelicEffectOnEvaluationData>(df);
+                    case "RelicDisplayData":
+                        RelicDisplayDataList = CreateInstance<RelicDisplayData>(df);
                         break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
@@ -133,21 +119,17 @@ namespace Database
                     var newCustomClassTestItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<CustomClassTest>>(json);
                     CustomClassTestList.AddRange(newCustomClassTestItems);
                     break;
-                case "BaseMobBossData":
-                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
-                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
-                    break;
                 case "RoomData":
                     var newRoomDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RoomData>>(json);
                     RoomDataList.AddRange(newRoomDataItems);
                     break;
+                case "BaseMobBossData":
+                    var newBaseMobBossDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BaseMobBossData>>(json);
+                    BaseMobBossDataList.AddRange(newBaseMobBossDataItems);
+                    break;
                 case "Heal":
                     var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
                     HealList.AddRange(newHealItems);
-                    break;
-                case "HandRankingData":
-                    var newHandRankingDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<HandRankingData>>(json);
-                    HandRankingDataList.AddRange(newHandRankingDataItems);
                     break;
                 case "MachineReward":
                     var newMachineRewardItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MachineReward>>(json);
@@ -157,13 +139,9 @@ namespace Database
                     var newMachineProbabillityItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MachineProbabillity>>(json);
                     MachineProbabillityList.AddRange(newMachineProbabillityItems);
                     break;
-                case "RelicData":
-                    var newRelicDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicData>>(json);
-                    RelicDataList.AddRange(newRelicDataItems);
-                    break;
-                case "RelicEffectOnEvaluationData":
-                    var newRelicEffectOnEvaluationDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicEffectOnEvaluationData>>(json);
-                    RelicEffectOnEvaluationDataList.AddRange(newRelicEffectOnEvaluationDataItems);
+                case "RelicDisplayData":
+                    var newRelicDisplayDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicDisplayData>>(json);
+                    RelicDisplayDataList.AddRange(newRelicDisplayDataItems);
                     break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
@@ -178,22 +156,18 @@ namespace Database
             {
                 case "CustomClassTest":
                     return typeof(CustomClassTest);
-                case "BaseMobBossData":
-                    return typeof(BaseMobBossData);
                 case "RoomData":
                     return typeof(RoomData);
+                case "BaseMobBossData":
+                    return typeof(BaseMobBossData);
                 case "Heal":
                     return typeof(Heal);
-                case "HandRankingData":
-                    return typeof(HandRankingData);
                 case "MachineReward":
                     return typeof(MachineReward);
                 case "MachineProbabillity":
                     return typeof(MachineProbabillity);
-                case "RelicData":
-                    return typeof(RelicData);
-                case "RelicEffectOnEvaluationData":
-                    return typeof(RelicEffectOnEvaluationData);
+                case "RelicDisplayData":
+                    return typeof(RelicDisplayData);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

@@ -1,5 +1,6 @@
-﻿using Cardevil.Events;
-using Cardevil.Events.ExecEvents;
+﻿using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.UI.PopUp;
 using TMPro;
 using UnityEngine;
 

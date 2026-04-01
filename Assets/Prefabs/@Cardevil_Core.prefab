@@ -99,8 +99,8 @@ MonoBehaviour:
       _slotMachineLevel: 0
       _variableContainer:
         variables: []
-    <CardLibrary>k__BackingField:
-      pipelineMap:
+    <CardStatus>k__BackingField:
+      specMap:
         defaultKey: 0
         _items: []
       dataMap:
@@ -108,7 +108,7 @@ MonoBehaviour:
         _items: []
   <GameFlow>k__BackingField:
     <Context>k__BackingField:
-      stageId: Test
+      stageId: 1.9
       mobIds: []
     <World>k__BackingField: {fileID: 0}
     <Stage>k__BackingField: {fileID: 0}
@@ -130,8 +130,8 @@ MonoBehaviour:
         _slotMachineLevel: 1
         _variableContainer:
           variables: []
-      CardLibraryData:
-        pipelines: []
+      cardStatusData:
+        specList: []
     _currentSlot:
       hasValue: 0
       value: 0

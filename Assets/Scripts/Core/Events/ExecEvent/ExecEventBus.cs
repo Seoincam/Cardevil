@@ -1,0 +1,224 @@
+using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
+using System.Threading;
+
+namespace Cardevil.Core.Events.ExecEvent
+{
+    /// <summary>
+    /// ExecDynamicEventBus와 ExecStaticEventBus의 기능을 모두 포함하는 이벤트 버스 클래스입니다.
+    /// </summary>
+    public static class ExecEventBus<TEvent> where TEvent : ExecEventArgs<TEvent>, new()
+    {
+        
+        private static bool _isMergedExecuting = false;
+        
+        /// <summary>
+        /// 이벤트 버스가 현재 실행 중인지 여부를 나타냅니다.
+        /// </summary>
+        public static bool IsExecuting => ExecDynamicEventBus<TEvent>.IsExecuting || ExecStaticEventBus<TEvent>.IsExecuting || _isMergedExecuting;
+        
+        /// <summary>
+        /// 동적 핸들러를 등록합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecDynamicEventBus{TEvent}.Register(ExecEventHandler{TEvent})"/>
+        public static void RegisterDynamic(ExecEventHandler<TEvent> handler)
+        {
+            ExecDynamicEventBus<TEvent>.Register(handler);
+        }
+
+        /// <summary>
+        /// 동적 핸들러 등록을 해제합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecDynamicEventBus{TEvent}.Unregister(ExecEventHandler{TEvent})"/>
+        public static void UnregisterDynamic(ExecEventHandler<TEvent> handler)
+        {
+            ExecDynamicEventBus<TEvent>.Unregister(handler);
+        }
+        /// <summary>
+        /// 정적 핸들러를 우선순위와 함께 등록합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecStaticEventBus{TEvent}.Register(int, ExecAction{TEvent}, int[])"/>
+        public static void RegisterStatic(int priority, ExecAction<TEvent> handler, params int[] extraPriorities)
+        {
+            ExecStaticEventBus<TEvent>.Register(priority, handler, extraPriorities);
+        }
+        
+        /// <summary>
+        /// 정적 핸들러를 우선순위와 함께 이진탐색으로 등록합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecStaticEventBus{TEvent}.RegisterSafeBinarySearch(int, ExecAction{TEvent}, int[])"/>
+        public static void RegisterStaticBinarySearch(int priority, ExecAction<TEvent> handler, params int[] extraPriorities)
+        {
+            ExecStaticEventBus<TEvent>.RegisterSafeBinarySearch(priority, handler, extraPriorities);
+        }
+        
+
+        /// <summary>
+        /// 정적 핸들러 등록을 해제합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecStaticEventBus{TEvent}.Unregister(ExecAction{TEvent})"/>
+        public static void UnregisterStatic(ExecAction<TEvent> handler)
+        {
+            ExecStaticEventBus<TEvent>.Unregister(handler);
+        }
+        /// <summary>
+        /// 모든 동적 핸들러를 제거합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecDynamicEventBus{TEvent}.ClearHandlers()"/>
+        public static void ClearDynamicHandlers()
+        {
+            ExecDynamicEventBus<TEvent>.ClearHandlers();
+        }
+        /// <summary>
+        /// 모든 정적 핸들러를 제거합니다.
+        /// </summary>
+        /// <inheritdoc cref="ExecStaticEventBus{TEvent}.ClearHandlers()"/>
+        public static void ClearStaticHandlers()
+        {
+            ExecStaticEventBus<TEvent>.ClearHandlers();
+        }
+        /// <summary>
+        /// 모든 핸들러를 제거합니다.
+        /// </summary>
+        public static void ClearAllHandlers()
+        {
+            ExecDynamicEventBus<TEvent>.ClearHandlers();
+            ExecStaticEventBus<TEvent>.ClearHandlers();
+        }
+        
+        /// <summary>
+        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출합니다. <br/>
+        /// Forget을 사용할 경우 대신 <see cref="InvokeSequentially(TEvent, CancellationToken)"/>를 사용하세요.
+        /// </summary>
+        /// <code>
+        /// using var args = new MyEventArgs { ... };
+        /// await ExecEventBus&lt;MyEventArgs&gt;.InvokeSequentially(args);
+        /// </code>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeSequentially(TEvent args, CancellationToken cancellationToken = default)
+        {
+            LogEx.Log($"<b>{ExecEventUtil.GetEventArgsName(typeof(TEvent))}</b> Invoking Dynamic Event Bus");
+            await ExecDynamicEventBus<TEvent>.Invoke(args, cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                LogEx.Log("Sequential Event Bus invocation cancelled.");
+                return;
+            }
+            if (args.BreakChain)
+            {
+                LogEx.Log("Sequential Event Bus invocation chain broken.");
+                return;
+            }
+            LogEx.Log($"<b>{typeof(TEvent)}</b> Invoking Static Event Bus");
+            await ExecStaticEventBus<TEvent>.Invoke(args, cancellationToken);
+        }
+
+        /// <summary>
+        /// 동적 이벤트와 정적 이벤트를 병합하여 우선순위에 따라 호출합니다.
+        /// 두 큐를 병합 정렬(merge sort) 방식으로 실행합니다. <br/>
+        /// Forget을 사용할 경우 대신 <see cref="InvokeMerged(TEvent, CancellationToken)"/>를 사용하세요.
+        /// </summary>
+        /// <remarks>
+        /// 같은 우선순위일 경우, 동적 이벤트가 먼저 실행됩니다.
+        /// </remarks>
+        /// <code>
+        /// using var args = new MyEventArgs { ... };
+        /// await ExecEventBus&lt;MyEventArgs&gt;.InvokeMerged(args);
+        /// </code>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeMerged(TEvent args, CancellationToken cancellationToken = default)
+        {
+            LogEx.Log($"<b>{ExecEventUtil.GetEventArgsName(typeof(TEvent))}</b> Invoking Merged Event Bus");
+            _isMergedExecuting = true;
+            
+            try
+            {
+                var dynamicQueue = ExecDynamicEventBus<TEvent>.InvocationQueue(args);
+                var staticQueue = ExecStaticEventBus<TEvent>.GetExecQueue();
+                staticQueue.SortByPriorityIfDirty();
+
+                int dynamicIndex = 0;
+                int staticIndex = 0;
+
+                // 두 큐를 병합 정렬 방식으로 실행
+                while (dynamicIndex < dynamicQueue.Count && staticIndex < staticQueue.Count)
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        LogEx.Log("Merged Event Bus invocation cancelled.");
+                        break;
+                    }
+                    if (args.BreakChain)
+                    {
+                        LogEx.Log("Merged Event Bus invocation chain broken.");
+                        break;
+                    }
+                    
+                    var dynamicAction = dynamicQueue[dynamicIndex];
+                    var staticAction = staticQueue[staticIndex];
+                    
+                    if (dynamicAction.CompareTo(staticAction) <= 0)
+                    {
+                        // LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
+                        await dynamicAction.action.Invoke(args, cancellationToken);
+                        dynamicIndex++;
+                    }
+                    else
+                    {
+                        // LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
+                        await staticAction.action.Invoke(args, cancellationToken);
+                        staticIndex++;
+                    }
+                }
+                
+                // 남은 동적 작업 실행
+                while (dynamicIndex < dynamicQueue.Count && !cancellationToken.IsCancellationRequested && !args.BreakChain)
+                {
+                    var dynamicAction = dynamicQueue[dynamicIndex];
+                    // LogEx.Log($"({dynamicAction._primaryPriority})Executing Dynamic action {dynamicAction.action}");
+                    await dynamicAction.action.Invoke(args, cancellationToken);
+                    dynamicIndex++;
+                }
+                // 남은 정적 작업 실행
+                while (staticIndex < staticQueue.Count && !cancellationToken.IsCancellationRequested && !args.BreakChain)
+                {
+                    var staticAction = staticQueue[staticIndex];
+                    // LogEx.Log($"({staticAction._primaryPriority})Executing Static action {staticAction.action}");
+                    await staticAction.action.Invoke(args, cancellationToken);
+                    staticIndex++;
+                }
+            }
+            finally
+            {
+                _isMergedExecuting = false;
+            }
+            
+            LogEx.Log($"<b>{ExecEventUtil.GetEventArgsName(typeof(TEvent))}</b> Merged Event Bus Invocation Complete");
+        }
+
+        /// <summary>
+        /// 동적 이벤트를 호출한 뒤, 정적 이벤트를 호출하고, 인자를 Dispose합니다.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeSequentiallyAndDispose(TEvent args, CancellationToken cancellationToken = default)
+        {
+            await InvokeSequentially(args, cancellationToken);
+            args.Dispose();
+            
+        }
+        
+        /// <summary>
+        /// 동적 이벤트와 정적 이벤트를 병합하여 우선순위에 따라 호출하고, 인자를 Dispose합니다.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="cancellationToken"></param>
+        public static async UniTask InvokeMergedAndDispose(TEvent args, CancellationToken cancellationToken = default)
+        {
+            await InvokeMerged(args, cancellationToken);
+            args.Dispose();
+        }
+    }
+}

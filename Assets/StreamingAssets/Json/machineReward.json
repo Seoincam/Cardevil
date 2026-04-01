@@ -1,161 +1,161 @@
 [
   {
-    "ItemName": 3,
-    "Rank": 2,
-    "Value": 5,
-    "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
-    "ItemName": 5,
-    "Rank": 2,
-    "Value": 1,
-    "Comment": "",
-    "ItemProbability": 10,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
-    "ItemName": 1,
-    "Rank": 2,
-    "Value": 7,
-    "Comment": "",
-    "ItemProbability": 25,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
-    "ItemName": 2,
-    "Rank": 2,
-    "Value": 10,
-    "Comment": "6",
-    "ItemProbability": 25,
-    "RandomProbablility": [
-      25,
-      30,
-      20,
-      15,
-      10
-    ],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
-    "ItemName": 4,
-    "Rank": 2,
-    "Value": 7,
-    "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
-    "ItemName": 6,
-    "Rank": 3,
-    "Value": 1,
-    "Comment": "",
-    "ItemProbability": 100,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
-    "ItemName": 3,
-    "Rank": 0,
-    "Value": 2,
-    "Comment": "",
-    "ItemProbability": 15,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
-  },
-  {
     "ItemName": 1,
     "Rank": 0,
+    "Comment": "",
     "Value": 3,
-    "Comment": "",
-    "ItemProbability": 25,
+    "ItemProbability": 1,
     "RandomProbablility": [],
-    "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
-  },
-  {
-    "ItemName": 0,
-    "Rank": 0,
-    "Value": 1,
-    "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
   },
   {
     "ItemName": 2,
     "Rank": 0,
-    "Value": 4,
     "Comment": "2",
-    "ItemProbability": 25,
+    "Value": 4,
+    "ItemProbability": 1,
     "RandomProbablility": [
       25,
       50,
       25
     ],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
+  },
+  {
+    "ItemName": 3,
+    "Rank": 0,
+    "Comment": "",
+    "Value": 2,
+    "ItemProbability": 2,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1Wh7A2RII6FbyC7rFCJ8MV1Wb_BjQwQVT/view?usp=drive_link"
   },
   {
     "ItemName": 4,
     "Rank": 0,
-    "Value": 3,
     "Comment": "",
-    "ItemProbability": 15,
+    "Value": 3,
+    "ItemProbability": 2,
     "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1or4zKu0Y-_D8OO8Ii_O0PM1YNbNTaCMB/view?usp=drive_link"
   },
   {
-    "ItemName": 3,
-    "Rank": 1,
-    "Value": 3,
+    "ItemName": 0,
+    "Rank": 0,
     "Comment": "",
-    "ItemProbability": 15,
+    "Value": 1,
+    "ItemProbability": 2,
     "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1D5jxCcdhesE3EzG3mpyq98uPlFR0LOzY/view?usp=drive_link"
   },
   {
     "ItemName": 1,
     "Rank": 1,
+    "Comment": "",
     "Value": 4,
-    "Comment": "",
-    "ItemProbability": 25,
+    "ItemProbability": 1,
     "RandomProbablility": [],
-    "URL": "https://drive.google.com/uc?id=11C5o2jnl2C7N6ke_MsTZ1HJ0IELtuPTr"
-  },
-  {
-    "ItemName": 0,
-    "Rank": 1,
-    "Value": 2,
-    "Comment": "",
-    "ItemProbability": 20,
-    "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
   },
   {
     "ItemName": 2,
     "Rank": 1,
-    "Value": 6,
     "Comment": "3",
-    "ItemProbability": 25,
+    "Value": 6,
+    "ItemProbability": 1,
     "RandomProbablility": [
       25,
       40,
       20,
       15
     ],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
+  },
+  {
+    "ItemName": 3,
+    "Rank": 1,
+    "Comment": "",
+    "Value": 3,
+    "ItemProbability": 2,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1Wh7A2RII6FbyC7rFCJ8MV1Wb_BjQwQVT/view?usp=drive_link"
   },
   {
     "ItemName": 4,
     "Rank": 1,
-    "Value": 4,
     "Comment": "",
-    "ItemProbability": 15,
+    "Value": 5,
+    "ItemProbability": 2,
     "RandomProbablility": [],
-    "URL": "https://drive.google.com/file/d/1OCk-dfEp8LQ-77ArIdAUElYu6WTHiYST/view?usp=drive_link"
+    "URL": "https://drive.google.com/file/d/1or4zKu0Y-_D8OO8Ii_O0PM1YNbNTaCMB/view?usp=drive_link"
+  },
+  {
+    "ItemName": 0,
+    "Rank": 1,
+    "Comment": "",
+    "Value": 2,
+    "ItemProbability": 2,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1D5jxCcdhesE3EzG3mpyq98uPlFR0LOzY/view?usp=drive_link"
+  },
+  {
+    "ItemName": 1,
+    "Rank": 2,
+    "Comment": "",
+    "Value": 7,
+    "ItemProbability": 1,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
+  },
+  {
+    "ItemName": 2,
+    "Rank": 2,
+    "Comment": "6",
+    "Value": 10,
+    "ItemProbability": 1,
+    "RandomProbablility": [
+      25,
+      30,
+      25,
+      15,
+      5
+    ],
+    "URL": "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
+  },
+  {
+    "ItemName": 3,
+    "Rank": 2,
+    "Comment": "",
+    "Value": 5,
+    "ItemProbability": 2,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1Wh7A2RII6FbyC7rFCJ8MV1Wb_BjQwQVT/view?usp=drive_link"
+  },
+  {
+    "ItemName": 4,
+    "Rank": 2,
+    "Comment": "",
+    "Value": 8,
+    "ItemProbability": 2,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1or4zKu0Y-_D8OO8Ii_O0PM1YNbNTaCMB/view?usp=drive_link"
+  },
+  {
+    "ItemName": 5,
+    "Rank": 3,
+    "Comment": "",
+    "Value": 1,
+    "ItemProbability": 1,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1nYqX9NdHIFRIioExq_66aQ-v49CnbGjK/view?usp=drive_link"
+  },
+  {
+    "ItemName": 6,
+    "Rank": 3,
+    "Comment": "",
+    "Value": 1,
+    "ItemProbability": 1,
+    "RandomProbablility": [],
+    "URL": "https://drive.google.com/file/d/1nYqX9NdHIFRIioExq_66aQ-v49CnbGjK/view?usp=drive_link"
   }
 ]

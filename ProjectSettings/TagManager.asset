@@ -13,7 +13,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Card
   - 
   - 
   - 
@@ -41,6 +41,12 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Card Default
+    uniqueID: 1901023
+    locked: 0
+  - name: Card PopUp
+    uniqueID: 4198433329
     locked: 0
   m_RenderingLayers:
   - Default

@@ -1,7 +1,8 @@
-using Cardevil.DebugConsole.Commands;
-using Cardevil.Events.ExecEvents;
-using Cardevil.Item;
-using Cardevil.SceneManagement;
+using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Core.SceneManagement;
+using Cardevil.Core.Systems.Save;
+using Cardevil.Gameplay.Items;
+using Cardevil.Test.DebugConsole.Commands;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
@@ -15,6 +16,9 @@ namespace Cardevil.Core.Bootstrap
     /// </summary>
     public static class Bootstrapper
     {
+        public const string EditorStartScenePathKey = "Bootstrapper.EditorStartScenePath";
+        public const string EditorStartSceneNameKey = "Bootstrapper.EditorStartSceneName";
+
         /// <summary>
         /// 부트스트랩 진행률 변경 이벤트.
         /// 로드 완료 개수와 전체 개수 전달.
@@ -30,7 +34,7 @@ namespace Cardevil.Core.Bootstrap
             set
             {
                 _loaded = value;
-                ProgressChanged?.Invoke(_totalToLoad, value);
+                ProgressChanged?.Invoke(value, _totalToLoad);
             }
         }
         
@@ -59,28 +63,38 @@ namespace Cardevil.Core.Bootstrap
             Loaded++;
             
             // 2. Database
-            await ctx.Database.InitializeAsync();
-            ctx.CardEnhancementData.Init();
+            await ctx.DatabaseManager.InitializeAsync();
             Loaded++;
             
             // 3. Save data
-            ctx.SaveLoad.Init();
+            ctx.SaveLoadManager.Init();
             Loaded++;
             
             // 4. Object Pool
-            ctx.Pool.Init(ctx.transform);
+            ctx.PoolManager.Init(ctx.transform);
             Loaded++;
             
             // 5. Sound
-            ctx.Sound.Init(ctx.transform, ctx.Pool);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
+            ctx.SoundManager.Init(ctx.transform, ctx.PoolManager);                //!!!!!!!!주의 나중에 사운드 작업할때 반드시 켜야함.
             Loaded++;
             
             // 6. Flow
-            ctx.Game.Init();
-            ctx.GameFlow.Init();
+            ctx.GameManager.Init();
+            ctx.GameFlowManager.Init();
             Loaded++;
 
-            await SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Single);
+            if (ctx.CanSelectSaveSlot)
+            {
+                SceneLoader.LoadSceneAsync(Scenes.Title, LoadSceneMode.Single).Forget();    
+            }
+            else
+            {
+                // 개발용으로 세이브 로드 생략하고 항상 새 게임에 진입
+                var slot = SaveSlot.DevSlot;
+                ctx.SaveLoadManager.MakeNewSave(slot, "DevSave");
+                ctx.SaveLoadManager.LoadGame(slot);
+                await SceneLoader.LoadSceneAsync(Scenes.World, LoadSceneMode.Single);
+            }
         }
     }
 }

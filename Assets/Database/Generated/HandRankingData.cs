@@ -10,7 +10,7 @@ namespace Database.Generated
     public partial class HandRankingData: IDBData {
 
         /// <summary> 족보 </summary>
-        public Cardevil.Cards.Data.HandRanking Ranking;
+        // public Cardevil.Cards.Core.HandRanking Ranking;
         /// <summary> 보너스 점수 </summary>
         public int Value;
         /// <summary> 게임상 이름 </summary>

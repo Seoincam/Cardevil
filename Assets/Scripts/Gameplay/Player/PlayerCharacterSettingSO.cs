@@ -1,0 +1,26 @@
+﻿using DG.Tweening;
+using UnityEngine;
+
+namespace Cardevil.Gameplay.Player
+{
+    [CreateAssetMenu(fileName = "PlayerSettingSO", menuName = "Cardevil/Player/Player Setting SO")]
+    public class PlayerCharacterSettingSO : ScriptableObject
+    {
+        [Header("Movement Settings")]
+        [SerializeField,Tooltip("이동 속도")] public float moveSpeed = 5f;
+        [Space]
+        [Header("Fall Animation Settings")]
+        [Header("Coyote Time Settings")]
+        [SerializeField,Tooltip("코요테 시간")] public float coyoteTime = 0.2f;
+        [SerializeField,Tooltip("코요테 떨림 횟수")] public int coyoteShakeCount = 5;
+        [SerializeField,Tooltip("코요테 떨림 세기")] public float coyoteShakeStrength = 0.2f;
+        [Header("Fall Settings")]
+        [SerializeField,Tooltip("ms")] public int fallDelayAfterCoyoteTimeMs = 200;
+        [SerializeField,Tooltip("떨어지는 높이")] public float fallHeight = 5f;
+        [SerializeField] public float fallDuration = 1f;
+        [SerializeField,Tooltip("떨어지는 속도 Ease") ] public Ease fallEase = Ease.InQuad;
+        [SerializeField,Range(0.0f,1.0f),Tooltip("떨어질 때 페이드 아웃이 시작되는 비율")] public float fallFadeStartRatio = 0.5f;
+        [SerializeField,Range(0.0f,1.0f),Tooltip("다시 떨어질때 페이드 인이 끝나는 비율")] public float fallFadeEndRatio = 0.8f;
+        [SerializeField] public Ease fallFadeEase = Ease.InQuad;
+    }
+}

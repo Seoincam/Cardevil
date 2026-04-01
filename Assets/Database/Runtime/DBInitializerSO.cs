@@ -1,0 +1,278 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using Database.DataReader;
+using Database.Generated;
+using UnityEditor;
+using UnityEngine;
+
+namespace Database.Generated
+{
+    
+}
+namespace Database
+{
+    [CreateAssetMenu(fileName = "DBInitializer", menuName = "Database/DBInitializer")]
+    public class DBInitializerSO : ScriptableObject
+    {
+        
+        
+#if UNITY_EDITOR
+        private string ThisDirPath => Path.GetDirectoryName(AssetDatabase.GetAssetPath(this));
+
+        [Header("Path")] 
+        public string dataDirPath = "./Raw";
+        public string targetClassPath = "./Generated";
+        public string targetPath = "./Json";
+        public string downloadStateDirPath = "./State";
+
+        [Header("Final Path (read only)")] 
+        public string thisDirPath;
+        public string dataDirFullPath;
+        public string targetClassFullPath;
+        public string targetFullPath;
+        public string downloadStateDirFullPath;
+
+        private string prevDataDirPath;
+
+        public string DataDirPath => !dataDirPath.StartsWith("./") ? dataDirPath : Path.Combine(ThisDirPath, dataDirPath.Substring(2));
+        public string TargetClassPath => !targetClassPath.StartsWith("./") ? targetClassPath : Path.Combine(ThisDirPath, targetClassPath.Substring(2));
+        public string TargetDirPath => !targetPath.StartsWith("./") ? targetPath : Path.Combine(Application.streamingAssetsPath, targetPath.Substring(2));
+        public string DownloadStateDirPath => ResolveEditorRelativePath(downloadStateDirPath);
+        
+        [Space]
+        [Header("Config")]
+        public bool doSaveCsharp = true;
+        public List<string> dbFindTarget = new List<string>() {"name","identifier"};
+        [Header("Xlsx Config")] 
+        public string xlsxExtension = ".xlsx";
+        public bool autoLoadXlsx = false;
+
+        [Header("JSON Config")] 
+        public string jsonExtension = ".json";
+        public bool autoLoadJson = false;
+
+        [Header("Google Sheet Config")] 
+        public string googleSheetUrl;
+
+        private AutomaticWatcher _xlsxWatcher;
+        private AutomaticWatcher _jsonWatcher;
+
+        private string ResolveEditorRelativePath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return ThisDirPath;
+            }
+
+            if (Path.IsPathRooted(path))
+            {
+                return path;
+            }
+
+            string relativePath = path.StartsWith("./") ? path.Substring(2) : path;
+            return Path.GetFullPath(Path.Combine(ThisDirPath, relativePath));
+        }
+
+        private void OnEnable()
+        {
+            
+            if (autoLoadXlsx)
+            {
+                _xlsxWatcher = new AutomaticWatcher(DataDirPath, new XlsxReader(), xlsxExtension, "~$");
+                _xlsxWatcher.CreateCsharp += WriteClassDefinition;
+            }
+            if (autoLoadJson)
+            {
+                _jsonWatcher = new AutomaticWatcher(DataDirPath, new RawJsonReader(), jsonExtension);
+                _jsonWatcher.CreateCsharp += WriteClassDefinition;
+            }
+        }
+
+        private void OnValidate()
+        {
+            thisDirPath = ThisDirPath;
+            dataDirFullPath = DataDirPath;
+            targetClassFullPath = TargetClassPath;
+            targetFullPath = TargetDirPath;
+            downloadStateDirFullPath = DownloadStateDirPath;
+
+            if (autoLoadXlsx)
+            {
+                _xlsxWatcher ??= new AutomaticWatcher(DataDirPath, new XlsxReader(), xlsxExtension, "~$");
+                _xlsxWatcher.CreateCsharp -= WriteClassDefinition;
+                _xlsxWatcher.CreateCsharp += WriteClassDefinition;
+                _xlsxWatcher.ChangeWatcherDir(DataDirPath);
+            }
+            else 
+                _xlsxWatcher?.DisposeWatcher();
+
+            if (autoLoadJson)
+            {
+                _jsonWatcher ??= new AutomaticWatcher(DataDirPath, new RawJsonReader(), jsonExtension);
+                _jsonWatcher.CreateCsharp -= WriteClassDefinition;
+                _jsonWatcher.CreateCsharp += WriteClassDefinition;
+                _jsonWatcher.ChangeWatcherDir(DataDirPath);
+            }
+            else
+                _jsonWatcher?.DisposeWatcher();
+        }
+
+        private void OnDisable()
+        {
+            EditorApplication.update -= EditorUpdate;
+            _xlsxWatcher?.DisposeWatcher();
+            _jsonWatcher?.DisposeWatcher();
+        }
+
+        HashSet<string> onProcessing = new HashSet<string>();
+        private void EditorUpdate()
+        {
+            
+            while(_modifiedFiles.Count > 0)
+            {
+                var enumerator = _modifiedFiles.GetEnumerator();
+                if (!enumerator.MoveNext())
+                    return;
+
+                var file = enumerator.Current; 
+                var df = file.Value;
+                Debug.Log($"File Changed: {df}");
+                _modifiedFiles.Remove(df.name);
+                onProcessing.Add(df.name);
+                EditorApplication.delayCall += () =>
+                {
+                    if(!onProcessing.Contains(df.name))
+                        return;
+                    Debug.Log($"Creating {df.name}.json");
+                    _modifiedFiles.Remove(df.name);
+                    WriteJson(df);
+                    Debug.Log("Creating .df");
+                    WriteDf(df);
+                    if(_modifiedFiles.Count == 0)
+                        AssetDatabase.Refresh();
+                };
+            }
+        }
+        public void LoadAll(string extension)
+        {
+            var files = Directory.GetFiles(DataDirPath, $"*{extension}");
+            if (files.Length == 0)
+            {
+                Debug.LogWarning($"No files with extension {extension} found in {DataDirPath}");
+                return;
+            }
+            List<string> classNames = new List<string>();
+            foreach (var file in files)
+            {
+                if (extension == xlsxExtension)
+                {
+                    var dfs = new XlsxReader().Read(file);
+                    foreach (var df in dfs)
+                    {
+                        WriteClassDefinition(df);
+                        classNames.Add(df.name);
+                    }
+                }
+                else if (extension == jsonExtension)
+                {
+                    var dfs = new RawJsonReader().Read(file);
+                    foreach (var df in dfs)
+                    {
+                        WriteClassDefinition(df);
+                        classNames.Add(df.name);
+                    }
+                }
+            }
+            WriteDatabaseClass(classNames);
+            
+            AssetDatabase.Refresh();
+        }
+        
+        public void DownloadGoogleSheet()
+        {
+            DownloadGoogleSheet(null);
+        }
+
+        public bool DownloadGoogleSheet(string targetSheetName)
+        {
+            autoLoadJson = false;
+            
+            var dfs = new GoogleSheetReader().Read(googleSheetUrl, targetSheetName);
+            if (dfs.Count == 0)
+            {
+                if (string.IsNullOrWhiteSpace(targetSheetName))
+                    Debug.LogWarning("No sheets were downloaded from Google Sheet.");
+                else
+                    Debug.LogWarning($"Sheet '{targetSheetName}' was not found in the Google Sheet response.");
+                return false;
+            }
+
+            List<string> classNames = new List<string>();
+            foreach (var df in dfs)
+            {
+                WriteClassDefinition(df);
+                classNames.Add(df.name);
+            }
+
+            if (string.IsNullOrWhiteSpace(targetSheetName))
+                WriteDatabaseClass(classNames);
+
+            AssetDatabase.Refresh();
+            return true;
+        }
+        
+        Dictionary<string, DataFrame> _modifiedFiles = new ();
+        private void WriteClassDefinition(DataFrame df)
+        {
+            EditorApplication.update -= EditorUpdate;
+            EditorApplication.update += EditorUpdate;
+            _modifiedFiles[df.name] = df;
+            
+            if (!doSaveCsharp)
+                return;
+            string cs = ClassDefinitionFactory.GenerateClassDefinition(df);
+            string fileName = Path.Combine(TargetClassPath, df.name + ".cs");
+            File.WriteAllText(fileName, cs);
+            Debug.Log($"Class Definition Generated: {fileName}");
+        }
+
+        private void WriteDatabaseClass(List<string> classNames)
+        {
+            if (!doSaveCsharp)
+                return;
+            string cs = DatabaseClassDefinitionFactory.GenerateDatabaseClass("McDatabase", classNames, dbFindTarget);
+            string fileName = Path.Combine(TargetClassPath, "McDatabase.cs");
+            File.WriteAllText(fileName, cs);
+            Debug.Log($"Database Class Generated: {fileName}");
+        }
+        
+        private void WriteJson(DataFrame df)
+        {
+            if(!Directory.Exists(TargetDirPath))
+                Directory.CreateDirectory(TargetDirPath);
+            string fileName = Path.Combine(TargetDirPath, df.name + ".json");
+            object[] obj = ClassInstanceFactory.CreateInstance(df) ?? throw new Exception($"Failed to create instance for {df.name}");
+
+            var json = Newtonsoft.Json.JsonConvert.SerializeObject(obj, Newtonsoft.Json.Formatting.Indented);
+
+            File.WriteAllText(fileName, json);
+            Debug.Log($"Json : {json}");
+            Debug.Log($"Json Generated: {fileName}");
+        }
+
+        private void WriteDf(DataFrame df)
+        {
+            if(!Directory.Exists(TargetDirPath))
+                Directory.CreateDirectory(TargetDirPath);
+            string fileName = Path.Combine(TargetDirPath, df.name + ".df");
+            string json = Newtonsoft.Json.JsonConvert.SerializeObject(df, Newtonsoft.Json.Formatting.Indented);
+            byte[] jsonBytes = System.Text.Encoding.UTF8.GetBytes(json);
+            File.WriteAllBytes(fileName, jsonBytes);
+            Debug.Log($"Df Generated: {fileName}");
+        }
+
+#endif
+    }
+}

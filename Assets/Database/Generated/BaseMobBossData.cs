@@ -7,7 +7,7 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class BaseMobBossData    {
+    public partial class BaseMobBossData: IDBData {
 
         /// <summary> 몹ID </summary>
         public string MobID;
@@ -25,17 +25,21 @@ namespace Database.Generated
         public int AttackCycle;
         /// <summary> 공격 데미지 </summary>
         public int AttackDamage;
-        /// <summary> 0 - 가중치따라 결정 / 1 - 패턴 고정 </summary>
+        /// <summary> 0  가중치/ 1  패턴  </summary>
         public bool BoolAttackType;
         /// <summary> 가중치 </summary>
         public List<int> AttackWeight;
         /// <summary> 사용 족보 순서(오타없이, 띄어쓰기없이) </summary>
-        public List<Cardevil.InGame.Enemy.AttackStyle> AttackPattern;
+        public List<Cardevil.Gameplay.Enemy.AttackStyle> AttackPattern;
         /// <summary> 0 - 랜덤 / 1 - 유도 </summary>
         public bool AttackPlayer;
         /// <summary> 기믹이름 </summary>
         public List<string> GimmickName;
         /// <summary> 기믹 value </summary>
         public List<float> GimmickValue;
+        /// <summary> 1챕터 </summary>
+        public string 챕터;
+        /// <summary> 16 </summary>
+        public string 수;
     }
 }
