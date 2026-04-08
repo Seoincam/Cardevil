@@ -4,6 +4,8 @@ using DG.Tweening;
 using System.Collections.Generic;
 using Cardevil.Gameplay.Items; // Item 클래스 참조용
 using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
+
 
 namespace Cardevil.UI.PopUp
 {
@@ -67,11 +69,12 @@ namespace Cardevil.UI.PopUp
         /// <summary>
         /// 슬롯머신을 아래로 퇴장시킬때 애니메이션
         /// </summary>
-        public void SlotMachine_GetDownAnimation(System.Action onCompleteCallback)
+        public async UniTask SlotMachine_GetDownAnimation(System.Action onCompleteCallback)
         {
             // 아래로 띠용(InBack)하면서 내려간 후 콜백으로 UI 비활성화
-            _slotmachine_rectTransform.DOAnchorPosY(offScreenY, 0.5f).SetEase(Ease.InBack).SetUpdate(true)
+            await _slotmachine_rectTransform.DOAnchorPosY(offScreenY, 0.5f).SetEase(Ease.InBack).SetUpdate(true)
                 .OnComplete(() => onCompleteCallback?.Invoke());
+
         }
 
         /// <summary>

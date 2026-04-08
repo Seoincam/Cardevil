@@ -19,6 +19,10 @@ namespace Cardevil.UI.PopUp
 {
     public class SlotMachine : UI_Popup
     {
+
+        // 슬롯머신 끝났을때의 액션 접근
+        public event Action OnSlotMachineClear;
+
         // 확대 설정을 위해
         [SerializeField]
         private Camera _renderCamera;
@@ -81,6 +85,7 @@ namespace Cardevil.UI.PopUp
         public void ActiveSlotMachine()
         {
             this.gameObject.SetActive(true);
+            _animationController.SlotMachine_GetUpAnimation();
             UpdateLayout();
 
             // UI 활성화 시 등장 애니메이션 재생
@@ -315,10 +320,11 @@ namespace Cardevil.UI.PopUp
         private void OnSelectClicked(PointerEventData eventData)
         {
             // TODO: 선택하면 모든 아이템을 획득하는 로직 여기
-
-            _animationController.SlotMachine_GetDownAnimation();
+   
+            _animationController.SlotMachine_GetDownAnimation(OnSlotMachineClear).Forget();
         
         }
+
         private void OnItem1Clicked(PointerEventData eventData) { slots[0].item.OnClicked(); }
         private void OnItem2Clicked(PointerEventData eventData) { slots[1].item.OnClicked(); }
         private void OnItem3Clicked(PointerEventData eventData) { slots[2].item.OnClicked(); }
