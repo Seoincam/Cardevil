@@ -60,15 +60,8 @@ namespace Cardevil.Gameplay.Turn
         {
             ExecEventBus<PlayerMoveArgs>.UnregisterStatic(_player.OnMoveAsync);
         }
-
-        public void StartLoop()
-        {
-            // 입장 전 실행할 로직들
-            
-            CoreLoopAsync().Forget();
-        }
         
-        private async UniTask CoreLoopAsync(CancellationToken cancellationToken = default)
+        public async UniTask CoreLoopAsync(CancellationToken cancellationToken = default)
         {
             await Reroll.WaitUntilRerollEndAsync();
 
