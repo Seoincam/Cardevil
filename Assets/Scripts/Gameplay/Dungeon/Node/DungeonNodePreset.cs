@@ -26,8 +26,13 @@ namespace Cardevil.Gameplay.Dungeon.Node
         [SerializeField] protected Sprite activeSprite;
         [Tooltip("완료 상태 스프라이트")]
         [SerializeField] protected Sprite completedSprite;
+        [Tooltip("노드 스프라이트 스케일")]
+        [SerializeField] protected float spriteScale = 1f;
+        [Header("옵션 스프라이트")]
         [Tooltip("완료 상태 오버레이 스프라이트 (옵션)")]
         [SerializeField] protected Sprite completedOverlaySprite;
+        [Tooltip("오버레이 스케일")]
+        [SerializeField] protected float overlayScale = 1f;
         
         [Header("색상 설정")]
         [SerializeField] protected Color nodeColor = Color.white;
@@ -137,6 +142,7 @@ namespace Cardevil.Gameplay.Dungeon.Node
                     nodeUI.OverlayImage.gameObject.SetActive(true);
                     nodeUI.OverlayImage.sprite = completedOverlaySprite;
                     nodeUI.NodeImage.SetNativeSize();
+                    nodeUI.OverlayImage.transform.localScale = new Vector3(overlayScale, overlayScale, 1f);
                 }
                 else
                 {
@@ -152,6 +158,7 @@ namespace Cardevil.Gameplay.Dungeon.Node
                 image.sprite = sprite;
                 image.color = color;
                 image.SetNativeSize();
+                image.transform.localScale = new Vector3(spriteScale, spriteScale, 1f);
             }
             else
             {
