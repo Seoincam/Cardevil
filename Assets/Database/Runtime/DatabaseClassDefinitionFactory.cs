@@ -19,7 +19,7 @@ namespace Database
             sb.AppendLine("{");
             sb.AppendLine("    [UnityEngine.Scripting.Preserve]");
             sb.AppendLine("    [Serializable]");
-            sb.AppendLine($"    public class {dbClassName}");
+            sb.AppendLine($"    public partial class {dbClassName}");
             sb.AppendLine("    {");
             foreach (var name in classNames)
             {
@@ -40,7 +40,6 @@ namespace Database
             }
             sb.AppendLine("        };");
             
-
             sb.AppendLine();
             sb.AppendLine();
             

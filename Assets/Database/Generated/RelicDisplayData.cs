@@ -9,7 +9,7 @@ namespace Database.Generated
     [Serializable]
     public partial class RelicDisplayData: IDBData {
 
-        /// <summary> 식별용 아이디 </summary>
+        /// <summary> 식별용 아이디 (구체적인 내용은 적지 않는걸 권장) </summary>
         public string Id;
         /// <summary> 희귀도 (수급 장소) </summary>
         public Cardevil.Gameplay.Relics.Core.RelicRarity Rarity;

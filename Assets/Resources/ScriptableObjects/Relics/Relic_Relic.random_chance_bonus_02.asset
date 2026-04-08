@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Relics.Core.RelicSO
   data:
     id: Relic.random_chance_bonus_02
-    commentForEditor: "66.66% \uD655\uB960\uB85C \uCD5C\uC885\uB370\uBBF8\uC9C0 110%"
+    commentForEditor: "66.66% \uD655\uB960\uB85C \uCD5C\uC885\uB370\uBBF8\uC9C0 x1.1"
     rarity: 1
     displayIcon: {fileID: 21300000, guid: 4993424a4ffbf4534a8c4a7ee9d6db31, type: 3}
     displayName: "\uC720\uBB3C17"
-    displayDescription: "66.66% \uD655\uB960\uB85C \uCD5C\uC885\uB370\uBBF8\uC9C0
-      110%"
+    displayDescription: "<color=yellow>66.66%</color> \uD655\uB960\uB85C \uCD5C\uC885\uB370\uBBF8\uC9C0
+      <color=red>x1.1</color>"
     effects:
     - rid: 3697062221459751026
   dataSource: 1
