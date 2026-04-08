@@ -488,10 +488,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonStage02
       objectReference: {fileID: 0}
-    - target: {fileID: 2298217810387235589, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3393791510757189451, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
@@ -613,86 +609,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonStage03
       objectReference: {fileID: 0}
-    - target: {fileID: 235367139693064220, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 522897128285370137, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 522897128285370137, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 1085629682459467552, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 1085629682459467552, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 1980976116591744271, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 1980976116591744271, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 2244360215541593244, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 2244360215541593244, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719721792508542092, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 3719721792508542092, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 5277114028840045326, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
       propertyPath: dungeonUI
       value: 
       objectReference: {fileID: 7001122293710359863}
-    - target: {fileID: 6967474860958568237, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 6967474860958568237, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7367541238494925445, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7367541238494925445, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7484194734613057511, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 7484194734613057511, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8347569666165291083, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.75
-      objectReference: {fileID: 0}
-    - target: {fileID: 8347569666165291083, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 8587072507038732841, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
