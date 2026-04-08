@@ -68,10 +68,11 @@ namespace Cardevil.Gameplay.Root
             view.PrepareMapForReturn(dungeon);
 
             var fadeTask = view.FadeInMapAsync(dungeon, ct);
-            var unloadTask = SceneLoader.UnloadSceneAsync(Scenes.Stage);
-            var handUpTask = view.PlayReturnToMapTransitionAsync(dungeon, ct);
+
 
             await fadeTask;
+            var unloadTask = SceneLoader.UnloadSceneAsync(Scenes.Stage);
+            var handUpTask = view.PlayReturnToMapTransitionAsync(dungeon, ct);
             await UniTask.WhenAll(unloadTask, handUpTask);
 
             SceneLoader.SetActiveScene(Scenes.World);

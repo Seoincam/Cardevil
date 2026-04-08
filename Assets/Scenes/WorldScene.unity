@@ -1391,7 +1391,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2704675496e541b9a59f8884e438212c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Root.WorldView
-  mapFadeDuration: 0.2
+  mapFadeDuration: 0.5
 --- !u!1 &1775464931
 GameObject:
   m_ObjectHideFlags: 0
