@@ -12,6 +12,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Cardevil.Core.Bootstrap;
+using Database;
+using Database.Generated;
 
 namespace Cardevil.UI.PopUp
 {
@@ -287,7 +289,7 @@ namespace Cardevil.UI.PopUp
                 return;
             }
 
-            float gold = (CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.Gold));
+            int gold = (CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.Gold));
             // 3. 골드 체크 및 차감 (PlayerStatus는 실제 관리하시는 플레이어 데이터 스크립트로 대체)
             if (gold < currentData.LevelUpCost)
             {
@@ -313,6 +315,8 @@ namespace Cardevil.UI.PopUp
         private void OnSelectClicked(PointerEventData eventData)
         {
             // TODO: 선택하면 모든 아이템을 획득하는 로직 여기
+
+            _animationController.SlotMachine_GetDownAnimation();
         
         }
         private void OnItem1Clicked(PointerEventData eventData) { slots[0].item.OnClicked(); }
@@ -438,15 +442,12 @@ namespace Cardevil.UI.PopUp
                     _probabilityBars[i].gameObject.SetActive(weights[i] > 0);
                 }
             }
-            CardevilCore.Database.Database
+
         }
 
-        private CardevilCore.Database.MachineProbabilityData GetMachineData(int level)
+        private MachineProbabillity GetMachineData(int level)
         {
-            // 실제 데이터베이스에서 레벨에 맞는 데이터를 가져오는 코드
-            // (예시 코드는 주석 처리하거나 실제에 맞게 수정해주세요)
-            // return CardevilCore.Database.Database.MachineLevelDataList.Find(x => x.MachineLevel == level);
-            return null;
+            return CardevilCore.Database.Database.MachineProbabillityList.Find(x => x.MachineLevel == level);
         }
 
         #endregion
