@@ -913,9 +913,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 704753097}
     m_Modifications:
+    - target: {fileID: 995294295237150641, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1151613996884152712, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1310750160403465949, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Name
       value: DungeonUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1569945232110518084, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 261.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1971655809971752234, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: blackPanel
@@ -933,6 +949,14 @@ PrefabInstance:
       propertyPath: <TransitionToStagePlayableAsset>k__BackingField
       value: 
       objectReference: {fileID: 11400000, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+    - target: {fileID: 2834965034600204076, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4423972615108536800, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 268.3
+      objectReference: {fileID: 0}
     - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_PlayableAsset
       value: 
