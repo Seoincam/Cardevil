@@ -82,8 +82,10 @@ namespace Cardevil.UI.PopUp
         /// <summary>
         /// 슬롯머신 호출
         /// </summary>
-        public void ActiveSlotMachine()
+        public async UniTask ActiveSlotMachine(float waitSeconds)
         {
+            await UniTask.WaitForSeconds(waitSeconds);
+
             this.gameObject.SetActive(true);
             _animationController.SlotMachine_GetUpAnimation();
             UpdateLayout();
