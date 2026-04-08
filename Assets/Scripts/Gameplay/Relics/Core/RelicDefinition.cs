@@ -1,3 +1,4 @@
+using Cardevil.Core.Attributes;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,23 +16,23 @@ namespace Cardevil.Gameplay.Relics.Core
     public class RelicDefinition
     {
         [Header("Database")]
-        [SerializeField] private string id;
+        [SerializeField, VisibleOnly] private string id;
 
 #if UNITY_EDITOR
-        [SerializeField] private string commentForEditor;
+        [SerializeField, VisibleOnly] private string commentForEditor;
         public string CommentForEditor => commentForEditor;
 #endif
 
         [Header("Setting")] 
-        [SerializeField] private RelicRarity rarity;
+        [SerializeField, VisibleOnly] private RelicRarity rarity;
         
         [Header("Display")]
-        [SerializeField] private Sprite displayIcon;
-        [SerializeField] private string displayName;
-        [SerializeField] private string displayDescription;
+        [SerializeField, VisibleOnly] private Sprite displayIcon;
+        [SerializeField, VisibleOnly] private string displayName;
+        [SerializeField, VisibleOnly] private string displayDescription;
         
         [Header("Effects")]
-        [SerializeReference] private List<EffectDefinition> effects = new();
+        [SerializeReference, VisibleOnly] private List<EffectDefinition> effects = new();
 
         public RelicDefinition(string id, string displayName)
         {
