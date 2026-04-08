@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 9149373502049407843}
   - component: {fileID: 2370924021656243185}
   - component: {fileID: 7667456996713160659}
+  - component: {fileID: 9120233378044765814}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -125,11 +126,7 @@ MonoBehaviour:
   delayAttackByRelic: 0
   enforcedAttackRanking: 0
   enforcedAttackDamage: 0
-  _enemySpriteRenderer: {fileID: 7667456996713160659}
-  _enemyTransform: {fileID: 5090514070268501704}
-  _attacked_BackPosition: 5
-  _attack_BackPosition: 3
-  _attack_FrontPosition: 2.5
+  _enemyAnimationController: {fileID: 9120233378044765814}
 --- !u!212 &7667456996713160659
 SpriteRenderer:
   serializedVersion: 2
@@ -189,6 +186,24 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &9120233378044765814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1754273413225031785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7ecac7bc38bd114995f6e1453a52c3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.EnemyAnimationController
+  _enemy: {fileID: 2370924021656243185}
+  _enemySpriteRenderer: {fileID: 7667456996713160659}
+  _enemyTransform: {fileID: 5090514070268501704}
+  _attacked_BackPosition: 2
+  _attack_BackPosition: 2
+  _attack_FrontPosition: 1.5
 --- !u!1 &2606874335021637752
 GameObject:
   m_ObjectHideFlags: 0

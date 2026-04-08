@@ -28,7 +28,7 @@ namespace Database
     {
        
 
-        [SerializeField] private McDatabase mcDatabase = new McDatabase();
+        [SerializeField] public McDatabase mcDatabase = new McDatabase();
         [SerializeField] private bool isInitialized = false;
         [Header("Path Settings")]
         [SerializeField] private string googleSheetUrl = "URL_HERE"; // 구글 시트 URL

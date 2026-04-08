@@ -11,19 +11,30 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Cardevil.Core.Bootstrap;
+using Database;
+using Database.Generated;
 
 namespace Cardevil.UI.PopUp
 {
     public class SlotMachine : UI_Popup
     {
+
+        // 슬롯머신 끝났을때의 액션 접근
+        public event Action OnSlotMachineClear;
+
         // 확대 설정을 위해
-        private Camera _mainCamera;
+        [SerializeField]
+        private Camera _renderCamera;
         private Vector3 _originCamPos;
         private float _originCamSize;
         private Tween _cameraTween; // 중복 실행 방지 및 관리용
         private int slotMachineLevel;
 
         //----
+        [Header("Animation Controller")]
+        [SerializeField] private SlotMachineAnimation _animationController; 
+
         [Header("UI 설정")]
         public GameObject probabilityPanel;
         [Tooltip("각 박스 이미지 사이의 간격(픽셀)")]
@@ -46,7 +57,14 @@ namespace Cardevil.UI.PopUp
         [SerializeField] private float dropTiming = 0.8f;
         [SerializeField] private float zoomInTime = 2f;
 
+        // 캐싱용 시각 효과 컨트롤러
+        private SlotButtonVisual _rerollVisual;
+        private SlotButtonVisual _upgradeVisual;
+        private SlotButtonVisual _selectVisual;
 
+        [Header("Probability UI (일반, 레어, 에픽, 잭팟 순서)")]
+        [Tooltip("각 색상 바(Image)에 LayoutElement 컴포넌트가 붙어있어야 합니다.")]
+        [SerializeField] private List<LayoutElement> _probabilityBars = new List<LayoutElement>();
         void Start()
         {
             Init();
@@ -58,11 +76,34 @@ namespace Cardevil.UI.PopUp
             {
                 OnRerollClicked(null);
             }
+
+        }
+
+        /// <summary>
+        /// 슬롯머신 호출
+        /// </summary>
+        public void ActiveSlotMachine()
+        {
+            this.gameObject.SetActive(true);
+            _animationController.SlotMachine_GetUpAnimation();
+            UpdateLayout();
+
+            // UI 활성화 시 등장 애니메이션 재생
+            if (_animationController != null)
+            {
+                _animationController.SlotMachine_GetUpAnimation();
+            }
+
+            // 슬롯 초기 세팅 (인덱스와 애니메이션 컨트롤러 주입)
+            for (int i = 0; i < slots.Count; i++)
+            {
+                slots[i].slotIndex = i;
+                slots[i].animController = _animationController;
+            }
         }
 
         public override void Init()
         {
-            base.Init();
 
             Bind<Button>(typeof(ItemButtons));
 
@@ -73,21 +114,16 @@ namespace Cardevil.UI.PopUp
             GetButton((int)ItemButtons.Select).gameObject.AddUIEvent(OnSelectClicked);
             GetButton((int)ItemButtons.Upgrade).gameObject.AddUIEvent(OnUpGradeClicked);
 
-            Canvas canvas = GetComponent<Canvas>();
+            // 초기화 시 컴포넌트 캐싱
+            _rerollVisual = GetButton((int)ItemButtons.Reroll).GetComponent<SlotButtonVisual>();
+            _upgradeVisual = GetButton((int)ItemButtons.Upgrade).GetComponent<SlotButtonVisual>();
+            _selectVisual = GetButton((int)ItemButtons.Select).GetComponent<SlotButtonVisual>();
 
-            canvas.renderMode = RenderMode.WorldSpace;
-            canvas.worldCamera = Camera.main;
 
-
-            canvas.overrideSorting = true;
-            canvas.sortingOrder = 30000;
-
-            _mainCamera = Camera.main;
-
-            if (_mainCamera != null)
+            if (_renderCamera != null)
             {
-                _originCamPos = _mainCamera.transform.position;
-                _originCamSize = _mainCamera.orthographicSize;
+                _originCamPos = _renderCamera.transform.position;
+                _originCamSize = _renderCamera.orthographicSize;
 
             }
             // 슬롯머신 레벨 index 벗어남 처리
@@ -113,6 +149,9 @@ namespace Cardevil.UI.PopUp
             if (isSetting) { return; }
             isSetting = true;
 
+            // 리롤 시작: Reroll 버튼 상태를 "구동 중(Rolling)"으로 고정
+            if (_rerollVisual != null) _rerollVisual.SetRolling(true);
+
             // 안전장치: 도중에 에러가 나거나 객체가 파괴되어도 isSetting을 해제하기 위해 try-finally 사용
             try
             {
@@ -120,7 +159,7 @@ namespace Cardevil.UI.PopUp
                 {
                     // SettingSlot이 설정되기 까지 무한대로 돌아갑니다.
                     slot.StartSpinning(probalityList);
-                }
+                }   
 
                 // 1.5초 대기 (Realtime)
                 // CancellationToken을 넣어주면 씬 이동 등으로 오브젝트 파괴 시 에러 방지
@@ -174,8 +213,11 @@ namespace Cardevil.UI.PopUp
             }
             finally
             {
-                // 작업이 끝났거나 취소되었을 때 반드시 실행
+                // 로직 완료 또는 취소 시 반드시 실행됨
                 isSetting = false;
+
+                // 리롤 종료: Reroll 버튼 상태 원상복구
+                if (_rerollVisual != null) _rerollVisual.SetRolling(false);
             }
         }
         #endregion
@@ -238,34 +280,51 @@ namespace Cardevil.UI.PopUp
         /// <param name="eventData"></param>
         private void OnUpGradeClicked(PointerEventData eventData)
         {
-            // 돈이 된다면
-            /*
-            if (Managers.Game.PlayerStatus.gold >= Managers.Database.Database.MachineProbabillityList[slotMachineLevel - 1].LevelUpCost)
+            // 1. 현재 레벨의 머신 데이터 가져오기 (DB 클래스명에 맞게 수정 필요)
+            // 예: CardevilCore.Database.MachineProbability.TryGetValue(slotMachineLevel, out var currentData)
+            var currentData = GetMachineData(slotMachineLevel);
+
+            if (currentData == null) return;
+
+            // 2. 만렙 체크 (시트를 보면 레벨 6의 LevelUpCost가 비어있으므로 0이거나 없을 때 만렙 처리)
+            if (currentData.LevelUpCost <= 0)
             {
-
-                // 레벨업, 
-
+                Debug.Log("최대 레벨입니다!");
+                if (_upgradeVisual != null) _upgradeVisual.SetBlocked(true);
+                return;
             }
-            */
 
-            // 상승 및 인덱스 조절
-            var newSlotMachineLevel = Math.Min(
-                CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.SlotMachineLevel) + 1, 
-                CardevilCore.Database.Database.MachineProbabillityList.Count);
-            
-            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.SlotMachineLevel, newSlotMachineLevel);
-            
-            //동기화
-            slotMachineLevel = newSlotMachineLevel;
-       
-            //리스트받기
-            probalityList = CardevilCore.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankWeight.ToArray();
+            int gold = (CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.Gold));
+            // 3. 골드 체크 및 차감 (PlayerStatus는 실제 관리하시는 플레이어 데이터 스크립트로 대체)
+            if (gold < currentData.LevelUpCost)
+            {
+                Debug.Log("골드가 부족합니다!");
+                if (_upgradeVisual != null) _upgradeVisual.SetBlocked(true);
+                return;
+            }
 
-            // 레이아웃 업데이트
-            UpdateLayout();
 
+            // 4. 업그레이드 실행
+            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.Gold, gold - currentData.LevelUpCost);
+            slotMachineLevel++;
+            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.SlotMachineLevel, slotMachineLevel);
+            Debug.Log($"슬롯머신 레벨업! 현재 레벨: {slotMachineLevel}");
+
+
+            if (_upgradeVisual != null) _upgradeVisual.SetBlocked(false);
+
+            // 5. 확률 바 UI 갱신
+            UpdateProbabilityPanel();
         }
-        private void OnSelectClicked(PointerEventData eventData) { }
+
+        private void OnSelectClicked(PointerEventData eventData)
+        {
+            // TODO: 선택하면 모든 아이템을 획득하는 로직 여기
+   
+            _animationController.SlotMachine_GetDownAnimation(OnSlotMachineClear).Forget();
+        
+        }
+
         private void OnItem1Clicked(PointerEventData eventData) { slots[0].item.OnClicked(); }
         private void OnItem2Clicked(PointerEventData eventData) { slots[1].item.OnClicked(); }
         private void OnItem3Clicked(PointerEventData eventData) { slots[2].item.OnClicked(); }
@@ -275,69 +334,73 @@ namespace Cardevil.UI.PopUp
         #region Tool
 
 
+
         private Tween CameraAction(int index, RectTransform targetRect, System.Action onMiddleAction = null)
         {
-            if (_mainCamera == null || targetRect == null) return null;
-
-            // ... (기존 초기화 및 좌표 계산 로직 동일) ...
-            // ... (approachDistance 설정 등 동일) ...
+            if (_renderCamera == null || targetRect == null) return null;
 
             Vector3[] corners = new Vector3[4];
             targetRect.GetWorldCorners(corners);
             Vector3 targetCenterPos = (corners[0] + corners[2]) / 2f;
 
-            // ... (거리 계산 로직 생략, 위와 동일) ...
-            float approachDistance = 90f;
-            if (index == 2) approachDistance = 80f;
-            else if (index == 3) approachDistance = 90f;
-            else if (index >= 4) approachDistance = 85f;
+            // 💡 카메라가 이동할 X, Y 좌표 (Z축은 기존 카메라의 Z 유지)
+            Vector3 finalCamPos = new Vector3(targetCenterPos.x, targetCenterPos.y, _originCamPos.z);
 
-            Vector3 finalCamPos;
+            // 💡 줌인 될 때의 카메라 사이즈 (숫자가 작을수록 더 크게 확대됨. 필요에 따라 조절하세요)
+            float targetOrthoSize = _originCamSize * 0.4f;
 
             float duration = dropTiming * index;
             Sequence seq = DOTween.Sequence();
-            _mainCamera.transform.position = _originCamPos;
 
-            // 1. 줌인 (Zoom In)
+            // 연계 전 초기화
+            _renderCamera.transform.position = _originCamPos;
+            _renderCamera.orthographicSize = _originCamSize;
+
+            // 1. 줌인 (Zoom In) 및 이동 (Pan)
             switch (index)
             {
                 case 2:
                 case 3:
-                    finalCamPos = targetCenterPos - (_mainCamera.transform.forward * 90);
-                    seq.Append(_mainCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutQuad));
+                    // 위치 이동과 Size 변경을 동시에(Join) 실행합니다.
+                    seq.Append(_renderCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutQuad));
+                    seq.Join(_renderCamera.DOOrthoSize(targetOrthoSize, zoomInTime).SetEase(Ease.OutQuad));
                     break;
+
                 case 4:
-                    finalCamPos = targetCenterPos - (_mainCamera.transform.forward * 90);
-                    seq.Append(_mainCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
-                    finalCamPos = targetCenterPos - (_mainCamera.transform.forward * 60f);
-                    seq.Append(_mainCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
-                    seq.Join(_mainCamera.transform.DOShakePosition(duration, 0.3f, 20, 90, false, true).SetDelay(zoomInTime));
+                    // 4단계는 더 과격하게 줌인하는 연출 (예시)
+                    targetOrthoSize = _originCamSize * 0.25f;
+
+                    seq.Append(_renderCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
+                    seq.Join(_renderCamera.DOOrthoSize(targetOrthoSize, zoomInTime).SetEase(Ease.OutCubic));
+
+                    // 흔들림 연출 (Z축 흔들림을 빼고 X, Y만 흔들리게 조정하는 것이 좋습니다)
+                    seq.Join(_renderCamera.transform.DOShakePosition(duration, new Vector3(0.3f, 0.3f, 0f), 20, 90, false, true).SetDelay(zoomInTime));
                     duration = duration * 2;
                     break;
-                default:
 
+                default:
                     return null;
             }
 
             // 2. 머무르는 시간 계산
             float stayTime = Mathf.Max(0f, duration - zoomInTime);
-
-            // [핵심] 머무르는 시간의 절반 지점에서 함수 실행!
             seq.AppendInterval(stayTime * 0.2f);
 
-            // DataSet진행
+            // DataSet 진행
             seq.AppendCallback(() =>
             {
                 if (onMiddleAction != null) onMiddleAction.Invoke();
             });
 
-            // 남은 시간 대기
             seq.AppendInterval(stayTime * 0.5f);
 
             // 3. 복귀 (Zoom Out)
-            seq.Append(_mainCamera.transform.DOMove(_originCamPos, 0.4f).SetEase(Ease.OutQuad));
+            seq.Append(_renderCamera.transform.DOMove(_originCamPos, 0.4f).SetEase(Ease.OutQuad));
+            seq.Join(_renderCamera.DOOrthoSize(_originCamSize, 0.4f).SetEase(Ease.OutQuad));
 
             _cameraTween = seq;
+
+            
             return seq;
         }
 
@@ -352,5 +415,48 @@ namespace Cardevil.UI.PopUp
         }
 
         #endregion
+        #region UI Update
+
+        /// <summary>
+        /// 머신 레벨업 시 DB의 RankWeight를 파싱하여 확률 바 UI 비율을 조절합니다.
+        /// </summary>
+        public void UpdateProbabilityPanel()
+        {
+            // 현재 레벨의 데이터 다시 가져오기
+            var currentData = GetMachineData(slotMachineLevel);
+            if (currentData == null || currentData.RankWeight == null) return;
+
+            List<int> weights = currentData.RankWeight; // [8600, 1000, 399, 1]
+            float totalWeight = 0;
+
+            // 총 가중치 합산 (통상 10000이겠지만, 만약의 경우를 위해 계산)
+            foreach (int weight in weights)
+            {
+                totalWeight += weight;
+            }
+
+            // 각 LayoutElement의 flexibleWidth 비율을 조절하여 길이 설정
+            for (int i = 0; i < _probabilityBars.Count; i++)
+            {
+                if (i < weights.Count)
+                {
+                    // flexibleWidth에 비율을 넣어주면 Layout Group이 알아서 길이를 분배합니다.
+                    float ratio = weights[i] / totalWeight;
+                    _probabilityBars[i].flexibleWidth = ratio;
+
+                    // 가중치가 0이면 아예 안 보이게 처리
+                    _probabilityBars[i].gameObject.SetActive(weights[i] > 0);
+                }
+            }
+
+        }
+
+        private MachineProbabillity GetMachineData(int level)
+        {
+            return CardevilCore.Database.Database.MachineProbabillityList.Find(x => x.MachineLevel == level);
+        }
+
+        #endregion
+
     }
 }
