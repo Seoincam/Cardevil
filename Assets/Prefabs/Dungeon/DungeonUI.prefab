@@ -488,10 +488,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonStage02
       objectReference: {fileID: 0}
-    - target: {fileID: 2298217810387235589, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3393791510757189451, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
@@ -612,10 +608,6 @@ PrefabInstance:
     - target: {fileID: 235367139693064220, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
       propertyPath: m_Name
       value: DungeonStage03
-      objectReference: {fileID: 0}
-    - target: {fileID: 235367139693064220, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5277114028840045326, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
       propertyPath: dungeonUI

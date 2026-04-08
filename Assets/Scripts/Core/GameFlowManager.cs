@@ -44,7 +44,11 @@ namespace Cardevil.Core
 
             await World.EnterStageAsync(Context, ct);
             
-            Stage.Initialize(Context, CardevilCore.PlayerStatus, CardevilCore.Game.ScoreProviderRegistry);
+            Stage.Initialize(
+                Context, 
+                CardevilCore.PlayerStatus, 
+                CardevilCore.Game.CardRepository, 
+                CardevilCore.Game.ScoreProviderRegistry);
             await Stage.EnterStageAsync();
         }
     }

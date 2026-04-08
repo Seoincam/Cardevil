@@ -23,6 +23,7 @@ namespace Cardevil.Core.Systems.Save
             SaveTime = DateTime.Now;
             PlayerStatus = new PlayerStatus();
             DungeonProgress = new DungeonProgress(1,1);
+            OwnedRelics = new List<RelicSaveData>();
         }
         public GameSave()
         {

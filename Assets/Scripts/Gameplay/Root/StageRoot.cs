@@ -1,3 +1,4 @@
+using Cardevil.Card.Common.Core;
 using Cardevil.Card.InStage;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
@@ -50,13 +51,14 @@ namespace Cardevil.Gameplay.Root
         public void Initialize(
             GameFlowManager.StageEnterContext context,
             PlayerStatus playerStatus,
+            CardRepository cardRepository,
             ScoreProviderRegistry scoreProviderRegistry
             )
         {
             _context = context;
             _enemySpawner = new EnemySpawner();
             _enemySpawner.ConfigureStageMobData(CardevilCore.GameFlow.Context.stageId);
-            cardManager.Initialize(playerStatus, scoreProviderRegistry);
+            cardManager.Initialize(cardRepository, playerStatus, scoreProviderRegistry);
             
             Field.InitField(3,3,0);// TODO: 스테이지 index 에 따라 받을 수 있게수정하기
             Player.Init(Field);
@@ -92,7 +94,7 @@ namespace Cardevil.Gameplay.Root
 
 
             await view.PlayEnterStageAnimationAsync();
-            //
+            
             // await turnManager.CoreLoopAsync();
             //
             // OnTurnLoopEnded();
