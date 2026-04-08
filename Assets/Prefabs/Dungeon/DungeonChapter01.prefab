@@ -589,7 +589,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node10
+      value: BlackMarket1.1
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -822,7 +822,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node19
+      value: 1.8
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -1043,7 +1043,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node23
+      value: Heal1.3
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -1268,7 +1268,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node22
+      value: BlackMarket1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -1497,7 +1497,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node20
+      value: BlackMarket1.4
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -1710,7 +1710,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node7
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -1943,7 +1943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: MBossNode11
+      value: MBoss1.1
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -2176,7 +2176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: FBossNode24
+      value: FBoss1.1
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -2409,7 +2409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node2
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -2618,7 +2618,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node13
+      value: 1.6
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -2831,7 +2831,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node9
+      value: Shop1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -3060,7 +3060,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node17
+      value: BlackMarket1.3
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -3285,7 +3285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node16
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -3494,7 +3494,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node6
+      value: Random1.1
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -3723,7 +3723,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node5
+      value: Heal1.1
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -3948,7 +3948,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node15
+      value: BlackMarket1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -4192,6 +4192,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
+      propertyPath: roomId
+      value: 1.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
       value: 1
       objectReference: {fileID: 0}
@@ -4378,7 +4382,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node18
+      value: Shop1.3
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -4599,7 +4603,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node12
+      value: Heal1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -4816,7 +4820,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node3
+      value: Shop1.1
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -5025,7 +5029,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node14
+      value: Random1.2
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -5258,7 +5262,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node8
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -5483,7 +5487,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node21
+      value: 1.9
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType
@@ -5666,10 +5670,6 @@ PrefabInstance:
       propertyPath: <Animator>k__BackingField
       value: 
       objectReference: {fileID: 8684106152215277810}
-    - target: {fileID: 2663704201058976783, guid: c064453fbfc18634f857274b829d87d1, type: 3}
-      propertyPath: <PlayableDirector>k__BackingField
-      value: 
-      objectReference: {fileID: 2688337447177441152}
     - target: {fileID: 2765549978760852071, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_ConstrainProportionsScale
       value: 1
@@ -5694,7 +5694,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonChapter01
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6805644129241918291, guid: c064453fbfc18634f857274b829d87d1, type: 3}
     m_RemovedGameObjects:
     - {fileID: 3807760292782404521, guid: c064453fbfc18634f857274b829d87d1, type: 3}
     - {fileID: 4224578539010208543, guid: c064453fbfc18634f857274b829d87d1, type: 3}
@@ -5779,11 +5780,6 @@ PrefabInstance:
       addedObject: {fileID: 7484148901978260898}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c064453fbfc18634f857274b829d87d1, type: 3}
---- !u!320 &2688337447177441152 stripped
-PlayableDirector:
-  m_CorrespondingSourceObject: {fileID: 6805644129241918291, guid: c064453fbfc18634f857274b829d87d1, type: 3}
-  m_PrefabInstance: {fileID: 8880084634793911507}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &5117500640084881787 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4339612256277648808, guid: c064453fbfc18634f857274b829d87d1, type: 3}
@@ -5928,7 +5924,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: roomId
-      value: Node4
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 7932035073756896530, guid: 8cfe2bf37f5c67b4585e8a4ca078e085, type: 3}
       propertyPath: nodeType

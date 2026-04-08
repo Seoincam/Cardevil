@@ -60,8 +60,17 @@ namespace Cardevil.Gameplay.Dungeon.Node
                     var db = CardevilCore.Database.Database;
                     // TODO : 딕셔너리 조회로 최적화
                     roomData = db.RoomDataList.Find(r => r.RoomID == roomId);
-                    if (roomData == null)                    {
-                        LogEx.LogError($"[DungeonNode] RoomData not found for RoomID: {roomId}");
+                    if (roomData == null)                    
+                    {
+                        switch (preset.NodeType)
+                        {
+                            case DungeonNodeTypes.Mob:
+                            case DungeonNodeTypes.MiniBoss:
+                            case DungeonNodeTypes.FinalBoss:
+                                    LogEx.LogError($"[DungeonNode] RoomData not found for RoomID: {roomId}");
+                                break;
+                        }
+                        
                     }
                 }
                 return roomData;
