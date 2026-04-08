@@ -1,4 +1,5 @@
-﻿using Cardevil.Gameplay.Relics.Core;
+﻿using Cardevil.Core.Attributes;
+using Cardevil.Gameplay.Relics.Core;
 using Cardevil.UI.Components;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +14,7 @@ namespace Cardevil.UI.GlobalNavigationBar
         [SerializeField] private ShowTooltipOnHover tooltipTrigger;
         
         [Header("Definition References")]
-        [SerializeField] private RelicDefinition definition;
+        [SerializeField, VisibleOnly] private RelicDefinition definition;
 
         public void Initialize(RelicDefinition def)
         {

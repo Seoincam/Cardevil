@@ -18,9 +18,9 @@ MonoBehaviour:
       \uB370\uBBF8\uC9C0\uB97C +10 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
     rarity: 1
     displayIcon: {fileID: 21300000, guid: 7e0bc59aa89745547ae1cf5e891e0d74, type: 3}
-    displayName: "\uC720\uBB3C11"
-    displayDescription: "\uBAA8\uB4E0 \uC22B\uC790 \uCE74\uB4DC\uC758 \uAE30\uBCF8
-      \uB370\uBBF8\uC9C0\uB97C +10 \uC99D\uAC00\uC2DC\uD0B5\uB2C8\uB2E4."
+    displayName: "\uB51C\uB7EC\uC758 \uCE74\uB4DC"
+    displayDescription: "\uBAA8\uB4E0 \uC22B\uC790 \uCE74\uB4DC\uC758 <b>\uAE30\uBCF8
+      \uB370\uBBF8\uC9C0</b> <color=red>+10</color>"
     effects:
     - rid: 3697062221459751020
   dataSource: 1
