@@ -7,10 +7,18 @@ using Cardevil.Test.DebugConsole.Commands;
 using Cardevil.UI.GlobalNavigationBar;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Cardevil.Gameplay.Relics.Core
 {
+    public interface IRelicCommonContext
+    {
+        PlayerStatus PlayerStatus { get; }
+        ScoreProviderRegistry ScoreProviderRegistry { get; }
+    }
+    
     [Serializable]
     public class RelicManager : ISaveLoad
     {
@@ -22,6 +30,7 @@ namespace Cardevil.Gameplay.Relics.Core
 
         private RelicBar RelicBar => GlobalNavigationBar.Instance.RelicBar;
 
+        
         public RelicManager(PlayerStatus playerStatus, ScoreProviderRegistry scoreProviderRegistry)
         {
             const string databasePath = "ScriptableObjects/Relics/Relic Database";
@@ -36,6 +45,10 @@ namespace Cardevil.Gameplay.Relics.Core
             _commonContext = new RelicCommonContext(playerStatus, scoreProviderRegistry);
         }
 
+        
+        /// <summary>
+        /// 유물을 추가하고 활성화.
+        /// </summary>
         public void AddRelic(string id)
         {
             if (_ownedRelics.ContainsKey(id))
@@ -51,8 +64,17 @@ namespace Cardevil.Gameplay.Relics.Core
                 return;
             }
             
+            AddRelic(definition);
+        }
+
+        /// <summary>
+        /// 유물을 추가하고 활성화.
+        /// </summary>
+        public void AddRelic(RelicDefinition definition)
+        {
+            // Def에 해당하는 런타임 인스턴스 생성 및 활성화
             var instance = new RelicInstance(definition, _commonContext);
-            _ownedRelics.Add(id, instance);
+            _ownedRelics.Add(definition.Id, instance);
             instance.Activate();
             
             var iconInstance = RelicBar.AddRelic(definition);
@@ -63,42 +85,69 @@ namespace Cardevil.Gameplay.Relics.Core
             LogEx.Log($"유물 '{instance.Data.DisplayName}({instance.Data.Id})'를 획득했습니다!");
         }
 
-        private class RelicCommonContext : IRelicCommonContext
+        /// <summary>
+        /// 희귀도에 해당하는 미획득 유물들을 반환.
+        /// </summary>
+        public List<RelicDefinition> GetRandomUnownedRelicsByRarity(RelicRarity targetRarity, int count)
         {
-            public PlayerStatus PlayerStatus { get; }
-            public ScoreProviderRegistry ScoreProviderRegistry { get; }
+            // 필터링
+            var pool = _database.GetAll()
+                .Where(def => def.Rarity == targetRarity && !_ownedRelics.ContainsKey(def.Id))
+                .ToList();
+
+            // 부족할 경우들 처리
+            if (count > pool.Count)
+                LogEx.LogWarning($"조건({targetRarity})에 부합하는 미획득 유물이 부족합니다. (요청: {count}, 가능: {pool.Count})");
             
-            public RelicCommonContext(
-                PlayerStatus playerStatus,
-                ScoreProviderRegistry scoreProviderRegistry)
+            int actualCount = Mathf.Min(count, pool.Count);
+            if (actualCount <= 0)
             {
-                PlayerStatus = playerStatus;
-                ScoreProviderRegistry = scoreProviderRegistry;
+                LogEx.LogWarning($"조건({targetRarity})에 부합하는 미획득 유물이 없습니다.");
+                return new List<RelicDefinition>();
             }
+            
+            // 셔플 및 반환
+            pool.ShuffleListInPlace();
+            return pool.Take(actualCount).ToList();
+        }
+
+        /// <summary>
+        /// 특정 인덱스의 유물을, 현재 리스트와 중복되지 않는 새로운 미획득 유물로 교체.
+        /// </summary>
+        public RelicDefinition RerollSingleRelic(
+            RelicRarity targetRarity,
+            List<RelicDefinition> currentOptions,
+            int indexToReplace)
+        {
+            // 필터링
+            var excludedIds = currentOptions
+                .Where(def => def != null)
+                .Select(def => def.Id)
+                .ToHashSet();
+
+            var pool = _database.GetAll()
+                .Where(def => def.Rarity == targetRarity
+                              && !_ownedRelics.ContainsKey(def.Id)
+                              && !excludedIds.Contains(def.Id))
+                .ToList();
+
+            // 부족할 경우 처리
+            if (pool.Count <= 0)
+            {
+                LogEx.LogWarning($"리롤 불가. 조건({targetRarity})에 부합하는 미획득 유물이 없습니다.");
+                return null;
+            }
+            
+            // 랜덤 선택
+            int randomIndex = RandomUtil.GetRandomInt(0, pool.Count);
+            var newRelic = pool[randomIndex];
+            
+            // 원본 리스트에서 교체
+            currentOptions[indexToReplace] = newRelic;
+            return newRelic;
         }
         
-        // [ConsoleCommand("addRelic", "유물을 획득합니다.", "addRelic <string: id>")]
-        // private static void AddRelicCommand(string id)
-        // {
-        //     var relicManager = CardevilCore.Instance.GameManager.Relic;
-        //     relicManager.AddRelic(id);
-        // }
-
-        [ConsoleCommand("printAllOwnedRelics", "획득한 모든 유물을 출력합니다.")]
-        private static void PrintAllOwnedRelics()
-        {
-            var relicManager = CardevilCore.Instance.GameManager.Relic;
-            var sb = new StringBuilder();
-            
-            foreach (var instance in relicManager._ownedRelics.Values)
-            {
-                sb.Append($"[{instance.Data.DisplayName}({instance.Data.Id})], "); 
-            }
-            sb.AppendLine($"총 유물 개수: {relicManager._ownedRelics.Count}");
-            
-            LogEx.Log($"현재 획득한 유물들: {sb}");
-        }
-
+        
         public void Save(GameSave currentSave)
         {
             currentSave.OwnedRelics.Clear();
@@ -128,7 +177,44 @@ namespace Cardevil.Gameplay.Relics.Core
                 instance.Activate();
             }
         }
+        
+        private class RelicCommonContext : IRelicCommonContext
+        {
+            public PlayerStatus PlayerStatus { get; }
+            public ScoreProviderRegistry ScoreProviderRegistry { get; }
+            
+            public RelicCommonContext(
+                PlayerStatus playerStatus,
+                ScoreProviderRegistry scoreProviderRegistry)
+            {
+                PlayerStatus = playerStatus;
+                ScoreProviderRegistry = scoreProviderRegistry;
+            }
+        }
+        
+        #region DebugConsole
+        
+        // [ConsoleCommand("addRelic", "유물을 획득합니다.", "addRelic <string: id>")]
+        // private static void AddRelicCommand(string id)
+        // {
+        //     var relicManager = CardevilCore.Instance.GameManager.Relic;
+        //     relicManager.AddRelic(id);
+        // }
 
+        [ConsoleCommand("printAllOwnedRelics", "획득한 모든 유물을 출력합니다.")]
+        private static void PrintAllOwnedRelics()
+        {
+            var relicManager = CardevilCore.Instance.GameManager.Relic;
+            var sb = new StringBuilder();
+            
+            foreach (var instance in relicManager._ownedRelics.Values)
+            {
+                sb.Append($"[{instance.Data.DisplayName}({instance.Data.Id})], "); 
+            }
+            sb.AppendLine($"총 유물 개수: {relicManager._ownedRelics.Count}");
+            
+            LogEx.Log($"현재 획득한 유물들: {sb}");
+        }
 
         [ConsoleCommandClass]
         public class AddRelicCommand : IConsoleCommand
@@ -165,13 +251,7 @@ namespace Cardevil.Gameplay.Relics.Core
                 }
             }
         }
+        
+        #endregion
     }
-
-    public interface IRelicCommonContext
-    {
-        PlayerStatus PlayerStatus { get; }
-        ScoreProviderRegistry ScoreProviderRegistry { get; }
-    }
-    
-
 }

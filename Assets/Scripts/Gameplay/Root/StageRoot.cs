@@ -6,8 +6,10 @@ using Cardevil.Core.Bootstrap;
 using Cardevil.Core.SceneManagement;
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Dungeon.Core;
+using Cardevil.Gameplay.Dungeon.Node;
 using Cardevil.Gameplay.Enemy;
 using Cardevil.Gameplay.Player;
+using Cardevil.Gameplay.Root.Stage;
 using Cardevil.Gameplay.Turn;
 using Cardevil.UI;
 using Cysharp.Threading.Tasks;
@@ -21,19 +23,20 @@ namespace Cardevil.Gameplay.Root
     /// </summary>
     public class StageRoot : MonoBehaviour
     {
-        [Header("References")] 
-        [SerializeField] private StageView view;
+        [field: Header("References")] 
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field.Field Field { get; private set; }
+        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public PlayerCharacter Player { get; set; } // 임시 플레이어
+        
+        [Space, SerializeField] private StageView view;
         [SerializeField] private StageCardManager cardManager;
+        
+        [Space, SerializeField] private ClearRewardTableView rewardTableView;
+        [SerializeField] private ClearRewardRelicChestView rewardChestView;
 
         [Header("States")] 
         [SerializeField] private TurnManager turnManager;
         [SerializeField] private EnemySpawner _enemySpawner;
-
-        [Header("References")]
-        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public Field.Field Field { get; private set; }
-        [field: SerializeField, VisibleOnly(EditableIn.EditMode)] public PlayerCharacter Player { get; set; } // 임시 플레이어
-
-
+        
         // public int TurnOrder => _turn.TurnOrder;
         
         private GameFlowManager.StageEnterContext _context;
@@ -61,6 +64,8 @@ namespace Cardevil.Gameplay.Root
             turnManager = new TurnManager(cardManager, Player, _enemySpawner, Field);
             
             StageCameraCanvas.Instance.InitRock(); // 돌 끄기
+            
+            // TODO: 넘겨진 stage 정보에 따라 설정
         }
 
         
@@ -87,10 +92,28 @@ namespace Cardevil.Gameplay.Root
 
 
             await view.PlayEnterStageAnimationAsync();
+            //
+            // await turnManager.CoreLoopAsync();
+            //
+            // OnTurnLoopEnded();
+
+            await PlayShowRewardAsync();
+        }
+
+        private async UniTask PlayShowRewardAsync()
+        {
+            var rewardPresenter = new StageClearRewardPresenter(
+                rewardTableView,
+                rewardChestView,
+                CardevilCore.PlayerStatus,
+                CardevilCore.Game.Relic,
+                5,
+                DungeonNodeTypes.MiniBoss);
             
-            await turnManager.CoreLoopAsync();
+            await view.PlayShowDimAsync();
             
-            OnTurnLoopEnded();
+            rewardPresenter.Show();
+            await rewardPresenter.RewardWaiter.Task;
         }
 
         /// <summary>
@@ -102,12 +125,17 @@ namespace Cardevil.Gameplay.Root
             // TODO: 보상창 등 나와야함.
             // TODO: 변경사항 세이브 해야함.
             
+
+            
             LogEx.Log("스테이지 종료");
             
             CardevilCore.GameFlow.Stage = null;
             
             turnManager?.Dispose();
             turnManager = null;
+
+            // _enemySpawner?.Dispose();
+            _enemySpawner = null;
             
             var exitInfo = new NodeExitInfo() { IsCleared = true };
             CardevilCore.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);

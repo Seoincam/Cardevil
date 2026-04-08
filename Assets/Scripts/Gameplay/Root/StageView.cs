@@ -4,6 +4,7 @@ using Cardevil.UI;
 using Cardevil.UI.GlobalNavigationBar;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -14,6 +15,14 @@ namespace Cardevil.Gameplay.Root
     /// </summary>
     public class StageView : MonoBehaviour
     {
+        [SerializeField] private float dimFadeDuration;
+        [SerializeField] private CanvasGroup dimCanvasGroup;
+
+        private void Awake()
+        {
+            dimCanvasGroup.blocksRaycasts = false;
+        }
+
         public async UniTask PlayEnterStageAnimationAsync()
         {
             // @machamy가 작성.
@@ -68,6 +77,18 @@ namespace Cardevil.Gameplay.Root
             GlobalNavigationBar gnb = GlobalNavigationBar.Instance;
             gnb.gameObject.SetActive(true);
             await gnb.ShowAsync(0.4f);
+        }
+
+        public async UniTask PlayShowDimAsync()
+        {
+            dimCanvasGroup.blocksRaycasts = true;
+            await dimCanvasGroup.DOFade(1f, dimFadeDuration);
+        }
+
+        public async UniTask PlayHideDimAsync()
+        {
+            await dimCanvasGroup.DOFade(0f, dimFadeDuration);
+            dimCanvasGroup.blocksRaycasts = false;
         }
     }
 }
