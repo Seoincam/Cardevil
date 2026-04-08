@@ -94,7 +94,7 @@ namespace Cardevil.Card.Common.Core
             if (Colors != null) clone.Colors = Colors.DeepClone();
             if (Numbers != null) clone.Numbers = Numbers.DeepClone();
             if (Directions != null) clone.Directions = Directions.DeepClone();
-            clone.DirectionFlag = clone.DirectionFlag;
+            clone.DirectionFlag = DirectionFlag;
 
             return clone;
         }

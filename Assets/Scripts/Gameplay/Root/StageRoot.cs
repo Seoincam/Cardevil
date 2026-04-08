@@ -94,7 +94,7 @@ namespace Cardevil.Gameplay.Root
 
 
             await view.PlayEnterStageAnimationAsync();
-            //
+            
             // await turnManager.CoreLoopAsync();
             //
             // OnTurnLoopEnded();
