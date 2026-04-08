@@ -1,5 +1,6 @@
 using Cardevil.Gameplay.Dungeon.Node;
 using Cardevil.Gameplay.Relics.Core;
+using Cardevil.UI.PopUp;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Cardevil.Gameplay.Root.Stage
         
         private readonly ClearRewardTableView _tableView;
         private readonly ClearRewardRelicChestView _relicChestView;
+        private readonly SlotMachine _slotMachine;
         private readonly PlayerStatus _playerStatus;
         private readonly RelicManager _relicManager;
         
@@ -39,6 +41,7 @@ namespace Cardevil.Gameplay.Root.Stage
         public StageClearRewardPresenter(
             ClearRewardTableView tableView, 
             ClearRewardRelicChestView relicChestView,
+            SlotMachine slotMachine,
             PlayerStatus playerStatus,
             RelicManager relicManager,
             int coinCount, 
@@ -46,6 +49,7 @@ namespace Cardevil.Gameplay.Root.Stage
         {
             _tableView = tableView;
             _relicChestView = relicChestView;
+            _slotMachine = slotMachine;
             _playerStatus = playerStatus;
             _relicManager = relicManager;
             
@@ -55,6 +59,7 @@ namespace Cardevil.Gameplay.Root.Stage
             tableView.Tapped += HandleTableTapped;
             relicChestView.RelicClicked += HandleRelicClicked;
             relicChestView.RerollClicked += HandleRerollClicked;
+            slotMachine.OnSlotMachineClear += HandleSlotMachineCompleted;
 
             RewardWaiter = new UniTaskCompletionSource();
         }
@@ -64,6 +69,7 @@ namespace Cardevil.Gameplay.Root.Stage
             if (_tableView) _tableView.Tapped -= HandleTableTapped;
             if (_relicChestView) _relicChestView.RelicClicked -= HandleRelicClicked;
             if (_relicChestView) _relicChestView.RerollClicked -= HandleRerollClicked;
+            if (_slotMachine) _slotMachine.OnSlotMachineClear -= HandleSlotMachineCompleted;
         }
 
 
@@ -91,7 +97,9 @@ namespace Cardevil.Gameplay.Root.Stage
             else
             {
                 _playerStatus.ModifyBaseValue(PlayerStatType.Gold, _coinCount);
+                
                 _tableView.PlayHideAnimationAsync().Forget();
+                _slotMachine.ActiveSlotMachine().Forget();
             }
         }
 
@@ -107,6 +115,11 @@ namespace Cardevil.Gameplay.Root.Stage
         {
             var newRelicDef = _relicManager.RerollSingleRelic(TargetRarity, _currentRelicOptions, index);
             _relicChestView.RefreshRelic(index, newRelicDef);
+        }
+
+        private void HandleSlotMachineCompleted()
+        {
+            RewardWaiter.TrySetResult();
         }
     }
 }

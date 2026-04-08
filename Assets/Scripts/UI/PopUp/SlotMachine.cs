@@ -35,6 +35,9 @@ namespace Cardevil.UI.PopUp
         [Header("Animation Controller")]
         [SerializeField] private SlotMachineAnimation _animationController; 
 
+        [Tooltip("첫 등장 대기 시간")]
+        [SerializeField] private float showInterval = 1f;
+        
         [Header("UI 설정")]
         public GameObject probabilityPanel;
         [Tooltip("각 박스 이미지 사이의 간격(픽셀)")]
@@ -82,9 +85,9 @@ namespace Cardevil.UI.PopUp
         /// <summary>
         /// 슬롯머신 호출
         /// </summary>
-        public async UniTask ActiveSlotMachine(float waitSeconds)
+        public async UniTask ActiveSlotMachine()
         {
-            await UniTask.WaitForSeconds(waitSeconds);
+            await UniTask.WaitForSeconds(showInterval);
             this.gameObject.SetActive(true);
             _animationController.SlotMachine_GetUpAnimation();
             UpdateLayout();

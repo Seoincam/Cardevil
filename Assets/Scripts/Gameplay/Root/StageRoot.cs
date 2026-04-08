@@ -13,6 +13,7 @@ using Cardevil.Gameplay.Player;
 using Cardevil.Gameplay.Root.Stage;
 using Cardevil.Gameplay.Turn;
 using Cardevil.UI;
+using Cardevil.UI.PopUp;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -33,6 +34,7 @@ namespace Cardevil.Gameplay.Root
         
         [Space, SerializeField] private ClearRewardTableView rewardTableView;
         [SerializeField] private ClearRewardRelicChestView rewardChestView;
+        [SerializeField] private SlotMachine slotMachine;
 
         [Header("States")] 
         [SerializeField] private TurnManager turnManager;
@@ -77,29 +79,20 @@ namespace Cardevil.Gameplay.Root
         /// </summary>
         public async UniTask EnterStageAsync()
         {
-            /*
-            // TODO : 필드 초기화 - @machamy
-            Field.InitField(3,3, Random.Range(0,4));
-            Player.Init(Field);
-            
-            _enemySpawner.ConfigureStageMobData(_context.stageId);
-            if (!_enemySpawner.TrySpawn(out var enemy))
-            {
-                LogEx.LogError($"Failed to spawn Enemy. stage Id: {_context.stageId}");
-                return;
-            }
-           
-            enemy.Init(Field);
-            */
-
-
             await view.PlayEnterStageAnimationAsync();
-            
-            // await turnManager.CoreLoopAsync();
-            //
-            // OnTurnLoopEnded();
 
+            StageCoreLoopAsync().Forget();
+        }
+
+
+        private async UniTask StageCoreLoopAsync()
+        {
+            // await turnManager.CoreLoopAsync();
+            
+            // TODO: 이기는 경우만 일단 처리중. 패배 고려해야함.
             await PlayShowRewardAsync();
+            
+            OnTurnLoopEnded();
         }
 
         private async UniTask PlayShowRewardAsync()
@@ -107,6 +100,7 @@ namespace Cardevil.Gameplay.Root
             var rewardPresenter = new StageClearRewardPresenter(
                 rewardTableView,
                 rewardChestView,
+                slotMachine,
                 CardevilCore.PlayerStatus,
                 CardevilCore.Game.Relic,
                 5,
@@ -116,6 +110,10 @@ namespace Cardevil.Gameplay.Root
             
             rewardPresenter.Show();
             await rewardPresenter.RewardWaiter.Task;
+            
+            await view.PlayHideDimAsync();
+            
+            LogEx.Log("스테이지 보상 획득 끝!");
         }
 
         /// <summary>
@@ -141,6 +139,7 @@ namespace Cardevil.Gameplay.Root
             
             var exitInfo = new NodeExitInfo() { IsCleared = true };
             CardevilCore.GameFlow.World.Dungeon.ExitCurrentNode(exitInfo);
+            CardevilCore.GameFlow.World.Dungeon.UI.gameObject.SetActive(true); // 임시로 껐던거 임시로 여기서 킴
             SceneLoader.UnloadSceneAsync(Scenes.Stage).Forget();
         }
     }
