@@ -330,6 +330,17 @@ namespace Cardevil.Gameplay.Dungeon.Build
 #endif
             }
         }
+
+        [ContextMenu("Validate All Nodes")]
+        public void ValidateAllNodes()
+        {
+            foreach (var node in this)
+            {
+                if (node == null) continue;
+
+                node.OnValidate();
+            }
+        }
 //
 //         [ContextMenu("Force Auto generate Room IDs")]
 //         public void ForceAutoGenerateRoomIds()
