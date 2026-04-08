@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{b2794613-2cbc-41a0-98ca-329f7899efdb}">
+		<property name="assetPath">
+			<value>SFX/PlayingCardTrigger.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.34401360544217685</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{0b0070e6-07f8-41d4-812a-953a9e13ca84}</destination>
+		</relationship>
+	</object>
+</objects>
