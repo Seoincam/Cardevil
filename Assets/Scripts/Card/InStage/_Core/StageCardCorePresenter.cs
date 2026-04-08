@@ -12,7 +12,7 @@ namespace Cardevil.Card.InStage
     [Serializable]
     public class StageCardCorePresenter : IDisposable
     {
-        [SerializeField] private StageCardCoreModel model = new();
+        [SerializeField] private StageCardCoreModel model;
 
         private StepElementBuilder _stepBuilder;
         private UniTaskCompletionSource _playerInputWaiter;
@@ -23,12 +23,15 @@ namespace Cardevil.Card.InStage
         private StageCardCoreView _view;
 
         public StageCardCorePresenter(
+            CardRepository cardRepository,
             IScoreProviderRegistry scoreProviderRegistry,
             StageCardCoreView view,
             HandBarPresenter handBarPresenter,
             ScorePresenter scorePresenter
         )
         {
+            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedStates());
+            
             _view = view;
             view.UseClicked += OnUseRequested;
             view.DiscardClicked += OnDiscardRequested;

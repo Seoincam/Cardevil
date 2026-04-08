@@ -4,11 +4,16 @@ using Cardevil.Gameplay.Items;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using Cardevil.Core.Utils;
 
 namespace Cardevil.UI.PopUp
 {
     public class Slot : MonoBehaviour
     {
+
+        public int slotIndex; // 0, 1, 2 (SlotMachine에서 할당)
+        public SlotMachineAnimation animController; // 하이라이트 호출을 위한 참조
+
         public Item item; // 슬롯에 등장할 아이템
         public Image itemIconImage;
         public Text itemNameText;
@@ -31,6 +36,9 @@ namespace Cardevil.UI.PopUp
         {
             slotItem.SetActive(true);
             RectTransform rt = slotItem.GetComponent<RectTransform>();
+
+            // 스핀 시작 시 이전 하이라이트 이펙트 제거
+            if (animController != null) animController.ClearHighlight(slotIndex);
 
             // 기존 애니메이션 제거
             rt.DOKill();
@@ -72,10 +80,16 @@ namespace Cardevil.UI.PopUp
 
             // 확정된 아이템이 위에서 툭 떨어지는 연출 시작
             rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, startYPosition);
-
-            // 2. 낙하 및 바운스 애니메이션 실행
+            // 낙하 애니메이션 실행 후, OnComplete에서 배경 하이라이트 이펙트 트리거
             rt.DOAnchorPosY(0, dropDuration)
-                .SetEase(Ease.OutBounce);
+                .SetEase(Ease.OutBounce)
+                .OnComplete(() =>
+                {
+                    if (animController != null)
+                    {
+                        animController.PlayHighlightEffect(slotIndex, itemtmp);
+                    }
+                });
         }
 
 
@@ -85,25 +99,65 @@ namespace Cardevil.UI.PopUp
 
         public void SetData(Item findItem)
         {
-
-            if (findItem == null) return; // 예외처리
-        
-            // 이미지 로딩
-            if (CardevilCore.Database.TryGetSprite(findItem.macinRewardData.URL, out Sprite loadedSprite))
+            if (findItem == null) return;
+            if (animController == null)
             {
-                // 성공! 찾은 스프라이트를 Image 컴포넌트에 적용
-                itemIconImage.sprite = loadedSprite;
-                itemIconImage.color = Color.white; // 이미지가 보이도록 색상 조절
-                // Debug.Log("이미지 로딩 성공");
+                Debug.LogError("SlotMachineAnimation 참조가 Slot에 할당되지 않았습니다.");
+                return;
+            }
+
+            // [변경점] DB에서 찾지 않고, SlotMachineAnimation에 할당된 스프라이트를 직접 가져옴
+            Sprite targetSprite = animController.GetItemSprite(findItem);
+
+            if (targetSprite != null)
+            {
+                itemIconImage.sprite = targetSprite;
+                itemIconImage.color = Color.white;
             }
             else
             {
-                // 실패. URL이 없거나, 로딩에 실패한 경우
-                // 여기에 '이미지 없음' 기본 아이콘을 설정하는 등의 예외 처리를 할 수 있습니다.
-                itemIconImage.sprite = null; // 또는 defaultIconSprite;
-                itemIconImage.color = Color.clear; // 이미지가 없으면 투명하게
-                Debug.LogWarning($"아이템 '{findItem.macinRewardData.URL}'의 이미지를 캐시에서 찾을 수 없습니다. URL: {findItem.macinRewardData.URL}");
+                // 할당된게 없을 경우 투명 처리
+                itemIconImage.sprite = null;
+                itemIconImage.color = Color.clear;
+                Debug.LogWarning($"[Slot] {findItem.itemName}에 맞는 이미지를 SlotMachineAnimation에서 찾을 수 없습니다.");
             }
+            itemIconImage.SetNativeSize();
+        }
+        /// <summary>
+        /// 아이템의 등급과 이름을 분석하여 DB에 등록된 실제 '이미지 이름(Key)'을 반환합니다.
+        /// </summary>
+        private string GetImageNameKey(Item item)
+        {
+            // DB(Resources 또는 어드레서블 등)에 등록된 실제 스프라이트 파일명이나 Key값과 
+            // 정확히 일치하는 문자열을 반환하도록 리턴값을 수정해 주세요.
+
+            switch (item.rareType)
+            {
+                case Define.RareType.Legend:
+                    if (item.itemName.Contains("Exact")) return "Legend_Exact_Upgrade"; // 예: DB에 있는 실제 이미지 이름
+                    if (item.itemName.Contains("JackPot")) return "Legend_Jack_Pot";
+                    if (item.itemName.Contains("Locked")) return "Legend_Relic_Locked";
+                    if (item.itemName.Contains("Unlocked")) return "Legend_Relic_Unlocked";
+                    break;
+
+                case Define.RareType.Epic:
+                    if (item.itemName.Contains("DarkUpgrade2")) return "Epic_Dark_Upgrade_2";
+                    if (item.itemName.Contains("DarkUpgrade3")) return "Epic_Dark_Upgrade_3";
+                    if (item.itemName.Contains("Gold")) return "Epic_Gold";
+                    if (item.itemName.Contains("Reroll")) return "Epic_Start_Reroll";
+                    break;
+
+                case Define.RareType.Rare:
+                    if (item.itemName.Contains("DarkUpgrade2")) return "Rare_Dark_Upgrade_2";
+                    if (item.itemName.Contains("DarkUpgrade3")) return "Rare_Dark_Upgrade_3";
+                    if (item.itemName.Contains("Gold")) return "Rare_Gold";
+                    if (item.itemName.Contains("Heal")) return "Rare_Heal";
+                    if (item.itemName.Contains("Reroll")) return "Rare_Start_Reroll";
+                    break;
+            }
+
+            // 매칭되는 조건이 없을 경우 기본적으로 아이템 이름을 그대로 Key로 사용 시도
+            return item.itemName;
         }
         #endregion
     }

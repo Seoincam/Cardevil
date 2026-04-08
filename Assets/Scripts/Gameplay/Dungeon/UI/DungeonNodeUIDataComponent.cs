@@ -14,10 +14,10 @@ namespace Cardevil.Gameplay.Dungeon.UI
         public int nodeFloor;
         [VisibleOnly] public DungeonNodeTypes nodeType;
         public DungeonNodePreset nodePreset;
+        public string roomId;
 
         public List<DungeonNodeUIDataComponent> nextNodes = new List<DungeonNodeUIDataComponent>();
-
-
+        
 
         private void Awake()
         {
@@ -58,7 +58,45 @@ namespace Cardevil.Gameplay.Dungeon.UI
             {
                 nodeType = DungeonNodeTypes.None;
             }
+
+            // AutoSetRoomId();
         }
+        
+        // public void AutoSetRoomId(bool force = false)
+        // {
+        //     if (force || useAutoGenerateRoomId)
+        //     {
+        //         DungeonChapterUI parentHelper = GetComponentInParent<DungeonChapterUI>();
+        //         string postfix;
+        //         // switch (nodeType)
+        //         string bossPrefix = nodeType switch
+        //         {
+        //             DungeonNodeTypes.FinalBoss => "FBoss",
+        //             DungeonNodeTypes.MiniBoss => "MBoss",
+        //             _ => ""
+        //         };
+        //         if (parentHelper == null)
+        //         {
+        //             postfix = $"{bossPrefix}Node{nodeId}";
+        //         }
+        //         else
+        //         {
+        //             postfix = $"{bossPrefix}{parentHelper.DungeonId}.{nodeId}";
+        //         }
+        //         string newRoomId = nodeType switch
+        //         {
+        //             DungeonNodeTypes.Mob => $"{postfix}",
+        //             DungeonNodeTypes.MiniBoss => $"MBoss{postfix}",
+        //             DungeonNodeTypes.FinalBoss => $"FBoss{postfix}",
+        //             _ => $"Node_{postfix}"
+        //         };
+        //         roomId = newRoomId;
+        //         #if UNITY_EDITOR
+        //         UnityEditor.EditorUtility.SetDirty(this);
+        //         #endif
+        //     }
+        //     
+        // }
 
 #if UNITY_EDITOR
         [Header("기즈모 설정")]
@@ -70,6 +108,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
         private void OnDrawGizmos()
         {
             if (!showGizmos) return;
+            
 
             // 일반 상태: 화살표 없이 연결선만 그리기
             Gizmos.color = gizmoLineColor;
@@ -78,6 +117,10 @@ namespace Cardevil.Gameplay.Dungeon.UI
                 if (nextNode == null) continue;
                 Gizmos.DrawLine(transform.position, nextNode.transform.position);
             }
+            // 노드 RoomId와 NodeId 표시
+            Gizmos.color = Color.magenta;
+            string label = $"ID: {nodeId}\nRoom: {roomId}";
+            UnityEditor.Handles.Label(transform.position + Vector3.up * 0.5f, label);
         }
 
         private void OnDrawGizmosSelected()

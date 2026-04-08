@@ -1,3 +1,4 @@
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Dungeon.Core;
@@ -7,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Cardevil.Core
 {
@@ -42,13 +42,13 @@ namespace Cardevil.Core
             // TODO: 전투, 회복, 상점 등 분기해야함.
             // TODO: Db에 접근해서 스테이지 데이터 구성.
 
-            if (!World)
-            {
-                LogEx.LogError("World is null");
-                return;
-            }
-
             await World.EnterStageAsync(Context, ct);
+            
+            Stage.Initialize(
+                Context, 
+                CardevilCore.PlayerStatus, 
+                CardevilCore.Game.CardRepository, 
+                CardevilCore.Game.ScoreProviderRegistry);
             await Stage.EnterStageAsync();
         }
     }

@@ -1,3 +1,4 @@
+using Cardevil.Card.Common.Core;
 using Cardevil.Card.InStage.Score;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Attributes;
@@ -26,7 +27,10 @@ namespace Cardevil.Card.InStage
         [field: SerializeField] public ValueSelectionPresenter ValueSelection { get; private set; }
         [field: SerializeField] public ScorePresenter Score { get; private set; }
         
-        public void Initialize(PlayerStatus playerStatus, IScoreProviderRegistry scoreProviderRegistry)
+        public void Initialize(
+            CardRepository cardRepository,
+            PlayerStatus playerStatus, 
+            IScoreProviderRegistry scoreProviderRegistry)
         {
             // 내부 로직
             ValueSelection = new ValueSelectionPresenter(valueSelectionView);
@@ -34,7 +38,7 @@ namespace Cardevil.Card.InStage
             Score = new ScorePresenter(cardScoreView); 
             
             // 외부 클래스와 상호작용
-            Core = new StageCardCorePresenter(scoreProviderRegistry, coreView, HandBar, Score);
+            Core = new StageCardCorePresenter(cardRepository, scoreProviderRegistry, coreView, HandBar, Score);
             Reroll = new RerollPresenter(playerStatus, rerollView, Core, HandBar);
             
             HandBar.HandRankChanged += Score.OnHandRankChanged;

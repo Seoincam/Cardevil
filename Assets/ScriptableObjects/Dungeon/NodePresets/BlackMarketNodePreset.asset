@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: "\uC554\uC2DC\uC7A5"
   nodeType: 6
-  lockedSprite: {fileID: 21300000, guid: 0d9e7e29cd2e5bd4c84f441e6051d0f3, type: 3}
-  activeSprite: {fileID: 21300000, guid: c97d2e52efe42bb4bac602cf22dec12b, type: 3}
+  lockedSprite: {fileID: 21300000, guid: e9747815f11a59b469034ac72348288c, type: 3}
+  activeSprite: {fileID: 21300000, guid: 364e64892a2de08458eeb874d5b65940, type: 3}
   completedSprite: {fileID: 21300000, guid: ff28f2a4b4a42fb4b86ae6fe4a82509d, type: 3}
+  spriteScale: 0.65
   completedOverlaySprite: {fileID: 0}
+  overlayScale: 1
   nodeColor: {r: 1, g: 1, b: 1, a: 1}
   textColor: {r: 1, g: 1, b: 1, a: 1}
   _appearChance: 0.5

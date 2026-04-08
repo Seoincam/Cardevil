@@ -1,5 +1,8 @@
 ﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Utils;
+using Database.Generated;
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +18,8 @@ namespace Cardevil.Gameplay.Dungeon.Node
     {
         [SerializeReference, VisibleOnly] private Core.Dungeon dungeon;
         [SerializeField, VisibleOnly] private int nodeInternalId;
+        [SerializeField, VisibleOnly] private string roomId;
+        [SerializeField, VisibleOnly] private RoomData roomData;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodePreset preset;
         [SerializeField, VisibleOnly] private NodeState state = NodeState.Locked;
@@ -32,10 +37,44 @@ namespace Cardevil.Gameplay.Dungeon.Node
             get => nodeInternalId;
             set => nodeInternalId = value;
         }
+        
+        public string RoomId
+        {
+            get => roomId.ToString();
+            set
+            {
+                roomId = value;
+            }
+        }
         public int Floor 
         {
             get => floor;
             set => floor = value;
+        }
+        public RoomData RoomData
+        {
+            get
+            {
+                switch (preset.NodeType)
+                {
+                    case DungeonNodeTypes.Mob:
+                    case DungeonNodeTypes.MiniBoss:
+                    case DungeonNodeTypes.FinalBoss:
+                        if (roomData == null && !string.IsNullOrEmpty(roomId))
+                        {
+                            var db = CardevilCore.Database.Database;
+                            // TODO : 딕셔너리 조회로 최적화
+                            roomData = db.RoomDataList.Find(r => r.RoomID == roomId);
+                            if (roomData == null)                    
+                            {
+                                LogEx.LogError($"[DungeonNode] RoomData not found for RoomID: {roomId}");
+                            }
+                        }
+                        break;
+                }
+                
+                return roomData;
+            }
         }
         
         /// <summary>
@@ -85,18 +124,19 @@ namespace Cardevil.Gameplay.Dungeon.Node
 
         private DungeonNode()
         {
-            
+            roomData = null;
         }
 
         public static DungeonNode CreateVoid()
         {
-            return new DungeonNode(-1, -1, null);
+            return new DungeonNode(-1, -1, null, null);
         }
-        public DungeonNode(int nodeId, int floor, DungeonNodePreset preset)
+        public DungeonNode(int nodeId, int floor, [CanBeNull] string roomId, DungeonNodePreset preset)
         {
             NodeId = nodeId;
             Floor = floor;
             Preset = preset;
+            this.roomId = roomId ?? string.Empty;
             PreviousNodes = new List<DungeonNode>();
             NextNodes = new List<DungeonNode>();
             state = NodeState.Locked;
@@ -109,6 +149,7 @@ namespace Cardevil.Gameplay.Dungeon.Node
         {
             // 노드 상태 초기화
             state = NodeState.Locked;
+            _ = RoomData;
             
             Debug.Log($"[DungeonNode] Node {NodeId} initialized. Type: {Type}, NextNodes: {NextNodes.Count}, PrevNodes: {PreviousNodes.Count}");
         }
