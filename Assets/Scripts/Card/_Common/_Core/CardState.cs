@@ -24,7 +24,7 @@ namespace Cardevil.Card.Common.Core
         CardState.ValueSelectableType SelectableType { get; }
         bool ValueSelected { get; }
         
-        uint Id { get; }
+        int Id { get; }
         CardType Type { get; }
     }
     
@@ -78,7 +78,7 @@ namespace Cardevil.Card.Common.Core
             }
         }
         
-        public uint Id => spec.ID;
+        public int Id => spec.ID;
         public CardType Type => spec.Type;
 
         public CardState(CardSpec spec)

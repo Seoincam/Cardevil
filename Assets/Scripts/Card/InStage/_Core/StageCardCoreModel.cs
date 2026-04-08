@@ -127,7 +127,7 @@ namespace Cardevil.Card.InStage
                 {
                     if (color == CardColor.None) continue;
                     
-                    var state = new CardSpec((uint)(10 + n), CardType.Attack)
+                    var state = new CardSpec((10 + n), CardType.Attack)
                         .AddElements(
                             new BaseColorElement(color),
                             new BaseNumberElement(n)

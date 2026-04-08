@@ -8,7 +8,7 @@ namespace Cardevil.Test.Card
 {
     public class HandRankEvaluatorTests
     {
-        private static CardState CreateAttackCard(uint id, CardColor color, int number)
+        private static CardState CreateAttackCard(int id, CardColor color, int number)
         {
             return new CardSpec(id, CardType.Attack)
                 .AddElements(
@@ -18,7 +18,7 @@ namespace Cardevil.Test.Card
                 .State;
         }
 
-        private static CardState CreateMoveCard(uint id, Direction direction)
+        private static CardState CreateMoveCard(int id, Direction direction)
         {
             return new CardSpec(id, CardType.Move)
                 .AddElements(
