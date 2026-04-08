@@ -5,7 +5,6 @@ using Cardevil.Core.Systems.Save;
 using Cardevil.Gameplay.Dungeon;
 using Cardevil.UI.GlobalNavigationBar;
 using Cysharp.Threading.Tasks;
-using DG.Tweening;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,7 +14,8 @@ namespace Cardevil.Gameplay.Root
     public class WorldRoot : MonoBehaviour, ISaveLoadRoot
     {
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
-
+        [SerializeField] private WorldView view;
+        
         private void Start()
         {
             Init();
@@ -34,10 +34,17 @@ namespace Cardevil.Gameplay.Root
 
         public async UniTask EnterStageAsync(GameFlowManager.StageEnterContext ctx, CancellationToken ct = default)
         {
+            var dungeon = Dungeon;
+            if (dungeon == null)
+            {
+                Debug.LogError("WorldRoot: Dungeon manager is not initialized.");
+                return;
+            }
+
             var op = SceneLoader.LoadSceneHandle(Scenes.Stage, LoadSceneMode.Additive);
 
             var loadReadyTask = UniTask.WaitUntil(() => op.progress >= .9f, cancellationToken: ct);
-            var worldAnimTask = PlayStageEnterAnimation(ct);
+            var worldAnimTask = view.PlayStageEnterTransitionAsync(dungeon, ct);
 
             await UniTask.WhenAll(loadReadyTask, worldAnimTask);
 
@@ -45,7 +52,7 @@ namespace Cardevil.Gameplay.Root
             await SceneLoader.WaitSceneActivationAsync(Scenes.Stage, op, LoadSceneMode.Additive, ct);
             SceneLoader.SetActiveScene(Scenes.Stage);
 
-            Dungeon.UI.gameObject.SetActive(false);
+            view.HideMap(dungeon);
         }
 
         public async UniTask ReturnFromStageAsync(CancellationToken ct)
@@ -57,37 +64,19 @@ namespace Cardevil.Gameplay.Root
                 return;
             }
 
-            dungeon.UI.gameObject.SetActive(true);
-            dungeon.UI.CanvasGroup.alpha = 0f;
             CameraManager.Instance.EnableSceneCameras(Scenes.World);
+            view.PrepareMapForReturn(dungeon);
 
-            await dungeon.UI.CanvasGroup.DOFade(1f, 0.2f).ToUniTask(cancellationToken: ct);
-
+            var fadeTask = view.FadeInMapAsync(dungeon, ct);
             var unloadTask = SceneLoader.UnloadSceneAsync(Scenes.Stage);
-            var handUpTask = PlayReturnToMapAnimation(ct);
+            var handUpTask = view.PlayReturnToMapTransitionAsync(dungeon, ct);
+
+            await fadeTask;
             await UniTask.WhenAll(unloadTask, handUpTask);
 
             SceneLoader.SetActiveScene(Scenes.World);
         }
-
-        private async UniTask PlayStageEnterAnimation(CancellationToken ct)
-        {
-            var transitionUI = Dungeon.Transition;
-            if (transitionUI)
-            {
-                await transitionUI.ShowEnterTransition(ct);
-            }
-        }
-
-        private async UniTask PlayReturnToMapAnimation(CancellationToken ct)
-        {
-            var transitionUI = Dungeon.Transition;
-            if (transitionUI)
-            {
-                await transitionUI.ShowHandUpAnimation(ct);
-            }
-        }
-
+        
         public void Save(GameSave currentSave)
         {
         }
