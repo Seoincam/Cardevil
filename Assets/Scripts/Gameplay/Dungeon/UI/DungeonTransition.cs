@@ -18,8 +18,16 @@ namespace Cardevil.Gameplay.Dungeon.UI
         [SerializeField] private RectTransform transitionPanel;
         [SerializeField] private Image blackPanel;
         [SerializeField] private TextMeshProUGUI blackPanelText;
+        [SerializeField] private CanvasGroup canvasGroup;
+        [Header("PlayableDirector Settings")]
         [field:SerializeField] public PlayableDirector PlayableDirector { get; private set; }
         [field:SerializeField] public SkippableTimelinePlayableDirector SkippableTimelinePlayableDirector{ get; private set; }
+        [field:Space]
+        [field:Tooltip("월드씬에서 스테이지 씬으로 넘어갈 때 재생되는 타임라인 에셋입니다.")]
+        [field:SerializeField] public PlayableAsset TransitionToStagePlayableAsset { get; private set; }
+        [field:Tooltip("지도를 손에 드는 애니메이션이 재생되는 타임라인 에셋입니다.")]
+        [field:SerializeField] public PlayableAsset HandUpPlayableAsset { get; private set; }
+        
         
         private RectTransform _initialEnvironmentImagePosition;
         private RectTransform _initialPanelPosition;
@@ -61,8 +69,9 @@ namespace Cardevil.Gameplay.Dungeon.UI
             return UniTask.CompletedTask;
         }
 
-        public async UniTask ShowTransition(CancellationToken cancellationToken = default)
+        public async UniTask ShowEnterTransition(CancellationToken cancellationToken = default)
         {
+            PlayableDirector.playableAsset = TransitionToStagePlayableAsset;
             PlayableDirector.Play();
             var timeline = PlayableDirector.playableAsset as TimelineAsset;
 
@@ -70,6 +79,18 @@ namespace Cardevil.Gameplay.Dungeon.UI
             var stopTask = UniTask.WaitUntil(() => PlayableDirector.state != PlayState.Playing, cancellationToken: cancellationToken);
             
             PlayerSkipCheckTask(cancellationToken).Forget();
+            
+            await UniTask.WhenAny(durationTask, stopTask);
+        }
+        
+        public async UniTask ShowHandUpAnimation(CancellationToken cancellationToken = default)
+        {
+            PlayableDirector.playableAsset = HandUpPlayableAsset;
+            PlayableDirector.Play(HandUpPlayableAsset);
+            var durationTask = UniTask.WaitForSeconds((float)PlayableDirector.duration, cancellationToken: cancellationToken);
+            var stopTask = UniTask.WaitUntil(() => PlayableDirector.state != PlayState.Playing, cancellationToken: cancellationToken);
+            
+            // PlayerSkipCheckTask(cancellationToken).Forget();
             
             await UniTask.WhenAny(durationTask, stopTask);
         }

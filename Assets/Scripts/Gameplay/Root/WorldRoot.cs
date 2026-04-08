@@ -5,16 +5,13 @@ using Cardevil.Core.Systems.Save;
 using Cardevil.Gameplay.Dungeon;
 using Cardevil.UI.GlobalNavigationBar;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Cardevil.Gameplay.Root
 {
-    /// <summary>
-    /// 월드 루트 컨트롤러.
-    /// 던전 관리 및 스테이지 진입 흐름 제어.
-    /// </summary>
     public class WorldRoot : MonoBehaviour, ISaveLoadRoot
     {
         [field: SerializeField] public DungeonManager Dungeon { get; private set; }
@@ -24,32 +21,19 @@ namespace Cardevil.Gameplay.Root
             Init();
         }
 
-        
-        /// <summary>
-        /// 월드 초기화.
-        /// GameFlow 월드 설정 및 던전 매니저 생성·초기화.
-        /// </summary>
         public void Init()
         {
             CardevilCore.GameFlow.World = this;
-            
+
             Dungeon = new DungeonManager();
             Dungeon.Init();
-            
-            // TODO : 세이브 로드시 해당 페이지 보여주는걸로
+
             GlobalNavigationBar.Instance.gameObject.SetActive(true);
             Dungeon.UI.UpdateShowingDungeon(1);
         }
 
-        /// <summary>
-        /// 스테이지 진입 비동기 처리.
-        /// 씬 로드 진행 대기 및 던전 입장 연출 병행 후 씬 활성화.
-        /// </summary>
-        /// <param name="ctx">스테이지 진입 컨텍스트</param>
-        /// <param name="ct">취소 토큰</param>
         public async UniTask EnterStageAsync(GameFlowManager.StageEnterContext ctx, CancellationToken ct = default)
         {
-            // 씬 로드 & 스테이지 선택 연출까지 대기
             var op = SceneLoader.LoadSceneHandle(Scenes.Stage, LoadSceneMode.Additive);
 
             var loadReadyTask = UniTask.WaitUntil(() => op.progress >= .9f, cancellationToken: ct);
@@ -57,38 +41,59 @@ namespace Cardevil.Gameplay.Root
 
             await UniTask.WhenAll(loadReadyTask, worldAnimTask);
 
-            // 씬 활성화 허용
             op.allowSceneActivation = true;
             await SceneLoader.WaitSceneActivationAsync(Scenes.Stage, op, LoadSceneMode.Additive, ct);
             SceneLoader.SetActiveScene(Scenes.Stage);
-            
-            // @Seoincam - StageScene UI 입력이 안돼서 임시로 끄게 해둠.
+
             Dungeon.UI.gameObject.SetActive(false);
         }
 
-        
-        /// <summary>
-        /// 던전 입장 연출 실행.
-        /// 스테이지 진입 전 월드 연출 처리.
-        /// </summary>
-        /// <param name="ct">취소 토큰</param>
+        public async UniTask ReturnFromStageAsync(CancellationToken ct)
+        {
+            var dungeon = Dungeon;
+            if (dungeon == null)
+            {
+                Debug.LogError("WorldRoot: Dungeon manager is not initialized.");
+                return;
+            }
+
+            dungeon.UI.gameObject.SetActive(true);
+            dungeon.UI.CanvasGroup.alpha = 0f;
+            CameraManager.Instance.EnableSceneCameras(Scenes.World);
+
+            await dungeon.UI.CanvasGroup.DOFade(1f, 0.2f).ToUniTask(cancellationToken: ct);
+
+            var unloadTask = SceneLoader.UnloadSceneAsync(Scenes.Stage);
+            var handUpTask = PlayReturnToMapAnimation(ct);
+            await UniTask.WhenAll(unloadTask, handUpTask);
+
+            SceneLoader.SetActiveScene(Scenes.World);
+        }
+
         private async UniTask PlayStageEnterAnimation(CancellationToken ct)
         {
             var transitionUI = Dungeon.Transition;
             if (transitionUI)
             {
-                await transitionUI.ShowTransition(ct);
+                await transitionUI.ShowEnterTransition(ct);
+            }
+        }
+
+        private async UniTask PlayReturnToMapAnimation(CancellationToken ct)
+        {
+            var transitionUI = Dungeon.Transition;
+            if (transitionUI)
+            {
+                await transitionUI.ShowHandUpAnimation(ct);
             }
         }
 
         public void Save(GameSave currentSave)
         {
-            
         }
 
         public void Load(GameSave currentSave)
         {
-           
         }
     }
 }
