@@ -8,6 +8,8 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public sealed class CardSpec
     {
+        public event Action<CardSpec> SpecChanged;
+        
         [field: SerializeField, VisibleOnly] public int ID { get; private set; }
         [field: SerializeField, VisibleOnly] public CardType Type { get; private set; }
 
@@ -54,6 +56,7 @@ namespace Cardevil.Card.Common.Core
         {
             elements.AddRange(specElements);
             _isDirty = true;
+            SpecChanged?.Invoke(this);
             return this;
         }
     }
