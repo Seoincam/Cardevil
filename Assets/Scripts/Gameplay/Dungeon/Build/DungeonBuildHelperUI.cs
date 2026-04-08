@@ -296,28 +296,53 @@ namespace Cardevil.Gameplay.Dungeon.Build
         [ContextMenu("Auto generate Room IDs")]
         public void AutoGenerateRoomIds()
         {
+            Dictionary<DungeonNodeTypes, int> typeCounts = new Dictionary<DungeonNodeTypes, int>();
+            DungeonChapterUI chapterUI = GetComponent<DungeonChapterUI>();
+            string GetRoomId(DungeonNodeTypes type, int dungeonId, int count)
+            {
+                
+                string newRoomId = type switch
+                {
+                    DungeonNodeTypes.Mob => $"{dungeonId}.{count}",
+                    DungeonNodeTypes.MiniBoss => $"MBoss{dungeonId}.{count}",
+                    DungeonNodeTypes.FinalBoss => $"FBoss{dungeonId}.{count}",
+                    _ => $"{type.ToString()}{dungeonId}.{count}"
+                };
+                return newRoomId;
+            }
+            
             foreach (var node in this)
             {
                 if (node == null) continue;
-                node.AutoSetRoomId(force: true);
+                if (!typeCounts.ContainsKey(node.nodeType))
+                {
+                    typeCounts[node.nodeType] = 1;
+                }
+                else
+                {
+                    typeCounts[node.nodeType]++;
+                }
+                int dungeonId = chapterUI?.DungeonId ?? -1;
+                node.roomId = GetRoomId(node.nodeType, dungeonId, typeCounts[node.nodeType]);
+                node.OnValidate();
 #if UNITY_EDITOR
                 PrefabUtility.RecordPrefabInstancePropertyModifications(node);
 #endif
             }
         }
-
-        [ContextMenu("Force Auto generate Room IDs")]
-        public void ForceAutoGenerateRoomIds()
-        {
-            foreach (var node in this)
-            {
-                if (node == null) continue;
-                node.AutoSetRoomId(force: true);
-#if UNITY_EDITOR
-                PrefabUtility.RecordPrefabInstancePropertyModifications(node);
-#endif
-            }
-        }
+//
+//         [ContextMenu("Force Auto generate Room IDs")]
+//         public void ForceAutoGenerateRoomIds()
+//         {
+//             foreach (var node in this)
+//             {
+//                 if (node == null) continue;
+//                 
+// #if UNITY_EDITOR
+//                 PrefabUtility.RecordPrefabInstancePropertyModifications(node);
+// #endif
+//             }
+//         }
 
         public Core.Dungeon BuildDungeon()
         {
@@ -491,6 +516,7 @@ namespace Cardevil.Gameplay.Dungeon.Build
         private Color gizmoNodeColor = Color.white;
         private Color gizmoConnectionColor = new Color(0.5f, 1f, 0.5f, 0.8f);
         private float gizmoNodeSize = 3f;
+        
 
         private void OnDrawGizmos()
         {
