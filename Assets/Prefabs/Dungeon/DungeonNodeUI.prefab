@@ -167,6 +167,8 @@ MonoBehaviour:
   nodeFloor: 0
   nodeType: 0
   nodePreset: {fileID: 0}
+  roomId: Node1
+  useAutoGenerateRoomId: 1
   nextNodes:
   - {fileID: 0}
 --- !u!1 &7196351500468433209
@@ -272,6 +274,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

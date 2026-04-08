@@ -1281,6 +1281,15 @@ MonoBehaviour:
       dungeon:
         rid: -2
       nodeInternalId: 0
+      roomId: 
+      roomData:
+        RoomID: 
+        MobCount: 0
+        MobList: []
+        RoomSequence: 0
+        HPRate: []
+        HPRateProbabillity: []
+        MachineLevel: 0
       floor: 0
       preset: {fileID: 0}
       state: 0
@@ -1291,6 +1300,15 @@ MonoBehaviour:
       dungeon:
         rid: -2
       nodeInternalId: 0
+      roomId: 
+      roomData:
+        RoomID: 
+        MobCount: 0
+        MobList: []
+        RoomSequence: 0
+        HPRate: []
+        HPRateProbabillity: []
+        MachineLevel: 0
       floor: 0
       preset: {fileID: 0}
       state: 0
