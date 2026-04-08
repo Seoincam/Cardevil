@@ -105,9 +105,8 @@ namespace Cardevil.Gameplay.Root.Stage
 
         private void HandleRerollClicked(int index)
         {
-            _relicManager.RerollSingleRelic(TargetRarity, _currentRelicOptions, index);
-            
-            // TODO: View에 반영하기
+            var newRelicDef = _relicManager.RerollSingleRelic(TargetRarity, _currentRelicOptions, index);
+            _relicChestView.RefreshRelic(index, newRelicDef);
         }
     }
 }

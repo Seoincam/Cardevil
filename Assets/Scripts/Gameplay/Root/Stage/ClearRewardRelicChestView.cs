@@ -79,7 +79,7 @@ namespace Cardevil.Gameplay.Root.Stage
                     continue;
                 }
                 
-                SetupRelic(i, relics[i]);
+                RefreshRelic(i, relics[i]);
             }
             
             
@@ -94,6 +94,12 @@ namespace Cardevil.Gameplay.Root.Stage
             
             entireCanvasGroup.interactable = true;
         }
+        
+        public void RefreshRelic(int index, RelicDefinition def)
+        {
+            var icon = def.DisplayIcon;
+            relicButtons[index].image.sprite = icon;
+        }
 
         public async UniTask PlayHideAnimationAsync()
         {
@@ -102,12 +108,6 @@ namespace Cardevil.Gameplay.Root.Stage
             await entireCanvasGroup.DOFade(0f, containerFadeDuration);
 
             entireCanvasGroup.blocksRaycasts = false;
-        }
-
-        private void SetupRelic(int index, RelicDefinition def)
-        {
-            var icon = def.DisplayIcon;
-            relicButtons[index].image.sprite = icon;
         }
     }
 }
