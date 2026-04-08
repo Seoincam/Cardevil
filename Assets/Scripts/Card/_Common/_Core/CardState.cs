@@ -91,9 +91,9 @@ namespace Cardevil.Card.Common.Core
         {
             var clone = new CardState(spec);
             
-            if (Colors != null) clone.Colors = clone.Colors.DeepClone();
-            if (Numbers != null) clone.Numbers = clone.Numbers.DeepClone();
-            if (Directions != null) clone.Directions = clone.Directions.DeepClone();
+            if (Colors != null) clone.Colors = Colors.DeepClone();
+            if (Numbers != null) clone.Numbers = Numbers.DeepClone();
+            if (Directions != null) clone.Directions = Directions.DeepClone();
             clone.DirectionFlag = clone.DirectionFlag;
 
             return clone;
