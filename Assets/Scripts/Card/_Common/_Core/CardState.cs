@@ -1,4 +1,5 @@
 using Cardevil.Card.InStage.Score.Step;
+using Cardevil.Core;
 using Cardevil.Core.Attributes;
 using Cardevil.Core.Utils;
 using System;
@@ -24,7 +25,7 @@ namespace Cardevil.Card.Common.Core
         CardState.ValueSelectableType SelectableType { get; }
         bool ValueSelected { get; }
         
-        uint Id { get; }
+        int Id { get; }
         CardType Type { get; }
     }
     
@@ -32,7 +33,7 @@ namespace Cardevil.Card.Common.Core
     /// 카드의 플레이용 상태 데이터 클래스.
     /// </summary>
     [Serializable]
-    public sealed class CardState : ICardState
+    public sealed class CardState : ICardState, IDeepClonable<CardState>
     {
         // 해당 상태를 생성한 원본 CardSpec.
         [SerializeField, VisibleOnly] private CardSpec spec;
@@ -78,7 +79,7 @@ namespace Cardevil.Card.Common.Core
             }
         }
         
-        public uint Id => spec.ID;
+        public int Id => spec.ID;
         public CardType Type => spec.Type;
 
         public CardState(CardSpec spec)
@@ -86,11 +87,23 @@ namespace Cardevil.Card.Common.Core
             this.spec = spec;
         }
 
+        public CardState DeepClone()
+        {
+            var clone = new CardState(spec);
+            
+            if (Colors != null) clone.Colors = clone.Colors.DeepClone();
+            if (Numbers != null) clone.Numbers = clone.Numbers.DeepClone();
+            if (Directions != null) clone.Directions = clone.Directions.DeepClone();
+            clone.DirectionFlag = clone.DirectionFlag;
+
+            return clone;
+        }
+
         /// <summary>
         /// 기본값과 선택 가능 값들을 관리하는 컨테이너.
         /// </summary>
         [Serializable]
-        public sealed class SelectableValues<T> where T : struct
+        public sealed class SelectableValues<T> : IDeepClonable<SelectableValues<T>> where T : struct 
         {
             [field: SerializeField] public Optional<T> DefaultValue { get; private set; }
             [SerializeField] private List<T> alternatives = new();
@@ -146,6 +159,17 @@ namespace Cardevil.Card.Common.Core
             {
                 Initialized = true;
                 DefaultValue = new Optional<T>(defaultValue);
+            }
+            
+            public SelectableValues<T> DeepClone()
+            {
+                var clone = new SelectableValues<T>(DefaultValue.hasValue ? DefaultValue.value : null)
+                {
+                    alternatives = new List<T>(alternatives), 
+                    selected = new Optional<T>(null)
+                };
+                
+                return clone;
             }
             
             public void AddAlternative(T value) => alternatives.Add(value);

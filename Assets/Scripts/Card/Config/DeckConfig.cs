@@ -56,7 +56,7 @@ namespace Cardevil.Card.Config
         public List<CardSpec> CreateDefaultSpecs()
         {
             var specs = new List<CardSpec>();
-            uint id = 1;
+            int id = 1;
             
             // Attack
             foreach (var color in colors)

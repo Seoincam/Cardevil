@@ -8,7 +8,9 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public sealed class CardSpec
     {
-        [field: SerializeField, VisibleOnly] public uint ID { get; private set; }
+        public event Action<CardSpec> SpecChanged;
+        
+        [field: SerializeField, VisibleOnly] public int ID { get; private set; }
         [field: SerializeField, VisibleOnly] public CardType Type { get; private set; }
 
         [SerializeReference, VisibleOnly] private List<ISpecElement> elements = new();
@@ -39,7 +41,7 @@ namespace Cardevil.Card.Common.Core
         public bool IsAttack => Type == CardType.Attack;
         public bool IsMove => Type == CardType.Move;
 
-        public CardSpec(uint id, CardType type, List<ISpecElement> elements = null)
+        public CardSpec(int id, CardType type, List<ISpecElement> elements = null)
         {
             ID = id;
             Type = type;
@@ -54,6 +56,7 @@ namespace Cardevil.Card.Common.Core
         {
             elements.AddRange(specElements);
             _isDirty = true;
+            SpecChanged?.Invoke(this);
             return this;
         }
     }
