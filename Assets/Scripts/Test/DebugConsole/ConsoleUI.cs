@@ -87,7 +87,8 @@ namespace Cardevil.Test.DebugConsole
             if (_instance != null && _instance != this)
             {
                 LogEx.LogWarning("Another instance of ConsoleUI already exists. Destroying this one.");
-                Destroy(gameObject);
+                if(gameObject)
+                    Destroy(gameObject);
                 return;
             }
             _instance = this;

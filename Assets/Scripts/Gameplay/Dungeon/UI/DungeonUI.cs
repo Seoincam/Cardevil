@@ -15,6 +15,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
     public class DungeonUI : MonoBehaviour
     {
         [SerializeField] private Canvas _dungeonUICanvas = null;
+        [SerializeField] private CanvasGroup _dungeonUICanvasGroup = null;
         [SerializeField] private RectTransform _rectTransform = null;
         [SerializeField] private List<DungeonChapterUI> _dungeonChapters = new List<DungeonChapterUI>();
         [SerializeField] DungeonUICamera _dungeonUICamera = null;
@@ -36,6 +37,22 @@ namespace Cardevil.Gameplay.Dungeon.UI
                     }
                 }
                 return _dungeonUICanvas;
+            }
+        }
+        
+        public CanvasGroup CanvasGroup
+        {
+            get
+            {
+                if (_dungeonUICanvasGroup == null)
+                {
+                    _dungeonUICanvasGroup = GetComponentInParent<CanvasGroup>();
+                    if (_dungeonUICanvasGroup == null)
+                    {
+                        LogEx.LogError("DungeonUI: No CanvasGroup component found on the GameObject.");
+                    }
+                }
+                return _dungeonUICanvasGroup;
             }
         }
         
