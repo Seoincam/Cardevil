@@ -26,7 +26,7 @@ namespace Cardevil.Core
             public List<string> mobIds;
         }
 
-        [field: SerializeField] public StageEnterContext Context { get; private set; } = new() { stageId = "1.2" };
+        [field: SerializeField] public StageEnterContext Context { get; private set; }
 
         [field: SerializeField] public WorldRoot World { get; set; }
         [field: SerializeField] public StageRoot Stage { get; set; }
@@ -41,6 +41,12 @@ namespace Cardevil.Core
         {
             LogEx.Log("Dungeon node selected");
 
+            Context = new StageEnterContext
+            {
+                stageId = args.Node.RoomData.RoomID, 
+                mobIds = args.Node.RoomData.MobList
+            };
+            
             await World.EnterStageAsync(Context, ct);
 
             Stage.Initialize(
