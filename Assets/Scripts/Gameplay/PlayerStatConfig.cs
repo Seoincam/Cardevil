@@ -14,7 +14,7 @@ namespace Cardevil.Gameplay
         [Serializable]
         public struct StatEntry
         {
-            [field: SerializeField] public PlayerStatType Type { get; private set; }
+            [field: SerializeField] public StatType Type { get; private set; }
             [field: SerializeField] public int Value { get; private set; }
         }
     }

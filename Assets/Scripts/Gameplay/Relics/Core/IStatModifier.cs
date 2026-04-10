@@ -5,7 +5,7 @@ namespace Cardevil.Gameplay.Relics.Core
     /// </summary>
     public interface IStatModifier
     {
-        PlayerStatType TargetType { get; }
+        StatType TargetType { get; }
         int Modify(int previousValue);
     }
 }
