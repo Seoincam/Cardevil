@@ -1,6 +1,7 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Dungeon;
 using Cardevil.Gameplay.Dungeon.Core;
 using Cardevil.Gameplay.Root;
 using Cysharp.Threading.Tasks;
@@ -67,6 +68,15 @@ namespace Cardevil.Core
                 LogEx.LogError("GameFlowManager: World is null while handling stage loop end.");
                 return;
             }
+            
+            DungeonManager dm = world.Dungeon;
+            if (dm == null)
+            {
+                LogEx.LogError("StageRoot: Dungeon manager is null during stage shutdown.");
+                return;
+            }
+
+            dm.ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
 
             try
             {

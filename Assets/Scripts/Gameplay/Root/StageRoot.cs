@@ -107,22 +107,6 @@ namespace Cardevil.Gameplay.Root
             turnManager?.Dispose();
             turnManager = null;
             _enemySpawner = null;
-
-            var world = CardevilCore.GameFlow.World;
-            if (world == null)
-            {
-                LogEx.LogError("StageRoot: World is null during stage shutdown.");
-                return;
-            }
-
-            DungeonManager dm = world.Dungeon;
-            if (dm == null)
-            {
-                LogEx.LogError("StageRoot: Dungeon manager is null during stage shutdown.");
-                return;
-            }
-
-            dm.ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
         }
     }
 }
