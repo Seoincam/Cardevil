@@ -72,10 +72,12 @@ namespace Cardevil.Gameplay.Root
 
         private async UniTask StageCoreLoopAsync()
         {
-            // await turnManager.CoreLoopAsync();
+            await turnManager.CoreLoopAsync();
+            
             await PlayShowRewardAsync();
 
             OnTurnLoopEnded();
+            
             await ExecEventBus<StageLoopEndEventArgs>.InvokeMergedAndDispose(new StageLoopEndEventArgs());
         }
 
