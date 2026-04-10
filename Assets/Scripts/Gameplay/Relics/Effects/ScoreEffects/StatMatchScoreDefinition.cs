@@ -10,7 +10,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
     public class StatMatchScoreDefinition : ScoreEffectDefinition
     {
         [Header("스탯 일치 보너스 설정")]
-        [SerializeField] private PlayerStatType targetStat;
+        [SerializeField] private StatType targetStat;
         [SerializeField] private int targetValue;
 
         public override string EditorName => "점수/스탯 일치 보너스";
@@ -31,7 +31,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)
             {
-                if (Context.CommonContext.PlayerStatus.GetFinalValue(_definition.targetStat) != _definition.targetValue)
+                if (Context.CommonContext.PlayerStatus[_definition.targetStat] != _definition.targetValue)
                 {
                     return null;
                 }

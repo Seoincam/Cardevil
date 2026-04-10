@@ -7,7 +7,7 @@ namespace Cardevil.Gameplay.Relics.Effects
     [Serializable]
     public class ModifyStatDefinition : EffectDefinition
     {
-        [SerializeField] private PlayerStatType targetStat;
+        [SerializeField] private StatType targetStat;
         [SerializeField] private int delta;
 
         public override string EditorName => "스탯 수정";
@@ -20,7 +20,7 @@ namespace Cardevil.Gameplay.Relics.Effects
             private readonly ModifyStatDefinition _definition;
             private int _modifierId;
             
-            public PlayerStatType TargetType => _definition.targetStat;
+            public StatType TargetType => _definition.targetStat;
 
             public Instance(ModifyStatDefinition definition, RelicInstance context) : base(context)
             {

@@ -13,7 +13,7 @@ namespace Cardevil.Card.InStage
 
         private UniTaskCompletionSource _rerollWaiter;
 
-        private int RerollTicketCount => _playerStatus.GetFinalValue(PlayerStatType.RerollTicket);
+        private int RerollTicketCount => _playerStatus[StatType.RerollTicket];
         private bool CanReroll => RerollTicketCount > 0;
 
         public RerollPresenter(PlayerStatus playerStatus, RerollView view, StageCardCorePresenter corePresenter, HandBarPresenter handBarPresenter)
@@ -53,7 +53,7 @@ namespace Cardevil.Card.InStage
         {
             Debug.Assert(CanReroll, "Reroll Ticket Count > 0");
             
-            _playerStatus.ModifyBaseValue(PlayerStatType.RerollTicket, -1);
+            _playerStatus.ModifyBaseValue(StatType.RerollTicket, -1);
             _view.SetTicketCount(RerollTicketCount);
             
             async UniTask RerollAsync()

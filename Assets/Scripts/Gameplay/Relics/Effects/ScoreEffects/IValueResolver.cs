@@ -22,7 +22,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
     public class PlayerStatResolver : IValueResolver
     {
         [Header("추적할 플레이어 스탯")]
-        [SerializeField] private PlayerStatType targetStat;
+        [SerializeField] private StatType targetStat;
         
         public float GetValue(RelicInstance context)
         {

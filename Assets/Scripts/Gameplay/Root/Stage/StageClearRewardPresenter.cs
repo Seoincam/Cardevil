@@ -96,7 +96,7 @@ namespace Cardevil.Gameplay.Root.Stage
             // 일반 스테이지거나, 이미 유물을 획득했을 경우
             else
             {
-                _playerStatus.ModifyBaseValue(PlayerStatType.Gold, _coinCount);
+                _playerStatus.ModifyBaseValue(StatType.Gold, _coinCount);
                 
                 _tableView.PlayHideAnimationAsync().Forget();
                 _slotMachine.ActiveSlotMachine().Forget();
