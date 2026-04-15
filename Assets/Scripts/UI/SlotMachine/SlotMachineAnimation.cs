@@ -55,6 +55,16 @@ namespace Cardevil.UI.PopUp
         [SerializeField] public Sprite _normal_Start_Reroll;
 
 
+        
+        [Header("Legend 6 Placeholder")]
+        [SerializeField] public Sprite _legend_6_Icon; // 전설 등급이 뜨기 전 보여줄 6 이미지
+
+
+        [Header("Jackpot Effects")]
+        [SerializeField] private GameObject _jackpotAlertBorder; // 붉은색 경고등 테두리 (사전 연출용)
+        [SerializeField] private GameObject _jackpotSuccessBorder; // 황금색 빛나는 테두리
+        [SerializeField] private GameObject _celebrationLayer; // 골드 떨어지는 파티클
+        [SerializeField] private Image _flashActiveBackground; // 붉은색 번쩍이는 배경
 
         /// <summary>
         /// SetActive된 슬롯머신을 등장시킬때의 애니메이션 
@@ -134,6 +144,7 @@ namespace Cardevil.UI.PopUp
                     break;
 
                 default: // Normal(Rare) 및 기타
+                    // TODO : DarkUpgrade 3도 나오게끔 이의 파싱방향을 점검할 필요성있음.
                     if (item.itemName.Contains("DarkUpgrade")) return _normal_Dark_Upgrade_2;
                     if (item.itemName.Contains("DarkUpgrade")) return _normal_Dark_Upgrade_3;
                     if (item.itemName.Contains("Gold")) return _normal_Gold;
@@ -183,5 +194,49 @@ namespace Cardevil.UI.PopUp
             Debug.LogWarning($"[Highlight] 매칭되는 Highlight 이미지가 없습니다! ItemName: {item.itemName}, RareType: {item.rareType}");
             return _rare_Gold_Highlight; // 기본값
         }
+
+ 
+
+        /// <summary>
+        /// 잭팟 기회 사전 연출 (붉은색 경고등 깜빡임)
+        /// </summary>
+        public void SetJackpotAlertMode(bool isOn)
+        {
+            if (_jackpotAlertBorder != null)
+            {
+                _jackpotAlertBorder.SetActive(isOn);
+                // DOTween 등으로 깜빡이는 효과를 주면 더욱 좋습니다.
+            }
+        }
+
+        /// <summary>
+        /// 잭팟 성공 연출 (황금 테두리, 배경 플래시, 파티클)
+        /// </summary>
+        public void PlayJackpotSuccessEffect()
+        {
+            if (_jackpotAlertBorder != null) _jackpotAlertBorder.SetActive(false);
+
+            // 황금색 테두리 켜기
+            if (_jackpotSuccessBorder != null) _jackpotSuccessBorder.SetActive(true);
+
+            // 파티클 (50개 골드 회전하며 떨어짐) 켜기
+            if (_celebrationLayer != null) _celebrationLayer.SetActive(true);
+
+            // 0.5초 주기로 붉은색 번쩍임 3초 유지 후 자연스럽게 사라짐
+            if (_flashActiveBackground != null)
+            {
+                _flashActiveBackground.gameObject.SetActive(true);
+                _flashActiveBackground.color = new Color(1, 0, 0, 0); // 투명한 빨강
+
+                Sequence flashSeq = DOTween.Sequence();
+                flashSeq.Append(_flashActiveBackground.DOFade(0.3f, 0.25f))
+                        .Append(_flashActiveBackground.DOFade(0f, 0.25f))
+                        .SetLoops(6, LoopType.Restart) // 0.5초 x 6회 = 3초
+                        .OnComplete(() => _flashActiveBackground.gameObject.SetActive(false));
+            }
+        }
+
     }
+
+
 }

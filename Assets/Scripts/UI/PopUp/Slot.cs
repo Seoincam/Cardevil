@@ -5,11 +5,24 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Cardevil.UI.PopUp
 {
     public class Slot : MonoBehaviour
     {
+        [Header("Tag UI References")]
+        [SerializeField] private Image tagImage;         // Tag 오브젝트의 Image 컴포넌트
+        [SerializeField] private CanvasGroup tagCanvasGroup; // Tag 오브젝트의 CanvasGroup
+        [SerializeField] private Text tagText; // Tag 하위의 Text 컴포넌트
+
+        [Header("Tag Sprites")]
+        [SerializeField] private Sprite normalTag;
+        [SerializeField] private Sprite rareTag;
+        [SerializeField] private Sprite epicTag;
+        [SerializeField] private Sprite legendTag;
+
 
         public int slotIndex; // 0, 1, 2 (SlotMachine에서 할당)
         public SlotMachineAnimation animController; // 하이라이트 호출을 위한 참조
@@ -19,6 +32,7 @@ namespace Cardevil.UI.PopUp
         public Text itemNameText;
 
         public GameObject slotItem;
+        
 
         [Header("Animation Settings")]
         private float startYPosition = 400f;   // 떨어질 Y위치 (시작점)
@@ -28,6 +42,43 @@ namespace Cardevil.UI.PopUp
 
         // 회전 애니메이션용 트윈 저장
         private Tween spinTween;
+
+        private Tween glitchSpinTween;
+
+        // 슬롯이 돌아가기 시작할 때 태그를 초기화하는 함수
+        public void ResetTag()
+        {
+            if (tagCanvasGroup != null)
+                tagCanvasGroup.alpha = 0f;
+        }
+        // 아이템 확정 시 태그를 업데이트하고 보여주는 함수
+        public void ShowTag(Define.RareType rareType)
+        {
+            if (tagImage == null || tagCanvasGroup == null) return;
+
+            // 1. 등급에 따른 스프라이트 결정
+            Sprite targetSprite = normalTag;
+            switch (rareType)
+            {
+                case Define.RareType.Normal: targetSprite = normalTag; break;
+                case Define.RareType.Rare: targetSprite = rareTag; break;
+                case Define.RareType.Epic: targetSprite = epicTag; break;
+                case Define.RareType.Legend: targetSprite = legendTag; break;
+            }
+
+            // 2. 이미지 및 텍스트 갱신
+            tagImage.sprite = targetSprite;
+            tagImage.SetNativeSize();
+            if (tagText != null)
+            {
+                tagText.text = rareType.ToString().ToUpper(); // 예: "EPIC"
+                                                              // 등급에 따라 텍스트 색상을 변경하고 싶다면 여기서 추가 가능
+            }
+
+            // 3. CanvasGroup Fade In 연출 (0.3초)
+            tagCanvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutCubic);
+        }
+
 
         /// <summary>
         /// 슬롯 회전을 시작합니다 (결과가 나오기 전 대기 상태).
@@ -160,5 +211,74 @@ namespace Cardevil.UI.PopUp
             return item.itemName;
         }
         #endregion
+
+
+        /// <summary>
+        /// 역전 연출 시 강제로 초고속 회전하는 애니메이션 (Glitch 효과)
+        /// </summary>
+        public void StartFastGlitchSpin(int[] probList)
+        {
+            RectTransform rt = slotItem.GetComponent<RectTransform>();
+            rt.DOKill();
+
+            // 매우 빠른 속도(0.05초)로 미친듯이 돌아가는 연출
+            glitchSpinTween = rt.DOAnchorPosY(endYPosition, 0.05f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart)
+                .OnStepComplete(() =>
+                {
+                    Item randomTempItem = Managers.Item.GetRandomItem(probList);
+                    SetData(randomTempItem);
+                });
+        }
+
+        /// <summary>
+        /// 초고속 회전을 멈추고 지정된 아이템(페이크 시 원본 아이템)으로 강제 고정합니다.
+        /// </summary>
+        public void StopGlitchSpin(Item originalItem)
+        {
+            if (glitchSpinTween != null) glitchSpinTween.Kill();
+
+            RectTransform rt = slotItem.GetComponent<RectTransform>();
+            rt.DOKill();
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, 0); // 제자리 고정
+
+            this.item = originalItem;
+            SetData(originalItem);
+
+            // 쿵 떨어지는 효과 대신 즉각적으로 보여줌
+            if (animController != null) animController.PlayHighlightEffect(slotIndex, originalItem);
+        }
+
+        /// <summary>
+        /// 잭팟 연출 중 낮은 등급에서 전설(6)로 강제 변경될 때 호출
+        /// </summary>
+        public void ForceChangeToLegend(Item trueLegendItem)
+        {
+            this.item = trueLegendItem;
+            // Phase 1에서 추가한 '6' 이미지를 우선 보여줌
+            itemIconImage.sprite = animController._legend_6_Icon;
+            itemIconImage.SetNativeSize();
+
+            // 이펙트 및 하이라이트 갱신
+            animController.PlayHighlightEffect(slotIndex, trueLegendItem);
+            // TODO: 여기서 쾅! 하는 사운드나 파티클 실행
+        }
+
+        /// <summary>
+        /// 전설(6) 아이콘이 실제 보상 아이콘으로 좌우 회전하며 공개됨
+        /// </summary>
+        public async UniTask RevealLegendItem()
+        {
+            // 1. 좌측으로 90도 회전해서 숨김
+            await transform.DORotate(new Vector3(0, 90, 0), 0.2f).SetEase(Ease.InQuad).ToUniTask();
+
+            // 2. 실제 아이템 스프라이트로 교체
+            itemIconImage.sprite = animController.GetItemSprite(this.item);
+            itemIconImage.SetNativeSize();
+
+            // 3. 반대편에서 나타나며 0도로 복귀
+            transform.rotation = Quaternion.Euler(0, -90, 0);
+            await transform.DORotate(new Vector3(0, 0, 0), 0.2f).SetEase(Ease.OutQuad).ToUniTask();
+        }
+
     }
 }
