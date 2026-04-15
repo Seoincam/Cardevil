@@ -1,4 +1,5 @@
-﻿using Cardevil.Core.Events.ExecEvent;
+﻿using Cardevil.Core;
+using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Gameplay.Dungeon.Core;
 using Cardevil.UI.Playables;
 using Cysharp.Threading.Tasks;
@@ -49,6 +50,13 @@ namespace Cardevil.Gameplay.Dungeon.UI
             _initialChapterUIRectTransform.gameObject.SetActive(false);
             
             ExecEventBus<NodeEnteredEventArgs>.RegisterStatic(-1000, OnNodeEntered);
+            ExecEventBus<StageLoopEndEventArgs>.RegisterStatic(-1000, OnStageLoopEnd);
+        }
+
+        private UniTask OnStageLoopEnd(StageLoopEndEventArgs eventArgs, CancellationToken cancellationToken)
+        {
+            chapterUIRectTransform.gameObject.SetActive(false);
+            return UniTask.CompletedTask;
         }
 
         private UniTask OnNodeEntered(NodeEnteredEventArgs eventArgs, CancellationToken cancellationToken)
@@ -90,6 +98,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
             chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
             chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
         }
+        
 
         /// <summary>
         /// 플레이어 입력을 감지하여 타임라인을 스킵하는 비동기 작업.
