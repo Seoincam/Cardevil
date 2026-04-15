@@ -438,8 +438,16 @@ namespace Cardevil.Gameplay
             playerStatus.godMode = !playerStatus.godMode;
             var godModeModifier = new GodModeScoreProvider();
             int id = godModeModifier.Id;
-            CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
-            CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(id, godModeModifier);
+            if (playerStatus.godMode)
+            {
+                CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+            }
+            else
+            {
+                CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+            }
+            
+            
             
             Console.MessageInfo($"God mode {(playerStatus.godMode ? "enabled" : "disabled")}. Current HP: {playerStatus.CurrentHp}/{playerStatus.MaxHp}");
         }
