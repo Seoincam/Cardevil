@@ -1,3 +1,5 @@
+using Cardevil.Card.InStage.Score;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.DataStructure;
@@ -46,9 +48,12 @@ namespace Cardevil.Gameplay
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
 
         private int _nextId;
+        private bool godMode = false; // 디버그용 무적 모드 플래그
         private Dictionary<int, IStatModifier> _modifiers = new();
 
         private static PlayerStatConfig _config;
+        
+        public bool IsGodMode => godMode;
 
         public int this[StatType type]
         {
@@ -171,6 +176,10 @@ namespace Cardevil.Gameplay
         
         public int TakeDamage(int damage)
         {
+            if (godMode)
+            {
+                return 0; // 무적 모드에서는 피해를 받지 않음
+            }
             if (damage < 0)
             {
                 Debug.LogWarning("Damage cannot be negative.");
@@ -419,6 +428,35 @@ namespace Cardevil.Gameplay
                 bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
                 CardevilCore.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
                 Console.MessageInfo($"Set player HP to {CardevilCore.PlayerStatus.CurrentHp}/{CardevilCore.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+            }
+        }
+
+        [ConsoleCommand("god", "Toggle god mode")]
+        private static void ToggleGodMode(string[] args)
+        {
+            PlayerStatus playerStatus = CardevilCore.PlayerStatus;
+            playerStatus.godMode = !playerStatus.godMode;
+            var godModeModifier = new GodModeScoreProvider();
+            int id = godModeModifier.Id;
+            CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+            CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(id, godModeModifier);
+            
+            Console.MessageInfo($"God mode {(playerStatus.godMode ? "enabled" : "disabled")}. Current HP: {playerStatus.CurrentHp}/{playerStatus.MaxHp}");
+        }
+
+        // TODO 임시
+        private class GodModeScoreProvider : IScoreProvider
+        {
+            public int Id { get; set; } = 2131232;
+            public ScoreStepType ScoreStepType => ScoreStepType.PlusPlayerStatus;
+            public IScoreOperator GetScoreOperator(IScoreContext context)
+            {
+                return new ScoreOperator
+                {
+                    Type = ScoreOperatorType.Plus,
+                    Value = CardevilCore.PlayerStatus.IsGodMode ? 9999 : 0,
+                    Source = this
+                };
             }
         }
 
