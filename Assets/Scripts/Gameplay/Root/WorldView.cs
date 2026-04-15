@@ -21,6 +21,17 @@ namespace Cardevil.Gameplay.Root
             dungeon.UI.gameObject.SetActive(false);
         }
 
+        public void ResetChapterTransform(DungeonManager dungeon)
+        {
+            if (dungeon?.Transition == null)
+            {
+                Debug.LogError("WorldView: Dungeon transition UI is not available while resetting chapter transform.");
+                return;
+            }
+
+            dungeon.Transition.ResetChapterUITransform();
+        }
+        
         public void PrepareMapForReturn(DungeonManager dungeon)
         {
             if (dungeon?.UI == null)

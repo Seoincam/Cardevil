@@ -5,7 +5,8 @@
         Bootstrap,
         Title,
         Stage,
-        World
+        World,
+        Shop
     }
     
     

@@ -184,6 +184,7 @@ MonoBehaviour:
   <SkippableTimelinePlayableDirector>k__BackingField: {fileID: 5115092642535421116}
   <TransitionToStagePlayableAsset>k__BackingField: {fileID: 11400000, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
   <HandUpPlayableAsset>k__BackingField: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+  chapterUIRectTransform: {fileID: 55388671689453536}
 --- !u!320 &4582846023241870710
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -193,7 +194,7 @@ PlayableDirector:
   m_GameObject: {fileID: 1310750160403465949}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
@@ -215,6 +216,16 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: -8225272918172772315, guid: 28058358ef00fc24da584251259ddc25, type: 2}
     value: {fileID: 3888877301972129048}
+  - key: {fileID: -6926066952972113523, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 990281625074865129, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 4864578706283051154, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -8004734514555262890, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -6925956535159640983, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!114 &5115092642535421116
