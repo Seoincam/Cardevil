@@ -913,25 +913,9 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 704753097}
     m_Modifications:
-    - target: {fileID: 995294295237150641, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1151613996884152712, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1310750160403465949, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Name
       value: DungeonUI
-      objectReference: {fileID: 0}
-    - target: {fileID: 1569945232110518084, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 261.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 1971655809971752234, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: blackPanel
@@ -941,34 +925,6 @@ PrefabInstance:
       propertyPath: blackPanelText
       value: 
       objectReference: {fileID: 1775464933}
-    - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: <HandUpPlayableAsset>k__BackingField
-      value: 
-      objectReference: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
-    - target: {fileID: 2175256954114535303, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: <TransitionToStagePlayableAsset>k__BackingField
-      value: 
-      objectReference: {fileID: 11400000, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
-    - target: {fileID: 2834965034600204076, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4423972615108536800, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 268.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_PlayableAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
-    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_SceneBindings.Array.size
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_SceneBindings.Array.data[7].key
-      value: 
-      objectReference: {fileID: -8225272918172772315, guid: 28058358ef00fc24da584251259ddc25, type: 2}
     - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_SceneBindings.Array.data[1].value
       value: 
@@ -989,18 +945,10 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[6].value
       value: 
       objectReference: {fileID: 666554869}
-    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: m_SceneBindings.Array.data[7].value
-      value: 
-      objectReference: {fileID: 1400307604}
     - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: _dungeonUICanvas
       value: 
       objectReference: {fileID: 704753096}
-    - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      propertyPath: _dungeonUICanvasGroup
-      value: 
-      objectReference: {fileID: 1400307606}
     - target: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1084,38 +1032,13 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1310750160403465949, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1400307606}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
 --- !u!224 &1400307603 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
   m_PrefabInstance: {fileID: 1400307602}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &1400307604 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 3888877301972129048, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-  m_PrefabInstance: {fileID: 1400307602}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1400307605 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1310750160403465949, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
-  m_PrefabInstance: {fileID: 1400307602}
-  m_PrefabAsset: {fileID: 0}
---- !u!225 &1400307606
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1400307605}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &1403253437
 GameObject:
   m_ObjectHideFlags: 0

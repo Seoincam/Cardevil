@@ -1,4 +1,5 @@
 ﻿using Cardevil.Core.Attributes;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Dungeon.Build;
@@ -6,11 +7,14 @@ using Cardevil.Gameplay.Dungeon.Core;
 using Cardevil.Gameplay.Dungeon.Node;
 using Cardevil.Gameplay.Dungeon.NodePresets;
 using Cardevil.Gameplay.Dungeon.UI;
+using Cardevil.Gameplay.Root;
+using Cardevil.Test.DebugConsole;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Console = Cardevil.Test.DebugConsole.Console;
 using Object = UnityEngine.Object;
 
 namespace Cardevil.Gameplay.Dungeon
@@ -488,14 +492,58 @@ namespace Cardevil.Gameplay.Dungeon
         }
 
         #region Console Commands
-        /*
-        /// <summary>
-        /// 콘솔 명령어: 현재 던전을 ID로 설정
-        /// </summary>
-        [ConsoleCommand("dungeonSetCurrent", "Sets the current dungeon by ID.", "dungeonSetCurrent <dungeonId>", new []{"1","2","3"})]
-        public static void SetCurrentDungeonCommand(int dungeonId)
+
+        [ConsoleCommand("UnlockAllCurrentDungeonNodes", "Unlocks all nodes in the current dungeon.", "UnlockAllCurrentDungeonNodes")]
+        public static void Console_UnlockAllCurrentDungeonNodes()
         {
-            DungeonManager dm = Managers.Dungeon;
+            DungeonManager dm = CardevilCore.GameFlow.World?.Dungeon;
+            if (dm == null)
+            {
+                Console.MessageError("DungeonManager not found in Managers.");
+                return;
+            }
+            
+            var currentDungeon = dm.CurrentDungeon;
+            if (currentDungeon == null)
+            {
+                Console.MessageError("No current dungeon to unlock nodes in.");
+                return;
+            }
+
+            foreach (var node in currentDungeon.Nodes) 
+            {
+                node.State = NodeState.Available;
+            }
+            
+            Console.Message("All nodes in the current dungeon have been unlocked.");
+        }
+
+        [ConsoleCommand("UnlockAllDungeons", "Unlocks all nodes in all dungeons.", "UnlockAllDungeons")]
+        public static void Console_UnlockAllDungeons()
+        {
+            DungeonManager dm = CardevilCore.GameFlow.World?.Dungeon;
+            if (dm == null)
+            {
+                Console.MessageError("DungeonManager not found in Managers.");
+                return;
+            }
+            
+            foreach (var dungeon in dm.dungeons) 
+            {
+                foreach (var node in dungeon.Nodes) 
+                {
+                    node.State = NodeState.Available;
+                }
+            }
+            
+            Console.Message("All nodes in all dungeons have been unlocked.");
+        }
+
+        [ConsoleCommand("SetCurrentDungeon", "Sets the current dungeon by ID.", "SetCurrentDungeon <dungeonId>",
+            new[] { "1", "2", "3" })]
+        public static void Console_SetCurrentDungeon(int dungeonId)
+        {
+            DungeonManager dm = CardevilCore.GameFlow.World?.Dungeon;
             if (dm == null)
             {
                 Console.MessageError("DungeonManager not found in Managers.");
@@ -512,48 +560,73 @@ namespace Cardevil.Gameplay.Dungeon
             dm.SetCurrentDungeonById(dungeonId);
             Console.Message($"Current dungeon set to ID {dungeonId}.");
         }
-
-        /// <summary>
-        /// 콘솔 명령어: 현재 노드 클리어
-        /// </summary>
-        [ConsoleCommand("dungeonClearCurrentNode", "Clears the current dungeon node.", "dungeonClearCurrentNode")]
-        public static void ClearCurrentNode()
-        {
-            DungeonManager dm = Managers.Dungeon;
-            if (dm == null)
-            {
-                Console.MessageError("DungeonManager not found in Managers.");
-                return;
-            }
-            
-            if (dm.CurrentNode == null)
-            {
-                Console.MessageError("No current dungeon node to clear.");
-                return;
-            }
-            
-            dm.ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
-            Console.Message($"Current dungeon node (ID: {dm.PreviousNode?.NodeId}) cleared.");
-        }
         
-        [ConsoleCommand("dungeonPrintDebugInfo", "Prints debug information about all dungeons.", "dungeonPrintDebugInfo")]
-        public static void PrintDungeonDebugInfo()
-        {
-            DungeonManager dm = Managers.Dungeon;
-            if (dm == null)
-            {
-                Console.MessageError("DungeonManager not found in Managers.");
-                return;
-            }
+         /*
+         /// <summary>
+         /// 콘솔 명령어: 현재 던전을 ID로 설정
+         /// </summary>
+         [ConsoleCommand("dungeonSetCurrent", "Sets the current dungeon by ID.", "dungeonSetCurrent <dungeonId>", new []{"1","2","3"})]
+         public static void SetCurrentDungeonCommand(int dungeonId)
+         {
+             DungeonManager dm = Managers.Dungeon;
+             if (dm == null)
+             {
+                 Console.MessageError("DungeonManager not found in Managers.");
+                 return;
+             }
+             
+             var dungeon = dm.GetDungeonById(dungeonId);
+             if (dungeon == null)
+             {
+                 Console.MessageError($"Invalid dungeon ID {dungeonId}.");
+                 return;
+             }
+             
+             dm.SetCurrentDungeonById(dungeonId);
+             Console.Message($"Current dungeon set to ID {dungeonId}.");
+         }
 
-            for (int i = 0; i < dm.dungeons.Count; i++)
-            {
-                var dungeon = dm.dungeons[i];
-                Console.Message($"Dungeon Index: {i}, ID: {dungeon.DungeonId}");
-                Console.Message(dungeon.GetDebugString());
-            }
-        }
-        */
+         /// <summary>
+         /// 콘솔 명령어: 현재 노드 클리어
+         /// </summary>
+         [ConsoleCommand("dungeonClearCurrentNode", "Clears the current dungeon node.", "dungeonClearCurrentNode")]
+         public static void ClearCurrentNode()
+         {
+             DungeonManager dm = Managers.Dungeon;
+             if (dm == null)
+             {
+                 Console.MessageError("DungeonManager not found in Managers.");
+                 return;
+             }
+             
+             if (dm.CurrentNode == null)
+             {
+                 Console.MessageError("No current dungeon node to clear.");
+                 return;
+             }
+             
+             dm.ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
+             Console.Message($"Current dungeon node (ID: {dm.PreviousNode?.NodeId}) cleared.");
+         }
+         
+         [ConsoleCommand("dungeonPrintDebugInfo", "Prints debug information about all dungeons.", "dungeonPrintDebugInfo")]
+         public static void PrintDungeonDebugInfo()
+         {
+             DungeonManager dm = Managers.Dungeon;
+             if (dm == null)
+             {
+                 Console.MessageError("DungeonManager not found in Managers.");
+                 return;
+             }
+
+             for (int i = 0; i < dm.dungeons.Count; i++)
+             {
+                 var dungeon = dm.dungeons[i];
+                 Console.Message($"Dungeon Index: {i}, ID: {dungeon.DungeonId}");
+                 Console.Message(dungeon.GetDebugString());
+             }
+         }
+         */
         #endregion
 
         
