@@ -430,23 +430,25 @@ namespace Cardevil.Gameplay
                 Console.MessageInfo($"Set player HP to {CardevilCore.PlayerStatus.CurrentHp}/{CardevilCore.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
             }
         }
-
+        
+        
+        private static GodModeScoreProvider godModeModifier = new GodModeScoreProvider();
         [ConsoleCommand("god", "Toggle god mode")]
         private static void ToggleGodMode(string[] args)
         {
             PlayerStatus playerStatus = CardevilCore.PlayerStatus;
             playerStatus.godMode = !playerStatus.godMode;
-            var godModeModifier = new GodModeScoreProvider();
-            int id = godModeModifier.Id;
+
+            
             if (playerStatus.godMode)
             {
-                CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+                int id = CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+                godModeModifier.Id = id;
             }
             else
             {
-                CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+                CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(godModeModifier.Id, godModeModifier);
             }
-            
             
             
             Console.MessageInfo($"God mode {(playerStatus.godMode ? "enabled" : "disabled")}. Current HP: {playerStatus.CurrentHp}/{playerStatus.MaxHp}");
@@ -455,7 +457,7 @@ namespace Cardevil.Gameplay
         // TODO 임시
         private class GodModeScoreProvider : IScoreProvider
         {
-            public int Id { get; set; } = 2131232;
+            public int Id { get; set; }
             public ScoreStepType ScoreStepType => ScoreStepType.PlusPlayerStatus;
             public IScoreOperator GetScoreOperator(IScoreContext context)
             {
