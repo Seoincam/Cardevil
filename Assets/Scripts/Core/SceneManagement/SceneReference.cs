@@ -24,6 +24,19 @@ namespace Cardevil.Core.SceneManagement
             return null;
         }
         
+        public static SceneReference Find(string sceneName)
+        {
+            foreach (var kvp in sceneReferenceCache)
+            {
+                if (kvp.Value.SceneName == sceneName)
+                {
+                    return kvp.Value;
+                }
+            }
+            Debug.LogError($"SceneReference for scene name '{sceneName}' not found!");
+            return null;
+        }
+        
         public static void InitializeCache()
         {
             if (_initialized) return;
@@ -44,6 +57,7 @@ namespace Cardevil.Core.SceneManagement
         [SerializeField] private Scenes sceneEnum;
         [SerializeField, VisibleOnly] private string sceneName;
         
+        public Scenes SceneEnum => sceneEnum;
         public string SceneName => sceneName;
         
         

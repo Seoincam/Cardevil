@@ -31,25 +31,9 @@ namespace Cardevil.Gameplay.Dungeon.UI
         
         private RectTransform _initialEnvironmentImagePosition;
         private RectTransform _initialPanelPosition;
-        // [Space(2f)]
-        // [Header("Legacy Settings (Unused)")]
-        // [Header("Animation Settings")]
-        // [Header("Phase 1: GNB Hide & Environment Zoom")]
-        // [SerializeField] private float gnbHideDuration = 0.5f;
-        // [SerializeField] private float zoomDuration = 0.5f;
-        // [SerializeField] private float environmentZoomScale = 1.2f;
-        // [Header("Phase 2: Panel Slide In")]
-        // [SerializeField] private float panelSlideDuration = 0.5f;
-        //
-        // [SerializeField] private Ease panelSlideEase = Ease.InOutSine;
-        // [Header("Phase 3: Pause")]
-        // [SerializeField] private float pauseDuration = 0.5f;
-        // [Header("Phase 4: Panel & Environment Zoom")]
-        // [SerializeField] private float finalZoomDuration = 0.5f;
-        // [SerializeField] private float finalPanelZoomScale = 100f;
-        // [SerializeField] private float finalEnvironmentZoomScale = 1.5f;
-        // [SerializeField] private Ease finalZoomEase = Ease.InOutSine;
-        // [SerializeField] private Ease finalPanelEase = Ease.InOutSine;
+        private RectTransform _initialChapterUIRectTransform;
+        [Header("UI Reference")]
+        [SerializeField] private RectTransform chapterUIRectTransform;
 
         private void Awake()
         {
@@ -58,6 +42,11 @@ namespace Cardevil.Gameplay.Dungeon.UI
             
             // _initialPanelPosition.gameObject.SetActive(false);
             // _initialEnvironmentImagePosition.gameObject.SetActive(false);
+            // _initialChapterUIRectTransform 
+            
+            
+            _initialChapterUIRectTransform = Instantiate(chapterUIRectTransform, chapterUIRectTransform.parent);
+            _initialChapterUIRectTransform.gameObject.SetActive(false);
             
             ExecEventBus<NodeEnteredEventArgs>.RegisterStatic(-1000, OnNodeEntered);
         }
@@ -93,6 +82,13 @@ namespace Cardevil.Gameplay.Dungeon.UI
             // PlayerSkipCheckTask(cancellationToken).Forget();
             
             await UniTask.WhenAny(durationTask, stopTask);
+        }
+
+        public void ResetChapterUITransform()
+        {
+            chapterUIRectTransform.anchoredPosition = _initialChapterUIRectTransform.anchoredPosition;
+            chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
+            chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
         }
 
         /// <summary>

@@ -41,16 +41,20 @@ namespace Cardevil.Gameplay.Root
                 return;
             }
 
-            var op = SceneLoader.LoadSceneHandle(Scenes.Stage, LoadSceneMode.Additive);
-
+            var op = SceneLoader.LoadSceneHandle(Scenes.Stage, LoadSceneMode.Additive, activateOnLoad: false);
+            
             var loadReadyTask = UniTask.WaitUntil(() => op.progress >= .9f, cancellationToken: ct);
             var worldAnimTask = view.PlayStageEnterTransitionAsync(dungeon, ct);
 
             await UniTask.WhenAll(loadReadyTask, worldAnimTask);
-
+            
             op.allowSceneActivation = true;
-            await SceneLoader.WaitSceneActivationAsync(Scenes.Stage, op, LoadSceneMode.Additive, ct);
+            
+            await op;
+            
             SceneLoader.SetActiveScene(Scenes.Stage);
+            CameraManager.Instance.EnableSceneCameras(Scenes.Stage);
+            view.ResetChapterTransform(dungeon);
 
             view.HideMap(dungeon);
         }
