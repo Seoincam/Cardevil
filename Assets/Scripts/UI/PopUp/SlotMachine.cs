@@ -131,7 +131,7 @@ namespace Cardevil.UI.PopUp
 
             }
             // 슬롯머신 레벨 index 벗어남 처리
-            slotMachineLevel = Math.Min(CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.SlotMachineLevel), CardevilCore.Database.Database.MachineProbabillityList.Count);
+            slotMachineLevel = Math.Min(CardevilCore.PlayerStatus[StatType.SlotMachineLevel], CardevilCore.Database.Database.MachineProbabillityList.Count);
             // machineLevel을 통한 probalityList받기
             probalityList = CardevilCore.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankWeight.ToArray();
 
@@ -298,7 +298,7 @@ namespace Cardevil.UI.PopUp
                 return;
             }
 
-            int gold = (CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.Gold));
+            int gold = (CardevilCore.PlayerStatus[StatType.Gold]);
             // 3. 골드 체크 및 차감 (PlayerStatus는 실제 관리하시는 플레이어 데이터 스크립트로 대체)
             if (gold < currentData.LevelUpCost)
             {
@@ -309,9 +309,9 @@ namespace Cardevil.UI.PopUp
 
 
             // 4. 업그레이드 실행
-            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.Gold, gold - currentData.LevelUpCost);
+            CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Gold, -currentData.LevelUpCost);
             slotMachineLevel++;
-            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.SlotMachineLevel, slotMachineLevel);
+            CardevilCore.PlayerStatus[StatType.SlotMachineLevel] = slotMachineLevel;
             Debug.Log($"슬롯머신 레벨업! 현재 레벨: {slotMachineLevel}");
 
 
