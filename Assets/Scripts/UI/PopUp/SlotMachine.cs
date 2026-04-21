@@ -144,10 +144,11 @@ namespace Cardevil.UI.PopUp
         #region Slot에 관련
 
         /// <summary>
-        /// 슬롯머신이 돌아갑니다.
+        /// 슬롯머신이 돌아갑니다. (테스트용 파라미터 추가)
         /// </summary>
-        /// <returns></returns>
-        public async UniTaskVoid SettingSlots()
+        /// <param name="forcedResults">테스트용 강제 아이템 리스트</param>
+        /// <param name="forcedFake">테스트용 강제 페이크 여부</param>
+        public async UniTaskVoid SettingSlots(List<Item> forcedResults = null, bool? forcedFake = null)
         {
             if (isSetting) return;
             isSetting = true;
@@ -155,16 +156,26 @@ namespace Cardevil.UI.PopUp
 
             try
             {
-                // 🔥 0. 시작 전 모든 슬롯의 태그를 미리 숨김 처리
+                // 슬롯이 돌기 시작할 때 무조건 기존 선택 UI 초기화 및 클릭 방지
+                _animationController.InitializeInteraction(false);
+
+                // 0. 시작 전 모든 슬롯의 태그를 미리 숨김 처리
                 foreach (var slot in slots) slot.ResetTag();
 
                 // 모두 회전 시작
                 foreach (var slot in slots) slot.StartSpinning(probalityList);
                 await UniTask.Delay(TimeSpan.FromSeconds(1.5f), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
 
-                // 1. 실제 결과 결정 및 오름차순 정렬
+                // 1. 실제 결과 결정 (테스트 값이 들어오면 그것을 사용, 아니면 랜덤 뽑기)
                 List<Item> trueResults = new List<Item>();
-                for (int i = 0; i < 3; i++) trueResults.Add(SettingItem(probalityList));
+                if (forcedResults != null && forcedResults.Count == 3)
+                {
+                    trueResults = new List<Item>(forcedResults); // 강제 결과 주입
+                }
+                else
+                {
+                    for (int i = 0; i < 3; i++) trueResults.Add(SettingItem(probalityList));
+                }
                 trueResults = trueResults.OrderBy(item => (int)item.rareType).ToList();
 
                 // 2. 잭팟/페이크를 위한 '보여주기용' 리스트 생성 (조작)
@@ -174,60 +185,48 @@ namespace Cardevil.UI.PopUp
                 // -----------------------------------------------------
                 // [타이밍 제어] 1, 2번째 슬롯 순차적 정지 및 태그 노출
                 // -----------------------------------------------------
-
-                // 1번째 슬롯 정지
                 slots[0].SettingSlot(probalityList, displayResults[0]);
-                // 🔥 1번 슬롯 바운스 대기 (0.6초) 후 태그 표시
                 await UniTask.Delay(TimeSpan.FromSeconds(0.6f), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
                 slots[0].ShowTag(displayResults[0].rareType);
 
-                // 기존 dropTiming 리듬 유지 (이미 바운스로 0.6초를 소모했으므로 남은 시간만 대기)
                 float waitExtra = Mathf.Max(0f, dropTiming - 0.6f);
                 if (waitExtra > 0) await UniTask.Delay(TimeSpan.FromSeconds(waitExtra), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
 
-                // 2번째 슬롯 정지
                 slots[1].SettingSlot(probalityList, displayResults[1]);
-                // 🔥 2번째 슬롯 바운스 대기 (0.6초) 후 태그 표시
                 await UniTask.Delay(TimeSpan.FromSeconds(0.6f), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
                 slots[1].ShowTag(displayResults[1].rareType);
 
                 // -----------------------------------------------------
                 // [타이밍 제어] 3번째 슬롯 줌인 및 대기 연출
                 // -----------------------------------------------------
-
                 ZoomType zType = DetermineZoomType(trueResults[2].rareType);
                 Tween cameraTween = CameraActionForSlot3(zType);
 
                 if (cameraTween != null)
                 {
-                    // 확률표에 따른 줌인 패닝이 완료될 때까지 대기 (화면이 3번 슬롯으로 빨려 들어감)
                     await cameraTween.ToUniTask(cancellationToken: this.GetCancellationTokenOnDestroy());
                 }
                 else
                 {
-                    // 줌이 없는 경우에도 3번 슬롯이 혼자 돌아가는 텐션을 주기 위해 대기
                     await UniTask.Delay(TimeSpan.FromSeconds(0.8f), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
                 }
 
-                // 3번째 슬롯 최종 멈춤
                 slots[2].SettingSlot(probalityList, displayResults[2]);
-                // 🔥 3번째 슬롯도 바닥에 완전히 내려오도록 대기 후 태그 표시
                 await UniTask.Delay(TimeSpan.FromSeconds(0.6f), ignoreTimeScale: true, cancellationToken: this.GetCancellationTokenOnDestroy());
                 slots[2].ShowTag(displayResults[2].rareType);
 
                 // -----------------------------------------------------
                 // [분기] 잭팟, 페이크, 혹은 정상 종료
                 // -----------------------------------------------------
-                bool isFakeLegend = (legendCount == 1 && UnityEngine.Random.Range(0, 100) < 20); // 20% 확률 발동
+                // 강제 페이크 값이 있으면 우선 적용, 없으면 기존 확률 로직 적용
+                bool isFakeLegend = forcedFake.HasValue ? forcedFake.Value : (legendCount == 1 && UnityEngine.Random.Range(0, 100) < 20);
 
                 if (legendCount >= 2 || isFakeLegend)
                 {
-                    // 잭팟 역전 연출 실행 (카메라가 1.6배 줌을 유지한 채 2번, 1번 슬롯으로 이동합니다 )
                     await PlayJackpotSequence(trueResults, legendCount, isFakeLegend);
                 }
                 else
                 {
-                    // 역전 연출이 없었다면, 3번 슬롯 결과를 보여준 후 카메라를 중앙으로 원상 복귀시킵니다.
                     if (zType != ZoomType.None)
                     {
                         _renderCamera.transform.DOMove(_originCamPos, 0.5f).SetEase(Ease.OutQuad);
@@ -236,25 +235,26 @@ namespace Cardevil.UI.PopUp
                     }
                 }
 
-                // 6. 잭팟 성공 연출 파티클 (최종 달성)
-                if (legendCount >= 2)
+                bool isJackpot = CheckJackpot(trueResults);
+
+                // [잭팟 성공 연출] 찐 잭팟일 경우 폭죽, 테두리 연출 실행
+                if (isJackpot)
                 {
                     _animationController.PlayJackpotSuccessEffect();
                 }
 
-                // 7. 전설(6 아이콘) 카드 최종 공개 (회전 효과)
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: this.GetCancellationTokenOnDestroy());
                 foreach (var slot in slots)
                 {
+                    // 전설 아이템(6 아이콘)이 있다면 빙글 돌며 실제 아이템 공개
                     if (slot.item.rareType == Define.RareType.Legend) await slot.RevealLegendItem();
                 }
 
-                // 8. 잭팟일 경우 3개 자동 선택
-                if (legendCount == 3)
-                {
-                    await UniTask.Delay(TimeSpan.FromSeconds(1.0f));
-                    OnSelectClicked(null);
-                }
+                //  [추가 2] 모든 슬롯 연출(전설 뒤집기 등)이 완전히 끝난 후! 
+                // 여기서 잭팟 여부를 한 번 더 세팅해주고 인터랙션(클릭, 호버)을 켭니다.
+                _animationController.InitializeInteraction(isJackpot);
+                _animationController.SetInteractable(true);
+
             }
             finally
             {
@@ -487,30 +487,7 @@ namespace Cardevil.UI.PopUp
             return displayList;
         }
 
-        /// <summary>
-        /// 잭팟 기회 연출: 카메라 이동 + 격렬한 진동 + 아이콘 변신
-        /// </summary>
-        private async UniTask PlayJackpotSequence(List<Item> trueResults, int legendCount)
-        {
-            // 2번째 슬롯부터 검사 (기획서 상 3번은 이미 떴고, 2번 혹은 1번이 변함)
-            int[] targetSlots = legendCount == 3 ? new int[] { 1, 0 } : new int[] { 1 };
-
-            foreach (int idx in targetSlots)
-            {
-                // 카메라 패닝 (해당 슬롯으로)
-                Vector3 targetPos = GetSlotWorldPos(idx);
-                await _renderCamera.transform.DOMove(new Vector3(targetPos.x, targetPos.y, _originCamPos.z), 0.5f).SetEase(Ease.OutCubic);
-
-                // 격렬한 진동 (2초)
-                await _renderCamera.transform.DOShakePosition(2.0f, 0.3f, 30).ToUniTask();
-
-                // 쾅! 소리와 함께 실제 전설(6형태)로 변경
-                slots[idx].ForceChangeToLegend(trueResults[idx]);
-            }
-
-            // 카메라 원복
-            await _renderCamera.transform.DOMove(_originCamPos, 0.5f);
-        }
+        
 
         /// <summary>
         /// 기획서의 카메라 배율(Scale), 이동(TranslateX), 대기 시간 연출을 담당합니다. [cite: 69, 70, 71]
@@ -586,74 +563,6 @@ namespace Cardevil.UI.PopUp
 
 
 
-        private Tween CameraAction(int index, RectTransform targetRect, System.Action onMiddleAction = null)
-        {
-            if (_renderCamera == null || targetRect == null) return null;
-
-            Vector3[] corners = new Vector3[4];
-            targetRect.GetWorldCorners(corners);
-            Vector3 targetCenterPos = (corners[0] + corners[2]) / 2f;
-
-            // 💡 카메라가 이동할 X, Y 좌표 (Z축은 기존 카메라의 Z 유지)
-            Vector3 finalCamPos = new Vector3(targetCenterPos.x, targetCenterPos.y, _originCamPos.z);
-
-            // 💡 줌인 될 때의 카메라 사이즈 (숫자가 작을수록 더 크게 확대됨. 필요에 따라 조절하세요)
-            float targetOrthoSize = _originCamSize * 0.4f;
-
-            float duration = dropTiming * index;
-            Sequence seq = DOTween.Sequence();
-
-            // 연계 전 초기화
-            _renderCamera.transform.position = _originCamPos;
-            _renderCamera.orthographicSize = _originCamSize;
-
-            // 1. 줌인 (Zoom In) 및 이동 (Pan)
-            switch (index)
-            {
-                case 2:
-                case 3:
-                    // 위치 이동과 Size 변경을 동시에(Join) 실행합니다.
-                    seq.Append(_renderCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutQuad));
-                    seq.Join(_renderCamera.DOOrthoSize(targetOrthoSize, zoomInTime).SetEase(Ease.OutQuad));
-                    break;
-
-                case 4:
-                    // 4단계는 더 과격하게 줌인하는 연출 (예시)
-                    targetOrthoSize = _originCamSize * 0.25f;
-
-                    seq.Append(_renderCamera.transform.DOMove(finalCamPos, zoomInTime).SetEase(Ease.OutCubic));
-                    seq.Join(_renderCamera.DOOrthoSize(targetOrthoSize, zoomInTime).SetEase(Ease.OutCubic));
-
-                    // 흔들림 연출 (Z축 흔들림을 빼고 X, Y만 흔들리게 조정하는 것이 좋습니다)
-                    seq.Join(_renderCamera.transform.DOShakePosition(duration, new Vector3(0.3f, 0.3f, 0f), 20, 90, false, true).SetDelay(zoomInTime));
-                    duration = duration * 2;
-                    break;
-
-                default:
-                    return null;
-            }
-
-            // 2. 머무르는 시간 계산
-            float stayTime = Mathf.Max(0f, duration - zoomInTime);
-            seq.AppendInterval(stayTime * 0.2f);
-
-            // DataSet 진행
-            seq.AppendCallback(() =>
-            {
-                if (onMiddleAction != null) onMiddleAction.Invoke();
-            });
-
-            seq.AppendInterval(stayTime * 0.5f);
-
-            // 3. 복귀 (Zoom Out)
-            seq.Append(_renderCamera.transform.DOMove(_originCamPos, 0.4f).SetEase(Ease.OutQuad));
-            seq.Join(_renderCamera.DOOrthoSize(_originCamSize, 0.4f).SetEase(Ease.OutQuad));
-
-            _cameraTween = seq;
-
-            
-            return seq;
-        }
 
         /// <summary>
         // 랜덤한 아이템을 결정합니다.
@@ -707,6 +616,108 @@ namespace Cardevil.UI.PopUp
             return CardevilCore.Database.Database.MachineProbabillityList.Find(x => x.MachineLevel == level);
         }
 
+
+        /// <summary>
+        /// 아이템의 이름(itemName)을 분석하여 핵심 종류(Kind)를 문자열로 반환합니다.
+        /// 이를 통해 등급이 달라도 같은 종류의 아이템인지 비교할 수 있습니다.
+        /// </summary>
+        private string GetItemKind(Item item)
+        {
+            if (item == null || string.IsNullOrEmpty(item.itemName)) return "";
+
+            string name = item.itemName;
+            if (name.Contains("Gold")) return "Gold";
+            if (name.Contains("DarkUpgrade")) return "DarkUpgrade";
+            if (name.Contains("Heal")) return "Heal";
+            if (name.Contains("Reroll")) return "Reroll";
+            if (name.Contains("Exact")) return "ExactUpgrade";
+            if (name.Contains("Relic")) return "Relic";
+
+            return name; // 예외적인 경우 기본 이름 반환
+        }
+
+        /// <summary>
+        /// 등급에 상관없이 같은 '종류' 3개이거나 와일드카드(Legend)가 포함되었는지 확인합니다.
+        /// </summary>
+        private bool CheckJackpot(List<Item> results)
+        {
+            if (results == null || results.Count < 3) return false;
+
+            int legendCount = results.Count(x => x.rareType == Define.RareType.Legend);
+            if (legendCount >= 2) return true; // 전설이 2개 이상이면 조커 역할로 무조건 잭팟
+
+            // 전설이 아닌 아이템들만 분리
+            var nonLegends = results.Where(x => x.rareType != Define.RareType.Legend).ToList();
+
+            // 🔥 이름에 섞여있는 등급 구분자 등을 제거하고 '핵심 아이템 종류'만 추출해서 비교
+            if (legendCount == 1)
+            {
+                return GetItemKind(nonLegends[0]) == GetItemKind(nonLegends[1]);
+            }
+            if (legendCount == 0)
+            {
+                return GetItemKind(nonLegends[0]) == GetItemKind(nonLegends[1]) &&
+                       GetItemKind(nonLegends[1]) == GetItemKind(nonLegends[2]);
+            }
+
+            return false;
+        }
+        #endregion
+
+        #region Test Buttons
+        /// <summary>
+        /// [테스트 1] 전설 1개 등장 연출 (잭팟 아님, 일반 전설 등장)
+        /// </summary>
+        public void OnTest1LegendClicked()
+        {
+            List<Item> testList = new List<Item> {
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Normal),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Rare),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend)
+            };
+            // 전설 1개, 페이크 연출 안함
+            SettingSlots(testList, false).Forget();
+        }
+
+        /// <summary>
+        /// [테스트 2] 전설 2개 등장 (잭팟 달성 - 2번 슬롯이 강제 변이되는 연출)
+        /// </summary>
+        public void OnTest2LegendClicked()
+        {
+            List<Item> testList = new List<Item> {
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Rare),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend)
+            };
+            SettingSlots(testList, false).Forget();
+        }
+
+        /// <summary>
+        /// [테스트 3] 전설 3개 등장 (찐 잭팟 - 2번, 1번 슬롯 모두 강제 변이 후 자동 획득)
+        /// </summary>
+        public void OnTest3LegendClicked()
+        {
+            List<Item> testList = new List<Item> {
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend)
+            };
+            SettingSlots(testList, false).Forget();
+        }
+
+        /// <summary>
+        /// [테스트 4] 페이크 연출 (전설 1개지만 잭팟인 척 하다가 원래 아이템으로 배신)
+        /// </summary>
+        public void OnTestFakeJackpotClicked()
+        {
+            List<Item> testList = new List<Item> {
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Normal),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Epic),
+                Managers.Item.GetRandomItemOfGrade(Define.RareType.Legend)
+            };
+            // 전설 1개, 페이크 연출 강제 발생
+            SettingSlots(testList, true).Forget();
+        }
         #endregion
 
     }
