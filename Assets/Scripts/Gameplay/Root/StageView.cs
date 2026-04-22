@@ -1,5 +1,6 @@
 using Cardevil.Core;
 using Cardevil.Core.SceneManagement;
+using Cardevil.Core.Utils;
 using Cardevil.UI;
 using Cardevil.UI.GlobalNavigationBar;
 using Cardevil.UI.PopUp;
@@ -8,6 +9,8 @@ using DG.Tweening;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
+using Random = System.Random;
 
 namespace Cardevil.Gameplay.Root
 {
@@ -23,7 +26,6 @@ namespace Cardevil.Gameplay.Root
         private void Awake()
         {
             dimCanvasGroup.blocksRaycasts = false;
-            roomMobInfoPopup.Init();
             roomMobInfoPopup.gameObject.SetActive(false);
         }
 
@@ -72,11 +74,17 @@ namespace Cardevil.Gameplay.Root
             // button.onClick.AddListener(() => completeSource.TrySetResult());
             // button.onClick.AddListener(() => Destroy(obj, 0.1f));
             #endregion
-
-            roomMobInfoPopup.SetMobInfo(MobInfo.Test);// TODO : 실제로는 방에 맞는 몹 정보로 설정해야 함.
+            
+            int testMobCount = RandomUtil.GetRandomInt(1, 5);
+            roomMobInfoPopup.ClearMobInfos();
+            roomMobInfoPopup.AddMobInfo(MobInfo.Test);
+            for (int i = 1; i < testMobCount; i++)
+            {
+                roomMobInfoPopup.AddMobInfo(new MobInfo($"적 {i}", "이것은 테스트용 적입니다.", "테스트 족보", $"{i*2}"));
+            }
             
             roomMobInfoPopup.SetCompleteSource(completeSource);
-            roomMobInfoPopup.gameObject.SetActive(true);
+            
             await roomMobInfoPopup.ShowAsync();
             
 

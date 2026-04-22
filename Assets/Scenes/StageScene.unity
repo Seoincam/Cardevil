@@ -6062,6 +6062,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 692
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 960.00006
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -540
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6069,13 +6093,13 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
 --- !u!114 &9133385246047081464 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1475758308623049366, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+  m_CorrespondingSourceObject: {fileID: 1193984340061036476, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
   m_PrefabInstance: {fileID: 9133385246047081463}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a4bf866241547a2894cf4a7061f0481, type: 3}
+  m_Script: {fileID: 11500000, guid: a9fb0865e9774e34abb4034998774e98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.PopUp.RoomMobInfoPopup
 --- !u!1660057539 &9223372036854775807
