@@ -77,8 +77,8 @@ namespace Cardevil.Gameplay.Root
             await PlayShowRewardAsync();
 
             OnTurnLoopEnded();
-            
-            await ExecEventBus<StageLoopEndEventArgs>.InvokeMergedAndDispose(new StageLoopEndEventArgs());
+
+            await ExecEventBus<StageLoopEndEventArgs>.InvokeMergedAndDispose(StageLoopEndEventArgs.Get());
         }
 
         private async UniTask PlayShowRewardAsync()

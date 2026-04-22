@@ -98,6 +98,7 @@ namespace Cardevil.Gameplay.Turn
                     await CardCore.AddStepAsync(ScoreStepType.MultiplyField);
                     await CardCore.AddStepAsync(ScoreStepType.MultiplyPlayerStatus);
                     await CardCore.ApplyScoreOperatorsAsync();
+                    
                     // TODO: 최종 데미지 출력하기 (근데 이게 뭔지 체크해야함)
                 }
                 

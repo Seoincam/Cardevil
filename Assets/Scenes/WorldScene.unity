@@ -926,6 +926,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1775464933}
     - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_PlayableAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.size
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[13].key
+      value: 
+      objectReference: {fileID: 7006675102454498006, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: m_SceneBindings.Array.data[1].value
       value: 
       objectReference: {fileID: 2682648631247123117}
@@ -945,6 +957,10 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[6].value
       value: 
       objectReference: {fileID: 666554869}
+    - target: {fileID: 4582846023241870710, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+      propertyPath: m_SceneBindings.Array.data[13].value
+      value: 
+      objectReference: {fileID: 1400307604}
     - target: {fileID: 7001122293710359863, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
       propertyPath: _dungeonUICanvas
       value: 
@@ -1037,6 +1053,11 @@ PrefabInstance:
 --- !u!224 &1400307603 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 9001370698350667531, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
+  m_PrefabInstance: {fileID: 1400307602}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1400307604 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5153401121443532665, guid: 31230a9e71b3d02479a3c02d5f092fad, type: 3}
   m_PrefabInstance: {fileID: 1400307602}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1403253437

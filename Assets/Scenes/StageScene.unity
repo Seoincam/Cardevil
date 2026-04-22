@@ -445,6 +445,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Clear Reward Table UI
       objectReference: {fileID: 0}
+    - target: {fileID: 1263753214217100823, guid: 1272cc542545c4a79b25e29e8b1c95f7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1537346971577376906, guid: 1272cc542545c4a79b25e29e8b1c95f7, type: 3}
       propertyPath: m_Alpha
       value: 0
@@ -1036,6 +1040,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!224 &313020375 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+  m_PrefabInstance: {fileID: 9133385246047081463}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &401468740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2516,6 +2525,7 @@ RectTransform:
   m_Children:
   - {fileID: 164885608}
   - {fileID: 1345867228}
+  - {fileID: 313020375}
   m_Father: {fileID: 1179038392}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2806,6 +2816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Root.StageView
   dimFadeDuration: 0.5
   dimCanvasGroup: {fileID: 659969655}
+  roomMobInfoPopup: {fileID: 9133385246047081464}
 --- !u!114 &1179038389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3050,6 +3061,10 @@ PrefabInstance:
     - target: {fileID: 3315312262289730964, guid: 7489a61b191d64b1b820a46043317a22, type: 3}
       propertyPath: m_Name
       value: Clear Reward Relic Chest UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 3315312262289730964, guid: 7489a61b191d64b1b820a46043317a22, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5955,6 +5970,114 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 93d3f4657318363438a75c0a2852265f, type: 3}
+--- !u!1001 &9133385246047081463
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 898798035}
+    m_Modifications:
+    - target: {fileID: 2196033274777845176, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_Name
+      value: MobInfoPopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+--- !u!114 &9133385246047081464 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1475758308623049366, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+  m_PrefabInstance: {fileID: 9133385246047081463}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a4bf866241547a2894cf4a7061f0481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.PopUp.RoomMobInfoPopup
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
