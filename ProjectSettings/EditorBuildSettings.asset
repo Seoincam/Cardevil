@@ -18,7 +18,19 @@ EditorBuildSettings:
     path: Assets/Scenes/StageScene.unity
     guid: 4f41cdc9efb5f4ee6aa613bd6d9a4969
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/ShopScene.unity
+    guid: 2f8ff69ca943498da6a0cc9626f6f2f4
+  - enabled: 1
+    path: Assets/Scenes/BlackMarketScene.unity
+    guid: a8b37cc2be00441a83d977ecc241a253
+  - enabled: 1
+    path: Assets/Scenes/GoodPlaceScene.unity
+    guid: 9b8c7947603f4952916d68017b980d9b
+  - enabled: 1
+    path: Assets/Scenes/HealScene.unity
+    guid: e3a2aa59f8a14cabaf5122c7a341fc08
+  - enabled: 1
+    path: Assets/Scenes/Test/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 4e83efcf62d374f4c8d9b97efd734132, type: 2}

@@ -27,11 +27,11 @@ namespace Cardevil.Gameplay.Dungeon
         [SerializeReference] private List<Core.Dungeon> dungeons = new List<Core.Dungeon>();
         [SerializeField] private DungeonUI dungeonUI;
         [FormerlySerializedAs("dungeonTransitionUI")] [SerializeField] private DungeonTransition dungeonTransition;
-        [SerializeField, VisibleOnly] private DungeonNode currentNode;
-        [SerializeField, VisibleOnly] private DungeonNode previousNode;
-        [SerializeReference, VisibleOnly] private DungeonProgress currentProgress;
-        [SerializeReference, VisibleOnly] private List<DungeonProgress> savedProgresses = new List<DungeonProgress>();
-        private int currentDungeonIndex = -1;
+        [NonSerialized] private DungeonNode currentNode;
+        [NonSerialized] private DungeonNode previousNode;
+        [NonSerialized] private DungeonProgress currentProgress;
+        [NonSerialized] private List<DungeonProgress> savedProgresses = new();
+        [NonSerialized] private int currentDungeonIndex = -1;
         
         [Header("Debug")]
         [SerializeField] bool doInstantClear = false;
@@ -94,6 +94,7 @@ namespace Cardevil.Gameplay.Dungeon
         
         public void Init()
         {
+            ResetRuntimeState();
 
             // TODO : DungeonConfig 로드
             
@@ -117,6 +118,15 @@ namespace Cardevil.Gameplay.Dungeon
                 LogEx.LogWarning("No dungeons created during initialization");
                 currentDungeonIndex = -1;
             }
+        }
+
+        private void ResetRuntimeState()
+        {
+            currentNode = null;
+            previousNode = null;
+            currentProgress = null;
+            currentDungeonIndex = -1;
+            _canGoNext = true;
         }
 
         private void CreateDungeons()
@@ -159,6 +169,8 @@ namespace Cardevil.Gameplay.Dungeon
         
         public void StartDungeonById(int dungeonId)
         {
+            currentNode = null;
+            previousNode = null;
             SetCurrentDungeonById(dungeonId);
             var dungeon = GetDungeonById(dungeonId);
             if (dungeon?.RootNode != null)
@@ -190,49 +202,38 @@ namespace Cardevil.Gameplay.Dungeon
         /// <summary>
         /// 노드에 진입합니다
         /// </summary>
-        public void EnterNode(DungeonNode node)
+        public bool TryEnterNode(DungeonNode node)
         {
             if (node == null)
             {
                 LogEx.LogWarning("Node is null");
-                return;
+                return false;
             }
 
             if (!CanGoNext)
             {
                 LogEx.Log("Cannot enter next node right now.");
-                return;
+                return false;
             }
-            
-            // 이전 노드 Exit 처리
+
+            if (node.State != NodeState.Available)
+            {
+                LogEx.LogWarning($"Cannot enter node {node.NodeId} - state is {node.State}");
+                return false;
+            }
+
             if (currentNode != null)
             {
-                // 클리어가 필요한 노드를 클리어하지 않고 나가려는 경우 차단
-                if (currentNode.RequiresClearToProgress && currentNode.State != NodeState.Completed)
+                if (currentNode.State == NodeState.Completed || currentNode.State == NodeState.Passed || currentNode.State == NodeState.Hidden)
                 {
-                    LogEx.LogWarning($"[DungeonManager] 노드 {currentNode.NodeId}는 클리어가 필요합니다. 다음 노드로 이동할 수 없습니다.");
-                    return;
+                    previousNode = currentNode;
+                    currentNode = null;
                 }
-
-                if (currentNode.Preset != null)
+                else
                 {
-                    var exitInfo = new NodeExitInfo() { IsCleared = true };
-                    currentNode.Preset.OnExit(currentNode, exitInfo);
-                    
-                    // 이미 Completed 상태가 아닐 때만 변경
-                    if (currentNode.State != NodeState.Completed)
-                    {
-                        currentNode.State = NodeState.Completed;
-                    }
-                    
-                    // 이벤트 발생
-                    var exitArgs = NodeExitedEventArgs.Get();
-                    exitArgs.Init(currentNode, exitInfo);
-                    ExecEventBus<NodeExitedEventArgs>.InvokeMergedAndDispose(exitArgs).Forget();
+                    LogEx.LogWarning($"[DungeonManager] 현재 노드 {currentNode.NodeId}가 아직 종료되지 않았습니다.");
+                    return false;
                 }
-                
-                // 이전 노드로 저장
-                previousNode = currentNode;
             }
             
             // 새 노드 Enter 처리
@@ -261,18 +262,24 @@ namespace Cardevil.Gameplay.Dungeon
             var enterArgs = NodeEnteredEventArgs.Get();
             enterArgs.Init(node);
             ExecEventBus<NodeEnteredEventArgs>.InvokeMergedAndDispose(enterArgs).Forget();
-            
+
             if (DoInstantClear)
             {
-                ExitCurrentNode(new NodeExitInfo() { IsCleared = true });
+                CompleteCurrentNode(new NodeExitInfo() { IsCleared = true });
             }
+
+            return true;
         }
-        
-        
+
+        public void EnterNode(DungeonNode node)
+        {
+            TryEnterNode(node);
+        }
+
         /// <summary>
-        /// 현재 노드에서 나가기
+        /// 현재 노드를 완료 처리합니다.
         /// </summary>
-        public void ExitCurrentNode(NodeExitInfo exitInfo)
+        public void CompleteCurrentNode(NodeExitInfo exitInfo)
         {
             if (currentNode == null)
             {
@@ -280,13 +287,15 @@ namespace Cardevil.Gameplay.Dungeon
                 return;
             }
             
-            ExitNode(currentNode, exitInfo);
+            CompleteNode(currentNode, exitInfo);
         }
-        
-        /// <summary>
-        /// 노드에서 나가기
-        /// </summary>
-        public void ExitNode(DungeonNode node, NodeExitInfo exitInfo)
+
+        public void ExitCurrentNode(NodeExitInfo exitInfo)
+        {
+            CompleteCurrentNode(exitInfo);
+        }
+
+        private void CompleteNode(DungeonNode node, NodeExitInfo exitInfo)
         {
             if (node == null)
             {
@@ -307,7 +316,8 @@ namespace Cardevil.Gameplay.Dungeon
                 
                 ActivateNextNodes(node);
             }
-            
+
+            HandlePostClearFlow(node, exitInfo);
             previousNode = node;
             
             // RequiresClearToProgress가 false인 노드는 currentNode를 유지
@@ -320,6 +330,25 @@ namespace Cardevil.Gameplay.Dungeon
             var args = NodeExitedEventArgs.Get();
             args.Init(node, exitInfo);
             ExecEventBus<NodeExitedEventArgs>.InvokeMergedAndDispose(args).Forget();
+        }
+
+        private void HandlePostClearFlow(DungeonNode node, NodeExitInfo exitInfo)
+        {
+            if (!exitInfo.IsCleared)
+            {
+                return;
+            }
+
+            if (node.Type != DungeonNodeTypes.FinalBoss)
+            {
+                return;
+            }
+
+            int nextDungeonId = GetNextDungeonId(node.Dungeon.DungeonId);
+            if (GetDungeonById(nextDungeonId) != null)
+            {
+                StartDungeonById(nextDungeonId);
+            }
         }
         
         /// <summary>
@@ -455,12 +484,32 @@ namespace Cardevil.Gameplay.Dungeon
                 return;
             }
             
-            currentProgress = progress;
             var dungeon = GetDungeonById(progress.dungeonId);
             if (dungeon == null)
             {
                 LogEx.LogError($"Cannot load progress - dungeon {progress.dungeonId} not found");
                 return;
+            }
+
+            currentProgress = progress;
+            previousNode = null;
+            currentNode = null;
+            currentDungeonIndex = progress.dungeonId;
+            UI?.UpdateShowingDungeon(progress.dungeonId);
+
+            foreach (var node in dungeon.Nodes)
+            {
+                if (node == null)
+                {
+                    continue;
+                }
+
+                node.State = NodeState.Locked;
+            }
+
+            if (dungeon.RootNode != null)
+            {
+                dungeon.RootNode.State = NodeState.Available;
             }
             
             // 방문한 노드들을 완료 상태로 설정
@@ -470,6 +519,7 @@ namespace Cardevil.Gameplay.Dungeon
                 if (node != null)
                 {
                     node.State = NodeState.Completed;
+                    ActivateNextNodes(node);
                 }
             }
             
@@ -488,6 +538,7 @@ namespace Cardevil.Gameplay.Dungeon
             if (progressNode != null)
             {
                 progressNode.State = NodeState.Current;
+                currentNode = progressNode;
             }
         }
 

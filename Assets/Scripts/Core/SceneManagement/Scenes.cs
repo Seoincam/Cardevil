@@ -2,11 +2,14 @@
 {
     public enum Scenes
     {
-        Bootstrap,
-        Title,
-        Stage,
-        World,
-        Shop
+        Bootstrap = 0,
+        Title = 1,
+        Stage = 2,
+        World = 3,
+        Shop = 4,
+        BlackMarket = 5,
+        GoodPlace = 6,
+        Heal = 7,
     }
     
     

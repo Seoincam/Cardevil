@@ -63,7 +63,7 @@ namespace Cardevil.Gameplay.Root
             StageCameraCanvas.Instance.InitRock();
         }
 
-        public async UniTask EnterStageAsync()
+        public async UniTask StartStageAsync()
         {
             await view.PlayEnterStageAnimationAsync();
 

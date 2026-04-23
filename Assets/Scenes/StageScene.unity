@@ -2782,7 +2782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Root.StageView
   dimFadeDuration: 0.5
   dimCanvasGroup: {fileID: 659969655}
-  roomMobInfoPopup: {fileID: 0}
+  roomMobInfoPopup: {fileID: 9133385246047081464}
 --- !u!114 &1179038389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6057,6 +6057,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+--- !u!114 &9133385246047081464 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1193984340061036476, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+  m_PrefabInstance: {fileID: 9133385246047081463}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fb0865e9774e34abb4034998774e98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.PopUp.RoomMobInfoPopup
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

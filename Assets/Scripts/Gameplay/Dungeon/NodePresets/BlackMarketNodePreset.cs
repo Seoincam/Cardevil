@@ -88,17 +88,17 @@ namespace Cardevil.Gameplay.Dungeon.NodePresets
                 nodeUI.Show();
             }
             #else
-            if(state == NodeState.Locked && !_showWhenNotAppeared)
+            if (state == NodeState.Locked && !showWhenNotAppeared)
             {
-                nodeUI.Hide()
+                nodeUI.Hide();
                 return;
             }
             else
             {
                 nodeUI.Show();
             }
-            
-#endif
+
+            #endif
             if (nodeUI.BackgroundImage)
             {
                 Sprite bgSprite = GetNodeBackgroundSprite(state);
