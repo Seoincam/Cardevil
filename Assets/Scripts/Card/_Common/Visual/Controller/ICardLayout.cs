@@ -10,9 +10,9 @@ namespace Cardevil.Card.Visual.Controller
         void Apply(in CardLayoutData data);
     }
 
-    public interface ICardLayoutSpriteRenderer : ICardLayout
+    public interface ICardLayoutGraphic : ICardLayout
     {
-        void SetBackground(SpriteRenderer sharedBackgroundRenderer);
+        void SetBackground(ICardRenderer sharedBackgroundRenderer);
         void SetSortingOrder(int sortingOrder, int layerId);
         Tween SetAlpha(float targetAlpha, float duration, Ease ease);
     }

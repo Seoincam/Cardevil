@@ -4,56 +4,46 @@ using UnityEngine;
 
 namespace Cardevil.Card.Visual.Controller
 {
-    public class CardDualLayout : MonoBehaviour, ICardLayoutSpriteRenderer
+    public class CardDualLayout : MonoBehaviour, ICardLayoutGraphic
     {
-        [SerializeField] private SpriteRenderer background;
+        [SerializeField] private GameObject backgroundObj;
+        private ICardRenderer _background;
+        private ICardRenderer Background => _background ??= backgroundObj?.GetComponent<ICardRenderer>();
         
-        [SerializeField] private SpriteRenderer subSprite0;
-        [SerializeField] private SpriteRenderer subSprite1;
-        
-        private static readonly int TextureId = Shader.PropertyToID("_BackgroundTex");
+        [SerializeField] private GameObject subSprite0Obj;
+        private ICardRenderer _subSprite0;
+        private ICardRenderer SubSprite0 => _subSprite0 ??= subSprite0Obj?.GetComponent<ICardRenderer>();
+
+        [SerializeField] private GameObject subSprite1Obj;
+        private ICardRenderer _subSprite1;
+        private ICardRenderer SubSprite1 => _subSprite1 ??= subSprite1Obj?.GetComponent<ICardRenderer>();
 
         public GameObject GameObject => gameObject;
 
         public void Apply(in CardLayoutData data)
         {
-            subSprite0.sprite = data.SubSprites[0];
-            subSprite1.sprite = data.SubSprites[1];
+            if (SubSprite0 != null) SubSprite0.Sprite = data.SubSprites[0];
+            if (SubSprite1 != null) SubSprite1.Sprite = data.SubSprites[1];
         }
 
-        public void SetBackground(SpriteRenderer sharedBackgroundRenderer)
+        public void SetBackground(ICardRenderer sharedBackgroundRenderer)
         {
-            var backgroundPropertyBlock = new MaterialPropertyBlock();   
-            backgroundPropertyBlock.SetTexture(TextureId, sharedBackgroundRenderer.sprite.texture);
-            
-            background.SetPropertyBlock(backgroundPropertyBlock);
+            Background?.SetSharedBackground(sharedBackgroundRenderer);
         }
 
         public void SetSortingOrder(int sortingOrder, int layerId)
         {
-            background.sortingLayerID = layerId;
-            background.sortingOrder = 100 * sortingOrder + 1;
-            
-            subSprite0.sortingLayerID = layerId;
-            subSprite0.sortingOrder = 100 * sortingOrder + 50;
-            
-            subSprite1.sortingLayerID = layerId;
-            subSprite1.sortingOrder = 100 * sortingOrder + 50;
+            Background?.SetSortingOrder(sortingOrder, 1, layerId);
+            SubSprite0?.SetSortingOrder(sortingOrder, 50, layerId);
+            SubSprite1?.SetSortingOrder(sortingOrder, 50, layerId);
         }
 
         public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
         {
-            var subSprite0Tween = subSprite0
-                .DOFade(targetAlpha, duration)
-                .SetEase(ease);
-            
-            var subSprite1Tween = subSprite1
-                .DOFade(targetAlpha, duration)
-                .SetEase(ease);
-            
-            return DOTween.Sequence()
-                .Join(subSprite0Tween)
-                .Join(subSprite1Tween);
+            var sq = DOTween.Sequence();
+            if (SubSprite0 != null) sq.Join(SubSprite0.DOFade(targetAlpha, duration).SetEase(ease));
+            if (SubSprite1 != null) sq.Join(SubSprite1.DOFade(targetAlpha, duration).SetEase(ease));
+            return sq;
         }
     }
 }

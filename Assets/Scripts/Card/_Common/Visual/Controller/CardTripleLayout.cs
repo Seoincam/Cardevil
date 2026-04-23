@@ -4,72 +4,61 @@ using UnityEngine;
 
 namespace Cardevil.Card.Visual.Controller
 {
-    public class CardTripleLayout : MonoBehaviour, ICardLayoutSpriteRenderer
+    public class CardTripleLayout : MonoBehaviour, ICardLayoutGraphic
     {
-        [SerializeField] private SpriteRenderer background0;
-        [SerializeField] private SpriteRenderer background1;
+        [SerializeField] private GameObject background0Obj;
+        private ICardRenderer _background0;
+        private ICardRenderer Background0 => _background0 ??= background0Obj?.GetComponent<ICardRenderer>();
+
+        [SerializeField] private GameObject background1Obj;
+        private ICardRenderer _background1;
+        private ICardRenderer Background1 => _background1 ??= background1Obj?.GetComponent<ICardRenderer>();
         
         [Space]
-        [SerializeField] private SpriteRenderer subSprite0;
-        [SerializeField] private SpriteRenderer subSprite1;
-        [SerializeField] private SpriteRenderer subSprite2;
-        
-        private static readonly int TextureId = Shader.PropertyToID("_BackgroundTex");
+        [SerializeField] private GameObject subSprite0Obj;
+        private ICardRenderer _subSprite0;
+        private ICardRenderer SubSprite0 => _subSprite0 ??= subSprite0Obj?.GetComponent<ICardRenderer>();
+
+        [SerializeField] private GameObject subSprite1Obj;
+        private ICardRenderer _subSprite1;
+        private ICardRenderer SubSprite1 => _subSprite1 ??= subSprite1Obj?.GetComponent<ICardRenderer>();
+
+        [SerializeField] private GameObject subSprite2Obj;
+        private ICardRenderer _subSprite2;
+        private ICardRenderer SubSprite2 => _subSprite2 ??= subSprite2Obj?.GetComponent<ICardRenderer>();
 
         public GameObject GameObject => gameObject;
 
         public void Apply(in CardLayoutData data)
         {
-            subSprite0.sprite = data.SubSprites[0];
-            subSprite1.sprite = data.SubSprites[1];
-            subSprite2.sprite = data.SubSprites[2];
+            if (SubSprite0 != null) SubSprite0.Sprite = data.SubSprites[0];
+            if (SubSprite1 != null) SubSprite1.Sprite = data.SubSprites[1];
+            if (SubSprite2 != null) SubSprite2.Sprite = data.SubSprites[2];
         }
 
-        public void SetBackground(SpriteRenderer sharedBackgroundRenderer)
+        public void SetBackground(ICardRenderer sharedBackgroundRenderer)
         {
-            var backgroundPropertyBlock = new MaterialPropertyBlock();   
-            backgroundPropertyBlock.SetTexture(TextureId, sharedBackgroundRenderer.sprite.texture);
-            
-            background0.SetPropertyBlock(backgroundPropertyBlock);
-            background1.SetPropertyBlock(backgroundPropertyBlock);
+            Background0?.SetSharedBackground(sharedBackgroundRenderer);
+            Background1?.SetSharedBackground(sharedBackgroundRenderer);
         }
 
         public void SetSortingOrder(int sortingOrder, int layerId)
         {
-            background0.sortingLayerID = layerId;
-            background0.sortingOrder = 100 * sortingOrder + 1;
+            Background0?.SetSortingOrder(sortingOrder, 1, layerId);
+            Background1?.SetSortingOrder(sortingOrder, 2, layerId);
             
-            background1.sortingLayerID = layerId;
-            background1.sortingOrder = 100 * sortingOrder + 2;
-            
-            subSprite0.sortingLayerID = layerId;
-            subSprite0.sortingOrder = 100 * sortingOrder + 50;
-            
-            subSprite1.sortingLayerID = layerId;
-            subSprite1.sortingOrder = 100 * sortingOrder + 50;
-            
-            subSprite2.sortingLayerID = layerId;
-            subSprite2.sortingOrder = 100 * sortingOrder + 50;
+            SubSprite0?.SetSortingOrder(sortingOrder, 50, layerId);
+            SubSprite1?.SetSortingOrder(sortingOrder, 50, layerId);
+            SubSprite2?.SetSortingOrder(sortingOrder, 50, layerId);
         }
 
         public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
         {
-            var subSprite0Tween = subSprite0
-                .DOFade(targetAlpha, duration)
-                .SetEase(ease);
-            
-            var subSprite1Tween = subSprite1
-                .DOFade(targetAlpha, duration)
-                .SetEase(ease);
-            
-            var subSprite2Tween = subSprite2
-                .DOFade(targetAlpha, duration)
-                .SetEase(ease);
-            
-            return DOTween.Sequence()
-                .Join(subSprite0Tween)
-                .Join(subSprite1Tween)
-                .Join(subSprite2Tween);
+            var sq = DOTween.Sequence();
+            if (SubSprite0 != null) sq.Join(SubSprite0.DOFade(targetAlpha, duration).SetEase(ease));
+            if (SubSprite1 != null) sq.Join(SubSprite1.DOFade(targetAlpha, duration).SetEase(ease));
+            if (SubSprite2 != null) sq.Join(SubSprite2.DOFade(targetAlpha, duration).SetEase(ease));
+            return sq;
         }
     }
 }
