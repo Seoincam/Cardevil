@@ -7,10 +7,10 @@ namespace Database.Generated
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class HandRankingData: IDBData {
+    public partial class HandRankData: IDBData {
 
         /// <summary> 족보 </summary>
-        // public Cardevil.Cards.Core.HandRanking Ranking;
+        public Cardevil.Card.Common.Core.HandRank Ranking;
         /// <summary> 보너스 점수 </summary>
         public int Value;
         /// <summary> 게임상 이름 </summary>
