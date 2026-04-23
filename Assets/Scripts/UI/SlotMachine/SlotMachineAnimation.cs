@@ -14,7 +14,7 @@ using System;
 using System.Linq;
 using UnityEngine.EventSystems;
 using Database;
-
+using Cardevil.UI.VFX;
 
 
 namespace Cardevil.UI.PopUp
@@ -22,6 +22,9 @@ namespace Cardevil.UI.PopUp
     public class SlotMachineAnimation : MonoBehaviour
     {
         private Item _selectedItem = null;
+
+        [Header("VFX Connect")]
+        [SerializeField] private CoinRainManager _coinRainManager;
 
         [Header("Connects")]
         [SerializeField] private RectTransform _slotmachine_rectTransform;
@@ -267,6 +270,8 @@ namespace Cardevil.UI.PopUp
                         .SetLoops(6, LoopType.Restart) // 0.5초 x 6회 = 3초
                         .OnComplete(() => _flashActiveBackground.gameObject.SetActive(false));
             }
+
+            _coinRainManager.PlayJackpotEffect(5.0f);
         }
 
 

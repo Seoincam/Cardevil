@@ -18,6 +18,8 @@ namespace Cardevil.UI.PopUp
 {
     public class SlotMachine : UI_Popup
     {
+        private bool isSlotMachineActive = false;
+
         /// <summary>
         /// 습득했을때의 이벤트 발행
         /// 파라미터: 1. 보상 타입(Enum), 2. 최종 획득 수량(int), 3. 원본 데이터(MachineReward)
@@ -86,6 +88,7 @@ namespace Cardevil.UI.PopUp
 
         void Update()
         {
+            if (!isSlotMachineActive) return;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 OnRerollClicked(null);
@@ -98,6 +101,7 @@ namespace Cardevil.UI.PopUp
         /// </summary>
         public async UniTask ActiveSlotMachine(float waitSeconds = -1f)
         {
+            isSlotMachineActive = true;
             float delay = waitSeconds >= 0f ? waitSeconds : showInterval;
             await UniTask.WaitForSeconds(delay);
 
@@ -416,9 +420,10 @@ namespace Cardevil.UI.PopUp
         /// </summary>
         private void CloseSlotMachine()
         {
+           
             // 하이라이트 클릭 등 상호작용 잠금
             _animationController.SetInteractable(false);
-
+            isSlotMachineActive = false;
             // GetDownAnimation은 콜백을 받으므로 람다식으로 SetActive(false) 전달
             _animationController.SlotMachine_GetDownAnimation(() =>
             {
@@ -596,7 +601,7 @@ namespace Cardevil.UI.PopUp
         /// <summary>
         /// 최종 보상 값을 계산하고 외부로 이벤트를 발행합니다.
         /// </summary>
-        private void ProcessAndPublishReward(MachineReward rewardData)
+        private async UniTask ProcessAndPublishReward(MachineReward rewardData)
         {
             if (rewardData == null) return;
 

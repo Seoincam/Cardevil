@@ -3108,6 +3108,7 @@ GameObject:
   - component: {fileID: 8289870095820898256}
   - component: {fileID: 4268430633788988331}
   - component: {fileID: 3992980170464383215}
+  - component: {fileID: 5990138350396446253}
   - component: {fileID: 819623427999130817}
   m_Layer: 8
   m_Name: SlotMachine
@@ -3249,6 +3250,25 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6434408965194146924}
   m_CullTransparentMesh: 1
+--- !u!114 &5990138350396446253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6434408965194146924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5323dbb3c5102e4c8817d827e3a5140, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.VFX.CoinRainManager
+  _coinPrefab: {fileID: 2149995388013416816, guid: d63c062767834be41b36ab9300225591, type: 3}
+  _rainContainer: {fileID: 5218677064891354918}
+  _poolCount: 100
+  _spawnDelay: 0.05
+  _fallDurationMin: 1.5
+  _fallDurationMax: 2.5
+  _fallDistance: 1500
 --- !u!114 &819623427999130817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3261,6 +3281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 826a1cff2b4e6ba419b3d6c57d7d105f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.SlotMachineAnimation
+  _coinRainManager: {fileID: 5990138350396446253}
   _slotmachine_rectTransform: {fileID: 5218677064891354918}
   _reroll_image: {fileID: 6067442441407972588}
   offScreenY: -10
