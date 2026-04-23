@@ -5,11 +5,27 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Cardevil.Core.Utils;
+using Cysharp.Threading.Tasks;
+using TMPro;
+using UnityEngine.EventSystems;
 
 namespace Cardevil.UI.PopUp
 {
-    public class Slot : MonoBehaviour
+    public class Slot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
+        public SlotMachine slotMachineManager;
+
+        [Header("Tag UI References")]
+        [SerializeField] private Image tagImage;         // Tag 오브젝트의 Image 컴포넌트
+        [SerializeField] private CanvasGroup tagCanvasGroup; // Tag 오브젝트의 CanvasGroup
+        [SerializeField] private Text tagText; // Tag 하위의 Text 컴포넌트
+
+        [Header("Tag Sprites")]
+        [SerializeField] private Sprite normalTag;
+        [SerializeField] private Sprite rareTag;
+        [SerializeField] private Sprite epicTag;
+        [SerializeField] private Sprite legendTag;
+
 
         public int slotIndex; // 0, 1, 2 (SlotMachine에서 할당)
         public SlotMachineAnimation animController; // 하이라이트 호출을 위한 참조
@@ -20,6 +36,7 @@ namespace Cardevil.UI.PopUp
 
         public GameObject slotItem;
 
+
         [Header("Animation Settings")]
         private float startYPosition = 400f;   // 떨어질 Y위치 (시작점)
         private float endYPosition = -400f;    // 지나갈 Y위치 (끝점 - 회전 효과용)
@@ -28,6 +45,43 @@ namespace Cardevil.UI.PopUp
 
         // 회전 애니메이션용 트윈 저장
         private Tween spinTween;
+
+        private Tween glitchSpinTween;
+
+        // 슬롯이 돌아가기 시작할 때 태그를 초기화하는 함수
+        public void ResetTag()
+        {
+            if (tagCanvasGroup != null)
+                tagCanvasGroup.alpha = 0f;
+        }
+        // 아이템 확정 시 태그를 업데이트하고 보여주는 함수
+        public void ShowTag(Define.RareType rareType)
+        {
+            if (tagImage == null || tagCanvasGroup == null) return;
+
+            // 1. 등급에 따른 스프라이트 결정
+            Sprite targetSprite = normalTag;
+            switch (rareType)
+            {
+                case Define.RareType.Normal: targetSprite = normalTag; break;
+                case Define.RareType.Rare: targetSprite = rareTag; break;
+                case Define.RareType.Epic: targetSprite = epicTag; break;
+                case Define.RareType.Legend: targetSprite = legendTag; break;
+            }
+
+            // 2. 이미지 및 텍스트 갱신
+            tagImage.sprite = targetSprite;
+            tagImage.SetNativeSize();
+            if (tagText != null)
+            {
+                tagText.text = rareType.ToString().ToUpper(); // 예: "EPIC"
+                                                              // 등급에 따라 텍스트 색상을 변경하고 싶다면 여기서 추가 가능
+            }
+
+            // 3. CanvasGroup Fade In 연출 (0.3초)
+            tagCanvasGroup.DOFade(1f, 0.3f).SetEase(Ease.OutCubic);
+        }
+
 
         /// <summary>
         /// 슬롯 회전을 시작합니다 (결과가 나오기 전 대기 상태).
@@ -96,8 +150,10 @@ namespace Cardevil.UI.PopUp
 
 
         #region tool
-
-        public void SetData(Item findItem)
+        /// <summary>
+        /// 슬롯의 이미지를 갱신합니다. (레전드는 기본적으로 잭팟 아이콘으로 가립니다)
+        /// </summary>
+        public void SetData(Item findItem, bool forceReveal = false)
         {
             if (findItem == null) return;
             if (animController == null)
@@ -106,8 +162,19 @@ namespace Cardevil.UI.PopUp
                 return;
             }
 
-            // [변경점] DB에서 찾지 않고, SlotMachineAnimation에 할당된 스프라이트를 직접 가져옴
-            Sprite targetSprite = animController.GetItemSprite(findItem);
+            Sprite targetSprite = null;
+
+            // 🔥 1. 레전드 등급인데 아직 까기 전(Reveal 전)이라면 무조건 잭팟(6) 아이콘으로 덮어씌움
+            if (findItem.rareType == Define.RareType.Legend && !forceReveal)
+            {
+                // 인스펙터에 등록한 6 아이콘(또는 잭팟 아이콘)
+                targetSprite = animController._legend_6_Icon;
+            }
+            else
+            {
+                // 일반 아이템이거나, 레전드인데 이제 돌아서 까서 보여주는 경우 진짜 아이콘 적용
+                targetSprite = animController.GetItemSprite(findItem);
+            }
 
             if (targetSprite != null)
             {
@@ -116,49 +183,126 @@ namespace Cardevil.UI.PopUp
             }
             else
             {
-                // 할당된게 없을 경우 투명 처리
                 itemIconImage.sprite = null;
                 itemIconImage.color = Color.clear;
-                Debug.LogWarning($"[Slot] {findItem.itemName}에 맞는 이미지를 SlotMachineAnimation에서 찾을 수 없습니다.");
+                Debug.LogWarning($"[Slot] {findItem.itemName}에 맞는 이미지를 찾을 수 없습니다.");
             }
             itemIconImage.SetNativeSize();
         }
+
         /// <summary>
-        /// 아이템의 등급과 이름을 분석하여 DB에 등록된 실제 '이미지 이름(Key)'을 반환합니다.
+        /// 전설(6/잭팟) 아이콘이 실제 보상 아이콘으로 좌우 회전하며 공개됨
         /// </summary>
-        private string GetImageNameKey(Item item)
+        public async UniTask RevealLegendItem()
         {
-            // DB(Resources 또는 어드레서블 등)에 등록된 실제 스프라이트 파일명이나 Key값과 
-            // 정확히 일치하는 문자열을 반환하도록 리턴값을 수정해 주세요.
+            // 1. 좌측으로 90도 회전해서 숨김
+            await transform.DORotate(new Vector3(0, 90, 0), 0.2f).SetEase(Ease.InQuad).ToUniTask();
 
-            switch (item.rareType)
-            {
-                case Define.RareType.Legend:
-                    if (item.itemName.Contains("Exact")) return "Legend_Exact_Upgrade"; // 예: DB에 있는 실제 이미지 이름
-                    if (item.itemName.Contains("JackPot")) return "Legend_Jack_Pot";
-                    if (item.itemName.Contains("Locked")) return "Legend_Relic_Locked";
-                    if (item.itemName.Contains("Unlocked")) return "Legend_Relic_Unlocked";
-                    break;
+            // 🔥 2. 이제 숨김 해제(forceReveal = true)하여 진짜 아이템 스프라이트로 교체
+            SetData(this.item, true);
 
-                case Define.RareType.Epic:
-                    if (item.itemName.Contains("DarkUpgrade2")) return "Epic_Dark_Upgrade_2";
-                    if (item.itemName.Contains("DarkUpgrade3")) return "Epic_Dark_Upgrade_3";
-                    if (item.itemName.Contains("Gold")) return "Epic_Gold";
-                    if (item.itemName.Contains("Reroll")) return "Epic_Start_Reroll";
-                    break;
-
-                case Define.RareType.Rare:
-                    if (item.itemName.Contains("DarkUpgrade2")) return "Rare_Dark_Upgrade_2";
-                    if (item.itemName.Contains("DarkUpgrade3")) return "Rare_Dark_Upgrade_3";
-                    if (item.itemName.Contains("Gold")) return "Rare_Gold";
-                    if (item.itemName.Contains("Heal")) return "Rare_Heal";
-                    if (item.itemName.Contains("Reroll")) return "Rare_Start_Reroll";
-                    break;
-            }
-
-            // 매칭되는 조건이 없을 경우 기본적으로 아이템 이름을 그대로 Key로 사용 시도
-            return item.itemName;
+            // 3. 반대편에서 나타나며 0도로 복귀
+            transform.rotation = Quaternion.Euler(0, -90, 0);
+            await transform.DORotate(new Vector3(0, 0, 0), 0.2f).SetEase(Ease.OutQuad).ToUniTask();
         }
+
+        /// <summary>
+        /// 잭팟 연출 중 낮은 등급에서 전설(6)로 강제 변경될 때 호출
+        /// </summary>
+        public void ForceChangeToLegend(Item trueLegendItem)
+        {
+            RectTransform rt = slotItem.GetComponent<RectTransform>();
+            if (glitchSpinTween != null) glitchSpinTween.Kill();
+            DOTween.Kill(rt);
+
+            this.item = trueLegendItem;
+
+            // 🔥 잭팟으로 강제 변환될 때도 마스킹 처리된 SetData 사용
+            SetData(trueLegendItem, false);
+
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, startYPosition);
+
+            rt.DOAnchorPosY(0, 0.2f).SetEase(Ease.OutBack).OnComplete(() =>
+            {
+                if (animController != null) animController.PlayHighlightEffect(slotIndex, trueLegendItem);
+                ShowTag(Define.RareType.Legend);
+            });
+        }
+
+        #endregion
+
+        /// <summary>
+        /// 역전 연출 시 강제로 초고속 회전하는 애니메이션 (Glitch 효과)
+        /// </summary>
+        public void StartFastGlitchSpin(int[] probList)
+        {
+            RectTransform rt = slotItem.GetComponent<RectTransform>();
+
+            if (animController != null) animController.ClearHighlight(slotIndex);
+            ResetTag();
+
+            //  이 오브젝트에서 돌아가고 있는 모든 DOTween 애니메이션 완벽하게 강제 종료
+            if (spinTween != null) spinTween.Kill();
+            if (glitchSpinTween != null) glitchSpinTween.Kill();
+            DOTween.Kill(rt);
+
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, startYPosition);
+
+            glitchSpinTween = rt.DOAnchorPosY(endYPosition, 0.08f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Restart)
+                .OnStepComplete(() =>
+                {
+                    Item randomTempItem = Managers.Item.GetRandomItem(probList);
+                    SetData(randomTempItem);
+                });
+        }
+
+        /// <summary>
+        /// 초고속 회전을 멈추고 지정된 아이템(페이크 시 원본 아이템)으로 강제 고정합니다.
+        /// </summary>
+        public void StopGlitchSpin(Item originalItem)
+        {
+            RectTransform rt = slotItem.GetComponent<RectTransform>();
+
+            // 확실한 애니메이션 킬 (무한 루프 차단)
+            if (glitchSpinTween != null) glitchSpinTween.Kill();
+            DOTween.Kill(rt);
+
+            this.item = originalItem;
+            SetData(originalItem);
+
+            rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, startYPosition);
+
+            //  위아래로 심하게 요동치던 OutBounce 제거 -> 살짝만 반동을 주고 즉시 멈추는 OutBack 적용 (시간도 0.2초로 짧고 굵게)
+            rt.DOAnchorPosY(0, 0.2f).SetEase(Ease.OutBack).OnComplete(() =>
+            {
+                if (animController != null) animController.PlayHighlightEffect(slotIndex, originalItem);
+                ShowTag(originalItem.rareType);
+            });
+        }
+
+        #region 호버 관련
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (item == null) return;
+            animController.OnHoverEnter(slotIndex, item);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            animController.OnHoverExit(slotIndex);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            animController.OnClickSlot(slotIndex, item);
+
+            // 2. 실제 데이터 캐싱 (SlotMachine 매니저에게 선택된 아이템 전달)
+            if (slotMachineManager != null)
+            {
+                slotMachineManager.SetSelectedItem(this.item);
+            }
+        }
+
         #endregion
     }
 }
