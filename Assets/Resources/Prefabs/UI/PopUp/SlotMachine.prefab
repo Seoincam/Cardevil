@@ -413,6 +413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4ee9337774f244e819a5bbc41442fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotMachineManager: {fileID: 4268430633788988331}
   tagImage: {fileID: 2657784374841430468}
   tagCanvasGroup: {fileID: 6929728422357451580}
   tagText: {fileID: 2146482622445789813}
@@ -707,6 +708,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4ee9337774f244e819a5bbc41442fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotMachineManager: {fileID: 4268430633788988331}
   tagImage: {fileID: 2271134415681429485}
   tagCanvasGroup: {fileID: 7649021429958243501}
   tagText: {fileID: 4236073442932976473}
@@ -3222,6 +3224,7 @@ MonoBehaviour:
   isTest: 1
   _renderCamera: {fileID: 0}
   _animationController: {fileID: 819623427999130817}
+  showInterval: 0.75
   probabilityPanel: {fileID: 3820963323397306502}
   spacing: 10
   values: 4b000000320000007d000000fa000000
@@ -4197,6 +4200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee4ee9337774f244e819a5bbc41442fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slotMachineManager: {fileID: 4268430633788988331}
   tagImage: {fileID: 6847115356729585593}
   tagCanvasGroup: {fileID: 6789462289004975144}
   tagText: {fileID: 6059755096919542820}

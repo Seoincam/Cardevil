@@ -6,11 +6,23 @@ using Cardevil.Gameplay.Items; // Item 클래스 참조용
 using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using TMPro;
+using Database.Generated;
+using Cardevil.Gameplay;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems;
+using System;
+using System.Linq;
+using UnityEngine.EventSystems;
+using Database;
+
+
 
 namespace Cardevil.UI.PopUp
 {
     public class SlotMachineAnimation : MonoBehaviour
     {
+        private Item _selectedItem = null;
+
         [Header("Connects")]
         [SerializeField] private RectTransform _slotmachine_rectTransform;
         [SerializeField] private Image _reroll_image;
@@ -265,6 +277,7 @@ namespace Cardevil.UI.PopUp
             _canInteract = false;
             _isJackpot = isJackpot;
             _selectedIndex = -1;
+            _selectedItem = null;
 
             // 모든 UI 초기화
             ResetAllUI();
@@ -330,7 +343,7 @@ namespace Cardevil.UI.PopUp
         // ==========================================
         // 클릭 액션 (Slot.cs에서 호출)
         // ==========================================
-        public void OnClickSlot(int index)
+        public void OnClickSlot(int index, Item clickedItem)
         {
             // 잭팟 상황이면 클릭 자체가 아예 안 먹히게 처리
             if (!_canInteract || _isJackpot) return;
@@ -346,6 +359,8 @@ namespace Cardevil.UI.PopUp
 
             // 새로운 선택
             _selectedIndex = index;
+            _selectedItem = clickedItem;
+
             RectTransform targetPanel = GetPanel(index);
             Image clickHover = GetClickHover(index);
             Image targetTextPanel = GetTextPanel(index);
@@ -358,6 +373,59 @@ namespace Cardevil.UI.PopUp
             targetTextPanel.gameObject.SetActive(true);
             targetTextPanel.color = new Color(targetTextPanel.color.r, targetTextPanel.color.g, targetTextPanel.color.b, 1f);
         }
+        public void OnConfirmButtonClicked()
+        {
+            if (_selectedItem == null)
+            {
+                Debug.LogWarning("아이템이 선택되지 않았습니다.");
+                return;
+            }
+
+            // 캐싱해둔 아이템의 보상 데이터를 PlayerStatus에 적용
+            ApplyRewardToPlayerStatus(_selectedItem.macinRewardData);
+
+            // TODO: 보상 획득 완료 후 슬롯머신 UI 닫기 연출 등을 호출하세요.
+            // 예: SlotMachine_GetDownAnimation(() => gameObject.SetActive(false));
+        }
+
+        // [추가] 아이템 데이터를 읽어 PlayerStatus 스탯에 적용하는 로직
+        private void ApplyRewardToPlayerStatus(MachineReward rewardData)
+        {
+            if (rewardData == null) return;
+
+            // Define.SlotRewardType 값에 따라 PlayerStatus 스탯을 증가시킵니다.
+            // (보상 타입명은 프로젝트 내부 열거형(Define.SlotRewardType) 기준에 맞춰 매칭하시면 됩니다.)
+            switch (rewardData.ItemName.ToString())
+            {
+                case "Gold":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Gold, rewardData.Value);
+                    break;
+                case "Heal":
+                    CardevilCore.PlayerStatus.Heal(rewardData.Value); // 체력은 Heal 메서드 사용
+                    break;
+                case "MaxHp":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.MaxHp, rewardData.Value);
+                    break;
+                case "Shield":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Shield, rewardData.Value);
+                    break;
+                case "RerollTicket":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.RerollTicket, rewardData.Value);
+                    break;
+                // 업그레이드나 유물 같은 특수 처리가 필요한 경우
+                case "Relic":
+                case "DarkUpgrade":
+                    // 유물 획득 시스템이나 업그레이드 시스템 호출 로직 작성
+                    Debug.Log($"[{rewardData.ItemName}] 유물/업그레이드 획득 처리");
+                    break;
+                default:
+                    Debug.LogWarning($"[{rewardData.ItemName}] 처리되지 않은 보상 타입입니다.");
+                    break;
+            }
+
+            Debug.Log($"보상 획득 완료: {rewardData.ItemName} (Value: {rewardData.Value})");
+        }
+
 
         private void DeselectSlot(int index)
         {
@@ -371,7 +439,10 @@ namespace Cardevil.UI.PopUp
         private TMP_Text GetText(int i) => i == 0 ? _itemText_1 : (i == 1 ? _itemText_2 : _itemText_3);
         private Image GetClickHover(int i) => i == 0 ? _itemClickHover_1 : (i == 1 ? _itemClickHover_2 : _itemClickHover_3);
         #endregion
+
+
     }
+
 
 
 }

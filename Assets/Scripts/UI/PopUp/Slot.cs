@@ -13,6 +13,8 @@ namespace Cardevil.UI.PopUp
 {
     public class Slot : MonoBehaviour,IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
+        public SlotMachine slotMachineManager;
+
         [Header("Tag UI References")]
         [SerializeField] private Image tagImage;         // Tag 오브젝트의 Image 컴포넌트
         [SerializeField] private CanvasGroup tagCanvasGroup; // Tag 오브젝트의 CanvasGroup
@@ -292,10 +294,13 @@ namespace Cardevil.UI.PopUp
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            animController.OnClickSlot(slotIndex);
+            animController.OnClickSlot(slotIndex, item);
 
-            // 여기서 실제로 아이템을 획득하는 SlotMachine의 함수를 호출할 수도 있습니다.
-            // 예: Managers.SlotMachine.SelectReward(slotIndex);
+            // 2. 실제 데이터 캐싱 (SlotMachine 매니저에게 선택된 아이템 전달)
+            if (slotMachineManager != null)
+            {
+                slotMachineManager.SetSelectedItem(this.item);
+            }
         }
 
         #endregion

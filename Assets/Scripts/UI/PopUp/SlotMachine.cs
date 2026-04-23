@@ -11,7 +11,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Cardevil.Core.Bootstrap;
 using Database;
 using Database.Generated;
 
@@ -20,6 +19,9 @@ namespace Cardevil.UI.PopUp
     public class SlotMachine : UI_Popup
     {
         public bool isTest = false;
+        // 현재 유저가 클릭해서 하이라이트된 아이템 데이터
+        private Item _currentSelectedItem = null;
+
         public enum ZoomType { None, Epic, Legend } // 줌 연출 타입 구분
 
         // 슬롯머신 끝났을때의 액션 접근
@@ -35,7 +37,11 @@ namespace Cardevil.UI.PopUp
 
         //----
         [Header("Animation Controller")]
-        [SerializeField] private SlotMachineAnimation _animationController; 
+        [SerializeField] private SlotMachineAnimation _animationController;
+
+
+        [Tooltip("첫 등장 대기시간")] // 인스펙터 제어용 변수 유지
+        [SerializeField] private float showInterval = 1f;
 
         [Header("UI 설정")]
         public GameObject probabilityPanel;
@@ -84,9 +90,11 @@ namespace Cardevil.UI.PopUp
         /// <summary>
         /// 슬롯머신 호출
         /// </summary>
-        public async UniTask ActiveSlotMachine(float waitSeconds)
+        public async UniTask ActiveSlotMachine(float waitSeconds = -1f)
         {
-            await UniTask.WaitForSeconds(waitSeconds);
+            float delay = waitSeconds >= 0f ? waitSeconds : showInterval;
+            await UniTask.WaitForSeconds(delay);
+
             this.gameObject.SetActive(true);
             _animationController.SlotMachine_GetUpAnimation();
             UpdateLayout();
@@ -130,7 +138,7 @@ namespace Cardevil.UI.PopUp
 
             }
             // 슬롯머신 레벨 index 벗어남 처리
-            slotMachineLevel = Math.Min(CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.SlotMachineLevel), CardevilCore.Database.Database.MachineProbabillityList.Count);
+            slotMachineLevel = Math.Min(CardevilCore.PlayerStatus.GetFinalValue(StatType.SlotMachineLevel), CardevilCore.Database.Database.MachineProbabillityList.Count);
             // machineLevel을 통한 probalityList받기
             probalityList = CardevilCore.Database.Database.MachineProbabillityList[slotMachineLevel - 1].RankWeight.ToArray();
 
@@ -307,6 +315,16 @@ namespace Cardevil.UI.PopUp
         #endregion
 
         #region OnClicked
+       
+        /// <summary>
+        /// Slot.cs에서 슬롯을 클릭했을 때 호출되어 데이터를 캐싱합니다.
+        /// </summary>
+        public void SetSelectedItem(Item item)
+        {
+            _currentSelectedItem = item;
+            Debug.Log($"[{item.itemName}] 아이템이 선택되었습니다. (확정 대기중)");
+        }
+
         enum ItemButtons
         {
             Item_1, Item_2, Item_3, Reroll, Upgrade, Select
@@ -336,7 +354,7 @@ namespace Cardevil.UI.PopUp
                 return;
             }
 
-            int gold = (CardevilCore.PlayerStatus.GetFinalValue(PlayerStatType.Gold));
+            int gold = (CardevilCore.PlayerStatus.GetFinalValue(StatType.Gold));
             if (!isTest) // 테스트중이라면 골드와 관계없이 설정
             {
                 // 3. 골드 체크 및 차감 (PlayerStatus는 실제 관리하시는 플레이어 데이터 스크립트로 대체)
@@ -350,9 +368,9 @@ namespace Cardevil.UI.PopUp
             }
 
             // 4. 업그레이드 실행
-            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.Gold, gold - currentData.LevelUpCost);
+            CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Gold, gold - currentData.LevelUpCost);
             slotMachineLevel++;
-            CardevilCore.PlayerStatus.SetBaseValue(PlayerStatType.SlotMachineLevel, slotMachineLevel);
+            CardevilCore.PlayerStatus.SetBaseValue(StatType.SlotMachineLevel, slotMachineLevel);
             Debug.Log($"슬롯머신 레벨업! 현재 레벨: {slotMachineLevel}");
 
 
@@ -370,12 +388,44 @@ namespace Cardevil.UI.PopUp
             UpdateLayout();
         }
 
-        private void OnSelectClicked(PointerEventData eventData)
+        /// <summary>
+        /// [선택하기] 버튼(OnConfirmButton)의 OnClick 이벤트에 연결할 함수
+        /// </summary>
+        public void OnSelectClicked(PointerEventData eventData)
         {
-            // TODO: 선택하면 모든 아이템을 획득하는 로직 여기
-   
-            _animationController.SlotMachine_GetDownAnimation(OnSlotMachineClear).Forget();
-        
+            // 1. 예외 처리: 선택된 아이템이 없을 경우
+            if (_currentSelectedItem == null)
+            {
+                Debug.LogWarning("아이템이 선택되지 않았습니다.");
+                return;
+            }
+
+            // 2. 캐싱된 아이템의 데이터를 PlayerStatus에 적용
+            ApplyRewardToPlayerStatus(_currentSelectedItem.macinRewardData);
+
+            // 3. 확정 후 슬롯머신 닫기 연출 (유니태스크로 비동기 실행)
+            CloseSlotMachine();
+        }
+      
+        /// <summary>
+        /// 슬롯머신 퇴장 애니메이션 재생 후 UI 비활성화
+        /// </summary>
+        private void CloseSlotMachine()
+        {
+            // 하이라이트 클릭 등 상호작용 잠금
+            _animationController.SetInteractable(false);
+
+            // GetDownAnimation은 콜백을 받으므로 람다식으로 SetActive(false) 전달
+            _animationController.SlotMachine_GetDownAnimation(() =>
+            {
+                // 변수 초기화
+                _currentSelectedItem = null;
+
+                // 슬롯머신 오브젝트 끄기
+                gameObject.SetActive(false);
+
+                // TODO: 전투나 맵 이동 등 다음 페이즈로 넘어가는 로직 호출
+            }).Forget(); // UniTask 경고 방지용 Forget
         }
 
 
@@ -399,7 +449,7 @@ namespace Cardevil.UI.PopUp
             // [공통] 잭팟 기회 사전 연출 및 2번 슬롯 초고속 회전 + 진동
             _animationController.SetJackpotAlertMode(true);
             slots[1].StartFastGlitchSpin(probalityList);
-            await _renderCamera.transform.DOShakePosition(2.0f, 0.4f, 40).ToUniTask();
+            await _renderCamera.transform.DOShakePosition(2.0f, new Vector3(0.4f, 0.4f, 0f), 40).ToUniTask();
 
             _animationController.SetJackpotAlertMode(false);
 
@@ -539,6 +589,47 @@ namespace Cardevil.UI.PopUp
         #endregion
 
         #region Tool
+        /// <summary>
+        /// Reward 데이터를 바탕으로 실제 플레이어 스탯을 변경합니다.
+        /// </summary>
+        private void ApplyRewardToPlayerStatus(MachineReward rewardData)
+        {
+            if (rewardData == null) return;
+
+            // Define.SlotRewardType (ItemName)을 기준으로 스탯을 올려줍니다.
+            string rewardTypeString = rewardData.ItemName.ToString();
+
+            switch (rewardTypeString)
+            {
+                case "Gold":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Gold, rewardData.Value);
+                    break;
+                case "Heal":
+                    CardevilCore.PlayerStatus.Heal(rewardData.Value);
+                    break;
+                case "MaxHp":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.MaxHp, rewardData.Value);
+                    break;
+                case "Shield":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Shield, rewardData.Value);
+                    break;
+                case "RerollTicket":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.RerollTicket, rewardData.Value);
+                    break;
+                // 유물, 업그레이드 등 별도 로직이 필요한 경우
+                case "Relic":
+                case "DarkUpgrade":
+                    Debug.Log($"[{rewardData.ItemName}] 유물/업그레이드 획득 처리 호출 (Value: {rewardData.Value})");
+                    // TODO: Managers.Relic.AddRelic(...) 등의 함수 호출
+                    break;
+                default:
+                    Debug.LogWarning($"[{rewardData.ItemName}] 처리되지 않은 보상 타입입니다.");
+                    break;
+            }
+
+            Debug.Log($"[보상 적용 완료] {rewardTypeString} 스탯에 {rewardData.Value} 만큼 적용됨.");
+        }
+
 
         /// <summary>
         /// 특정 슬롯 UI의 월드 좌표를 반환하는 헬퍼 함수입니다.

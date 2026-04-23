@@ -644,7 +644,7 @@ MonoBehaviour:
   cardManager: {fileID: 1753595122}
   rewardTableView: {fileID: 164885609}
   rewardChestView: {fileID: 1345867229}
-  slotMachine: {fileID: 253756869}
+  slotMachine: {fileID: 0}
   turnManager:
     turnOrder: 0
 --- !u!1001 &253756867
@@ -655,22 +655,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 819623427999130817, guid: d30b98e116c666945931ef25d820337c, type: 3}
-      propertyPath: offScreenY
-      value: -10
-      objectReference: {fileID: 0}
-    - target: {fileID: 4268430633788988331, guid: d30b98e116c666945931ef25d820337c, type: 3}
-      propertyPath: showInterval
-      value: 0.75
-      objectReference: {fileID: 0}
     - target: {fileID: 4268430633788988331, guid: d30b98e116c666945931ef25d820337c, type: 3}
       propertyPath: _renderCamera
       value: 
       objectReference: {fileID: 619675880}
-    - target: {fileID: 4268430633788988331, guid: d30b98e116c666945931ef25d820337c, type: 3}
-      propertyPath: _animationController
-      value: 
-      objectReference: {fileID: 253756868}
     - target: {fileID: 5218677064891354918, guid: d30b98e116c666945931ef25d820337c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -737,7 +725,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5218677064891354918, guid: d30b98e116c666945931ef25d820337c, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5218677064891354918, guid: d30b98e116c666945931ef25d820337c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -764,28 +752,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d30b98e116c666945931ef25d820337c, type: 3}
---- !u!114 &253756868 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 819623427999130817, guid: d30b98e116c666945931ef25d820337c, type: 3}
-  m_PrefabInstance: {fileID: 253756867}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 826a1cff2b4e6ba419b3d6c57d7d105f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.SlotMachineAnimation
---- !u!114 &253756869 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4268430633788988331, guid: d30b98e116c666945931ef25d820337c, type: 3}
-  m_PrefabInstance: {fileID: 253756867}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36bd3cec69d5aa24a882fad0f26c06f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &273489078
 GameObject:
   m_ObjectHideFlags: 0
@@ -2816,7 +2782,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Root.StageView
   dimFadeDuration: 0.5
   dimCanvasGroup: {fileID: 659969655}
-  roomMobInfoPopup: {fileID: 9133385246047081464}
+  roomMobInfoPopup: {fileID: 0}
 --- !u!114 &1179038389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6064,44 +6030,33 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 692
-      objectReference: {fileID: 0}
-    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
-      propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 737
+      objectReference: {fileID: 0}
+    - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960.00006
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8685857357408796282, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -540
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
---- !u!114 &9133385246047081464 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1193984340061036476, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
-  m_PrefabInstance: {fileID: 9133385246047081463}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9fb0865e9774e34abb4034998774e98, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.PopUp.RoomMobInfoPopup
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
