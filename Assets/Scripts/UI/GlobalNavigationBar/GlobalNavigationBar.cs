@@ -1,4 +1,5 @@
-﻿using Cardevil.Core.Utils;
+﻿using Cardevil.Card.InWorld;
+using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections.Generic;
@@ -52,6 +53,10 @@ namespace Cardevil.UI.GlobalNavigationBar
         // [SerializeField] private RelicIcon relicIconPrefab;
         [SerializeField] private RectTransform hidePositionTransform;
         
+        [Space(2f)]
+        [Header("Rank")]
+        [SerializeField] private HandRankDescriptionView rankView;
+        
         private RectTransform _rectTransform;
         private Vector2 _initialPosition;
 
@@ -70,6 +75,12 @@ namespace Cardevil.UI.GlobalNavigationBar
             }
             _rectTransform = GetComponent<RectTransform>();
             _initialPosition = _rectTransform.anchoredPosition;
+
+            if (ranksButton)
+            {
+                ranksButton.onClick.AddListener(() => rankView.ShowAnimated());
+            }
+            
             Hide();
         }
 
