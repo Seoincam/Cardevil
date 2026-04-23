@@ -5398,7 +5398,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 193814931497093448, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 316.99866
+      value: 261.7
       objectReference: {fileID: 0}
     - target: {fileID: 244807854765573979, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -5419,6 +5419,10 @@ PrefabInstance:
     - target: {fileID: 614932568083985786, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -95.00135
+      objectReference: {fileID: 0}
+    - target: {fileID: 1766074804725294980, guid: c064453fbfc18634f857274b829d87d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1936577624033385768, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_Pivot.x
@@ -5506,7 +5510,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4339612256277648808, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 54.99865
+      value: 54.998657
       objectReference: {fileID: 0}
     - target: {fileID: 6805644129241918291, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_SceneBindings.Array.size
@@ -5560,7 +5564,8 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 16ef99899db6c3e47ab3e14e0db33e18, type: 3}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6805644129241918291, guid: c064453fbfc18634f857274b829d87d1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1936577624033385768, guid: c064453fbfc18634f857274b829d87d1, type: 3}

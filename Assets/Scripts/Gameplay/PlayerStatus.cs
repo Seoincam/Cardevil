@@ -1,3 +1,5 @@
+using Cardevil.Card.InStage.Score;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.DataStructure;
@@ -16,7 +18,7 @@ using Console = Cardevil.Test.DebugConsole.Console;
 
 namespace Cardevil.Gameplay
 {
-    public enum PlayerStatType
+    public enum StatType
     {
         Level,
         SlotMachineLevel,
@@ -40,15 +42,24 @@ namespace Cardevil.Gameplay
     [Serializable]
     public class PlayerStatus : ISaveLoad, ICopy<PlayerStatus>, INewGameInitializable
     {
-        [SerializeField] private SerializableDictionary<PlayerStatType, StatEntry> stats = new();
-        [SerializeReference] private SerializableDictionary<PlayerStatType, List<IStatModifier>> cachedModifiers = new();
+        [SerializeField] private SerializableDictionary<StatType, StatEntry> stats = new();
+        [SerializeReference] private SerializableDictionary<StatType, List<IStatModifier>> cachedModifiers = new();
         
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
 
         private int _nextId;
+        private bool godMode = false; // 디버그용 무적 모드 플래그
         private Dictionary<int, IStatModifier> _modifiers = new();
 
         private static PlayerStatConfig _config;
+        
+        public bool IsGodMode => godMode;
+
+        public int this[StatType type]
+        {
+            get => GetFinalValue(type);
+            set => SetBaseValue(type, value);
+        }
 
         /// <summary>
         /// 플레이어의 현재 체력
@@ -59,23 +70,23 @@ namespace Cardevil.Gameplay
         /// </remarks>
         public int CurrentHp
         {
-            get => GetFinalValue(PlayerStatType.CurrentHp);
-            set => SetBaseValue(PlayerStatType.CurrentHp, value);
+            get => this[StatType.CurrentHp];
+            set => this[StatType.CurrentHp] = value;
         }
         public int MaxHp
         {
-            get => GetFinalValue(PlayerStatType.MaxHp);
+            get => this[StatType.MaxHp];
             set
             {
-                SetBaseValue(PlayerStatType.MaxHp, value);
+                this[StatType.MaxHp] = value;
                 CurrentHp = Mathf.Clamp(CurrentHp, 0, MaxHp);
             }
         }
         
         public int Shield
         {
-            get => GetFinalValue(PlayerStatType.Shield);
-            set => SetBaseValue(PlayerStatType.Shield, value);
+            get => this[StatType.Shield];
+            set => this[StatType.Shield] = value;
         }
         
         public VariableContainer VariableContainer => _variableContainer;
@@ -83,36 +94,36 @@ namespace Cardevil.Gameplay
         /// <summary>
         /// 스탯의 <c>BaseValue</c>를 설정합니다.
         /// </summary>
-        public void SetBaseValue(PlayerStatType playerStatType, int value)
+        public void SetBaseValue(StatType statType, int value)
         {
-            GetOrAddStat(playerStatType).SetBaseValue(value);
-            RecalculateAndNotify(playerStatType);
+            GetOrAddStat(statType).SetBaseValue(value);
+            RecalculateAndNotify(statType);
         }
 
         /// <summary>
         /// 스탯의 <c>BaseValue</c> + <c>delta</c>를 수행합니다.
         /// </summary>
-        public void ModifyBaseValue(PlayerStatType playerStatType, int delta)
+        public void ModifyBaseValue(StatType statType, int delta)
         {
-            var stat = GetOrAddStat(playerStatType);
+            var stat = GetOrAddStat(statType);
             stat.SetBaseValue(stat.BaseValue + delta);
-            RecalculateAndNotify(playerStatType);
+            RecalculateAndNotify(statType);
         }
         
         /// <summary>
         /// 스탯의 <c>BaseValue</c>를 반환함. 해당 스탯 엔트리가 존재하지 않을 경우, 추가함.
         /// </summary>
-        public int GetBaseValue(PlayerStatType playerStatType)
+        public int GetBaseValue(StatType statType)
         {
-            return GetOrAddStat(playerStatType).BaseValue;
+            return GetOrAddStat(statType).BaseValue;
         }
 
         /// <summary>
         /// 스탯의 <c>FinalValue</c>를 반환함. 해당 스탯 엔트리가 존재하지 않을 경우, 추가함.
         /// </summary>
-        public int GetFinalValue(PlayerStatType playerStatType)
+        public int GetFinalValue(StatType statType)
         {
-            return GetOrAddStat(playerStatType).FinalValue;
+            return GetOrAddStat(statType).FinalValue;
         }
 
         /// <summary>
@@ -165,6 +176,10 @@ namespace Cardevil.Gameplay
         
         public int TakeDamage(int damage)
         {
+            if (godMode)
+            {
+                return 0; // 무적 모드에서는 피해를 받지 않음
+            }
             if (damage < 0)
             {
                 Debug.LogWarning("Damage cannot be negative.");
@@ -273,7 +288,7 @@ namespace Cardevil.Gameplay
             other.CopyFrom(this);
         }
         
-        private StatEntry GetOrAddStat(PlayerStatType type)
+        private StatEntry GetOrAddStat(StatType type)
         {
             if (!stats.TryGetValue(type, out var stat))
             {
@@ -283,7 +298,7 @@ namespace Cardevil.Gameplay
             return stat;
         }
 
-        private void RecalculateAndNotify(PlayerStatType type)
+        private void RecalculateAndNotify(StatType type)
         {
             var stat = GetOrAddStat(type);
             int previousFinalValue = stat.FinalValue;
@@ -305,25 +320,25 @@ namespace Cardevil.Gameplay
             }
         }
 
-        private void OnValueChanged(PlayerStatType statType, int previous, int current)
+        private void OnValueChanged(StatType statType, int previous, int current)
         {
             switch (statType)
             {
-                case PlayerStatType.MaxHp:
+                case StatType.MaxHp:
                     CurrentHp = Mathf.Clamp(CurrentHp, 0, current);
                     break;
                 
-                case PlayerStatType.CurrentHp:
+                case StatType.CurrentHp:
                     var hpArgs = PlayerHealthChangeArgs.Get(previous, current);
                     ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(hpArgs).Forget();
                     break;
                 
-                case PlayerStatType.Shield:
+                case StatType.Shield:
                     var shieldArgs = PlayerShieldChangeArgs.Get(previous, current);
                     ExecEventBus<PlayerShieldChangeArgs>.InvokeMergedAndDispose(shieldArgs).Forget();
                     break;
                 
-                case PlayerStatType.RerollTicket:
+                case StatType.RerollTicket:
                     break;
             }
         }
@@ -331,11 +346,11 @@ namespace Cardevil.Gameplay
         [Serializable]
         private class StatEntry
         {
-            [field: SerializeField] public PlayerStatType Type { get; private set; }
+            [field: SerializeField] public StatType Type { get; private set; }
             [field: SerializeField] public int BaseValue { get; private set; }
             [field: SerializeField] public int FinalValue { get; private set; }
             
-            public StatEntry(PlayerStatType type) => Type = type;
+            public StatEntry(StatType type) => Type = type;
             public void SetBaseValue(int value) => BaseValue = value;
             public void SetFinalValue(int value) => FinalValue = value;
         }
@@ -413,6 +428,45 @@ namespace Cardevil.Gameplay
                 bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
                 CardevilCore.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
                 Console.MessageInfo($"Set player HP to {CardevilCore.PlayerStatus.CurrentHp}/{CardevilCore.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+            }
+        }
+        
+        
+        private static GodModeScoreProvider godModeModifier = new GodModeScoreProvider();
+        [ConsoleCommand("god", "Toggle god mode")]
+        private static void ToggleGodMode(string[] args)
+        {
+            PlayerStatus playerStatus = CardevilCore.PlayerStatus;
+            playerStatus.godMode = !playerStatus.godMode;
+
+            
+            if (playerStatus.godMode)
+            {
+                int id = CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+                godModeModifier.Id = id;
+            }
+            else
+            {
+                CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(godModeModifier.Id, godModeModifier);
+            }
+            
+            
+            Console.MessageInfo($"God mode {(playerStatus.godMode ? "enabled" : "disabled")}. Current HP: {playerStatus.CurrentHp}/{playerStatus.MaxHp}");
+        }
+
+        // TODO 임시
+        private class GodModeScoreProvider : IScoreProvider
+        {
+            public int Id { get; set; }
+            public ScoreStepType ScoreStepType => ScoreStepType.PlusPlayerStatus;
+            public IScoreOperator GetScoreOperator(IScoreContext context)
+            {
+                return new ScoreOperator
+                {
+                    Type = ScoreOperatorType.Plus,
+                    Value = CardevilCore.PlayerStatus.IsGodMode ? 9999 : 0,
+                    Source = this
+                };
             }
         }
 
