@@ -15,7 +15,8 @@ namespace Cardevil.Gameplay.Enemy
         private readonly Dictionary<string, BaseMobBossData> _mobBossDataDict = new();
 
         private readonly Queue<string> _currentStageMobIds = new();
-        
+
+        public List<BaseMobBossData> _baseMobBossDatas = new();
         public EnemySpawner()
         {
             var db = CardevilCore.Database.Database;
@@ -57,6 +58,8 @@ namespace Cardevil.Gameplay.Enemy
             }
 
             _currentStageMobIds.Clear();
+            _baseMobBossDatas.Clear();
+
             
             // 몹의 수 에서 나올 수 있는 몬스터들의 id를 저장한다
             // 같은 몹이 여러 번 나올 수 있음.
@@ -64,7 +67,14 @@ namespace Cardevil.Gameplay.Enemy
             {
                 int randomIndex = Random.Range(0, roomData.MobList.Count);
                 string cleanMobID = roomData.MobList[randomIndex].Trim('"');
-                
+
+
+                if(!_mobBossDataDict.TryGetValue(cleanMobID, out BaseMobBossData dataToSpawn))
+                {
+                    LogEx.LogError($"[EnemySpawner] MobID '{cleanMobID}'에 해당하는 데이터를 딕셔너리에서 찾을 수 없습니다.");
+                }
+
+                _baseMobBossDatas.Add(dataToSpawn);
                 _currentStageMobIds.Enqueue(cleanMobID);
             }
         }
