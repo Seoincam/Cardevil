@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Cardevil.Gameplay.SpecialScenes
 {
     public abstract class SpecialSceneView : MonoBehaviour
+    
     {
         public event Action CloseRequested;
 

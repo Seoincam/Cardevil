@@ -128,9 +128,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
 
         public void PrepareChapterUIForHandUp()
         {
-            chapterUIRectTransform.anchoredPosition = new Vector2(
-                _initialChapterUIRectTransform.anchoredPosition.x,
-                -100f);
+            chapterUIRectTransform.gameObject.SetActive(false);
             chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
             chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
         }
