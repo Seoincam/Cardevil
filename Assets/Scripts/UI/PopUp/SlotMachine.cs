@@ -18,6 +18,12 @@ namespace Cardevil.UI.PopUp
 {
     public class SlotMachine : UI_Popup
     {
+        /// <summary>
+        /// 습득했을때의 이벤트 발행
+        /// 파라미터: 1. 보상 타입(Enum), 2. 최종 획득 수량(int), 3. 원본 데이터(MachineReward)
+        /// </summary>
+        public event Action<Define.SlotRewardType, int, MachineReward> OnRewardAcquired;
+
         public bool isTest = false;
         // 현재 유저가 클릭해서 하이라이트된 아이템 데이터
         private Item _currentSelectedItem = null;
@@ -322,7 +328,6 @@ namespace Cardevil.UI.PopUp
         public void SetSelectedItem(Item item)
         {
             _currentSelectedItem = item;
-            Debug.Log($"[{item.itemName}] 아이템이 선택되었습니다. (확정 대기중)");
         }
 
         enum ItemButtons
@@ -401,8 +406,7 @@ namespace Cardevil.UI.PopUp
             }
 
             // 2. 캐싱된 아이템의 데이터를 PlayerStatus에 적용
-            ApplyRewardToPlayerStatus(_currentSelectedItem.macinRewardData);
-
+            ProcessAndPublishReward(_currentSelectedItem.macinRewardData);
             // 3. 확정 후 슬롯머신 닫기 연출 (유니태스크로 비동기 실행)
             CloseSlotMachine();
         }
@@ -590,45 +594,68 @@ namespace Cardevil.UI.PopUp
 
         #region Tool
         /// <summary>
-        /// Reward 데이터를 바탕으로 실제 플레이어 스탯을 변경합니다.
+        /// 최종 보상 값을 계산하고 외부로 이벤트를 발행합니다.
         /// </summary>
-        private void ApplyRewardToPlayerStatus(MachineReward rewardData)
+        private void ProcessAndPublishReward(MachineReward rewardData)
         {
             if (rewardData == null) return;
 
-            // Define.SlotRewardType (ItemName)을 기준으로 스탯을 올려줍니다.
-            string rewardTypeString = rewardData.ItemName.ToString();
+            int finalValue = rewardData.Value;
 
-            switch (rewardTypeString)
+            // 랜덤 골드의 경우에만 가중치 기반으로 최종 값을 재계산합니다.
+            if (rewardData.ItemName == Define.SlotRewardType.RandomGold)
             {
-                case "Gold":
-                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Gold, rewardData.Value);
-                    break;
-                case "Heal":
-                    CardevilCore.PlayerStatus.Heal(rewardData.Value);
-                    break;
-                case "MaxHp":
-                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.MaxHp, rewardData.Value);
-                    break;
-                case "Shield":
-                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Shield, rewardData.Value);
-                    break;
-                case "RerollTicket":
-                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.RerollTicket, rewardData.Value);
-                    break;
-                // 유물, 업그레이드 등 별도 로직이 필요한 경우
-                case "Relic":
-                case "DarkUpgrade":
-                    Debug.Log($"[{rewardData.ItemName}] 유물/업그레이드 획득 처리 호출 (Value: {rewardData.Value})");
-                    // TODO: Managers.Relic.AddRelic(...) 등의 함수 호출
-                    break;
-                default:
-                    Debug.LogWarning($"[{rewardData.ItemName}] 처리되지 않은 보상 타입입니다.");
-                    break;
+                finalValue = CalculateRandomGold(rewardData.Comment, rewardData.Value, rewardData.RandomProbablility);
             }
 
-            Debug.Log($"[보상 적용 완료] {rewardTypeString} 스탯에 {rewardData.Value} 만큼 적용됨.");
+            // 이벤트 발행: 외부의 매니저나 시스템들이 이 이벤트를 듣고 스탯 적용 및 연출을 진행합니다.
+            OnRewardAcquired?.Invoke(rewardData.ItemName, finalValue, rewardData);
+
+           
         }
+
+        /// <summary>
+        /// 최소값(Comment), 최대값(Value), 가중치 리스트를 바탕으로 랜덤 값을 추출합니다.
+        /// </summary>
+        private int CalculateRandomGold(string minComment, int maxValue, List<int> weights)
+        {
+            // 1. Comment에서 최소값 파싱
+            if (!int.TryParse(minComment, out int minValue))
+            {
+                Debug.LogError($"[RandomGold] 최소값 파싱 실패. Comment 확인 요망: {minComment}");
+                return maxValue; // 파싱 실패 시 안전하게 최대값 지급
+            }
+
+            // 2. 데이터 유효성 검증 (가중치 개수와 값의 범위가 일치하는지 확인)
+            int rangeCount = maxValue - minValue + 1;
+            if (weights == null || weights.Count == 0 || weights.Count != rangeCount)
+            {
+                Debug.LogWarning("[RandomGold] 가중치 데이터가 값의 범위와 맞지 않습니다. 균등 확률로 대체합니다.");
+                return UnityEngine.Random.Range(minValue, maxValue + 1);
+            }
+
+            // 3. 가중치 기반 랜덤 룰렛 (Weighted Random)
+            int totalWeight = 0;
+            foreach (int weight in weights)
+            {
+                totalWeight += weight;
+            }
+
+            int randomPick = UnityEngine.Random.Range(0, totalWeight);
+            int cumulativeWeight = 0;
+
+            for (int i = 0; i < weights.Count; i++)
+            {
+                cumulativeWeight += weights[i];
+                if (randomPick < cumulativeWeight)
+                {
+                    return minValue + i; // 뽑힌 인덱스에 매칭되는 골드량 반환
+                }
+            }
+
+            return minValue; // 기본 방어 로직
+        }
+
 
 
         /// <summary>
