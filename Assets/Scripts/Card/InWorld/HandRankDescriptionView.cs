@@ -1,9 +1,14 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Utils;
+using Database.Generated;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
+using System.Linq;
 
 namespace Cardevil.Card.InWorld
 {
@@ -11,6 +16,7 @@ namespace Cardevil.Card.InWorld
     {
         [SerializeField] private List<HandRankDescriptionRow> rows;
         [SerializeField] private TextMeshProUGUI handRankNameText;
+        [SerializeField] private TextMeshProUGUI handRankDescriptionText;
         
         [Header("Canvas Group")]
         [SerializeField] private CanvasGroup canvasGroup;
@@ -33,10 +39,11 @@ namespace Cardevil.Card.InWorld
             {
                 var handRank = handRankOrders[i];
                 var row = rows[i];
+                var handRankData = GetHandRankData(handRank);
 
                 row.Button.onClick.AddListener(() => HandleRowClicked(handRank));
-                row.HandRank = handRank;
-                row.Damage = 10;
+                row.HandRank = handRankData.DisplayName;
+                row.Damage = handRankData.Value;
                 
                 _rowMap.Add(handRank, row);
             }
@@ -47,11 +54,15 @@ namespace Cardevil.Card.InWorld
             {
                 exitButton.onClick.AddListener(HideAnimated);
             }
+            
+            HideInstant();
         }
 
         private void HandleRowClicked(HandRank targetHandRank)
-        {
-            handRankNameText.text = targetHandRank.ToString();
+        { 
+            var handRankData = GetHandRankData(targetHandRank);
+            handRankNameText.text = handRankData.DisplayName;
+            handRankDescriptionText.text = handRankData.DisplayCondition;
 
             if (_currentSelectedRow)
             {
@@ -66,6 +77,9 @@ namespace Cardevil.Card.InWorld
         public void ShowAnimated()
         {
             if (canvasGroup == null) return;
+            
+            HandleRowClicked(handRankOrders[0]);
+            
             canvasGroup.alpha = 0f;
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
@@ -87,6 +101,8 @@ namespace Cardevil.Card.InWorld
         public void ShowInstant()
         {
             if (canvasGroup == null) return;
+            
+            HandleRowClicked(handRankOrders[0]);
             canvasGroup.alpha = 1f;
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
@@ -99,6 +115,16 @@ namespace Cardevil.Card.InWorld
             canvasGroup.alpha = 0f;
             canvasGroup.blocksRaycasts = false;
             canvasGroup.interactable = false;
+        }
+
+        private static HandRankData GetHandRankData(HandRank handRank)
+        {
+            var data = CardevilCore.Database.Database.HandRankDataList
+                .FirstOrDefault(d => d.Ranking == handRank);
+
+            if (data == null) throw new ArgumentException($"{handRank} 데이터를 찾을 수 없음.");
+
+            return data;
         }
     }
 }

@@ -115,7 +115,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "1.6",
@@ -214,7 +214,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.1",
@@ -235,7 +235,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.2",
@@ -255,7 +255,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.3",
@@ -275,7 +275,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.4",
@@ -296,7 +296,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.5",
@@ -316,7 +316,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "MBoss2.1",
@@ -335,7 +335,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.6",
@@ -355,7 +355,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.7",
@@ -376,7 +376,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.8",
@@ -395,7 +395,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "2.9",
@@ -415,7 +415,7 @@
       0.5,
       0.25
     ],
-    "MachineLevel": 2
+    "MachineLevel": 1
   },
   {
     "RoomID": "FBoss2.1",
@@ -434,7 +434,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.1",
@@ -455,7 +455,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.2",
@@ -476,7 +476,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.3",
@@ -498,7 +498,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.4",
@@ -519,7 +519,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.5",
@@ -541,7 +541,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "MBoss3.1",
@@ -560,7 +560,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 4
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.6",
@@ -581,7 +581,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 4
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.7",
@@ -602,7 +602,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 4
+    "MachineLevel": 1
   },
   {
     "RoomID": "3.8",
@@ -623,7 +623,7 @@
       0.0,
       3.0
     ],
-    "MachineLevel": 3
+    "MachineLevel": 1
   },
   {
     "RoomID": "FBoss3.1",
@@ -642,7 +642,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 5
+    "MachineLevel": 1
   },
   {
     "RoomID": "FBoss3.2",
@@ -661,7 +661,7 @@
       1.0,
       1.0
     ],
-    "MachineLevel": 5
+    "MachineLevel": 1
   },
   {
     "RoomID": "Test",

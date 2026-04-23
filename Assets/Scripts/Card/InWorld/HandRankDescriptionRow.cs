@@ -13,10 +13,10 @@ namespace Cardevil.Card.InWorld
 
         public Button Button => button;
 
-        public HandRank HandRank
+        public string HandRank
         {
             // TODO: 실제 족보명이랑 연결
-            set => nameText.text = value.ToString();
+            set => nameText.text = value;
         }
 
         public int Damage
