@@ -21,7 +21,7 @@ namespace Database.Generated
         public List<float> HPRate;
         /// <summary> 비율 결정 확률 </summary>
         public List<float> HPRateProbabillity;
-        /// <summary> 나오게 될 슬롯머신의 레벨 </summary>
+        /// <summary> (필요 없음, 삭제 예정) </summary>
         public int MachineLevel;
     }
 }

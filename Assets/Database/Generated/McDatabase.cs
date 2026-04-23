@@ -7,23 +7,27 @@ namespace Database
 {
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public class McDatabase
+    public partial class McDatabase
     {
         public List<CustomClassTest> CustomClassTestList = new List<CustomClassTest>();
         public List<RoomData> RoomDataList = new List<RoomData>();
         public List<BaseMobBossData> BaseMobBossDataList = new List<BaseMobBossData>();
         public List<Heal> HealList = new List<Heal>();
+        public List<HandRankData> HandRankDataList = new List<HandRankData>();
         public List<MachineReward> MachineRewardList = new List<MachineReward>();
         public List<MachineProbabillity> MachineProbabillityList = new List<MachineProbabillity>();
         public List<RelicDisplayData> RelicDisplayDataList = new List<RelicDisplayData>();
+        public List<TooltipData> TooltipDataList = new List<TooltipData>();
         public readonly List<string> ClassNames = new List<string> {
             "CustomClassTest",
             "RoomData",
             "BaseMobBossData",
             "Heal",
+            "HandRankData",
             "MachineReward",
             "MachineProbabillity",
-            "RelicDisplayData"
+            "RelicDisplayData",
+            "TooltipData"
         };
 
 
@@ -42,6 +46,13 @@ namespace Database
         {
             switch (typeof(T).Name)
             {
+                case "TooltipData":
+                    foreach (var instance in TooltipDataList)
+                    {
+                        if (instance.identifier == identifier)
+                            return instance as T;
+                    }
+                    break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 타입: {typeof(T).Name}");
                     return null;
@@ -55,9 +66,11 @@ namespace Database
             RoomDataList.Clear();
             BaseMobBossDataList.Clear();
             HealList.Clear();
+            HandRankDataList.Clear();
             MachineRewardList.Clear();
             MachineProbabillityList.Clear();
             RelicDisplayDataList.Clear();
+            TooltipDataList.Clear();
         }
 
 
@@ -94,6 +107,9 @@ namespace Database
                     case "Heal":
                         HealList = CreateInstance<Heal>(df);
                         break;
+                    case "HandRankData":
+                        HandRankDataList = CreateInstance<HandRankData>(df);
+                        break;
                     case "MachineReward":
                         MachineRewardList = CreateInstance<MachineReward>(df);
                         break;
@@ -102,6 +118,9 @@ namespace Database
                         break;
                     case "RelicDisplayData":
                         RelicDisplayDataList = CreateInstance<RelicDisplayData>(df);
+                        break;
+                    case "TooltipData":
+                        TooltipDataList = CreateInstance<TooltipData>(df);
                         break;
                     default:
                         Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {df.name}");
@@ -131,6 +150,10 @@ namespace Database
                     var newHealItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Heal>>(json);
                     HealList.AddRange(newHealItems);
                     break;
+                case "HandRankData":
+                    var newHandRankDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<HandRankData>>(json);
+                    HandRankDataList.AddRange(newHandRankDataItems);
+                    break;
                 case "MachineReward":
                     var newMachineRewardItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<MachineReward>>(json);
                     MachineRewardList.AddRange(newMachineRewardItems);
@@ -142,6 +165,10 @@ namespace Database
                 case "RelicDisplayData":
                     var newRelicDisplayDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<RelicDisplayData>>(json);
                     RelicDisplayDataList.AddRange(newRelicDisplayDataItems);
+                    break;
+                case "TooltipData":
+                    var newTooltipDataItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<TooltipData>>(json);
+                    TooltipDataList.AddRange(newTooltipDataItems);
                     break;
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
@@ -162,12 +189,16 @@ namespace Database
                     return typeof(BaseMobBossData);
                 case "Heal":
                     return typeof(Heal);
+                case "HandRankData":
+                    return typeof(HandRankData);
                 case "MachineReward":
                     return typeof(MachineReward);
                 case "MachineProbabillity":
                     return typeof(MachineProbabillity);
                 case "RelicDisplayData":
                     return typeof(RelicDisplayData);
+                case "TooltipData":
+                    return typeof(TooltipData);
                 default:
                     Debug.LogWarning($"[MDatabase] 정의되지 않은 클래스 이름: {className}");
                     return null;

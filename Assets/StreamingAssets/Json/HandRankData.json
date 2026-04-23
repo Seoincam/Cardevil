@@ -1,0 +1,87 @@
+[
+  {
+    "Ranking": 1,
+    "Value": 0,
+    "DisplayName": "하이카드",
+    "DisplayCondition": "어떠한 족보에도 해당되지 않는 경우를 말합니다.\u2028제일 높은 숫자 카드만 공격에 사용됩니다.",
+    "DisplayCards": [
+      "Red_2",
+      "Green_4",
+      "Blue_6",
+      "Black_10"
+    ],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 2,
+    "Value": 5,
+    "DisplayName": "원 페어",
+    "DisplayCondition": "같은 숫자가 1쌍 있는 경우를 말합니다.",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 3,
+    "Value": 20,
+    "DisplayName": "투 페어",
+    "DisplayCondition": "같은 숫자가 2쌍 있는 경우를 말합니다.",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 4,
+    "Value": 30,
+    "DisplayName": "트리플",
+    "DisplayCondition": "같은 숫자가 3장 있는 경우를 말합니다.",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 5,
+    "Value": 80,
+    "DisplayName": "스트레이트",
+    "DisplayCondition": "연속된 4개의 숫자로 이루어진 경우를 말합니다.",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 6,
+    "Value": 100,
+    "DisplayName": "플러시",
+    "DisplayCondition": "플러시",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 7,
+    "Value": 180,
+    "DisplayName": "투 페어 플러시",
+    "DisplayCondition": "같은 색 4장으로 이루어진 투 페어 족보를 말합니다.\u2028세상에 이런 족보가 있나요? 몰래 사용하세요 . . .\u2028사용 시, 색상별로 다른 무시무시한 효과가 뒤따릅니다 . . .",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 8,
+    "Value": 200,
+    "DisplayName": "포카드",
+    "DisplayCondition": "같은 숫자가 4장 있는 경우를 말합니다.",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 9,
+    "Value": 400,
+    "DisplayName": "스트레이트 플러시",
+    "DisplayCondition": "같은 색 4장으로 이루어진 스트레이트 족보를 말합니다.\u2028사용 시, 색상별로 다른 무시무시한 효과가 뒤따릅니다 . . .",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  },
+  {
+    "Ranking": 10,
+    "Value": 666,
+    "DisplayName": "포카드 플러시",
+    "DisplayCondition": "같은 색 4장으로 이루어진 포카드 족보를 말합니다.\u2028세상에 이런 족보가 있나요? 부디 몰래 사용하세요 . . .\u2028사용 시, 색상별로 다른 무시무시한 효과가 뒤따릅니다 . . .",
+    "DisplayCards": [],
+    "DisplayEffect": ""
+  }
+]
