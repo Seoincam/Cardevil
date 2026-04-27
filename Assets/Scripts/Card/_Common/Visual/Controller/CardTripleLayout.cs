@@ -52,6 +52,13 @@ namespace Cardevil.Card.Visual.Controller
             subSprite2.sortingOrder = 100 * sortingOrder + 50;
         }
 
+        public void SetAlpha(float targetAlpha)
+        {
+            subSprite0.color = new Color(subSprite0.color.r, subSprite0.color.g, subSprite0.color.b, targetAlpha);
+            subSprite1.color = new Color(subSprite1.color.r, subSprite1.color.g, subSprite1.color.b, targetAlpha);
+            subSprite2.color = new Color(subSprite2.color.r, subSprite2.color.g, subSprite2.color.b, targetAlpha);
+        }
+
         public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
         {
             var subSprite0Tween = subSprite0

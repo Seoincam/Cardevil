@@ -30,6 +30,12 @@ namespace Cardevil.Card.Visual.Controller
             cornerSprite.sortingOrder = 100 * sortingOrder + 50;
         }
 
+        public void SetAlpha(float targetAlpha)
+        {
+            mainSprite.color = new Color(mainSprite.color.r, mainSprite.color.g, mainSprite.color.b, targetAlpha);
+            cornerSprite.color = new Color(cornerSprite.color.r, cornerSprite.color.g, cornerSprite.color.b, targetAlpha);
+        }
+
         public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
         {
             var mainSpriteTween = mainSprite

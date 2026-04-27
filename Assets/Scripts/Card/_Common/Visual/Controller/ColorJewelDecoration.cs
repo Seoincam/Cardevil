@@ -62,6 +62,15 @@ namespace Cardevil.Card.Visual.Controller
             }
         }
 
+        public void SetAlpha(float targetAlpha)
+        {
+            foreach (var colorJewel in _colorJewels)
+            {
+                var jewelRenderer = colorJewel.GetComponent<SpriteRenderer>();
+                jewelRenderer.color = new Color(jewelRenderer.color.r, jewelRenderer.color.g, jewelRenderer.color.b, targetAlpha);
+            }
+        }
+
         public Tween SetAlpha(float targetAlpha, float duration, Ease ease)
         {
             var sequence = DOTween.Sequence();

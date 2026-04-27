@@ -17,9 +17,9 @@ namespace Database.Generated
         public string DisplayName;
         /// <summary> 게임상 조건 설명 </summary>
         public string DisplayCondition;
-        /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 </summary>
-        public List<string> DisplayCards;
-        /// <summary> 악마의 계약 </summary>
-        public string DisplayEffect;
+        /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 (색) </summary>
+        public List<Cardevil.Card.Common.Core.CardColor> DisplayCardColors;
+        /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 (숫자) </summary>
+        public List<int> DisplayCardNumbers;
     }
 }
