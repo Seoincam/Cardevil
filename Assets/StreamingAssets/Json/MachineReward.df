@@ -43,7 +43,7 @@
       "2",
       "4",
       "1",
-      "[\n  25,\n  50,\n  25\n]",
+      "[25,50,25]",
       "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
@@ -88,7 +88,7 @@
       "3",
       "6",
       "1",
-      "[\n  25,\n  40,\n  20,\n  15\n]",
+      "[25,40,20,15]",
       "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [
@@ -133,7 +133,7 @@
       "6",
       "10",
       "1",
-      "[\n  25,\n  30,\n  25,\n  15,\n  5\n]",
+      "[25,30,25,15,5]",
       "https://drive.google.com/file/d/1CitR4H-iGw1kmkn-MwCaKDsT0lGculho/view?usp=drive_link"
     ],
     [

@@ -147,9 +147,26 @@ namespace Database
                         return;
                     Debug.Log($"Creating {df.name}.json");
                     _modifiedFiles.Remove(df.name);
-                    WriteJson(df);
+
+                    try
+                    {
+                        WriteJson(df);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[DBInitializerSO] JSON 저장 실패: {df.name}.df 저장은 계속 진행합니다. 예외: {e}");
+                    }
+
                     Debug.Log("Creating .df");
-                    WriteDf(df);
+                    try
+                    {
+                        WriteDf(df);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError($"[DBInitializerSO] DF 저장 실패: {df.name}, 예외: {e}");
+                    }
+
                     if(_modifiedFiles.Count == 0)
                         AssetDatabase.Refresh();
                 };

@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class HandRankData: IDBData {
+    public partial class HandRankData: IDBData
+    {
 
         /// <summary> 족보 </summary>
         public Cardevil.Card.Common.Core.HandRank Ranking;
@@ -22,4 +26,5 @@ namespace Database.Generated
         /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 (숫자) </summary>
         public List<int> DisplayCardNumbers;
     }
+
 }

@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class RoomData: IDBData {
+    public partial class RoomData: IDBData
+    {
 
         /// <summary> 방ID </summary>
         public string RoomID;
@@ -24,4 +28,5 @@ namespace Database.Generated
         /// <summary> (필요 없음, 삭제 예정) </summary>
         public int MachineLevel;
     }
+
 }
