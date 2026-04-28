@@ -222,6 +222,8 @@ namespace Cardevil.Gameplay.Dungeon
                 return false;
             }
 
+            CardevilCore.SaveLoad.SaveGame();
+            
             if (currentNode != null)
             {
                 if (currentNode.State == NodeState.Completed || currentNode.State == NodeState.Passed || currentNode.State == NodeState.Hidden)
@@ -330,6 +332,8 @@ namespace Cardevil.Gameplay.Dungeon
             var args = NodeExitedEventArgs.Get();
             args.Init(node, exitInfo);
             ExecEventBus<NodeExitedEventArgs>.InvokeMergedAndDispose(args).Forget();
+
+            CardevilCore.SaveLoad.SaveGame();
         }
 
         private void HandlePostClearFlow(DungeonNode node, NodeExitInfo exitInfo)

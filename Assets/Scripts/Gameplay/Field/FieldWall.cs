@@ -30,7 +30,7 @@ namespace Cardevil.Gameplay.Field
             {
                 if (_walls[i] != null)
                 {
-                    bool isActive = i < args.ModifiedHealth;
+                    bool isActive = i < args.NewHealth;
                     _walls[i].SetActive(isActive);
                 }
             }

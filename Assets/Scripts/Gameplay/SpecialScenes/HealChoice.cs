@@ -40,6 +40,8 @@ namespace Cardevil.Gameplay.SpecialScenes
         private Sequence _hoverSequence;
         private Sequence _applySequence;
         private bool _isApplying;
+        private int _selectedHealAmount;
+        private bool isGoldChoice;
         
         protected void Awake()
         {
@@ -54,10 +56,10 @@ namespace Cardevil.Gameplay.SpecialScenes
             descriptionText.text = "체력보다는 돈 \n 체력보다는 돈!";
             iconImage.sprite = goldIconSprite;
             panelImage.sprite = defaultPanelSprite;
-            
+            isGoldChoice = true;
         }
         
-        public void SetHealChoice(int minHealAmount, int maxHealAmount, int defaultHealIndex)
+        public void SetHealChoice(int minHealAmount, int maxHealAmount, int currentHealAmount)
         {
             titleText.text = "회복";
             if (minHealAmount == maxHealAmount)
@@ -71,6 +73,8 @@ namespace Cardevil.Gameplay.SpecialScenes
             descriptionText.text = "대결을 잠시 멈추고, \n 충분한 휴식을 취합니다.";
             iconImage.sprite = healIconSprite;
             panelImage.sprite = defaultPanelSprite;
+            _selectedHealAmount = currentHealAmount;
+            isGoldChoice = false;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -115,9 +119,21 @@ namespace Cardevil.Gameplay.SpecialScenes
             Sequence applySequence = DOTween.Sequence();
             float originalScale = iconImage.transform.localScale.x;
             applySequence.Append(iconImage.transform.DOScale(applyScale, applyScaleUpDuration).SetEase(Ease.OutBack));
+            if (!isGoldChoice)
+            {
+                applySequence.Join(valueText.DOFade(0f, applyScaleUpDuration));
+                applySequence.AppendCallback(() =>
+                {
+                    valueText.text = $"x{_selectedHealAmount}";
+                });
+            }
             applySequence.AppendInterval(applyHoldDuration);
             applySequence.Append(iconImage.transform.DOScale(originalScale, applyScaleDownDuration)
                 .SetEase(Ease.OutBack));
+            if (!isGoldChoice)
+            {
+                applySequence.Join(valueText.DOFade(1f, applyScaleDownDuration));
+            }
             applySequence.OnComplete(() =>
             {
                 ApplyAnimationCompleted?.Invoke();

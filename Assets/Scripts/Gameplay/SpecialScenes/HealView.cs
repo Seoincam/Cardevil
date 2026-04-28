@@ -95,7 +95,7 @@ namespace Cardevil.Gameplay.SpecialScenes
             }
 
             goldChoice.SetGoldChoice(healCore.GoldAmount);
-            healChoice.SetHealChoice(healCore.MinHealAmount, healCore.MaxHealAmount, healCore.SelectedHealIndex);
+            healChoice.SetHealChoice(healCore.MinHealAmount, healCore.MaxHealAmount, healCore.SelectedHealAmount);
         }
 
         public override async UniTask PlayEnterAsync()

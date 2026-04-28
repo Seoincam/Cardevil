@@ -20,20 +20,23 @@ namespace Cardevil.Gameplay
 {
     public enum StatType
     {
-        Level,
-        SlotMachineLevel,
+        Level = 0,
+        SlotMachineLevel = 1,
         
-        MaxHp,
-        CurrentHp,
-        Shield,
+        MaxHp = 2,
+        CurrentHp = 3,
+        Shield = 4,
+        BlackMarketTicket = 10,
+        MulliganTicket = 11,
+        ReinforcementTicket = 12,
         
-        MaxHandCount,
-        DefaultDiscardCount,
+        MaxHandCount = 5,
+        DefaultDiscardCount = 6,
         
-        Gold,
-        RerollTicket,
+        Gold = 7,
+        RerollTicket = 8,
         
-        StageClearCount,
+        StageClearCount = 9,
     }
     
     /// <summary>
@@ -237,6 +240,10 @@ namespace Cardevil.Gameplay
             var args = PlayerHealthChangeArgs.Get(CurrentHp, CurrentHp);
             args.IsJustBroadcast = true;
             ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+
+            var goldArgs = PlayerGoldChangeArgs.Get(GetFinalValue(StatType.Gold), GetFinalValue(StatType.Gold));
+            goldArgs.IsJustBroadcast = true;
+            ExecEventBus<PlayerGoldChangeArgs>.InvokeMergedAndDispose(goldArgs).Forget();
         }
         
         public void SetUpNewGame(GameSave currentSave)
@@ -337,10 +344,18 @@ namespace Cardevil.Gameplay
                     var shieldArgs = PlayerShieldChangeArgs.Get(previous, current);
                     ExecEventBus<PlayerShieldChangeArgs>.InvokeMergedAndDispose(shieldArgs).Forget();
                     break;
+
+                case StatType.Gold:
+                    var goldArgs = PlayerGoldChangeArgs.Get(previous, current);
+                    ExecEventBus<PlayerGoldChangeArgs>.InvokeMergedAndDispose(goldArgs).Forget();
+                    break;
                 
                 case StatType.RerollTicket:
                     break;
+                
             }
+            
+            ExecEventBus<PlayerStatusChangedArgs>.InvokeMergedAndDispose(PlayerStatusChangedArgs.Get(statType, previous, current)).Forget();
         }
 
         [Serializable]

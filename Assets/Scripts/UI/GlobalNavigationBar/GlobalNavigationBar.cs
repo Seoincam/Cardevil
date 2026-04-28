@@ -1,4 +1,7 @@
 ﻿using Cardevil.Card.InWorld;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Events.EventArgs;
+using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -83,12 +86,7 @@ namespace Cardevil.UI.GlobalNavigationBar
             
             Hide();
         }
-
-        void Start()
-        {
         
-        }
-
 
         public void OnDeckButtonClicked()
         {
@@ -146,5 +144,6 @@ namespace Cardevil.UI.GlobalNavigationBar
         {
             HideAsync().Forget();
         }
+        
     }
 }
