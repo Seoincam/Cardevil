@@ -2,7 +2,8 @@
   {
     "HealID": "Heal1.1",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 3,
     "HealProbabillity": [
@@ -13,7 +14,8 @@
   {
     "HealID": "Heal1.2",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 3,
     "HealProbabillity": [
@@ -24,7 +26,8 @@
   {
     "HealID": "Heal1.3",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 3,
     "HealProbabillity": [
@@ -35,7 +38,8 @@
   {
     "HealID": "Heal2.1",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 4,
     "HealProbabillity": [
@@ -46,7 +50,8 @@
   {
     "HealID": "Heal2.2",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 4,
     "HealProbabillity": [
@@ -57,7 +62,8 @@
   {
     "HealID": "Heal2.3",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 5,
     "HealProbabillity": [
@@ -68,7 +74,8 @@
   {
     "HealID": "Heal2.4",
     "HealAmount": [
-      0
+      1,
+      2
     ],
     "Gold": 5,
     "HealProbabillity": [

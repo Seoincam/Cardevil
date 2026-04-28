@@ -12,7 +12,8 @@ namespace Cardevil.Core.Utils
         public enum RandomType
         {
             Default = 0,
-            CardShuffle, 
+            CardShuffle = 1,
+            Events = 2,
             
             MAX
         }
@@ -94,6 +95,47 @@ namespace Cardevil.Core.Utils
                 int j = GetRandomInt(0, i + 1, type);
                 (list[i], list[j]) = (list[j], list[i]);
             }
+        }
+        
+        
+        public static int WeightedRandomIndex(IEnumerator<int> weights, RandomType type = RandomType.Default)
+        {
+            if (weights == null) throw new ArgumentNullException(nameof(weights));
+
+            int totalWeight = 0;
+            List<int> weightList = new List<int>();
+            while (weights.MoveNext())
+            {
+                int weight = weights.Current;
+                if (weight < 0) throw new ArgumentException("Weights cannot be negative.", nameof(weights));
+                totalWeight += weight;
+                weightList.Add(weight);
+            }
+
+            if (totalWeight == 0) throw new ArgumentException("Total weight must be greater than zero.", nameof(weights));
+
+            int randomValue = GetRandomInt(0, totalWeight, type);
+            for (int i = 0; i < weightList.Count; i++)
+            {
+                if (randomValue < weightList[i])
+                {
+                    return i;
+                }
+                randomValue -= weightList[i];
+            }
+
+            // Should never reach here if totalWeight > 0
+            throw new InvalidOperationException("Failed to select a weighted random index.");
+        }
+        
+        public static int WeightedRandomIndex(IEnumerable<int> weights, RandomType type = RandomType.Default)
+        {
+            return WeightedRandomIndex(weights.GetEnumerator(), type);
+        }
+        
+        public static int WeightedRandomIndex(params int[] weights)
+        {
+            return WeightedRandomIndex(weights.AsEnumerable());
         }
 
         [Serializable]

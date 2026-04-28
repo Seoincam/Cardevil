@@ -12,9 +12,9 @@ namespace Cardevil.Gameplay.SpecialScenes
             Context = context;
         }
 
-        public abstract string Title { get; }
-        public abstract string Description { get; }
-        public virtual string ConfirmLabel => "확인";
-        public abstract Color AccentColor { get; }
+        public abstract string TestTitle { get; }
+        public abstract string TestDescription { get; }
+        public virtual string TestConfirmLabel => "확인";
+        public abstract Color TestAccentColor { get; }
     }
 }

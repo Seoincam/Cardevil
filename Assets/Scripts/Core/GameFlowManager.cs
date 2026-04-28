@@ -1,6 +1,7 @@
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay;
 using Cardevil.Gameplay.Dungeon;
 using Cardevil.Gameplay.Dungeon.Core;
 using Cardevil.Gameplay.Dungeon.Node;
@@ -65,6 +66,7 @@ namespace Cardevil.Core
             public SceneManagement.Scenes scene;
             public string roomId;
             public int nodeId;
+            public DungeonNode node;
             public int floor;
             public DungeonNodeTypes sourceNodeType;
         }
@@ -142,6 +144,7 @@ namespace Cardevil.Core
                 scene = scene,
                 roomId = node.RoomId,
                 nodeId = node.NodeId,
+                node = node,
                 floor = node.Floor,
                 sourceNodeType = node.Type,
             };

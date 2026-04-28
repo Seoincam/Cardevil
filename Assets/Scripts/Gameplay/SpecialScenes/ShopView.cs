@@ -26,10 +26,10 @@ namespace Cardevil.Gameplay.SpecialScenes
 
         public override void Bind(SpecialSceneCore core)
         {
-            titleText.text = core.Title;
-            bodyText.text = core.Description;
-            buttonText.text = core.ConfirmLabel;
-            panelImage.color = core.AccentColor;
+            titleText.text = core.TestTitle;
+            bodyText.text = core.TestDescription;
+            buttonText.text = core.TestConfirmLabel;
+            panelImage.color = core.TestAccentColor;
         }
 
         public override async UniTask PlayEnterAsync()

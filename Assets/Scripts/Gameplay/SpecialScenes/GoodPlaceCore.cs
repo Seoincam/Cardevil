@@ -19,9 +19,9 @@ namespace Cardevil.Gameplay.SpecialScenes
             _description = Outcomes[Random.Range(0, Outcomes.Length)];
         }
 
-        public override string Title => "Good Place";
-        public override string Description => $"Random node result on floor {Context.floor}.\n{_description}";
-        public override string ConfirmLabel => "Finish Event";
-        public override Color AccentColor => new(0.18f, 0.45f, 0.30f, 0.97f);
+        public override string TestTitle => "Good Place";
+        public override string TestDescription => $"Random node result on floor {Context.floor}.\n{_description}";
+        public override string TestConfirmLabel => "Finish Event";
+        public override Color TestAccentColor => new(0.18f, 0.45f, 0.30f, 0.97f);
     }
 }
