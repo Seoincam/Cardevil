@@ -4,6 +4,7 @@ namespace Cardevil.UI
 {
     public class CanvasLetterbox : MonoBehaviour
     {
+        
         private const float TargetAspectRatio = 16f / 9f;
         private RectTransform _rectTransform;
         private void Awake()

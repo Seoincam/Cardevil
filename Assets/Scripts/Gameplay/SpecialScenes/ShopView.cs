@@ -1,7 +1,7 @@
-
+using Cardevil.UI;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,35 +10,49 @@ namespace Cardevil.Gameplay.SpecialScenes
     public class ShopView : SpecialSceneView
     {
         [SerializeField] private CanvasGroup canvasGroup;
-        [SerializeField] private Image panelImage;
-        [SerializeField] private TextMeshProUGUI titleText;
-        [SerializeField] private TextMeshProUGUI bodyText;
-        [SerializeField] private Button closeButton;
-        [SerializeField] private TextMeshProUGUI buttonText;
+        
+        [Header("Shop References")]
+        [SerializeField] private Transform shopItemContainer;
 
-        private void Awake()
-        {
-            if (closeButton)
-            {
-                closeButton.onClick.AddListener(RaiseCloseRequested);
-            }
-        }
+        [SerializeField] private List<ShopItem> shopItems;
+        [SerializeField] private Button reinforceButton;
+        
+        ShopCore shopCore;
 
         public override void Bind(SpecialSceneCore core)
         {
-            titleText.text = core.TestTitle;
-            bodyText.text = core.TestDescription;
-            buttonText.text = core.TestConfirmLabel;
-            panelImage.color = core.TestAccentColor;
+            shopCore = (ShopCore)core;
+            
+            var shopEntries = shopCore.ShopEntries;
+            for (int i = 0; i < shopItems.Count && i < shopEntries.Count; i++)
+            {
+                TooltipData tooltipData = TooltipResolver.Resolve(shopEntries[i].TooltipKey);
+                shopItems[i].Initialize(shopEntries[i], tooltipData);
+                shopItems[i].OnItemClicked += () => HandleItemClicked(i);
+            }
+            
+            reinforceButton.onClick.AddListener(HandleReinforceClicked);
+        }
+
+        private void HandleReinforceClicked()
+        {
+            Debug.Log("Reinforce button clicked!");
+            
+            // TODO : 강화를 위한 카드 선택창으로 이동
+        }
+
+        private void HandleItemClicked(int index)
+        {
+            Debug.Log($"Shop item {index} clicked!");
         }
 
         public override async UniTask PlayEnterAsync()
         {
-            var blackFade = UI.OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.8f)
+            var blackFade = UI.OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.2f)
                 .ToUniTask(TweenCancelBehaviour.Complete);
             canvasGroup.interactable = true;
             canvasGroup.blocksRaycasts = true;
-            await blackFade;
+            await UniTask.WhenAll(blackFade, canvasGroup.DOFade(1f, 0.2f).ToUniTask(TweenCancelBehaviour.Complete));
         }
 
         public override async UniTask PlayExitAsync()
@@ -47,5 +61,42 @@ namespace Cardevil.Gameplay.SpecialScenes
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
         }
+        
+        // #region Legacy
+        //
+        //
+        // [Header("Legacy References")]
+  
+        // [SerializeField] private Image panelImage;
+        // [SerializeField] private TextMeshProUGUI titleText;
+        // [SerializeField] private TextMeshProUGUI bodyText;
+        // [SerializeField] private Button closeButton;
+        // [SerializeField] private TextMeshProUGUI buttonText;
+        //
+        // private void Awake()
+        // {
+        //     if (closeButton)
+        //     {
+        //         closeButton.onClick.AddListener(RaiseCloseRequested);
+        //     }
+        // }
+        //
+        // public override void Bind(SpecialSceneCore core)
+        // {
+        //     titleText.text = core.TestTitle;
+        //     bodyText.text = core.TestDescription;
+        //     buttonText.text = core.TestConfirmLabel;
+        //     panelImage.color = core.TestAccentColor;
+        // }
+        //
+        // public override async UniTask PlayEnterAsync()
+        // {
+        //     var blackFade = UI.OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.8f)
+        //         .ToUniTask(TweenCancelBehaviour.Complete);
+        //     canvasGroup.interactable = true;
+        //     canvasGroup.blocksRaycasts = true;
+        //     await blackFade;
+        // }
+        // #endregion
     }
 }
