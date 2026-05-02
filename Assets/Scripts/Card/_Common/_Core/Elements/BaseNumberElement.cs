@@ -8,6 +8,7 @@ namespace Cardevil.Card.Common.Core
     {
         [SerializeField] private int number;
 
+        public BaseNumberElement() { }
         public BaseNumberElement(int defaultNumber)
         {
             number = defaultNumber;

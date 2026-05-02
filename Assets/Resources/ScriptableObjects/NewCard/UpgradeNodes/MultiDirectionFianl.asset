@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3671bfb43be444c1ae9e1b370003b544, type: 3}
+  m_Name: MultiDirectionFianl
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.Common.Core.Upgrade.UpgradeNodeSO
+  nextNodes: []
+  path: 3
+  stage: 2
+  targetCardType: 2
+  upgradeType: 1
+  elements:
+  - rid: 5998883810384282548
+  - rid: 5998883810384282549
+  - rid: 5998883810384282550
+  - rid: 5998883810384282551
+  blackMarketCost: 0
+  marketCost: 0
+  nodePosition: {x: 654, y: 450}
+  references:
+    version: 2
+    RefIds:
+    - rid: 5998883810384282548
+      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        direction:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 0
+    - rid: 5998883810384282549
+      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        direction:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 2
+    - rid: 5998883810384282550
+      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        direction:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 3
+    - rid: 5998883810384282551
+      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        direction:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 1

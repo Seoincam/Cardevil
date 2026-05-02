@@ -8,6 +8,11 @@ namespace Cardevil.Card.Common.Core
     public sealed class SelectableDirectionElement : ISpecElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<Direction> direction;
+
+        public SelectableDirectionElement()
+        {
+            direction = CardStateBuilder.SelectableSlot<Direction>.Random();
+        }
         
         public static SelectableDirectionElement Fixed(Direction direction) => new()
         {

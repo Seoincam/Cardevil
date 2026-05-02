@@ -7,7 +7,8 @@ namespace Cardevil.Card.Common.Core
     public class BaseColorElement : ISpecElement
     {
         [SerializeField] private CardColor color;
-        
+
+        public BaseColorElement() { }
         public BaseColorElement(CardColor defaultColor)
         {
             color = defaultColor;    

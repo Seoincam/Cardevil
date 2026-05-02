@@ -7,6 +7,11 @@ namespace Cardevil.Card.Common.Core
     public sealed class SelectableColorElement : ISpecElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<CardColor> color;
+
+        public SelectableColorElement()
+        {
+            color = CardStateBuilder.SelectableSlot<CardColor>.Random();
+        }
         
         public static SelectableColorElement Fixed(CardColor color) => new()
         {

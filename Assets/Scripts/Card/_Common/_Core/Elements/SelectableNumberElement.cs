@@ -8,6 +8,11 @@ namespace Cardevil.Card.Common.Core
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<int> number;
         
+        public SelectableNumberElement()
+        {
+            number = CardStateBuilder.SelectableSlot<int>.Random();
+        }
+        
         public static SelectableNumberElement Fixed(int number) => new()
         {
             number = CardStateBuilder.SelectableSlot<int>.Fixed(number)

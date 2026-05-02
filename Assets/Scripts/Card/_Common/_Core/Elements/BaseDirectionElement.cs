@@ -9,6 +9,7 @@ namespace Cardevil.Card.Common.Core
     {
         [SerializeField] private Direction direction;
 
+        public BaseDirectionElement() { }
         public BaseDirectionElement(Direction defaultDirection)
         {
             direction = defaultDirection;

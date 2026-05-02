@@ -18,7 +18,7 @@ namespace Cardevil.Card.Common.Core
         [SerializeReference, VisibleOnly] private List<ISpecElement> elements = new();
         
         [field: Header("Upgrade Data")]
-        [field: SerializeField] public UpgradeNode UpgradeNode { get; private set; }
+        [field: SerializeField] public UpgradeNodeSO UpgradeNode { get; private set; }
         
 
         private CardStateBuilder _builder = new();
@@ -61,7 +61,7 @@ namespace Cardevil.Card.Common.Core
 
         public CardSpec(int id,
             CardType type,
-            UpgradeNode upgradeNode = null)
+            UpgradeNodeSO upgradeNode = null)
         {
             ID = id;
             Type = type;
