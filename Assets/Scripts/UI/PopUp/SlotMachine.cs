@@ -29,6 +29,7 @@ namespace Cardevil.UI.PopUp
         public bool isTest = false;
         // 현재 유저가 클릭해서 하이라이트된 아이템 데이터
         private Item _currentSelectedItem = null;
+        private bool _isCurrentJackpot = false; // 현재 결과가 잭팟인지 저장하는 변수
 
         public enum ZoomType { None, Epic, Legend } // 줌 연출 타입 구분
 
@@ -259,6 +260,7 @@ namespace Cardevil.UI.PopUp
                 if (isJackpot)
                 {
                     _animationController.PlayJackpotSuccessEffect();
+                    _isCurrentJackpot = isJackpot;
                 }
 
                 await UniTask.Delay(TimeSpan.FromSeconds(0.5f), cancellationToken: this.GetCancellationTokenOnDestroy());
@@ -402,16 +404,32 @@ namespace Cardevil.UI.PopUp
         /// </summary>
         public void OnSelectClicked(PointerEventData eventData)
         {
-            // 1. 예외 처리: 선택된 아이템이 없을 경우
-            if (_currentSelectedItem == null)
+            // 잭팟일 경우: 3개 슬롯의 모든 보상 획득
+            if (_isCurrentJackpot)
             {
-                Debug.LogWarning("아이템이 선택되지 않았습니다.");
-                return;
+                foreach (var slot in slots)
+                {
+                    if (slot.item != null && slot.item.macinRewardData != null)
+                    {
+                        // 각각의 보상을 모두 적용
+                        ProcessAndPublishReward(slot.item.macinRewardData).Forget();
+                    }
+                }
+                Debug.Log("잭팟! 3개의 보상을 모두 획득했습니다.");
+            }
+            // 일반 상태일 경우: 기존처럼 선택된 1개의 보상만 획득
+            else
+            {
+                if (_currentSelectedItem == null)
+                {
+                    Debug.LogWarning("아이템이 선택되지 않았습니다.");
+                    return;
+                }
+
+                ProcessAndPublishReward(_currentSelectedItem.macinRewardData).Forget();
             }
 
-            // 2. 캐싱된 아이템의 데이터를 PlayerStatus에 적용
-            ProcessAndPublishReward(_currentSelectedItem.macinRewardData);
-            // 3. 확정 후 슬롯머신 닫기 연출 (유니태스크로 비동기 실행)
+            // 확정후 슬롯 머신 닫기 연출
             CloseSlotMachine();
         }
       

@@ -10,11 +10,34 @@ namespace Cardevil.Gameplay.Enemy
         [SerializeField] Enemy _enemy;
         [SerializeField] SpriteRenderer _enemySpriteRenderer;
         [SerializeField] Transform _enemyTransform;
+        [SerializeField] RectTransform _enemyHpBarRectTransform; // 초기 세팅
 
         [Header("Settings")]
         [SerializeField] float _attacked_BackPosition = 2f;
         [SerializeField] float _attack_BackPosition = 2f;
         [SerializeField] float _attack_FrontPosition = 1.5f;
+
+        private void Awake()
+        {
+            // 1. HP 바를 Enemy의 자식에서 분리합니다.
+            if (_enemyHpBarRectTransform != null)
+            {
+                // UI 요소이므로 부모 캔버스를 찾아서 그 바로 아래로 종속시킵니다.
+                Canvas parentCanvas = _enemyHpBarRectTransform.GetComponentInParent<Canvas>();
+                if (parentCanvas != null)
+                {
+                    _enemyHpBarRectTransform.SetParent(parentCanvas.transform, true);
+                }
+                else
+                {
+                    // 캔버스를 못 찾았다면 최상단으로 분리
+                    _enemyHpBarRectTransform.SetParent(null, true);
+                }
+
+                // 회전값 초기화 (만약 프리팹에서 돌아가 있었다면 방지)
+                _enemyHpBarRectTransform.rotation = Quaternion.identity;
+            }
+        }
 
         // 공격 애니메이션: 뒤로 살짝 빠졌다가 앞으로 돌진 후 원위치
         public async UniTask EnemyAttackAnimation()
@@ -87,9 +110,8 @@ namespace Cardevil.Gameplay.Enemy
             // 이미지 기준 Enemy Transform 할당 
             // Position (6, -2.6, 1)
             _enemyTransform.position = new Vector3(6f, -2.6f, 1f);
+           
 
-            // Rotation (10, 60, 1) 
-            // (참고: 이미지상 Z값이 1로 입력되어 있어 그대로 적용했습니다. 필요시 0으로 수정하세요)
             _enemyTransform.rotation = Quaternion.Euler(10f, 60f, 1f);
 
             // Scale (0.6, 0.6, 0.6)

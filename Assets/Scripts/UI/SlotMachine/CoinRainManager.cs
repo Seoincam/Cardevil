@@ -14,6 +14,7 @@ namespace Cardevil.UI.VFX
         [Header("Connects")]
         [SerializeField] private GameObject _coinPrefab; // [필수] 동전 이미지 프리팹
         [SerializeField] private RectTransform _rainContainer; // [필수] 동전들이 생성될 UI 컨테이너 (화면 전체 크기 권장)
+        [SerializeField] private RectTransform _slotMachineRect;
 
         [Header("Rain Settings")]
         [SerializeField] private int _poolCount = 100; // 미리 생성해둘 동전 개수
@@ -71,6 +72,7 @@ namespace Cardevil.UI.VFX
         public void PlayJackpotEffect(float duration = 3.0f)
         {
             // 비동기로 코인 비 소나기 실행
+            _slotMachineRect.DOShakePosition(duration, strength: 20f, vibrato: 30, randomness: 90f, snapping: false, fadeOut: true);
             SpawnCoinRainLoop(duration).Forget();
         }
 
