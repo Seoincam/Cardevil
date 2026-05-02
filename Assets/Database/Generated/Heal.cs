@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class Heal: IDBData {
+    public partial class Heal: IDBData
+    {
 
         /// <summary> 방번호 </summary>
         public string HealID;
@@ -18,4 +22,5 @@ namespace Database.Generated
         /// <summary> 힐 가중치 </summary>
         public List<int> HealProbabillity;
     }
+
 }

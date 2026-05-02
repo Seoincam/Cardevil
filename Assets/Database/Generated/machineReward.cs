@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class MachineReward: IDBData {
+    public partial class MachineReward: IDBData
+    {
 
         /// <summary> 이름 </summary>
         public Cardevil.Core.Utils.Define.SlotRewardType ItemName;
@@ -24,4 +28,5 @@ namespace Database.Generated
         /// <summary> 아이템이미지 </summary>
         public string URL;
     }
+
 }

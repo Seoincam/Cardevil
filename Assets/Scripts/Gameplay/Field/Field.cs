@@ -123,7 +123,7 @@ namespace Cardevil.Gameplay.Field
             {
                 if (_subFloorObjects[i] != null)
                 {
-                    bool isActive = i < args.ModifiedHealth;
+                    bool isActive = i < args.NewHealth;
                     _subFloorObjects[i].gameObject.SetActive(isActive);
                 }
             }

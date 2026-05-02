@@ -20,6 +20,7 @@ namespace Cardevil.Gameplay.Dungeon.Node
         [SerializeField, VisibleOnly] private int nodeInternalId;
         [SerializeField, VisibleOnly] private string roomId;
         [SerializeField, VisibleOnly] private RoomData roomData;
+        [SerializeField, VisibleOnly] private Heal healData;
         [SerializeField, VisibleOnly] private int floor;
         [SerializeField, VisibleOnly] private DungeonNodePreset preset;
         [SerializeField, VisibleOnly] private NodeState state = NodeState.Locked;
@@ -74,6 +75,27 @@ namespace Cardevil.Gameplay.Dungeon.Node
                 }
                 
                 return roomData;
+            }
+        }
+
+        public Heal HealData
+        {
+            get
+            {
+                if (preset != null && preset.NodeType == DungeonNodeTypes.Heal)
+                {
+                    if (healData == null && !string.IsNullOrEmpty(roomId))
+                    {
+                        var db = CardevilCore.Database.Database;
+                        // TODO : 딕셔너리 조회로 최적화
+                        healData = db.HealList.Find(h => h.HealID == roomId);
+                        if (healData == null)                    
+                        {
+                            LogEx.LogError($"[DungeonNode] HealData not found for HealID: {roomId}");
+                        }
+                    }
+                }
+                return healData;
             }
         }
         
@@ -150,6 +172,7 @@ namespace Cardevil.Gameplay.Dungeon.Node
             // 노드 상태 초기화
             state = NodeState.Locked;
             _ = RoomData;
+            _ = HealData;
             
             Debug.Log($"[DungeonNode] Node {NodeId} initialized. Type: {Type}, NextNodes: {NextNodes.Count}, PrevNodes: {PreviousNodes.Count}");
         }

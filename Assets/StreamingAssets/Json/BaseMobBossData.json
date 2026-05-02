@@ -5,8 +5,8 @@
     "MobType": "개",
     "BaseHP": 300,
     "ChapterFactor": 1.0,
-    "HPGrowFactor": 16,
-    "AttackCycle": 3,
+    "HPGrowFactor": 3,
+    "AttackCycle": 0,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
@@ -1429,7 +1429,9 @@
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
-    "AttackPattern": [],
+    "AttackPattern": [
+      11
+    ],
     "AttackPlayer": false,
     "GimmickName": [
       "Gimmick_SBoss"
@@ -1469,7 +1471,7 @@
     "MobKorID": "QBoss",
     "MobType": "Boss",
     "BaseHP": 1000,
-    "ChapterFactor": 1.5,
+    "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
     "AttackCycle": 0,
     "AttackDamage": 1,
@@ -1493,7 +1495,7 @@
     "MobKorID": "KBoss",
     "MobType": "Boss",
     "BaseHP": 1500,
-    "ChapterFactor": 1.5,
+    "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
     "AttackCycle": 2,
     "AttackDamage": 1,
@@ -1515,7 +1517,7 @@
     "MobKorID": "ABoss",
     "MobType": "Boss",
     "BaseHP": 1800,
-    "ChapterFactor": 2.0,
+    "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 1,
@@ -1543,7 +1545,7 @@
     "MobKorID": "Empty_Boss",
     "MobType": "Boss",
     "BaseHP": 5000,
-    "ChapterFactor": 2.0,
+    "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
     "AttackCycle": 3,
     "AttackDamage": 3,
@@ -1573,29 +1575,23 @@
     "MobID": "9007",
     "MobKorID": "Maker_Boss",
     "MobType": "Boss",
-    "BaseHP": 1500,
-    "ChapterFactor": 2.0,
+    "BaseHP": 666,
+    "ChapterFactor": 1.0,
     "HPGrowFactor": 0,
-    "AttackCycle": 2,
-    "AttackDamage": 2,
-    "BoolAttackType": false,
-    "AttackWeight": [
-      0,
-      0,
-      0
-    ],
+    "AttackCycle": 3,
+    "AttackDamage": 1,
+    "BoolAttackType": true,
+    "AttackWeight": [],
     "AttackPattern": [
-      8,
       9,
+      10,
       11
     ],
     "AttackPlayer": true,
     "GimmickName": [
       "Gimmick_Maker"
     ],
-    "GimmickValue": [
-      1.0
-    ],
+    "GimmickValue": [],
     "챕터": "",
     "수": ""
   },

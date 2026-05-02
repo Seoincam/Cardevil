@@ -162,14 +162,64 @@ function safeMatch(re, str) {
   return (m && m.length >= 1) ? m : null;
 }
 
+function splitTopLevel(str, separator) {
+  if (typeof str !== ""string"") return [];
+  const result = [];
+  let angle = 0, paren = 0, bracket = 0, brace = 0;
+  let inQuote = false;
+  let start = 0;
+
+  for (let i = 0; i < str.length; i++) {
+    const c = str[i];
+    if (c === '""') {
+      inQuote = !inQuote;
+      continue;
+    }
+    if (inQuote) continue;
+
+    if (c === ""<"") angle++;
+    else if (c === "">"") angle--;
+    else if (c === ""("") paren++;
+    else if (c === "")"") paren--;
+    else if (c === ""["") bracket++;
+    else if (c === ""]"") bracket--;
+    else if (c === ""{"") brace++;
+    else if (c === ""}"") brace--;
+    else if (c === separator && angle === 0 && paren === 0 && bracket === 0 && brace === 0) {
+      result.push(str.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+
+  result.push(str.slice(start).trim());
+  return result.filter(x => x !== """");
+}
+
+function tryGetTupleElementTypes(typeStr) {
+  if (typeof typeStr !== ""string"") return null;
+  const t = typeStr.trim();
+  if (t.startsWith(""("") && t.endsWith("")"")) {
+    const parts = splitTopLevel(t.slice(1, -1), "","");
+    return parts.length >= 2 ? parts : null;
+  }
+  if (/^ValueTuple\s*</i.test(t) && t.endsWith("">"")) {
+    const start = t.indexOf(""<"");
+    const parts = splitTopLevel(t.slice(start + 1, -1), "","");
+    return parts.length >= 2 ? parts : null;
+  }
+  return null;
+}
+
 function isListType(typeStr) {
   if (typeof typeStr !== ""string"") return false;
-  return /^List<\s*[^>]+\s*>$/i.test(typeStr.trim());
+  const t = typeStr.trim();
+  return /^List\s*</i.test(t) && t.endsWith("">"");
 }
 function getListElementType(typeStr) {
   if (!isListType(typeStr)) return null;
-  const m = typeStr.match(/^List<\s*([^>]+)\s*>$/i);
-  return m ? m[1].trim() : null;
+  const t = typeStr.trim();
+  const start = t.indexOf(""<"");
+  return start >= 0 ? t.slice(start + 1, -1).trim() : null;
 }
 function normalizeArrayElementType(typeStr) {
   if (typeof typeStr !== ""string"") return ""string"";
@@ -185,13 +235,27 @@ function parseListCell(listType, rawValue) {
   const elemType = getListElementType(listType) || ""string"";
   if (rawValue == null || rawValue === """") return [];
   const str = (typeof rawValue === ""string"") ? rawValue : String(rawValue);
-  const parts = str.split("","").map(s => s.trim());
+  const body = str.startsWith(""["") && str.endsWith(""]"") ? str.slice(1, -1) : str;
+  const parts = splitTopLevel(body, "","");
   return parts.map(p => parseByType(elemType, p));
 }
 
 function parseByType(typeStr, rawValue) {
-  const t = (typeStr || ""string"").toLowerCase();
+  const normalizedType = (typeStr || ""string"").trim();
+  const t = normalizedType.toLowerCase();
   if (rawValue === """" || rawValue == null) return null;
+
+  const tupleTypes = tryGetTupleElementTypes(normalizedType);
+  if (tupleTypes) {
+    const raw = (typeof rawValue === ""string"") ? rawValue.trim() : String(rawValue).trim();
+    const body =
+      (raw.startsWith(""("") && raw.endsWith("")"")) || (raw.startsWith(""["") && raw.endsWith(""]""))
+        ? raw.slice(1, -1)
+        : raw;
+    const parts = splitTopLevel(body, "","");
+    if (parts.length !== tupleTypes.length) return null;
+    return parts.map((part, i) => parseByType(tupleTypes[i], part));
+  }
 
   if (t === ""int"" || t === ""integer"") {
     if (typeof rawValue === ""number"") return Math.trunc(rawValue);

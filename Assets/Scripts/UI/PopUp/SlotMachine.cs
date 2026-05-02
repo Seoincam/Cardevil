@@ -31,6 +31,7 @@ namespace Cardevil.UI.PopUp
         private Item _currentSelectedItem = null;
         private bool _isCurrentJackpot = false; // 현재 결과가 잭팟인지 저장하는 변수
 
+
         public enum ZoomType { None, Epic, Legend } // 줌 연출 타입 구분
 
         // 슬롯머신 끝났을때의 액션 접근
@@ -430,6 +431,16 @@ namespace Cardevil.UI.PopUp
             }
 
             // 확정후 슬롯 머신 닫기 연출
+            // 1. 예외 처리: 선택된 아이템이 없을 경우
+            if (_currentSelectedItem == null)
+            {
+                Debug.LogWarning("아이템이 선택되지 않았습니다.");
+                return;
+            }
+
+            // 2. 캐싱된 아이템의 데이터를 PlayerStatus에 적용
+            ProcessAndPublishReward(_currentSelectedItem.macinRewardData);
+            // 3. 확정 후 슬롯머신 닫기 연출 (유니태스크로 비동기 실행)
             CloseSlotMachine();
         }
       

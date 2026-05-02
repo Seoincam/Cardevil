@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class BaseMobBossData: IDBData {
+    public partial class BaseMobBossData: IDBData
+    {
 
         /// <summary> 몹ID </summary>
         public string MobID;
@@ -42,4 +46,5 @@ namespace Database.Generated
         /// <summary> 16 </summary>
         public string 수;
     }
+
 }

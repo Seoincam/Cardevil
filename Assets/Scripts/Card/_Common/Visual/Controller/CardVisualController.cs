@@ -131,10 +131,28 @@ namespace Cardevil.Card.Visual.Controller
             }
         }
 
+        public void Fade(float targetAlpha, bool fadeAll = false)
+        {
+            innerFrame.color = new Color(innerFrame.color.r, innerFrame.color.g, innerFrame.color.b, targetAlpha);
+            if (_currentLayout != null)
+            {
+                _currentLayout.SetAlpha(targetAlpha);
+            }
+            if (_currentColorJewel)
+            {
+                _currentColorJewel.SetAlpha(targetAlpha);
+            }
+
+            if (fadeAll)
+            {
+                background.color = new Color(background.color.r, background.color.g, background.color.b, targetAlpha);
+            }
+        }
+
         /// <summary>
         /// 카드 내부 요소의 알파값을 변경하는 트윈을 반환.
         /// </summary>
-        public Tween DoFade(float targetAlpha, float duration, Ease ease)
+        public Tween DoFade(float targetAlpha, float duration, Ease ease, bool fadeAll = false)
         {
             var innerFrameTween = innerFrame
                 .DOFade(targetAlpha, duration)
@@ -151,6 +169,11 @@ namespace Cardevil.Card.Visual.Controller
             if (_currentColorJewel)
             {
                 sequence.Join(_currentColorJewel.SetAlpha(targetAlpha, duration, ease));
+            }
+
+            if (fadeAll)
+            {
+                sequence.Join(background.DOFade(targetAlpha, duration).SetEase(ease));
             }
             
             return sequence;

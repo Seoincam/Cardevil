@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Database.Generated;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 namespace Database
@@ -19,7 +20,7 @@ namespace Database
             var type = ReflectionUtil.FindTypeByFullName("Database.Generated." + df.name);
             if (type == null)
             {
-                Debug.LogError($"[ClassInstanceFactory] ??낆쓣 李얠쓣 ???놁뒿?덈떎: Database.Generated.{df.name}");
+                Debug.LogError($"[ClassInstanceFactory] 타입을 찾을 수 없습니다: Database.Generated.{df.name}");
                 return Array.Empty<object>();
             }
 
@@ -67,10 +68,26 @@ namespace Database
         {
             value = value?.Trim() ?? string.Empty;
 
+            if (IsTupleDtoType(targetType))
+            {
+                if (string.IsNullOrEmpty(value) || value == "null")
+                {
+                    return Activator.CreateInstance(targetType)!;
+                }
+
+                return JsonConvert.DeserializeObject(value, targetType)!;
+            }
+
+            if (IsValueTupleType(targetType))
+            {
+                return ConvertTupleValue(targetType, value, depth);
+            }
+
             if (targetType.IsArray)
             {
                 Type elementType = targetType.GetElementType()!;
-                string[] elements = SplitToList(value);
+                string[] elements = GetCollectionElements(value);
+                elements = NormalizeTupleCollectionElements(elementType, elements);
                 Array arrayInstance = Array.CreateInstance(elementType, elements.Length);
 
                 for (int i = 0; i < elements.Length; i++)
@@ -90,7 +107,7 @@ namespace Database
                         }
                         else
                         {
-                            Debug.LogError($"[ClassInstanceFactory] 諛곗뿴 ?붿냼 蹂???ㅽ뙣: {targetType.Name}, 媛? '{elements[i]}', ?덉쇅: {e}");
+                            Debug.LogError($"[ClassInstanceFactory] 배열 요소 변환 실패: {targetType.Name}, 값 '{elements[i]}', 예외: {e}");
                             throw;
                         }
                     }
@@ -104,7 +121,8 @@ namespace Database
                 if (targetType.GetGenericTypeDefinition() == typeof(List<>))
                 {
                     Type elementType = targetType.GetGenericArguments()[0];
-                    string[] elements = SplitToList(value);
+                    string[] elements = GetCollectionElements(value);
+                    elements = NormalizeTupleCollectionElements(elementType, elements);
                     var listInstance = Activator.CreateInstance(targetType);
                     var addMethod = targetType.GetMethod("Add");
                     foreach (string element in elements)
@@ -131,7 +149,7 @@ namespace Database
                             }
                             else
                             {
-                                Debug.LogError($"[ClassInstanceFactory] 由ъ뒪???붿냼 蹂???ㅽ뙣: {targetType.Name}, 媛? '{element}', ?덉쇅: {e}");
+                                Debug.LogError($"[ClassInstanceFactory] 리스트 요소 변환 실패: {targetType.Name}, 값 '{element}', 예외: {e}");
                                 throw;
                             }
                         }
@@ -143,7 +161,8 @@ namespace Database
                 if (targetType.GetGenericTypeDefinition() == typeof(Database.ListWrapper<>))
                 {
                     Type elementType = targetType.GetGenericArguments()[0];
-                    string[] elements = SplitToList(value);
+                    string[] elements = GetCollectionElements(value);
+                    elements = NormalizeTupleCollectionElements(elementType, elements);
                     var listWrapperInstance = Activator.CreateInstance(targetType);
                     var addMethod = targetType.GetMethod("Add");
                     foreach (var element in elements)
@@ -161,7 +180,7 @@ namespace Database
                             }
                             else
                             {
-                                Debug.LogError($"[ClassInstanceFactory] 由ъ뒪?몃옒???붿냼 蹂???ㅽ뙣: {targetType.Name}, 媛? '{element}', ?덉쇅: {e}");
+                                Debug.LogError($"[ClassInstanceFactory] ListWrapper 요소 변환 실패: {targetType.Name}, 값 '{element}', 예외: {e}");
                                 throw;
                             }
                         }
@@ -279,7 +298,7 @@ namespace Database
             }
             catch (Exception e)
             {
-                Debug.LogError($"[ClassInstanceFactory] IJsonUtilitySupport 蹂???ㅽ뙣: {targetType.Name}, {e}");
+                Debug.LogError($"[ClassInstanceFactory] IJsonUtilitySupport 변환 실패: {targetType.Name}, {e}");
             }
 
             try
@@ -294,7 +313,7 @@ namespace Database
             }
             catch (Exception e)
             {
-                Debug.LogError($"[ClassInstanceFactory] ILoadFromDatabaseString 蹂???ㅽ뙣: {targetType.Name}, {e}");
+                Debug.LogError($"[ClassInstanceFactory] ILoadFromDatabaseString 변환 실패: {targetType.Name}, {e}");
             }
 
             if (targetType == typeof(DateTime))
@@ -311,7 +330,20 @@ namespace Database
                 return TimeSpan.Zero;
             }
 
-            if (targetType.IsClass)
+            if (Attribute.IsDefined(targetType, typeof(JsonConverterAttribute)))
+            {
+                try
+                {
+                    var instance = JsonConvert.DeserializeObject(value, targetType);
+                    return instance!;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"[ClassInstanceFactory] JsonConverter 변환 실패: {targetType.Name}, {e}");
+                }
+            }
+
+            if (targetType.IsClass || targetType.IsValueType)
             {
                 if (Attribute.IsDefined(targetType, typeof(SerializableAttribute)))
                 {
@@ -322,25 +354,13 @@ namespace Database
                     }
                     catch (Exception e)
                     {
-                        Debug.LogError($"[ClassInstanceFactory] Serializable ?대옒??蹂???ㅽ뙣: {targetType.Name}, {e}");
+                        Debug.LogError($"[ClassInstanceFactory] Serializable 타입 변환 실패: {targetType.Name}, {e}");
                     }
                 }
 
-                if (Attribute.IsDefined(targetType, typeof(JsonConverterAttribute)))
-                {
-                    try
-                    {
-                        var instance = JsonConvert.DeserializeObject(value, targetType);
-                        return instance!;
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogError($"[ClassInstanceFactory] JsonConverter ?대옒??蹂???ㅽ뙣: {targetType.Name}, {e}");
-                    }
-                }
             }
 
-            Debug.LogWarning($"[ClassInstanceFactory] ?????녿뒗 ???蹂???쒕룄: {targetType.Name}, 媛? '{value}'");
+            Debug.LogWarning($"[ClassInstanceFactory] 지원되지 않는 타입 변환 시도: {targetType.Name}, 값 '{value}'");
             return Convert.ChangeType(value, targetType, ci);
         }
 
@@ -351,7 +371,7 @@ namespace Database
 
             value = value.Trim();
 
-            if (value.StartsWith("[") && value.EndsWith("]"))
+            if (IsWrappedBy(value, '[', ']'))
                 value = value.Substring(1, value.Length - 2);
 
             if (string.IsNullOrWhiteSpace(value))
@@ -363,6 +383,7 @@ namespace Database
             var elements = new List<string>();
             int bracketCount = 0;
             int braceCount = 0;
+            int parenCount = 0;
             bool inQuote = false;
             int lastSplitIndex = 0;
 
@@ -370,7 +391,7 @@ namespace Database
             {
                 char c = value[i];
 
-                if (c == '"')
+                if (IsQuoteToggle(value, i))
                     inQuote = !inQuote;
 
                 if (!inQuote)
@@ -383,8 +404,12 @@ namespace Database
                         braceCount++;
                     else if (c == '}')
                         braceCount--;
+                    else if (c == '(')
+                        parenCount++;
+                    else if (c == ')')
+                        parenCount--;
 
-                    if (c == ',' && bracketCount == 0 && braceCount == 0)
+                    if (c == ',' && bracketCount == 0 && braceCount == 0 && parenCount == 0)
                     {
                         elements.Add(value.Substring(lastSplitIndex, i - lastSplitIndex).Trim());
                         lastSplitIndex = i + 1;
@@ -398,16 +423,108 @@ namespace Database
             return elements.ToArray();
         }
 
+        private static string[] GetCollectionElements(string value)
+        {
+            if (TrySplitJsonArray(value, out string[] jsonElements))
+            {
+                return jsonElements;
+            }
+
+            return SplitToList(value);
+        }
+
+        private static string[] NormalizeTupleCollectionElements(Type elementType, string[] elements)
+        {
+            if (!IsValueTupleType(elementType) || elements == null || elements.Length == 0)
+            {
+                return elements ?? Array.Empty<string>();
+            }
+
+            // ValueTuple 조각이 잘린 입력을 괄호/인용부호 균형 기준으로 재병합한다.
+            var merged = new List<string>();
+            var buffer = new System.Text.StringBuilder();
+            int bracketCount = 0;
+            int braceCount = 0;
+            int parenCount = 0;
+            bool inQuote = false;
+
+            for (int i = 0; i < elements.Length; i++)
+            {
+                string token = (elements[i] ?? string.Empty).Trim();
+                if (buffer.Length > 0)
+                {
+                    buffer.Append(',');
+                }
+
+                buffer.Append(token);
+                UpdateDepthState(token, ref bracketCount, ref braceCount, ref parenCount, ref inQuote);
+
+                if (!inQuote && bracketCount == 0 && braceCount == 0 && parenCount == 0)
+                {
+                    merged.Add(buffer.ToString().Trim());
+                    buffer.Clear();
+                }
+            }
+
+            if (buffer.Length > 0)
+            {
+                merged.Add(buffer.ToString().Trim());
+            }
+
+            return merged.ToArray();
+        }
+
+        private static bool TrySplitJsonArray(string value, out string[] elements)
+        {
+            elements = null;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            string trimmed = value.Trim();
+            if (!IsWrappedBy(trimmed, '[', ']'))
+            {
+                return false;
+            }
+
+            try
+            {
+                JArray array = JArray.Parse(trimmed);
+                elements = array
+                    .Select(ToCollectionElementString)
+                    .ToArray();
+                return true;
+            }
+            catch (JsonReaderException)
+            {
+                return false;
+            }
+        }
+
+        private static string ToCollectionElementString(JToken token)
+        {
+            if (token == null || token.Type == JTokenType.Null)
+            {
+                return string.Empty;
+            }
+
+            return token.Type == JTokenType.String
+                ? token.Value<string>()
+                : token.ToString(Formatting.None);
+        }
+
         internal static string[] SplitToKV(string entry)
         {
             int bracketCount = 0;
             int braceCount = 0;
+            int parenCount = 0;
             bool inQuote = false;
 
             for (int i = 0; i < entry.Length; i++)
             {
                 char c = entry[i];
-                if (c == '"')
+                if (IsQuoteToggle(entry, i))
                     inQuote = !inQuote;
 
                 if (!inQuote)
@@ -420,8 +537,12 @@ namespace Database
                         braceCount++;
                     else if (c == '}')
                         braceCount--;
+                    else if (c == '(')
+                        parenCount++;
+                    else if (c == ')')
+                        parenCount--;
 
-                    if (c == ':' && bracketCount == 0 && braceCount == 0)
+                    if (c == ':' && bracketCount == 0 && braceCount == 0 && parenCount == 0)
                     {
                         return new[]
                         {
@@ -433,6 +554,195 @@ namespace Database
             }
 
             return Array.Empty<string>();
+        }
+
+        private static bool IsValueTupleType(Type targetType)
+        {
+            return targetType.IsValueType
+                   && targetType.IsGenericType
+                   && targetType.FullName != null
+                   && targetType.FullName.StartsWith("System.ValueTuple`", StringComparison.Ordinal);
+        }
+
+        private static bool IsTupleDtoType(Type targetType)
+        {
+            if (!Attribute.IsDefined(targetType, typeof(JsonConverterAttribute)))
+            {
+                return false;
+            }
+
+            int tupleFieldCount = targetType
+                .GetFields(BindingFlags.Public | BindingFlags.Instance)
+                .Count(field => field.Name.StartsWith("Item", StringComparison.Ordinal));
+
+            return tupleFieldCount >= 1;
+        }
+
+        private static object ConvertTupleValue(Type targetType, string value, int depth)
+        {
+            if (string.IsNullOrWhiteSpace(value) || value == "null")
+            {
+                return Activator.CreateInstance(targetType)!;
+            }
+
+            string tuplePayload = NormalizeTupleLiteral(value);
+            if (string.IsNullOrWhiteSpace(tuplePayload))
+            {
+                return Activator.CreateInstance(targetType)!;
+            }
+
+            string[] elements = SplitToList(tuplePayload);
+            List<Type> tupleTypes = GetTupleElementTypes(targetType);
+
+            if (elements.Length != tupleTypes.Count)
+            {
+                throw new FormatException(
+                    $"Tuple element count mismatch for {targetType}: expected {tupleTypes.Count}, got {elements.Length}. Value='{value}'");
+            }
+
+            object[] converted = new object[tupleTypes.Count];
+            for (int i = 0; i < tupleTypes.Count; i++)
+            {
+                converted[i] = ConvertValue(tupleTypes[i], elements[i], depth + 1);
+            }
+
+            return BuildTupleInstance(targetType, converted, 0);
+        }
+
+        private static string NormalizeTupleLiteral(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return string.Empty;
+            }
+
+            string trimmed = UnwrapQuotedValue(value.Trim());
+            if (IsWrappedBy(trimmed, '(', ')'))
+            {
+                return trimmed.Substring(1, trimmed.Length - 2);
+            }
+
+            if (IsWrappedBy(trimmed, '[', ']'))
+            {
+                return trimmed.Substring(1, trimmed.Length - 2);
+            }
+
+            return trimmed;
+        }
+
+        private static string UnwrapQuotedValue(string value)
+        {
+            string trimmed = value;
+            while (trimmed.Length >= 2
+                   && trimmed[0] == '"'
+                   && trimmed[trimmed.Length - 1] == '"'
+                   && !IsEscaped(trimmed, trimmed.Length - 1))
+            {
+                trimmed = trimmed.Substring(1, trimmed.Length - 2).Trim();
+            }
+
+            return trimmed;
+        }
+
+        private static bool IsWrappedBy(string value, char start, char end)
+        {
+            return value.Length >= 2 && value[0] == start && value[^1] == end;
+        }
+
+        private static bool IsEscaped(string value, int index)
+        {
+            int backslashCount = 0;
+            for (int i = index - 1; i >= 0 && value[i] == '\\'; i--)
+            {
+                backslashCount++;
+            }
+
+            return (backslashCount % 2) == 1;
+        }
+
+        private static bool IsQuoteToggle(string value, int index)
+        {
+            return value[index] == '"' && !IsEscaped(value, index);
+        }
+
+        private static void UpdateDepthState(
+            string value,
+            ref int bracketCount,
+            ref int braceCount,
+            ref int parenCount,
+            ref bool inQuote)
+        {
+            for (int i = 0; i < value.Length; i++)
+            {
+                char c = value[i];
+                if (IsQuoteToggle(value, i))
+                {
+                    inQuote = !inQuote;
+                    continue;
+                }
+
+                if (inQuote)
+                {
+                    continue;
+                }
+
+                if (c == '[')
+                    bracketCount++;
+                else if (c == ']')
+                    bracketCount--;
+                else if (c == '{')
+                    braceCount++;
+                else if (c == '}')
+                    braceCount--;
+                else if (c == '(')
+                    parenCount++;
+                else if (c == ')')
+                    parenCount--;
+            }
+        }
+
+        private static List<Type> GetTupleElementTypes(Type tupleType)
+        {
+            var elementTypes = new List<Type>();
+            AppendTupleElementTypes(tupleType, elementTypes);
+            return elementTypes;
+        }
+
+        private static void AppendTupleElementTypes(Type tupleType, List<Type> elementTypes)
+        {
+            Type[] genericArguments = tupleType.GetGenericArguments();
+            if (genericArguments.Length <= 7)
+            {
+                elementTypes.AddRange(genericArguments);
+                return;
+            }
+
+            for (int i = 0; i < 7; i++)
+            {
+                elementTypes.Add(genericArguments[i]);
+            }
+
+            AppendTupleElementTypes(genericArguments[7], elementTypes);
+        }
+
+        private static object BuildTupleInstance(Type tupleType, object[] values, int startIndex)
+        {
+            Type[] genericArguments = tupleType.GetGenericArguments();
+            object[] ctorArgs;
+
+            if (genericArguments.Length <= 7)
+            {
+                ctorArgs = new object[genericArguments.Length];
+                Array.Copy(values, startIndex, ctorArgs, 0, genericArguments.Length);
+            }
+            else
+            {
+                ctorArgs = new object[8];
+                Array.Copy(values, startIndex, ctorArgs, 0, 7);
+                ctorArgs[7] = BuildTupleInstance(genericArguments[7], values, startIndex + 7);
+            }
+
+            return Activator.CreateInstance(tupleType, ctorArgs)!;
         }
     }
 }

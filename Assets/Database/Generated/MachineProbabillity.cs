@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class MachineProbabillity: IDBData {
+    public partial class MachineProbabillity: IDBData
+    {
 
         /// <summary> 머신레벨 </summary>
         public int MachineLevel;
@@ -16,4 +20,5 @@ namespace Database.Generated
         /// <summary> 다음 레벨까지의 레벨업 비용 </summary>
         public int LevelUpCost;
     }
+
 }

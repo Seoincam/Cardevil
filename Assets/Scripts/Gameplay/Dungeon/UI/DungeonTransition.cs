@@ -1,13 +1,17 @@
 ﻿using Cardevil.Core;
 using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Gameplay.Dungeon.Core;
+using Cardevil.UI;
 using Cardevil.UI.Playables;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System;
 using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.Serialization;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
@@ -17,7 +21,8 @@ namespace Cardevil.Gameplay.Dungeon.UI
     {
         [SerializeField] private Image environmentImage;
         [SerializeField] private RectTransform transitionPanel;
-        [SerializeField] private Image blackPanel;
+        [SerializeField] private BlackPanel blackPanel;
+        [SerializeField] private Image blackPanelImg;
         [SerializeField] private TextMeshProUGUI blackPanelText;
         [SerializeField] private CanvasGroup canvasGroup;
         [Header("PlayableDirector Settings")]
@@ -28,6 +33,8 @@ namespace Cardevil.Gameplay.Dungeon.UI
         [field:SerializeField] public PlayableAsset TransitionToStagePlayableAsset { get; private set; }
         [field:Tooltip("지도를 손에 드는 애니메이션이 재생되는 타임라인 에셋입니다.")]
         [field:SerializeField] public PlayableAsset HandUpPlayableAsset { get; private set; }
+        [field:Obsolete("사용안함.", true)]
+        [field:SerializeField] public PlayableAsset DefaultHideTransitionPlayableAsset { get; private set; }
         
         
         private RectTransform _initialEnvironmentImagePosition;
@@ -68,6 +75,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
 
         public async UniTask ShowEnterTransition(CancellationToken cancellationToken = default)
         {
+            blackPanelText.gameObject.SetActive(true);
             PlayableDirector.playableAsset = TransitionToStagePlayableAsset;
             PlayableDirector.Play();
             var timeline = PlayableDirector.playableAsset as TimelineAsset;
@@ -82,6 +90,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
         
         public async UniTask ShowHandUpAnimation(CancellationToken cancellationToken = default)
         {
+            canvasGroup.alpha = 1;
             PlayableDirector.playableAsset = HandUpPlayableAsset;
             PlayableDirector.Play(HandUpPlayableAsset);
             var durationTask = UniTask.WaitForSeconds((float)PlayableDirector.duration, cancellationToken: cancellationToken);
@@ -91,10 +100,35 @@ namespace Cardevil.Gameplay.Dungeon.UI
             
             await UniTask.WhenAny(durationTask, stopTask);
         }
+        
+        public async UniTask PlayMapHideAndBlackoutAsync(CancellationToken cancellationToken = default)
+        {
+            blackPanel.gameObject.SetActive(true);
+            blackPanelText.gameObject.SetActive(false);
+            blackPanelImg.color = new Color(blackPanelImg.color.r, blackPanelImg.color.g, blackPanelImg.color.b, 1f);
+            blackPanel.CanvasGroup.alpha = 0f;
+            blackPanel.CanvasGroup.interactable = false;
+            blackPanel.CanvasGroup.blocksRaycasts = false;
+            canvasGroup.alpha = 1;
+            canvasGroup.blocksRaycasts = true;
 
-        public void ResetChapterUITransform()
+            var handDownSmallTask = chapterUIRectTransform.DOAnchorPosY(-100, 0.5f).SetEase(Ease.Linear).ToUniTask(cancellationToken: cancellationToken);
+            var blackPanelFadeinTask = blackPanel.CanvasGroup.DOFade(1, 0.5f).SetEase(Ease.Linear).ToUniTask(cancellationToken: cancellationToken);
+            await UniTask.WhenAll(handDownSmallTask, blackPanelFadeinTask);
+            ResetChapterUIVisual();
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        public void ResetChapterUIVisual()
         {
             chapterUIRectTransform.anchoredPosition = _initialChapterUIRectTransform.anchoredPosition;
+            chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
+            chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
+        }
+
+        public void PrepareChapterUIForHandUp()
+        {
+            chapterUIRectTransform.gameObject.SetActive(false);
             chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
             chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
         }

@@ -13,7 +13,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 플러시 계열일 경우 대표색도 저장함.
         /// </summary>
-        [field: SerializeField] public CardColor CardColor { get; private set; }
+        [field: SerializeField] public CardColor FlushColor { get; private set; }
         
         public IReadOnlyList<ICardState> RankedCards { get; }
         
@@ -22,17 +22,17 @@ namespace Cardevil.Card.InStage
         public HandRankData(
             HandRank handRank,
             IReadOnlyList<ICardState> rankedCards,
-            CardColor cardColor = CardColor.None)
+            CardColor flushColor = CardColor.None)
         {
             HandRank = handRank;
-            CardColor = cardColor;
+            FlushColor = flushColor;
             RankedCards = rankedCards;
         }
 
         public HandRankData(HandRank handRank)
         {
             HandRank = handRank;
-            CardColor = CardColor.None;
+            FlushColor = CardColor.None;
             RankedCards = Array.Empty<ICardState>();
         }
     }

@@ -1,0 +1,35 @@
+{
+  "name": "TooltipData",
+  "varNames": [
+    "identifier",
+    "titleTextID",
+    "decriptionTextID"
+  ],
+  "types": [
+    "string",
+    "string",
+    "string"
+  ],
+  "comments": [
+    "툴팁 구분자",
+    "",
+    ""
+  ],
+  "data": [
+    [
+      "tooltip.testItem01",
+      "text.testTitle01",
+      "text.testTitle02"
+    ],
+    [
+      "tooltip.testItem02",
+      "text.testTitle02",
+      "text.testTitle02"
+    ],
+    [
+      "tooltip.testItem03",
+      "이것은 테스트 제목입니다",
+      "대신귀\n여운알\n파카를\n드리겠\n습니다."
+    ]
+  ]
+}

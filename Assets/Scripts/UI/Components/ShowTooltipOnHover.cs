@@ -9,6 +9,8 @@ namespace Cardevil.UI.Components
     {
         [SerializeField, VisibleOnly] private HoverTooltip _hoverTooltip;
         [SerializeField, Tooltip("이벤트 트리거가 할당되면 PointerHandler는 비활성화 됩니다.")] private EventTrigger _eventTrigger;
+        [SerializeField] private TooltipSide _preferredSide = TooltipSide.Auto;
+        [SerializeField] private TooltipAlign _preferredAlign = TooltipAlign.Center;
 
         [field: SerializeField] public TooltipData TooltipData { get; private set; }
         private RectTransform _rectTransform;
@@ -85,12 +87,17 @@ namespace Cardevil.UI.Components
         {
             HideTooltip();
         }
+        
+        public void SetTooltipData(TooltipData data)
+        {
+            TooltipData = data;
+        }
 
         public void ShowTooltip()
         {
             if (_hoverTooltip != null)
             {
-                _hoverTooltip.ShowTooltip(TooltipData, _rectTransform);
+                _hoverTooltip.ShowTooltip(TooltipData, _rectTransform, _preferredSide, _preferredAlign);
                 return;
             }
 
@@ -107,8 +114,10 @@ namespace Cardevil.UI.Components
                 return;
             }
 
-            _hoverTooltip.transform.SetParent(transform.root, false);
-            _hoverTooltip.ShowTooltip(TooltipData, _rectTransform);
+            Canvas rootCanvas = GetComponentInParent<Canvas>()?.rootCanvas;
+            Transform parent = rootCanvas != null ? rootCanvas.transform : transform.root;
+            _hoverTooltip.transform.SetParent(parent, false);
+            _hoverTooltip.ShowTooltip(TooltipData, _rectTransform, _preferredSide, _preferredAlign);
         }
 
         public void HideTooltip()
