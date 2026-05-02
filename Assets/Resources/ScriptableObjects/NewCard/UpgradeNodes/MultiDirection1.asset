@@ -21,7 +21,7 @@ MonoBehaviour:
   elements:
   - rid: 5998883810384282547
   blackMarketCost: 0
-  marketCost: 0
+  marketCost: 2
   nodePosition: {x: 397.5, y: 450}
   references:
     version: 2

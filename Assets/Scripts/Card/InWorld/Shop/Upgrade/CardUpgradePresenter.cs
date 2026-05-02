@@ -1,7 +1,9 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Card.Common.Visual;
+using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Utils;
+using Cardevil.Gameplay;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,19 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
         
         private int _targetSpecId;
         private IReadOnlyList<UpgradeNodeSO> _availableNodes;
+
+
+        public struct UpgradeData
+        { 
+            public readonly UpgradeNodeSO UpgradeNode;
+            public readonly CardVisualInput VisualInput;
+
+            public UpgradeData(UpgradeNodeSO upgradeNode, CardVisualInput visualInput)
+            {
+                UpgradeNode = upgradeNode;
+                VisualInput = visualInput;
+            }
+        }
         
         
         public CardUpgradePresenter(CardRepository repository, UpgradeNodeDatabaseSO upgradeDatabase, CardUpgradeView view)
@@ -29,8 +44,9 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             _repository = repository;
             _upgradeDatabase = upgradeDatabase;
             _view = view;
-            
-            _view.UpgradeRequested += HandleUpgradeRequested;
+
+            _view.SelectedNodeChanged += HandleSelectedNodeChanged;
+            _view.ConfirmClicked += HandleUpgradeConfirmClicked;
         }
 
         
@@ -62,66 +78,85 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             _targetSpecId = specId;
             _availableNodes = availableNodes;
             
-            // 현재 상태
+            
             var originalState = _repository.GetState(specId);
             var originalVisual = CardVisualInput.From(originalState);
-
 
             switch (_availableNodes.Count)
             {
                 case 1 :
-                    var nextSpec = _repository
-            }
-            // 가능한 다음 강화 적용한 상태
-            if (availableNodes.Count == 1)
-            {
-                var nextSpec = _repository.GetDeepClonedSpec(specId)
-                    .ApplyUpgradeNode(availableNodes[0]);
-                var nextVisual = CardVisualInput.From(nextSpec.State);
+                    var nextSpec = _repository.GetDeepClonedSpec(specId)
+                        .ApplyUpgradeNode(availableNodes[0]);
+                    var nextVisual = CardVisualInput.From(nextSpec);
+                    var data = new UpgradeData(availableNodes[0], nextVisual);
+                    
+                    _view.Create(originalVisual, data);
+                    break;
                 
-                _view.Create(originalVisual, nextVisual);
-            }
-            else if (availableNodes.Count == 2)
-            {
-                var nextSpec1 = _repository.GetDeepClonedSpec(specId)
-                    .ApplyUpgradeNode(availableNodes[0]);
-                var nextSpec2 = _repository.GetDeepClonedSpec(specId)
-                    .ApplyUpgradeNode(availableNodes[1]);
+                case 2: 
+                    var nextSpec1 = _repository.GetDeepClonedSpec(specId)
+                        .ApplyUpgradeNode(availableNodes[0]);
+                    var nextVisual1 = CardVisualInput.From(nextSpec1.State);
+                    var data1 = new UpgradeData(availableNodes[0], nextVisual1);
+
+                    var nextSpec2 = _repository.GetDeepClonedSpec(specId)
+                        .ApplyUpgradeNode(availableNodes[1]);
+                    var nextVisual2 = CardVisualInput.From(nextSpec2.State);
+                    var data2 = new UpgradeData(availableNodes[1], nextVisual2);
+
                 
-                var nextVisual1 = CardVisualInput.From(nextSpec1.State);
-                var nextVisual2 = CardVisualInput.From(nextSpec2.State);
-                
-                _view.Create(originalVisual, nextVisual1, nextVisual2);
+                    _view.Create(originalVisual, data1, data2);
+                    break;
             }
             
             _view.PlayOpenAnimationAsync().Forget();
         }
 
-        public void Clear()
+        public void Close()
+        {
+            HandleCloseClicked();
+        }
+
+
+        private void ClearTarget()
         {
             _targetSpecId = -1;
             _availableNodes = null;
-
-            if (_view)
-            {
-                _view.UpgradeRequested -= HandleUpgradeRequested;
-            }
-        }
-
-        private void HandleUpgradeConfirmButtonClicked()
-        {
-            
-        }
-
-        private void HandleUpgradeRequested(int index)
-        {
-            var selectedUpgradeNode = _availableNodes[index];
-            _repository.GetSpec(_targetSpecId).ApplyUpgradeNode(selectedUpgradeNode);
-            
-            Clear();
-            _view.FadeOut().ContinueWith(() => CardUpgraded?.Invoke());
         }
         
-        private static void Create
+        private void HandleSelectedNodeChanged(UpgradeNodeSO selectedNode)
+        {
+            _view.ValidCanUpgrade(ValidUpgrade(selectedNode));
+        }
+
+        private void HandleUpgradeConfirmClicked(UpgradeNodeSO selectedNode)
+        {
+            if (!ValidUpgrade(selectedNode))
+            {
+                LogEx.LogError("강화가 가능하지 않지만 View에서 강화가 호출됐습니다.");
+                return;
+            }
+            
+            var targetSpec = _repository.GetSpec(_targetSpecId);
+            targetSpec.ApplyUpgradeNode(selectedNode);
+            CardUpgraded?.Invoke(_targetSpecId);
+            
+            HandleCloseClicked();
+        }
+
+        private void HandleCloseClicked()
+        {
+            ClearTarget();
+            _view.PlayCloseAnimationAsync().Forget();
+        }
+
+        /// <summary>
+        /// 강화가 가능한 지 노드를 검증. 일단은 비용만 검증함.
+        /// </summary>
+        private bool ValidUpgrade(UpgradeNodeSO targetNode)
+        {
+            int cost = targetNode.MarketCost;
+            return CardevilCore.PlayerStatus[StatType.Gold] >= cost;
+        }
     }
 }

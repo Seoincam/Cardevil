@@ -1,9 +1,11 @@
 using Cardevil.Card.Common;
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Card.Common.Visual;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +13,10 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
 {
     public class CardUpgradeView : MonoBehaviour
     {
-        public event Action<int> UpgradeRequested;
+        public event Action<UpgradeNodeSO> SelectedNodeChanged;
+        public event Action<UpgradeNodeSO> ConfirmClicked;
+        public event Action CloseClicked;
+        
         
         [Header("Prefabs")]
         [SerializeField] private InteractionCard cardPrefab;
@@ -29,41 +34,49 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
 
         [Space, SerializeField] private Button confirmButton;
         [SerializeField] private Button cancelButton;
+        [SerializeField] private TextMeshProUGUI costText;
 
-        private List<InteractionCard> _createdCards = new(3);
-        private int _selectedIndex;
 
+        private readonly Dictionary<InteractionCard, UpgradeNodeSO> _cardMap = new(2);
+        private InteractionCard _originalCard;
+        private InteractionCard _currentSelectedCard;
+
+        
         private void Awake()
         {
             canvasGroup.blocksRaycasts = false;
             canvasGroup.interactable = false;
             
-            cancelButton.onClick.AddListener(HandleCancelButtonClicked);
+            cancelButton.onClick.AddListener(() => CloseClicked?.Invoke());
+            confirmButton.onClick.AddListener(HandleConfirmClicked);
         }
 
-        public void Create(CardVisualInput original, CardVisualInput next)
+        public void Create(CardVisualInput originalVisualInput, 
+            CardUpgradePresenter.UpgradeData candidateData)
         {
-            CreateCard(original, originalAnchor);
-            CreateCard(next, next_1_0Anchor);
-
-            _selectedIndex = 0;
-            confirmButton.onClick.RemoveAllListeners();
-            confirmButton.onClick.AddListener(HandleConfirmButtonClicked);
+            CreateOriginalCard(originalVisualInput, originalAnchor.position);
+            var candidate = CreateCandidateCard(candidateData, next_1_0Anchor.position);
+            HandleCardSelected(candidate);
         }
 
-        public void Create(CardVisualInput original, CardVisualInput next1, CardVisualInput next2)
+        public void Create(CardVisualInput originalVisualInput,
+            CardUpgradePresenter.UpgradeData candidate1Data,
+            CardUpgradePresenter.UpgradeData candidate2Data)
         {
-            CreateCard(original, originalAnchor);
-            
-            var next1Card = CreateCard(next1, next_2_0Anchor);
-            next1Card.PointerUp += _ => _selectedIndex = 0;
-            
-            var next2Card = CreateCard(next2, next_2_1Anchor);
-            next2Card.PointerUp += _ => _selectedIndex = 1;
+            CreateOriginalCard(originalVisualInput, originalAnchor.position);
+            var candidate1 = CreateCandidateCard(candidate1Data, next_2_0Anchor.position);
+            var candidate2 = CreateCandidateCard(candidate2Data, next_2_1Anchor.position);
 
-            _selectedIndex = 0;
-            confirmButton.onClick.RemoveAllListeners();
-            confirmButton.onClick.AddListener(HandleConfirmButtonClicked);
+            candidate1.PointerUp += HandleCardSelected;
+            candidate2.PointerUp += HandleCardSelected;
+        }
+
+        /// <summary>
+        /// 일단은 Presenter에서 돈이 부족하지 않은지만 체크해서 주입함.
+        /// </summary>
+        public void ValidCanUpgrade(bool canUpgrade)
+        {
+            confirmButton.interactable = canUpgrade;
         }
 
         public async UniTask PlayOpenAnimationAsync()
@@ -71,13 +84,21 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             await FadeIn();
         }
 
+        public async UniTask PlayCloseAnimationAsync()
+        {
+            await FadeOut();
+        }
+
         private async UniTask FadeIn()
         {
-            foreach (var card in _createdCards)
+            foreach (var card in _cardMap.Keys)
             {
                 card.VisualController.Fade(0f, true);
                 card.VisualController.DoFade(1f, fadeDuration, Ease.Unset, true);
             }
+            _originalCard.VisualController.Fade(0f, true);
+            _originalCard.VisualController.DoFade(1f, fadeDuration, Ease.Unset, true);
+
 
             canvasGroup.alpha = 0f;
             await canvasGroup.DOFade(1f, fadeDuration);
@@ -86,13 +107,15 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             canvasGroup.interactable = true;
         }
 
-        public async UniTask FadeOut()
+        private async UniTask FadeOut()
         {
-            foreach (var card in _createdCards)
+            foreach (var card in _cardMap.Keys)
             {
                 card.VisualController.Fade(1f, true);
                 card.VisualController.DoFade(0f, fadeDuration, Ease.Unset, true);
             }
+            _originalCard.VisualController.Fade(1f, true);
+            _originalCard.VisualController.DoFade(0f, fadeDuration, Ease.Unset, true);
             
             canvasGroup.alpha = 1f;
             await canvasGroup.DOFade(0f, fadeDuration);
@@ -100,44 +123,59 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             canvasGroup.blocksRaycasts = false;
             canvasGroup.interactable = false;
 
-            for (int i = _createdCards.Count - 1; i >= 0; i--)
+            foreach (var card in _cardMap.Keys)
             {
-                Destroy(_createdCards[i].gameObject);
-            } 
-            _createdCards.Clear();
+                Destroy(card.gameObject);
+            }
+            _cardMap.Clear();
+            Destroy(_originalCard.gameObject);
+            // _originalCard = null;
         }
 
-        private InteractionCard CreateCard(CardVisualInput visualInput, Transform anchor)
+        private void HandleCardSelected(InteractionCard selected)
         {
-            return CreateCard(visualInput, anchor.position);
+            if (_currentSelectedCard == selected) return;
+            
+            _currentSelectedCard = selected;
+            
+            var node = _cardMap[selected];
+            costText.text = node.MarketCost + "G";
+            
+            SelectedNodeChanged?.Invoke(node);
+        }
+
+        private void HandleConfirmClicked()
+        {
+            if (!_currentSelectedCard) return;
+            
+            ConfirmClicked?.Invoke(_cardMap[_currentSelectedCard]);
         }
         
-        private InteractionCard CreateCard(CardVisualInput visualInput, Vector2 position)
+        private InteractionCard CreateOriginalCard(CardVisualInput originalVisualInput, Vector2 position)
         {
             var card = Instantiate(cardPrefab, transform);
-            card.Initialize(visualInput, false, LayerMask.NameToLayer("ShopCard"));
+            card.Initialize(originalVisualInput, false, LayerMask.NameToLayer("ShopCard"));
             
             card.VisualController.SetSortingOrderLast();
             card.FollowTargetPosition = false;
             card.transform.position = position;
 
-            _createdCards.Add(card);
+            _originalCard = card;
             return card;
         }
 
-        private void HandleCardSelected(int index)
+        private InteractionCard CreateCandidateCard(CardUpgradePresenter.UpgradeData data, Vector2 position)
         {
+            var card = Instantiate(cardPrefab, transform);
+            card.Initialize(data.VisualInput, false, LayerMask.NameToLayer("ShopCard"));
             
-        }
+            card.VisualController.SetSortingOrderLast();
+            card.FollowTargetPosition = false;
+            card.transform.position = position;
+            
+            _cardMap.Add(card, data.UpgradeNode);
 
-        private void HandleConfirmButtonClicked()
-        {
-            UpgradeRequested?.Invoke(_selectedIndex);
-        }
-
-        private void HandleCancelButtonClicked()
-        {
-            FadeOut().Forget();
+            return card;
         }
     }
 }

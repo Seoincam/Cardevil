@@ -16,6 +16,7 @@ namespace Cardevil.Card.InWorld.Shop
         /// </summary>
         public event Action<int> CardSelected;
         
+        
         private readonly CardRepository _repository;
         private readonly ShopCardSelectionView _view;
 
@@ -66,8 +67,6 @@ namespace Cardevil.Card.InWorld.Shop
                 });
             }
             _dataList = list;
-
-            _view.CardSelected += id => CardSelected?.Invoke(id);
         }
 
         
