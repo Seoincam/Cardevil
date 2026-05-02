@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 110002}
   - component: {fileID: 110003}
   - component: {fileID: 110004}
+  - component: {fileID: 110005}
   m_Layer: 0
   m_Name: Special Scene Camera
   m_TagString: Untagged
@@ -192,7 +193,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 160
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -265,6 +266,22 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!114 &110005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 110000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.Physics2DRaycaster
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 128
+  m_MaxRayIntersections: 0
 --- !u!1 &120000
 GameObject:
   m_ObjectHideFlags: 0
@@ -1522,6 +1539,51 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &721056348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 721056350}
+  - component: {fileID: 721056349}
+  m_Layer: 0
+  m_Name: '@Shop Card Manager'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &721056349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721056348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7597375d8b4b0fbdb04224c11c2b85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.InWorld.Shop.ShopCardManager
+  shopCardSelectionView: {fileID: 1525100678}
+--- !u!4 &721056350
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 721056348}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.63394, y: 0.80106, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &828550530
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2499,6 +2561,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1308750284}
   m_CullTransparentMesh: 1
+--- !u!1 &1525100677
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1525100679}
+  - component: {fileID: 1525100678}
+  m_Layer: 7
+  m_Name: Shop Card Selection View
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1525100678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100677}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 037a01899a6f42edafd55696f5bd85a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.InWorld.Shop.ShopCardSelectionView
+  cardPrefab: {fileID: 8339060972586061226, guid: 06ec47cb27fe34282bf1cf00a578b6fd, type: 3}
+  cardCamera: {fileID: 110002}
+--- !u!4 &1525100679
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1525100677}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2126204305
 GameObject:
   m_ObjectHideFlags: 0
@@ -2970,3 +3078,5 @@ SceneRoots:
   - {fileID: 110001}
   - {fileID: 120001}
   - {fileID: 130001}
+  - {fileID: 721056350}
+  - {fileID: 1525100679}

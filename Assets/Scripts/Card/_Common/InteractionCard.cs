@@ -15,7 +15,7 @@ namespace Cardevil.Card.Common
         [field: SerializeField] public CardVisualController VisualController { get; private set; }
         
         [Header("Settings")]
-        [SerializeField] private bool followTargetPosition;
+        [field: SerializeField] public bool FollowTargetPosition { get; set; }
 
         private Camera _cardCamera;
 
@@ -36,14 +36,15 @@ namespace Cardevil.Card.Common
 
         private void LateUpdate()
         {
-            if (followTargetPosition)
+            if (FollowTargetPosition)
                 transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
         }
 
-        public void Initialize(CardVisualInput visualInput, Camera cardCamera)
+        public void Initialize(CardVisualInput visualInput, Camera cardCamera, bool followTargetPosition = false)
         {
             VisualController.SetLayout(visualInput);
             _cardCamera = cardCamera;
+            FollowTargetPosition = followTargetPosition;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
