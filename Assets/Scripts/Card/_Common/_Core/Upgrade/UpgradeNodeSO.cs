@@ -55,6 +55,4 @@ namespace Cardevil.Card.Common.Core.Upgrade
         }
 #endif
     }
-    
-    
 }

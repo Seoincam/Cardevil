@@ -12,6 +12,7 @@ namespace Cardevil.Card.Common.Core.Upgrade
     public class UpgradeNodeEditorWindow : EditorWindow
     {
         private List<UpgradeNodeSO> _allNodes = new();
+        private UpgradeNodeDatabaseSO _database;
         private UpgradeNodeSO _selectedNode;
 
         // UI Elements
@@ -71,6 +72,21 @@ namespace Cardevil.Card.Common.Core.Upgrade
             _allNodes = guids
                 .Select(g => AssetDatabase.LoadAssetAtPath<UpgradeNodeSO>(AssetDatabase.GUIDToAssetPath(g)))
                 .ToList();
+            
+            // 2. 데이터베이스 자동 갱신
+            if (_database == null)
+            {
+                string[] dbGuids = AssetDatabase.FindAssets("t:UpgradeNodeDatabaseSO");
+                if (dbGuids.Length > 0)
+                {
+                    _database = AssetDatabase.LoadAssetAtPath<UpgradeNodeDatabaseSO>(AssetDatabase.GUIDToAssetPath(dbGuids[0]));
+                }
+            }
+
+            if (_database != null)
+            {
+                _database.SyncNodes(_allNodes);
+            }
         }
 
         private void PopulateGraph()
