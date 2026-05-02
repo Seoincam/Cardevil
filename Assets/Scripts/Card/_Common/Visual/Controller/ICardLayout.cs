@@ -14,6 +14,7 @@ namespace Cardevil.Card.Visual.Controller
     {
         void SetBackground(SpriteRenderer sharedBackgroundRenderer);
         void SetSortingOrder(int sortingOrder, int layerId);
+        void SetAlpha(float targetAlpha);
         Tween SetAlpha(float targetAlpha, float duration, Ease ease);
     }
 }

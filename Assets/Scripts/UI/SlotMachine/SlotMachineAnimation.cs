@@ -5,12 +5,27 @@ using System.Collections.Generic;
 using Cardevil.Gameplay.Items; // Item 클래스 참조용
 using Cardevil.Core.Utils;
 using Cysharp.Threading.Tasks;
+using TMPro;
+using Database.Generated;
+using Cardevil.Gameplay;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Systems;
+using System;
+using System.Linq;
+using UnityEngine.EventSystems;
+using Database;
+using Cardevil.UI.VFX;
 
 
 namespace Cardevil.UI.PopUp
 {
     public class SlotMachineAnimation : MonoBehaviour
     {
+        private Item _selectedItem = null;
+
+        [Header("VFX Connect")]
+        [SerializeField] private CoinRainManager _coinRainManager;
+
         [Header("Connects")]
         [SerializeField] private RectTransform _slotmachine_rectTransform;
         [SerializeField] private Image _reroll_image;
@@ -55,6 +70,37 @@ namespace Cardevil.UI.PopUp
         [SerializeField] public Sprite _normal_Start_Reroll;
 
 
+
+        [Header("Legend 6 Placeholder")]
+        [SerializeField] public Sprite _legend_6_Icon; // 전설 등급이 뜨기 전 보여줄 6 이미지
+
+
+        [Header("Jackpot Effects")]
+        [SerializeField] private GameObject _jackpotAlertBorder; // 붉은색 경고등 테두리 (사전 연출용)
+        [SerializeField] private GameObject _jackpotSuccessBorder; // 황금색 빛나는 테두리
+        [SerializeField] private GameObject _celebrationLayer; // 골드 떨어지는 파티클
+        [SerializeField] private Image _flashActiveBackground; // 붉은색 번쩍이는 배경
+
+        [Header("아이템 클릭 및 하이라이트 호버 애니메이션 관련")]
+        [SerializeField] private RectTransform _itemPanel_1;
+        [SerializeField] private RectTransform _itemPanel_2;
+        [SerializeField] private RectTransform _itemPanel_3;
+
+        [SerializeField] private Image _itemClickHover_1;
+        [SerializeField] private Image _itemClickHover_2;
+        [SerializeField] private Image _itemClickHover_3;
+
+        [SerializeField] private Image _itemTextPanel_1;
+        [SerializeField] private Image _itemTextPanel_2;
+        [SerializeField] private Image _itemTextPanel_3;
+
+        [SerializeField] private TMP_Text _itemText_1;
+        [SerializeField] private TMP_Text _itemText_2;
+        [SerializeField] private TMP_Text _itemText_3;
+
+        private bool _canInteract = false; // 슬롯머신이 멈춘 후 true가 됨
+        private bool _isJackpot = false;   // 잭팟 여부
+        private int _selectedIndex = -1;    // 현재 선택된 슬롯 번호 (0, 1, 2)
 
         /// <summary>
         /// SetActive된 슬롯머신을 등장시킬때의 애니메이션 
@@ -102,7 +148,7 @@ namespace Cardevil.UI.PopUp
             // 1. 아이템 정보에 맞는 하이라이트 스프라이트 설정
             highlightImg.sprite = GetMatchingBlurSprite(item);
             highlightImg.gameObject.SetActive(true);
-            if(highlightImg.sprite==null) // Normal이라 없을때
+            if (highlightImg.sprite == null) // Normal이라 없을때
             {
                 highlightImg.gameObject.SetActive(false);
             }
@@ -134,6 +180,7 @@ namespace Cardevil.UI.PopUp
                     break;
 
                 default: // Normal(Rare) 및 기타
+                    // TODO : DarkUpgrade 3도 나오게끔 이의 파싱방향을 점검할 필요성있음.
                     if (item.itemName.Contains("DarkUpgrade")) return _normal_Dark_Upgrade_2;
                     if (item.itemName.Contains("DarkUpgrade")) return _normal_Dark_Upgrade_3;
                     if (item.itemName.Contains("Gold")) return _normal_Gold;
@@ -183,5 +230,225 @@ namespace Cardevil.UI.PopUp
             Debug.LogWarning($"[Highlight] 매칭되는 Highlight 이미지가 없습니다! ItemName: {item.itemName}, RareType: {item.rareType}");
             return _rare_Gold_Highlight; // 기본값
         }
+
+
+
+        /// <summary>
+        /// 잭팟 기회 사전 연출 (붉은색 경고등 깜빡임)
+        /// </summary>
+        public void SetJackpotAlertMode(bool isOn)
+        {
+            if (_jackpotAlertBorder != null)
+            {
+                _jackpotAlertBorder.SetActive(isOn);
+                // DOTween 등으로 깜빡이는 효과를 주면 더욱 좋습니다.
+            }
+        }
+
+        /// <summary>
+        /// 잭팟 성공 연출 (황금 테두리, 배경 플래시, 파티클)
+        /// </summary>
+        public void PlayJackpotSuccessEffect()
+        {
+            if (_jackpotAlertBorder != null) _jackpotAlertBorder.SetActive(false);
+
+            // 황금색 테두리 켜기
+            if (_jackpotSuccessBorder != null) _jackpotSuccessBorder.SetActive(true);
+
+            // 파티클 (50개 골드 회전하며 떨어짐) 켜기
+            if (_celebrationLayer != null) _celebrationLayer.SetActive(true);
+
+            // 0.5초 주기로 붉은색 번쩍임 3초 유지 후 자연스럽게 사라짐
+            if (_flashActiveBackground != null)
+            {
+                _flashActiveBackground.gameObject.SetActive(true);
+                _flashActiveBackground.color = new Color(1, 0, 0, 0); // 투명한 빨강
+
+                Sequence flashSeq = DOTween.Sequence();
+                flashSeq.Append(_flashActiveBackground.DOFade(0.3f, 0.25f))
+                        .Append(_flashActiveBackground.DOFade(0f, 0.25f))
+                        .SetLoops(6, LoopType.Restart) // 0.5초 x 6회 = 3초
+                        .OnComplete(() => _flashActiveBackground.gameObject.SetActive(false));
+            }
+
+            _coinRainManager.PlayJackpotEffect(2.0f);
+        }
+
+
+        #region 슬롯머신 호버 앤 클릭 아이템 정보 관련
+
+        public void InitializeInteraction(bool isJackpot)
+        {
+            _canInteract = false;
+            _isJackpot = isJackpot;
+            _selectedIndex = -1;
+            _selectedItem = null;
+
+            // 모든 UI 초기화
+            ResetAllUI();
+        }
+
+        public void SetInteractable(bool value)
+        {
+            _canInteract = value;
+        }
+
+        private void ResetAllUI()
+        {
+            // 모든 패널 스케일 1, 텍스트 패널 투명도 0, 클릭 하이라이트 오프
+            ResetSlotUI(1, _itemPanel_1, _itemTextPanel_1, _itemClickHover_1);
+            ResetSlotUI(2, _itemPanel_2, _itemTextPanel_2, _itemClickHover_2);
+            ResetSlotUI(3, _itemPanel_3, _itemTextPanel_3, _itemClickHover_3);
+        }
+
+        private void ResetSlotUI(int index, RectTransform panel, Image textPanel, Image clickHover)
+        {
+            panel.DOKill();
+            panel.localScale = Vector3.one;
+
+            textPanel.DOKill();
+            textPanel.DOFade(0, 0); // CanvasGroup이 있다면 alpha, Image라면 color.a 조절 (여기선 Image로 되어있어 CanvasGroup 권장)
+            textPanel.gameObject.SetActive(false);
+
+            clickHover.gameObject.SetActive(false);
+        }
+
+        // ==========================================
+        // 호버 액션 (Slot.cs에서 호출)
+        // ==========================================
+        public void OnHoverEnter(int index, Item item)
+        {
+            if (!_canInteract || _selectedIndex == index) return;
+
+            RectTransform targetPanel = GetPanel(index);
+            Image targetTextPanel = GetTextPanel(index);
+            TMP_Text targetText = GetText(index);
+
+            // 1. 스케일 키우기 (1.15f)
+            targetPanel.DOScale(1.15f, 0.2f).SetEase(Ease.OutBack);
+
+            // 2. 텍스트 설정 및 보이기 (살짝 딜레이)
+            targetText.text = item.itemName;
+            targetTextPanel.gameObject.SetActive(true);
+            targetTextPanel.DOKill();
+            targetTextPanel.DOFade(1f, 0.3f).From(0f).SetDelay(0.1f);
+        }
+
+        public void OnHoverExit(int index)
+        {
+            if (!_canInteract || _selectedIndex == index) return;
+
+            RectTransform targetPanel = GetPanel(index);
+            Image targetTextPanel = GetTextPanel(index);
+
+            targetPanel.DOScale(1.0f, 0.2f);
+            targetTextPanel.DOFade(0f, 0.2f).OnComplete(() => targetTextPanel.gameObject.SetActive(false));
+        }
+
+        // ==========================================
+        // 클릭 액션 (Slot.cs에서 호출)
+        // ==========================================
+        public void OnClickSlot(int index, Item clickedItem)
+        {
+            // 잭팟 상황이면 클릭 자체가 아예 안 먹히게 처리
+            if (!_canInteract || _isJackpot) return;
+
+            // 이미 선택된 거라면 리턴
+            if (_selectedIndex == index) return;
+
+            // 이전 선택 해제
+            if (_selectedIndex != -1)
+            {
+                DeselectSlot(_selectedIndex);
+            }
+
+            // 새로운 선택
+            _selectedIndex = index;
+            _selectedItem = clickedItem;
+
+            RectTransform targetPanel = GetPanel(index);
+            Image clickHover = GetClickHover(index);
+            Image targetTextPanel = GetTextPanel(index);
+
+            targetPanel.DOKill();
+            targetPanel.localScale = Vector3.one; // 스케일 고정
+
+            clickHover.gameObject.SetActive(true); // 클릭 하이라이트 온
+            clickHover.DOFade(1, 0);
+            targetTextPanel.gameObject.SetActive(true);
+            targetTextPanel.color = new Color(targetTextPanel.color.r, targetTextPanel.color.g, targetTextPanel.color.b, 1f);
+        }
+        public void OnConfirmButtonClicked()
+        {
+            if (_selectedItem == null)
+            {
+                Debug.LogWarning("아이템이 선택되지 않았습니다.");
+                return;
+            }
+
+            // 캐싱해둔 아이템의 보상 데이터를 PlayerStatus에 적용
+            ApplyRewardToPlayerStatus(_selectedItem.macinRewardData);
+
+            // TODO: 보상 획득 완료 후 슬롯머신 UI 닫기 연출 등을 호출하세요.
+            // 예: SlotMachine_GetDownAnimation(() => gameObject.SetActive(false));
+        }
+
+        // [추가] 아이템 데이터를 읽어 PlayerStatus 스탯에 적용하는 로직
+        private void ApplyRewardToPlayerStatus(MachineReward rewardData)
+        {
+            if (rewardData == null) return;
+
+            // Define.SlotRewardType 값에 따라 PlayerStatus 스탯을 증가시킵니다.
+            // (보상 타입명은 프로젝트 내부 열거형(Define.SlotRewardType) 기준에 맞춰 매칭하시면 됩니다.)
+            switch (rewardData.ItemName.ToString())
+            {
+                case "Gold":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Gold, rewardData.Value);
+                    break;
+                case "Heal":
+                    CardevilCore.PlayerStatus.Heal(rewardData.Value); // 체력은 Heal 메서드 사용
+                    break;
+                case "MaxHp":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.MaxHp, rewardData.Value);
+                    break;
+                case "Shield":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.Shield, rewardData.Value);
+                    break;
+                case "RerollTicket":
+                    CardevilCore.PlayerStatus.ModifyBaseValue(StatType.RerollTicket, rewardData.Value);
+                    break;
+                // 업그레이드나 유물 같은 특수 처리가 필요한 경우
+                case "Relic":
+                case "DarkUpgrade":
+                    // 유물 획득 시스템이나 업그레이드 시스템 호출 로직 작성
+                    Debug.Log($"[{rewardData.ItemName}] 유물/업그레이드 획득 처리");
+                    break;
+                default:
+                    Debug.LogWarning($"[{rewardData.ItemName}] 처리되지 않은 보상 타입입니다.");
+                    break;
+            }
+
+            Debug.Log($"보상 획득 완료: {rewardData.ItemName} (Value: {rewardData.Value})");
+        }
+
+
+        private void DeselectSlot(int index)
+        {
+            GetClickHover(index).gameObject.SetActive(false);
+            OnHoverExit(index);
+        }
+
+        // 유틸리티 메서드들
+        private RectTransform GetPanel(int i) => i == 0 ? _itemPanel_1 : (i == 1 ? _itemPanel_2 : _itemPanel_3);
+        private Image GetTextPanel(int i) => i == 0 ? _itemTextPanel_1 : (i == 1 ? _itemTextPanel_2 : _itemTextPanel_3);
+        private TMP_Text GetText(int i) => i == 0 ? _itemText_1 : (i == 1 ? _itemText_2 : _itemText_3);
+        private Image GetClickHover(int i) => i == 0 ? _itemClickHover_1 : (i == 1 ? _itemClickHover_2 : _itemClickHover_3);
+        #endregion
+
+
     }
+
+
+
 }
+

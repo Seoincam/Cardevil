@@ -162,7 +162,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &415131608599847198
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4773,7 +4773,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 193814931497093448, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 323.00143
+      value: 268.3
       objectReference: {fileID: 0}
     - target: {fileID: 232085821599061351, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_text
@@ -4853,6 +4853,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1742800106583457116, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1766074804725294980, guid: c064453fbfc18634f857274b829d87d1, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1871483119337627900, guid: c064453fbfc18634f857274b829d87d1, type: 3}
@@ -5065,7 +5069,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4339612256277648808, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 61.001446
+      value: 61.001434
       objectReference: {fileID: 0}
     - target: {fileID: 4421962890402466849, guid: c064453fbfc18634f857274b829d87d1, type: 3}
       propertyPath: m_SizeDelta.x
@@ -5323,7 +5327,8 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 9c7da9c35300c6d4daf607b0ab935c22, type: 3}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6805644129241918291, guid: c064453fbfc18634f857274b829d87d1, type: 3}
     m_RemovedGameObjects:
     - {fileID: 8421318502528888155, guid: c064453fbfc18634f857274b829d87d1, type: 3}
     - {fileID: 7455602294515498763, guid: c064453fbfc18634f857274b829d87d1, type: 3}

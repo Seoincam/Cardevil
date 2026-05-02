@@ -9,6 +9,7 @@ using Database.Generated;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 
 namespace Cardevil.Gameplay.Enemy
@@ -22,6 +23,10 @@ namespace Cardevil.Gameplay.Enemy
     {
         // ----- HP UI ----- ///
         [SerializeField] private Slider hpBar; // Inspector에서 UI Slider를 드래그하여 연결합니다.
+        [SerializeField] private TMP_Text hpText;
+        [SerializeField] private Image hpBarImage;
+        [SerializeField] private Image hpBarGlowImage;
+
         public float maxHP = 100;
         public BaseMobBossData baseMobBossData;
         private Field.Field field;
@@ -51,13 +56,13 @@ namespace Cardevil.Gameplay.Enemy
 
         [Header("애니메이션 관련 연결")]
         [SerializeField] EnemyAnimationController _enemyAnimationController;
+        [SerializeField] AttackCardAnimation _enemyAttackCardAnimation;
 
         public void Init(Field.Field field)
         {
             this.field = field;
             currentAttackStyle = AttackStyle.UnKnown;
             maxHP = HP; // 시작 시 HP를 최대 HP로 저장합니다.
-            UpdateHPBar(); // 시작 시 HP바를 초기화합니다.
         
         }
 
@@ -229,6 +234,8 @@ namespace Cardevil.Gameplay.Enemy
         {
             Attack.Attack tmpAttack = new() { playerPosition = playerPosition };
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨 공격인지 설정
+
+            _enemyAttackCardAnimation.AttackAnimationStart(tmpAttack.currentAttackStyle).Forget();
             tmpAttack.SetAttackCycle(baseMobBossData.AttackCycle);
             Debug.Log($"적의 {tmpAttack.currentAttackStyle} 공격!");
 
@@ -349,7 +356,7 @@ namespace Cardevil.Gameplay.Enemy
         }
 
         #endregion
-
+        
         #region Player 상호작용
 
         public virtual bool GetDamage(float damage)
@@ -389,6 +396,17 @@ namespace Cardevil.Gameplay.Enemy
             {
                 // 현재 HP 값을 0과 1 사이의 값으로 정규화하여 Slider에 반영합니다.
                 hpBar.value = HP / maxHP;
+                hpText.text = $"{HP}  /  {maxHP}";
+                if(baseMobBossData.MobType=="Boss")
+                {
+                    hpBarImage.sprite = Resources.Load<Sprite>("Arts/Ingame/HP_Bar/Main_Boss_HP/Main_Boss_Hp_Frame");
+                    hpBarGlowImage.sprite = Resources.Load<Sprite>("Arts/Ingame/HP_Bar/Main_Boss_HP/Main_Boss_Hp_Glow");
+                }
+                else
+                {
+                    hpBarImage.sprite = Resources.Load<Sprite>("Arts/Ingame/HP_Bar/Middle_Boss_HP/Middle_Boss_HP_Frame");
+                    hpBarGlowImage.sprite = Resources.Load<Sprite>("Arts/Ingame/HP_Bar/Middle_Boss_HP/Middle_Boss_HP_Glow");
+                }
             }
         }
 
@@ -500,6 +518,8 @@ namespace Cardevil.Gameplay.Enemy
             CurrentHp = maxHP;
 
             _enemyAnimationController.EnemyStartAnimation(baseMobBossData.MobID).Forget();
+
+            UpdateHPBar(); // 시작 시 HP바를 초기화합니다.
 
             SettingGimmick(_baseMobBossData);
         }

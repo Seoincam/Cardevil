@@ -49,6 +49,17 @@ namespace Cardevil.Gameplay.Items
 
         }
 
+        /// <summary>
+        /// <paramref name="grade"/> 중 랜덤을 받아옵니다.
+        /// </summary>
+        /// <param name="grade"></param>
+        /// <returns></returns>
+        public Item GetRandomItemOfGrade(Define.RareType grade)
+        {
+            // 기존에 작성해두신 GetRandomTypeItem 로직을 재활용합니다.
+            return GetRandomTypeItem((int)grade);
+        }
+
         public Item GetRandomTypeItem(int index)
         {
             Define.RareType thisRare = (Define.RareType)index;

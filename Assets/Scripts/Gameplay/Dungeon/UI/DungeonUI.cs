@@ -143,7 +143,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
             
         }
 
-        [ConsoleCommand("dungeonUI.ShowDungeon", "Show a specific dungeon UI by its ID.", "dungeonUI.ShowDungeon <dungeonId>", new []{"1", "2", "3"})]
+        [ConsoleCommand("ShowDungeon", "Show a specific dungeon UI by its ID.", "dungeonUI.ShowDungeon <dungeonId>", new []{"1", "2", "3"})]
         private static void Console_ShowDungeon(int dungeonId)
         {
             var dungeonUI = Object.FindAnyObjectByType<DungeonUI>();

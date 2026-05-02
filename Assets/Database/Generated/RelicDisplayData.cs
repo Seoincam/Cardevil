@@ -1,13 +1,17 @@
 using System.Text;
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using UnityEngine;
 
 namespace Database.Generated
 {
 
     [UnityEngine.Scripting.Preserve]
     [Serializable]
-    public partial class RelicDisplayData: IDBData {
+    public partial class RelicDisplayData: IDBData
+    {
 
         /// <summary> 식별용 아이디 (구체적인 내용은 적지 않는걸 권장) </summary>
         public string Id;
@@ -20,4 +24,5 @@ namespace Database.Generated
         /// <summary> 에디터용 코멘트 </summary>
         public string CommentForEditor;
     }
+
 }

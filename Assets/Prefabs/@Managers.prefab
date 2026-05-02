@@ -47,12 +47,19 @@ MonoBehaviour:
   _pool:
     _initialSize: 3
     _maxSize: 100
-    _factories:
-      defaultKey: 
-      _items: []
-    _pools:
-      defaultKey: 
-      _items: []
+    _registrations:
+    - _enumKey: 2
+      _stringKey: SoundEmitter
+      _prefab: {fileID: 6775984005517683770, guid: c75534845de178342a5f5333c1d5b9c8, type: 3}
+    - _enumKey: 3
+      _stringKey: TileHighlight
+      _prefab: {fileID: 8956471083975710289, guid: 82732a4b9284aa34ba46e5e548429beb, type: 3}
+    - _enumKey: 6
+      _stringKey: RockPile
+      _prefab: {fileID: 5318671644886050455, guid: 64595628a5f901346b3a403f0658309b, type: 3}
+    - _enumKey: 1
+      _stringKey: TestPoolable
+      _prefab: {fileID: 6835334373886603522, guid: c91b1be919fcd534d8c5a766c1c7b6f8, type: 3}
   _card:
     cardLibrary:
       pipelineMap:

@@ -1,11 +1,37 @@
 using Cardevil.Core.Events.ExecEvent;
+using Cardevil.Gameplay;
 using Cardevil.Gameplay.Enemy;
 
 namespace Cardevil.Core.Events.EventArgs
 {
+    
     /// <summary>
-    /// 플레이어의 체력 변화 이벤트 인자.
+    /// 각 특정 상태변화가 끝난후, 해당 상태변화에 대한 정보를 담는 이벤트 아규먼트입니다.
     /// </summary>
+    public class PlayerStatusChangedArgs : ExecEventArgs<PlayerStatusChangedArgs>
+    {
+        public enum Priority
+        {
+            First = int.MinValue,
+            UI = 1000,
+        }
+
+        public bool IsJustBroadcast { get; set; } = false;
+        
+        public StatType StatType { get; private set; }
+        public int OldValue { get; private set; }
+        public int NewValue { get; private set; }
+        
+        public static PlayerStatusChangedArgs Get(StatType statType, int currentValue, int newValue)
+        {
+            var args = Get();
+            args.StatType = statType;
+            args.OldValue = currentValue;
+            args.NewValue = newValue;
+            return args;
+        }
+    }
+    
     public class PlayerHealthChangeArgs : ExecEventArgs<PlayerHealthChangeArgs>
     {
         public enum Priority
@@ -13,25 +39,16 @@ namespace Cardevil.Core.Events.EventArgs
             First = int.MinValue,
             UI = 1000,
         }
-        /// <summary>
-        /// 단순히 체력 변화 이벤트를 방송만 할 때 true로 설정.
-        /// </summary>
+
         public bool IsJustBroadcast { get; set; } = false;
         public int OldHealth { get; private set; }
         public int NewHealth { get; private set; }
-
-        /// <summary>
-        /// 이벤트 진행으로 인해 수정된 체력 값. 최종적으로 해당 값으로 플레이어의 체력이 설정됨.
-        /// </summary>
-        public int ModifiedHealth { get; set; }
 
         public static PlayerHealthChangeArgs Get(int currentHealth, int newHealth)
         {
             var args = Get();
             args.OldHealth = currentHealth;
             args.NewHealth = newHealth;
-            args.ModifiedHealth = newHealth;
-            
             return args;
         }
 
@@ -41,21 +58,13 @@ namespace Cardevil.Core.Events.EventArgs
             IsJustBroadcast = false;
             OldHealth = 0;
             NewHealth = 0;
-            ModifiedHealth = 0;
         }
     }
 
-    /// <summary>
-    /// 플레이어의 방어막 변화 이벤트 인자.
-    /// </summary>
     public class PlayerShieldChangeArgs : ExecEventArgs<PlayerShieldChangeArgs>
     {
         public int OldShield { get; private set; }
         public int NewShield { get; private set; }
-
-        /// <summary>
-        /// 이벤트 진행으로 인해 수정된 방어막 값. 최종적으로 해당 값으로 플레이어의 방어막이 설정됨.
-        /// </summary>
         public int ModifiedShield { get; set; }
 
         public static PlayerShieldChangeArgs Get(int currentShield, int newShield)
@@ -63,8 +72,6 @@ namespace Cardevil.Core.Events.EventArgs
             var args = Get();
             args.OldShield = currentShield;
             args.NewShield = newShield;
-            args.ModifiedShield = newShield;
-
             return args;
         }
 
@@ -73,21 +80,42 @@ namespace Cardevil.Core.Events.EventArgs
             base.Clear();
             OldShield = 0;
             NewShield = 0;
-            ModifiedShield = 0;
         }
     }
 
-    /// <summary>
-    /// 시작 카드 뽑기권 개수 변화 이벤트 인자.
-    /// </summary>
+    public class PlayerGoldChangeArgs : ExecEventArgs<PlayerGoldChangeArgs>
+    {
+        public enum Priority
+        {
+            First = int.MinValue,
+            UI = 1000,
+        }
+
+        public bool IsJustBroadcast { get; set; } = false;
+        public int OldGold { get; private set; }
+        public int NewGold { get; private set; }
+
+        public static PlayerGoldChangeArgs Get(int currentGold, int newGold)
+        {
+            var args = Get();
+            args.OldGold = currentGold;
+            args.NewGold = newGold;
+            return args;
+        }
+
+        public override void Clear()
+        {
+            base.Clear();
+            IsJustBroadcast = false;
+            OldGold = 0;
+            NewGold = 0;
+        }
+    }
+
     public class RerollTicketChangeArgs : ExecEventArgs<RerollTicketChangeArgs>
     {
         public int OldTicket { get; private set; }
         public int NewTicket { get; private set; }
-
-        /// <summary>
-        /// 이벤트 진행으로 인해 수정된 시작 카드 뽑기권 개수. 최종적으로 해당 개수로 시작 카드 뽑기권이 설정됨.
-        /// </summary>
         public int ModifiedTicket { get; set; }
 
         public void Init(int currentTicket, int newTicket)
@@ -106,9 +134,6 @@ namespace Cardevil.Core.Events.EventArgs
         }
     }
 
-    /// <summary>
-    /// Enemy의 체력이 변경되었을때 호출
-    /// </summary>
     public class EnemyHealthChangeArgs : ExecEventArgs<EnemyHealthChangeArgs>
     {
         public float OldHealth { get; private set; }
@@ -124,7 +149,6 @@ namespace Cardevil.Core.Events.EventArgs
             Owner = owner;
         }
 
-        // CardDeckChangeArgs에 잘못 들어가 있던 Clear 로직을 여기로 이동 및 수정
         public override void Clear()
         {
             base.Clear();
@@ -135,9 +159,6 @@ namespace Cardevil.Core.Events.EventArgs
         }
     }
 
-    /// <summary>
-    /// Enemy가 공격한 후 호출
-    /// </summary>
     public class EnemyAttackAfterArgs : ExecEventArgs<EnemyAttackAfterArgs>
     {
         public bool isPlayerAttackSuccess;
@@ -149,13 +170,8 @@ namespace Cardevil.Core.Events.EventArgs
         }
     }
 
-    /// <summary>
-    /// Enemy Turn까지 모두 종료된 후 호출
-    /// </summary>
     public class EnemyTurnEndArgs : ExecEventArgs<EnemyTurnEndArgs>
     {
-
-
         public override void Clear()
         {
             base.Clear();

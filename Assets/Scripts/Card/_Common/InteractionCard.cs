@@ -13,6 +13,9 @@ namespace Cardevil.Card.Common
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
     {
         [field: SerializeField] public CardVisualController VisualController { get; private set; }
+        
+        [Header("Settings")]
+        [SerializeField] private bool followTargetPosition;
 
         private Camera _cardCamera;
 
@@ -33,7 +36,8 @@ namespace Cardevil.Card.Common
 
         private void LateUpdate()
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
+            if (followTargetPosition)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
         }
 
         public void Initialize(CardVisualInput visualInput, Camera cardCamera)

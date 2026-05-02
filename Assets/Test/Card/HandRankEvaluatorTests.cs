@@ -196,7 +196,7 @@ namespace Cardevil.Test.Card
             var result = HandRankEvaluator.GetHandRank(cards);
 
             Assert.AreEqual(HandRank.TwoPairFlush, result.HandRank);
-            Assert.AreEqual(CardColor.Red, result.CardColor);
+            Assert.AreEqual(CardColor.Red, result.FlushColor);
         }
 
         // --- StraightFlush ---
@@ -215,7 +215,7 @@ namespace Cardevil.Test.Card
             var result = HandRankEvaluator.GetHandRank(cards);
 
             Assert.AreEqual(HandRank.StraightFlush, result.HandRank);
-            Assert.AreEqual(CardColor.Blue, result.CardColor);
+            Assert.AreEqual(CardColor.Blue, result.FlushColor);
         }
 
         // --- FourCardFlush ---
@@ -234,7 +234,7 @@ namespace Cardevil.Test.Card
             var result = HandRankEvaluator.GetHandRank(cards);
 
             Assert.AreEqual(HandRank.FourCardFlush, result.HandRank);
-            Assert.AreEqual(CardColor.Green, result.CardColor);
+            Assert.AreEqual(CardColor.Green, result.FlushColor);
         }
 
         // --- Move 카드 무시 ---

@@ -111,6 +111,7 @@ GameObject:
   - component: {fileID: 2175256954114535303}
   - component: {fileID: 4582846023241870710}
   - component: {fileID: 5115092642535421116}
+  - component: {fileID: 5504616389185872991}
   m_Layer: 5
   m_Name: DungeonUI
   m_TagString: Untagged
@@ -153,6 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dungeonUICanvas: {fileID: 0}
+  _dungeonUICanvasGroup: {fileID: 5504616389185872991}
   _rectTransform: {fileID: 9001370698350667531}
   _dungeonChapters:
   - {fileID: 7512300475251869851}
@@ -176,9 +178,15 @@ MonoBehaviour:
   environmentImage: {fileID: 8046994267900239738}
   transitionPanel: {fileID: 0}
   blackPanel: {fileID: 0}
+  blackPanelImg: {fileID: 0}
   blackPanelText: {fileID: 0}
+  canvasGroup: {fileID: 5504616389185872991}
   <PlayableDirector>k__BackingField: {fileID: 4582846023241870710}
   <SkippableTimelinePlayableDirector>k__BackingField: {fileID: 5115092642535421116}
+  <TransitionToStagePlayableAsset>k__BackingField: {fileID: 11400000, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+  <HandUpPlayableAsset>k__BackingField: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+  <DefaultHideTransitionPlayableAsset>k__BackingField: {fileID: 11400000, guid: c210014b5ffc9e8418050379b71b3c6f, type: 2}
+  chapterUIRectTransform: {fileID: 55388671689453536}
 --- !u!320 &4582846023241870710
 PlayableDirector:
   m_ObjectHideFlags: 0
@@ -188,7 +196,7 @@ PlayableDirector:
   m_GameObject: {fileID: 1310750160403465949}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: 28058358ef00fc24da584251259ddc25, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
@@ -208,6 +216,26 @@ PlayableDirector:
     value: {fileID: 0}
   - key: {fileID: 4077329632234576030, guid: 531727917f55cc54087214c4afdf57a5, type: 2}
     value: {fileID: 0}
+  - key: {fileID: -8225272918172772315, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+    value: {fileID: 3888877301972129048}
+  - key: {fileID: -6926066952972113523, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 990281625074865129, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 4864578706283051154, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -8004734514555262890, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -6925956535159640983, guid: c6b694ff97ce344178e5579e393c3b55, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 7006675102454498006, guid: 28058358ef00fc24da584251259ddc25, type: 2}
+    value: {fileID: 5153401121443532665}
+  - key: {fileID: -235133736172254481, guid: c210014b5ffc9e8418050379b71b3c6f, type: 2}
+    value: {fileID: 3888877301972129048}
+  - key: {fileID: 5205729887991227032, guid: c210014b5ffc9e8418050379b71b3c6f, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 1113379115752284531, guid: c210014b5ffc9e8418050379b71b3c6f, type: 2}
+    value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
 --- !u!114 &5115092642535421116
@@ -223,6 +251,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.InGame.SlotMachine.Playables.SkippableTimelinePlayableDirector
   playableDirector: {fileID: 4582846023241870710}
+--- !u!225 &5504616389185872991
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310750160403465949}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5153401121443532665
 GameObject:
   m_ObjectHideFlags: 0
@@ -488,10 +528,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DungeonStage02
       objectReference: {fileID: 0}
-    - target: {fileID: 3393791510757189451, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
-      propertyPath: m_SceneBindings.Array.data[0].value
-      value: 
-      objectReference: {fileID: 1495547041979703853}
     - target: {fileID: 6169028761822087191, guid: bc97a222b5a65704082d2ec50efbbabb, type: 3}
       propertyPath: dungeonUI
       value: 
@@ -701,11 +737,6 @@ PrefabInstance:
 --- !u!224 &979843458320837412 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8587072507038732841, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
-  m_PrefabInstance: {fileID: 8841255041380989197}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1495547041979703853 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 7958760498679454496, guid: 0a166b3931ded8146bd4ebd7eafc278a, type: 3}
   m_PrefabInstance: {fileID: 8841255041380989197}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &3715014091142132227 stripped

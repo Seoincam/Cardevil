@@ -1,12 +1,17 @@
-﻿using Cardevil.Core.Events.ExecEvent;
+﻿using Cardevil.Core;
+using Cardevil.Core.Events.ExecEvent;
 using Cardevil.Gameplay.Dungeon.Core;
+using Cardevil.UI;
 using Cardevil.UI.Playables;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
+using System;
 using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.Serialization;
 using UnityEngine.Timeline;
 using UnityEngine.UI;
 
@@ -16,7 +21,8 @@ namespace Cardevil.Gameplay.Dungeon.UI
     {
         [SerializeField] private Image environmentImage;
         [SerializeField] private RectTransform transitionPanel;
-        [SerializeField] private Image blackPanel;
+        [SerializeField] private BlackPanel blackPanel;
+        [SerializeField] private Image blackPanelImg;
         [SerializeField] private TextMeshProUGUI blackPanelText;
         [SerializeField] private CanvasGroup canvasGroup;
         [Header("PlayableDirector Settings")]
@@ -27,29 +33,15 @@ namespace Cardevil.Gameplay.Dungeon.UI
         [field:SerializeField] public PlayableAsset TransitionToStagePlayableAsset { get; private set; }
         [field:Tooltip("지도를 손에 드는 애니메이션이 재생되는 타임라인 에셋입니다.")]
         [field:SerializeField] public PlayableAsset HandUpPlayableAsset { get; private set; }
+        [field:Obsolete("사용안함.", true)]
+        [field:SerializeField] public PlayableAsset DefaultHideTransitionPlayableAsset { get; private set; }
         
         
         private RectTransform _initialEnvironmentImagePosition;
         private RectTransform _initialPanelPosition;
-        // [Space(2f)]
-        // [Header("Legacy Settings (Unused)")]
-        // [Header("Animation Settings")]
-        // [Header("Phase 1: GNB Hide & Environment Zoom")]
-        // [SerializeField] private float gnbHideDuration = 0.5f;
-        // [SerializeField] private float zoomDuration = 0.5f;
-        // [SerializeField] private float environmentZoomScale = 1.2f;
-        // [Header("Phase 2: Panel Slide In")]
-        // [SerializeField] private float panelSlideDuration = 0.5f;
-        //
-        // [SerializeField] private Ease panelSlideEase = Ease.InOutSine;
-        // [Header("Phase 3: Pause")]
-        // [SerializeField] private float pauseDuration = 0.5f;
-        // [Header("Phase 4: Panel & Environment Zoom")]
-        // [SerializeField] private float finalZoomDuration = 0.5f;
-        // [SerializeField] private float finalPanelZoomScale = 100f;
-        // [SerializeField] private float finalEnvironmentZoomScale = 1.5f;
-        // [SerializeField] private Ease finalZoomEase = Ease.InOutSine;
-        // [SerializeField] private Ease finalPanelEase = Ease.InOutSine;
+        private RectTransform _initialChapterUIRectTransform;
+        [Header("UI Reference")]
+        [SerializeField] private RectTransform chapterUIRectTransform;
 
         private void Awake()
         {
@@ -58,8 +50,20 @@ namespace Cardevil.Gameplay.Dungeon.UI
             
             // _initialPanelPosition.gameObject.SetActive(false);
             // _initialEnvironmentImagePosition.gameObject.SetActive(false);
+            // _initialChapterUIRectTransform 
+            
+            
+            _initialChapterUIRectTransform = Instantiate(chapterUIRectTransform, chapterUIRectTransform.parent);
+            _initialChapterUIRectTransform.gameObject.SetActive(false);
             
             ExecEventBus<NodeEnteredEventArgs>.RegisterStatic(-1000, OnNodeEntered);
+            ExecEventBus<StageLoopEndEventArgs>.RegisterStatic(-1000, OnStageLoopEnd);
+        }
+
+        private UniTask OnStageLoopEnd(StageLoopEndEventArgs eventArgs, CancellationToken cancellationToken)
+        {
+            chapterUIRectTransform.gameObject.SetActive(false);
+            return UniTask.CompletedTask;
         }
 
         private UniTask OnNodeEntered(NodeEnteredEventArgs eventArgs, CancellationToken cancellationToken)
@@ -71,6 +75,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
 
         public async UniTask ShowEnterTransition(CancellationToken cancellationToken = default)
         {
+            blackPanelText.gameObject.SetActive(true);
             PlayableDirector.playableAsset = TransitionToStagePlayableAsset;
             PlayableDirector.Play();
             var timeline = PlayableDirector.playableAsset as TimelineAsset;
@@ -85,6 +90,7 @@ namespace Cardevil.Gameplay.Dungeon.UI
         
         public async UniTask ShowHandUpAnimation(CancellationToken cancellationToken = default)
         {
+            canvasGroup.alpha = 1;
             PlayableDirector.playableAsset = HandUpPlayableAsset;
             PlayableDirector.Play(HandUpPlayableAsset);
             var durationTask = UniTask.WaitForSeconds((float)PlayableDirector.duration, cancellationToken: cancellationToken);
@@ -94,6 +100,39 @@ namespace Cardevil.Gameplay.Dungeon.UI
             
             await UniTask.WhenAny(durationTask, stopTask);
         }
+        
+        public async UniTask PlayMapHideAndBlackoutAsync(CancellationToken cancellationToken = default)
+        {
+            blackPanel.gameObject.SetActive(true);
+            blackPanelText.gameObject.SetActive(false);
+            blackPanelImg.color = new Color(blackPanelImg.color.r, blackPanelImg.color.g, blackPanelImg.color.b, 1f);
+            blackPanel.CanvasGroup.alpha = 0f;
+            blackPanel.CanvasGroup.interactable = false;
+            blackPanel.CanvasGroup.blocksRaycasts = false;
+            canvasGroup.alpha = 1;
+            canvasGroup.blocksRaycasts = true;
+
+            var handDownSmallTask = chapterUIRectTransform.DOAnchorPosY(-100, 0.5f).SetEase(Ease.Linear).ToUniTask(cancellationToken: cancellationToken);
+            var blackPanelFadeinTask = blackPanel.CanvasGroup.DOFade(1, 0.5f).SetEase(Ease.Linear).ToUniTask(cancellationToken: cancellationToken);
+            await UniTask.WhenAll(handDownSmallTask, blackPanelFadeinTask);
+            ResetChapterUIVisual();
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        public void ResetChapterUIVisual()
+        {
+            chapterUIRectTransform.anchoredPosition = _initialChapterUIRectTransform.anchoredPosition;
+            chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
+            chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
+        }
+
+        public void PrepareChapterUIForHandUp()
+        {
+            chapterUIRectTransform.gameObject.SetActive(false);
+            chapterUIRectTransform.localScale = _initialChapterUIRectTransform.localScale;
+            chapterUIRectTransform.rotation = _initialChapterUIRectTransform.rotation;
+        }
+        
 
         /// <summary>
         /// 플레이어 입력을 감지하여 타임라인을 스킵하는 비동기 작업.

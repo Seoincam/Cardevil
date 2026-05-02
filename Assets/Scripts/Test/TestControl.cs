@@ -115,7 +115,7 @@ namespace Cardevil.Test
         [ContextMenu("Get Test Poolable")]
         public void GetTestPoolableFromResource()
         {
-            // PoolableFactorySO를 통해 Poolable 객체를 가져오는 테스트
+            // Poolable prefab을 통해 Poolable 객체를 가져오는 테스트
             var poolable = AssetUtil.Instantiate(resourcePoolableName, transform).GetComponent<Poolable>();
             if (poolable != null)
             {

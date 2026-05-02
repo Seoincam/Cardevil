@@ -1,3 +1,5 @@
+using Cardevil.Card.InStage.Score;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.DataStructure;
@@ -18,20 +20,23 @@ namespace Cardevil.Gameplay
 {
     public enum StatType
     {
-        Level,
-        SlotMachineLevel,
+        Level = 0,
+        SlotMachineLevel = 1,
         
-        MaxHp,
-        CurrentHp,
-        Shield,
+        MaxHp = 2,
+        CurrentHp = 3,
+        Shield = 4,
+        BlackMarketTicket = 10,
+        MulliganTicket = 11,
+        ReinforcementTicket = 12,
         
-        MaxHandCount,
-        DefaultDiscardCount,
+        MaxHandCount = 5,
+        DefaultDiscardCount = 6,
         
-        Gold,
-        RerollTicket,
+        Gold = 7,
+        RerollTicket = 8,
         
-        StageClearCount,
+        StageClearCount = 9,
     }
     
     /// <summary>
@@ -46,9 +51,12 @@ namespace Cardevil.Gameplay
         [SerializeField] private VariableContainer _variableContainer = new VariableContainer();
 
         private int _nextId;
+        private bool godMode = false; // 디버그용 무적 모드 플래그
         private Dictionary<int, IStatModifier> _modifiers = new();
 
         private static PlayerStatConfig _config;
+        
+        public bool IsGodMode => godMode;
 
         public int this[StatType type]
         {
@@ -171,6 +179,10 @@ namespace Cardevil.Gameplay
         
         public int TakeDamage(int damage)
         {
+            if (godMode)
+            {
+                return 0; // 무적 모드에서는 피해를 받지 않음
+            }
             if (damage < 0)
             {
                 Debug.LogWarning("Damage cannot be negative.");
@@ -228,6 +240,10 @@ namespace Cardevil.Gameplay
             var args = PlayerHealthChangeArgs.Get(CurrentHp, CurrentHp);
             args.IsJustBroadcast = true;
             ExecEventBus<PlayerHealthChangeArgs>.InvokeMergedAndDispose(args).Forget();
+
+            var goldArgs = PlayerGoldChangeArgs.Get(GetFinalValue(StatType.Gold), GetFinalValue(StatType.Gold));
+            goldArgs.IsJustBroadcast = true;
+            ExecEventBus<PlayerGoldChangeArgs>.InvokeMergedAndDispose(goldArgs).Forget();
         }
         
         public void SetUpNewGame(GameSave currentSave)
@@ -328,10 +344,18 @@ namespace Cardevil.Gameplay
                     var shieldArgs = PlayerShieldChangeArgs.Get(previous, current);
                     ExecEventBus<PlayerShieldChangeArgs>.InvokeMergedAndDispose(shieldArgs).Forget();
                     break;
+
+                case StatType.Gold:
+                    var goldArgs = PlayerGoldChangeArgs.Get(previous, current);
+                    ExecEventBus<PlayerGoldChangeArgs>.InvokeMergedAndDispose(goldArgs).Forget();
+                    break;
                 
                 case StatType.RerollTicket:
                     break;
+                
             }
+            
+            ExecEventBus<PlayerStatusChangedArgs>.InvokeMergedAndDispose(PlayerStatusChangedArgs.Get(statType, previous, current)).Forget();
         }
 
         [Serializable]
@@ -419,6 +443,45 @@ namespace Cardevil.Gameplay
                 bool doBroadcast = CommandHelper.ParseArgument<bool>(args[1]);
                 CardevilCore.PlayerStatus.ForceSetCurrentHp(hp, doBroadcast);
                 Console.MessageInfo($"Set player HP to {CardevilCore.PlayerStatus.CurrentHp}/{CardevilCore.PlayerStatus.MaxHp} with broadcast: {doBroadcast}");
+            }
+        }
+        
+        
+        private static GodModeScoreProvider godModeModifier = new GodModeScoreProvider();
+        [ConsoleCommand("god", "Toggle god mode")]
+        private static void ToggleGodMode(string[] args)
+        {
+            PlayerStatus playerStatus = CardevilCore.PlayerStatus;
+            playerStatus.godMode = !playerStatus.godMode;
+
+            
+            if (playerStatus.godMode)
+            {
+                int id = CardevilCore.Game.ScoreProviderRegistry.Register(godModeModifier);
+                godModeModifier.Id = id;
+            }
+            else
+            {
+                CardevilCore.Game.ScoreProviderRegistry.SafeUnregister(godModeModifier.Id, godModeModifier);
+            }
+            
+            
+            Console.MessageInfo($"God mode {(playerStatus.godMode ? "enabled" : "disabled")}. Current HP: {playerStatus.CurrentHp}/{playerStatus.MaxHp}");
+        }
+
+        // TODO 임시
+        private class GodModeScoreProvider : IScoreProvider
+        {
+            public int Id { get; set; }
+            public ScoreStepType ScoreStepType => ScoreStepType.PlusPlayerStatus;
+            public IScoreOperator GetScoreOperator(IScoreContext context)
+            {
+                return new ScoreOperator
+                {
+                    Type = ScoreOperatorType.Plus,
+                    Value = CardevilCore.PlayerStatus.IsGodMode ? 9999 : 0,
+                    Source = this
+                };
             }
         }
 

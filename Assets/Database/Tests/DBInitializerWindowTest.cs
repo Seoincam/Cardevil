@@ -53,6 +53,20 @@ namespace Database.Tests
         }
 
         [Test]
+        public void BuildJsonRows_PreservesCompactTupleAndNestedArrayCells()
+        {
+            var root = JToken.Parse(
+                "{\"type\":{\"tuple\":\"(int,int,string)\",\"tupleList\":\"List<(int,int,string)>\"},\"data\":[{\"tuple\":[1,2,\"SampleText\"],\"tupleList\":[[1,2,\"A\"],[3,4,\"B\"]]}]}");
+
+            var columns = InvokeList(BuildJsonColumnsMethod, root);
+            var rows = InvokeList(BuildJsonRowsMethod, root, columns);
+            var firstCells = (IList)GetProperty(rows[0], "Cells");
+
+            Assert.That(firstCells[0], Is.EqualTo("[1,2,\"SampleText\"]"));
+            Assert.That(firstCells[1], Is.EqualTo("[[1,2,\"A\"],[3,4,\"B\"]]"));
+        }
+
+        [Test]
         public void DownloadStateStore_SaveAndLoadFromPath_RoundTrips()
         {
             string stateFilePath = Path.Combine(Path.GetTempPath(), $"dbinitializer-state-{Path.GetRandomFileName()}.json");
