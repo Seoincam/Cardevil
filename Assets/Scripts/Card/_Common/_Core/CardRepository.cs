@@ -10,10 +10,10 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public class CardRepository : ISaveLoad, INewGameInitializable
     {
-        private const int CardCount = 50;
+        public const int CardCount = 50;
         
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
-
+        
         private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
         
         public IReadOnlyList<CardSpec> Cards => cards;
@@ -41,7 +41,7 @@ namespace Cardevil.Card.Common.Core
         }
 
         /// <summary>
-        /// 모든 카드의 최신 State 리스트를 반환.
+        /// 모든 카드의 최신 State 인터페이스 리스트를 반환.
         /// </summary>
         public List<ICardState> GetAllStates()
         {
@@ -51,9 +51,8 @@ namespace Cardevil.Card.Common.Core
         }
 
         /// <summary>
-        /// 모든 카드의 최신 State 리스트를 DeepClone해 반환.
+        /// 모든 카드의 최신 State 인터페이스 리스트를 DeepClone해 반환.
         /// </summary>
-        /// <returns></returns>
         public List<ICardState> GetAllDeepClonedStates()
         {
             return _stateCache.Values

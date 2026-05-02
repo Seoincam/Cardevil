@@ -1,3 +1,4 @@
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core.Attributes;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,15 @@ namespace Cardevil.Card.Common.Core
     {
         public event Action<CardSpec> SpecChanged;
         
+        [field: Header("Core Data")]
         [field: SerializeField, VisibleOnly] public int ID { get; private set; }
         [field: SerializeField, VisibleOnly] public CardType Type { get; private set; }
 
         [SerializeReference, VisibleOnly] private List<ISpecElement> elements = new();
+        
+        [field: Header("Upgrade Data")]
+        [field: SerializeField] public UpgradeNode UpgradeNode { get; private set; }
+        
 
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
@@ -41,7 +47,8 @@ namespace Cardevil.Card.Common.Core
         public bool IsAttack => Type == CardType.Attack;
         public bool IsMove => Type == CardType.Move;
 
-        public CardSpec(int id, CardType type, List<ISpecElement> elements = null)
+        
+        public CardSpec(int id, CardType type, List<ISpecElement> elements)
         {
             ID = id;
             Type = type;
@@ -50,6 +57,15 @@ namespace Cardevil.Card.Common.Core
             {
                 this.elements.AddRange(elements);
             }
+        }
+
+        public CardSpec(int id,
+            CardType type,
+            UpgradeNode upgradeNode = null)
+        {
+            ID = id;
+            Type = type;
+            UpgradeNode = upgradeNode;
         }
 
         public CardSpec AddElements(params ISpecElement[] specElements)
