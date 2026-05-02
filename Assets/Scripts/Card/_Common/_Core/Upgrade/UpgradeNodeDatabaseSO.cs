@@ -37,12 +37,30 @@ namespace Cardevil.Card.Common.Core.Upgrade
         {
             if (_nodeMap == null) Initialize();
 
-            if (_nodeMap.TryGetValue((path, stage), out var node))
+            var node = _nodeMap.GetValueOrDefault((path, stage));
+            if (!node)
             {
-                return node;
+                LogEx.LogError($"강화 노드가 존재하지 않음 (path: {path}, stage: {stage})");
             }
 
-            return null;
+            return node;
+        }
+
+        /// <summary>
+        /// 가능한 강화 노드를 필터링해서 제공.
+        /// </summary>
+        public IReadOnlyCollection<UpgradeNodeSO> GetNextAvailableNodes(CardSpec spec)
+        {
+            if (!spec.UpgradeNode)
+            {
+                LogEx.LogError($"현재 강화 노드가 존재하지 않음! ID: {spec.ID}");
+                return new List<UpgradeNodeSO>();
+            }
+
+            var allNextNodes = spec.UpgradeNode.NextNodes;
+            var availableNodes = allNextNodes.Where(node => node.TargetCardType == spec.Type)
+                .ToList();
+            return availableNodes;
         }
         
 #if UNITY_EDITOR

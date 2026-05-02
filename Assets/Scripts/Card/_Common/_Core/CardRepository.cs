@@ -1,3 +1,4 @@
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
 using System;
@@ -15,15 +16,23 @@ namespace Cardevil.Card.Common.Core
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
         
         private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
+
+        private UpgradeNodeDatabaseSO _upgradeDatabase;
         
         public IReadOnlyList<CardSpec> Cards => cards;
+        
+        private CardRepository() { }
+        public CardRepository(UpgradeNodeDatabaseSO upgradeDatabase)
+        {
+            _upgradeDatabase = upgradeDatabase;
+        }
         
         public void SetUpNewGame(GameSave save)
         {
             cards.Clear();
             _stateCache.Clear();
 
-            var newSpecs = CreateStandardCardSpecs();
+            var newSpecs = CreateStandardCardSpecs(_upgradeDatabase);
             foreach (var spec in newSpecs)
             {
                 AddCardSpec(spec);
@@ -80,6 +89,16 @@ namespace Cardevil.Card.Common.Core
 
             return null;
         }
+
+        /// <summary>
+        /// 특정 Id의 최신 State를 DeepClone해 반환.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public CardState GetDeepClonedState(int id)
+        {
+            return GetState(id)?.DeepClone();
+        }
         
         private void AddCardSpec(CardSpec spec)
         {
@@ -97,10 +116,14 @@ namespace Cardevil.Card.Common.Core
         }
 
         // 기본 덱 생성
-        private static List<CardSpec> CreateStandardCardSpecs()
+        private static List<CardSpec> CreateStandardCardSpecs(UpgradeNodeDatabaseSO upgradeDatabase)
         {
             var deckSpecs = new List<CardSpec>(CardCount);
             int nextID = 0;
+
+            var noneUpgradeNode = upgradeDatabase.GetNode(UpgradePath.None, 0);
+            var multiNumberFinalUpgradeNode = upgradeDatabase.GetNode(UpgradePath.MultiNumber, 3);
+            var multiDirectionFinalUpgradeNode = upgradeDatabase.GetNode(UpgradePath.MultiDirection, 2);
             
             // 공격 카드
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
@@ -110,7 +133,7 @@ namespace Cardevil.Card.Common.Core
                 // 기본 공격 카드 스펙
                 for (int n = 2; n <= 10; n++)
                 {
-                    var defaultAttackSpec = new CardSpec(nextID++, CardType.Attack)
+                    var defaultAttackSpec = new CardSpec(nextID++, CardType.Attack, noneUpgradeNode)
                         .AddElements(
                             new BaseColorElement(color),
                             new BaseNumberElement(n)
@@ -120,12 +143,8 @@ namespace Cardevil.Card.Common.Core
 
                 // 오망성 카드 스펙
                 var starSpec = new CardSpec(nextID++, CardType.Attack)
-                    .AddElements(new BaseColorElement(color));
-
-                for (int n = 2; n <= 10; n++)
-                {
-                    starSpec.AddElements(SelectableNumberElement.Fixed(n));
-                }
+                    .AddElements(new BaseColorElement(color))
+                    .ApplyUpgradeNode(multiNumberFinalUpgradeNode);
                 deckSpecs.Add(starSpec);
             }
 
@@ -145,13 +164,7 @@ namespace Cardevil.Card.Common.Core
             // 네 방향 이동 카드 스펙
             for (int i = 0; i < 2; i++)
             {
-                var fourDirectionSpec = new CardSpec(nextID++, CardType.Move)
-                    .AddElements(
-                        SelectableDirectionElement.Fixed(Direction.Up),
-                        SelectableDirectionElement.Fixed(Direction.Down),
-                        SelectableDirectionElement.Fixed(Direction.Left),
-                        SelectableDirectionElement.Fixed(Direction.Right)
-                    );
+                var fourDirectionSpec = new CardSpec(nextID++, CardType.Move, multiDirectionFinalUpgradeNode);
                 deckSpecs.Add(fourDirectionSpec);
             }
 

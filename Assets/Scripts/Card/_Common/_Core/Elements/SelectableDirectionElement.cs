@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public sealed class SelectableDirectionElement : ISpecElement
+    public sealed class SelectableDirectionElement : IDirectionElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<Direction> direction;
 

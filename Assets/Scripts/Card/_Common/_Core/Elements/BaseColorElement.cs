@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public class BaseColorElement : ISpecElement
+    public class BaseColorElement : IColorElement
     {
         [SerializeField] private CardColor color;
 

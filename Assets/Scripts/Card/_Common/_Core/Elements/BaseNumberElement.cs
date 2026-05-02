@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public sealed class BaseNumberElement : ISpecElement
+    public sealed class BaseNumberElement : INumberElement
     {
         [SerializeField] private int number;
 

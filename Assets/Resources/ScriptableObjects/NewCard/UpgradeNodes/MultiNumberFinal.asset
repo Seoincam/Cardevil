@@ -16,7 +16,7 @@ MonoBehaviour:
   path: 1
   stage: 3
   targetCardType: 1
-  upgradeType: 1
+  upgradeType: 3
   elements:
   - rid: 5998883810384282538
   - rid: 5998883810384282539

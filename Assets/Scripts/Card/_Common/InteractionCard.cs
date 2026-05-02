@@ -8,6 +8,9 @@ using UnityEngine.EventSystems;
 
 namespace Cardevil.Card.Common
 {
+    /// <summary>
+    /// 대부분의 상황에서 공용적으로 사용할 카드 오브젝트. 각 사용처에서 이벤트를 구독하는 방식을 사용함.
+    /// </summary>
     [RequireComponent(typeof(CardVisualController))]
     public class InteractionCard : MonoBehaviour,
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler

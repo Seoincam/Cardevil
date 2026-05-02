@@ -7,4 +7,13 @@ namespace Cardevil.Card.Common.Core.Upgrade
         MultiColor,
         MultiDirection
     }
+
+	public enum UpgradeApplyType
+	{
+        None,
+        Add,
+        OverrideColors,
+        OverrideNumbers,
+        OverrideDirections
+	}
 }

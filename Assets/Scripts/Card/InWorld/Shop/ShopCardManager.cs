@@ -1,4 +1,7 @@
+using Cardevil.Card.Common.Core;
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core.Bootstrap;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cardevil.Card.InWorld.Shop
@@ -7,6 +10,9 @@ namespace Cardevil.Card.InWorld.Shop
     {
         [Header("Scene References")]
         [SerializeField] private ShopCardSelectionView shopCardSelectionView;
+        
+        [Header("References")]
+        [SerializeField] private UpgradeNodeDatabaseSO upgradeDatabase;
         
         /// <summary>
         /// 지정된 개수만큼 상점 카드를 추첨하고, 그리드 형식으로 선택 화면을 생성.
@@ -39,6 +45,12 @@ namespace Cardevil.Card.InWorld.Shop
         {
             CreateSelection(count, centerAnchor.position, colCount, colSpacing, rowSpacing);
         }
+
+        public IReadOnlyCollection<UpgradeNodeSO> GetAvailableUpgradeNodes(CardSpec spec)
+        {
+            return upgradeDatabase.GetNextAvailableNodes(spec);
+        }
+        
 
         private void HandleCardSelected(int specId)
         {

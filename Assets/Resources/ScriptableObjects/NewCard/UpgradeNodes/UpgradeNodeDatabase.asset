@@ -12,4 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba2117fd346646a5b4dff79268407816, type: 3}
   m_Name: UpgradeNodeDatabase
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.Common.Core.Upgrade.UpgradeNodeDatabaseSO
-  allNodes: []
+  allNodes:
+  - {fileID: 11400000, guid: a172a034552f54f8e939ccae86e73655, type: 2}
+  - {fileID: 11400000, guid: d39a9ddbb46e249a0a2517ec2f355e93, type: 2}
+  - {fileID: 11400000, guid: 3d9ce9d3e65074ff19925ef53161efc7, type: 2}
+  - {fileID: 11400000, guid: 0a5be7291b45740eb9c4a3cd75f56579, type: 2}
+  - {fileID: 11400000, guid: 7370c880a3aca4d518b9833362680f1a, type: 2}
+  - {fileID: 11400000, guid: 6def4f2c4922b48c7a09e46a2fb16f7e, type: 2}
+  - {fileID: 11400000, guid: e750f664d480e40b694ea0aaac79164c, type: 2}
+  - {fileID: 11400000, guid: 51665c1bfe3fc4fe1b0dcbb1b1cf4159, type: 2}
+  - {fileID: 11400000, guid: 97893f494750b442690acc6e7e6752cf, type: 2}

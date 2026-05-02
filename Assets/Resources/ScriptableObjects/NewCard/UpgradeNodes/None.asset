@@ -23,7 +23,7 @@ MonoBehaviour:
   elements: []
   blackMarketCost: 0
   marketCost: 0
-  nodePosition: {x: 73.5, y: 268}
+  nodePosition: {x: 98.5, y: 268}
   references:
     version: 2
     RefIds: []

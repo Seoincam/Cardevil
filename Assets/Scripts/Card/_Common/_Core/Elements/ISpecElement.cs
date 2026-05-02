@@ -7,4 +7,8 @@ namespace Cardevil.Card.Common.Core
     {
         void Apply(CardStateBuilder builder);
     }
+    
+    public interface IColorElement : ISpecElement { }
+    public interface INumberElement : ISpecElement { }
+    public interface IDirectionElement : ISpecElement { }
 }

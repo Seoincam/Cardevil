@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,9 +10,9 @@ namespace Cardevil.Card.Common.Core.Upgrade
         [Header("Nodes")]
         [SerializeField] private List<UpgradeNodeSO> nextNodes = new();
         
-        [field: Header("Current")]
-        [SerializeField] public UpgradePath path;
-        [SerializeField] public int stage;
+        [Header("Current")]
+        [SerializeField] private UpgradePath path;
+        [SerializeField] private int stage;
         
         [Header("Constraints")]
         [SerializeField] private CardType targetCardType;
@@ -23,12 +24,6 @@ namespace Cardevil.Card.Common.Core.Upgrade
         [Header("Cost")]
         [SerializeField] private int blackMarketCost;
         [SerializeField] private int marketCost;
-
-        public enum UpgradeApplyType
-        {
-            Add,
-            Override
-        }
         
         public IReadOnlyList<UpgradeNodeSO> NextNodes => nextNodes;
         

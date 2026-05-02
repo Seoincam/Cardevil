@@ -17,7 +17,7 @@ MonoBehaviour:
   path: 3
   stage: 1
   targetCardType: 2
-  upgradeType: 0
+  upgradeType: 1
   elements:
   - rid: 5998883810384282547
   blackMarketCost: 0

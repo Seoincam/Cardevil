@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public sealed class SelectableColorElement : ISpecElement
+    public sealed class SelectableColorElement : IColorElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<CardColor> color;
 

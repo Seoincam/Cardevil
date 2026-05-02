@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public class BaseDirectionElement : ISpecElement
+    public class BaseDirectionElement : IDirectionElement
     {
         [SerializeField] private Direction direction;
 

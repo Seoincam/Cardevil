@@ -68,7 +68,7 @@ namespace Cardevil.Card.InWorld.Shop
         [ContextMenu("Clear Cards")]
         public void Clear()
         {
-            for (int i = _createdCards.Count - 1; i > 0; i--)
+            for (int i = _createdCards.Count - 1; i >= 0; i--)
             {
                 var card = _createdCards[i];
                 Destroy(card.gameObject);

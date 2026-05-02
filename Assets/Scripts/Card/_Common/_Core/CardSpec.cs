@@ -65,7 +65,7 @@ namespace Cardevil.Card.Common.Core
         {
             ID = id;
             Type = type;
-            UpgradeNode = upgradeNode;
+            ApplyUpgradeNode(upgradeNode);
         }
 
         public CardSpec AddElements(params ISpecElement[] specElements)
@@ -73,6 +73,44 @@ namespace Cardevil.Card.Common.Core
             elements.AddRange(specElements);
             _isDirty = true;
             SpecChanged?.Invoke(this);
+            return this;
+        }
+        
+        /// <param name="upgradeNode">적용할 강화 단계 노드.</param>
+        /// <param name="isUIAction">
+        /// <c>true</c>일 경우, UI 표시용으로 판단해 이벤트를 발행하지 않음.
+        /// <c>false</c>일 경우, 실제 강화가 이루어진 것으로 판단해 이벤트를 발행함.
+        /// </param>
+        public CardSpec ApplyUpgradeNode(UpgradeNodeSO upgradeNode, bool isUIAction = false)
+        {
+            if (!upgradeNode || UpgradeNode == upgradeNode) return this;
+
+            UpgradeNode = upgradeNode;
+            _isDirty = true;
+            
+            if (UpgradeNode.UpgradeType == UpgradeApplyType.None) return this;
+
+            switch (UpgradeNode.UpgradeType)
+            {
+                case UpgradeApplyType.OverrideColors:
+                    elements.RemoveAll(e => e is IColorElement);
+                    break;
+                
+                case UpgradeApplyType.OverrideNumbers:
+                    elements.RemoveAll(e => e is INumberElement);
+                    break;
+                
+                case UpgradeApplyType.OverrideDirections:
+                    elements.RemoveAll(e => e is IDirectionElement);
+                    break;
+            }
+            elements.AddRange(UpgradeNode.Elements);
+
+            if (!isUIAction)
+            {
+                SpecChanged?.Invoke(this);
+            }
+
             return this;
         }
     }
