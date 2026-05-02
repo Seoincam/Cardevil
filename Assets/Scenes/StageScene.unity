@@ -655,6 +655,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2998936136693003989, guid: d30b98e116c666945931ef25d820337c, type: 3}
+      propertyPath: m_Name
+      value: slotImage
+      objectReference: {fileID: 0}
     - target: {fileID: 4268430633788988331, guid: d30b98e116c666945931ef25d820337c, type: 3}
       propertyPath: _renderCamera
       value: 
@@ -746,6 +750,10 @@ PrefabInstance:
     - target: {fileID: 6434408965194146924, guid: d30b98e116c666945931ef25d820337c, type: 3}
       propertyPath: m_Name
       value: SlotMachine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7902160425241490047, guid: d30b98e116c666945931ef25d820337c, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3535,7 +3543,7 @@ MonoBehaviour:
       score: 0
       handRankData:
         <HandRank>k__BackingField: 0
-        <CardColor>k__BackingField: 0
+        <FlushColor>k__BackingField: 0
       scoreOperators: []
   references:
     version: 2

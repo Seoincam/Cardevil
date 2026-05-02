@@ -271,7 +271,7 @@ namespace Cardevil.UI.PopUp
                         .OnComplete(() => _flashActiveBackground.gameObject.SetActive(false));
             }
 
-            _coinRainManager.PlayJackpotEffect(5.0f);
+            _coinRainManager.PlayJackpotEffect(2.0f);
         }
 
 
