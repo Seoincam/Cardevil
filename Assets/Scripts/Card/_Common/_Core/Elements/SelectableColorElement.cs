@@ -12,7 +12,6 @@ namespace Cardevil.Card.Common.Core
         {
             color = CardStateBuilder.SelectableSlot<CardColor>.Random();
         }
-        
         public static SelectableColorElement Fixed(CardColor color) => new()
         {
             color = CardStateBuilder.SelectableSlot<CardColor>.Fixed(color)
@@ -22,6 +21,11 @@ namespace Cardevil.Card.Common.Core
         {
             color = CardStateBuilder.SelectableSlot<CardColor>.Random()
         };
+        
+        public ISpecElement DeepClone()
+        {
+            return new SelectableColorElement { color = color };
+        }
         
         public void Apply(CardStateBuilder builder)
         {

@@ -15,6 +15,11 @@ namespace Cardevil.Card.Common.Core
             direction = defaultDirection;
         }
         
+        public ISpecElement DeepClone()
+        {
+            return new BaseDirectionElement(direction);
+        }
+        
         public void Apply(CardStateBuilder builder)
         {
             builder.SetDefaultDirection(direction);

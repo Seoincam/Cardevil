@@ -65,7 +65,7 @@ namespace Cardevil.Card.InWorld
             foreach (var card in cards)
             {
                 var visualInput = CardVisualInput.Attack(CardColor.Black, 3);
-                card.Initialize(visualInput, cardCamera);
+                card.Initialize(visualInput);
             }
             
             HideInstant();

@@ -23,6 +23,11 @@ namespace Cardevil.Card.Common.Core
             number = CardStateBuilder.SelectableSlot<int>.Random()
         };
         
+        public ISpecElement DeepClone()
+        {
+            return new SelectableNumberElement { number = number };
+        }
+        
         public void Apply(CardStateBuilder builder)
         {
             builder.AddNumberSelectableSlot(number);

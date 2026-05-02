@@ -24,6 +24,11 @@ namespace Cardevil.Card.Common.Core
             direction = CardStateBuilder.SelectableSlot<Direction>.Random()
         };
         
+        public ISpecElement DeepClone()
+        {
+            return new SelectableDirectionElement() { direction =  direction };
+        }
+        
         public void Apply(CardStateBuilder builder)
         {
             builder.AddDirectionSelectableSlot(direction);

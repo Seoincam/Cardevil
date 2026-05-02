@@ -61,7 +61,7 @@ namespace Cardevil.Card.Common.Core
             }
             else if (spec.Type == CardType.Move)
             {
-                var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_directionSelectableSlots);
+                var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_defaultDirection, _directionSelectableSlots);
                 state.Directions = BuildSelectable(_defaultDirection, resolvedDirection);
                 
                 var directionFlag = state.Directions.DefaultValue.value.ToDirectionFlag();

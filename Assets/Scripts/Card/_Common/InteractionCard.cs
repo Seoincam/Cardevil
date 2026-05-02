@@ -2,6 +2,7 @@ using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
 using Cardevil.Card.InStage;
 using Cardevil.Card.Visual.Controller;
+using Cardevil.Core.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -19,9 +20,7 @@ namespace Cardevil.Card.Common
         
         [Header("Settings")]
         [field: SerializeField] public bool FollowTargetPosition { get; set; }
-
-        private Camera _cardCamera;
-
+        
         public event Action<InteractionCard> PointerEnter;
         public event Action<InteractionCard> PointerDown;
         public event Action<InteractionCard> PointerUp;
@@ -43,11 +42,15 @@ namespace Cardevil.Card.Common
                 transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
         }
 
-        public void Initialize(CardVisualInput visualInput, Camera cardCamera, bool followTargetPosition = false)
+        public void Initialize(CardVisualInput visualInput, bool followTargetPosition = false, int? layerMask = null)
         {
             VisualController.SetLayout(visualInput);
-            _cardCamera = cardCamera;
             FollowTargetPosition = followTargetPosition;
+
+            if (layerMask.HasValue)
+            {
+                gameObject.SetLayerRecursively(layerMask.Value);
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -74,10 +77,10 @@ namespace Cardevil.Card.Common
             PointerExit?.Invoke(this);
         }
 
-        public HandBarCard ConvertToHandCard(ICardState cardState)
+        public HandBarCard ConvertToHandCard(ICardState cardState, Camera cardCamera)
         {
             var handBarCard = gameObject.AddComponent<HandBarCard>();
-            handBarCard.Initialize(cardState, _cardCamera, false);
+            handBarCard.Initialize(cardState, cardCamera, false);
             
             Destroy(this);
             return handBarCard;

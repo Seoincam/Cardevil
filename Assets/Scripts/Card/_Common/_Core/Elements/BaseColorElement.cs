@@ -14,6 +14,11 @@ namespace Cardevil.Card.Common.Core
             color = defaultColor;    
         }
         
+        public ISpecElement DeepClone()
+        {
+            return new BaseColorElement(color);
+        }
+        
         public void Apply(CardStateBuilder builder)
         {
             builder.SetDefaultColor(color);

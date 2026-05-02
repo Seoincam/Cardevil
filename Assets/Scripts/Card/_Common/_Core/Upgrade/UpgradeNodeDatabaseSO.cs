@@ -49,7 +49,7 @@ namespace Cardevil.Card.Common.Core.Upgrade
         /// <summary>
         /// 가능한 강화 노드를 필터링해서 제공.
         /// </summary>
-        public IReadOnlyCollection<UpgradeNodeSO> GetNextAvailableNodes(CardSpec spec)
+        public IReadOnlyList<UpgradeNodeSO> GetNextAvailableNodes(CardSpec spec)
         {
             if (!spec.UpgradeNode)
             {

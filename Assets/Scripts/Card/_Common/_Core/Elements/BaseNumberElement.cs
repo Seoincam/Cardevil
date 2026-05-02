@@ -14,6 +14,11 @@ namespace Cardevil.Card.Common.Core
             number = defaultNumber;
         }
         
+        public ISpecElement DeepClone()
+        {
+            return new BaseNumberElement(number);
+        }
+        
         public void Apply(CardStateBuilder builder)
         {
             builder.SetDefaultNumber(number);

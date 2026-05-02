@@ -31,4 +31,4 @@ MonoBehaviour:
       data:
         direction:
           <IsFixed>k__BackingField: 0
-          <FixedValue>k__BackingField: 0
+          <FixedValue>k__BackingField: -1

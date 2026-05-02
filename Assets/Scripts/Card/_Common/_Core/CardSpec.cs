@@ -1,13 +1,15 @@
 using Cardevil.Card.Common.Core.Upgrade;
+using Cardevil.Core;
 using Cardevil.Core.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public sealed class CardSpec
+    public sealed class CardSpec : IDeepClonable<CardSpec>
     {
         public event Action<CardSpec> SpecChanged;
         
@@ -66,6 +68,19 @@ namespace Cardevil.Card.Common.Core
             ID = id;
             Type = type;
             ApplyUpgradeNode(upgradeNode);
+        }
+        
+        public CardSpec DeepClone()
+        {
+            var clonedElements = elements.Select(e => e.DeepClone()).ToList();
+            var clone = new CardSpec(ID, Type, clonedElements)
+            {
+                UpgradeNode = UpgradeNode, 
+                _isDirty = true, 
+                _cachedState = null
+            };
+
+            return clone;
         }
 
         public CardSpec AddElements(params ISpecElement[] specElements)

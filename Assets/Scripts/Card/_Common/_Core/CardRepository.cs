@@ -14,7 +14,8 @@ namespace Cardevil.Card.Common.Core
         public const int CardCount = 50;
         
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
-        
+
+        private readonly Dictionary<int, CardSpec> _specMap = new(CardCount);
         private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
 
         private UpgradeNodeDatabaseSO _upgradeDatabase;
@@ -69,6 +70,28 @@ namespace Cardevil.Card.Common.Core
                 .Cast<ICardState>()
                 .ToList();
         }
+
+        /// <summary>
+        /// 특정 Id의 Spec을 반환.
+        /// </summary>
+        public CardSpec GetSpec(int id)
+        {
+            if (_specMap.TryGetValue(id, out var spec))
+            {
+                return spec;
+            }
+
+            LogEx.LogError($"Spec을 찾을 수 없음! ID: {id}");
+            return null;
+        }
+
+        /// <summary>
+        /// 특정 Id의 Spec을 DeepClone해 반환.
+        /// </summary>
+        public CardSpec GetDeepClonedSpec(int id)
+        {
+            return GetSpec(id).DeepClone();
+        }
         
         /// <summary>
         /// 특정 Id의 최신 State를 반환.
@@ -93,8 +116,6 @@ namespace Cardevil.Card.Common.Core
         /// <summary>
         /// 특정 Id의 최신 State를 DeepClone해 반환.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public CardState GetDeepClonedState(int id)
         {
             return GetState(id)?.DeepClone();
@@ -105,6 +126,7 @@ namespace Cardevil.Card.Common.Core
             cards.Add(spec);
             spec.SpecChanged += HandleSpecChanged;
 
+            _specMap[spec.ID] = spec;
             _stateCache[spec.ID] = spec.State;
         }
         
@@ -155,7 +177,7 @@ namespace Cardevil.Card.Common.Core
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    var defaultMoveSpec = new CardSpec(nextID++, CardType.Move)
+                    var defaultMoveSpec = new CardSpec(nextID++, CardType.Move, noneUpgradeNode)
                         .AddElements(new BaseDirectionElement(dir));
                     deckSpecs.Add(defaultMoveSpec);
                 }
