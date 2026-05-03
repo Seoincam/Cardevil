@@ -46,6 +46,7 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             _view = view;
 
             _view.SelectedNodeChanged += HandleSelectedNodeChanged;
+            _view.CloseClicked += HandleCloseClicked;
             _view.ConfirmClicked += HandleUpgradeConfirmClicked;
         }
 

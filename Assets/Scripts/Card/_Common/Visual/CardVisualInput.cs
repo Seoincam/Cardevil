@@ -56,7 +56,7 @@ namespace Cardevil.Card.Common.Visual
 
         public static CardVisualInput From(CardSpec spec)
         {
-            return CardVisualInput.From(spec.State);
+            return From(spec.State);
         }
         
         public static CardVisualInput From(ICardState state)
