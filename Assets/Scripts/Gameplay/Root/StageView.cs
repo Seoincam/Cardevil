@@ -1,16 +1,14 @@
 using Cardevil.Core;
 using Cardevil.Core.SceneManagement;
-using Cardevil.Core.Utils;
+using Cardevil.Gameplay.Enemy;
 using Cardevil.UI;
 using Cardevil.UI.GlobalNavigationBar;
 using Cardevil.UI.PopUp;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using System;
-using TMPro;
+using System.Globalization;
+using System.Text;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = System.Random;
 
 namespace Cardevil.Gameplay.Root
 {
@@ -29,12 +27,66 @@ namespace Cardevil.Gameplay.Root
             roomMobInfoPopup.gameObject.SetActive(false);
         }
 
-        public async UniTask PlayEnterStageAnimationAsync()
+        public async UniTask PlayEnterStageAnimationAsync(EnemySpawner enemySpawner)
         {
             // @machamy가 작성.
-            
             // 페이드아웃 + 돌 가져오기
             CameraManager.Instance.DisableSceneCameras(Scenes.World);
+
+            string BuildAttackPatternString(Database.Generated.BaseMobBossData mobRawInfo)
+            {
+                if (mobRawInfo?.AttackPattern == null || mobRawInfo.AttackPattern.Count == 0)
+                {
+                    return string.Empty;
+                }
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < mobRawInfo.AttackPattern.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        builder.Append(", ");
+                    }
+
+                    builder.Append(mobRawInfo.AttackPattern[i]);
+                }
+
+                return builder.ToString();
+            }
+
+            string BuildGimmickString(Database.Generated.BaseMobBossData mobRawInfo)
+            {
+                if (mobRawInfo?.GimmickName == null || mobRawInfo.GimmickName.Count == 0)
+                {
+                    return "없음";
+                }
+
+                var gimmickValues = mobRawInfo.GimmickValue;
+                int valueCount = gimmickValues?.Count ?? 0;
+                StringBuilder builder = new StringBuilder();
+
+                for (int i = 0; i < mobRawInfo.GimmickName.Count; i++)
+                {
+                    if (i > 0)
+                    {
+                        builder.Append(", ");
+                    }
+
+                    string gimmickName = mobRawInfo.GimmickName[i] ?? string.Empty;
+                    string gimmickValue = "?";
+                    if (gimmickValues != null && i < valueCount)
+                    {
+                        gimmickValue = gimmickValues[i].ToString(CultureInfo.InvariantCulture);
+                    }
+
+                    builder.Append(gimmickName);
+                    builder.Append('(');
+                    builder.Append(gimmickValue);
+                    builder.Append(')');
+                }
+
+                return builder.ToString();
+            }
 
             var blackFade = OverlayCanvas.Instance.BlackPanel.CanvasGroup.DOFade(0, 0.8f)
                 .ToUniTask(TweenCancelBehaviour.Complete);
@@ -75,13 +127,28 @@ namespace Cardevil.Gameplay.Root
             // button.onClick.AddListener(() => Destroy(obj, 0.1f));
             #endregion
             
-            int testMobCount = RandomUtil.GetRandomInt(1, 5);
+            // int testMobCount = RandomUtil.GetRandomInt(1, 5);
             roomMobInfoPopup.ClearMobInfos();
-            roomMobInfoPopup.AddMobInfo(MobInfo.Test);
-            for (int i = 1; i < testMobCount; i++)
+            for (int i = 0; i < enemySpawner._baseMobBossDatas.Count; i++)
             {
-                roomMobInfoPopup.AddMobInfo(new MobInfo($"적 {i}", "이것은 테스트용 적입니다.", "테스트 족보", $"{i*2}"));
+                var mobRawInfo = enemySpawner._baseMobBossDatas[i];
+                string rankString = BuildAttackPatternString(mobRawInfo);
+                string gimmickString = BuildGimmickString(mobRawInfo);
+
+                string mobName = mobRawInfo?.MobKorID ?? string.Empty;
+                string description = $"BaseHP: {mobRawInfo?.BaseHP ?? 0} / 공격주기: {mobRawInfo?.AttackCycle ?? 0} / 공격 데미지: {mobRawInfo?.AttackDamage ?? 0} " +
+                                     $"/ 기믹: {gimmickString}";
+                string additionalInfo = $"뭘넣음?";
+                var mobInfo = new MobInfo(mobName, description, rankString, additionalInfo);
+                roomMobInfoPopup.AddMobInfo(mobInfo);
             }
+            
+            //
+            // roomMobInfoPopup.AddMobInfo(MobInfo.Test);
+            // for (int i = 1; i < testMobCount; i++)
+            // {
+            //     roomMobInfoPopup.AddMobInfo(new MobInfo($"적 {i}", "이것은 테스트용 적입니다.", "테스트 족보", $"{i*2}"));
+            // }
             
             roomMobInfoPopup.SetCompleteSource(completeSource);
             
