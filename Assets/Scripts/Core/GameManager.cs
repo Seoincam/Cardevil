@@ -1,8 +1,10 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core.Attributes;
 using Cardevil.Core.Bootstrap;
 using Cardevil.Core.Systems.Save;
+using Cardevil.Core.Utils;
 using Cardevil.Gameplay;
 using Cardevil.Gameplay.Relics.Core;
 using UnityEngine;
@@ -25,7 +27,9 @@ namespace Cardevil.Core
             PlayerStatus = new PlayerStatus();
             ScoreProviderRegistry = new ScoreProviderRegistry();
             Relic = new RelicManager(PlayerStatus, ScoreProviderRegistry);
-            CardRepository = new CardRepository();
+            
+            var upgradeDatabase = AssetUtil.Load<UpgradeNodeDatabaseSO>("ScriptableObjects/NewCard/UpgradeNodes/UpgradeNodeDatabase");
+            CardRepository = new CardRepository(upgradeDatabase);
         }
         
         public void SetUpNewGame(GameSave currentSave)

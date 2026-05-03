@@ -138,5 +138,23 @@ namespace Cardevil.Core.Utils
             return results;
 
         }
+        
+        /// <summary>
+        /// 해당 게임오브젝트와 모든 자식의 레이어를 변경.
+        /// </summary>
+        public static void SetLayerRecursively(this GameObject obj, int newLayer)
+        {
+            if (null == obj) return;
+
+            obj.layer = newLayer;
+
+            foreach (Transform child in obj.transform)
+            {
+                if (!child) continue;
+                
+                // 재귀적으로 자식의 자식까지 탐색
+                child.gameObject.SetLayerRecursively(newLayer);
+            }
+        }
     }
 }

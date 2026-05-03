@@ -76,7 +76,7 @@ namespace Cardevil.Card.InStage
             var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
             var visualInput = CardVisualInput.Attack(color, number);
 
-            card.Initialize(visualInput, cardCamera);
+            card.Initialize(visualInput, true);
             BindCard(card);
             _cardToColor.Add(card, color);
             _colorToCard.Add(color, card);
@@ -92,7 +92,7 @@ namespace Cardevil.Card.InStage
             var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
             var visualInput = CardVisualInput.Attack(color, number);
 
-            card.Initialize(visualInput, cardCamera);
+            card.Initialize(visualInput, true);
             BindCard(card);
             _cardToNumber.Add(card, number);
             _numberToCard.Add(number, card);
@@ -108,7 +108,7 @@ namespace Cardevil.Card.InStage
             var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
             var visualInput = CardVisualInput.Move(direction);
 
-            card.Initialize(visualInput, cardCamera);
+            card.Initialize(visualInput, true);
             BindCard(card);
             _cardToDirection.Add(card, direction);
             _directionToCard.Add(direction, card);

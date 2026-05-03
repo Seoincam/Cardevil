@@ -103,8 +103,8 @@ namespace Cardevil.Card.InStage
         {
             var interactionCard = CardRegistry.GetInteractionCard(interactionCardId);
             CardRegistry.Unregister(interactionCard);
-            
-            var handBarCard = interactionCard.ConvertToHandCard(state);
+
+            var handBarCard = interactionCard.ConvertToHandCard(state, cardCamera);
             handBarCard.transform.SetParent(handBarAnchor);
             
             AddMap(state, handBarCard);

@@ -2,6 +2,7 @@ namespace Cardevil.Card.Common.Core
 {
     public enum CardType : byte
     {
+        None,
         Attack, 
         Move    
     }

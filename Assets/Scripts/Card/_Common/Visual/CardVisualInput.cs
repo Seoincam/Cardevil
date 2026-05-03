@@ -54,6 +54,11 @@ namespace Cardevil.Card.Common.Visual
             DirectionSelected = directionSelected;
         }
 
+        public static CardVisualInput From(CardSpec spec)
+        {
+            return From(spec.State);
+        }
+        
         public static CardVisualInput From(ICardState state)
         {
             CardColor[] colorOptions = null;

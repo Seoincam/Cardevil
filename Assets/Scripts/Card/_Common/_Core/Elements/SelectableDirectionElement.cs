@@ -5,9 +5,14 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public sealed class SelectableDirectionElement : ISpecElement
+    public sealed class SelectableDirectionElement : IDirectionElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<Direction> direction;
+
+        public SelectableDirectionElement()
+        {
+            direction = CardStateBuilder.SelectableSlot<Direction>.Random();
+        }
         
         public static SelectableDirectionElement Fixed(Direction direction) => new()
         {
@@ -18,6 +23,11 @@ namespace Cardevil.Card.Common.Core
         {
             direction = CardStateBuilder.SelectableSlot<Direction>.Random()
         };
+        
+        public ISpecElement DeepClone()
+        {
+            return new SelectableDirectionElement() { direction =  direction };
+        }
         
         public void Apply(CardStateBuilder builder)
         {

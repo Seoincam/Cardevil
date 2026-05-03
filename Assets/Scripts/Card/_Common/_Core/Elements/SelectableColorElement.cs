@@ -4,10 +4,14 @@ using UnityEngine;
 namespace Cardevil.Card.Common.Core
 {
     [Serializable]
-    public sealed class SelectableColorElement : ISpecElement
+    public sealed class SelectableColorElement : IColorElement
     {
         [SerializeField] private CardStateBuilder.SelectableSlot<CardColor> color;
-        
+
+        public SelectableColorElement()
+        {
+            color = CardStateBuilder.SelectableSlot<CardColor>.Random();
+        }
         public static SelectableColorElement Fixed(CardColor color) => new()
         {
             color = CardStateBuilder.SelectableSlot<CardColor>.Fixed(color)
@@ -17,6 +21,11 @@ namespace Cardevil.Card.Common.Core
         {
             color = CardStateBuilder.SelectableSlot<CardColor>.Random()
         };
+        
+        public ISpecElement DeepClone()
+        {
+            return new SelectableColorElement { color = color };
+        }
         
         public void Apply(CardStateBuilder builder)
         {
