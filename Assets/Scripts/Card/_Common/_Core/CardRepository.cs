@@ -80,10 +80,11 @@ namespace Cardevil.Card.Common.Core
                 .ToList();
         }
 
-        public List<NewCardState> GetAllDeepClonedNewStates()
+        public List<INewCardState> GetAllDeepClonedNewStates()
         {
             return _newStateCache.Values
                 .Select(state => state.DeepClone())
+                .Cast<INewCardState>()
                 .ToList();
         }
 
@@ -112,22 +113,22 @@ namespace Cardevil.Card.Common.Core
         /// <summary>
         /// 특정 Id의 최신 State를 반환.
         /// </summary>
-        public CardState GetState(int id)
-        {
-            if (_stateCache.TryGetValue(id, out var state))
-            {
-                return state;
-            }
-            
-            var spec = cards.Find(c => c.ID == id);
-            if (spec != null)
-            {
-                HandleSpecChanged(spec);
-                return spec.State;
-            }
-
-            return null;
-        }
+        // public CardState GetState(int id)
+        // {
+        //     if (_stateCache.TryGetValue(id, out var state))
+        //     {
+        //         return state;
+        //     }
+        //     
+        //     var spec = cards.Find(c => c.ID == id);
+        //     if (spec != null)
+        //     {
+        //         HandleSpecChanged(spec);
+        //         return spec.State;
+        //     }
+        //
+        //     return null;
+        // }
 
         public NewCardState GetNewState(int id)
         {
@@ -149,10 +150,10 @@ namespace Cardevil.Card.Common.Core
         /// <summary>
         /// 특정 Id의 최신 State를 DeepClone해 반환.
         /// </summary>
-        public CardState GetDeepClonedState(int id)
-        {
-            return GetState(id)?.DeepClone();
-        }
+        // public CardState GetDeepClonedState(int id)
+        // {
+        //     return GetState(id)?.DeepClone();
+        // }
 
         public NewCardState GetDeepClonedNewState(int id)
         {
@@ -165,13 +166,14 @@ namespace Cardevil.Card.Common.Core
             spec.SpecChanged += HandleSpecChanged;
 
             _specMap[spec.ID] = spec;
-            _stateCache[spec.ID] = spec.State;
+            _newStateCache[spec.ID] = spec.NewState;
         }
         
         // State 갱신
         private void HandleSpecChanged(CardSpec spec)
         {
-            _stateCache[spec.ID] = spec.State;
+            // _stateCache[spec.ID] = spec.State;
+            _newStateCache[spec.ID] = spec.NewState;
             LogEx.Log($"Id {spec.ID}의 State가 자동 갱신됐음.");
         }
 

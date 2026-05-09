@@ -40,7 +40,7 @@ namespace Cardevil.Card.Common.Core
 
         public void Apply(NewCardStateBuilder builder)
         {
-            builder.AddNumberAlternative(newNumber);
+            builder.AddNumberAlternative(newNumber.HasValue ? newNumber.Value : null);
         }
     }
 }

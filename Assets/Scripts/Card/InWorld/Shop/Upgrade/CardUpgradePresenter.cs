@@ -80,7 +80,7 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             _availableNodes = availableNodes;
             
             
-            var originalState = _repository.GetState(specId);
+            var originalState = _repository.GetNewState(specId);
             var originalVisual = CardVisualInput.From(originalState);
 
             switch (_availableNodes.Count)
@@ -97,12 +97,12 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
                 case 2: 
                     var nextSpec1 = _repository.GetDeepClonedSpec(specId)
                         .ApplyUpgradeNode(availableNodes[0]);
-                    var nextVisual1 = CardVisualInput.From(nextSpec1.State);
+                    var nextVisual1 = CardVisualInput.From(nextSpec1.NewState);
                     var data1 = new UpgradeData(availableNodes[0], nextVisual1);
 
                     var nextSpec2 = _repository.GetDeepClonedSpec(specId)
                         .ApplyUpgradeNode(availableNodes[1]);
-                    var nextVisual2 = CardVisualInput.From(nextSpec2.State);
+                    var nextVisual2 = CardVisualInput.From(nextSpec2.NewState);
                     var data2 = new UpgradeData(availableNodes[1], nextVisual2);
 
                 

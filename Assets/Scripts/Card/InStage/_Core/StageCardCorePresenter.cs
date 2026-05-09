@@ -30,7 +30,7 @@ namespace Cardevil.Card.InStage
             ScorePresenter scorePresenter
         )
         {
-            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedStates());
+            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedNewStates());
             
             _view = view;
             view.UseClicked += OnUseRequested;
@@ -123,7 +123,7 @@ namespace Cardevil.Card.InStage
 
         public async UniTask DiscardSelectionAsync() => await _handBarPresenter.DiscardSelectionAsync();
 
-        public void Reroll(IReadOnlyList<ICardState> states)
+        public void Reroll(IReadOnlyList<INewCardState> states)
         {
             model.Reroll(states);
             model.ShuffleDeck();

@@ -21,7 +21,7 @@ namespace Cardevil.Card.InStage
 
 #pragma warning disable 0414
         [Header("Debug")]
-        [SerializeReference] private ICardState debugState;
+        [SerializeReference] private INewCardState debugState;
 #pragma warning restore 0414
         
         public event Action<HandBarCard> PointerEnter;
@@ -89,7 +89,7 @@ namespace Cardevil.Card.InStage
             _rotation?.UpdateRotation(transform, Time.deltaTime);
         }
 
-        public void Initialize(ICardState cardState, Camera cardCamera, bool setLayout = true)
+        public void Initialize(INewCardState cardState, Camera cardCamera, bool setLayout = true)
         {
             if (!VisualController)
             {

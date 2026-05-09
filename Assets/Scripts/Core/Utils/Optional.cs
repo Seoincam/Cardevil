@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace Cardevil.Core.Utils
 {
@@ -14,13 +15,13 @@ namespace Cardevil.Core.Utils
         /// 값이 존재하는지를 나타내는 플래그.  
         /// <c>true</c>면 <see cref="Value"/>가 유효한 값을 가지고 있음.
         /// </summary>
-        public bool HasValue { get; private set; }
+        [field: SerializeField] public bool HasValue { get; private set; }
         
         /// <summary>
         /// 실제 저장된 값.  
         /// <see cref="HasValue"/>가 <c>false</c>인 경우, 기본값(<c>default</c>)을 가짐.
         /// </summary>
-        public T Value { get; private set; }
+        [field: SerializeField] public T Value { get; private set; }
         
         /// <param name="value">
         /// 초기값으로 사용할 <see cref="Nullable{T}"/>.  

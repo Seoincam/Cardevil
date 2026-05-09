@@ -37,7 +37,7 @@ namespace Cardevil.Card.InStage
         /// 손패 상에 위치한 순서대로 정렬된 선택 카드.
         /// 호출 시 새로운 객체를 반환함.
         /// </summary>
-        public IReadOnlyList<ICardState> SortedSelection => model.SortedSelection;
+        public IReadOnlyList<INewCardState> SortedSelection => model.SortedSelection;
 
         public int HandCardCount => model.Hand.Count;
 
@@ -59,7 +59,7 @@ namespace Cardevil.Card.InStage
         
         private bool CanInteract => isInputEnabled && !isBusy;
         
-        private IReadOnlyList<ICardState> Selection => model.Selection;
+        private IReadOnlyList<INewCardState> Selection => model.Selection;
 
         public HandBarPresenter(HandBarView view, ValueSelectionPresenter valueSelectionPresenter)
         {
@@ -83,21 +83,21 @@ namespace Cardevil.Card.InStage
             isInputEnabled = enabled;
         }
 
-        public void AddCard(ICardState state)
+        public void AddCard(INewCardState state)
         {
             model.Add(state);
             _view.CreateCard(state);
             _view.ArrangeCards(model.Hand);
         }
 
-        public void RemoveCard(ICardState state)
+        public void RemoveCard(INewCardState state)
         {
             model.Remove(state);
             _view.DestroyCard(state);
             _view.ArrangeCards(model.Hand);
         }
 
-        public async UniTask<ICardState> DiscardAsync(ICardState state)
+        public async UniTask<INewCardState> DiscardAsync(INewCardState state)
         {
             using (Busy())
             {
@@ -110,7 +110,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        public async UniTask<IReadOnlyList<ICardState>> RerollAllCardToDeck()
+        public async UniTask<IReadOnlyList<INewCardState>> RerollAllCardToDeck()
         {
             using (Busy())
             {
@@ -129,7 +129,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        public async UniTask DrawAsync(IReadOnlyList<ICardState> states)
+        public async UniTask DrawAsync(IReadOnlyList<INewCardState> states)
         {
             using (Busy())
             {
@@ -141,7 +141,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        public async UniTask<IReadOnlyList<ICardState>> DiscardSelectionAsync()
+        public async UniTask<IReadOnlyList<INewCardState>> DiscardSelectionAsync()
         {
             using (Busy())
             {
@@ -172,19 +172,19 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        private void OnPointerEnter(ICardState state)
+        private void OnPointerEnter(INewCardState state)
         {
             if (!CanInteract) return;
         }
 
-        private void OnPointerDown(ICardState state)
+        private void OnPointerDown(INewCardState state)
         {
             if (!CanInteract) return;
             
             model.SetPointerDownData(state);
         }
 
-        private void OnDragStart(ICardState state)
+        private void OnDragStart(INewCardState state)
         {
             if (!CanInteract) return;
             
@@ -197,7 +197,7 @@ namespace Cardevil.Card.InStage
             StartDragLoop(state);
         }
 
-        private void OnDragging(ICardState state)
+        private void OnDragging(INewCardState state)
         {
             if (!CanInteract) return;
 
@@ -221,7 +221,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        private void OnPointerUp(ICardState state)
+        private void OnPointerUp(INewCardState state)
         {
             if (!CanInteract) return;
             
@@ -253,7 +253,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        private void OnDragEnd(ICardState state)
+        private void OnDragEnd(INewCardState state)
         {
             StopDragLoop();
             
@@ -282,12 +282,12 @@ namespace Cardevil.Card.InStage
             _view.ArrangeCards(model.Hand);
         }
 
-        private void OnPointerExit(ICardState state)
+        private void OnPointerExit(INewCardState state)
         {
             if (!CanInteract) return;
         }
 
-        private void TrySwap(ICardState dragging)
+        private void TrySwap(INewCardState dragging)
         {
             int from = model.IndexOf(dragging);
             float draggingX = _view.GetCurrentX(dragging);
@@ -331,7 +331,7 @@ namespace Cardevil.Card.InStage
             model.Sort(CardStateComparers.ByIcon);
             _view.ArrangeCards(model.Hand);
         }
-        private void OnValueSelected(ICardState state, uint cardId)
+        private void OnValueSelected(INewCardState state, uint cardId)
         {
             model.Reattach(state);
                 
@@ -356,13 +356,13 @@ namespace Cardevil.Card.InStage
         private void PublishMoveCardEvent()
         {
             var moveCards = model.Selection.Where(s => s.IsMove).ToList();
-            bool shouldShow = moveCards.Any() && moveCards.All(s => s.Directions.HasSelected);
+            bool shouldShow = moveCards.Any() && moveCards.All(s => s.DirectionList.IsFixed);
 
             List<Direction> directions = null;
             if (shouldShow)
             {
                 directions = moveCards
-                    .Select(c => c.Directions.Current!.Value)
+                    .Select(c => c.DirectionList.FixedValue)
                     .ToList();
             }
 
@@ -370,7 +370,7 @@ namespace Cardevil.Card.InStage
             ExecEventBus<SelectedMoveChangedArgs>.InvokeMergedAndDispose(args).Forget();
         }
 
-        private void StartDragLoop(ICardState state)
+        private void StartDragLoop(INewCardState state)
         {
             StopDragLoop();
             _dragLoopCancellationTokenSource = new CancellationTokenSource();
@@ -386,7 +386,7 @@ namespace Cardevil.Card.InStage
 
         // HandBarPresenter는 MonoBehaviour가 아니므로 Update 이벤트를 사용 못함.
         // 드래깅 중 위치 감지를 위해 내부적으로 구현한 Update.
-        private async UniTaskVoid DragLoopAsync(ICardState state, CancellationToken cancellationToken)
+        private async UniTaskVoid DragLoopAsync(INewCardState state, CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {

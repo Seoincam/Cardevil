@@ -45,23 +45,6 @@ namespace Cardevil.Card.Common.Core
             }
         }
 
-        /// <summary>
-        /// 현재 Spec 기준으로 생성된 카드 상태.
-        /// </summary>
-        public CardState State
-        {
-            get
-            {
-                if (_isDirty || _cachedState == null)
-                {
-                    _cachedState = _builder.Build(this);
-                    _isDirty = false;
-                }
-
-                return _cachedState;
-            }
-        }
-
         public bool IsAttack => Type == CardType.Attack;
         public bool IsMove => Type == CardType.Move;
 
@@ -77,9 +60,7 @@ namespace Cardevil.Card.Common.Core
             }
         }
 
-        public CardSpec(int id,
-            CardType type,
-            UpgradeNodeSO upgradeNode = null)
+        public CardSpec(int id, CardType type, UpgradeNodeSO upgradeNode = null)
         {
             ID = id;
             Type = type;

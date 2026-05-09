@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core.Upgrade;
+using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
 using Cardevil.Core.Attributes;
 using Cardevil.Core.Utils;
@@ -9,13 +10,40 @@ using UnityEngine;
 
 namespace Cardevil.Card.Common.Core
 {
+    public interface INewCardState : IScoreSource
+    {
+        IValueList<CardColor> ColorList { get; }
+        IValueList<int> NumberList { get; }
+        IValueList<Direction> DirectionList { get; }
+        DirectionFlag DirectionFlag { get; }
+        
+        bool IsAttack { get; }
+        bool IsMove { get; }
+        bool IsStar { get; }
+        
+        UpgradePath UpgradePath { get; }
+        bool ValueSelected { get; }
+        
+        int Id { get; }
+        CardType Type { get; }
+
+        void ResolveValues();
+    }
+    
     public interface IValueList<T> where T : struct
     {
+        Optional<T> DefaultValue { get; }
+        Optional<T> SelectedValue { get; }
         
+        bool IsInitialized { get; }
+        IReadOnlyList<T?> AllCandidateValues { get; }
+        bool IsFixed { get; }
+        T FixedValue { get; }
+        void Fix(T value);
     } 
     
     [Serializable]
-    public sealed class NewCardState : IDeepClonable<NewCardState>
+    public sealed class NewCardState : INewCardState, IDeepClonable<NewCardState>
     {
         [SerializeField, VisibleOnly] private CardSpec originalSpec;
         
@@ -24,11 +52,15 @@ namespace Cardevil.Card.Common.Core
         [field: SerializeField] public ValueList<int> NumberList { get; set; }
         [field: SerializeField] public ValueList<Direction> DirectionList { get; set; }
         [field: SerializeField] public DirectionFlag DirectionFlag { get; set; }
+        
+        IValueList<CardColor> INewCardState.ColorList => ColorList;
+        IValueList<int> INewCardState.NumberList => NumberList;
+        IValueList<Direction> INewCardState.DirectionList => DirectionList;
 
         
         public bool IsAttack => originalSpec.IsAttack;
         public bool IsMove => originalSpec.IsMove;
-        public bool IsStar => NumberList?.AllCandidateValue.Count == 9;
+        public bool IsStar => NumberList?.AllCandidateValues.Count == 9;
 
         public UpgradePath UpgradePath => originalSpec.UpgradeNode?.Path ?? UpgradePath.None;
         public bool ValueSelected
@@ -48,10 +80,15 @@ namespace Cardevil.Card.Common.Core
             }
         }
 
-        private int Id => originalSpec.ID;
-        private CardType Type => originalSpec.Type;
-        
-        
+        public int Id => originalSpec.ID;
+        public CardType Type => originalSpec.Type;
+
+
+        public NewCardState(CardSpec originalSpec)
+        {
+            this.originalSpec = originalSpec;
+        }
+
         public NewCardState DeepClone()
         {
             var clone = (NewCardState)MemberwiseClone();
@@ -72,12 +109,13 @@ namespace Cardevil.Card.Common.Core
             [field: SerializeField, VisibleOnly] public List<Optional<T>> Alternatives { get; private set; }
             [field: Space, SerializeField, VisibleOnly] public Optional<T> SelectedValue { get; private set; }
 
-            private List<T?> _allCandidateValue;
-            
+            private List<T?> allCandidateValues;
+
+            public bool IsInitialized { get; }
             public bool IsResolved { get; }
             public bool HasAlternatives => Alternatives != null && Alternatives.Count > 0;
 
-            public List<T?> AllCandidateValue => _allCandidateValue;
+            public IReadOnlyList<T?> AllCandidateValues => allCandidateValues;
 
             public bool IsFixed
             {
@@ -111,8 +149,12 @@ namespace Cardevil.Card.Common.Core
                     throw new Exception("카드의 값이 고정되지 않았지만 고정된 값에 접근했습니다. IsFixed를 체크 후 접근해주세요.");
                 }
             }
-            
 
+
+            public ValueList()
+            {
+                IsInitialized = false;
+            }
             public ValueList(T? defaultValue, IReadOnlyList<T> alternatives)
             {
                 DefaultValue = new Optional<T>(defaultValue);
@@ -123,17 +165,18 @@ namespace Cardevil.Card.Common.Core
                     Alternatives = alternatives.Select(a => new Optional<T>(a)).ToList();
                 }
 
-                _allCandidateValue = new List<T?>();
+                allCandidateValues = new List<T?>();
                 if (defaultValue.HasValue)
                 {
-                    _allCandidateValue.Add(defaultValue.Value);
+                    allCandidateValues.Add(defaultValue.Value);
                 }
                 if (hasAlternatives)
                 {
-                    _allCandidateValue.AddRange(alternatives.Select(a => (T?)a));   
+                    allCandidateValues.AddRange(alternatives.Select(a => (T?)a));   
                 }
 
-                IsResolved = _allCandidateValue.All(v => v.HasValue);
+                IsResolved = allCandidateValues.All(v => v.HasValue);
+                IsInitialized = true;
             }
             
             public ValueList(T? defaultValue, IReadOnlyList<T?> alternatives = null)
@@ -146,17 +189,18 @@ namespace Cardevil.Card.Common.Core
                     Alternatives = alternatives.Select(a => new Optional<T>(a)).ToList();
                 }
 
-                _allCandidateValue = new List<T?>();
+                allCandidateValues = new List<T?>();
                 if (defaultValue.HasValue)
                 {
-                    _allCandidateValue.Add(defaultValue.Value);
+                    allCandidateValues.Add(defaultValue.Value);
                 }
                 if (hasAlternatives)
                 {
-                    _allCandidateValue.AddRange(alternatives.Select(a => (T?)a));   
+                    allCandidateValues.AddRange(alternatives.Select(a => (T?)a));   
                 }
 
-                IsResolved = _allCandidateValue.All(v => v.HasValue);
+                IsResolved = allCandidateValues.All(v => v.HasValue);
+                IsInitialized = true;
             }
             
             public ValueList<T> DeepClone()
@@ -168,9 +212,9 @@ namespace Cardevil.Card.Common.Core
                     clone.Alternatives = new List<Optional<T>>(Alternatives);
                 }
 
-                if (_allCandidateValue != null)
+                if (allCandidateValues != null)
                 {
-                    clone._allCandidateValue = new List<T?>(_allCandidateValue);
+                    clone.allCandidateValues = new List<T?>(allCandidateValues);
                 }
 
                 return clone;
@@ -205,7 +249,7 @@ namespace Cardevil.Card.Common.Core
 
         public void ResolveValues()
         {
-            if (ColorList != null &&!ColorList.IsResolved)
+            if (ColorList != null && ColorList.IsInitialized && !ColorList.IsResolved)
             {
                 var resolvedAlternativeColors = SelectableSlotsResolver
                     .ResolveAlternativeColors(ColorList.DefaultValue, ColorList.Alternatives);
@@ -213,7 +257,7 @@ namespace Cardevil.Card.Common.Core
                 ColorList = new ValueList<CardColor>(ColorList.DefaultValue.Value, resolvedAlternativeColors);
             }
 
-            if (NumberList != null && !NumberList.IsResolved)
+            if (NumberList != null && NumberList.IsInitialized && !NumberList.IsResolved)
             {
                 var resolvedAlternativeNumbers = SelectableSlotsResolver
                     .ResolveAlternativeNumbers(NumberList.DefaultValue, NumberList.Alternatives);

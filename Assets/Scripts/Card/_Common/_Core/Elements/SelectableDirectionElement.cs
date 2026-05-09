@@ -40,7 +40,7 @@ namespace Cardevil.Card.Common.Core
 
         public void Apply(NewCardStateBuilder builder)
         {
-            builder.AddDirectionAlternative(newDirection);
+            builder.AddDirectionAlternative(newDirection.HasValue ? newDirection.Value : null);
         }
     }
 }

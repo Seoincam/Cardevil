@@ -9,21 +9,21 @@ namespace Cardevil.Card.InStage
     [Serializable]
     public class StageCardCoreModel
     {
-        [SerializeReference] private List<ICardState> deck = new();
-        [SerializeReference] private List<ICardState> discarded = new();
+        [SerializeReference] private List<INewCardState> deck = new();
+        [SerializeReference] private List<INewCardState> discarded = new();
         
-        public IReadOnlyList<ICardState> Deck => deck;
-        public IReadOnlyList<ICardState> Discarded => discarded;
+        public IReadOnlyList<INewCardState> Deck => deck;
+        public IReadOnlyList<INewCardState> Discarded => discarded;
 
-        public StageCardCoreModel(List<ICardState> deepClonedStates)
+        public StageCardCoreModel(List<INewCardState> deepClonedStates)
         {
             deepClonedStates.ShuffleListInPlace();
             deck.AddRange(deepClonedStates);
         }
 
-        public IReadOnlyList<ICardState> Draw(int count = 1)
+        public IReadOnlyList<INewCardState> Draw(int count = 1)
         {
-            var states = new List<ICardState>();
+            var states = new List<INewCardState>();
             
             for (int i = 0; i < count; i++)
             {
@@ -32,23 +32,24 @@ namespace Cardevil.Card.InStage
                     return states;
                 }
                 
+                state.ResolveValues();
                 states.Add(state);
             }
             
             return states;
         }
 
-        public void Discard(ICardState state)
+        public void Discard(INewCardState state)
         {
             discarded.Add(state);
         }
 
-        public void Discard(IReadOnlyList<ICardState> states)
+        public void Discard(IReadOnlyList<INewCardState> states)
         {
             discarded.AddRange(states);
         }
 
-        public void Reroll(IReadOnlyList<ICardState> states)
+        public void Reroll(IReadOnlyList<INewCardState> states)
         {
             deck.AddRange(states);
         }
@@ -58,7 +59,7 @@ namespace Cardevil.Card.InStage
             deck.ShuffleListInPlace();
         }
 
-        private bool TryDraw(out ICardState state)
+        private bool TryDraw(out INewCardState state)
         {
             if (deck.Count == 0)
             {

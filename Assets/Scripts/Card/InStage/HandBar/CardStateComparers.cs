@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core.Utils;
 using System.Collections.Generic;
 
@@ -9,12 +10,12 @@ namespace Cardevil.Card.InStage
     /// </summary>
     public static class CardStateComparers
     {
-        public static readonly IComparer<ICardState> ByNumber = new NumberComparer();
-        public static readonly IComparer<ICardState> ByIcon = new IconComparer();
+        public static readonly IComparer<INewCardState> ByNumber = new NumberComparer();
+        public static readonly IComparer<INewCardState> ByIcon = new IconComparer();
         
-        private sealed class NumberComparer : IComparer<ICardState>
+        private sealed class NumberComparer : IComparer<INewCardState>
         {
-            public int Compare(ICardState a, ICardState b)
+            public int Compare(INewCardState a, INewCardState b)
             {
                 int cmp = TypeOrder(a).CompareTo(TypeOrder(b));
                 if (cmp != 0) return cmp;
@@ -29,9 +30,9 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        private sealed class IconComparer : IComparer<ICardState>
+        private sealed class IconComparer : IComparer<INewCardState>
         {
-            public int Compare(ICardState a, ICardState b)
+            public int Compare(INewCardState a, INewCardState b)
             {
                 int cmp = TypeOrder(a).CompareTo(TypeOrder(b));
                 if (cmp != 0) return cmp;
@@ -49,29 +50,28 @@ namespace Cardevil.Card.InStage
             }
         }
         
-        private static int TypeOrder(ICardState s) => s.IsMove ? 0 : 1;
+        private static int TypeOrder(INewCardState s) => s.IsMove ? 0 : 1;
 
-        private static int SelectableCount(ICardState s)
+        private static int SelectableCount(INewCardState s)
         {
             if (s.ValueSelected) return 0;
 
-            return s.SelectableType switch
+            return s.UpgradePath switch
             {
-                CardState.ValueSelectableType.Color     => s.Colors.AllOptionsCount,
-                CardState.ValueSelectableType.Number    => s.Numbers.AllOptionsCount,
-                CardState.ValueSelectableType.Direction => s.Directions.AllOptionsCount,
+                UpgradePath.MultiColor => s.ColorList.AllCandidateValues.Count,
+                UpgradePath.MultiNumber => s.NumberList.AllCandidateValues.Count,
+                UpgradePath.MultiDirection => s.DirectionList.AllCandidateValues.Count,
                 _ => 0
             };
         }
 
-        private static int DirectionOrder(ICardState s)
+        private static int DirectionOrder(INewCardState s)
         {
             if (!s.IsMove) return 0;
-            
-            var current = s.Directions.Current;
-            if (!current.HasValue) return int.MaxValue;
 
-            return current.Value switch
+            var current = s.DirectionList.IsFixed ? s.DirectionList.FixedValue : Direction.None;
+
+            return current switch
             {
                 Direction.Up => 0,
                 Direction.Down => 1,
@@ -82,19 +82,21 @@ namespace Cardevil.Card.InStage
             };
         }
         
-        private static int ColorOrder(ICardState s)
+        private static int ColorOrder(INewCardState s)
         {
             if (!s.IsAttack) return 0;
-            var cur = s.Colors.Current;
-            return cur.HasValue ? (int)cur.Value : int.MaxValue;
+
+            if (s.ColorList == null)
+                return 0;
+            
+            return s.ColorList.IsFixed ? (int)s.ColorList.FixedValue : int.MaxValue;
         }
 
-        private static int NumberOrder(ICardState state)
+        private static int NumberOrder(INewCardState state)
         {
             if (!state.IsAttack) return 0;
 
-            var current = state.Numbers.Current;
-            return current ?? int.MaxValue;
+            return state.NumberList.IsFixed ? state.NumberList.FixedValue : int.MaxValue;
         }
     }
 }

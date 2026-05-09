@@ -31,7 +31,7 @@ namespace Cardevil.Card.Common.Core
                 element.Apply(this);
             }
 
-            var state = new NewCardState();
+            var state = new NewCardState(spec);
             
             // 공격 카드인 경우는 Resolve를 하지 않고, 이동 카드는 이 시점에 미리 Resolve함.
             if (spec.Type == CardType.Attack)
@@ -47,10 +47,10 @@ namespace Cardevil.Card.Common.Core
                         DefaultDirection,
                         _directionAlternatives
                     );
-                    state.DirectionList = new NewCardState.ValueList<Direction>(null, resolvedDirection);
+                    state.DirectionList = new NewCardState.ValueList<Direction>(null, resolvedDirection); // 아직 선택 안 했으니깐 defaultValue null로 넘김
 
                     state.DirectionFlag = DefaultDirection.Value.ToDirectionFlag();
-                    state.DirectionFlag |= resolvedDirection[0].ToDirectionFlag();
+                    state.DirectionFlag |= resolvedDirection[1].ToDirectionFlag();
                 }
                 else if (_directionAlternatives.Count == 4)
                 {

@@ -39,7 +39,7 @@ namespace Cardevil.Card.Common.Core
 
         public void Apply(NewCardStateBuilder builder)
         {
-            builder.AddColorAlternative(newColor);
+            builder.AddColorAlternative(newColor.HasValue ? newColor.Value : null);
         }
     }
 }

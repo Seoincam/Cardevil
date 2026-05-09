@@ -77,7 +77,7 @@ namespace Cardevil.Card.Common
             PointerExit?.Invoke(this);
         }
 
-        public HandBarCard ConvertToHandCard(ICardState cardState, Camera cardCamera)
+        public HandBarCard ConvertToHandCard(INewCardState cardState, Camera cardCamera)
         {
             var handBarCard = gameObject.AddComponent<HandBarCard>();
             handBarCard.Initialize(cardState, cardCamera, false);

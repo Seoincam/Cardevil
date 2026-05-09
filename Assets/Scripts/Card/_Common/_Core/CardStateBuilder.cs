@@ -51,26 +51,26 @@ namespace Cardevil.Card.Common.Core
             
             var state = new CardState(spec);
 
-            if (spec.Type == CardType.Attack)
-            {
-                var resolvedColors = SelectableSlotsResolver.ResolveColors(_defaultColor, _colorSelectableSlots);
-                state.Colors = BuildSelectable(_defaultColor, resolvedColors);
-                
-                var resolvedNumbers = SelectableSlotsResolver.ResolveNumbers(_defaultNumber, _numberSelectableSlots);
-                state.Numbers = BuildSelectable(_defaultNumber, resolvedNumbers);
-            }
-            else if (spec.Type == CardType.Move)
-            {
-                var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_defaultDirection, _directionSelectableSlots);
-                state.Directions = BuildSelectable(_defaultDirection, resolvedDirection);
-                
-                var directionFlag = state.Directions.DefaultValue.Value.ToDirectionFlag();
-                foreach (var direction in resolvedDirection)
-                {
-                    directionFlag |= direction.ToDirectionFlag();
-                }
-                state.DirectionFlag = directionFlag;
-            }
+            // if (spec.Type == CardType.Attack)
+            // {
+            //     var resolvedColors = SelectableSlotsResolver.ResolveColors(_defaultColor, _colorSelectableSlots);
+            //     state.Colors = BuildSelectable(_defaultColor, resolvedColors);
+            //     
+            //     var resolvedNumbers = SelectableSlotsResolver.ResolveNumbers(_defaultNumber, _numberSelectableSlots);
+            //     state.Numbers = BuildSelectable(_defaultNumber, resolvedNumbers);
+            // }
+            // else if (spec.Type == CardType.Move)
+            // {
+            //     var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_defaultDirection, _directionSelectableSlots);
+            //     state.Directions = BuildSelectable(_defaultDirection, resolvedDirection);
+            //     
+            //     var directionFlag = state.Directions.DefaultValue.Value.ToDirectionFlag();
+            //     foreach (var direction in resolvedDirection)
+            //     {
+            //         directionFlag |= direction.ToDirectionFlag();
+            //     }
+            //     state.DirectionFlag = directionFlag;
+            // }
             
             return state;
         }
