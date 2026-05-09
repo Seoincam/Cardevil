@@ -7,7 +7,7 @@ namespace Cardevil.Card.InStage
 {
     public static class HandRankEvaluator
     {
-        public static HandRankData GetHandRank(IReadOnlyList<INewCardState> selection)
+        public static HandRankData GetHandRank(IReadOnlyList<ICardState> selection)
         {
             if (selection == null || selection.Count == 0) return new HandRankData(HandRank.None);
 
@@ -75,10 +75,10 @@ namespace Cardevil.Card.InStage
             public int PairCount { get; }
             public CardColor Color { get; }
 
-            public IReadOnlyList<IGrouping<int, INewCardState>> Groups { get; }
-            public IReadOnlyList<INewCardState> All { get; }
+            public IReadOnlyList<IGrouping<int, ICardState>> Groups { get; }
+            public IReadOnlyList<ICardState> All { get; }
 
-            public HandInfo(IReadOnlyList<INewCardState> attacks)
+            public HandInfo(IReadOnlyList<ICardState> attacks)
             {
                 All = attacks;
                 int count = attacks.Count;

@@ -10,12 +10,12 @@ namespace Cardevil.Card.InStage
     /// </summary>
     public static class CardStateComparers
     {
-        public static readonly IComparer<INewCardState> ByNumber = new NumberComparer();
-        public static readonly IComparer<INewCardState> ByIcon = new IconComparer();
+        public static readonly IComparer<ICardState> ByNumber = new NumberComparer();
+        public static readonly IComparer<ICardState> ByIcon = new IconComparer();
         
-        private sealed class NumberComparer : IComparer<INewCardState>
+        private sealed class NumberComparer : IComparer<ICardState>
         {
-            public int Compare(INewCardState a, INewCardState b)
+            public int Compare(ICardState a, ICardState b)
             {
                 int cmp = TypeOrder(a).CompareTo(TypeOrder(b));
                 if (cmp != 0) return cmp;
@@ -30,9 +30,9 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        private sealed class IconComparer : IComparer<INewCardState>
+        private sealed class IconComparer : IComparer<ICardState>
         {
-            public int Compare(INewCardState a, INewCardState b)
+            public int Compare(ICardState a, ICardState b)
             {
                 int cmp = TypeOrder(a).CompareTo(TypeOrder(b));
                 if (cmp != 0) return cmp;
@@ -50,9 +50,9 @@ namespace Cardevil.Card.InStage
             }
         }
         
-        private static int TypeOrder(INewCardState s) => s.IsMove ? 0 : 1;
+        private static int TypeOrder(ICardState s) => s.IsMove ? 0 : 1;
 
-        private static int SelectableCount(INewCardState s)
+        private static int SelectableCount(ICardState s)
         {
             if (s.ValueSelected) return 0;
 
@@ -65,7 +65,7 @@ namespace Cardevil.Card.InStage
             };
         }
 
-        private static int DirectionOrder(INewCardState s)
+        private static int DirectionOrder(ICardState s)
         {
             if (!s.IsMove) return 0;
 
@@ -82,7 +82,7 @@ namespace Cardevil.Card.InStage
             };
         }
         
-        private static int ColorOrder(INewCardState s)
+        private static int ColorOrder(ICardState s)
         {
             if (!s.IsAttack) return 0;
 
@@ -92,7 +92,7 @@ namespace Cardevil.Card.InStage
             return s.ColorList.IsFixed ? (int)s.ColorList.FixedValue : int.MaxValue;
         }
 
-        private static int NumberOrder(INewCardState state)
+        private static int NumberOrder(ICardState state)
         {
             if (!state.IsAttack) return 0;
 

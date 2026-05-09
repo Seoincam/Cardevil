@@ -24,7 +24,7 @@ namespace Cardevil.Test.Card
             var spec = new CardSpec(TEST_ID, CardType.Attack, elements);
     
             // Build
-            var state = spec.NewState;
+            var state = spec.State;
     
             // Verify: 둘 다 1개씩이므로 즉시 Resolved 상태여야 함
             Assert.IsTrue(state.ColorList.IsResolved, "Color가 1개면 즉시 Resolved여야 합니다.");
@@ -46,7 +46,7 @@ namespace Cardevil.Test.Card
             };
             var spec = new CardSpec(TEST_ID, CardType.Attack, elements);
     
-            var state = spec.NewState;
+            var state = spec.State;
     
             // Verify Initial State
             Assert.AreEqual(3, state.NumberList.AllCandidateValues.Count, "후보 값은 총 3개여야 합니다.");
@@ -81,7 +81,7 @@ namespace Cardevil.Test.Card
             var spec = new CardSpec(TEST_ID, CardType.Move, elements);
     
             // Build: Move는 빌드 시점에 ResolveDirections가 호출됨
-            var state = spec.NewState;
+            var state = spec.State;
     
             // Verify
             Assert.IsTrue(state.DirectionList.IsResolved);
@@ -106,7 +106,7 @@ namespace Cardevil.Test.Card
             };
             var spec = new CardSpec(TEST_ID, CardType.Move, elements);
 
-            var state = spec.NewState;
+            var state = spec.State;
             
             Assert.IsTrue(state.DirectionList.IsResolved);
             Assert.AreEqual(4, state.DirectionList.AllCandidateValues.Count);
@@ -127,7 +127,7 @@ namespace Cardevil.Test.Card
         {
             // ResolveValues가 인스턴스를 교체할 때 originalSpec 참조를 잃지 않는지 확인
             var spec = new CardSpec(TEST_ID, CardType.Attack, new List<ISpecElement> { SelectableNumberElement.Random() });
-            var state = spec.NewState;
+            var state = spec.State;
     
             state.ResolveValues();
     
@@ -147,7 +147,7 @@ namespace Cardevil.Test.Card
                 SelectableColorElement.Random()
             };
             var spec = new CardSpec(TEST_ID, CardType.Attack, elements);
-            var state = spec.NewState;
+            var state = spec.State;
     
             state.ResolveValues();
     

@@ -49,10 +49,10 @@ namespace Cardevil.Card.Common.Visual
 
         public static CardVisualInput From(CardSpec spec)
         {
-            return From(spec.NewState);
+            return From(spec.State);
         }
 
-        public static CardVisualInput From(INewCardState state)
+        public static CardVisualInput From(ICardState state)
         {
             CardColor?[] allColorCandidates = null;
             CardColor? fixedColor = null;
@@ -93,54 +93,6 @@ namespace Cardevil.Card.Common.Visual
                 fixedDirection,
                 directionFlag);
         }
-        
-        // public static CardVisualInput From(ICardState state)
-        // {
-        //     CardColor[] colorOptions = null;
-        //     var currentColor = CardColor.None;
-        //     var colorSelected = false;
-        //     int[] numberOptions = null;
-        //     var currentNumber = 0;
-        //     var numberSelected = false;
-        //
-        //     if (state.Colors is { Initialized: true })
-        //     {
-        //         colorOptions = state.Colors.AllOptions.ToArray();
-        //         currentColor = state.Colors.Current ?? state.Colors.DefaultValue;
-        //         colorSelected = state.Colors.HasSelected;
-        //     }
-        //     if (state.Numbers is { Initialized: true})
-        //     {
-        //         numberOptions = state.Numbers.AllOptions.ToArray();
-        //         currentNumber = state.Numbers.Current ?? state.Numbers.DefaultValue;
-        //         numberSelected = state.Numbers.HasSelected;
-        //     }
-        //
-        //     var currentDirection = Direction.None;
-        //     Direction[] directionOptions = null;
-        //     var directionSelected = false;
-        //
-        //     if (state.Directions is { Initialized: true })
-        //     {
-        //         currentDirection = state.Directions.Current ?? state.Directions.DefaultValue;
-        //         directionOptions = state.Directions.AllOptions.ToArray();
-        //         directionSelected = state.Directions.HasSelected;
-        //     }
-        //
-        //     return new CardVisualInput(
-        //         type: state.Type,
-        //         allColorCandidates: colorOptions,
-        //         currentColor: currentColor,
-        //         colorSelected: colorSelected,
-        //         allNumberCandidates: numberOptions,
-        //         currentNumber: currentNumber,
-        //         numberSelected: numberSelected,
-        //         currentDirection: currentDirection,
-        //         directionFlag: state.DirectionFlag,
-        //         allDirectionCandidates: directionOptions,
-        //         directionSelected: directionSelected
-        //     );
-        // }
         
         public static CardVisualInput Attack(CardColor color, params int?[] numbers)
         {

@@ -22,26 +22,23 @@ namespace Cardevil.Card.Common.Core
         [field: Header("Upgrade Data")]
         [field: SerializeField] public UpgradeNodeSO UpgradeNode { get; private set; }
 
-        private NewCardStateBuilder _newBuilder = new();
-        private NewCardState _newCachedState;
-
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
         private bool _isDirty = true;
 
         public IReadOnlyList<ISpecElement> Elements => elements;
 
-        public NewCardState NewState
+        public CardState State
         {
             get
             {
                 if (_isDirty || _cachedState == null)
                 {
-                    _newCachedState = _newBuilder.Build(this);
+                    _cachedState = _builder.Build(this);
                     _isDirty = false;
                 }
                 
-                return _newCachedState;
+                return _cachedState;
             }
         }
 

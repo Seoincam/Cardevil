@@ -47,7 +47,7 @@ namespace Cardevil.Card.Visual.Controller
         /// <summary>
         /// ICardState를 VisualInput으로 변환한 후, 레이아웃을 적용.
         /// </summary>
-        public void SetLayout(INewCardState state)
+        public void SetLayout(ICardState state)
         {
             var visualInput = CardVisualInput.From(state);
             SetLayout(visualInput);

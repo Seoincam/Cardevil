@@ -15,13 +15,13 @@ namespace Cardevil.Card.InStage
         /// </summary>
         [field: SerializeField] public CardColor FlushColor { get; private set; }
         
-        public IReadOnlyList<INewCardState> RankedCards { get; }
+        public IReadOnlyList<ICardState> RankedCards { get; }
         
         public static HandRankData None = new(HandRank.None);
 
         public HandRankData(
             HandRank handRank,
-            IReadOnlyList<INewCardState> rankedCards,
+            IReadOnlyList<ICardState> rankedCards,
             CardColor flushColor = CardColor.None)
         {
             HandRank = handRank;
@@ -33,7 +33,7 @@ namespace Cardevil.Card.InStage
         {
             HandRank = handRank;
             FlushColor = CardColor.None;
-            RankedCards = Array.Empty<INewCardState>();
+            RankedCards = Array.Empty<ICardState>();
         }
     }
 }

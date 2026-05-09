@@ -123,7 +123,7 @@ namespace Cardevil.Card.InStage
 
         public async UniTask DiscardSelectionAsync() => await _handBarPresenter.DiscardSelectionAsync();
 
-        public void Reroll(IReadOnlyList<INewCardState> states)
+        public void Reroll(IReadOnlyList<ICardState> states)
         {
             model.Reroll(states);
             model.ShuffleDeck();

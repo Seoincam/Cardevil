@@ -18,13 +18,8 @@ namespace Cardevil.Card.Common.Core
         {
             return new BaseNumberElement(number);
         }
-        
-        public void Apply(CardStateBuilder builder)
-        {
-            builder.SetDefaultNumber(number);
-        }
 
-        public void Apply(NewCardStateBuilder builder)
+        public void Apply(CardStateBuilder builder)
         {
             builder.DefaultNumber = number;
         }

@@ -7,11 +7,11 @@ namespace Cardevil.Card.InStage.Score.Step
 {
     public interface IScoreContext
     {
-        IReadOnlyList<INewCardState> Cards { get; }
+        IReadOnlyList<ICardState> Cards { get; }
         HandRankData HandRankData { get; }
         float CurrentScore { get; }
             
-        INewCardState CurrentCard { get; }
+        ICardState CurrentCard { get; }
         HandRank HandRank { get; }
     }
     
@@ -45,7 +45,7 @@ namespace Cardevil.Card.InStage.Score.Step
             _providerRegistry = registry;
         }
 
-        public void BuildContext(IReadOnlyList<INewCardState> cards, HandRankData handRankData, float handRankScore)
+        public void BuildContext(IReadOnlyList<ICardState> cards, HandRankData handRankData, float handRankScore)
         {
             _context = new ScoreContext
             {
@@ -70,11 +70,11 @@ namespace Cardevil.Card.InStage.Score.Step
         
         private class ScoreContext : IScoreContext
         {
-            public IReadOnlyList<INewCardState> Cards { get; set; }
+            public IReadOnlyList<ICardState> Cards { get; set; }
             public HandRankData HandRankData { get; set; }
             public float CurrentScore { get; set; }
 
-            public INewCardState CurrentCard { get; set; }
+            public ICardState CurrentCard { get; set; }
             public HandRank HandRank => HandRankData.HandRank;
         }
 

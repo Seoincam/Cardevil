@@ -9,21 +9,21 @@ namespace Cardevil.Card.InStage
     [Serializable]
     public class StageCardCoreModel
     {
-        [SerializeReference] private List<INewCardState> deck = new();
-        [SerializeReference] private List<INewCardState> discarded = new();
+        [SerializeReference] private List<ICardState> deck = new();
+        [SerializeReference] private List<ICardState> discarded = new();
         
-        public IReadOnlyList<INewCardState> Deck => deck;
-        public IReadOnlyList<INewCardState> Discarded => discarded;
+        public IReadOnlyList<ICardState> Deck => deck;
+        public IReadOnlyList<ICardState> Discarded => discarded;
 
-        public StageCardCoreModel(List<INewCardState> deepClonedStates)
+        public StageCardCoreModel(List<ICardState> deepClonedStates)
         {
             deepClonedStates.ShuffleListInPlace();
             deck.AddRange(deepClonedStates);
         }
 
-        public IReadOnlyList<INewCardState> Draw(int count = 1)
+        public IReadOnlyList<ICardState> Draw(int count = 1)
         {
-            var states = new List<INewCardState>();
+            var states = new List<ICardState>();
             
             for (int i = 0; i < count; i++)
             {
@@ -39,17 +39,17 @@ namespace Cardevil.Card.InStage
             return states;
         }
 
-        public void Discard(INewCardState state)
+        public void Discard(ICardState state)
         {
             discarded.Add(state);
         }
 
-        public void Discard(IReadOnlyList<INewCardState> states)
+        public void Discard(IReadOnlyList<ICardState> states)
         {
             discarded.AddRange(states);
         }
 
-        public void Reroll(IReadOnlyList<INewCardState> states)
+        public void Reroll(IReadOnlyList<ICardState> states)
         {
             deck.AddRange(states);
         }
@@ -59,7 +59,7 @@ namespace Cardevil.Card.InStage
             deck.ShuffleListInPlace();
         }
 
-        private bool TryDraw(out INewCardState state)
+        private bool TryDraw(out ICardState state)
         {
             if (deck.Count == 0)
             {

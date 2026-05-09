@@ -31,15 +31,15 @@ namespace Cardevil.Card.InStage
         public event UnityAction SortByNumberClicked;
         public event UnityAction SortByIconClicked;
 
-        public event Action<INewCardState> CardPointerEnter;
-        public event Action<INewCardState> CardPointerDown;
-        public event Action<INewCardState> CardDragStart;
-        public event Action<INewCardState> CardPointerUp;
-        public event Action<INewCardState> CardDragEnd;
-        public event Action<INewCardState> CardPointerExit;
+        public event Action<ICardState> CardPointerEnter;
+        public event Action<ICardState> CardPointerDown;
+        public event Action<ICardState> CardDragStart;
+        public event Action<ICardState> CardPointerUp;
+        public event Action<ICardState> CardDragEnd;
+        public event Action<ICardState> CardPointerExit;
 
-        private readonly Dictionary<INewCardState, HandBarCard> _cardMap = new();
-        private readonly Dictionary<HandBarCard, INewCardState> _reverseCardMap = new();
+        private readonly Dictionary<ICardState, HandBarCard> _cardMap = new();
+        private readonly Dictionary<HandBarCard, ICardState> _reverseCardMap = new();
 
         private Rect _safeArea;
         private Vector2 _viewportMin;
@@ -80,7 +80,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        public void CreateCard(INewCardState state)
+        public void CreateCard(ICardState state)
         {
             var card = Instantiate(cardPrefab, handBarAnchor).GetComponent<HandBarCard>();
             card.transform.position = drawAnchor.position;
@@ -99,7 +99,7 @@ namespace Cardevil.Card.InStage
         /// </summary>
         /// <param name="state"></param>
         /// <param name="interactionCardId"></param>
-        public void ConvertToHandCard(INewCardState state, uint interactionCardId)
+        public void ConvertToHandCard(ICardState state, uint interactionCardId)
         {
             var interactionCard = CardRegistry.GetInteractionCard(interactionCardId);
             CardRegistry.Unregister(interactionCard);
@@ -113,7 +113,7 @@ namespace Cardevil.Card.InStage
             ScoreVisualRegistry.Unregister(state);
         }
 
-        public void DestroyCard(INewCardState state)
+        public void DestroyCard(ICardState state)
         {
             if (_cardMap.Remove(state, out var card))
             {
@@ -124,7 +124,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-        public void ArrangeCards(IReadOnlyList<INewCardState> cards, INewCardState excluded = null)
+        public void ArrangeCards(IReadOnlyList<ICardState> cards, ICardState excluded = null)
         {
             for (int i = 0; i < cards.Count; i++)
             {
@@ -147,7 +147,7 @@ namespace Cardevil.Card.InStage
             }
         }
         
-        public uint GetCardId(INewCardState state)
+        public uint GetCardId(ICardState state)
         {
             var card = InternalGetCard(state);
             return CardRegistry.GetId(card);
@@ -156,7 +156,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 핸드바 내 LocalPosition X를 반환. 
         /// </summary>
-        public float GetCurrentX(INewCardState state)
+        public float GetCurrentX(ICardState state)
         {
             var card = InternalGetCard(state);
             return card.CurrentX;
@@ -165,7 +165,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 추적 타겟을 포인터로 설정함.
         /// </summary>
-        public void StartDrag(INewCardState state)
+        public void StartDrag(ICardState state)
         {
             var card = InternalGetCard(state);
             card.SetMode(HandBarCard.Mode.Dragging);
@@ -175,7 +175,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 추적 타겟을 슬롯(Local Position)으로 설정함.
         /// </summary>
-        public void EndDrag(INewCardState state)
+        public void EndDrag(ICardState state)
         {
             var card = InternalGetCard(state);
             card.SetMode(HandBarCard.Mode.InHand);
@@ -184,7 +184,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 추적 타겟을 WorldPosition으로 설정함.
         /// </summary>
-        public void StartValueSelection(INewCardState state, Vector3 worldPosition)
+        public void StartValueSelection(ICardState state, Vector3 worldPosition)
         {
             // var card = InternalGetCard(state);
             //
@@ -196,7 +196,7 @@ namespace Cardevil.Card.InStage
         /// 카드의 추적 타겟을 슬롯(Local Position)으로 설정함.
         /// </summary>
         /// <param name="state"></param>
-        public void EndValueSelection(INewCardState state)
+        public void EndValueSelection(ICardState state)
         {
             var card = InternalGetCard(state);
             card.SetMode(HandBarCard.Mode.InHand);
@@ -205,7 +205,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 뷰포트 Y 기준으로 핸드 영역 내인지 판단함.
         /// </summary>
-        public bool IsInHandZone(INewCardState state)
+        public bool IsInHandZone(ICardState state)
         {
             var viewport = GetViewportPoint(state);
             return viewport.y < config.HandZoneMaxY;
@@ -214,7 +214,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 월드 포지션을 반환함.
         /// </summary>
-        public Vector3 GetWorldPosition(INewCardState state)
+        public Vector3 GetWorldPosition(ICardState state)
         {
             var card = InternalGetCard(state);
             return card.transform.position;
@@ -223,7 +223,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 SelectionY를 설정함.
         /// </summary>
-        public void SelectCard(INewCardState state)
+        public void SelectCard(ICardState state)
         {
             var card = InternalGetCard(state);
             card.LocalTargetPosition.SetOffset(OffsetKey.Selection, new Vector3(0f, 0.5f));
@@ -232,7 +232,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 SelectionY를 해제함.
         /// </summary>
-        public void DeselectCard(INewCardState state)
+        public void DeselectCard(ICardState state)
         {
             var card = InternalGetCard(state);
             card.LocalTargetPosition.ClearOffset(OffsetKey.Selection);
@@ -241,23 +241,23 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드의 모습을 최신 상태에 맞춰 갱신함.
         /// </summary>
-        public void UpdateCardVisual(INewCardState state)
+        public void UpdateCardVisual(ICardState state)
         {
             var card = InternalGetCard(state);
             card.VisualController.SetLayout(state);
         }
 
-        public async UniTask PlayRerollAnimationAsync(INewCardState state)
+        public async UniTask PlayRerollAnimationAsync(ICardState state)
         {
             await MoveCardWithDiscardAnimationAsync(state, drawAnchor.position);
         }
 
-        public async UniTask PlayDiscardAnimationAsync(INewCardState state)
+        public async UniTask PlayDiscardAnimationAsync(ICardState state)
         {
             await MoveCardWithDiscardAnimationAsync(state, discardAnchor.position);
         }
 
-        private async UniTask MoveCardWithDiscardAnimationAsync(INewCardState state, Vector3 targetPosition)
+        private async UniTask MoveCardWithDiscardAnimationAsync(ICardState state, Vector3 targetPosition)
         {
             var card = InternalGetCard(state);
             card.VisualController.SetSortingOrderLast();
@@ -299,7 +299,7 @@ namespace Cardevil.Card.InStage
             handBarAnchor.position = anchorPosition;
         }
 
-        private HandBarCard InternalGetCard(INewCardState state)
+        private HandBarCard InternalGetCard(ICardState state)
         {
             if (!_cardMap.TryGetValue(state, out var card))
             {
@@ -313,13 +313,13 @@ namespace Cardevil.Card.InStage
             return (index - (maxHand - 1) * 0.5f) * config.CardSpacing;
         }
         
-        private Vector2 GetViewportPoint(INewCardState state)
+        private Vector2 GetViewportPoint(ICardState state)
         {
             var card = InternalGetCard(state);
             return cardCamera.WorldToViewportPoint(card.transform.position);
         }
 
-        private void AddMap(INewCardState state, HandBarCard card)
+        private void AddMap(ICardState state, HandBarCard card)
         {
             _cardMap.Add(state, card);
             _reverseCardMap.Add(card, state);

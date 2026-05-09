@@ -12,16 +12,16 @@ namespace Cardevil.Card.InStage.Score.Step
 
     public class DiscardStepElement : IStepElement
     {
-        public INewCardState Card { get; }
-        public DiscardStepElement(INewCardState card) => Card = card;
+        public ICardState Card { get; }
+        public DiscardStepElement(ICardState card) => Card = card;
     }
 
     public class MoveStepElement : IStepElement
     {
-        public INewCardState Card { get; }
+        public ICardState Card { get; }
         public PlayerMoveArgs Args { get; }
 
-        public MoveStepElement(INewCardState card)
+        public MoveStepElement(ICardState card)
         {
             Card = card;
             Args = PlayerMoveArgs.Get(card.DirectionList.FixedValue);

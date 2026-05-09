@@ -196,8 +196,8 @@ namespace Cardevil.Card.InWorld.Shop
             {
                 if (spec.IsMove) return CardCategory.Direction;
 
-                var color = spec.NewState.ColorList.DefaultValue.HasValue
-                    ? spec.NewState.ColorList.DefaultValue.Value
+                var color = spec.State.ColorList.DefaultValue.HasValue
+                    ? spec.State.ColorList.DefaultValue.Value
                     : CardColor.None;
                 
                 return color switch

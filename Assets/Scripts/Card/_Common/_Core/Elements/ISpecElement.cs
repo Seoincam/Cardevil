@@ -8,7 +8,6 @@ namespace Cardevil.Card.Common.Core
     public interface ISpecElement : IDeepClonable<ISpecElement>
     {
         void Apply(CardStateBuilder builder);
-        void Apply(NewCardStateBuilder builder);
     }
     
     public interface IColorElement : ISpecElement { }

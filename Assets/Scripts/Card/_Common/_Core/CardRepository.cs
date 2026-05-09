@@ -16,8 +16,7 @@ namespace Cardevil.Card.Common.Core
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
 
         private readonly Dictionary<int, CardSpec> _specMap = new(CardCount);
-        private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
-        private readonly Dictionary<int, NewCardState> _newStateCache = new(CardCount);
+        private readonly Dictionary<int, CardState> _newStateCache = new(CardCount);
 
         private UpgradeNodeDatabaseSO _upgradeDatabase;
         
@@ -32,7 +31,6 @@ namespace Cardevil.Card.Common.Core
         public void SetUpNewGame(GameSave save)
         {
             cards.Clear();
-            _stateCache.Clear();
             _newStateCache.Clear();
 
             var newSpecs = CreateStandardCardSpecs(_upgradeDatabase);
@@ -51,40 +49,20 @@ namespace Cardevil.Card.Common.Core
         {
             LogEx.LogWarning("카드 세이브로드 미구현 - @Seoincam");
         }
+        
 
-        /// <summary>
-        /// 모든 카드의 최신 State 인터페이스 리스트를 반환.
-        /// </summary>
-        public List<ICardState> GetAllStates()
-        {
-            return _stateCache.Values
-                .Cast<ICardState>()
-                .ToList();
-        }
-
-        public List<NewCardState> GetAllNewStates()
+        public List<CardState> GetAllNewStates()
         {
             return _newStateCache.Values
                 // .Cast<>()
                 .ToList();
         }
 
-        /// <summary>
-        /// 모든 카드의 최신 State 인터페이스 리스트를 DeepClone해 반환.
-        /// </summary>
-        public List<ICardState> GetAllDeepClonedStates()
-        {
-            return _stateCache.Values
-                .Select(state => state.DeepClone())
-                .Cast<ICardState>()
-                .ToList();
-        }
-
-        public List<INewCardState> GetAllDeepClonedNewStates()
+        public List<ICardState> GetAllDeepClonedNewStates()
         {
             return _newStateCache.Values
                 .Select(state => state.DeepClone())
-                .Cast<INewCardState>()
+                .Cast<ICardState>()
                 .ToList();
         }
 
@@ -130,7 +108,7 @@ namespace Cardevil.Card.Common.Core
         //     return null;
         // }
 
-        public NewCardState GetNewState(int id)
+        public CardState GetNewState(int id)
         {
             if (_newStateCache.TryGetValue(id, out var state))
             {
@@ -141,7 +119,7 @@ namespace Cardevil.Card.Common.Core
             if (spec != null)
             {
                 HandleSpecChanged(spec);
-                return spec.NewState;
+                return spec.State;
             }
             
             return null;
@@ -155,7 +133,7 @@ namespace Cardevil.Card.Common.Core
         //     return GetState(id)?.DeepClone();
         // }
 
-        public NewCardState GetDeepClonedNewState(int id)
+        public CardState GetDeepClonedNewState(int id)
         {
             return GetNewState(id)?.DeepClone();
         }
@@ -166,14 +144,14 @@ namespace Cardevil.Card.Common.Core
             spec.SpecChanged += HandleSpecChanged;
 
             _specMap[spec.ID] = spec;
-            _newStateCache[spec.ID] = spec.NewState;
+            _newStateCache[spec.ID] = spec.State;
         }
         
         // State 갱신
         private void HandleSpecChanged(CardSpec spec)
         {
             // _stateCache[spec.ID] = spec.State;
-            _newStateCache[spec.ID] = spec.NewState;
+            _newStateCache[spec.ID] = spec.State;
             LogEx.Log($"Id {spec.ID}의 State가 자동 갱신됐음.");
         }
 

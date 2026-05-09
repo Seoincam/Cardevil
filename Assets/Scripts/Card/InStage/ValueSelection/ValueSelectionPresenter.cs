@@ -11,11 +11,11 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 타겟 ICardState와 Registry 상의 InteractionCard Id를 반환.
         /// </summary>
-        public event Action<INewCardState, uint> ValueSelected;
+        public event Action<ICardState, uint> ValueSelected;
         
         private readonly ValueSelectionView _view;
         
-        private INewCardState _targetState;
+        private ICardState _targetState;
 
         public Vector3 ZoneWorldPosition => _view.ZoneWorldPosition;
         
@@ -34,7 +34,7 @@ namespace Cardevil.Card.InStage
         /// 카드가 Value Selectable일 경우 값 선택 존을 염.
         /// </summary>
         /// <param name="state"></param>
-        public void TryOpenValueSelectionZone(INewCardState state)
+        public void TryOpenValueSelectionZone(ICardState state)
         {
             if (state.UpgradePath == UpgradePath.None) return;
             
@@ -49,7 +49,7 @@ namespace Cardevil.Card.InStage
         /// <summary>
         /// 카드가 Value Selectable일 경우 값 선택창을 염.
         /// </summary>
-        public bool TryOpenValueSelection(INewCardState state, uint handBarCardId)
+        public bool TryOpenValueSelection(ICardState state, uint handBarCardId)
         {
             _targetState = state;
 
@@ -77,7 +77,7 @@ namespace Cardevil.Card.InStage
             _view.Clear();
         }
 
-        private void OnColorSelectable(INewCardState state, uint handBarCardId)
+        private void OnColorSelectable(ICardState state, uint handBarCardId)
         {
             int number = state.NumberList.FixedValue;
             foreach (var color in state.ColorList.AllCandidateValues)
@@ -89,7 +89,7 @@ namespace Cardevil.Card.InStage
             _view.ArrangeCards(state.ColorList.AllCandidateValues.Select(c => c.Value).ToArray(), handBarCardId);
         }
 
-        private void OnNumberSelectable(INewCardState state)
+        private void OnNumberSelectable(ICardState state)
         {
             CardColor color = state.ColorList.FixedValue;
             foreach (var number in state.NumberList.AllCandidateValues)
@@ -101,7 +101,7 @@ namespace Cardevil.Card.InStage
             _view.ArrangeCards(state.NumberList.AllCandidateValues.Select(n => n.Value).ToArray());
         }
 
-        private void OnDirectionSelectable(INewCardState state)
+        private void OnDirectionSelectable(ICardState state)
         {
             foreach (var direction in state.DirectionList.AllCandidateValues)
             {
