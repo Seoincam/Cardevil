@@ -30,7 +30,7 @@ namespace Cardevil.Card.InStage
             ScorePresenter scorePresenter
         )
         {
-            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedStates());
+            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedNewStates());
             
             _view = view;
             view.UseClicked += OnUseRequested;

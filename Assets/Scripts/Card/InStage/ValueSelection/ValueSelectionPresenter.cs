@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.Common.Core.Upgrade;
 using System;
 using System.Linq;
 using UnityEngine;
@@ -18,8 +19,6 @@ namespace Cardevil.Card.InStage
 
         public Vector3 ZoneWorldPosition => _view.ZoneWorldPosition;
         
-        private CardState.ValueSelectableType SelectableType => _targetState.SelectableType;
-
         public ValueSelectionPresenter(ValueSelectionView view)
         {
             _view = view;
@@ -37,7 +36,7 @@ namespace Cardevil.Card.InStage
         /// <param name="state"></param>
         public void TryOpenValueSelectionZone(ICardState state)
         {
-            if (state.SelectableType == CardState.ValueSelectableType.None) return;
+            if (state.UpgradePath == UpgradePath.None) return;
             
             _view.OpenValueSelectionZone();
         }
@@ -54,17 +53,17 @@ namespace Cardevil.Card.InStage
         {
             _targetState = state;
 
-            switch (SelectableType)
+            switch (state.UpgradePath)
             {
-                case CardState.ValueSelectableType.Color:
+                case UpgradePath.MultiColor:
                     OnColorSelectable(state, handBarCardId);
                     return true;
                 
-                case CardState.ValueSelectableType.Number:
+                case UpgradePath.MultiNumber:
                     OnNumberSelectable(state);
                     return true;
                 
-                case CardState.ValueSelectableType.Direction:
+                case UpgradePath.MultiDirection:
                     OnDirectionSelectable(state);
                     return true;
             }
@@ -80,53 +79,53 @@ namespace Cardevil.Card.InStage
 
         private void OnColorSelectable(ICardState state, uint handBarCardId)
         {
-            int number = state.Numbers.DefaultValue;
-            foreach (var color in state.Colors.AllOptions)
+            int number = state.NumberList.FixedValue;
+            foreach (var color in state.ColorList.AllCandidateValues)
             {
-                _view.AddColorSelectable(color, number);
+                _view.AddColorSelectable(color.Value, number);
             }   
             
             _view.SetDimActive(true);
-            _view.ArrangeCards(state.Colors.AllOptions.ToArray(), handBarCardId);
+            _view.ArrangeCards(state.ColorList.AllCandidateValues.Select(c => c.Value).ToArray(), handBarCardId);
         }
 
         private void OnNumberSelectable(ICardState state)
         {
-            CardColor color = state.Colors.DefaultValue;
-            foreach (var number in state.Numbers.AllOptions)
+            CardColor color = state.ColorList.FixedValue;
+            foreach (var number in state.NumberList.AllCandidateValues)
             {
-                _view.AddNumberSelectable(color, number);
+                _view.AddNumberSelectable(color, number.Value);
             }
             
             _view.SetDimActive(true);
-            _view.ArrangeCards(state.Numbers.AllOptions.ToArray());
+            _view.ArrangeCards(state.NumberList.AllCandidateValues.Select(n => n.Value).ToArray());
         }
 
         private void OnDirectionSelectable(ICardState state)
         {
-            foreach (var direction in state.Directions.AllOptions)
+            foreach (var direction in state.DirectionList.AllCandidateValues)
             {
-                _view.AddDirectionSelectable(direction);
+                _view.AddDirectionSelectable(direction.Value);
             }
             
             _view.SetDimActive(true);
-            _view.ArrangeCards(state.Directions.AllOptions.ToArray());
+            _view.ArrangeCards(state.DirectionList.AllCandidateValues.Select(d => d.Value).ToArray());
         }
 
         private void OnValueSelected(in ValueSelectionView.Values values, uint cardId)
         {
-            switch (SelectableType)
+            switch (_targetState.UpgradePath)
             {
-                case CardState.ValueSelectableType.Color:
-                    _targetState.Colors.Select(values.Color);
+                case UpgradePath.MultiColor:
+                    _targetState.ColorList.Fix(values.Color);
                     break;
                 
-                case CardState.ValueSelectableType.Number:
-                    _targetState.Numbers.Select(values.Number);
+                case UpgradePath.MultiNumber:
+                    _targetState.NumberList.Fix(values.Number);
                     break;
                 
-                case CardState.ValueSelectableType.Direction:
-                    _targetState.Directions.Select(values.Direction);
+                case UpgradePath.MultiDirection:
+                    _targetState.DirectionList.Fix(values.Direction); 
                     break;
             }
             

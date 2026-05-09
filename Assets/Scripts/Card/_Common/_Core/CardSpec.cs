@@ -21,7 +21,6 @@ namespace Cardevil.Card.Common.Core
         
         [field: Header("Upgrade Data")]
         [field: SerializeField] public UpgradeNodeSO UpgradeNode { get; private set; }
-        
 
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
@@ -29,9 +28,6 @@ namespace Cardevil.Card.Common.Core
 
         public IReadOnlyList<ISpecElement> Elements => elements;
 
-        /// <summary>
-        /// 현재 Spec 기준으로 생성된 카드 상태.
-        /// </summary>
         public CardState State
         {
             get
@@ -41,7 +37,7 @@ namespace Cardevil.Card.Common.Core
                     _cachedState = _builder.Build(this);
                     _isDirty = false;
                 }
-
+                
                 return _cachedState;
             }
         }
@@ -61,9 +57,7 @@ namespace Cardevil.Card.Common.Core
             }
         }
 
-        public CardSpec(int id,
-            CardType type,
-            UpgradeNodeSO upgradeNode = null)
+        public CardSpec(int id, CardType type, UpgradeNodeSO upgradeNode = null)
         {
             ID = id;
             Type = type;

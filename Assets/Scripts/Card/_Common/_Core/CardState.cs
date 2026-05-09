@@ -1,206 +1,271 @@
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Card.InStage.Score.Step;
 using Cardevil.Core;
 using Cardevil.Core.Attributes;
 using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Cardevil.Card.Common.Core
 {
-    /// <summary>
-    /// 카드의 플레이용 상태 데이터.
-    /// </summary>
     public interface ICardState : IScoreSource
     {
-        CardState.SelectableValues<CardColor> Colors { get; }
-        CardState.SelectableValues<int> Numbers { get; }
-        CardState.SelectableValues<Direction> Directions { get; }
+        IValueList<CardColor> ColorList { get; }
+        IValueList<int> NumberList { get; }
+        IValueList<Direction> DirectionList { get; }
         DirectionFlag DirectionFlag { get; }
         
         bool IsAttack { get; }
         bool IsMove { get; }
         bool IsStar { get; }
         
-        CardState.ValueSelectableType SelectableType { get; }
+        UpgradePath UpgradePath { get; }
         bool ValueSelected { get; }
         
         int Id { get; }
         CardType Type { get; }
+
+        void ResolveValues();
     }
     
-    /// <summary>
-    /// 카드의 플레이용 상태 데이터 클래스.
-    /// </summary>
+    public interface IValueList<T> where T : struct
+    {
+        Optional<T> DefaultValue { get; }
+        Optional<T> SelectedValue { get; }
+        
+        bool IsInitialized { get; }
+        IReadOnlyList<T?> AllCandidateValues { get; }
+        bool IsFixed { get; }
+        T FixedValue { get; }
+        void Fix(T value);
+    } 
+    
     [Serializable]
     public sealed class CardState : ICardState, IDeepClonable<CardState>
     {
-        // 해당 상태를 생성한 원본 CardSpec.
-        [SerializeField, VisibleOnly] private CardSpec spec;
-
-        // 카드에서 선택 가능한 값의 집함.
-        // CardType에 따라 필요한 것만 생성함.
-        [field: Space]
-        [field: SerializeField] public SelectableValues<CardColor> Colors { get; set; }
-        [field: SerializeField] public SelectableValues<int> Numbers { get; set; }
-        [field: SerializeField] public SelectableValues<Direction> Directions { get; set; }
-        [field: SerializeField] public DirectionFlag DirectionFlag { get; set; }
-
-        public bool IsAttack => spec.IsAttack;
-        public bool IsMove => spec.IsMove;
-        public bool IsStar => Numbers?.AllOptionsCount == 9;
-
-        public ValueSelectableType SelectableType
-        {
-            get
-            {
-                if (Colors is { HasAlternatives: true }) return ValueSelectableType.Color;
-                if (Numbers is { HasAlternatives: true }) return ValueSelectableType.Number;
-                if (Directions is { HasAlternatives: true }) return ValueSelectableType.Direction;
-                
-                return ValueSelectableType.None;
-            }
-        }
+        [SerializeField, VisibleOnly] private CardSpec originalSpec;
         
+        [field: Header("Value List")]
+        [field: SerializeField] public ValueList<CardColor> ColorList { get; set; }
+        [field: SerializeField] public ValueList<int> NumberList { get; set; }
+        [field: SerializeField] public ValueList<Direction> DirectionList { get; set; }
+        [field: SerializeField] public DirectionFlag DirectionFlag { get; set; }
+        
+        IValueList<CardColor> ICardState.ColorList => ColorList;
+        IValueList<int> ICardState.NumberList => NumberList;
+        IValueList<Direction> ICardState.DirectionList => DirectionList;
+
+        
+        public bool IsAttack => originalSpec.IsAttack;
+        public bool IsMove => originalSpec.IsMove;
+        public bool IsStar => NumberList?.AllCandidateValues.Count == 9;
+
+        public UpgradePath UpgradePath => originalSpec.UpgradeNode?.Path ?? UpgradePath.None;
         public bool ValueSelected
         {
             get
             {
-                switch (spec.Type)
+                switch (originalSpec.Type)
                 {
-                    case CardType.Attack: 
-                        return Colors.HasSelected && Numbers.HasSelected;
+                    case CardType.Attack:
+                        return ColorList.IsFixed && NumberList.IsFixed;
                     
-                    case CardType.Move: 
-                        return Directions.HasSelected;
+                    case CardType.Move:
+                        return DirectionList.IsFixed;
                     
-                    default: throw new ArgumentOutOfRangeException(nameof(CardState));
+                    default: throw new ArgumentOutOfRangeException(nameof(originalSpec.Type));
                 }
             }
         }
-        
-        public int Id => spec.ID;
-        public CardType Type => spec.Type;
 
-        public CardState(CardSpec spec)
+        public int Id => originalSpec.ID;
+        public CardType Type => originalSpec.Type;
+
+
+        public CardState(CardSpec originalSpec)
         {
-            this.spec = spec;
+            this.originalSpec = originalSpec;
         }
 
         public CardState DeepClone()
         {
-            var clone = new CardState(spec);
-            
-            if (Colors != null) clone.Colors = Colors.DeepClone();
-            if (Numbers != null) clone.Numbers = Numbers.DeepClone();
-            if (Directions != null) clone.Directions = Directions.DeepClone();
-            clone.DirectionFlag = DirectionFlag;
+            var clone = (CardState)MemberwiseClone();
 
+            clone.ColorList = ColorList?.DeepClone();
+            clone.NumberList = NumberList?.DeepClone();
+            clone.DirectionList = DirectionList?.DeepClone();
+            
+            clone.originalSpec = originalSpec;
             return clone;
         }
-
-        /// <summary>
-        /// 기본값과 선택 가능 값들을 관리하는 컨테이너.
-        /// </summary>
+        
+        
         [Serializable]
-        public sealed class SelectableValues<T> : IDeepClonable<SelectableValues<T>> where T : struct 
+        public sealed class ValueList<T> : IValueList<T>, IDeepClonable<ValueList<T>> where T : struct
         {
-            [field: SerializeField] public Optional<T> DefaultValue { get; private set; }
-            [SerializeField] private List<T> alternatives = new();
-            [SerializeField] private Optional<T> selected;
-            
-            public bool Initialized { get; }
-            public IReadOnlyList<T> Alternatives => alternatives;
+            [field: SerializeField, VisibleOnly] public Optional<T> DefaultValue { get; private set; }
+            [field: SerializeField, VisibleOnly] public List<Optional<T>> Alternatives { get; private set; }
+            [field: Space, SerializeField, VisibleOnly] public Optional<T> SelectedValue { get; private set; }
 
-            /// <summary>
-            /// 현재 유효한 값.
-            /// 선택 가능하지만 아직 미선택했다면 null을 반환함.
-            /// </summary>
-            public T? Current
+            private List<T?> allCandidateValues;
+
+            public bool IsInitialized { get; }
+            public bool IsResolved { get; }
+            public bool HasAlternatives => Alternatives != null && Alternatives.Count > 0;
+
+            public IReadOnlyList<T?> AllCandidateValues => allCandidateValues;
+
+            public bool IsFixed
             {
                 get
                 {
-                    if (HasAlternatives && selected.hasValue) return selected;
-                    if (HasAlternatives && !selected.hasValue) return null;
-                    
-                    if (DefaultValue.hasValue) return DefaultValue;
-                    return null;
+                    // 기본값이 존재하고 대안이 없는 경우
+                    if (DefaultValue.HasValue && !HasAlternatives) return true;
+
+                    // 선택된 값이 존재하는 경우
+                    if (SelectedValue.HasValue) return true;
+
+                    return false;
                 }
             }
 
-            /// <summary>
-            /// 선택 가능한 모든 값의 개수. 선택이 불가능한 카드일 경우 1임.
-            /// </summary>
-            public int AllOptionsCount => (alternatives?.Count ?? 0) + 1;
-
-            /// <summary>
-            /// 기본값을 포함해, 선택 가능한 모든 값.
-            /// </summary>
-            public IEnumerable<T> AllOptions
+            public T FixedValue
             {
                 get
                 {
-                    if (DefaultValue.hasValue)
-                    {
-                        yield return DefaultValue.value;   
-                    }
+                    if (!IsFixed)
+                        throw new Exception("카드의 값이 고정되지 않았지만 고정된 값에 접근했습니다. IsFixed 체크 후 접근해주세요.");
                     
-                    foreach (var alternative in alternatives)
-                    {
-                        yield return alternative;
-                    }
+                    // 기본값이 존재하고 대안이 없는 경우
+                    if (DefaultValue.HasValue && !HasAlternatives)
+                        return DefaultValue.Value;
+
+                    // 선택된 값이 존재하는 경우
+                    if (SelectedValue.HasValue)
+                        return SelectedValue.Value;
+
+                    throw new Exception("카드의 값이 고정되지 않았지만 고정된 값에 접근했습니다. IsFixed를 체크 후 접근해주세요.");
                 }
             }
-            
-            public bool HasAlternatives => alternatives is { Count: > 0 };
-            public bool HasSelected => Current != null;
-            
-            public SelectableValues(T? defaultValue)
+
+
+            public ValueList()
             {
-                Initialized = true;
+                IsInitialized = false;
+            }
+            public ValueList(T? defaultValue, IReadOnlyList<T> alternatives)
+            {
                 DefaultValue = new Optional<T>(defaultValue);
+
+                bool hasAlternatives = alternatives != null && alternatives.Count > 0; 
+                if (hasAlternatives)
+                {
+                    Alternatives = alternatives.Select(a => new Optional<T>(a)).ToList();
+                }
+
+                allCandidateValues = new List<T?>();
+                if (defaultValue.HasValue)
+                {
+                    allCandidateValues.Add(defaultValue.Value);
+                }
+                if (hasAlternatives)
+                {
+                    allCandidateValues.AddRange(alternatives.Select(a => (T?)a));   
+                }
+
+                IsResolved = allCandidateValues.All(v => v.HasValue);
+                IsInitialized = true;
             }
             
-            public SelectableValues<T> DeepClone()
+            public ValueList(T? defaultValue, IReadOnlyList<T?> alternatives = null)
             {
-                var clone = new SelectableValues<T>(DefaultValue.hasValue ? DefaultValue.value : null)
+                DefaultValue = new Optional<T>(defaultValue);
+
+                bool hasAlternatives = alternatives != null && alternatives.Count > 0; 
+                if (hasAlternatives)
                 {
-                    alternatives = new List<T>(alternatives), 
-                    selected = new Optional<T>(null)
-                };
-                
+                    Alternatives = alternatives.Select(a => new Optional<T>(a)).ToList();
+                }
+
+                allCandidateValues = new List<T?>();
+                if (defaultValue.HasValue)
+                {
+                    allCandidateValues.Add(defaultValue.Value);
+                }
+                if (hasAlternatives)
+                {
+                    allCandidateValues.AddRange(alternatives.Select(a => (T?)a));   
+                }
+
+                IsResolved = allCandidateValues.All(v => v.HasValue);
+                IsInitialized = true;
+            }
+            
+            public ValueList<T> DeepClone()
+            {
+                var clone = (ValueList<T>)MemberwiseClone();
+
+                if (Alternatives != null)
+                {
+                    clone.Alternatives = new List<Optional<T>>(Alternatives);
+                }
+
+                if (allCandidateValues != null)
+                {
+                    clone.allCandidateValues = new List<T?>(allCandidateValues);
+                }
+
                 return clone;
             }
+
             
-            public void AddAlternative(T value) => alternatives.Add(value);
-            
-            public void Select(T value)
+            public void Fix(T value)
             {
-                if ((DefaultValue.hasValue && !value.Equals(DefaultValue.value)) 
-                    && !alternatives.Contains(value))
+                if (Alternatives == null || Alternatives.Count == 0)
                 {
-                    Debug.LogError($"기본값과 선택 가능한 값 외에 값이 선택됐습니다: {value}. 기본값: {DefaultValue}, 선택 가능한 값: {alternatives}");
+                    LogEx.LogError("선택 가능한 값이 존재하지 않지만 값을 선택하려 했습니다.");
                     return;
                 }
-                
-                selected = new Optional<T>(value);   
-            }
 
-            public void Unselect()
-            {
-                selected = new Optional<T>(null);
+                bool success = false;
+                foreach (var alternative in Alternatives)
+                {
+                    if (alternative.HasValue && alternative.Value.Equals(value))
+                    {
+                        SelectedValue = new Optional<T>(value);
+                        success = true;
+                        break;
+                    }
+                }
+
+                if (!success)
+                {
+                    LogEx.LogError("값 선택 실패! 가능하지 않은 값을 선택하려 했습니다.");
+                }
             }
         }
-        
-        /// <summary>
-        /// 카드의 선택 가능 종류.
-        /// </summary>
-        public enum ValueSelectableType
+
+        public void ResolveValues()
         {
-            None,
-            Color,
-            Number,
-            Direction
+            if (ColorList != null && ColorList.IsInitialized && !ColorList.IsResolved)
+            {
+                var resolvedAlternativeColors = SelectableSlotsResolver
+                    .ResolveAlternativeColors(ColorList.DefaultValue, ColorList.Alternatives);
+                
+                ColorList = new ValueList<CardColor>(ColorList.DefaultValue.Value, resolvedAlternativeColors);
+            }
+
+            if (NumberList != null && NumberList.IsInitialized && !NumberList.IsResolved)
+            {
+                var resolvedAlternativeNumbers = SelectableSlotsResolver
+                    .ResolveAlternativeNumbers(NumberList.DefaultValue, NumberList.Alternatives);
+                
+                NumberList = new ValueList<int>(NumberList.DefaultValue.Value, resolvedAlternativeNumbers);
+            }
+            
+            // Direction은 빌드될 때 이미 Resolve됨.
         }
     }
 }

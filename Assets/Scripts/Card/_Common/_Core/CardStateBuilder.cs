@@ -1,103 +1,86 @@
+using Cardevil.Core;
 using Cardevil.Core.Utils;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Cardevil.Card.Common.Core
 {
     /// <summary>
-    /// <see cref="CardSpec"/>을 기반으로 <see cref="CardState"/>를 생성하는 빌더.
+    /// <see cref="CardSpec"/>을 기반으로 <see cref="CardState"/>을 생성하는 빌더.
     /// </summary>
-    public sealed class CardStateBuilder
+    public sealed class CardStateBuilder : IClearable
     {
-        // 해당 속성의 기본값들.
-        private CardColor? _defaultColor;
-        private int? _defaultNumber;
-        private Direction? _defaultDirection;
+        // 기본값들.
+        public CardColor? DefaultColor { get; set; }
+        public int? DefaultNumber { get; set; }
+        public Direction? DefaultDirection { get; set; }
 
-        // 기본값 외 선택 가능한 슬롯 목록들.
-        private readonly List<SelectableSlot<CardColor>> _colorSelectableSlots = new();
-        private readonly List<SelectableSlot<int>> _numberSelectableSlots = new();
-        private readonly List<SelectableSlot<Direction>> _directionSelectableSlots = new();
+        // 기본값 외 선택 가능한 값 목록들.
+        private readonly List<CardColor?> _colorAlternatives = new();
+        private readonly List<int?> _numberAlternatives = new();
+        private readonly List<Direction?> _directionAlternatives = new();
         
-        public void SetDefaultColor(CardColor color) => _defaultColor = color;
-        public void SetDefaultNumber(int number) => _defaultNumber = number;
-        public void SetDefaultDirection(Direction direction) => _defaultDirection = direction;
-        
-        public void AddColorSelectableSlot(SelectableSlot<CardColor> colorSelectable) => _colorSelectableSlots.Add(colorSelectable);
-        public void AddNumberSelectableSlot(SelectableSlot<int> numberSelectable) => _numberSelectableSlots.Add(numberSelectable);
-        public void AddDirectionSelectableSlot(SelectableSlot<Direction> directionSelectable) => _directionSelectableSlots.Add(directionSelectable);
-        
-        [Serializable]
-        public struct SelectableSlot<T> where T : struct
-        {
-            [field: SerializeField] public bool IsFixed {get; private set;}
-            [field: SerializeField] public T FixedValue {get; private set;}
+        public void AddColorAlternative(CardColor? color) => _colorAlternatives.Add(color);
+        public void AddNumberAlternative(int? number) => _numberAlternatives.Add(number);
+        public void AddDirectionAlternative(Direction? direction) => _directionAlternatives.Add(direction);
 
-            public static SelectableSlot<T> Fixed(T value) => new() { IsFixed = true, FixedValue = value };
-            public static SelectableSlot<T> Random() => new() { IsFixed = false };
-        }
-
-        /// <summary>
-        /// Spec Elements를 적용해 CardState 생성.
-        /// CardType에 따라 필요한 값만 생성함.
-        /// </summary>
         public CardState Build(CardSpec spec)
         {
             Clear();
-            
             foreach (var element in spec.Elements)
+            {
                 element.Apply(this);
-            
-            var state = new CardState(spec);
+            }
 
+            var state = new CardState(spec);
+            
+            // 공격 카드인 경우는 Resolve를 하지 않고, 이동 카드는 이 시점에 미리 Resolve함.
             if (spec.Type == CardType.Attack)
             {
-                var resolvedColors = SelectableSlotsResolver.ResolveColors(_defaultColor, _colorSelectableSlots);
-                state.Colors = BuildSelectable(_defaultColor, resolvedColors);
-                
-                var resolvedNumbers = SelectableSlotsResolver.ResolveNumbers(_defaultNumber, _numberSelectableSlots);
-                state.Numbers = BuildSelectable(_defaultNumber, resolvedNumbers);
+                state.ColorList = new CardState.ValueList<CardColor>(DefaultColor, _colorAlternatives);
+                state.NumberList = new CardState.ValueList<int>(DefaultNumber, _numberAlternatives);
             }
             else if (spec.Type == CardType.Move)
             {
-                var resolvedDirection = SelectableSlotsResolver.ResolveDirections(_defaultDirection, _directionSelectableSlots);
-                state.Directions = BuildSelectable(_defaultDirection, resolvedDirection);
-                
-                var directionFlag = state.Directions.DefaultValue.value.ToDirectionFlag();
-                foreach (var direction in resolvedDirection)
+                if (_directionAlternatives.Count is 1)
                 {
-                    directionFlag |= direction.ToDirectionFlag();
+                    var resolvedDirection = SelectableSlotsResolver.ResolveDirections(
+                        DefaultDirection,
+                        _directionAlternatives
+                    );
+                    state.DirectionList = new CardState.ValueList<Direction>(null, resolvedDirection); // 아직 선택 안 했으니깐 defaultValue null로 넘김
+
+                    state.DirectionFlag = DefaultDirection.Value.ToDirectionFlag();
+                    state.DirectionFlag |= resolvedDirection[1].ToDirectionFlag();
                 }
-                state.DirectionFlag = directionFlag;
+                else if (_directionAlternatives.Count == 4)
+                {
+                    var resolvedDirection = SelectableSlotsResolver.ResolveDirections(
+                        DefaultDirection,
+                        _directionAlternatives
+                    );
+                    state.DirectionList = new CardState.ValueList<Direction>(null, resolvedDirection);
+
+                    state.DirectionFlag = DirectionFlag.All;
+                }
+                else
+                {
+                    state.DirectionList = new CardState.ValueList<Direction>(DefaultDirection);
+                    state.DirectionFlag = DefaultDirection.Value.ToDirectionFlag();
+                }
             }
-            
+
             return state;
         }
-        
-        private static CardState.SelectableValues<T> BuildSelectable<T>(
-            T? defaultValue,
-            IReadOnlyList<T> alternatives) where T : struct
-        {
-            var selectable = new CardState.SelectableValues<T>(defaultValue);
-            
-            foreach (var alternative in alternatives)
-            {
-                selectable.AddAlternative(alternative);
-            }
-            
-            return selectable;
-        }
 
-        // 이전 빌드 상태 초기화. 모든 변수를 초기화함.
-        private void Clear()
+        public void Clear()
         {
-            _defaultColor = null;
-            _defaultNumber = null;
-            _defaultDirection = null;
-            _colorSelectableSlots.Clear();
-            _numberSelectableSlots.Clear();
-            _directionSelectableSlots.Clear();
+            DefaultColor = null;
+            DefaultNumber = null;
+            DefaultDirection = null;
+
+            _colorAlternatives.Clear();
+            _numberAlternatives.Clear();
+            _directionAlternatives.Clear();
         }
     }
 }
