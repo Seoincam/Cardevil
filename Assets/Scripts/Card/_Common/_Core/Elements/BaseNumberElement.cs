@@ -23,5 +23,10 @@ namespace Cardevil.Card.Common.Core
         {
             builder.SetDefaultNumber(number);
         }
+
+        public void Apply(NewCardStateBuilder builder)
+        {
+            builder.DefaultNumber = number;
+        }
     }
 }

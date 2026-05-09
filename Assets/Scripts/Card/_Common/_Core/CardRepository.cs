@@ -17,6 +17,7 @@ namespace Cardevil.Card.Common.Core
 
         private readonly Dictionary<int, CardSpec> _specMap = new(CardCount);
         private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
+        private readonly Dictionary<int, NewCardState> _newStateCache = new(CardCount);
 
         private UpgradeNodeDatabaseSO _upgradeDatabase;
         
@@ -32,6 +33,7 @@ namespace Cardevil.Card.Common.Core
         {
             cards.Clear();
             _stateCache.Clear();
+            _newStateCache.Clear();
 
             var newSpecs = CreateStandardCardSpecs(_upgradeDatabase);
             foreach (var spec in newSpecs)
@@ -60,6 +62,13 @@ namespace Cardevil.Card.Common.Core
                 .ToList();
         }
 
+        public List<NewCardState> GetAllNewStates()
+        {
+            return _newStateCache.Values
+                // .Cast<>()
+                .ToList();
+        }
+
         /// <summary>
         /// 모든 카드의 최신 State 인터페이스 리스트를 DeepClone해 반환.
         /// </summary>
@@ -68,6 +77,13 @@ namespace Cardevil.Card.Common.Core
             return _stateCache.Values
                 .Select(state => state.DeepClone())
                 .Cast<ICardState>()
+                .ToList();
+        }
+
+        public List<NewCardState> GetAllDeepClonedNewStates()
+        {
+            return _newStateCache.Values
+                .Select(state => state.DeepClone())
                 .ToList();
         }
 
@@ -113,12 +129,34 @@ namespace Cardevil.Card.Common.Core
             return null;
         }
 
+        public NewCardState GetNewState(int id)
+        {
+            if (_newStateCache.TryGetValue(id, out var state))
+            {
+                return state;
+            }
+            
+            var spec = cards.Find(c => c.ID == id);
+            if (spec != null)
+            {
+                HandleSpecChanged(spec);
+                return spec.NewState;
+            }
+            
+            return null;
+        }
+
         /// <summary>
         /// 특정 Id의 최신 State를 DeepClone해 반환.
         /// </summary>
         public CardState GetDeepClonedState(int id)
         {
             return GetState(id)?.DeepClone();
+        }
+
+        public NewCardState GetDeepClonedNewState(int id)
+        {
+            return GetNewState(id)?.DeepClone();
         }
         
         private void AddCardSpec(CardSpec spec)

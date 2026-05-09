@@ -23,5 +23,10 @@ namespace Cardevil.Card.Common.Core
         {
             builder.SetDefaultColor(color);
         }
+
+        public void Apply(NewCardStateBuilder builder)
+        {
+            builder.DefaultColor = color;
+        }
     }
 }

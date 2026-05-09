@@ -120,10 +120,10 @@ namespace Cardevil.Card.Common.Core
             {
                 get
                 {
-                    if (HasAlternatives && selected.hasValue) return selected;
-                    if (HasAlternatives && !selected.hasValue) return null;
+                    if (HasAlternatives && selected.HasValue) return selected;
+                    if (HasAlternatives && !selected.HasValue) return null;
                     
-                    if (DefaultValue.hasValue) return DefaultValue;
+                    if (DefaultValue.HasValue) return DefaultValue;
                     return null;
                 }
             }
@@ -140,9 +140,9 @@ namespace Cardevil.Card.Common.Core
             {
                 get
                 {
-                    if (DefaultValue.hasValue)
+                    if (DefaultValue.HasValue)
                     {
-                        yield return DefaultValue.value;   
+                        yield return DefaultValue.Value;   
                     }
                     
                     foreach (var alternative in alternatives)
@@ -163,7 +163,7 @@ namespace Cardevil.Card.Common.Core
             
             public SelectableValues<T> DeepClone()
             {
-                var clone = new SelectableValues<T>(DefaultValue.hasValue ? DefaultValue.value : null)
+                var clone = new SelectableValues<T>(DefaultValue.HasValue ? DefaultValue.Value : null)
                 {
                     alternatives = new List<T>(alternatives), 
                     selected = new Optional<T>(null)
@@ -176,7 +176,7 @@ namespace Cardevil.Card.Common.Core
             
             public void Select(T value)
             {
-                if ((DefaultValue.hasValue && !value.Equals(DefaultValue.value)) 
+                if ((DefaultValue.HasValue && !value.Equals(DefaultValue.Value)) 
                     && !alternatives.Contains(value))
                 {
                     Debug.LogError($"기본값과 선택 가능한 값 외에 값이 선택됐습니다: {value}. 기본값: {DefaultValue}, 선택 가능한 값: {alternatives}");

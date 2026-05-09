@@ -21,13 +21,29 @@ namespace Cardevil.Card.Common.Core
         
         [field: Header("Upgrade Data")]
         [field: SerializeField] public UpgradeNodeSO UpgradeNode { get; private set; }
-        
+
+        private NewCardStateBuilder _newBuilder = new();
+        private NewCardState _newCachedState;
 
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
         private bool _isDirty = true;
 
         public IReadOnlyList<ISpecElement> Elements => elements;
+
+        public NewCardState NewState
+        {
+            get
+            {
+                if (_isDirty || _cachedState == null)
+                {
+                    _newCachedState = _newBuilder.Build(this);
+                    _isDirty = false;
+                }
+                
+                return _newCachedState;
+            }
+        }
 
         /// <summary>
         /// 현재 Spec 기준으로 생성된 카드 상태.

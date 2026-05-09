@@ -24,5 +24,10 @@ namespace Cardevil.Card.Common.Core
         {
             builder.SetDefaultDirection(direction);
         }
+
+        public void Apply(NewCardStateBuilder builder)
+        {
+            builder.DefaultDirection = direction;
+        }
     }
 }
