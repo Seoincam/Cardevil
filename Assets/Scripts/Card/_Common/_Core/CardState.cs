@@ -254,9 +254,9 @@ namespace Cardevil.Card.Common.Core
             if (ColorList != null && ColorList.IsInitialized && !ColorList.IsResolved)
             {
                 var resolvedAlternativeColors = SelectableSlotsResolver
-                    .ResolveAlternativeColors(ColorList.DefaultValue, ColorList.Alternatives);
+                    .ResolveAlternativeColors(ColorList.Alternatives);
                 
-                ColorList = new ValueList<CardColor>(ColorList.DefaultValue.Value, resolvedAlternativeColors);
+                ColorList = new ValueList<CardColor>(null, resolvedAlternativeColors);
             }
 
             if (NumberList != null && NumberList.IsInitialized && !NumberList.IsResolved)
@@ -264,7 +264,7 @@ namespace Cardevil.Card.Common.Core
                 var resolvedAlternativeNumbers = SelectableSlotsResolver
                     .ResolveAlternativeNumbers(NumberList.DefaultValue, NumberList.Alternatives);
                 
-                NumberList = new ValueList<int>(NumberList.DefaultValue.Value, resolvedAlternativeNumbers);
+                NumberList = new ValueList<int>(null, resolvedAlternativeNumbers);
             }
             
             // Direction은 빌드될 때 이미 Resolve됨.
