@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3671bfb43be444c1ae9e1b370003b544, type: 3}
+  m_Name: MultiColor2
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.Common.Core.Upgrade.UpgradeNodeSO
+  nextNodes:
+  - {fileID: 11400000, guid: 3d9ce9d3e65074ff19925ef53161efc7, type: 2}
+  path: 2
+  stage: 2
+  targetCardType: 1
+  upgradeType: 1
+  elements:
+  - rid: 5998883810384282531
+  blackMarketCost: 0
+  marketCost: 0
+  nodePosition: {x: 654, y: 85.5}
+  references:
+    version: 2
+    RefIds:
+    - rid: 5998883810384282531
+      type: {class: SelectableColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        color:
+          <IsFixed>k__BackingField: 0
+          <FixedValue>k__BackingField: 0

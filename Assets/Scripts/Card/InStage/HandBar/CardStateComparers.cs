@@ -1,4 +1,5 @@
 using Cardevil.Card.Common.Core;
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core.Utils;
 using System.Collections.Generic;
 
@@ -55,11 +56,11 @@ namespace Cardevil.Card.InStage
         {
             if (s.ValueSelected) return 0;
 
-            return s.SelectableType switch
+            return s.UpgradePath switch
             {
-                CardState.ValueSelectableType.Color     => s.Colors.AllOptionsCount,
-                CardState.ValueSelectableType.Number    => s.Numbers.AllOptionsCount,
-                CardState.ValueSelectableType.Direction => s.Directions.AllOptionsCount,
+                UpgradePath.MultiColor => s.ColorList.AllCandidateValues.Count,
+                UpgradePath.MultiNumber => s.NumberList.AllCandidateValues.Count,
+                UpgradePath.MultiDirection => s.DirectionList.AllCandidateValues.Count,
                 _ => 0
             };
         }
@@ -67,11 +68,10 @@ namespace Cardevil.Card.InStage
         private static int DirectionOrder(ICardState s)
         {
             if (!s.IsMove) return 0;
-            
-            var current = s.Directions.Current;
-            if (!current.HasValue) return int.MaxValue;
 
-            return current.Value switch
+            var current = s.DirectionList.IsFixed ? s.DirectionList.FixedValue : Direction.None;
+
+            return current switch
             {
                 Direction.Up => 0,
                 Direction.Down => 1,
@@ -85,16 +85,18 @@ namespace Cardevil.Card.InStage
         private static int ColorOrder(ICardState s)
         {
             if (!s.IsAttack) return 0;
-            var cur = s.Colors.Current;
-            return cur.HasValue ? (int)cur.Value : int.MaxValue;
+
+            if (s.ColorList == null)
+                return 0;
+            
+            return s.ColorList.IsFixed ? (int)s.ColorList.FixedValue : int.MaxValue;
         }
 
         private static int NumberOrder(ICardState state)
         {
             if (!state.IsAttack) return 0;
 
-            var current = state.Numbers.Current;
-            return current ?? int.MaxValue;
+            return state.NumberList.IsFixed ? state.NumberList.FixedValue : int.MaxValue;
         }
     }
 }

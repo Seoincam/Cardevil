@@ -24,7 +24,7 @@ namespace Cardevil.Card.InStage.Score.Step
         public MoveStepElement(ICardState card)
         {
             Card = card;
-            Args = PlayerMoveArgs.Get(card.Directions.Current!.Value);
+            Args = PlayerMoveArgs.Get(card.DirectionList.FixedValue);
         }
     }
 }

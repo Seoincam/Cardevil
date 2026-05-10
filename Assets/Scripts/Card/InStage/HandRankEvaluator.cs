@@ -22,8 +22,8 @@ namespace Cardevil.Card.InStage
                 if (!card.ValueSelected) return new HandRankData(HandRank.None);
             }
 
-            Debug.Assert(attacks.All(card => card.Colors.Current.HasValue));
-            Debug.Assert(attacks.All(card => card.Numbers.Current.HasValue));
+            Debug.Assert(attacks.All(card => card.ColorList.IsFixed));
+            Debug.Assert(attacks.All(card => card.NumberList.IsFixed));
 
             var info = new HandInfo(attacks);
 
@@ -61,7 +61,7 @@ namespace Cardevil.Card.InStage
             }
 
             var highCard = info.All
-                .OrderByDescending(c => c.Numbers.Current!.Value)
+                .OrderByDescending(c => c.NumberList.FixedValue)
                 .First();
             return new HandRankData(HandRank.HighCard, new[] { highCard });
         }
@@ -83,13 +83,13 @@ namespace Cardevil.Card.InStage
                 All = attacks;
                 int count = attacks.Count;
 
-                var firstColor = attacks[0].Colors.Current!.Value;
+                var firstColor = attacks[0].ColorList.FixedValue;
                 Color = firstColor;
                 IsFlush = count == 4 &&
-                          attacks.All(c => c.Colors.Current!.Value == firstColor);
+                          attacks.All(c => c.ColorList.FixedValue == firstColor);
 
                 Groups = attacks
-                    .GroupBy(c => c.Numbers.Current!.Value)
+                    .GroupBy(c => c.NumberList.FixedValue)
                     .ToList();
 
                 IsFourCard = Groups.Any(g => g.Count() >= 4);
@@ -98,7 +98,7 @@ namespace Cardevil.Card.InStage
 
                 if (count == 4 && Groups.Count == 4)
                 {
-                    var numbers = attacks.Select(c => c.Numbers.Current!.Value);
+                    var numbers = attacks.Select(c => c.NumberList.FixedValue);
                     IsStraight = numbers.Max() - numbers.Min() == 3;
                 }
                 else

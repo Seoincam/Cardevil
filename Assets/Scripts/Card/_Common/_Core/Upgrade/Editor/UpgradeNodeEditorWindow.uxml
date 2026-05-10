@@ -1,0 +1,20 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="RootContainer" style="flex-grow: 1; flex-direction: column;">
+        
+        <ui:VisualElement style="flex-direction: row; background-color: rgb(56, 56, 56); padding: 5px; border-bottom-width: 1px; border-color: rgb(35, 35, 35);">
+            <ui:Button name="AddButton" text="+ 노드 추가" style="width: 100px; background-color: rgb(75, 110, 75);" />
+            <ui:VisualElement style="flex-grow: 1;" /> <ui:Label text="Upgrade Node Editor" style="align-self: center; font-weight: bold; color: rgb(200, 200, 200);" />
+        </ui:VisualElement>
+
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row; background-color: rgb(40, 40, 40);">
+            
+            <ui:VisualElement name="LeftPane" style="width: 350px; border-right-width: 1px; border-color: rgba(0, 0, 0, 0.5);">
+                <ui:ListView name="NodeListView" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.1);" />
+            </ui:VisualElement>
+            
+            <ui:ScrollView name="DetailContainer" style="flex-grow: 1; padding: 20px; transition-duration: 0.2s;" />
+            
+        </ui:VisualElement>
+        
+    </ui:VisualElement>
+</ui:UXML>

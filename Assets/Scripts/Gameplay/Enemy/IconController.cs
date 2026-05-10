@@ -6,6 +6,6 @@ namespace Cardevil.Gameplay.Enemy
     {
         
 
-        public
+        // public
     }
 }

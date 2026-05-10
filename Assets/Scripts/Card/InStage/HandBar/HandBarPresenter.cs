@@ -356,13 +356,13 @@ namespace Cardevil.Card.InStage
         private void PublishMoveCardEvent()
         {
             var moveCards = model.Selection.Where(s => s.IsMove).ToList();
-            bool shouldShow = moveCards.Any() && moveCards.All(s => s.Directions.HasSelected);
+            bool shouldShow = moveCards.Any() && moveCards.All(s => s.DirectionList.IsFixed);
 
             List<Direction> directions = null;
             if (shouldShow)
             {
                 directions = moveCards
-                    .Select(c => c.Directions.Current!.Value)
+                    .Select(c => c.DirectionList.FixedValue)
                     .ToList();
             }
 
