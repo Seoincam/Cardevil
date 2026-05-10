@@ -15,12 +15,12 @@ namespace Cardevil.Card.Common.Visual
     {
         [field: SerializeField] public CardType Type { get; private set; }
         
-        [field: Header("Attack - Color")]
+        [field: Header("Attack (Color)")]
         [field: SerializeField] public Optional<CardColor> BaseColor { get; private set; }
         [field: SerializeField] public Optional<CardColor>[] AllColorCandidates { get; private set; }
         [field: SerializeField] public Optional<CardColor> FixedColor { get; private set; }
 
-        [field: Header("Attack - Number")]
+        [field: Header("Attack (Number)")]
         [field: SerializeField] public Optional<int>[] AllNumberCandidates { get; private set; }
         [field: SerializeField] public Optional<int> FixedNumber { get; private set; }
 

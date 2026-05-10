@@ -1,12 +1,13 @@
 using Cardevil.Card.Common.Visual;
 using DG.Tweening;
+using System;
 using UnityEngine;
 
 namespace Cardevil.Card.Visual.Controller
 {
     public class CardSingleLayout : MonoBehaviour, ICardLayoutSpriteRenderer
     {
-        private static readonly int SaturationAmountID = Shader.PropertyToID("Amount");
+        private static int _saturationAmountID;
         
         [SerializeField] private SpriteRenderer mainSprite;
         [SerializeField] private SpriteRenderer cornerSprite;
@@ -14,6 +15,11 @@ namespace Cardevil.Card.Visual.Controller
         private MaterialPropertyBlock _propBlock;
 
         public GameObject GameObject => gameObject;
+
+        private void Awake()
+        {
+            _saturationAmountID = Shader.PropertyToID("_Amount");
+        }
 
         public void Apply(in CardLayoutData data)
         {
@@ -26,15 +32,12 @@ namespace Cardevil.Card.Visual.Controller
             _propBlock ??= new MaterialPropertyBlock();
             
             mainSprite.GetPropertyBlock(_propBlock);
-
-            if (value)
-            {
-                _propBlock.SetFloat(SaturationAmountID, 0);
-            }
-            else
-            {
-                _propBlock.SetFloat(SaturationAmountID, 1);
-            }
+            _propBlock.SetFloat(_saturationAmountID, value ? 0 : 1);
+            mainSprite.SetPropertyBlock(_propBlock);
+            
+            cornerSprite.GetPropertyBlock(_propBlock);
+            _propBlock.SetFloat(_saturationAmountID, value ? 0 : 1);
+            cornerSprite.SetPropertyBlock(_propBlock);
         }
 
         public void SetBackground(SpriteRenderer sharedBackgroundRenderer)

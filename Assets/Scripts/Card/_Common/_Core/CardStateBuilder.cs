@@ -46,10 +46,15 @@ namespace Cardevil.Card.Common.Core
                 {
                     state.ColorList = new CardState.ValueList<CardColor>(DefaultColor);
                 }
-                else
+                else if (_colorAlternatives.Count <= 3)
                 {
                     var alternatives = new List<CardColor?> { DefaultColor };
                     alternatives.AddRange(_colorAlternatives);
+                    state.ColorList = new CardState.ValueList<CardColor>(null, alternatives);
+                }
+                else
+                {
+                    var alternatives = new List<CardColor?>(_colorAlternatives);
                     state.ColorList = new CardState.ValueList<CardColor>(null, alternatives);
                 }
                 
