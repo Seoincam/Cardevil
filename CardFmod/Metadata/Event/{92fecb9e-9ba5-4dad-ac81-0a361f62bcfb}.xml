@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.03.00">
 	<object class="Event" id="{92fecb9e-9ba5-4dad-ac81-0a361f62bcfb}">
 		<property name="name">
-			<value>bgm_ace_boss</value>
+			<value>bgm_3_stage_boss</value>
 		</property>
 		<property name="outputFormat">
 			<value>1</value>
