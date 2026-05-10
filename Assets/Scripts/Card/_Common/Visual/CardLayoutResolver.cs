@@ -18,10 +18,10 @@ namespace Cardevil.Card.Common.Visual
 
         private static CardLayoutData ResolveAttack(in CardVisualInput input)
         {
-            var baseColor = input.AllColorCandidates[0];
-            var currentColor = input.CurrentColor;
+            var currentColor = input.FixedColor;
 
-            if (input.AllNumberCandidates.Length > 1 && !input.CurrentNumber.HasValue && currentColor.HasValue)
+            // 다중 숫자 카드의 경우 CurrentColor가 항상 존재함.
+            if (input.AllNumberCandidates.Length > 1 && !input.FixedNumber.HasValue && currentColor.HasValue)
             {
                 if (input.AllNumberCandidates.Length == 9)
                 {
@@ -57,10 +57,10 @@ namespace Cardevil.Card.Common.Visual
             
             // 숫자 한개, 선택 완료 등 나머지 -> 단일 레이아웃
             {
-                var number = input.CurrentNumber;
-                var innerFrame = CardSpriteCache.GetInnerFrame(baseColor.Value);
-                var mainSprite = CardSpriteCache.GetNumber(baseColor.Value, number.Value);
-                var cornerSprite = CardSpriteCache.GetSmallNumber(baseColor.Value, number.Value);
+                var number = input.FixedNumber;
+                var innerFrame = CardSpriteCache.GetInnerFrame(input.BaseColor.Value);
+                var mainSprite = CardSpriteCache.GetNumber(input.BaseColor.Value, number.Value);
+                var cornerSprite = CardSpriteCache.GetSmallNumber(input.BaseColor.Value, number.Value);
 
                 return CardLayoutData.SingleWithCorner(innerFrame, mainSprite, cornerSprite);
             }
@@ -69,7 +69,7 @@ namespace Cardevil.Card.Common.Visual
         private static CardLayoutData ResolveMove(in CardVisualInput input)
         {
             // 방향 여러개 + 미선택 -> 다중 화살표
-            if (input.AllDirectionCandidates.Length > 1 && !input.CurrentDirection.HasValue)
+            if (input.AllDirectionCandidates.Length > 1 && !input.FixedDirection.HasValue)
             {
                 var innerFrame = CardSpriteCache.GetInnerFrame(input.DirectionFlag);
                 var mainSprite = CardSpriteCache.GetArrow(input.DirectionFlag);
@@ -79,9 +79,9 @@ namespace Cardevil.Card.Common.Visual
 
             // 방향 한개, 선택 완료 등 나머지 -> 단일 화살표
             {
-                var direction = input.CurrentDirection;
-                var innerFrame = CardSpriteCache.GetInnerFrame(input.CurrentDirection.Value);
-                var mainSprite = CardSpriteCache.GetArrow(input.CurrentDirection.Value);
+                var direction = input.FixedDirection;
+                var innerFrame = CardSpriteCache.GetInnerFrame(input.FixedDirection.Value);
+                var mainSprite = CardSpriteCache.GetArrow(input.FixedDirection.Value);
 
                 return CardLayoutData.Single(innerFrame, mainSprite);
             }

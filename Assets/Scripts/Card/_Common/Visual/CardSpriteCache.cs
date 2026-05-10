@@ -120,7 +120,7 @@ namespace Cardevil.Card.Common.Visual
             return sprite;
         }
         
-        public static implicit operator Sprite(SpriteReference reference) => reference.Get();
+        public static implicit operator Sprite(SpriteReference reference) => reference.GetOrLogError();
         
         // 디버깅용 
         public override string ToString() => $"SpriteKey({_key})";

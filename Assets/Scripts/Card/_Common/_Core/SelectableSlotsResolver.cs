@@ -10,16 +10,9 @@ namespace Cardevil.Card.Common.Core
     /// </summary>
     public static class SelectableSlotsResolver
     {
-        public static IReadOnlyList<CardColor> ResolveAlternativeColors(
-            Optional<CardColor> defaultColor,
-            IReadOnlyList<Optional<CardColor>> alternatives)
+        public static IReadOnlyList<CardColor> ResolveAlternativeColors(IReadOnlyList<Optional<CardColor>> alternatives)
         {
-            if (!defaultColor.HasValue)
-            {
-                throw new ArgumentNullException(nameof(defaultColor));
-            }   
-            
-            var used = new HashSet<CardColor> { defaultColor.Value };
+            var used = new HashSet<CardColor>();
             var resolvedAlternatives = new List<CardColor>(alternatives.Count);
 
             foreach (var alternative in alternatives)
@@ -58,6 +51,7 @@ namespace Cardevil.Card.Common.Core
             if (defaultNumber.HasValue)
             {
                 used.Add(defaultNumber.Value);
+                resolvedAlternatives.Add(defaultNumber.Value);
             }
 
             foreach (var alternative in alternatives)

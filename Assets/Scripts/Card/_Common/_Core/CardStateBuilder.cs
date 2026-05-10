@@ -1,5 +1,6 @@
 using Cardevil.Core;
 using Cardevil.Core.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace Cardevil.Card.Common.Core
@@ -36,7 +37,28 @@ namespace Cardevil.Card.Common.Core
             // 공격 카드인 경우는 Resolve를 하지 않고, 이동 카드는 이 시점에 미리 Resolve함.
             if (spec.Type == CardType.Attack)
             {
-                state.ColorList = new CardState.ValueList<CardColor>(DefaultColor, _colorAlternatives);
+                // Color
+                if (!DefaultColor.HasValue)
+                    throw new ArgumentNullException(nameof(DefaultColor), "기본색은 항상 존재해야합니다.");
+                
+                state.BaseColor = new Optional<CardColor>(DefaultColor);
+                if (_colorAlternatives.Count == 0)
+                {
+                    state.ColorList = new CardState.ValueList<CardColor>(DefaultColor);
+                }
+                else if (_colorAlternatives.Count <= 3)
+                {
+                    var alternatives = new List<CardColor?> { DefaultColor };
+                    alternatives.AddRange(_colorAlternatives);
+                    state.ColorList = new CardState.ValueList<CardColor>(null, alternatives);
+                }
+                else
+                {
+                    var alternatives = new List<CardColor?>(_colorAlternatives);
+                    state.ColorList = new CardState.ValueList<CardColor>(null, alternatives);
+                }
+                
+                // Number
                 state.NumberList = new CardState.ValueList<int>(DefaultNumber, _numberAlternatives);
             }
             else if (spec.Type == CardType.Move)
