@@ -102,7 +102,8 @@ namespace Cardevil.Card.Common.Core
             switch (UpgradeNode.UpgradeType)
             {
                 case UpgradeApplyType.OverrideColors:
-                    elements.RemoveAll(e => e is IColorElement);
+                    // 기본색을 남겨두기 위해서 BaseColorElement는 지우지 않음.
+                    elements.RemoveAll(e => e is SelectableColorElement);
                     break;
                 
                 case UpgradeApplyType.OverrideNumbers:

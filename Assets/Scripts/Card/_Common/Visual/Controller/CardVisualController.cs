@@ -1,5 +1,6 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
+using Cardevil.Core.Attributes;
 using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,9 @@ namespace Cardevil.Card.Visual.Controller
     
     public class CardVisualController : MonoBehaviour
     {
+        [Header("States")]
+        [SerializeField, VisibleOnly] private CardVisualInput currentInput;
+        
         [Header("Prefabs")]
         [SerializeField] private CardSingleLayout singlePrefab;
         [SerializeField] private CardDualLayout dualPrefab;
@@ -58,6 +62,8 @@ namespace Cardevil.Card.Visual.Controller
         /// </summary>
         public void SetLayout(CardVisualInput visualInput)
         {
+            currentInput = visualInput;
+            
             // Layout
             var layoutData = CardLayoutResolver.Resolve(visualInput);
 
@@ -80,6 +86,12 @@ namespace Cardevil.Card.Visual.Controller
 
             _currentLayout.SetBackground(background);
             _currentLayout.Apply(in layoutData);
+            
+            if (layoutData.LayoutType == CardLayoutType.SingleWithCorner && 
+                _currentLayout is CardSingleLayout singleLayout)
+            {
+                singleLayout.SetNoneColorMaterial(visualInput.FixedColor.HasValue);
+            }
 
             // Decoration
             if (_currentColorJewel)

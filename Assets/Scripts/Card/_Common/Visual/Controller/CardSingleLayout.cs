@@ -6,8 +6,12 @@ namespace Cardevil.Card.Visual.Controller
 {
     public class CardSingleLayout : MonoBehaviour, ICardLayoutSpriteRenderer
     {
+        private static readonly int SaturationAmountID = Shader.PropertyToID("Amount");
+        
         [SerializeField] private SpriteRenderer mainSprite;
         [SerializeField] private SpriteRenderer cornerSprite;
+
+        private MaterialPropertyBlock _propBlock;
 
         public GameObject GameObject => gameObject;
 
@@ -15,6 +19,22 @@ namespace Cardevil.Card.Visual.Controller
         {
             mainSprite.sprite = data.MainSprite;
             cornerSprite.sprite = data.CornerSprite;
+        }
+
+        public void SetNoneColorMaterial(bool value)
+        {
+            _propBlock ??= new MaterialPropertyBlock();
+            
+            mainSprite.GetPropertyBlock(_propBlock);
+
+            if (value)
+            {
+                _propBlock.SetFloat(SaturationAmountID, 0);
+            }
+            else
+            {
+                _propBlock.SetFloat(SaturationAmountID, 1);
+            }
         }
 
         public void SetBackground(SpriteRenderer sharedBackgroundRenderer)

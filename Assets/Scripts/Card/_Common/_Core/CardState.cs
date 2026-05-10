@@ -12,6 +12,7 @@ namespace Cardevil.Card.Common.Core
 {
     public interface ICardState : IScoreSource
     {
+        Optional<CardColor> BaseColor { get; }
         IValueList<CardColor> ColorList { get; }
         IValueList<int> NumberList { get; }
         IValueList<Direction> DirectionList { get; }
@@ -48,6 +49,7 @@ namespace Cardevil.Card.Common.Core
         [SerializeField, VisibleOnly] private CardSpec originalSpec;
         
         [field: Header("Value List")]
+        [field: SerializeField] public Optional<CardColor> BaseColor { get; set; }
         [field: SerializeField] public ValueList<CardColor> ColorList { get; set; }
         [field: SerializeField] public ValueList<int> NumberList { get; set; }
         [field: SerializeField] public ValueList<Direction> DirectionList { get; set; }
@@ -146,7 +148,7 @@ namespace Cardevil.Card.Common.Core
                     if (SelectedValue.HasValue)
                         return SelectedValue.Value;
 
-                    throw new Exception("카드의 값이 고정되지 않았지만 고정된 값에 접근했습니다. IsFixed를 체크 후 접근해주세요.");
+                    throw new Exception("카드의 값이 고정되지 않았지만 고정된 값에 접근했습니다. ValueList<T>.IsFixed 로직에 문제가 있습니다!!");
                 }
             }
 
