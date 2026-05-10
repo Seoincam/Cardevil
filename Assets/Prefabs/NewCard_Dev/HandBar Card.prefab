@@ -58,7 +58,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: -876546973899608171, guid: 3643b098d6cbc47368198f7bc98c8947, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -138,7 +138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <VisualController>k__BackingField: {fileID: -8963677850682684460}
-  <State>k__BackingField:
+  debugState:
     rid: -2
   rotationAmount: 3
   maxTilt: 40
