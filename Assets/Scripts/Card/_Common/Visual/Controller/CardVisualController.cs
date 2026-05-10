@@ -3,6 +3,7 @@ using Cardevil.Card.Common.Visual;
 using Cardevil.Core.Attributes;
 using DG.Tweening;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Cardevil.Card.Visual.Controller
@@ -209,9 +210,15 @@ namespace Cardevil.Card.Visual.Controller
         private void SetNoneColorMaterial(bool value)
         {
             _propBlock ??= new MaterialPropertyBlock();
+
+            float targetSaturation = value ? 0f : 1f;
+            
+            background.GetPropertyBlock(_propBlock);
+            _propBlock.SetFloat(_saturationAmountID, targetSaturation);
+            background.SetPropertyBlock(_propBlock);
             
             innerFrame.GetPropertyBlock(_propBlock);
-            _propBlock.SetFloat(_saturationAmountID, value ? 0 : 1);
+            _propBlock.SetFloat(_saturationAmountID, targetSaturation);
             innerFrame.SetPropertyBlock(_propBlock);
         }
     }
