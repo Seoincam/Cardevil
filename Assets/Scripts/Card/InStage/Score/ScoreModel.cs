@@ -1,9 +1,11 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Core.Attributes;
+using Cardevil.Core.Bootstrap;
+using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using Object = System.Object;
 using Random = UnityEngine.Random;
 
 namespace Cardevil.Card.InStage.Score
@@ -18,7 +20,23 @@ namespace Cardevil.Card.InStage.Score
         public float Score => score;
         public HandRank HandRank => handRankData.HandRank;
         public IReadOnlyList<IScoreOperator> ScoreOperators => scoreOperators;
-        public float HandRankScore => HandRank == HandRank.None ? 0f : Random.Range(0, 100f);
+
+        public float HandRankScore
+        {
+            get
+            {
+                if (HandRank == HandRank.None) return 0f;
+                
+                var data = CardevilCore.Database.Database.HandRankDataList.FirstOrDefault(x => x.Ranking == handRankData.HandRank);
+                if (data == null)
+                {
+                    LogEx.LogError($"DB에서 족보 데이터를 찾지 못했습니다: {HandRank}");
+                    return 0f;
+                }
+
+                return data.Value;
+            }
+        }
         
         public void SetScore(float value)
         {
