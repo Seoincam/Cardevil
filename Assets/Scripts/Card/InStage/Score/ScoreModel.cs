@@ -21,17 +21,17 @@ namespace Cardevil.Card.InStage.Score
         public HandRank HandRank => handRankData.HandRank;
         public IReadOnlyList<IScoreOperator> ScoreOperators => scoreOperators;
 
-        public float HandRankScore
+        public int HandRankScore
         {
             get
             {
-                if (HandRank == HandRank.None) return 0f;
+                if (HandRank == HandRank.None) return 0;
                 
                 var data = CardevilCore.Database.Database.HandRankDataList.FirstOrDefault(x => x.Ranking == handRankData.HandRank);
                 if (data == null)
                 {
                     LogEx.LogError($"DB에서 족보 데이터를 찾지 못했습니다: {HandRank}");
-                    return 0f;
+                    return 0;
                 }
 
                 return data.Value;
