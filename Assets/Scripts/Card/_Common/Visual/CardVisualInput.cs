@@ -84,7 +84,7 @@ namespace Cardevil.Card.Common.Visual
 
             if (state.DirectionList != null && state.DirectionList.IsInitialized)
             {
-                allDirectionCandidates = state.DirectionList.AllCandidateValues.Select(d => d.Value).ToArray();
+                allDirectionCandidates = state.DirectionList.AllCandidateValues.Select(d => d!.Value).ToArray();
                 fixedDirection = state.DirectionList.IsFixed ? state.DirectionList.FixedValue : null;
                 directionFlag = state.DirectionFlag;
             }

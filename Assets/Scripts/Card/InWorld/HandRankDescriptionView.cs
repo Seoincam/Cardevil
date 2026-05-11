@@ -74,11 +74,11 @@ namespace Cardevil.Card.InWorld
             handRankNameText.text = data.DisplayName;
             handRankDescriptionText.text = data.DisplayCondition;
 
-            if (data.DisplayCardColors is { Count: 4 } && data.DisplayCardNumbers is { Count: 4 })
+            if (data.DisplayCards is { Count: 4 })
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    var visualInput = CardVisualInput.Attack(data.DisplayCardColors[i], data.DisplayCardNumbers[i]);
+                    var visualInput = CardVisualInput.Attack(data.DisplayCards[i].Item1, data.DisplayCards[i].Item2);
                     cards[i].VisualController.SetLayout(visualInput);
                 }
             }
