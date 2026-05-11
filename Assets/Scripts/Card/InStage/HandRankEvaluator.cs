@@ -35,6 +35,9 @@ namespace Cardevil.Card.InStage
 
             if (info.IsFlush && info.PairCount == 2)
                 return new HandRankData(HandRank.TwoPairFlush, info.All, info.Color);
+            
+            if (info.IsFlush)
+                return new HandRankData(HandRank.Flush, info.All, info.Color);
 
             if (info.IsFourCard)
                 return new HandRankData(HandRank.FourCard, info.All);
