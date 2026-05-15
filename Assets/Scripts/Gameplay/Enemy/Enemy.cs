@@ -4,13 +4,9 @@ using Cardevil.Core.Utils;
 using Cardevil.Gameplay.Enemy.Attack;
 using Cardevil.Gameplay.Enemy.Gimmick;
 using Cardevil.Gameplay.Turn;
-using Cardevil.Test.DebugConsole;
-using Cardevil.Test.DebugConsole.Commands;
 using Cysharp.Threading.Tasks;
 using Database.Generated;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -34,7 +30,7 @@ namespace Cardevil.Gameplay.Enemy
 
         public float maxHP = 100;
         public BaseMobBossData baseMobBossData;
-        public Field.Field field;
+        private Field.Field field;
 
         // ---- 기본 선언부 --- ///
         private float damage = 1; // Enemy의 공격력

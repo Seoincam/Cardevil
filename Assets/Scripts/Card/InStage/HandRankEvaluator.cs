@@ -22,8 +22,8 @@ namespace Cardevil.Card.InStage
                 if (!card.ValueSelected) return new HandRankData(HandRank.None);
             }
 
-            Debug.Assert(attacks.All(card => card.ColorList.IsFixed));
-            Debug.Assert(attacks.All(card => card.NumberList.IsFixed));
+            Debug.Assert(attacks.All(card => card.Colors.Current.HasValue));
+            Debug.Assert(attacks.All(card => card.Numbers.Current.HasValue));
 
             var info = new HandInfo(attacks);
 
@@ -35,9 +35,6 @@ namespace Cardevil.Card.InStage
 
             if (info.IsFlush && info.PairCount == 2)
                 return new HandRankData(HandRank.TwoPairFlush, info.All, info.Color);
-            
-            if (info.IsFlush)
-                return new HandRankData(HandRank.Flush, info.All, info.Color);
 
             if (info.IsFourCard)
                 return new HandRankData(HandRank.FourCard, info.All);
@@ -64,7 +61,7 @@ namespace Cardevil.Card.InStage
             }
 
             var highCard = info.All
-                .OrderByDescending(c => c.NumberList.FixedValue)
+                .OrderByDescending(c => c.Numbers.Current!.Value)
                 .First();
             return new HandRankData(HandRank.HighCard, new[] { highCard });
         }
@@ -86,13 +83,13 @@ namespace Cardevil.Card.InStage
                 All = attacks;
                 int count = attacks.Count;
 
-                var firstColor = attacks[0].ColorList.FixedValue;
+                var firstColor = attacks[0].Colors.Current!.Value;
                 Color = firstColor;
                 IsFlush = count == 4 &&
-                          attacks.All(c => c.ColorList.FixedValue == firstColor);
+                          attacks.All(c => c.Colors.Current!.Value == firstColor);
 
                 Groups = attacks
-                    .GroupBy(c => c.NumberList.FixedValue)
+                    .GroupBy(c => c.Numbers.Current!.Value)
                     .ToList();
 
                 IsFourCard = Groups.Any(g => g.Count() >= 4);
@@ -101,7 +98,7 @@ namespace Cardevil.Card.InStage
 
                 if (count == 4 && Groups.Count == 4)
                 {
-                    var numbers = attacks.Select(c => c.NumberList.FixedValue);
+                    var numbers = attacks.Select(c => c.Numbers.Current!.Value);
                     IsStraight = numbers.Max() - numbers.Min() == 3;
                 }
                 else

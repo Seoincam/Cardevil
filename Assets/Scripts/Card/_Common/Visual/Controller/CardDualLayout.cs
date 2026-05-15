@@ -18,7 +18,7 @@ namespace Cardevil.Card.Visual.Controller
         public void Apply(in CardLayoutData data)
         {
             subSprite0.sprite = data.SubSprites[0];
-            subSprite1.sprite = data.SubSprites[1].GetOrLogError();
+            subSprite1.sprite = data.SubSprites[1];
         }
 
         public void SetBackground(SpriteRenderer sharedBackgroundRenderer)

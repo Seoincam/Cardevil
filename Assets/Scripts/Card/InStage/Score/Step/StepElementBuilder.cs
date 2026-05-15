@@ -124,7 +124,7 @@ namespace Cardevil.Card.InStage.Score.Step
                     var cardScoreOperator = new ScoreOperator
                     {
                         Type = ScoreOperatorType.Plus, 
-                        Value = card.NumberList.FixedValue, 
+                        Value = card.Numbers.Current!.Value, 
                         Source = card
                     };
                     Apply(cardScoreOperator);

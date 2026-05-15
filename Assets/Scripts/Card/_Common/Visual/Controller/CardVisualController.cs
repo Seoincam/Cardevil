@@ -1,9 +1,7 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
-using Cardevil.Core.Attributes;
 using DG.Tweening;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace Cardevil.Card.Visual.Controller
@@ -16,13 +14,6 @@ namespace Cardevil.Card.Visual.Controller
     
     public class CardVisualController : MonoBehaviour
     {
-        private const int LastSortingOrder = 100;
-        private static int _saturationAmountID;
-        private static Dictionary<CardLayer, int> _layerIdMap;
-        
-        [Header("States")]
-        [SerializeField, VisibleOnly] private CardVisualInput currentInput;
-        
         [Header("Prefabs")]
         [SerializeField] private CardSingleLayout singlePrefab;
         [SerializeField] private CardDualLayout dualPrefab;
@@ -37,15 +28,14 @@ namespace Cardevil.Card.Visual.Controller
         private ICardLayoutSpriteRenderer _currentLayout;
         private ColorJewelDecoration _currentColorJewel;
         private TrailRenderer _currentTrail;
-        private (int sortingOrder, CardLayer layer)? _cachedSortingData;
-        
-        private MaterialPropertyBlock _propBlock;
+
+        private const int LastSortingOrder = 100;
+        private static Dictionary<CardLayer, int> _layerIdMap;
         
         public float TrailTime => _currentTrail?.time ?? 0f;
 
         private void Awake()
         {
-            _saturationAmountID = Shader.PropertyToID("_Amount");
             if (_layerIdMap == null)
             {
                 _layerIdMap = new Dictionary<CardLayer, int>(2);
@@ -68,8 +58,6 @@ namespace Cardevil.Card.Visual.Controller
         /// </summary>
         public void SetLayout(CardVisualInput visualInput)
         {
-            currentInput = visualInput;
-            
             // Layout
             var layoutData = CardLayoutResolver.Resolve(visualInput);
 
@@ -92,32 +80,18 @@ namespace Cardevil.Card.Visual.Controller
 
             _currentLayout.SetBackground(background);
             _currentLayout.Apply(in layoutData);
-            
-            // 아직 색이 결정되지 않은 카드 처리해줌
-            bool isNoneColor = !visualInput.FixedColor.HasValue;
-            SetNoneColorMaterial(isNoneColor);
-            if (layoutData.LayoutType == CardLayoutType.SingleWithCorner && 
-                _currentLayout is CardSingleLayout singleLayout)
-            {
-                singleLayout.SetNoneColorMaterial(isNoneColor);
-            }
 
             // Decoration
             if (_currentColorJewel)
             {
-                Destroy(_currentColorJewel.gameObject);
+                Destroy(_currentColorJewel);
             }
             
             var decorationData = CardDecorationResolver.Resolve(visualInput);
-            if (decorationData.DecorationType.HasFlag(CardDecorationType.ColorJewel))
+            if (decorationData.Decorations.HasFlag(CardDecorations.ColorJewel))
             {
                 _currentColorJewel = Instantiate(colorJewelPrefab, transform).GetComponent<ColorJewelDecoration>();
                 _currentColorJewel.Apply(in decorationData);
-            }
-
-            if (_cachedSortingData.HasValue)
-            {
-                SetSortingOrder(_cachedSortingData.Value.sortingOrder, _cachedSortingData.Value.layer);
             }
         }
 
@@ -136,8 +110,6 @@ namespace Cardevil.Card.Visual.Controller
             
             _currentLayout?.SetSortingOrder(sortingOrder, layerId);
             _currentColorJewel?.SetSortingOrder(sortingOrder, layerId);
-
-            _cachedSortingData = (sortingOrder, layer);
         }
 
         /// <summary>
@@ -205,21 +177,6 @@ namespace Cardevil.Card.Visual.Controller
             }
             
             return sequence;
-        }
-        
-        private void SetNoneColorMaterial(bool value)
-        {
-            _propBlock ??= new MaterialPropertyBlock();
-
-            float targetSaturation = value ? 0f : 1f;
-            
-            background.GetPropertyBlock(_propBlock);
-            _propBlock.SetFloat(_saturationAmountID, targetSaturation);
-            background.SetPropertyBlock(_propBlock);
-            
-            innerFrame.GetPropertyBlock(_propBlock);
-            _propBlock.SetFloat(_saturationAmountID, targetSaturation);
-            innerFrame.SetPropertyBlock(_propBlock);
         }
     }
 }

@@ -1,4 +1,3 @@
-using Cardevil.Core.Utils;
 using System;
 using UnityEngine;
 
@@ -7,31 +6,31 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public sealed class SelectableNumberElement : INumberElement
     {
-        [SerializeField] private Optional<int> number;
+        [SerializeField] private CardStateBuilder.SelectableSlot<int> number;
         
         public SelectableNumberElement()
         {
-            number = new Optional<int>(null);
+            number = CardStateBuilder.SelectableSlot<int>.Random();
         }
         
         public static SelectableNumberElement Fixed(int number) => new()
         {
-            number = new Optional<int>(number)
+            number = CardStateBuilder.SelectableSlot<int>.Fixed(number)
         };
         
         public static SelectableNumberElement Random() => new()
         {
-            number = new Optional<int>(null)
+            number = CardStateBuilder.SelectableSlot<int>.Random()
         };
         
         public ISpecElement DeepClone()
         {
             return new SelectableNumberElement { number = number };
         }
-
+        
         public void Apply(CardStateBuilder builder)
         {
-            builder.AddNumberAlternative(number.HasValue ? number.Value : null);
+            builder.AddNumberSelectableSlot(number);
         }
     }
 }

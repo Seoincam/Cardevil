@@ -48,7 +48,7 @@ namespace Cardevil.Card.InWorld.Shop
         /// </summary>
         public void HandleCardUpgraded(int specId)
         {
-            var newVisualInput = CardVisualInput.From(_repository.GetNewState(specId));
+            var newVisualInput = CardVisualInput.From(_repository.GetState(specId));
             _view.UpdateCardVisual(specId, newVisualInput);
         }
 
@@ -59,7 +59,7 @@ namespace Cardevil.Card.InWorld.Shop
             var drawResultIds = ShopCardProvider.DrawShopCards(_repository.Cards, count);
             foreach (var id in drawResultIds)
             {
-                var visualInput = CardVisualInput.From(_repository.GetNewState(id));
+                var visualInput = CardVisualInput.From(_repository.GetState(id));
                 list.Add(new SelectionData
                 {
                     Id = id, 
@@ -195,9 +195,9 @@ namespace Cardevil.Card.InWorld.Shop
             private static CardCategory GetCategory(CardSpec spec)
             {
                 if (spec.IsMove) return CardCategory.Direction;
-
-                var color = spec.State.ColorList.DefaultValue.HasValue
-                    ? spec.State.ColorList.DefaultValue.Value
+    
+                var color = spec.State.Colors.DefaultValue.hasValue
+                    ? spec.State.Colors.DefaultValue.value
                     : CardColor.None;
                 
                 return color switch

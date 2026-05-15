@@ -21,49 +21,10 @@ namespace Database.Generated
         public string DisplayName;
         /// <summary> 게임상 조건 설명 </summary>
         public string DisplayCondition;
-        /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 </summary>
-        [NonSerialized]
-        [JsonIgnore]
-        public List<(Cardevil.Card.Common.Core.CardColor, int, bool)> DisplayCards;
-    }
-
-    public partial class HandRankData : ISerializationCallbackReceiver
-    {
-
-        [SerializeField, JsonProperty("DisplayCards"), InspectorName("DisplayCards")]
-        private List<DatabaseTuple<Cardevil.Card.Common.Core.CardColor, int, bool>> DisplayCardsSerialized = new List<DatabaseTuple<Cardevil.Card.Common.Core.CardColor, int, bool>>();
-
-        public void OnBeforeSerialize()
-        {
-            SyncTupleFieldsToSerializedBacking();
-        }
-
-        public void OnAfterDeserialize()
-        {
-            SyncTupleFieldsFromSerializedBacking();
-        }
-
-        [OnSerializing]
-        private void OnJsonSerializing(StreamingContext context)
-        {
-            SyncTupleFieldsToSerializedBacking();
-        }
-
-        [OnDeserialized]
-        private void OnJsonDeserialized(StreamingContext context)
-        {
-            SyncTupleFieldsFromSerializedBacking();
-        }
-
-        private void SyncTupleFieldsToSerializedBacking()
-        {
-            DisplayCardsSerialized = DisplayCards?.ConvertAll(item => DatabaseTupleConvert.ToBacking<DatabaseTuple<Cardevil.Card.Common.Core.CardColor, int, bool>>(item)) ?? new List<DatabaseTuple<Cardevil.Card.Common.Core.CardColor, int, bool>>();
-        }
-
-        private void SyncTupleFieldsFromSerializedBacking()
-        {
-            DisplayCards = DisplayCardsSerialized?.ConvertAll(item => DatabaseTupleConvert.ToValueTuple<(Cardevil.Card.Common.Core.CardColor, int, bool)>(item)) ?? new List<(Cardevil.Card.Common.Core.CardColor, int, bool)>();
-        }
+        /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 (색) </summary>
+        public List<Cardevil.Card.Common.Core.CardColor> DisplayCardColors;
+        /// <summary> 게임상 족보 설명창에 뜨는 카드 조합 (숫자) </summary>
+        public List<int> DisplayCardNumbers;
     }
 
 }

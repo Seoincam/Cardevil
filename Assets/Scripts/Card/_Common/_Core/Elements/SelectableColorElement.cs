@@ -1,4 +1,3 @@
-using Cardevil.Core.Utils;
 using System;
 using UnityEngine;
 
@@ -7,30 +6,30 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public sealed class SelectableColorElement : IColorElement
     {
-        [SerializeField] private Optional<CardColor> color;
+        [SerializeField] private CardStateBuilder.SelectableSlot<CardColor> color;
 
         public SelectableColorElement()
         {
-            color = new Optional<CardColor>(null);
+            color = CardStateBuilder.SelectableSlot<CardColor>.Random();
         }
         public static SelectableColorElement Fixed(CardColor color) => new()
         {
-            color = new Optional<CardColor>(color)
+            color = CardStateBuilder.SelectableSlot<CardColor>.Fixed(color)
         };
         
         public static SelectableColorElement Random() => new()
         {
-            color = new Optional<CardColor>(null)
+            color = CardStateBuilder.SelectableSlot<CardColor>.Random()
         };
         
         public ISpecElement DeepClone()
         {
             return new SelectableColorElement { color = color };
         }
-
+        
         public void Apply(CardStateBuilder builder)
         {
-            builder.AddColorAlternative(color.HasValue ? color.Value : null);
+            builder.AddColorSelectableSlot(color);
         }
     }
 }

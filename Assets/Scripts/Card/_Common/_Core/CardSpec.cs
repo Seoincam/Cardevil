@@ -1,7 +1,6 @@
 using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core;
 using Cardevil.Core.Attributes;
-using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +21,7 @@ namespace Cardevil.Card.Common.Core
         
         [field: Header("Upgrade Data")]
         [field: SerializeField] public UpgradeNodeSO UpgradeNode { get; private set; }
+        
 
         private CardStateBuilder _builder = new();
         private CardState _cachedState;
@@ -29,6 +29,9 @@ namespace Cardevil.Card.Common.Core
 
         public IReadOnlyList<ISpecElement> Elements => elements;
 
+        /// <summary>
+        /// 현재 Spec 기준으로 생성된 카드 상태.
+        /// </summary>
         public CardState State
         {
             get
@@ -38,7 +41,7 @@ namespace Cardevil.Card.Common.Core
                     _cachedState = _builder.Build(this);
                     _isDirty = false;
                 }
-                
+
                 return _cachedState;
             }
         }
@@ -58,13 +61,13 @@ namespace Cardevil.Card.Common.Core
             }
         }
 
-        public CardSpec(int id, CardType type, UpgradeNodeSO upgradeNode = null)
+        public CardSpec(int id,
+            CardType type,
+            UpgradeNodeSO upgradeNode = null)
         {
             ID = id;
             Type = type;
-            
-            if (upgradeNode)
-                ApplyUpgradeNodeAndNotify(upgradeNode);
+            ApplyUpgradeNode(upgradeNode);
         }
         
         public CardSpec DeepClone()
@@ -87,33 +90,25 @@ namespace Cardevil.Card.Common.Core
             SpecChanged?.Invoke(this);
             return this;
         }
-
-        public CardSpec ApplyUpgradeNodeAndNotify(UpgradeNodeSO upgradeNode)
+        
+        /// <param name="upgradeNode">적용할 강화 단계 노드.</param>
+        /// <param name="isUIAction">
+        /// <c>true</c>일 경우, UI 표시용으로 판단해 이벤트를 발행하지 않음.
+        /// <c>false</c>일 경우, 실제 강화가 이루어진 것으로 판단해 이벤트를 발행함.
+        /// </param>
+        public CardSpec ApplyUpgradeNode(UpgradeNodeSO upgradeNode, bool isUIAction = false)
         {
-            ApplyUpgradeNode(upgradeNode);
-            
-            SpecChanged?.Invoke(this);
-            return this;
-        }
-
-        public CardSpec ApplyUpgradeNode(UpgradeNodeSO upgradeNode)
-        {
-            if (!upgradeNode || UpgradeNode == upgradeNode)
-            {
-                LogEx.LogError("UpgradeNode 적용 실패.");
-                return this;
-            }
+            if (!upgradeNode || UpgradeNode == upgradeNode) return this;
 
             UpgradeNode = upgradeNode;
             _isDirty = true;
-
-            if (UpgradeNode.UpgradeType == UpgradeApplyType.None) return this;
             
+            if (UpgradeNode.UpgradeType == UpgradeApplyType.None) return this;
+
             switch (UpgradeNode.UpgradeType)
             {
                 case UpgradeApplyType.OverrideColors:
-                    // 기본색을 남겨두기 위해서 BaseColorElement는 지우지 않음.
-                    elements.RemoveAll(e => e is SelectableColorElement);
+                    elements.RemoveAll(e => e is IColorElement);
                     break;
                 
                 case UpgradeApplyType.OverrideNumbers:
@@ -126,33 +121,11 @@ namespace Cardevil.Card.Common.Core
             }
             elements.AddRange(UpgradeNode.Elements);
 
-            return this;
-        }
+            if (!isUIAction)
+            {
+                SpecChanged?.Invoke(this);
+            }
 
-        /// <summary>
-        /// 공격(숫자) 카드의 기본색을 변경합니다.
-        /// </summary>
-        /// <remarks>
-        /// 기본색: 카드의 색이 정해지지 않았을 때 기본적으로 표시될 스프라이트들의 기본색.
-        /// </remarks>
-        public CardSpec ChangeBaseColor(CardColor targetBaseColor)
-        {
-            if (Type != CardType.Attack)
-            {
-                LogEx.LogError("공격(숫자) 카드가 아닌 카드 스펙의 기본 색을 변경할 수 없습니다.");
-                return this;
-            }
-            
-            var baseColorElement = elements.FirstOrDefault(e => e is BaseColorElement);
-            if (baseColorElement == null)
-            {
-                LogEx.LogError("BaseColorElement가 존재하지 않습니다.");
-                return this;
-            }
-            
-            int baseColorElementIndex = elements.IndexOf(baseColorElement);
-            elements[baseColorElementIndex] = new BaseColorElement(targetBaseColor);
-            
             return this;
         }
     }

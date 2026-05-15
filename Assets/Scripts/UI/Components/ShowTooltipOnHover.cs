@@ -13,9 +13,6 @@ namespace Cardevil.UI.Components
         [SerializeField] private TooltipAlign _preferredAlign = TooltipAlign.Center;
 
         [field: SerializeField] public TooltipData TooltipData { get; private set; }
-        
-        [Tooltip("Awake 시 TooltipData를 이 키로 불러옵니다.")]
-        [SerializeField] private string overrideTooltipKey;
         private RectTransform _rectTransform;
 
 #if UNITY_EDITOR
@@ -32,10 +29,6 @@ namespace Cardevil.UI.Components
         {
             base.Awake();
             _rectTransform = GetComponent<RectTransform>();
-            if (!string.IsNullOrEmpty(overrideTooltipKey))
-            {
-                TooltipData = TooltipResolver.Resolve(overrideTooltipKey);
-            }
         }
 
         protected override void OnEnable()

@@ -14,7 +14,6 @@ namespace Cardevil.Core.Utils
             Default = 0,
             CardShuffle = 1,
             Events = 2,
-            Gimmick = 3,
             
             MAX
         }

@@ -7,31 +7,31 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public sealed class SelectableDirectionElement : IDirectionElement
     {
-        [SerializeField] private Optional<Direction> direction;
-        
+        [SerializeField] private CardStateBuilder.SelectableSlot<Direction> direction;
+
         public SelectableDirectionElement()
         {
-            direction = new Optional<Direction>(null);
+            direction = CardStateBuilder.SelectableSlot<Direction>.Random();
         }
         
         public static SelectableDirectionElement Fixed(Direction direction) => new()
         {
-            direction = new Optional<Direction>(direction)
+            direction = CardStateBuilder.SelectableSlot<Direction>.Fixed(direction)
         };
         
         public static SelectableDirectionElement Random() => new()
         {
-            direction = new Optional<Direction>(null)
+            direction = CardStateBuilder.SelectableSlot<Direction>.Random()
         };
         
         public ISpecElement DeepClone()
         {
-            return new SelectableDirectionElement {  direction = direction };
+            return new SelectableDirectionElement() { direction =  direction };
         }
         
         public void Apply(CardStateBuilder builder)
         {
-            builder.AddDirectionAlternative(direction.HasValue ? direction.Value : null);
+            builder.AddDirectionSelectableSlot(direction);
         }
     }
 }

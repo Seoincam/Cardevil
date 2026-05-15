@@ -18,10 +18,10 @@ namespace Cardevil.Card.Common.Core
         {
             return new BaseColorElement(color);
         }
-
+        
         public void Apply(CardStateBuilder builder)
         {
-            builder.DefaultColor = color;
+            builder.SetDefaultColor(color);
         }
     }
 }
