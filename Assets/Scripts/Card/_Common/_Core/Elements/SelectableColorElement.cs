@@ -7,30 +7,30 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public sealed class SelectableColorElement : IColorElement
     {
-        [SerializeField] private Optional<CardColor> newColor;
+        [SerializeField] private Optional<CardColor> color;
 
         public SelectableColorElement()
         {
-            newColor = new Optional<CardColor>(null);
+            color = new Optional<CardColor>(null);
         }
         public static SelectableColorElement Fixed(CardColor color) => new()
         {
-            newColor = new Optional<CardColor>(color)
+            color = new Optional<CardColor>(color)
         };
         
         public static SelectableColorElement Random() => new()
         {
-            newColor = new Optional<CardColor>(null)
+            color = new Optional<CardColor>(null)
         };
         
         public ISpecElement DeepClone()
         {
-            return new SelectableColorElement { newColor = newColor };
+            return new SelectableColorElement { color = color };
         }
 
         public void Apply(CardStateBuilder builder)
         {
-            builder.AddColorAlternative(newColor.HasValue ? newColor.Value : null);
+            builder.AddColorAlternative(color.HasValue ? color.Value : null);
         }
     }
 }

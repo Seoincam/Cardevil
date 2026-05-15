@@ -31,24 +31,24 @@ MonoBehaviour:
     - rid: 5998883810384282548
       type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        newDirection:
+        direction:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 0
     - rid: 5998883810384282549
       type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        newDirection:
+        direction:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 2
     - rid: 5998883810384282550
       type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        newDirection:
+        direction:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 3
     - rid: 5998883810384282551
       type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        newDirection:
+        direction:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 1

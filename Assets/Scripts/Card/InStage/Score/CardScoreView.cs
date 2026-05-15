@@ -40,7 +40,7 @@ namespace Cardevil.Card.InStage.Score
             }
             
             handRankText.text = handRank.ToString();
-            scoreText.text = score.ToString("F1");
+            scoreText.text = score.ToString("0");
         }
         
         public void ClearScore()

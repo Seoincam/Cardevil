@@ -3241,7 +3241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feb46e1a05a24165ac94c3225d62c21d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactionCardPrefab: {fileID: 1365421869542360622, guid: 06ec47cb27fe34282bf1cf00a578b6fd, type: 3}
+  interactionCardPrefab: {fileID: 8339060972586061226, guid: 06ec47cb27fe34282bf1cf00a578b6fd, type: 3}
   zoneSpriteRenderer: {fileID: 843343089}
   cardCamera: {fileID: 273489082}
   spacing: 2
@@ -3553,1765 +3553,1515 @@ MonoBehaviour:
     - rid: 5725363179173970241
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 1
-          <Type>k__BackingField: 1
-          elements:
-          - rid: 5725363179173970283
-        <Colors>k__BackingField:
+        originalSpec:
+          <ID>k__BackingField: 0
+          <Type>k__BackingField: 0
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 1
     - rid: 5725363179173970242
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 2
-          <Type>k__BackingField: 1
-          elements:
-          - rid: 5725363179173970284
-        <Colors>k__BackingField:
+        originalSpec:
+          <ID>k__BackingField: 0
+          <Type>k__BackingField: 0
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 4
     - rid: 5725363179173970243
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 3
-          <Type>k__BackingField: 1
-          elements:
-          - rid: 5725363179173970285
-        <Colors>k__BackingField:
+        originalSpec:
+          <ID>k__BackingField: 0
+          <Type>k__BackingField: 0
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 8
     - rid: 5725363179173970244
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 4
-          <Type>k__BackingField: 1
-          elements:
-          - rid: 5725363179173970286
-        <Colors>k__BackingField:
+        originalSpec:
+          <ID>k__BackingField: 0
+          <Type>k__BackingField: 0
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 2
     - rid: 5725363179173970245
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 5
-          <Type>k__BackingField: 1
-          elements:
-          - rid: 5725363179173970287
-          - rid: 5725363179173970288
-        <Colors>k__BackingField:
+        originalSpec:
+          <ID>k__BackingField: 0
+          <Type>k__BackingField: 0
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 01000000
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 10
     - rid: 5725363179173970246
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 5
-          <Type>k__BackingField: 1
-          elements:
-          - rid: 5725363179173970289
-          - rid: 5725363179173970290
-          - rid: 5725363179173970291
-          - rid: 5725363179173970292
-        <Colors>k__BackingField:
+        originalSpec:
+          <ID>k__BackingField: 0
+          <Type>k__BackingField: 0
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 0
-          alternatives: 020000000300000001000000
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 15
     - rid: 5725363179173970247
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 12
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970293
-          - rid: 5725363179173970294
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970248
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 13
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970295
-          - rid: 5725363179173970296
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970249
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 14
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970297
-          - rid: 5725363179173970298
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970250
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 15
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970299
-          - rid: 5725363179173970300
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 5
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970251
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 16
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970301
-          - rid: 5725363179173970302
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 6
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970252
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 17
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970303
-          - rid: 5725363179173970304
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 7
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970253
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 18
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970305
-          - rid: 5725363179173970306
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 8
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970254
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 19
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970307
-          - rid: 5725363179173970308
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 9
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970255
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 20
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970309
-          - rid: 5725363179173970310
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 1
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 10
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970256
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 12
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970311
-          - rid: 5725363179173970312
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970257
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 13
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970313
-          - rid: 5725363179173970314
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970258
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 14
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970315
-          - rid: 5725363179173970316
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970259
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 15
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970317
-          - rid: 5725363179173970318
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 5
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970260
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 16
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970319
-          - rid: 5725363179173970320
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 6
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970261
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 17
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970321
-          - rid: 5725363179173970322
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 7
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970262
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 18
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970323
-          - rid: 5725363179173970324
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 8
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970263
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 19
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970325
-          - rid: 5725363179173970326
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 9
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970264
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 20
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970327
-          - rid: 5725363179173970328
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 10
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970265
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 12
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970329
-          - rid: 5725363179173970330
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970266
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 13
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970331
-          - rid: 5725363179173970332
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970267
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 14
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970333
-          - rid: 5725363179173970334
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970268
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 15
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970335
-          - rid: 5725363179173970336
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 5
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970269
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 16
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970337
-          - rid: 5725363179173970338
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 6
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970270
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 17
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970339
-          - rid: 5725363179173970340
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 7
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970271
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 18
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970341
-          - rid: 5725363179173970342
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 8
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970272
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 19
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970343
-          - rid: 5725363179173970344
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 9
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970273
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 20
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970345
-          - rid: 5725363179173970346
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 10
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970274
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 12
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970347
-          - rid: 5725363179173970348
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 2
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970275
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 13
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970349
-          - rid: 5725363179173970350
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 3
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970276
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 14
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970351
-          - rid: 5725363179173970352
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970277
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 15
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970353
-          - rid: 5725363179173970354
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 5
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970278
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 16
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970355
-          - rid: 5725363179173970356
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 6
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970279
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 17
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970357
-          - rid: 5725363179173970358
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 7
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970280
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 18
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970359
-          - rid: 5725363179173970360
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 8
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970281
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 19
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970361
-          - rid: 5725363179173970362
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 9
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
     - rid: 5725363179173970282
       type: {class: CardState, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
-        spec:
-          <ID>k__BackingField: 20
+        originalSpec:
+          <ID>k__BackingField: 0
           <Type>k__BackingField: 0
-          elements:
-          - rid: 5725363179173970363
-          - rid: 5725363179173970364
-        <Colors>k__BackingField:
+          elements: []
+          <UpgradeNode>k__BackingField: {fileID: 0}
+        <BaseColor>k__BackingField:
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0
+        <ColorList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 4
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Numbers>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <NumberList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 1
-            value: 10
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
-        <Directions>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+        <DirectionList>k__BackingField:
           <DefaultValue>k__BackingField:
-            hasValue: 0
-            value: 0
-          alternatives: 
-          selected:
-            hasValue: 0
-            value: 0
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
+          <Alternatives>k__BackingField: []
+          <SelectedValue>k__BackingField:
+            <HasValue>k__BackingField: 0
+            <Value>k__BackingField: 0
         <DirectionFlag>k__BackingField: 0
-    - rid: 5725363179173970283
-      type: {class: BaseDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction: 0
-    - rid: 5725363179173970284
-      type: {class: BaseDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction: 2
-    - rid: 5725363179173970285
-      type: {class: BaseDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction: 3
-    - rid: 5725363179173970286
-      type: {class: BaseDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction: 1
-    - rid: 5725363179173970287
-      type: {class: BaseDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction: 3
-    - rid: 5725363179173970288
-      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 1
-    - rid: 5725363179173970289
-      type: {class: BaseDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction: 0
-    - rid: 5725363179173970290
-      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 2
-    - rid: 5725363179173970291
-      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 3
-    - rid: 5725363179173970292
-      type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        direction:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 1
-    - rid: 5725363179173970293
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970294
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 2
-    - rid: 5725363179173970295
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970296
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 3
-    - rid: 5725363179173970297
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970298
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 4
-    - rid: 5725363179173970299
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970300
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 5
-    - rid: 5725363179173970301
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970302
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 6
-    - rid: 5725363179173970303
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970304
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 7
-    - rid: 5725363179173970305
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970306
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 8
-    - rid: 5725363179173970307
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970308
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 9
-    - rid: 5725363179173970309
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 1
-    - rid: 5725363179173970310
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 10
-    - rid: 5725363179173970311
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970312
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 2
-    - rid: 5725363179173970313
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970314
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 3
-    - rid: 5725363179173970315
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970316
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 4
-    - rid: 5725363179173970317
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970318
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 5
-    - rid: 5725363179173970319
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970320
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 6
-    - rid: 5725363179173970321
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970322
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 7
-    - rid: 5725363179173970323
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970324
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 8
-    - rid: 5725363179173970325
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970326
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 9
-    - rid: 5725363179173970327
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 2
-    - rid: 5725363179173970328
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 10
-    - rid: 5725363179173970329
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970330
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 2
-    - rid: 5725363179173970331
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970332
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 3
-    - rid: 5725363179173970333
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970334
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 4
-    - rid: 5725363179173970335
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970336
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 5
-    - rid: 5725363179173970337
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970338
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 6
-    - rid: 5725363179173970339
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970340
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 7
-    - rid: 5725363179173970341
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970342
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 8
-    - rid: 5725363179173970343
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970344
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 9
-    - rid: 5725363179173970345
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 3
-    - rid: 5725363179173970346
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 10
-    - rid: 5725363179173970347
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970348
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 2
-    - rid: 5725363179173970349
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970350
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 3
-    - rid: 5725363179173970351
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970352
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 4
-    - rid: 5725363179173970353
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970354
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 5
-    - rid: 5725363179173970355
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970356
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 6
-    - rid: 5725363179173970357
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970358
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 7
-    - rid: 5725363179173970359
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970360
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 8
-    - rid: 5725363179173970361
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970362
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 9
-    - rid: 5725363179173970363
-      type: {class: BaseColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        color: 4
-    - rid: 5725363179173970364
-      type: {class: BaseNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
-      data:
-        number: 10
 --- !u!4 &1753595123
 Transform:
   m_ObjectHideFlags: 0

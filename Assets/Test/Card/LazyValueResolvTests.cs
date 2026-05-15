@@ -29,7 +29,7 @@ namespace Cardevil.Test.Card
             // Verify: 둘 다 1개씩이므로 즉시 Resolved 상태여야 함
             Assert.IsTrue(state.ColorList.IsResolved, "Color가 1개면 즉시 Resolved여야 합니다.");
             Assert.IsTrue(state.NumberList.IsResolved, "Number가 1개면 즉시 Resolved여야 합니다.");
-            Assert.IsTrue(state.ValueSelected, "모두 Resolved이므로 ValueSelected는 true여야 합니다.");
+            Assert.IsTrue(state.ValueSelected, "ValueSelected는 true여야 합니다.");
             Assert.AreEqual(5, state.NumberList.FixedValue);
         }
     

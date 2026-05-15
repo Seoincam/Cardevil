@@ -37,80 +37,53 @@ MonoBehaviour:
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 2
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 2
     - rid: 5998883810384282539
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 3
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 3
     - rid: 5998883810384282540
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 4
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 4
     - rid: 5998883810384282541
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 5
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 5
     - rid: 5998883810384282542
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 6
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 6
     - rid: 5998883810384282543
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 7
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 7
     - rid: 5998883810384282544
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 8
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 8
     - rid: 5998883810384282545
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 9
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 9
     - rid: 5998883810384282546
       type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         number:
-          <IsFixed>k__BackingField: 1
-          <FixedValue>k__BackingField: 10
-        newNumber:
           <HasValue>k__BackingField: 1
           <Value>k__BackingField: 10

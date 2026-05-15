@@ -6,7 +6,7 @@
     "BaseHP": 300,
     "ChapterFactor": 1.0,
     "HPGrowFactor": 3,
-    "AttackCycle": 0,
+    "AttackCycle": 3,
     "AttackDamage": 1,
     "BoolAttackType": true,
     "AttackWeight": [],
