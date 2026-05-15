@@ -1,6 +1,8 @@
+using Cardevil.Core.Systems;
 using Cardevil.UI;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,12 +18,16 @@ namespace Cardevil.Gameplay.SpecialScenes
 
         [SerializeField] private List<ShopItem> shopItems;
         [SerializeField] private Button reinforceButton;
-        
+        [SerializeField] private Button exitButton;
+        public event Action ReinforceRequested;
+
         ShopCore shopCore;
 
         public override void Bind(SpecialSceneCore core)
         {
             shopCore = (ShopCore)core;
+            
+            exitButton.onClick.AddListener(HandleExitClicked);
             
             var shopEntries = shopCore.ShopEntries;
             for (int i = 0; i < shopItems.Count && i < shopEntries.Count; i++)
@@ -34,11 +40,35 @@ namespace Cardevil.Gameplay.SpecialScenes
             reinforceButton.onClick.AddListener(HandleReinforceClicked);
         }
 
+        private void OnDestroy()
+        {
+            if (reinforceButton)
+            {
+                reinforceButton.onClick.RemoveListener(HandleReinforceClicked);
+            }
+
+            if (exitButton)
+            {
+                exitButton.onClick.RemoveListener(HandleExitClicked);
+            }
+        }
+
         private void HandleReinforceClicked()
         {
-            Debug.Log("Reinforce button clicked!");
-            
-            // TODO : 강화를 위한 카드 선택창으로 이동
+            ReinforceRequested?.Invoke();
+        }
+
+        private void HandleExitClicked()
+        {
+            RaiseCloseRequested();
+        }
+
+        public void SetReinforceInteractable(bool value)
+        {
+            if (reinforceButton)
+            {
+                reinforceButton.interactable = value;
+            }
         }
 
         private void HandleItemClicked(int index)
