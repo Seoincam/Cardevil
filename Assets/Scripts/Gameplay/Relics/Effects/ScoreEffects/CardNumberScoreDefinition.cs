@@ -30,7 +30,7 @@ namespace Cardevil.Gameplay.Relics.Effects.ScoreEffects
 
             public override IScoreOperator GetScoreOperator(IScoreContext context)
             {
-                var currentNumber = context.CurrentCard.Numbers.Current!.Value;
+                var currentNumber = context.CurrentCard.NumberList.FixedValue;
                 if (!_definition.targetNumbers.Contains(currentNumber))
                 {
                     return null;

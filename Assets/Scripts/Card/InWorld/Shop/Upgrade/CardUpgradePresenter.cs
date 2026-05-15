@@ -80,7 +80,7 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             _availableNodes = availableNodes;
             
             
-            var originalState = _repository.GetState(specId);
+            var originalState = _repository.GetNewState(specId);
             var originalVisual = CardVisualInput.From(originalState);
 
             switch (_availableNodes.Count)
@@ -139,7 +139,7 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             }
             
             var targetSpec = _repository.GetSpec(_targetSpecId);
-            targetSpec.ApplyUpgradeNode(selectedNode);
+            targetSpec.ApplyUpgradeNodeAndNotify(selectedNode);
             CardUpgraded?.Invoke(_targetSpecId);
             
             HandleCloseClicked();

@@ -65,7 +65,7 @@ namespace Cardevil.Gameplay.Root
 
         public async UniTask StartStageAsync()
         {
-            await view.PlayEnterStageAnimationAsync();
+            await view.PlayEnterStageAnimationAsync(_enemySpawner);
 
             StageCoreLoopAsync().Forget();
         }

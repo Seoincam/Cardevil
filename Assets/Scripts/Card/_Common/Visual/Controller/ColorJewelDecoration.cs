@@ -1,9 +1,7 @@
 using Cardevil.Card.Common.Visual;
 using DG.Tweening;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Cardevil.Card.Visual.Controller
 {

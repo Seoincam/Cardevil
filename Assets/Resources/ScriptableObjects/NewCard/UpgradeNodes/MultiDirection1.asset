@@ -30,5 +30,5 @@ MonoBehaviour:
       type: {class: SelectableDirectionElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         direction:
-          <IsFixed>k__BackingField: 0
-          <FixedValue>k__BackingField: -1
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: -1

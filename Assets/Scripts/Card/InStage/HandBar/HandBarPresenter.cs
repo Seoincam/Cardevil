@@ -21,7 +21,7 @@ namespace Cardevil.Card.InStage
         [Header("States")]
         [SerializeField, VisibleOnly] private HandBarModel model = new();
         
-        [SerializeField, VisibleOnly] private bool isInputEnabled; // 외부(Turn)에서 허용했는가?
+        [field: SerializeField, VisibleOnly] public bool IsInputEnabled { private get; set; } // 외부(Turn)에서 허용했는가?
         [SerializeField, VisibleOnly] private bool isBusy; // 내부(Animation 등)에서 작업 중인가?
         
         private HandBarView _view;
@@ -57,7 +57,7 @@ namespace Cardevil.Card.InStage
         /// </summary>
         public HandRankData HandRankData => _cachedHandRankData;
         
-        private bool CanInteract => isInputEnabled && !isBusy;
+        private bool CanInteract => IsInputEnabled && !isBusy;
         
         private IReadOnlyList<ICardState> Selection => model.Selection;
 
@@ -76,11 +76,6 @@ namespace Cardevil.Card.InStage
             
             _valueSelectionPresenter = valueSelectionPresenter;
             _valueSelectionPresenter.ValueSelected += OnValueSelected;
-        }
-
-        public void SetInputEnabled(bool enabled)
-        {
-            isInputEnabled = enabled;
         }
 
         public void AddCard(ICardState state)
@@ -356,13 +351,13 @@ namespace Cardevil.Card.InStage
         private void PublishMoveCardEvent()
         {
             var moveCards = model.Selection.Where(s => s.IsMove).ToList();
-            bool shouldShow = moveCards.Any() && moveCards.All(s => s.Directions.HasSelected);
+            bool shouldShow = moveCards.Any() && moveCards.All(s => s.DirectionList.IsFixed);
 
             List<Direction> directions = null;
             if (shouldShow)
             {
                 directions = moveCards
-                    .Select(c => c.Directions.Current!.Value)
+                    .Select(c => c.DirectionList.FixedValue)
                     .ToList();
             }
 

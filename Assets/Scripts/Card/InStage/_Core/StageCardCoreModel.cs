@@ -32,6 +32,7 @@ namespace Cardevil.Card.InStage
                     return states;
                 }
                 
+                state.ResolveValues();
                 states.Add(state);
             }
             

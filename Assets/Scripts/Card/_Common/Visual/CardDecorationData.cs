@@ -3,7 +3,7 @@ using System;
 namespace Cardevil.Card.Common.Visual
 {
     [Flags]
-    public enum CardDecorations : byte
+    public enum CardDecorationType : byte
     {
         None = 0,
         
@@ -20,14 +20,14 @@ namespace Cardevil.Card.Common.Visual
     
     public readonly struct CardDecorationData
     {
-        public readonly CardDecorations Decorations;
+        public readonly CardDecorationType DecorationType;
         public readonly SpriteReference[] JewelSprites;
         
-        public static CardDecorationData Empty => new CardDecorationData(CardDecorations.None, null);
+        public static CardDecorationData Empty => new CardDecorationData(CardDecorationType.None, null);
 
-        public CardDecorationData(CardDecorations decorations, params SpriteReference[] jewelSprites)
+        public CardDecorationData(CardDecorationType decorationType, params SpriteReference[] jewelSprites)
         {
-            Decorations = decorations;
+            DecorationType = decorationType;
             JewelSprites = jewelSprites;
         }
     }

@@ -16,7 +16,7 @@ namespace Cardevil.Card.Common.Core
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
 
         private readonly Dictionary<int, CardSpec> _specMap = new(CardCount);
-        private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
+        private readonly Dictionary<int, CardState> _newStateCache = new(CardCount);
 
         private UpgradeNodeDatabaseSO _upgradeDatabase;
         
@@ -31,7 +31,7 @@ namespace Cardevil.Card.Common.Core
         public void SetUpNewGame(GameSave save)
         {
             cards.Clear();
-            _stateCache.Clear();
+            _newStateCache.Clear();
 
             var newSpecs = CreateStandardCardSpecs(_upgradeDatabase);
             foreach (var spec in newSpecs)
@@ -49,23 +49,18 @@ namespace Cardevil.Card.Common.Core
         {
             LogEx.LogWarning("카드 세이브로드 미구현 - @Seoincam");
         }
+        
 
-        /// <summary>
-        /// 모든 카드의 최신 State 인터페이스 리스트를 반환.
-        /// </summary>
-        public List<ICardState> GetAllStates()
+        public List<CardState> GetAllNewStates()
         {
-            return _stateCache.Values
-                .Cast<ICardState>()
+            return _newStateCache.Values
+                // .Cast<>()
                 .ToList();
         }
 
-        /// <summary>
-        /// 모든 카드의 최신 State 인터페이스 리스트를 DeepClone해 반환.
-        /// </summary>
-        public List<ICardState> GetAllDeepClonedStates()
+        public List<ICardState> GetAllDeepClonedNewStates()
         {
-            return _stateCache.Values
+            return _newStateCache.Values
                 .Select(state => state.DeepClone())
                 .Cast<ICardState>()
                 .ToList();
@@ -96,9 +91,26 @@ namespace Cardevil.Card.Common.Core
         /// <summary>
         /// 특정 Id의 최신 State를 반환.
         /// </summary>
-        public CardState GetState(int id)
+        // public CardState GetState(int id)
+        // {
+        //     if (_stateCache.TryGetValue(id, out var state))
+        //     {
+        //         return state;
+        //     }
+        //     
+        //     var spec = cards.Find(c => c.ID == id);
+        //     if (spec != null)
+        //     {
+        //         HandleSpecChanged(spec);
+        //         return spec.State;
+        //     }
+        //
+        //     return null;
+        // }
+
+        public CardState GetNewState(int id)
         {
-            if (_stateCache.TryGetValue(id, out var state))
+            if (_newStateCache.TryGetValue(id, out var state))
             {
                 return state;
             }
@@ -109,16 +121,21 @@ namespace Cardevil.Card.Common.Core
                 HandleSpecChanged(spec);
                 return spec.State;
             }
-
+            
             return null;
         }
 
         /// <summary>
         /// 특정 Id의 최신 State를 DeepClone해 반환.
         /// </summary>
-        public CardState GetDeepClonedState(int id)
+        // public CardState GetDeepClonedState(int id)
+        // {
+        //     return GetState(id)?.DeepClone();
+        // }
+
+        public CardState GetDeepClonedNewState(int id)
         {
-            return GetState(id)?.DeepClone();
+            return GetNewState(id)?.DeepClone();
         }
         
         private void AddCardSpec(CardSpec spec)
@@ -127,13 +144,14 @@ namespace Cardevil.Card.Common.Core
             spec.SpecChanged += HandleSpecChanged;
 
             _specMap[spec.ID] = spec;
-            _stateCache[spec.ID] = spec.State;
+            _newStateCache[spec.ID] = spec.State;
         }
         
         // State 갱신
         private void HandleSpecChanged(CardSpec spec)
         {
-            _stateCache[spec.ID] = spec.State;
+            // _stateCache[spec.ID] = spec.State;
+            _newStateCache[spec.ID] = spec.State;
             LogEx.Log($"Id {spec.ID}의 State가 자동 갱신됐음.");
         }
 
@@ -166,7 +184,7 @@ namespace Cardevil.Card.Common.Core
                 // 오망성 카드 스펙
                 var starSpec = new CardSpec(nextID++, CardType.Attack)
                     .AddElements(new BaseColorElement(color))
-                    .ApplyUpgradeNode(multiNumberFinalUpgradeNode);
+                    .ApplyUpgradeNodeAndNotify(multiNumberFinalUpgradeNode);
                 deckSpecs.Add(starSpec);
             }
 
