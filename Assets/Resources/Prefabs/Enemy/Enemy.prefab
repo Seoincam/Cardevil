@@ -36,118 +36,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &490132203606971619
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1222984563187445849}
-  - component: {fileID: 7662369281919708134}
-  - component: {fileID: 383078072033857457}
-  - component: {fileID: 7501510669466122645}
-  - component: {fileID: 650012895791534137}
-  m_Layer: 0
-  m_Name: Gimmick
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1222984563187445849
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490132203606971619}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8512445795477768559}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 71, y: 71}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &7662369281919708134
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490132203606971619}
-  m_CullTransparentMesh: 1
---- !u!114 &383078072033857457
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490132203606971619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 04cad2ab1839f2e42b6193dddfa4c58a, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &7501510669466122645
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490132203606971619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e6f47733252913489b7a243cea919f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.IconUIElement
---- !u!114 &650012895791534137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 490132203606971619}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f386ae90f05e40bc97f45b0621e62e0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
-  _hoverTooltip: {fileID: 0}
-  _eventTrigger: {fileID: 0}
-  _preferredSide: 0
-  _preferredAlign: 1
-  <TooltipData>k__BackingField:
-    <Title>k__BackingField: 
-    <Description>k__BackingField: "\u314E\u3147"
-    subTooltips: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &769447857038535671
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,7 +255,7 @@ MonoBehaviour:
   hpText: {fileID: 802917834310572918}
   hpBarImage: {fileID: 8767485268842417638}
   hpBarGlowImage: {fileID: 7404657825319265031}
-  iconController: {fileID: 4332535977436343183}
+  iconController: {fileID: 2242448758037676455}
   maxHP: 100
   baseMobBossData:
     MobID: 
@@ -611,118 +499,6 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!1 &2560389171141153414
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 587362889725927290}
-  - component: {fileID: 5554668797729319633}
-  - component: {fileID: 5213508990812764976}
-  - component: {fileID: 6333703474302328402}
-  - component: {fileID: 8680032619683119697}
-  m_Layer: 0
-  m_Name: AC
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &587362889725927290
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560389171141153414}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8512445795477768559}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 71, y: 71}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &5554668797729319633
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560389171141153414}
-  m_CullTransparentMesh: 1
---- !u!114 &5213508990812764976
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560389171141153414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2124510bac819c34eb3dedeb4d3af5f8, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &6333703474302328402
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560389171141153414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e6f47733252913489b7a243cea919f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.IconUIElement
---- !u!114 &8680032619683119697
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2560389171141153414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f386ae90f05e40bc97f45b0621e62e0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
-  _hoverTooltip: {fileID: 0}
-  _eventTrigger: {fileID: 0}
-  _preferredSide: 0
-  _preferredAlign: 1
-  <TooltipData>k__BackingField:
-    <Title>k__BackingField: 
-    <Description>k__BackingField: 
-    subTooltips: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &2606874335021637752
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,11 +658,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2232426578804449427}
-  - component: {fileID: 4332535977436343183}
   - component: {fileID: 1984034113256016190}
   - component: {fileID: 4097677087229523879}
   - component: {fileID: 8074873581565857901}
   - component: {fileID: 9108680951081873344}
+  - component: {fileID: 2242448758037676455}
   m_Layer: 0
   m_Name: IconContainer
   m_TagString: Untagged
@@ -914,34 +690,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &4332535977436343183
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3700738850488431713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5bb2f565c67287a48a49a77af21b0c2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.IconController
-  _defaultGimmickSprite: {fileID: 21300000, guid: 04cad2ab1839f2e42b6193dddfa4c58a, type: 3}
-  _adIconSprites:
-  - {fileID: 21300000, guid: 2c287416b519891439ad34517a6e857d, type: 3}
-  - {fileID: 21300000, guid: d163a45f6eb9ada4f84003e2922b49ad, type: 3}
-  - {fileID: 21300000, guid: d601930677aa6e74eb0d8c4e3d67c49d, type: 3}
-  - {fileID: 21300000, guid: 0763c56409dc1dd4f9a18900dae12382, type: 3}
-  - {fileID: 21300000, guid: 270c7db1e0b8d104a9f534eba64ecebc, type: 3}
-  _actDelayIconSprites:
-  - {fileID: 21300000, guid: e16ab45ca8c6c3449b961eb2543cfd05, type: 3}
-  - {fileID: 21300000, guid: 2b5a1199c761e8440b871fd9f2f72e27, type: 3}
-  - {fileID: 21300000, guid: dbb3cc15ef2f6dc4491aa5d22b8ede3a, type: 3}
-  - {fileID: 21300000, guid: 96ca81c80158362469f8484f54f4b511, type: 3}
-  - {fileID: 21300000, guid: 2124510bac819c34eb3dedeb4d3af5f8, type: 3}
-  _infoIconElement: {fileID: 7501510669466122645}
-  _adIconElement: {fileID: 8140981659439706600}
-  _delayIconElement: {fileID: 6333703474302328402}
 --- !u!225 &1984034113256016190
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1017,6 +765,36 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
+--- !u!114 &2242448758037676455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3700738850488431713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15f13e35b7ac0c84788aa4e3408bfc61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.EnemyIconController
+  _iconPrefab: {fileID: 8568176932129314979, guid: 40e31471c3a65604288ba42f5d0f203d, type: 3}
+  _iconContainer: {fileID: 8512445795477768559}
+  TestDefaultSprite: {fileID: 0}
+  defaultNameText: 
+  defaultContentText: 
+  _defaultGimmickSprite: {fileID: 21300000, guid: 04cad2ab1839f2e42b6193dddfa4c58a, type: 3}
+  _adIconSprites:
+  - {fileID: 21300000, guid: 2c287416b519891439ad34517a6e857d, type: 3}
+  - {fileID: 21300000, guid: d163a45f6eb9ada4f84003e2922b49ad, type: 3}
+  - {fileID: 21300000, guid: d601930677aa6e74eb0d8c4e3d67c49d, type: 3}
+  - {fileID: 21300000, guid: 0763c56409dc1dd4f9a18900dae12382, type: 3}
+  - {fileID: 21300000, guid: 270c7db1e0b8d104a9f534eba64ecebc, type: 3}
+  _actDelayIconSprites:
+  - {fileID: 21300000, guid: e16ab45ca8c6c3449b961eb2543cfd05, type: 3}
+  - {fileID: 21300000, guid: 2b5a1199c761e8440b871fd9f2f72e27, type: 3}
+  - {fileID: 21300000, guid: dbb3cc15ef2f6dc4491aa5d22b8ede3a, type: 3}
+  - {fileID: 21300000, guid: 96ca81c80158362469f8484f54f4b511, type: 3}
+  - {fileID: 21300000, guid: 2124510bac819c34eb3dedeb4d3af5f8, type: 3}
 --- !u!1 &3725638167713957002
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,10 +1285,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1222984563187445849}
-  - {fileID: 5166517634306587112}
-  - {fileID: 587362889725927290}
+  m_Children: []
   m_Father: {fileID: 2232426578804449427}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1694,118 +1469,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &7581532327923957554
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5166517634306587112}
-  - component: {fileID: 8025213996518870762}
-  - component: {fileID: 1994688194400491836}
-  - component: {fileID: 8140981659439706600}
-  - component: {fileID: 6192693189749813948}
-  m_Layer: 0
-  m_Name: AD
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &5166517634306587112
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7581532327923957554}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8512445795477768559}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 71, y: 71}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &8025213996518870762
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7581532327923957554}
-  m_CullTransparentMesh: 1
---- !u!114 &1994688194400491836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7581532327923957554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2c287416b519891439ad34517a6e857d, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!114 &8140981659439706600
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7581532327923957554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e6f47733252913489b7a243cea919f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.IconUIElement
---- !u!114 &6192693189749813948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7581532327923957554}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f386ae90f05e40bc97f45b0621e62e0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
-  _hoverTooltip: {fileID: 0}
-  _eventTrigger: {fileID: 0}
-  _preferredSide: 0
-  _preferredAlign: 1
-  <TooltipData>k__BackingField:
-    <Title>k__BackingField: 
-    <Description>k__BackingField: 
-    subTooltips: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &7696326983331729820
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,7 +26,7 @@ namespace Cardevil.Gameplay.Enemy
         [SerializeField] private TMP_Text hpText;
         [SerializeField] private Image hpBarImage;
         [SerializeField] private Image hpBarGlowImage;
-        [SerializeField] private IconController iconController;
+        [SerializeField] private EnemyIconController iconController;
 
         public float maxHP = 100;
         public BaseMobBossData baseMobBossData;
@@ -121,6 +121,7 @@ namespace Cardevil.Gameplay.Enemy
             {
                 attack.attackTurnOrder--;
                 LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다.");
+                iconController.UpdateDelayAsync(attack.attackTurnOrder).Forget();
                 if (attack.attackTurnOrder <= 0)
                 {
                     isAnyAttackReady = true;
@@ -241,7 +242,7 @@ namespace Cardevil.Gameplay.Enemy
             Debug.Log($"적의 {tmpAttack.currentAttackStyle} 공격!");
 
             iconController.UpdateAttack(baseMobBossData.AttackCycle);
-
+            iconController.UpdateDelayAsync(tmpAttack.attackTurnOrder).Forget();
             if (firstCreate)
             {
                 tmpAttack.attackTurnOrder += delayAttackByRelic;
@@ -277,6 +278,8 @@ namespace Cardevil.Gameplay.Enemy
             {
                 attack.attackTurnOrder--; // 모든 Attack들의 TurnOrder 감소
                 iconController.UpdateDelayAsync(attack.attackTurnOrder).Forget();
+
+
                 LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
 
                 if (attack.attackTurnOrder <= 0) // 0이라면 공격 시행

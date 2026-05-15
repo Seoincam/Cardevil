@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.Scripting;
 using Console = Cardevil.Test.DebugConsole.Console;
+using Cardevil.Gameplay.Enemy;
 
 namespace Cardevil.Gameplay.Player
 {
@@ -31,7 +32,8 @@ namespace Cardevil.Gameplay.Player
         [SerializeField] protected Entity _entity;
         [SerializeField] protected PlayerVisual _playerVisual;
 
-        
+        [Header("Test")]
+        [SerializeField] IconController _iconController;
 
         public float MoveSpeed => playerCharacterSetting.moveSpeed;
         private void Reset()
@@ -76,6 +78,7 @@ namespace Cardevil.Gameplay.Player
             {
                 _entity.Init(Field.GetTile(_initialTile));
             }
+            
         }
 
         public void Update()

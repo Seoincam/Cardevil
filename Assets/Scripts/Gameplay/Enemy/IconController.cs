@@ -1,86 +1,65 @@
 using UnityEngine;
-using Cysharp.Threading.Tasks;
-using System;
 using System.Collections.Generic;
-using Database.Generated;
-using DG.Tweening;
-using System;
-
+using UnityEngine.UI;
 
 namespace Cardevil.Gameplay.Enemy
 {
     public class IconController : MonoBehaviour
     {
-        [Header("Sprite Data")]
-        [SerializeField] private Sprite _defaultGimmickSprite;
-        [SerializeField] private List<Sprite> _adIconSprites;
-        [SerializeField] private List<Sprite> _actDelayIconSprites;
+        [Header("Shared Prefab & Container")]
+        [SerializeField] protected IconUIElement _iconPrefab;
+        [SerializeField] protected Transform _iconContainer;
 
-        [Header("UI Element References")]
-        [SerializeField] private IconUIElement _infoIconElement;
-        [SerializeField] private IconUIElement _adIconElement;
-        [SerializeField] private IconUIElement _delayIconElement;
+        [Header("Test_Sprites")]
+        [SerializeField] Sprite TestDefaultSprite;
+        [SerializeField] string defaultNameText;
+        [SerializeField] string defaultContentText;
 
-        private BaseMobBossData _bossData;
+        protected List<IconUIElement> _activeIcons = new List<IconUIElement>();
 
-        // InitIcons() 함수는 이제 필요 없으므로 삭제했습니다.
 
-        /// <summary>
-        /// 1) 몬스터 데이터 주입 시 기믹 툴팁 세팅
-        /// </summary>
-        public void SetMonsterInfo(BaseMobBossData infoData)
+        private void Start()
         {
-            _bossData = infoData;
-
-            if (_bossData == null) return;
-
-            // 기믹 아이콘 설정
-            _infoIconElement.SetSprite(_defaultGimmickSprite);
-
-            // 핵심: 기믹 툴팁 데이터 주입
-            _infoIconElement.UpdateTooltipData("기믹 정보", _bossData.GimmickName[0]);
+            AddIcon(TestDefaultSprite, defaultNameText, defaultContentText); // 테스트용도
         }
 
         /// <summary>
-        /// 2) 공격력 갱신
+        /// 아이콘을 컨테이너에 동적으로 추가합니다.
         /// </summary>
-        public void UpdateAttack(int attackPower)
+        public virtual IconUIElement AddIcon(Sprite iconSprite, string tooltipTitle, string tooltipDesc)
         {
-            int index = Mathf.Clamp(attackPower - 1, 0, _adIconSprites.Count - 1);
-            _adIconElement.SetSprite(_adIconSprites[index]);
+            if (_iconPrefab == null || _iconContainer == null) return null;
 
-            // 공격력 툴팁 갱신
-            _adIconElement.UpdateTooltipData("현재 공격력", $"위협 수준: {attackPower}");
+            IconUIElement newIcon = Instantiate(_iconPrefab, _iconContainer);
+            newIcon.SetSprite(iconSprite);
+            newIcon.UpdateTooltipData(tooltipTitle, tooltipDesc);
+
+            _activeIcons.Add(newIcon);
+            return newIcon;
         }
 
         /// <summary>
-        /// 3) 턴 감소 시 쿨타임(모래시계) 갱신
+        /// 특정 아이콘을 삭제합니다.
         /// </summary>
-        public async UniTaskVoid UpdateDelayAsync(int currentRemainingTurn)
+        public virtual void RemoveIcon(IconUIElement targetIcon)
         {
-            int index = Mathf.Clamp(currentRemainingTurn - 1, 0, _actDelayIconSprites.Count - 1);
-            _delayIconElement.SetSprite(_actDelayIconSprites[index]);
-
-            // 핵심: 남은 턴 수가 바뀔 때마다 툴팁 내용을 새로 덮어씌웁니다.
-            string attackCycleInfo = _bossData != null ? _bossData.AttackCycle.ToString() : "알 수 없음";
-            string tooltipDesc = $"기본 공격 주기: {attackCycleInfo}\n현재 남은 턴: {currentRemainingTurn}";
-
-            _delayIconElement.UpdateTooltipData("공격 주기 정보", tooltipDesc);
-
-            // 흔들림 연출
-            if (currentRemainingTurn <= 2 && currentRemainingTurn > 0)
+            if (targetIcon != null && _activeIcons.Contains(targetIcon))
             {
-                _delayIconElement.PlayWarningAnimation();
+                _activeIcons.Remove(targetIcon);
+                Destroy(targetIcon.gameObject);
             }
-            else
-            {
-                _delayIconElement.StopAnimation();
-            }
+        }
 
-            // 반짝임 연출 (선택사항)
-            _delayIconElement.GetComponent<UnityEngine.UI.Image>().DOColor(Color.red, 0.2f).SetLoops(2, DG.Tweening.LoopType.Yoyo);
-            await UniTask.Delay(TimeSpan.FromSeconds(0.4f));
+        /// <summary>
+        /// 동적으로 생성된 모든 아이콘을 삭제합니다.
+        /// </summary>
+        public virtual void ClearAllIcons()
+        {
+            foreach (var icon in _activeIcons)
+            {
+                if (icon != null) Destroy(icon.gameObject);
+            }
+            _activeIcons.Clear();
         }
     }
 }
-        

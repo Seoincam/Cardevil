@@ -42,14 +42,16 @@ namespace Cardevil.Gameplay.Enemy
         /// </summary>
         public void UpdateTooltipData(string title, string description)
         {
-            // 제공해주신 코드의 TooltipData 구조체를 생성하여 주입합니다.
-            TooltipData newData = new TooltipData
-            {
-                Title = title,
-                Description = description
-            };
+            // 1. 프리팹(Inspector)에 세팅되어 있는 기존 툴팁 데이터를 가져옵니다.
+            // (만약 비어있다면 새로 생성합니다.)
+            var currentData = _tooltipComponent.TooltipData ?? new TooltipData();
 
-            _tooltipComponent.SetTooltipData(newData);
+            // 2. 다른 내부 데이터는 건드리지 않고, 제목과 내용만 업데이트합니다.
+            currentData.Title = title;
+            currentData.Description = description;
+
+            // 3. 변경된 데이터를 다시 적용합니다.
+            _tooltipComponent.SetTooltipData(currentData);
         }
 
         // 긴박함 애니메이션 (기존과 동일)

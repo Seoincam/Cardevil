@@ -1019,6 +1019,108 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2793683271519004326, guid: 74fba83085ccb694287e5be182a20ee7, type: 3}
   m_PrefabInstance: {fileID: 9133385246047081463}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &333491186
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 333491190}
+  - component: {fileID: 333491189}
+  - component: {fileID: 333491188}
+  - component: {fileID: 333491187}
+  m_Layer: 5
+  m_Name: Player State UI Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &333491187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333491186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GraphicRaycaster
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &333491188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333491186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!223 &333491189
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333491186}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
+--- !u!224 &333491190
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 333491186}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1612265227}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1001 &401468740
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3151,6 +3253,85 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
   m_AspectMode: 2
   m_AspectRatio: 0.37407407
+--- !u!1 &1449363362
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1449363365}
+  - component: {fileID: 1449363364}
+  - component: {fileID: 1449363363}
+  m_Layer: 0
+  m_Name: EventSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1449363363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449363362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.UI.InputSystemUIInputModule
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
+--- !u!114 &1449363364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449363362}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.EventSystems.EventSystem
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+--- !u!4 &1449363365
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449363362}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1538176313
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3262,6 +3443,126 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1612265226
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1612265227}
+  - component: {fileID: 1612265230}
+  - component: {fileID: 1612265229}
+  - component: {fileID: 1612265228}
+  - component: {fileID: 1612265231}
+  m_Layer: 5
+  m_Name: IconContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1612265227
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612265226}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 333491190}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -378.62042, y: 354.625}
+  m_SizeDelta: {x: -1457.7048, y: -989.0089}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1612265228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612265226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_Spacing: 0
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
+--- !u!114 &1612265229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612265226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1612265230
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612265226}
+  m_CullTransparentMesh: 1
+--- !u!114 &1612265231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1612265226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bb2f565c67287a48a49a77af21b0c2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Gameplay.Enemy.IconController
+  _iconPrefab: {fileID: 8568176932129314979, guid: 40e31471c3a65604288ba42f5d0f203d, type: 3}
+  _iconContainer: {fileID: 1612265227}
+  TestDefaultSprite: {fileID: 21300000, guid: 04cad2ab1839f2e42b6193dddfa4c58a, type: 3}
+  defaultNameText: "\uAE30\uBBF9\uC774\uB984 \uD14C\uC2A4\uD2B8"
+  defaultContentText: "\uAE30\uBBF9\uB0B4\uC6A9 \uD14C\uC2A4\uD2B8"
 --- !u!1 &1648436562
 GameObject:
   m_ObjectHideFlags: 0
@@ -3558,6 +3859,7 @@ MonoBehaviour:
           <Type>k__BackingField: 1
           elements:
           - rid: 5725363179173970283
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 0
@@ -3591,6 +3893,7 @@ MonoBehaviour:
           <Type>k__BackingField: 1
           elements:
           - rid: 5725363179173970284
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 0
@@ -3624,6 +3927,7 @@ MonoBehaviour:
           <Type>k__BackingField: 1
           elements:
           - rid: 5725363179173970285
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 0
@@ -3657,6 +3961,7 @@ MonoBehaviour:
           <Type>k__BackingField: 1
           elements:
           - rid: 5725363179173970286
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 0
@@ -3691,6 +3996,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970287
           - rid: 5725363179173970288
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 0
@@ -3727,6 +4033,7 @@ MonoBehaviour:
           - rid: 5725363179173970290
           - rid: 5725363179173970291
           - rid: 5725363179173970292
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 0
@@ -3761,6 +4068,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970293
           - rid: 5725363179173970294
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3795,6 +4103,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970295
           - rid: 5725363179173970296
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3829,6 +4138,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970297
           - rid: 5725363179173970298
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3863,6 +4173,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970299
           - rid: 5725363179173970300
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3897,6 +4208,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970301
           - rid: 5725363179173970302
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3931,6 +4243,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970303
           - rid: 5725363179173970304
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3965,6 +4278,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970305
           - rid: 5725363179173970306
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -3999,6 +4313,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970307
           - rid: 5725363179173970308
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4033,6 +4348,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970309
           - rid: 5725363179173970310
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4067,6 +4383,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970311
           - rid: 5725363179173970312
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4101,6 +4418,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970313
           - rid: 5725363179173970314
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4135,6 +4453,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970315
           - rid: 5725363179173970316
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4169,6 +4488,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970317
           - rid: 5725363179173970318
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4203,6 +4523,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970319
           - rid: 5725363179173970320
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4237,6 +4558,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970321
           - rid: 5725363179173970322
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4271,6 +4593,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970323
           - rid: 5725363179173970324
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4305,6 +4628,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970325
           - rid: 5725363179173970326
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4339,6 +4663,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970327
           - rid: 5725363179173970328
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4373,6 +4698,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970329
           - rid: 5725363179173970330
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4407,6 +4733,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970331
           - rid: 5725363179173970332
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4441,6 +4768,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970333
           - rid: 5725363179173970334
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4475,6 +4803,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970335
           - rid: 5725363179173970336
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4509,6 +4838,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970337
           - rid: 5725363179173970338
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4543,6 +4873,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970339
           - rid: 5725363179173970340
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4577,6 +4908,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970341
           - rid: 5725363179173970342
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4611,6 +4943,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970343
           - rid: 5725363179173970344
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4645,6 +4978,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970345
           - rid: 5725363179173970346
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4679,6 +5013,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970347
           - rid: 5725363179173970348
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4713,6 +5048,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970349
           - rid: 5725363179173970350
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4747,6 +5083,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970351
           - rid: 5725363179173970352
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4781,6 +5118,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970353
           - rid: 5725363179173970354
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4815,6 +5153,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970355
           - rid: 5725363179173970356
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4849,6 +5188,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970357
           - rid: 5725363179173970358
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4883,6 +5223,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970359
           - rid: 5725363179173970360
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4917,6 +5258,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970361
           - rid: 5725363179173970362
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -4951,6 +5293,7 @@ MonoBehaviour:
           elements:
           - rid: 5725363179173970363
           - rid: 5725363179173970364
+          <UpgradeNode>k__BackingField: {fileID: 0}
         <Colors>k__BackingField:
           <DefaultValue>k__BackingField:
             hasValue: 1
@@ -6089,6 +6432,7 @@ SceneRoots:
   - {fileID: 1753595123}
   - {fileID: 1538176313}
   - {fileID: 1736170422}
+  - {fileID: 333491190}
   - {fileID: 619394802}
   - {fileID: 797708088}
   - {fileID: 838612933965421742}
@@ -6109,3 +6453,4 @@ SceneRoots:
   - {fileID: 8921634}
   - {fileID: 843343090}
   - {fileID: 253756867}
+  - {fileID: 1449363365}
