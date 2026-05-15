@@ -30,6 +30,7 @@ namespace Cardevil.Gameplay.Enemy
         [SerializeField] private TMP_Text hpText;
         [SerializeField] private Image hpBarImage;
         [SerializeField] private Image hpBarGlowImage;
+        [SerializeField] private EnemyIconController iconController;
 
         public float maxHP = 100;
         public BaseMobBossData baseMobBossData;
@@ -61,6 +62,7 @@ namespace Cardevil.Gameplay.Enemy
         [Header("애니메이션 관련 연결")]
         [SerializeField] EnemyAnimationController _enemyAnimationController;
         [SerializeField] AttackCardAnimation _enemyAttackCardAnimation;
+        [SerializeField] SpriteRenderer _enemySprite;
 
         public void Init(Field.Field field)
         {
@@ -123,6 +125,7 @@ namespace Cardevil.Gameplay.Enemy
             {
                 attack.attackTurnOrder--;
                 LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다.");
+                iconController.UpdateDelayAsync(attack.attackTurnOrder).Forget();
                 if (attack.attackTurnOrder <= 0)
                 {
                     isAnyAttackReady = true;
@@ -238,11 +241,12 @@ namespace Cardevil.Gameplay.Enemy
         {
             Attack.Attack tmpAttack = new() { playerPosition = playerPosition };
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨 공격인지 설정
-
-            _enemyAttackCardAnimation.AttackAnimationStart(tmpAttack.currentAttackStyle).Forget();
+            _enemyAttackCardAnimation.AttackAnimationStart(tmpAttack.currentAttackStyle,_enemySprite).Forget();
             tmpAttack.SetAttackCycle(baseMobBossData.AttackCycle);
             Debug.Log($"적의 {tmpAttack.currentAttackStyle} 공격!");
 
+            iconController.UpdateAttack(baseMobBossData.AttackCycle);
+            iconController.UpdateDelayAsync(tmpAttack.attackTurnOrder).Forget();
             if (firstCreate)
             {
                 tmpAttack.attackTurnOrder += delayAttackByRelic;
@@ -277,6 +281,9 @@ namespace Cardevil.Gameplay.Enemy
             foreach (Attack.Attack attack in attackLists) // 현재 Enemy가 가지고 있는 Attack
             {
                 attack.attackTurnOrder--; // 모든 Attack들의 TurnOrder 감소
+                iconController.UpdateDelayAsync(attack.attackTurnOrder).Forget();
+
+
                 LogEx.Log($"다음 공격까지 {attack.attackTurnOrder}턴 남았습니다 - {attack.currentAttackStyle} : {attack.attackLineNumber}");
 
                 if (attack.attackTurnOrder <= 0) // 0이라면 공격 시행
@@ -504,7 +511,7 @@ namespace Cardevil.Gameplay.Enemy
             Debug.Log($"SetUp! : {baseMobBossData.MobKorID} : {_baseMobBossData.MobID}");
 
             attackCreateCycle = _baseMobBossData.AttackCycle;
-
+          
             if (baseMobBossData.BoolAttackType)
             {
                 attackStyles = baseMobBossData.AttackPattern;
@@ -524,6 +531,7 @@ namespace Cardevil.Gameplay.Enemy
             _enemyAnimationController.EnemyStartAnimation(baseMobBossData.MobID).Forget();
 
             UpdateHPBar(); // 시작 시 HP바를 초기화합니다.
+            iconController.SetMonsterInfo(baseMobBossData); // 아이콘 인포를 초기화합니다
 
             SettingGimmick(_baseMobBossData);
         }

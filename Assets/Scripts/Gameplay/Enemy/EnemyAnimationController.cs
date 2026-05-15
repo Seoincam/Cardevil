@@ -109,7 +109,7 @@ namespace Cardevil.Gameplay.Enemy
             _enemySpriteRenderer.sprite = Resources.Load<Sprite>($"Enemy/{mob_ID}");
             // 이미지 기준 Enemy Transform 할당 
             // Position (6, -2.6, 1)
-            _enemyTransform.position = new Vector3(6f, -2.6f, 1f);
+            _enemyTransform.position = new Vector3(6f, 0f, 1f);
            
 
             _enemyTransform.rotation = Quaternion.Euler(10f, 60f, 1f);

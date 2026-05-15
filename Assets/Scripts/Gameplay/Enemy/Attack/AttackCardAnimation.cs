@@ -20,10 +20,11 @@ namespace Cardevil.Gameplay.Enemy
         [SerializeField] private float _spreadDistanceX = 40f; // 카드가 좌우로 퍼지는 거리
         [SerializeField] private float _spreadDropY = 5f; // 가장자리 카드가 아래로 내려가는 정도 (원형 느낌)
 
-        public async UniTask AttackAnimationStart(AttackStyle attackStyle)
+        public async UniTask AttackAnimationStart(AttackStyle attackStyle, SpriteRenderer enemySprite)
         {
             // 텍스트 초기화
             _cardText.color = new Color(_cardText.color.r, _cardText.color.g, _cardText.color.b, 0f);
+            Vector3 originalEnemyScale = enemySprite != null ? enemySprite.transform.localScale : Vector3.one;
 
             var fadeTasks = new List<UniTask>();
 
@@ -49,13 +50,18 @@ namespace Cardevil.Gameplay.Enemy
             await UniTask.WhenAll(fadeTasks);
 
             // 2. 카드 스프레드 애니메이션 시작 (매개변수로 attackStyle 전달)
-            await CardSpreadAnimation(attackStyle);
+            await CardSpreadAnimation(attackStyle, enemySprite, originalEnemyScale);
         }
 
-        private async UniTask CardSpreadAnimation(AttackStyle attackStyle)
+        private async UniTask CardSpreadAnimation(AttackStyle attackStyle, SpriteRenderer enemySprite, Vector3 originalEnemyScale)
         {
             var spreadTasks = new List<UniTask>();
 
+            // 카드가 펼쳐질 때 적 스프라이트의 크기를 0.7배로 축소시켜 카드 액션 강조
+            if (enemySprite != null)
+            {
+                spreadTasks.Add(enemySprite.transform.DOScale(originalEnemyScale * 0.7f, 0.6f).SetEase(Ease.OutBack).ToUniTask());
+            }
             // 카드의 중앙 인덱스 계산 (5장일 경우 2)
             float middleIndex = (_cardImage.Count - 1) / 2f;
 
@@ -97,6 +103,11 @@ namespace Cardevil.Gameplay.Enemy
                 fadeOutTasks.Add(img.DOFade(0f, 0.5f).ToUniTask());
             }
             fadeOutTasks.Add(_cardText.DOFade(0f, 0.5f).ToUniTask());
+
+            if (enemySprite != null)
+            {
+                fadeOutTasks.Add(enemySprite.transform.DOScale(originalEnemyScale, 0.5f).SetEase(Ease.OutBack).ToUniTask());
+            }
 
             await UniTask.WhenAll(fadeOutTasks);
 
