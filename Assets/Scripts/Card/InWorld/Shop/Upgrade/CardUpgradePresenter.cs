@@ -139,7 +139,7 @@ namespace Cardevil.Card.InWorld.Shop.Upgrade
             }
             
             var targetSpec = _repository.GetSpec(_targetSpecId);
-            targetSpec.ApplyUpgradeNode(selectedNode);
+            targetSpec.ApplyUpgradeNodeAndNotify(selectedNode);
             CardUpgraded?.Invoke(_targetSpecId);
             
             HandleCloseClicked();

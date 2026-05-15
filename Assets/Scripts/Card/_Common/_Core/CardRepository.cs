@@ -184,7 +184,7 @@ namespace Cardevil.Card.Common.Core
                 // 오망성 카드 스펙
                 var starSpec = new CardSpec(nextID++, CardType.Attack)
                     .AddElements(new BaseColorElement(color))
-                    .ApplyUpgradeNode(multiNumberFinalUpgradeNode);
+                    .ApplyUpgradeNodeAndNotify(multiNumberFinalUpgradeNode);
                 deckSpecs.Add(starSpec);
             }
 

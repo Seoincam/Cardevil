@@ -1,6 +1,7 @@
 using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core;
 using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,9 @@ namespace Cardevil.Card.Common.Core
         {
             ID = id;
             Type = type;
-            ApplyUpgradeNode(upgradeNode);
+            
+            if (upgradeNode)
+                ApplyUpgradeNodeAndNotify(upgradeNode);
         }
         
         public CardSpec DeepClone()
@@ -84,21 +87,28 @@ namespace Cardevil.Card.Common.Core
             SpecChanged?.Invoke(this);
             return this;
         }
-        
-        /// <param name="upgradeNode">적용할 강화 단계 노드.</param>
-        /// <param name="isUIAction">
-        /// <c>true</c>일 경우, UI 표시용으로 판단해 이벤트를 발행하지 않음.
-        /// <c>false</c>일 경우, 실제 강화가 이루어진 것으로 판단해 이벤트를 발행함.
-        /// </param>
-        public CardSpec ApplyUpgradeNode(UpgradeNodeSO upgradeNode, bool isUIAction = false)
+
+        public CardSpec ApplyUpgradeNodeAndNotify(UpgradeNodeSO upgradeNode)
         {
-            if (!upgradeNode || UpgradeNode == upgradeNode) return this;
+            ApplyUpgradeNode(upgradeNode);
+            
+            SpecChanged?.Invoke(this);
+            return this;
+        }
+
+        public CardSpec ApplyUpgradeNode(UpgradeNodeSO upgradeNode)
+        {
+            if (!upgradeNode || UpgradeNode == upgradeNode)
+            {
+                LogEx.LogError("UpgradeNode 적용 실패.");
+                return this;
+            }
 
             UpgradeNode = upgradeNode;
             _isDirty = true;
-            
-            if (UpgradeNode.UpgradeType == UpgradeApplyType.None) return this;
 
+            if (UpgradeNode.UpgradeType == UpgradeApplyType.None) return this;
+            
             switch (UpgradeNode.UpgradeType)
             {
                 case UpgradeApplyType.OverrideColors:
@@ -116,11 +126,33 @@ namespace Cardevil.Card.Common.Core
             }
             elements.AddRange(UpgradeNode.Elements);
 
-            if (!isUIAction)
-            {
-                SpecChanged?.Invoke(this);
-            }
+            return this;
+        }
 
+        /// <summary>
+        /// 공격(숫자) 카드의 기본색을 변경합니다.
+        /// </summary>
+        /// <remarks>
+        /// 기본색: 카드의 색이 정해지지 않았을 때 기본적으로 표시될 스프라이트들의 기본색.
+        /// </remarks>
+        public CardSpec ChangeBaseColor(CardColor targetBaseColor)
+        {
+            if (Type != CardType.Attack)
+            {
+                LogEx.LogError("공격(숫자) 카드가 아닌 카드 스펙의 기본 색을 변경할 수 없습니다.");
+                return this;
+            }
+            
+            var baseColorElement = elements.FirstOrDefault(e => e is BaseColorElement);
+            if (baseColorElement == null)
+            {
+                LogEx.LogError("BaseColorElement가 존재하지 않습니다.");
+                return this;
+            }
+            
+            int baseColorElementIndex = elements.IndexOf(baseColorElement);
+            elements[baseColorElementIndex] = new BaseColorElement(targetBaseColor);
+            
             return this;
         }
     }
