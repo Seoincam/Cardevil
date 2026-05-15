@@ -1,6 +1,7 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
 using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
@@ -38,6 +39,7 @@ namespace Cardevil.Card.Visual.Controller
         private ColorJewelDecoration _currentColorJewel;
         private TrailRenderer _currentTrail;
         private (int sortingOrder, CardLayer layer)? _cachedSortingData;
+        private int? _cachedLayerMask = null;
         
         private MaterialPropertyBlock _propBlock;
         
@@ -57,7 +59,7 @@ namespace Cardevil.Card.Visual.Controller
         /// <summary>
         /// ICardState를 VisualInput으로 변환한 후, 레이아웃을 적용.
         /// </summary>
-        public void SetLayout(ICardState state)
+        public void SetLayout(ICardState state, int? layerMask = null)
         {
             var visualInput = CardVisualInput.From(state);
             SetLayout(visualInput);
@@ -66,7 +68,7 @@ namespace Cardevil.Card.Visual.Controller
         /// <summary>
         /// 레이아웃을 적용.
         /// </summary>
-        public void SetLayout(CardVisualInput visualInput)
+        public void SetLayout(CardVisualInput visualInput, int? layerMask = null)
         {
             currentInput = visualInput;
             
@@ -118,6 +120,15 @@ namespace Cardevil.Card.Visual.Controller
             if (_cachedSortingData.HasValue)
             {
                 SetSortingOrder(_cachedSortingData.Value.sortingOrder, _cachedSortingData.Value.layer);
+            }
+            
+            if (layerMask.HasValue)
+            {
+                _cachedLayerMask = layerMask;
+            }
+            if (_cachedLayerMask.HasValue)
+            {
+                gameObject.SetLayerRecursively(_cachedLayerMask.Value);
             }
         }
 
