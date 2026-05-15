@@ -24,7 +24,6 @@ namespace Cardevil.Gameplay.Enemy
         {
             // 텍스트 초기화
             _cardText.color = new Color(_cardText.color.r, _cardText.color.g, _cardText.color.b, 0f);
-
             Vector3 originalEnemyScale = enemySprite != null ? enemySprite.transform.localScale : Vector3.one;
 
             var fadeTasks = new List<UniTask>();
@@ -63,7 +62,6 @@ namespace Cardevil.Gameplay.Enemy
             {
                 spreadTasks.Add(enemySprite.transform.DOScale(originalEnemyScale * 0.7f, 0.6f).SetEase(Ease.OutBack).ToUniTask());
             }
-
             // 카드의 중앙 인덱스 계산 (5장일 경우 2)
             float middleIndex = (_cardImage.Count - 1) / 2f;
 

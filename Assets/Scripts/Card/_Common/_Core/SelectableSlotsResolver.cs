@@ -89,23 +89,41 @@ namespace Cardevil.Card.Common.Core
         }
 
         public static IReadOnlyList<Direction> ResolveDirections(
+            Direction? defaultDirection,
             IReadOnlyList<CardStateBuilder.SelectableSlot<Direction>> slots)
         {
             var results = new List<Direction>();
-            
-            foreach (var slot in slots)
+
+            // 네 개인 경우는 UpgradeNode에 의해서 모든 값이 확정되어 있음.
+            if (slots.Count == 4)
             {
-                // Move 카드의 값들은 모두 확정되어 있어야 함.
-                if (!slot.IsFixed)
+                foreach (var slot in slots)
                 {
-                    Debug.LogError("Move 카드의 값이 확정되지 않았음.");
+                    results.Add(slot.FixedValue);
+                }
+            }
+            
+            // 두 개인 경우는 하나를 직접 확정해줘야함.
+            else if (slots.Count == 1)
+            {
+                if (!defaultDirection.HasValue)
+                {
+                    LogEx.LogError("두 방향이 있는 경우지만, 기본 방향이 존재하지 않습니다.");
                     return null;
                 }
                 
-                results.Add(slot.FixedValue);
+                results.Add(defaultDirection.Value);
+                results.Add(GetOpposite(defaultDirection.Value));
             }
             
             return results;
+            
+            Direction GetOpposite(Direction dir)
+            {
+                if (dir == Direction.None) return Direction.None;
+                // Up(0), Right(1), Down(2), Left(3)
+                return (Direction)(((int)dir + 2) % 4);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using Database.Generated;
 using DG.Tweening;
 using System;
 
+
 namespace Cardevil.Gameplay.Enemy
 {
     public class IconController : MonoBehaviour
@@ -82,3 +83,4 @@ namespace Cardevil.Gameplay.Enemy
         }
     }
 }
+        

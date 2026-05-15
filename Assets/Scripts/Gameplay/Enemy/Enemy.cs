@@ -26,7 +26,6 @@ namespace Cardevil.Gameplay.Enemy
         [SerializeField] private TMP_Text hpText;
         [SerializeField] private Image hpBarImage;
         [SerializeField] private Image hpBarGlowImage;
-
         [SerializeField] private IconController iconController;
 
         public float maxHP = 100;
@@ -237,7 +236,6 @@ namespace Cardevil.Gameplay.Enemy
         {
             Attack.Attack tmpAttack = new() { playerPosition = playerPosition };
             tmpAttack.currentAttackStyle = SetAttackType(); // 무슨 공격인지 설정
-
             _enemyAttackCardAnimation.AttackAnimationStart(tmpAttack.currentAttackStyle,_enemySprite).Forget();
             tmpAttack.SetAttackCycle(baseMobBossData.AttackCycle);
             Debug.Log($"적의 {tmpAttack.currentAttackStyle} 공격!");

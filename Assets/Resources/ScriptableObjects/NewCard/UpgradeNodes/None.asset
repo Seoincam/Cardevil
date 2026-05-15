@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3671bfb43be444c1ae9e1b370003b544, type: 3}
+  m_Name: None
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.Common.Core.Upgrade.UpgradeNodeSO
+  nextNodes:
+  - {fileID: 11400000, guid: a172a034552f54f8e939ccae86e73655, type: 2}
+  - {fileID: 11400000, guid: 6def4f2c4922b48c7a09e46a2fb16f7e, type: 2}
+  - {fileID: 11400000, guid: 0a5be7291b45740eb9c4a3cd75f56579, type: 2}
+  path: 0
+  stage: 0
+  targetCardType: 0
+  upgradeType: 0
+  elements: []
+  blackMarketCost: 0
+  marketCost: 0
+  nodePosition: {x: 98.5, y: 268}
+  references:
+    version: 2
+    RefIds: []

@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3671bfb43be444c1ae9e1b370003b544, type: 3}
+  m_Name: MultiNumberFinal
+  m_EditorClassIdentifier: Assembly-CSharp::Cardevil.Card.Common.Core.Upgrade.UpgradeNodeSO
+  nextNodes: []
+  path: 1
+  stage: 3
+  targetCardType: 1
+  upgradeType: 3
+  elements:
+  - rid: 5998883810384282538
+  - rid: 5998883810384282539
+  - rid: 5998883810384282540
+  - rid: 5998883810384282541
+  - rid: 5998883810384282542
+  - rid: 5998883810384282543
+  - rid: 5998883810384282544
+  - rid: 5998883810384282545
+  - rid: 5998883810384282546
+  blackMarketCost: 0
+  marketCost: 0
+  nodePosition: {x: 907, y: 268}
+  references:
+    version: 2
+    RefIds:
+    - rid: 5998883810384282538
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 2
+    - rid: 5998883810384282539
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 3
+    - rid: 5998883810384282540
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 4
+    - rid: 5998883810384282541
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 5
+    - rid: 5998883810384282542
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 6
+    - rid: 5998883810384282543
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 7
+    - rid: 5998883810384282544
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 8
+    - rid: 5998883810384282545
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 9
+    - rid: 5998883810384282546
+      type: {class: SelectableNumberElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
+      data:
+        number:
+          <IsFixed>k__BackingField: 1
+          <FixedValue>k__BackingField: 10

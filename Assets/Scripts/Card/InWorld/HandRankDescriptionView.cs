@@ -16,7 +16,6 @@ namespace Cardevil.Card.InWorld
     public class HandRankDescriptionView : MonoBehaviour
     {
         [SerializeField] private Camera cardCamera;
-        
         [Header("UI")]
         [SerializeField] private List<HandRankDescriptionRow> rows;
         [SerializeField] private TextMeshProUGUI handRankNameText;
@@ -36,6 +35,7 @@ namespace Cardevil.Card.InWorld
         [Header("Cards")]
         [SerializeField] private List<InteractionCard> cards;
 
+
         private readonly Dictionary<HandRank, HandRankDescriptionRow> _rowMap = new(10);
 
         private HandRankDescriptionRow _currentSelectedRow;
@@ -51,10 +51,11 @@ namespace Cardevil.Card.InWorld
                 row.Button.onClick.AddListener(() => HandleRowClicked(handRank));
                 row.HandRank = handRankData.DisplayName;
                 row.Damage = handRankData.Value;
-                
+
                 _rowMap.Add(handRank, row);
             }
             
+
             HandleRowClicked(handRankOrders[0]);
 
             if (exitButton != null)
@@ -67,12 +68,13 @@ namespace Cardevil.Card.InWorld
                 var visualInput = CardVisualInput.Attack(CardColor.Black, 3);
                 card.Initialize(visualInput, cardCamera);
             }
-            
+
             HideInstant();
         }
 
         private void HandleRowClicked(HandRank targetHandRank)
         { 
+
             var data = GetHandRankData(targetHandRank);
             handRankNameText.text = data.DisplayName;
             handRankDescriptionText.text = data.DisplayCondition;
@@ -99,13 +101,12 @@ namespace Cardevil.Card.InWorld
         public void ShowAnimated()
         {
             if (canvasGroup == null) return;
-            
             HandleRowClicked(handRankOrders[0]);
             
             canvasGroup.alpha = 0f;
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
-            
+
             foreach (var card in cards)
             {
                 card.VisualController.DoFade(1f, 0.3f, Ease.Unset, true);
@@ -122,7 +123,7 @@ namespace Cardevil.Card.InWorld
             {
                 card.VisualController.DoFade(0f, 0.3f, Ease.Unset, true);
             }
-            
+
             canvasGroup.DOFade(0f, 0.3f).OnComplete(() =>
             {
                 canvasGroup.blocksRaycasts = false;
@@ -134,13 +135,13 @@ namespace Cardevil.Card.InWorld
         public void ShowInstant()
         {
             if (canvasGroup == null) return;
-            
             HandleRowClicked(handRankOrders[0]);
             canvasGroup.alpha = 1f;
             foreach (var card in cards)
             {
                 card.VisualController.Fade(1f, true);
             }
+
             canvasGroup.blocksRaycasts = true;
             canvasGroup.interactable = true;
         }

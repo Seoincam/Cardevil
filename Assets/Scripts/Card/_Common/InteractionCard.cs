@@ -2,12 +2,16 @@ using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
 using Cardevil.Card.InStage;
 using Cardevil.Card.Visual.Controller;
+using Cardevil.Core.Utils;
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Cardevil.Card.Common
 {
+    /// <summary>
+    /// 대부분의 상황에서 공용적으로 사용할 카드 오브젝트. 각 사용처에서 이벤트를 구독하는 방식을 사용함.
+    /// </summary>
     [RequireComponent(typeof(CardVisualController))]
     public class InteractionCard : MonoBehaviour,
         IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, IPointerDownHandler
@@ -15,10 +19,8 @@ namespace Cardevil.Card.Common
         [field: SerializeField] public CardVisualController VisualController { get; private set; }
         
         [Header("Settings")]
-        [SerializeField] private bool followTargetPosition;
-
-        private Camera _cardCamera;
-
+        [field: SerializeField] public bool FollowTargetPosition { get; set; }
+        
         public event Action<InteractionCard> PointerEnter;
         public event Action<InteractionCard> PointerDown;
         public event Action<InteractionCard> PointerUp;
@@ -36,14 +38,19 @@ namespace Cardevil.Card.Common
 
         private void LateUpdate()
         {
-            if (followTargetPosition)
+            if (FollowTargetPosition)
                 transform.localPosition = Vector3.Lerp(transform.localPosition, TargetLocalPosition, Time.deltaTime * 10);
         }
 
-        public void Initialize(CardVisualInput visualInput, Camera cardCamera)
+        public void Initialize(CardVisualInput visualInput, bool followTargetPosition = false, int? layerMask = null)
         {
             VisualController.SetLayout(visualInput);
-            _cardCamera = cardCamera;
+            FollowTargetPosition = followTargetPosition;
+
+            if (layerMask.HasValue)
+            {
+                gameObject.SetLayerRecursively(layerMask.Value);
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -70,10 +77,10 @@ namespace Cardevil.Card.Common
             PointerExit?.Invoke(this);
         }
 
-        public HandBarCard ConvertToHandCard(ICardState cardState)
+        public HandBarCard ConvertToHandCard(ICardState cardState, Camera cardCamera)
         {
             var handBarCard = gameObject.AddComponent<HandBarCard>();
-            handBarCard.Initialize(cardState, _cardCamera, false);
+            handBarCard.Initialize(cardState, cardCamera, false);
             
             Destroy(this);
             return handBarCard;

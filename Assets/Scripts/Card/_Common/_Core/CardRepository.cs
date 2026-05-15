@@ -1,3 +1,4 @@
+using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Core.Systems.Save;
 using Cardevil.Core.Utils;
 using System;
@@ -10,20 +11,29 @@ namespace Cardevil.Card.Common.Core
     [Serializable]
     public class CardRepository : ISaveLoad, INewGameInitializable
     {
-        private const int CardCount = 50;
+        public const int CardCount = 50;
         
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
 
+        private readonly Dictionary<int, CardSpec> _specMap = new(CardCount);
         private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
+
+        private UpgradeNodeDatabaseSO _upgradeDatabase;
         
         public IReadOnlyList<CardSpec> Cards => cards;
+        
+        private CardRepository() { }
+        public CardRepository(UpgradeNodeDatabaseSO upgradeDatabase)
+        {
+            _upgradeDatabase = upgradeDatabase;
+        }
         
         public void SetUpNewGame(GameSave save)
         {
             cards.Clear();
             _stateCache.Clear();
 
-            var newSpecs = CreateStandardCardSpecs();
+            var newSpecs = CreateStandardCardSpecs(_upgradeDatabase);
             foreach (var spec in newSpecs)
             {
                 AddCardSpec(spec);
@@ -41,7 +51,7 @@ namespace Cardevil.Card.Common.Core
         }
 
         /// <summary>
-        /// 모든 카드의 최신 State 리스트를 반환.
+        /// 모든 카드의 최신 State 인터페이스 리스트를 반환.
         /// </summary>
         public List<ICardState> GetAllStates()
         {
@@ -51,15 +61,36 @@ namespace Cardevil.Card.Common.Core
         }
 
         /// <summary>
-        /// 모든 카드의 최신 State 리스트를 DeepClone해 반환.
+        /// 모든 카드의 최신 State 인터페이스 리스트를 DeepClone해 반환.
         /// </summary>
-        /// <returns></returns>
         public List<ICardState> GetAllDeepClonedStates()
         {
             return _stateCache.Values
                 .Select(state => state.DeepClone())
                 .Cast<ICardState>()
                 .ToList();
+        }
+
+        /// <summary>
+        /// 특정 Id의 Spec을 반환.
+        /// </summary>
+        public CardSpec GetSpec(int id)
+        {
+            if (_specMap.TryGetValue(id, out var spec))
+            {
+                return spec;
+            }
+
+            LogEx.LogError($"Spec을 찾을 수 없음! ID: {id}");
+            return null;
+        }
+
+        /// <summary>
+        /// 특정 Id의 Spec을 DeepClone해 반환.
+        /// </summary>
+        public CardSpec GetDeepClonedSpec(int id)
+        {
+            return GetSpec(id).DeepClone();
         }
         
         /// <summary>
@@ -81,12 +112,21 @@ namespace Cardevil.Card.Common.Core
 
             return null;
         }
+
+        /// <summary>
+        /// 특정 Id의 최신 State를 DeepClone해 반환.
+        /// </summary>
+        public CardState GetDeepClonedState(int id)
+        {
+            return GetState(id)?.DeepClone();
+        }
         
         private void AddCardSpec(CardSpec spec)
         {
             cards.Add(spec);
             spec.SpecChanged += HandleSpecChanged;
 
+            _specMap[spec.ID] = spec;
             _stateCache[spec.ID] = spec.State;
         }
         
@@ -98,10 +138,14 @@ namespace Cardevil.Card.Common.Core
         }
 
         // 기본 덱 생성
-        private static List<CardSpec> CreateStandardCardSpecs()
+        private static List<CardSpec> CreateStandardCardSpecs(UpgradeNodeDatabaseSO upgradeDatabase)
         {
             var deckSpecs = new List<CardSpec>(CardCount);
             int nextID = 0;
+
+            var noneUpgradeNode = upgradeDatabase.GetNode(UpgradePath.None, 0);
+            var multiNumberFinalUpgradeNode = upgradeDatabase.GetNode(UpgradePath.MultiNumber, 3);
+            var multiDirectionFinalUpgradeNode = upgradeDatabase.GetNode(UpgradePath.MultiDirection, 2);
             
             // 공격 카드
             foreach (CardColor color in Enum.GetValues(typeof(CardColor)))
@@ -111,7 +155,7 @@ namespace Cardevil.Card.Common.Core
                 // 기본 공격 카드 스펙
                 for (int n = 2; n <= 10; n++)
                 {
-                    var defaultAttackSpec = new CardSpec(nextID++, CardType.Attack)
+                    var defaultAttackSpec = new CardSpec(nextID++, CardType.Attack, noneUpgradeNode)
                         .AddElements(
                             new BaseColorElement(color),
                             new BaseNumberElement(n)
@@ -121,12 +165,8 @@ namespace Cardevil.Card.Common.Core
 
                 // 오망성 카드 스펙
                 var starSpec = new CardSpec(nextID++, CardType.Attack)
-                    .AddElements(new BaseColorElement(color));
-
-                for (int n = 2; n <= 10; n++)
-                {
-                    starSpec.AddElements(SelectableNumberElement.Fixed(n));
-                }
+                    .AddElements(new BaseColorElement(color))
+                    .ApplyUpgradeNode(multiNumberFinalUpgradeNode);
                 deckSpecs.Add(starSpec);
             }
 
@@ -137,7 +177,7 @@ namespace Cardevil.Card.Common.Core
             {
                 for (int i = 0; i < 2; i++)
                 {
-                    var defaultMoveSpec = new CardSpec(nextID++, CardType.Move)
+                    var defaultMoveSpec = new CardSpec(nextID++, CardType.Move, noneUpgradeNode)
                         .AddElements(new BaseDirectionElement(dir));
                     deckSpecs.Add(defaultMoveSpec);
                 }
@@ -146,13 +186,7 @@ namespace Cardevil.Card.Common.Core
             // 네 방향 이동 카드 스펙
             for (int i = 0; i < 2; i++)
             {
-                var fourDirectionSpec = new CardSpec(nextID++, CardType.Move)
-                    .AddElements(
-                        SelectableDirectionElement.Fixed(Direction.Up),
-                        SelectableDirectionElement.Fixed(Direction.Down),
-                        SelectableDirectionElement.Fixed(Direction.Left),
-                        SelectableDirectionElement.Fixed(Direction.Right)
-                    );
+                var fourDirectionSpec = new CardSpec(nextID++, CardType.Move, multiDirectionFinalUpgradeNode);
                 deckSpecs.Add(fourDirectionSpec);
             }
 

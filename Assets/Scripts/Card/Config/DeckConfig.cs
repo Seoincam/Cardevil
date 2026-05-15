@@ -8,6 +8,7 @@ using UnityEngine.Pool;
 
 namespace Cardevil.Card.Config
 {
+    [Obsolete("Test 시에만 사용하고 있음. 실제 런타임 덱 생성은 CardRepository에서 수행함.")]
     [CreateAssetMenu(menuName = "Cards/Config/Deck", fileName = "DeckConfig")]
     public class DeckConfig : ScriptableObject
     {
