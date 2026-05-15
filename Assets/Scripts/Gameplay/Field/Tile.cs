@@ -41,6 +41,8 @@ namespace Cardevil.Gameplay.Field
             get => _coordinate;
         }
 
+        public bool HasPlayer => entities.Exists(e => e.TryGetComponent(out Player.PlayerCharacter _));
+
         public void Initialize(Field field, TileVector coordinate)
         {
             this._coordinate = coordinate;

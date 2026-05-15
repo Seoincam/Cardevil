@@ -13,7 +13,7 @@ namespace Cardevil.Card.InStage
     public class ValueSelectionView : MonoBehaviour
     {
         [Header("Prefabs")]
-        [SerializeField] private GameObject interactionCardPrefab;
+        [SerializeField] private InteractionCard interactionCardPrefab;
         
         [Header("References")]
         [SerializeField] private SpriteRenderer zoneSpriteRenderer;
@@ -68,12 +68,12 @@ namespace Cardevil.Card.InStage
             return zoneSpriteRenderer.bounds.Contains(worldPosition);
         }
         
-        public void AddColorSelectable(CardColor color, int number)
+        public void CreateColorAlternative(CardColor color, int number)
         {
             _cardToColor ??= new Dictionary<InteractionCard, CardColor>();
             _colorToCard ??= new Dictionary<CardColor, InteractionCard>();
 
-            var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
+            var card = Instantiate(interactionCardPrefab);
             var visualInput = CardVisualInput.Attack(color, number);
 
             card.Initialize(visualInput, true);
@@ -84,12 +84,12 @@ namespace Cardevil.Card.InStage
             CardRegistry.Register(card);
         }
 
-        public void AddNumberSelectable(CardColor color, int number)
+        public void CreateNumberAlternative(CardColor color, int number)
         {
             _cardToNumber ??= new Dictionary<InteractionCard, int>();
             _numberToCard ??= new Dictionary<int, InteractionCard>();
 
-            var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
+            var card = Instantiate(interactionCardPrefab);
             var visualInput = CardVisualInput.Attack(color, number);
 
             card.Initialize(visualInput, true);
@@ -100,12 +100,12 @@ namespace Cardevil.Card.InStage
             CardRegistry.Register(card);
         }
 
-        public void AddDirectionSelectable(Direction direction)
+        public void CreateDirectionAlternative(Direction direction)
         {
             _cardToDirection ??= new Dictionary<InteractionCard, Direction>();
             _directionToCard ??= new Dictionary<Direction, InteractionCard>();
 
-            var card = Instantiate(interactionCardPrefab).GetComponent<InteractionCard>();
+            var card = Instantiate(interactionCardPrefab);
             var visualInput = CardVisualInput.Move(direction);
 
             card.Initialize(visualInput, true);
@@ -184,64 +184,45 @@ namespace Cardevil.Card.InStage
                 }
             }
         }
-        
-        private Vector3[] MakeCirclePoints(Vector3 center, float radiusX, float radiusY, int count)
-        {
-            var points = new Vector3[count];
-            for (int i = 0; i < count; i++)
-            {
-                float angle = i * Mathf.PI * 2 / count;
-                points[i] = center + new Vector3(Mathf.Cos(angle) * radiusX, Mathf.Sin(angle) * radiusY);
-            }
-    
-            return points;
-        }
 
-        public void ArrangeCards(CardColor[] colors, uint handBarCardId)
+        public void ArrangeCards(uint handBarCardId, CardColor[] colors)
         {
             var center = Vector3.zero;
+            SetHandBarCardPosition(handBarCardId, center);
+
             var points = MakeCirclePoints(center, colors.Length);
-            
             for (int i = 0; i < colors.Length; i++)
             {
                 var card = _colorToCard[colors[i]];
                 card.VisualController.SetSortingOrder(i, CardLayer.PopUp);
-                // card.TargetLocalX = GetSlotX(i, colors.Length);
-                // card.TargetLocalY = GetSlotY(i, colors.Length);
                 
                 card.TargetLocalX = points[i].x;
                 card.TargetLocalY = points[i].y;
             }
-            
-            var handBarCard = CardRegistry.GetHandBarCard(handBarCardId);
-            
-            handBarCard.SetMode(HandBarCard.Mode.Unmanaged);
-            handBarCard.transform.DOLocalRotate(Vector3.zero, 0.5f);
-            handBarCard.transform.DOMove(center, 10f).SetSpeedBased();
-            handBarCard.VisualController.SetSortingOrderLast(CardLayer.PopUp);
         }
 
-        public void ArrangeCards(int[] numbers)
+        public void ArrangeCards(uint handBarCardId, int[] numbers)
         {
-            // var points = MakeCirclePoints(Vector3.zero, 5.4f, 3.6f, numbers.Length);
-            var points = MakeCirclePoints(Vector3.zero, numbers.Length);
-
+            var center = Vector3.zero;
+            SetHandBarCardPosition(handBarCardId, center);
+            
+            var points = MakeCirclePoints(center, numbers.Length);
             for (int i = 0; i < numbers.Length; i++)
             {
                 var card = _numberToCard[numbers[i]];
                 card.VisualController.SetSortingOrder(i, CardLayer.PopUp);
-                // card.TargetLocalX = GetSlotX(i, numbers.Length);
-                // card.TargetLocalY = GetSlotY(i, numbers.Length);
                 
                 card.TargetLocalX = points[i].x;
                 card.TargetLocalY = points[i].y;
             }
         }
 
-        public void ArrangeCards(Direction[] directions)
+        public void ArrangeCards(uint handBarCardId, Direction[] directions)
         {
-            var points = MakeCirclePoints(Vector3.zero, directions.Length);
-
+            var center = Vector3.zero;
+            SetHandBarCardPosition(handBarCardId, center);
+            
+            var points = MakeCirclePoints(center, directions.Length);
             for (int i = 0; i < directions.Length; i++)
             {
                 var card = _directionToCard[directions[i]];
@@ -386,6 +367,19 @@ namespace Cardevil.Card.InStage
             
             var id = CardRegistry.GetId(card);
             ValueSelected?.Invoke(values, id);
+        }
+
+        /// <summary>
+        /// 손패 카드를 <c>targetPosition</c>으로 이동시킵니다.
+        /// </summary>
+        private void SetHandBarCardPosition(uint handBarCardId, Vector3 targetPosition)
+        {
+            var handBarCard = CardRegistry.GetHandBarCard(handBarCardId);
+            
+            handBarCard.SetMode(HandBarCard.Mode.Unmanaged);
+            handBarCard.transform.DOLocalRotate(Vector3.zero, 0.5f);
+            handBarCard.transform.DOMove(targetPosition, 10f).SetSpeedBased();
+            handBarCard.VisualController.SetSortingOrderLast(CardLayer.PopUp);
         }
     }
 }

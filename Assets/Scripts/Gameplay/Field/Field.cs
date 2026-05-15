@@ -37,6 +37,12 @@ namespace Cardevil.Gameplay.Field
         [SerializeField] private FieldSubFloorObject[] _subFloorObjects;
         [SerializeField, VisibleOnly(EditableIn.EditMode)] private Transform tileParent;
         [SerializeField, VisibleOnly] private TileLine[] _tileContainer;
+        
+        
+        
+        public int Width => width;
+        public int Height => height;
+        
         [Serializable]
         internal class TileLine : IEnumerable<Tile>
         {
@@ -410,6 +416,42 @@ namespace Cardevil.Gameplay.Field
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator(); 
+        }
+    }
+    
+    
+    public static class FieldExtensions
+    {
+        public static TileVector GetRandomTileCoordinate(this Field field)
+        {
+            int randomI = UnityEngine.Random.Range(0, field.Height);
+            int randomJ = UnityEngine.Random.Range(0, field.Width);
+            return new TileVector(randomI, randomJ);
+        }
+        
+        public static TileVector? GetRandomTileCoordinate(this Field field, Func<Tile, bool> predicate)
+        {
+            List<Tile> validTiles = new List<Tile>();
+            foreach (var tile in field)
+            {
+                if (predicate(tile))
+                {
+                    validTiles.Add(tile);
+                }
+            }
+
+            if (validTiles.Count == 0)
+            {
+                return null;
+            }
+
+            Tile randomTile = validTiles[RandomUtil.GetRandomInt(0, validTiles.Count,RandomUtil.RandomType.Gimmick)];
+            return randomTile.Coordinate;
+        }
+        
+        public static TileVector? GetRandomTileCoordinateWithoutPlayer(this Field field)
+        {
+            return GetRandomTileCoordinate(field, tile => !tile.HasPlayer);
         }
     }
 }

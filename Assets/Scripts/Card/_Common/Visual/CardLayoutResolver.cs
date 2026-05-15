@@ -18,23 +18,30 @@ namespace Cardevil.Card.Common.Visual
 
         private static CardLayoutData ResolveAttack(in CardVisualInput input)
         {
-            var color = input.CurrentColor;
+            var currentColor = input.FixedColor;
 
-            if (input.NumberOptions.Length > 1 && !input.NumberSelected)
+            // 다중 숫자 카드의 경우 CurrentColor가 항상 존재함.
+            if (input.AllNumberCandidates.Length > 1 && !input.FixedNumber.HasValue && currentColor.HasValue)
             {
-                if (input.NumberOptions.Length == 9)
+                if (input.AllNumberCandidates.Length == 9)
                 {
-                    var innerFrame = CardSpriteCache.GetInnerFrame(color);
-                    var mainSprite = CardSpriteCache.GetStar(color);
+                    var innerFrame = CardSpriteCache.GetInnerFrame(currentColor.Value);
+                    var mainSprite = CardSpriteCache.GetStar(currentColor.Value);
 
                     return CardLayoutData.Single(innerFrame, mainSprite);
                 }
 
-                if (input.NumberOptions.Length == 2 || input.NumberOptions.Length == 3)
+                if (input.AllNumberCandidates.Length == 2 || input.AllNumberCandidates.Length == 3)
                 {
-                    var innerFrame = CardSpriteCache.GetInnerFrame(color);
-                    var sprites = input.NumberOptions
-                        .Select(n => CardSpriteCache.GetNumber(color, n))
+                    var innerFrame = CardSpriteCache.GetInnerFrame(currentColor.Value);
+                    var sprites = input.AllNumberCandidates
+                        .Select(n =>
+                        {
+                            if (n.HasValue)
+                                return CardSpriteCache.GetNumber(currentColor.Value, n.Value);
+                            else
+                                return CardSpriteCache.GetQuestionMark(currentColor.Value);
+                        })
                         .ToArray();
                     
                     if (sprites.Length == 2)
@@ -50,10 +57,10 @@ namespace Cardevil.Card.Common.Visual
             
             // 숫자 한개, 선택 완료 등 나머지 -> 단일 레이아웃
             {
-                var number = input.CurrentNumber;
-                var innerFrame = CardSpriteCache.GetInnerFrame(color);
-                var mainSprite = CardSpriteCache.GetNumber(color, number);
-                var cornerSprite = CardSpriteCache.GetSmallNumber(color, number);
+                var number = input.FixedNumber;
+                var innerFrame = CardSpriteCache.GetInnerFrame(input.BaseColor.Value);
+                var mainSprite = CardSpriteCache.GetNumber(input.BaseColor.Value, number.Value);
+                var cornerSprite = CardSpriteCache.GetSmallNumber(input.BaseColor.Value, number.Value);
 
                 return CardLayoutData.SingleWithCorner(innerFrame, mainSprite, cornerSprite);
             }
@@ -62,7 +69,7 @@ namespace Cardevil.Card.Common.Visual
         private static CardLayoutData ResolveMove(in CardVisualInput input)
         {
             // 방향 여러개 + 미선택 -> 다중 화살표
-            if (input.DirectionOptions.Length > 1 && !input.DirectionSelected)
+            if (input.AllDirectionCandidates.Length > 1 && !input.FixedDirection.HasValue)
             {
                 var innerFrame = CardSpriteCache.GetInnerFrame(input.DirectionFlag);
                 var mainSprite = CardSpriteCache.GetArrow(input.DirectionFlag);
@@ -72,9 +79,9 @@ namespace Cardevil.Card.Common.Visual
 
             // 방향 한개, 선택 완료 등 나머지 -> 단일 화살표
             {
-                var direction = input.CurrentDirection;
-                var innerFrame = CardSpriteCache.GetInnerFrame(direction);
-                var mainSprite = CardSpriteCache.GetArrow(direction);
+                var direction = input.FixedDirection;
+                var innerFrame = CardSpriteCache.GetInnerFrame(input.FixedDirection.Value);
+                var mainSprite = CardSpriteCache.GetArrow(input.FixedDirection.Value);
 
                 return CardLayoutData.Single(innerFrame, mainSprite);
             }

@@ -30,7 +30,7 @@ namespace Cardevil.Card.InStage
             ScorePresenter scorePresenter
         )
         {
-            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedStates());
+            model = new StageCardCoreModel(cardRepository.GetAllDeepClonedNewStates());
             
             _view = view;
             view.UseClicked += OnUseRequested;
@@ -153,7 +153,7 @@ namespace Cardevil.Card.InStage
 
             async UniTaskVoid DiscardAsync()
             {
-                _handBarPresenter.SetInputEnabled(false);
+                _handBarPresenter.IsInputEnabled = false;
 
                 var discardedStates = await _handBarPresenter.DiscardSelectionAsync();
                 model.Discard(discardedStates);
@@ -161,7 +161,7 @@ namespace Cardevil.Card.InStage
                 var states = model.Draw(discardedStates.Count);
                 await _handBarPresenter.DrawAsync(states);
 
-                _handBarPresenter.SetInputEnabled(true);
+                _handBarPresenter.IsInputEnabled = true;
             }
 
             DiscardAsync().Forget();
@@ -192,7 +192,7 @@ namespace Cardevil.Card.InStage
             }
         }
 
-    private InteractionScope Interaction() => new(_handBarPresenter);
+        private InteractionScope Interaction() => new(_handBarPresenter);
 
         private readonly struct InteractionScope : IDisposable
         {
@@ -201,12 +201,12 @@ namespace Cardevil.Card.InStage
             public InteractionScope(HandBarPresenter handBarPresenter)
             {
                 _handBarPresenter = handBarPresenter;
-                handBarPresenter.SetInputEnabled(true);
+                _handBarPresenter.IsInputEnabled = true;
             }
             
             public void Dispose()
             {
-                _handBarPresenter.SetInputEnabled(false);
+                _handBarPresenter.IsInputEnabled = false;
             }
         }
     }
