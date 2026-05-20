@@ -80,7 +80,7 @@ namespace Cardevil.Gameplay.Enemy
                 LogEx.Log("Enemy 최초 턴! 첫 공격 패턴을 생성합니다.");
                 // 적의 공격(SetupAttack)은 어차피 내부에서 Random.Range로 위치를 결정하므로,
                 // 플레이어의 실제 위치가 없어도 임시 위치(0,0)를 넘겨 공격을 생성하고 하이라이트를 띄울 수 있습니다.
-                AttackEnemyAwake(context.PlayerPosition);
+                AttackEnemyAwake(context.PlayerPosition());
                 aWakeFirst = false;
             }
             await UniTask.CompletedTask;
@@ -150,7 +150,7 @@ namespace Cardevil.Gameplay.Enemy
                     }
 
                     // [핵심해결] CheckHit를 돌리기 전에, 플레이어의 최신 위치를 attack 객체에 반드시 갱신해야 합니다!
-                    attack.playerPosition = context.PlayerPosition;
+                    attack.playerPosition = context.PlayerPosition();
                     float damage = baseMobBossData.AttackDamage;
 
                     // HandRankAttackLogic에서 반환하는 out var resultInfo를 받아와서 처리합니다.
@@ -192,7 +192,7 @@ namespace Cardevil.Gameplay.Enemy
 
         public async UniTask UpdateAttackAsync(IEnemyContext context)
         {
-            TileVector playerPosition = context.PlayerPosition;
+            TileVector playerPosition = context.PlayerPosition();
 
             // 턴 오더가 0이하가 되어 방금 사용된 공격들을 지우고 새로 생성(새 하이라이트 켜짐)
             int removedCount = attackLists.RemoveAll(attack => attack.attackTurnOrder <= 0);

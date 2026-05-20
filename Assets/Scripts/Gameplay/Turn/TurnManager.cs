@@ -17,11 +17,6 @@ namespace Cardevil.Gameplay.Turn
         Func<TileVector> PlayerPosition { get; }
     }
     
-    public class EnemyContext : IEnemyContext
-    {
-        public Func<TileVector> PlayerPosition { get; set; }
-    }
-    
     [Serializable]
     public class TurnManager : IDisposable
     {
@@ -38,6 +33,12 @@ namespace Cardevil.Gameplay.Turn
 
         private RerollPresenter Reroll => _card.Reroll;
         private StageCardCorePresenter CardCore => _card.Core;
+        
+        private class EnemyContext : IEnemyContext
+        {
+            public Func<TileVector> PlayerPosition { get; set; }
+        }
+        
 
         public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner,Field.Field field)
         {
