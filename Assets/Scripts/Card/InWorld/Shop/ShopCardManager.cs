@@ -1,9 +1,15 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Core.Upgrade;
-using Cardevil.Card.InWorld.Shop.Upgrade;
+using Cardevil.Card.InWorld.UI;
+using Cardevil.Card.InWorld.UI.Selection;
+using Cardevil.Card.InWorld.UI.Upgrade;
 using Cardevil.Core.Bootstrap;
+using Cardevil.UI.Flow;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Cardevil.Card.InWorld.Shop
 {
@@ -12,8 +18,9 @@ namespace Cardevil.Card.InWorld.Shop
         [Header("Settings")]
         [SerializeField, Tooltip("추첨할 카드의 총 개수")] private int drawCardCount = 10;
         
+        [FormerlySerializedAs("shopCardSelectionView")]
         [Header("Scene References")]
-        [SerializeField] private ShopCardSelectionView shopCardSelectionView;
+        [SerializeField] private CardSelectionView cardSelectionView;
         [SerializeField] private CardUpgradeView upgradeView;
         
         [Header("References")]
@@ -27,11 +34,21 @@ namespace Cardevil.Card.InWorld.Shop
 
         private void Awake()
         {
-            _selectionPresenter = new SelectionPresenter(Repository, shopCardSelectionView, drawCardCount);
-            _upgradePresenter = new CardUpgradePresenter(Repository, upgradeDatabase, upgradeView);
+            if (!cardSelectionView || !upgradeView)
+            {
+                return;
+            }
 
+            _selectionPresenter = new SelectionPresenter(Repository, cardSelectionView, drawCardCount);
+            _upgradePresenter = new CardUpgradePresenter(Repository, upgradeDatabase, upgradeView);
             _selectionPresenter.CardSelected += _upgradePresenter.HandleCardSelected;
             _upgradePresenter.CardUpgraded += _selectionPresenter.HandleCardUpgraded;
+        }
+
+        public UniTask<UiFlowResult<int>> RequestReinforceAsync(CancellationToken cancellationToken = default)
+        {
+            var flow = new CardUpgradeUiFlow(Repository, upgradeDatabase, drawCardCount);
+            return flow.SelectAndUpgradeAsync(cancellationToken);
         }
 
         
@@ -45,7 +62,7 @@ namespace Cardevil.Card.InWorld.Shop
         /// 지정된 개수만큼 상점 카드를 추첨하고, 그리드 형식으로 선택 화면을 생성.
         /// </summary>
         /// <param name="centerAnchor">전체 카드 뭉치가 배치될 중앙 기준 좌표.</param>
-        public void OpenSelection(Vector2 centerAnchor) => _selectionPresenter.Open(centerAnchor);
+        public void OpenSelection(Vector2 centerAnchor) => _selectionPresenter?.Open(centerAnchor);
 
         /// <summary>
         /// 지정된 개수만큼 상점 카드를 추첨하고, 그리드 형식으로 선택 화면을 생성.
@@ -65,7 +82,7 @@ namespace Cardevil.Card.InWorld.Shop
         /// <param name="colSpacing">카드 사이의 가로 간격(Column Spacing).</param>
         /// <param name="rowSpacing">줄 사이의 세로 간격(Row Spacing).</param>
         public void OpenSelection(Vector2 centerAnchor, int colCount, float colSpacing, float rowSpacing) =>
-            _selectionPresenter.Open(centerAnchor, colCount, colSpacing, rowSpacing);
+            _selectionPresenter?.Open(centerAnchor, colCount, colSpacing, rowSpacing);
         
 
         [ContextMenu("Create Example")]

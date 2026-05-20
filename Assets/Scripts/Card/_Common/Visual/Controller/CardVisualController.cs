@@ -1,6 +1,7 @@
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Visual;
 using Cardevil.Core.Attributes;
+using Cardevil.Core.Utils;
 using DG.Tweening;
 using System.Collections.Generic;
 using TMPro;
@@ -119,6 +120,8 @@ namespace Cardevil.Card.Visual.Controller
             {
                 SetSortingOrder(_cachedSortingData.Value.sortingOrder, _cachedSortingData.Value.layer);
             }
+            
+            gameObject.SetLayerRecursively(gameObject.layer);
         }
 
         /// <summary>
