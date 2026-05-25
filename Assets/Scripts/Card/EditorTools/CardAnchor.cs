@@ -1,7 +1,9 @@
 using UnityEngine;
+using Cardevil.Card.Common;
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Card.Common.Visual;
+using Cardevil.Card.InWorld.UI;
 using Cardevil.Card.Visual.Controller;
 using Cardevil.Core.Utils;
 
@@ -12,8 +14,12 @@ using UnityEditor;
 namespace Cardevil.Card.EditorTools
 {
     [ExecuteAlways]
-    public class CardAnchorPreview : MonoBehaviour
+    public class CardAnchor : MonoBehaviour
     {
+        // Unity's serialized sorting-layer id for CardWorldUiSorting.PopupSortingLayerName.
+        // Stored as an id because spawned SpriteRenderers/SortingGroups apply by id.
+        private const int PopupSortingLayerID = -96533967;
+
         public enum PreviewMode
         {
             Random,
@@ -30,6 +36,11 @@ namespace Cardevil.Card.EditorTools
         public bool showPreview = true;
         public PreviewMode mode = PreviewMode.Random;
         public float cardScale = 1f;
+        public bool applyUnityLayer = true;
+        public string unityLayerName = "ShopCard";
+        public bool applySorting = true;
+        public int sortingLayerID = PopupSortingLayerID;
+        public int orderInLayer = (int)CardWorldUiSorting.Order.Card;
 
         [Header("Custom Settings")]
         public CardType customType = CardType.Attack;
@@ -53,6 +64,53 @@ namespace Cardevil.Card.EditorTools
         public Direction customDir3 = Direction.Left;
 
         private InteractionCard _previewInstance;
+
+        public InteractionCard Spawn(CardVisualInput input, Transform parent = null)
+        {
+            if (cardPrefab == null)
+            {
+                Debug.LogWarning($"{nameof(CardAnchor)}: Card Prefab is missing.", this);
+                return null;
+            }
+
+            var card = Instantiate(cardPrefab, parent ? parent : transform);
+            ApplyTransform(card);
+            card.Initialize(input, false, ResolveUnityLayer());
+            ApplyRenderSettings(card);
+            card.VisualController.Fade(1f, true);
+            return card;
+        }
+
+        public void ApplyTo(InteractionCard card)
+        {
+            if (card == null)
+            {
+                return;
+            }
+
+            ApplyTransform(card);
+
+            int? unityLayer = ResolveUnityLayer();
+            if (unityLayer.HasValue)
+            {
+                card.gameObject.SetLayerRecursively(unityLayer.Value);
+            }
+
+            ApplyRenderSettings(card);
+        }
+
+        public void SetSorting(int sortingOrder, int sortingLayerId, bool shouldApply = true)
+        {
+            orderInLayer = sortingOrder;
+            sortingLayerID = sortingLayerId;
+            applySorting = shouldApply;
+        }
+
+        public void SetUnityLayer(string layerName, bool shouldApply = true)
+        {
+            unityLayerName = layerName;
+            applyUnityLayer = shouldApply;
+        }
 
         private void OnEnable()
         {
@@ -103,7 +161,7 @@ namespace Cardevil.Card.EditorTools
         {
             if (cardPrefab == null)
             {
-                Debug.LogWarning("CardAnchorPreview: Card Prefab is missing.");
+                Debug.LogWarning($"{nameof(CardAnchor)}: Card Prefab is missing.", this);
                 return;
             }
 
@@ -112,9 +170,7 @@ namespace Cardevil.Card.EditorTools
             _previewInstance = Instantiate(cardPrefab, transform);
             _previewInstance.gameObject.hideFlags = HideFlags.DontSave;
             
-            _previewInstance.transform.localPosition = Vector3.zero;
-            _previewInstance.transform.localRotation = Quaternion.identity;
-            _previewInstance.transform.localScale = Vector3.one * cardScale;
+            ApplyTransform(_previewInstance);
 
             CardVisualInput input;
 
@@ -132,9 +188,42 @@ namespace Cardevil.Card.EditorTools
                 input = GenerateCustomInput();
             }
 
-            _previewInstance.Initialize(input, false, 5); 
-            _previewInstance.VisualController.SetSortingOrder(10);
+            _previewInstance.Initialize(input, false, ResolveUnityLayer()); 
+            ApplyRenderSettings(_previewInstance);
             _previewInstance.VisualController.Fade(1f, true);
+        }
+
+        private void ApplyTransform(InteractionCard card)
+        {
+            card.FollowTargetPosition = false;
+            card.transform.position = transform.position;
+            card.transform.rotation = transform.rotation;
+            card.transform.localScale = Vector3.one * cardScale;
+        }
+
+        private int? ResolveUnityLayer()
+        {
+            if (!applyUnityLayer)
+            {
+                return null;
+            }
+
+            int layer = LayerMask.NameToLayer(unityLayerName);
+            if (layer < 0)
+            {
+                Debug.LogWarning($"{nameof(CardAnchor)}: Unity layer '{unityLayerName}' does not exist.", this);
+                return null;
+            }
+
+            return layer;
+        }
+
+        private void ApplyRenderSettings(InteractionCard card)
+        {
+            if (applySorting && card.VisualController != null)
+            {
+                card.VisualController.SetSortingOrder(orderInLayer, sortingLayerID);
+            }
         }
 
         private CardVisualInput GenerateRandomInput()

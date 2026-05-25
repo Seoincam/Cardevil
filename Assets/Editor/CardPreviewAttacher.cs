@@ -4,7 +4,7 @@ using Cardevil.Card.EditorTools;
 
 public class CardPreviewAttacher : EditorWindow
 {
-    [MenuItem("Tools/Attach Card Previews to UI Host")]
+    [MenuItem("Tools/Attach Card Anchors to UI Host")]
     public static void AttachPreviews()
     {
         string prefabPath = "Assets/Resources/Prefabs/UI/CardFlow/CardWorldUiHost.prefab";
@@ -26,15 +26,15 @@ public class CardPreviewAttacher : EditorWindow
         {
             if (t.name.Contains("Anchor"))
             {
-                var preview = t.GetComponent<CardAnchorPreview>();
-                if (preview == null)
+                var anchor = t.GetComponent<CardAnchor>();
+                if (anchor == null)
                 {
-                    preview = t.gameObject.AddComponent<CardAnchorPreview>();
+                    anchor = t.gameObject.AddComponent<CardAnchor>();
                 }
                 
-                if (cardPrefab != null && preview.cardPrefab == null)
+                if (cardPrefab != null && anchor.cardPrefab == null)
                 {
-                    preview.cardPrefab = cardPrefab;
+                    anchor.cardPrefab = cardPrefab;
                 }
                 count++;
             }
@@ -43,7 +43,7 @@ public class CardPreviewAttacher : EditorWindow
         if (count > 0)
         {
             PrefabUtility.SavePrefabAsset(prefab);
-            Debug.Log($"Successfully attached {count} CardAnchorPreview components to anchors in CardWorldUiHost.");
+            Debug.Log($"Successfully attached {count} CardAnchor components to anchors in CardWorldUiHost.");
         }
         else
         {

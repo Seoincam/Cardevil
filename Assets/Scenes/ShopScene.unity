@@ -4388,6 +4388,13 @@ MonoBehaviour:
   confirmButton: {fileID: 1583930949}
   cancelButton: {fileID: 730592492}
   costText: {fileID: 1668394959}
+  tooltipPanel_1_0: {fileID: 0}
+  tooltipPanel_2_0: {fileID: 0}
+  tooltipPanel_2_1: {fileID: 0}
+  arrow_1_0: {fileID: 0}
+  arrow_2_0: {fileID: 0}
+  arrow_2_1: {fileID: 0}
+  controlsCanvas: {fileID: 0}
 --- !u!4 &1759717572
 Transform:
   m_ObjectHideFlags: 0

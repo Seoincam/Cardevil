@@ -73,7 +73,6 @@ namespace Cardevil.Card.InWorld.UI
             {
                 if (host)
                 {
-                    // Object.Destroy(host.gameObject);
                     AssetUtil.Destroy(host.gameObject);
                 }
             }

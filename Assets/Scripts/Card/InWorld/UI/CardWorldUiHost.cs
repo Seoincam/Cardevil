@@ -10,6 +10,8 @@ namespace Cardevil.Card.InWorld.UI
     public class CardWorldUiHost : MonoBehaviour
     {
         private const string PrefabPath = "UI/CardFlow/CardWorldUiHost";
+        private const float MainIconSize = 72f;
+        private const float MainIconGap = 14f;
 
         [field: SerializeField] public CardSelectionView SelectionView { get; private set; }
         [field: SerializeField] public CardUpgradeView UpgradeView { get; private set; }
@@ -17,6 +19,12 @@ namespace Cardevil.Card.InWorld.UI
         [Header("Common UI")]
         [SerializeField] private Image mainIcon;
         [SerializeField] private TextMeshProUGUI mainText;
+
+        private void Awake()
+        {
+            ApplyCanvasSorting();
+            ApplyMainHeaderLayout();
+        }
 
         public static CardWorldUiHost Instantiate()
         {
@@ -53,6 +61,7 @@ namespace Cardevil.Card.InWorld.UI
 
             mainIcon.sprite = icon;
             mainIcon.enabled = icon != null;
+            ApplyMainHeaderLayout();
         }
 
         public void SetMainText(string text)
@@ -63,6 +72,68 @@ namespace Cardevil.Card.InWorld.UI
             }
 
             mainText.text = text ?? string.Empty;
+            ApplyMainHeaderLayout();
+        }
+
+        private void ApplyCanvasSorting()
+        {
+            int popupLayer = SortingLayer.NameToID(CardWorldUiSorting.PopupSortingLayerName);
+            foreach (var canvas in GetComponentsInChildren<Canvas>(true))
+            {
+                canvas.overrideSorting = true;
+                canvas.sortingLayerID = popupLayer;
+                canvas.sortingOrder = ResolveCanvasSortingOrder(canvas);
+            }
+        }
+
+        private static int ResolveCanvasSortingOrder(Canvas canvas)
+        {
+            if (IsDimCanvas(canvas))
+            {
+                return (int)CardWorldUiSorting.Order.Dim;
+            }
+
+            if (IsCommonUiCanvas(canvas))
+            {
+                return (int)CardWorldUiSorting.Order.CommonUi;
+            }
+
+            return (int)CardWorldUiSorting.Order.Ui;
+        }
+
+        private static bool IsDimCanvas(Canvas canvas)
+        {
+            return canvas && canvas.name.Contains("Dim");
+        }
+
+        private static bool IsCommonUiCanvas(Canvas canvas)
+        {
+            return canvas && canvas.transform.parent && canvas.transform.parent.name.Contains("Card Common UI");
+        }
+
+        private void ApplyMainHeaderLayout()
+        {
+            if (!mainText)
+            {
+                return;
+            }
+
+            var textRect = mainText.rectTransform;
+            bool hasIcon = mainIcon && mainIcon.enabled && mainIcon.sprite;
+            textRect.anchoredPosition = new Vector2(hasIcon ? (MainIconSize + MainIconGap) * 0.5f : 0f, textRect.anchoredPosition.y);
+
+            if (!mainIcon)
+            {
+                return;
+            }
+
+            var iconRect = mainIcon.rectTransform;
+            iconRect.anchorMin = new Vector2(0f, 0.5f);
+            iconRect.anchorMax = new Vector2(0f, 0.5f);
+            iconRect.pivot = new Vector2(1f, 0.5f);
+            iconRect.sizeDelta = new Vector2(MainIconSize, MainIconSize);
+            iconRect.anchoredPosition = new Vector2(-MainIconGap, 0f);
+            mainIcon.preserveAspect = true;
         }
     }
 }

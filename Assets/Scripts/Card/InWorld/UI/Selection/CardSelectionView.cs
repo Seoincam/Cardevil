@@ -1,5 +1,6 @@
 using Cardevil.Card.Common;
 using Cardevil.Card.Common.Visual;
+using Cardevil.Card.InWorld.UI;
 using Cardevil.Card.Visual.Controller;
 using Cardevil.UI.Flow;
 using Cysharp.Threading.Tasks;
@@ -247,7 +248,7 @@ namespace Cardevil.Card.InWorld.UI.Selection
             var card = Instantiate(cardPrefab, transform);
             card.Initialize(data.VisualInput, false, LayerMask.NameToLayer("ShopCard"));
             
-            card.VisualController.SetSortingOrder(10, CardLayer.PopUp);
+            card.VisualController.SetSortingOrder((int)CardWorldUiSorting.Order.Card, CardLayer.PopUp);
             card.FollowTargetPosition = false;
             card.transform.position = position;
             

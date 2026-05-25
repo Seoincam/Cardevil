@@ -39,6 +39,7 @@ namespace Cardevil.Card.Visual.Controller
         private ColorJewelDecoration _currentColorJewel;
         private TrailRenderer _currentTrail;
         private (int sortingOrder, CardLayer layer)? _cachedSortingData;
+        private (int sortingOrder, int layerId)? _cachedSortingDataById;
         
         private MaterialPropertyBlock _propBlock;
         
@@ -121,7 +122,11 @@ namespace Cardevil.Card.Visual.Controller
                 _currentColorJewel.Apply(in decorationData);
             }
 
-            if (_cachedSortingData.HasValue)
+            if (_cachedSortingDataById.HasValue)
+            {
+                SetSortingOrder(_cachedSortingDataById.Value.sortingOrder, _cachedSortingDataById.Value.layerId);
+            }
+            else if (_cachedSortingData.HasValue)
             {
                 SetSortingOrder(_cachedSortingData.Value.sortingOrder, _cachedSortingData.Value.layer);
             }
@@ -154,6 +159,31 @@ namespace Cardevil.Card.Visual.Controller
             }
 
             _cachedSortingData = (sortingOrder, layer);
+            _cachedSortingDataById = null;
+        }
+
+        public void SetSortingOrder(int sortingOrder, int sortingLayerId)
+        {
+            var sortingGroup = GetComponent<UnityEngine.Rendering.SortingGroup>();
+            if (sortingGroup != null)
+            {
+                sortingGroup.sortingLayerID = sortingLayerId;
+                sortingGroup.sortingOrder = sortingOrder;
+            }
+            else
+            {
+                innerFrame.sortingLayerID = sortingLayerId;
+                innerFrame.sortingOrder = 100 * sortingOrder + 10;
+
+                background.sortingLayerID = sortingLayerId;
+                background.sortingOrder = 100 * sortingOrder + 0;
+
+                _currentLayout?.SetSortingOrder(sortingOrder, sortingLayerId);
+                _currentColorJewel?.SetSortingOrder(sortingOrder, sortingLayerId);
+            }
+
+            _cachedSortingDataById = (sortingOrder, sortingLayerId);
+            _cachedSortingData = null;
         }
 
         /// <summary>
