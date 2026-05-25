@@ -35,7 +35,11 @@ namespace Cardevil.Card.InStage
         /// </summary>
         public void TryOpenValueSelectionZone(ICardState state)
         {
-            if (state.UpgradePath == UpgradePath.None) return;
+            if (state.UpgradePath == UpgradePath.None ||
+                state.ValueSelected)
+            {
+                return;
+            }
             
             _view.OpenValueSelectionZone();
         }
@@ -51,6 +55,8 @@ namespace Cardevil.Card.InStage
         public bool TryOpenValueSelection(ICardState state, uint handBarCardId)
         {
             _targetState = state;
+
+            if (state.ValueSelected) return false;
 
             switch (state.UpgradePath)
             {
