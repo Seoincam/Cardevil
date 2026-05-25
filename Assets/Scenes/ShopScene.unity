@@ -1185,7 +1185,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   view: {fileID: 130003}
-  upgradeDatabase: {fileID: 0}
+  upgradeDatabase: {fileID: 11400000, guid: 1ebc087628958493fac3f5bef7250bbd, type: 2}
+  reinforceUiMainIcon: {fileID: 21300000, guid: c467c816247fec24aae23d6d91c4ab09, type: 3}
+  reinforceSelectionText: "\uAC15\uD654\uD560 \uCE74\uB4DC\uB97C \uC120\uD0DD\uD558\uC138\uC694."
+  reinforceUpgradeText: "\uC544\uB798 \uACE8\uB4DC\uB97C \uB0B4\uACE0 \uB2E4\uC74C
+    \uB2E8\uACC4\uB85C \uD655\uC815 \uAC15\uD654\uD569\uB2C8\uB2E4."
 --- !u!114 &130003
 MonoBehaviour:
   m_ObjectHideFlags: 0

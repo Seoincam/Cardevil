@@ -16,6 +16,9 @@ namespace Cardevil.Gameplay.SpecialScenes
 
         [SerializeField] private ShopView view;
         [SerializeField] private UpgradeNodeDatabaseSO upgradeDatabase;
+        [SerializeField] private Sprite reinforceUiMainIcon;
+        [SerializeField] private string reinforceSelectionText = "강화할 카드를 선택하세요.";
+        [SerializeField] private string reinforceUpgradeText = "아래 골드를 내고 다음 단계로 확정 강화합니다.";
 
         private readonly ShopCore _core = new();
         private bool _isReinforceFlowRunning;
@@ -68,7 +71,11 @@ namespace Cardevil.Gameplay.SpecialScenes
                 var flow = new CardUpgradeUiFlow(
                     CardevilCore.Game.CardRepository,
                     upgradeDatabase,
-                    _core.ReinforceDrawCount);
+                    _core.ReinforceDrawCount,
+                    new CardUpgradeUiFlow.Presentation(
+                        reinforceUiMainIcon,
+                        reinforceSelectionText,
+                        reinforceUpgradeText));
 
                 var result = await flow.SelectAndUpgradeAsync(this.GetCancellationTokenOnDestroy());
                 if (result.Status == UiFlowStatus.Completed)

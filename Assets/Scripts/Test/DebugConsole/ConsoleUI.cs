@@ -507,6 +507,10 @@ namespace Cardevil.Test.DebugConsole
             {
                 previewContainer.schedule.Execute(() =>
                 {
+                    if (!IsOpen || selectedLabel == null)
+                        return;
+                    if(selectedLabel.parent == null)
+                        return;
                     previewContainer.ScrollTo(selectedLabel);
                 });
             }

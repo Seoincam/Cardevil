@@ -108,9 +108,26 @@ namespace Database
             if (!string.IsNullOrEmpty(finalComment))
             {
                 sb.Append(indentSb)
-                    .Append("/// <summary> ")
-                    .Append(finalComment)
-                    .AppendLine(" </summary>");
+                    .Append("/// <summary> ");
+                var commetLines = finalComment.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+                if(commetLines.Length == 1)
+                {
+                    sb.Append(finalComment.Trim())
+                        .AppendLine(" </summary>");
+                }
+                else
+                {
+                    sb.AppendLine();
+                    foreach (var line in commetLines)
+                    {
+                        sb.Append(indentSb).Append("/// ");
+                        sb.Append("<br/>");
+                        sb.AppendLine(line.Trim());
+                    }
+                    sb.Append(indentSb).Append("/// ");
+                    sb.AppendLine(" </summary>");
+                }
+                
             }
 
             sb.Append(indentSb)

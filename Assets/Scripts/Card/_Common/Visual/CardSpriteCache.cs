@@ -21,6 +21,12 @@ namespace Cardevil.Card.Common.Visual
 
         private static bool TryInitialize()
         {
+#if UNITY_EDITOR
+            if (_isInitialized && _atlas == null)
+            {
+                _isInitialized = false;
+            }
+#endif
             if (_isInitialized)
                 return true;
             

@@ -47,6 +47,11 @@ namespace Cardevil.Card.Visual.Controller
         private void Awake()
         {
             _saturationAmountID = Shader.PropertyToID("_Amount");
+            EnsureLayerMapInitialized();
+        }
+
+        private static void EnsureLayerMapInitialized()
+        {
             if (_layerIdMap == null)
             {
                 _layerIdMap = new Dictionary<CardLayer, int>(2);
@@ -125,20 +130,28 @@ namespace Cardevil.Card.Visual.Controller
         }
 
         /// <summary>
-        /// 모든 하위 요소의 Sorting Order를 설정.
-        /// </summary>
         public void SetSortingOrder(int sortingOrder, CardLayer layer = CardLayer.Default)
         {
+            EnsureLayerMapInitialized();
             var layerId = _layerIdMap[layer];
             
-            innerFrame.sortingLayerID = layerId;
-            innerFrame.sortingOrder = 100 * sortingOrder + 10;
-            
-            background.sortingLayerID = layerId;
-            background.sortingOrder = 100 * sortingOrder + 0;
-            
-            _currentLayout?.SetSortingOrder(sortingOrder, layerId);
-            _currentColorJewel?.SetSortingOrder(sortingOrder, layerId);
+            var sortingGroup = GetComponent<UnityEngine.Rendering.SortingGroup>();
+            if (sortingGroup != null)
+            {
+                sortingGroup.sortingLayerID = layerId;
+                sortingGroup.sortingOrder = sortingOrder;
+            }
+            else
+            {
+                innerFrame.sortingLayerID = layerId;
+                innerFrame.sortingOrder = 100 * sortingOrder + 10;
+                
+                background.sortingLayerID = layerId;
+                background.sortingOrder = 100 * sortingOrder + 0;
+                
+                _currentLayout?.SetSortingOrder(sortingOrder, layerId);
+                _currentColorJewel?.SetSortingOrder(sortingOrder, layerId);
+            }
 
             _cachedSortingData = (sortingOrder, layer);
         }

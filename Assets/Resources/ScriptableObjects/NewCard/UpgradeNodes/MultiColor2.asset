@@ -22,7 +22,7 @@ MonoBehaviour:
   - rid: 5998883810384282531
   blackMarketCost: 0
   marketCost: 0
-  nodePosition: {x: 654, y: 85.5}
+  nodePosition: {x: 654, y: 86}
   references:
     version: 2
     RefIds:
@@ -30,5 +30,5 @@ MonoBehaviour:
       type: {class: SelectableColorElement, ns: Cardevil.Card.Common.Core, asm: Assembly-CSharp}
       data:
         color:
-          <IsFixed>k__BackingField: 0
-          <FixedValue>k__BackingField: 0
+          <HasValue>k__BackingField: 0
+          <Value>k__BackingField: 0

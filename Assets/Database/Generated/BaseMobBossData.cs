@@ -29,7 +29,7 @@ namespace Database.Generated
         public int AttackCycle;
         /// <summary> 공격 데미지 </summary>
         public int AttackDamage;
-        /// <summary> 0  가중치/ 1  패턴  </summary>
+        /// <summary> 0  가중치/ 1  패턴 </summary>
         public bool BoolAttackType;
         /// <summary> 가중치 </summary>
         public List<int> AttackWeight;
@@ -37,14 +37,18 @@ namespace Database.Generated
         public List<Cardevil.Gameplay.Enemy.AttackStyle> AttackPattern;
         /// <summary> 0 - 랜덤 / 1 - 유도 </summary>
         public bool AttackPlayer;
-        /// <summary> 기믹이름 </summary>
+        /// <summary> 
+        /// <br/>Gimmick_대분류(SYSTEM/CARD/RANK/FIELD/DISCARD)
+        /// <br/>_발동 주체_발동 조건_효과 주체(Target)_효과 내용
+        /// <br/>
+        /// <br/>* DI : Damage Increase (데미지 증가)
+        /// <br/>* DR : Damage Reduction (데미지 감소)
+        /// <br/>* Inc : Increase (증가)
+        /// <br/>* Dec : Decrease (감소)
+        ///  </summary>
         public List<string> GimmickName;
         /// <summary> 기믹 value </summary>
         public List<float> GimmickValue;
-        /// <summary> 1챕터 </summary>
-        public string 챕터;
-        /// <summary> 16 </summary>
-        public string 수;
     }
 
 }

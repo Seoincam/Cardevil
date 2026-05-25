@@ -25,7 +25,11 @@ namespace Cardevil.Card.Visual.Controller
 
         public void Apply(in CardDecorationData data)
         {
-            if (_colorJewels != null)
+            if (_colorJewels == null)
+            {
+                _colorJewels = new List<GameObject>();
+            }
+            else if (_colorJewels.Count > 0)
             {
                 foreach (GameObject colorJewel in _colorJewels)
                 {
