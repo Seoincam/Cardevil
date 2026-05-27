@@ -18,6 +18,7 @@ namespace Cardevil.Gameplay.SpecialScenes
         
         
         public List<ShopEntryData> ShopEntries => shopEntries;
+        public int ReinforceDrawCount => 10;
         
         public override void Initialize(GameFlowManager.SpecialSceneEnterContext context)
         {

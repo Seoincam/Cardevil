@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 3631545985713094405}
   - component: {fileID: 5078404048896651609}
   - component: {fileID: -8963677850682684460}
+  - component: {fileID: -4058537613317865538}
   m_Layer: 7
   m_Name: HandBar Card
   m_TagString: Untagged
@@ -159,6 +160,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 869f401d84104d43823acee89f3a025e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentInput:
+    <Type>k__BackingField: 0
+    <BaseColor>k__BackingField:
+      <HasValue>k__BackingField: 0
+      <Value>k__BackingField: 0
+    <AllColorCandidates>k__BackingField: []
+    <FixedColor>k__BackingField:
+      <HasValue>k__BackingField: 0
+      <Value>k__BackingField: 0
+    <AllNumberCandidates>k__BackingField: []
+    <FixedNumber>k__BackingField:
+      <HasValue>k__BackingField: 0
+      <Value>k__BackingField: 0
+    <FixedDirection>k__BackingField:
+      <HasValue>k__BackingField: 0
+      <Value>k__BackingField: 0
+    <AllDirectionCandidates>k__BackingField: 
+    <DirectionFlag>k__BackingField: 0
   singlePrefab: {fileID: 1529222975977995294, guid: 995917307c1c845c9b37ddd0769ef9d4, type: 3}
   dualPrefab: {fileID: 1812218762953639239, guid: 76d9e7a15ad914b3bb45122999e22e15, type: 3}
   triplePrefab: {fileID: 7489706158802945289, guid: adab9a889037445eda1ca35bb4e2e0ac, type: 3}
@@ -166,6 +185,19 @@ MonoBehaviour:
   trailPrefab: {fileID: 363327854278043243, guid: 8ba90654794f04b388be6256a44335f0, type: 3}
   background: {fileID: 273946579888129227}
   innerFrame: {fileID: 5797317074329174716}
+--- !u!210 &-4058537613317865538
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7493370066561514446}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &7792454409356232169
 GameObject:
   m_ObjectHideFlags: 0
@@ -210,6 +242,7 @@ GameObject:
   - component: {fileID: 7449433732181682909}
   - component: {fileID: 273946579888129227}
   - component: {fileID: 7999858966583082215}
+  - component: {fileID: 8470953740174583940}
   m_Layer: 7
   m_Name: Background (Collider)
   m_TagString: Untagged
@@ -337,3 +370,62 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.8, y: 2.5}
   m_EdgeRadius: 0
+--- !u!331 &8470953740174583940
+SpriteMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8190160895298301345}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 15d0c3709176029428a0da2f8cecf0b5, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 21300000, guid: ea106c52188db405ba4e08b1af05c3bc, type: 3}
+  m_MaskAlphaCutoff: 0.2
+  m_FrontSortingLayerID: 0
+  m_BackSortingLayerID: 0
+  m_FrontSortingLayer: 0
+  m_BackSortingLayer: 0
+  m_FrontSortingOrder: 0
+  m_BackSortingOrder: 0
+  m_IsCustomRangeActive: 0
+  m_SpriteSortPoint: 0
+  m_MaskSource: 0

@@ -14,12 +14,7 @@ namespace Cardevil.Gameplay.Turn
 {
     public interface IEnemyContext
     {
-        TileVector PlayerPosition { get; }
-    }
-    
-    public class EnemyContext : IEnemyContext
-    {
-        public TileVector PlayerPosition { get; set; }
+        Func<TileVector> PlayerPosition { get; }
     }
     
     [Serializable]
@@ -38,6 +33,12 @@ namespace Cardevil.Gameplay.Turn
 
         private RerollPresenter Reroll => _card.Reroll;
         private StageCardCorePresenter CardCore => _card.Core;
+        
+        private class EnemyContext : IEnemyContext
+        {
+            public Func<TileVector> PlayerPosition { get; set; }
+        }
+        
 
         public TurnManager(StageCardManager cardManager, ITurnPlayer player, EnemySpawner enemySpawner,Field.Field field)
         {
@@ -65,12 +66,13 @@ namespace Cardevil.Gameplay.Turn
         {
             await Reroll.WaitUntilRerollEndAsync();
 
-            var firstEnemyContext = new EnemyContext
+            var enemyContext = new EnemyContext
             {
-                PlayerPosition = _player.Position
+                PlayerPosition = () => _player.Position
             };
+            
             // Enemy의 공격 범위 띄우기
-            await _currentEnemy.OnEnemyCreateFirstAttackAsync(firstEnemyContext);
+            await _currentEnemy.OnEnemyCreateFirstAttackAsync(enemyContext);
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -114,11 +116,6 @@ namespace Cardevil.Gameplay.Turn
                     await _player.AttackAsync(finalScore);
                     await _currentEnemy.OnTakeDamageAsync(finalScore);
                 }
-
-                var enemyContext = new EnemyContext
-                {
-                    PlayerPosition = _player.Position
-                };
 
                 if (_currentEnemy.IsDead)
                 {

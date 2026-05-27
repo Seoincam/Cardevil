@@ -37,6 +37,7 @@ namespace Cardevil.Test.DebugConsole
         {
             if (input != _chachedInput)
             {
+                // input = input.ToLower();
                 _chachedInput = input;
                 GetSuggestions(_chachedInput, ref _cachedSuggestions);
                 _currentIndex = -1;

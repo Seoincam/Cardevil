@@ -432,7 +432,7 @@ namespace Cardevil.Gameplay.Player
         #region ITurnPlayer
         
         public bool IsDead { get; }
-        public TileVector Position { get; }
+        public TileVector Position => new(GetPlayerLineNumberHorizontal(), GetPlayerLineNumberVertical());
         
         public async UniTask OnMoveAsync(Card.InStage.PlayerMoveArgs args, CancellationToken cancellationToken)
         {

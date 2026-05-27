@@ -443,10 +443,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cardevil.UI.Components.ShowTooltipOnHover
   _hoverTooltip: {fileID: 0}
   _eventTrigger: {fileID: 0}
+  _preferredSide: 0
+  _preferredAlign: 1
   <TooltipData>k__BackingField:
     <Title>k__BackingField: 
     <Description>k__BackingField: 
     subTooltips: []
+  overrideTooltipKey: 
   references:
     version: 2
     RefIds: []
@@ -466,7 +469,7 @@ MonoBehaviour:
   _itemIcon: {fileID: 1148560647692872884}
   _costIcon: {fileID: 1148560647692872884}
   _costText: {fileID: 5264964360406006730}
-  _purchaseButton: {fileID: 0}
+  _button: {fileID: 0}
 --- !u!114 &8734080321602217712
 MonoBehaviour:
   m_ObjectHideFlags: 0

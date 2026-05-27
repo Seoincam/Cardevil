@@ -16,7 +16,7 @@ namespace Cardevil.Card.Common.Core
         [SerializeReference] private List<CardSpec> cards = new(CardCount);
 
         private readonly Dictionary<int, CardSpec> _specMap = new(CardCount);
-        private readonly Dictionary<int, CardState> _newStateCache = new(CardCount);
+        private readonly Dictionary<int, CardState> _stateCache = new(CardCount);
 
         private UpgradeNodeDatabaseSO _upgradeDatabase;
         
@@ -31,7 +31,7 @@ namespace Cardevil.Card.Common.Core
         public void SetUpNewGame(GameSave save)
         {
             cards.Clear();
-            _newStateCache.Clear();
+            _stateCache.Clear();
 
             var newSpecs = CreateStandardCardSpecs(_upgradeDatabase);
             foreach (var spec in newSpecs)
@@ -53,14 +53,14 @@ namespace Cardevil.Card.Common.Core
 
         public List<CardState> GetAllNewStates()
         {
-            return _newStateCache.Values
+            return _stateCache.Values
                 // .Cast<>()
                 .ToList();
         }
 
         public List<ICardState> GetAllDeepClonedNewStates()
         {
-            return _newStateCache.Values
+            return _stateCache.Values
                 .Select(state => state.DeepClone())
                 .Cast<ICardState>()
                 .ToList();
@@ -91,26 +91,26 @@ namespace Cardevil.Card.Common.Core
         /// <summary>
         /// 특정 Id의 최신 State를 반환.
         /// </summary>
-        // public CardState GetState(int id)
-        // {
-        //     if (_stateCache.TryGetValue(id, out var state))
-        //     {
-        //         return state;
-        //     }
-        //     
-        //     var spec = cards.Find(c => c.ID == id);
-        //     if (spec != null)
-        //     {
-        //         HandleSpecChanged(spec);
-        //         return spec.State;
-        //     }
-        //
-        //     return null;
-        // }
+        public CardState GetState(int id)
+        {
+            if (_stateCache.TryGetValue(id, out var state))
+            {
+                return state;
+            }
+            
+            var spec = cards.Find(c => c.ID == id);
+            if (spec != null)
+            {
+                HandleSpecChanged(spec);
+                return spec.State;
+            }
+        
+        return null;
+        }
 
         public CardState GetNewState(int id)
         {
-            if (_newStateCache.TryGetValue(id, out var state))
+            if (_stateCache.TryGetValue(id, out var state))
             {
                 return state;
             }
@@ -144,14 +144,14 @@ namespace Cardevil.Card.Common.Core
             spec.SpecChanged += HandleSpecChanged;
 
             _specMap[spec.ID] = spec;
-            _newStateCache[spec.ID] = spec.State;
+            _stateCache[spec.ID] = spec.State;
         }
         
         // State 갱신
         private void HandleSpecChanged(CardSpec spec)
         {
             // _stateCache[spec.ID] = spec.State;
-            _newStateCache[spec.ID] = spec.State;
+            _stateCache[spec.ID] = spec.State;
             LogEx.Log($"Id {spec.ID}의 State가 자동 갱신됐음.");
         }
 
@@ -184,7 +184,7 @@ namespace Cardevil.Card.Common.Core
                 // 오망성 카드 스펙
                 var starSpec = new CardSpec(nextID++, CardType.Attack)
                     .AddElements(new BaseColorElement(color))
-                    .ApplyUpgradeNode(multiNumberFinalUpgradeNode);
+                    .ApplyUpgradeNodeAndNotify(multiNumberFinalUpgradeNode);
                 deckSpecs.Add(starSpec);
             }
 

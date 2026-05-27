@@ -109,7 +109,7 @@ namespace Cardevil.Card.Common.Visual
                 allColorCandidates: new CardColor?[] { color },
                 fixedColor: color,
                 allNumberCandidates: numbers,
-                fixedNumber: numbers.Length > 0 ? numbers[0] : 0,
+                fixedNumber: numbers.Length > 1 ? null : (numbers.Length > 0 ? numbers[0] : 0),
                 fixedDirection: Direction.None,
                 allDirectionCandidates: null,
                 directionFlag: DirectionFlag.None
@@ -122,7 +122,7 @@ namespace Cardevil.Card.Common.Visual
                 type: CardType.Attack,
                 baseColor,
                 allColorCandidates: colors,
-                fixedColor: colors.Length > 0 ? colors[0] : CardColor.None,
+                fixedColor: colors.Length > 1 ? null : (colors.Length > 0 ? colors[0] : CardColor.None),
                 allNumberCandidates: new int?[] { numbers },
                 fixedNumber: numbers,
                 fixedDirection: Direction.None,
@@ -155,7 +155,7 @@ namespace Cardevil.Card.Common.Visual
                 fixedColor: CardColor.None,
                 allNumberCandidates: null,
                 fixedNumber: 0,
-                fixedDirection: directions.Length > 0 ? directions[0] : Direction.None,
+                fixedDirection: directions.Length > 1 ? null : (directions.Length > 0 ? directions[0] : Direction.None),
                 allDirectionCandidates: directions,
                 directionFlag: flag
             );
