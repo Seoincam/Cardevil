@@ -85,13 +85,16 @@ namespace Cardevil.Card.InStage.Score.Step
             
             var list = new List<IStepElement>();
             
-            foreach (var provider in _providerRegistry.GetProviders(type))
+            // ToArray를 통해 캐싱
+            foreach (var provider in providers.ToArray())
             {
                 var scoreOperator = provider.GetScoreOperator(_context);
                 Apply(scoreOperator);
-                
-                var scoreStep = new ScoreStepElement(scoreOperator);
-                list.Add(scoreStep);
+                if (scoreOperator != null)
+                {
+                    var scoreStep = new ScoreStepElement(scoreOperator);
+                    list.Add(scoreStep);
+                }
             }
 
             return list;
@@ -133,7 +136,7 @@ namespace Cardevil.Card.InStage.Score.Step
                     var providers = _providerRegistry.GetProviders(ScoreStepType.EachCard);
                     if (providers == null) continue;
                     
-                    foreach (var provider in providers)
+                    foreach (var provider in providers.ToArray())
                     {
                         var scoreOperator = provider.GetScoreOperator(_context);
                         Apply(scoreOperator);

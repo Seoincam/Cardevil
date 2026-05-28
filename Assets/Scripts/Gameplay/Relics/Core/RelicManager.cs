@@ -28,9 +28,6 @@ namespace Cardevil.Gameplay.Relics.Core
 
         public event Action<RelicInstance> RelicAdded;
 
-        private RelicBar RelicBar => GlobalNavigationBar.Instance.RelicBar;
-
-        
         public RelicManager(PlayerStatus playerStatus, ScoreProviderRegistry scoreProviderRegistry)
         {
             const string databasePath = "ScriptableObjects/Relics/Relic Database";
@@ -51,6 +48,12 @@ namespace Cardevil.Gameplay.Relics.Core
         /// </summary>
         public void AddRelic(string id)
         {
+            if (!_database)
+            {
+                LogEx.LogWarning("유물 데이터베이스가 없어 획득할 수 없습니다.");
+                return;
+            }
+
             if (_ownedRelics.ContainsKey(id))
             {
                 LogEx.LogWarning($"유물을 중복 획득했습니다. id: {id}");
@@ -72,12 +75,25 @@ namespace Cardevil.Gameplay.Relics.Core
         /// </summary>
         public void AddRelic(RelicDefinition definition)
         {
+            if (definition == null)
+            {
+                LogEx.LogWarning("유물 정의가 없어 획득할 수 없습니다.");
+                return;
+            }
+
+            if (_ownedRelics.ContainsKey(definition.Id))
+            {
+                LogEx.LogWarning($"유물을 중복 획득했습니다. id: {definition.Id}");
+                return;
+            }
+
             // Def에 해당하는 런타임 인스턴스 생성 및 활성화
             var instance = new RelicInstance(definition, _commonContext);
             _ownedRelics.Add(definition.Id, instance);
             instance.Activate();
             
-            var iconInstance = RelicBar.AddRelic(definition);
+            var relicBar = GlobalNavigationBar.Instance ? GlobalNavigationBar.Instance.RelicBar : null;
+            var iconInstance = relicBar ? relicBar.AddRelic(definition) : null;
             instance.SetIcon(iconInstance);
             
             RelicAdded?.Invoke(instance);
@@ -90,6 +106,12 @@ namespace Cardevil.Gameplay.Relics.Core
         /// </summary>
         public List<RelicDefinition> GetRandomUnownedRelicsByRarity(RelicRarity targetRarity, int count)
         {
+            if (!_database)
+            {
+                LogEx.LogWarning("유물 데이터베이스가 없어 유물을 뽑을 수 없습니다.");
+                return new List<RelicDefinition>();
+            }
+
             // 필터링
             var pool = _database.GetAll()
                 .Where(def => def.Rarity == targetRarity && !_ownedRelics.ContainsKey(def.Id))
@@ -119,6 +141,20 @@ namespace Cardevil.Gameplay.Relics.Core
             List<RelicDefinition> currentOptions,
             int indexToReplace)
         {
+            if (currentOptions == null ||
+                indexToReplace < 0 ||
+                indexToReplace >= currentOptions.Count)
+            {
+                LogEx.LogWarning($"리롤 인덱스가 올바르지 않습니다. index: {indexToReplace}");
+                return null;
+            }
+
+            if (!_database)
+            {
+                LogEx.LogWarning("유물 데이터베이스가 없어 리롤할 수 없습니다.");
+                return null;
+            }
+
             // 필터링
             var excludedIds = currentOptions
                 .Where(def => def != null)

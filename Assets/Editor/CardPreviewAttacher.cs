@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEditor;
-using Cardevil.Card.EditorTools;
+using Cardevil.Card.InWorld.UI;
 
 public class CardPreviewAttacher : EditorWindow
 {

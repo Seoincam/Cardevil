@@ -3,6 +3,7 @@ using Cardevil.Card.InWorld.UI.Upgrade;
 using Cardevil.Core.Utils;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Cardevil.Card.InWorld.UI
@@ -10,6 +11,7 @@ namespace Cardevil.Card.InWorld.UI
     public class CardWorldUiHost : MonoBehaviour
     {
         private const string PrefabPath = "UI/CardFlow/CardWorldUiHost";
+        private const string ShopCardLayerName = "ShopCard";
         private const float MainIconSize = 72f;
         private const float MainIconGap = 14f;
 
@@ -23,7 +25,8 @@ namespace Cardevil.Card.InWorld.UI
         private void Awake()
         {
             ApplyCanvasSorting();
-            ApplyMainHeaderLayout();
+            ApplyCameraMasks();
+            HideMainUi();
         }
 
         public static CardWorldUiHost Instantiate()
@@ -61,6 +64,8 @@ namespace Cardevil.Card.InWorld.UI
 
             mainIcon.sprite = icon;
             mainIcon.enabled = icon != null;
+            mainIcon.raycastTarget = false;
+            UpdateMainUiActive();
             ApplyMainHeaderLayout();
         }
 
@@ -72,17 +77,56 @@ namespace Cardevil.Card.InWorld.UI
             }
 
             mainText.text = text ?? string.Empty;
+            mainText.raycastTarget = false;
+            UpdateMainUiActive();
             ApplyMainHeaderLayout();
         }
 
         private void ApplyCanvasSorting()
         {
-            int popupLayer = SortingLayer.NameToID(CardWorldUiSorting.PopupSortingLayerName);
+            int popupLayer = ResolvePopupSortingLayerID();
             foreach (var canvas in GetComponentsInChildren<Canvas>(true))
             {
                 canvas.overrideSorting = true;
                 canvas.sortingLayerID = popupLayer;
                 canvas.sortingOrder = ResolveCanvasSortingOrder(canvas);
+
+                if (IsDimCanvas(canvas))
+                {
+                    EnsureDimBlocksLowerUi(canvas);
+                }
+            }
+        }
+
+        private static int ResolvePopupSortingLayerID()
+        {
+            return CardWorldUiSorting.PopupSortingLayerID;
+        }
+
+        private void ApplyCameraMasks()
+        {
+            int shopCardLayer = LayerMask.NameToLayer(ShopCardLayerName);
+            if (shopCardLayer < 0)
+            {
+                Debug.LogError($"{nameof(CardWorldUiHost)}: Unity layer '{ShopCardLayerName}' does not exist.");
+                return;
+            }
+
+            int mask = 1 << shopCardLayer;
+            int uiLayer = LayerMask.NameToLayer("UI");
+            if (uiLayer >= 0)
+            {
+                mask |= 1 << uiLayer;
+            }
+
+            foreach (var camera in GetComponentsInChildren<Camera>(true))
+            {
+                camera.cullingMask = mask;
+            }
+
+            foreach (var raycaster in GetComponentsInChildren<Physics2DRaycaster>(true))
+            {
+                raycaster.eventMask = 1 << shopCardLayer;
             }
         }
 
@@ -109,6 +153,40 @@ namespace Cardevil.Card.InWorld.UI
         private static bool IsCommonUiCanvas(Canvas canvas)
         {
             return canvas && canvas.transform.parent && canvas.transform.parent.name.Contains("Card Common UI");
+        }
+
+        private static void EnsureDimBlocksLowerUi(Canvas canvas)
+        {
+            canvas.gameObject.SetActive(true);
+
+            if (!canvas.TryGetComponent(out GraphicRaycaster raycaster))
+            {
+                raycaster = canvas.gameObject.AddComponent<GraphicRaycaster>();
+            }
+
+            raycaster.enabled = true;
+            foreach (var graphic in canvas.GetComponentsInChildren<Graphic>(true))
+            {
+                graphic.raycastTarget = true;
+            }
+        }
+
+        private void HideMainUi()
+        {
+            SetMainIcon(null);
+            SetMainText(null);
+        }
+
+        private void UpdateMainUiActive()
+        {
+            if (!mainText)
+            {
+                return;
+            }
+
+            bool hasText = !string.IsNullOrWhiteSpace(mainText.text);
+            bool hasIcon = mainIcon && mainIcon.enabled && mainIcon.sprite;
+            mainText.gameObject.SetActive(hasText || hasIcon);
         }
 
         private void ApplyMainHeaderLayout()

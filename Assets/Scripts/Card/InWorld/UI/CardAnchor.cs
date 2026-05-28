@@ -11,15 +11,11 @@ using Cardevil.Core.Utils;
 using UnityEditor;
 #endif
 
-namespace Cardevil.Card.EditorTools
+namespace Cardevil.Card.InWorld.UI
 {
     [ExecuteAlways]
     public class CardAnchor : MonoBehaviour
     {
-        // Unity's serialized sorting-layer id for CardWorldUiSorting.PopupSortingLayerName.
-        // Stored as an id because spawned SpriteRenderers/SortingGroups apply by id.
-        private const int PopupSortingLayerID = -96533967;
-
         public enum PreviewMode
         {
             Random,
@@ -39,7 +35,7 @@ namespace Cardevil.Card.EditorTools
         public bool applyUnityLayer = true;
         public string unityLayerName = "ShopCard";
         public bool applySorting = true;
-        public int sortingLayerID = PopupSortingLayerID;
+        public int sortingLayerID;
         public int orderInLayer = (int)CardWorldUiSorting.Order.Card;
 
         [Header("Custom Settings")]
@@ -222,8 +218,18 @@ namespace Cardevil.Card.EditorTools
         {
             if (applySorting && card.VisualController != null)
             {
-                card.VisualController.SetSortingOrder(orderInLayer, sortingLayerID);
+                card.VisualController.SetSortingOrder(orderInLayer, ResolveSortingLayerID());
             }
+        }
+
+        private int ResolveSortingLayerID()
+        {
+            if (sortingLayerID == 0)
+            {
+                sortingLayerID = CardWorldUiSorting.PopupSortingLayerID;
+            }
+
+            return sortingLayerID;
         }
 
         private CardVisualInput GenerateRandomInput()

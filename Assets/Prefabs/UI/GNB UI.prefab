@@ -1495,6 +1495,8 @@ MonoBehaviour:
   HitPointAmount: {fileID: 3438566631749550540}
   GoldAmount: {fileID: 1882247385361656039}
   consumableIcons: []
+  itemIcons: []
+  maxConsumableSlots: 5
   relicBar: {fileID: 1967078927715620979}
   deckButton: {fileID: 2300552170211608984}
   ranksButton: {fileID: 1927321484938115258}

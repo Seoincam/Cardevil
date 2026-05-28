@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using Cardevil.Card.Common.Core;
 using Cardevil.Card.Common.Core.Upgrade;
+using Cardevil.Card.InWorld.UI;
 
 namespace Cardevil.Card.EditorTools
 {

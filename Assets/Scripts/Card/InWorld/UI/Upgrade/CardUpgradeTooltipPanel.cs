@@ -37,6 +37,11 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
 
         public void Setup(string title, string description, int cost)
         {
+            Setup(title, description, cost, cost);
+        }
+
+        public void Setup(string title, string description, int cost, int originalCost)
+        {
             if (titleText)
             {
                 titleText.text = title;
@@ -49,7 +54,9 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
 
             if (costText)
             {
-                costText.text = $"{cost}G";
+                costText.text = cost < originalCost
+                    ? $"{cost}G <s><color=#8E8E8E>{originalCost}G</color></s>"
+                    : $"{cost}G";
             }
 
             SetSelected(false);

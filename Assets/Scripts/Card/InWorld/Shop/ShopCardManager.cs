@@ -16,6 +16,7 @@ namespace Cardevil.Card.InWorld.Shop
     public class ShopCardManager : MonoBehaviour
     {
         [Header("Settings")]
+        [SerializeField] private bool initializeOnAwake;
         [SerializeField, Tooltip("추첨할 카드의 총 개수")] private int drawCardCount = 10;
         
         [FormerlySerializedAs("shopCardSelectionView")]
@@ -34,6 +35,11 @@ namespace Cardevil.Card.InWorld.Shop
 
         private void Awake()
         {
+            if (!initializeOnAwake)
+            {
+                return;
+            }
+
             if (!cardSelectionView || !upgradeView)
             {
                 return;

@@ -1,7 +1,6 @@
 using Cardevil.Card.Common;
 using Cardevil.Card.Common.Visual;
 using Cardevil.Card.InWorld.UI;
-using Cardevil.Card.Visual.Controller;
 using Cardevil.UI.Flow;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -44,6 +43,8 @@ namespace Cardevil.Card.InWorld.UI.Selection
         
         private void Awake()
         {
+            HideImmediate();
+
             if (cancelButton)
             {
                 cancelButton.onClick.AddListener(HandleCancelClicked);
@@ -74,7 +75,7 @@ namespace Cardevil.Card.InWorld.UI.Selection
                 this.cancelButton.onClick.AddListener(HandleCancelClicked);
             }
 
-            SetInteractable(false);
+            HideImmediate();
         }
         
         public void Open(IReadOnlyList<SelectionPresenter.SelectionData> dataList, Vector2 centerAnchor)
@@ -248,7 +249,7 @@ namespace Cardevil.Card.InWorld.UI.Selection
             var card = Instantiate(cardPrefab, transform);
             card.Initialize(data.VisualInput, false, LayerMask.NameToLayer("ShopCard"));
             
-            card.VisualController.SetSortingOrder((int)CardWorldUiSorting.Order.Card, CardLayer.PopUp);
+            card.VisualController.SetSortingOrder((int)CardWorldUiSorting.Order.Card, CardWorldUiSorting.PopupSortingLayerID);
             card.FollowTargetPosition = false;
             card.transform.position = position;
             
@@ -282,6 +283,17 @@ namespace Cardevil.Card.InWorld.UI.Selection
 
             canvasGroup.blocksRaycasts = value;
             canvasGroup.interactable = value;
+        }
+
+        private void HideImmediate()
+        {
+            if (!canvasGroup)
+            {
+                return;
+            }
+
+            canvasGroup.alpha = 0f;
+            SetInteractable(false);
         }
     }
 }

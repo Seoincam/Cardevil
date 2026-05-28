@@ -44,34 +44,77 @@ namespace Cardevil.Gameplay.Root.Stage
 
         private void Awake()
         {
-            for (int i = 0; i < 3; i++)
+            int relicButtonCount = relicButtons?.Length ?? 0;
+            int rerollButtonCount = rerollButtons?.Length ?? 0;
+            int buttonCount = Mathf.Min(relicButtonCount, rerollButtonCount);
+            for (int i = 0; i < buttonCount; i++)
             {
                 var index = i;
-                relicButtons[i].onClick.AddListener(() => RelicClicked?.Invoke(index));
-                rerollButtons[i].onClick.AddListener(() => RerollClicked?.Invoke(index));
+                if (relicButtons[i])
+                {
+                    relicButtons[i].onClick.AddListener(() => RelicClicked?.Invoke(index));
+                }
+
+                if (rerollButtons[i])
+                {
+                    rerollButtons[i].onClick.AddListener(() => RerollClicked?.Invoke(index));
+                }
             }
 
-            initialHandY = handRect.anchoredPosition.y;
+            if (handRect)
+            {
+                initialHandY = handRect.anchoredPosition.y;
+            }
 
-            entireCanvasGroup.alpha = 0f;
-            entireCanvasGroup.interactable = false;
-            entireCanvasGroup.blocksRaycasts = false;
+            if (entireCanvasGroup)
+            {
+                entireCanvasGroup.alpha = 0f;
+                entireCanvasGroup.interactable = false;
+                entireCanvasGroup.blocksRaycasts = false;
+            }
         }
 
         
         public async UniTask PlayShowAnimationAsync(IReadOnlyList<RelicDefinition> relics)
         {
+            if (relics == null || relics.Count == 0)
+            {
+                LogEx.LogWarning("표시할 유물이 없습니다.");
+                return;
+            }
+
             // 초기화
-            entireCanvasGroup.alpha = 1f;
-            entireCanvasGroup.blocksRaycasts = true;
+            if (entireCanvasGroup)
+            {
+                entireCanvasGroup.alpha = 1f;
+                entireCanvasGroup.blocksRaycasts = true;
+            }
             
-            backgroundCanvasGroup.alpha = 0f;
-            handRect.anchoredPosition = Vector2.up * handInitialYOffset;
-            containerCanvasGroup.alpha = 0f;
+            if (backgroundCanvasGroup)
+            {
+                backgroundCanvasGroup.alpha = 0f;
+            }
+
+            if (handRect)
+            {
+                handRect.anchoredPosition = Vector2.up * handInitialYOffset;
+            }
+
+            if (containerCanvasGroup)
+            {
+                containerCanvasGroup.alpha = 0f;
+            }
             
-            LogEx.Log($"뽑힌 유물: {relics[0].DisplayName}, {relics[1].DisplayName}, {relics[2].DisplayName}");
+            LogEx.Log($"뽑힌 유물: {string.Join(", ", relics)}");
             
-            for (int i = 0; i < relics.Count; i++)
+            int count = Mathf.Min(relics.Count, relicButtons?.Length ?? 0);
+            int buttonCount = Mathf.Max(relicButtons?.Length ?? 0, rerollButtons?.Length ?? 0);
+            for (int i = 0; i < buttonCount; i++)
+            {
+                SetButtonPairActive(i, i < count);
+            }
+
+            for (int i = 0; i < count; i++)
             {
                 if (relics[i] == null)
                 {
@@ -84,25 +127,60 @@ namespace Cardevil.Gameplay.Root.Stage
             
             
             // 배경화면
-            await backgroundCanvasGroup.DOFade(1f, backgroundFadeDuration);
+            if (backgroundCanvasGroup)
+            {
+                await backgroundCanvasGroup.DOFade(1f, backgroundFadeDuration);
+            }
             
             // 손
-            await handRect.DOAnchorPosY(initialHandY, handMoveDuration);
+            if (handRect)
+            {
+                await handRect.DOAnchorPosY(initialHandY, handMoveDuration);
+            }
             
             // 콘텐츠
-            await containerCanvasGroup.DOFade(1f, containerFadeDuration);
+            if (containerCanvasGroup)
+            {
+                await containerCanvasGroup.DOFade(1f, containerFadeDuration);
+            }
             
-            entireCanvasGroup.interactable = true;
+            if (entireCanvasGroup)
+            {
+                entireCanvasGroup.interactable = true;
+            }
         }
         
         public void RefreshRelic(int index, RelicDefinition def)
         {
+            if (def == null || relicButtons == null || index < 0 || index >= relicButtons.Length || !relicButtons[index])
+            {
+                return;
+            }
+
             var icon = def.DisplayIcon;
             relicButtons[index].image.sprite = icon;
         }
 
+        private void SetButtonPairActive(int index, bool active)
+        {
+            if (relicButtons != null && index >= 0 && index < relicButtons.Length && relicButtons[index])
+            {
+                relicButtons[index].gameObject.SetActive(active);
+            }
+
+            if (rerollButtons != null && index >= 0 && index < rerollButtons.Length && rerollButtons[index])
+            {
+                rerollButtons[index].gameObject.SetActive(active);
+            }
+        }
+
         public async UniTask PlayHideAnimationAsync()
         {
+            if (!entireCanvasGroup)
+            {
+                return;
+            }
+
             entireCanvasGroup.interactable = false;
             
             await entireCanvasGroup.DOFade(0f, containerFadeDuration);

@@ -1,7 +1,6 @@
 using Cardevil.Card.Common;
 using Cardevil.Card.Common.Core.Upgrade;
 using Cardevil.Card.Common.Visual;
-using Cardevil.Card.EditorTools;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System;
@@ -15,6 +14,7 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
     public class CardUpgradeView : MonoBehaviour
     {
         private const float SlotClickPaddingPx = 24f;
+        private const float CommandControlSafeGapPx = 4f;
         private static readonly Vector2 FallbackCardClickSizePx = new(260f, 380f);
         private const float SelectedCardScaleMultiplier = 1.08f;
         private const float SelectionTweenDuration = 0.12f;
@@ -56,10 +56,14 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
         [SerializeField] private Canvas controlsCanvas;
 
         private readonly Dictionary<InteractionCard, UpgradeNodeSO> _cardMap = new(2);
+        private readonly Dictionary<InteractionCard, int> _cardCostMap = new(2);
+        private readonly Dictionary<InteractionCard, int> _cardOriginalCostMap = new(2);
         private readonly Dictionary<InteractionCard, Vector3> _cardBaseScales = new(2);
         private readonly List<CandidateSlot> _candidateSlots = new(2);
         private InteractionCard _originalCard;
         private InteractionCard _currentSelectedCard;
+
+        public InteractionCard CardPrefab => cardPrefab;
 
         private sealed class CandidateSlot
         {
@@ -73,7 +77,7 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
 
         private void Awake()
         {
-            SetInteractable(false);
+            HideImmediate();
 
             if (cancelButton)
             {
@@ -155,7 +159,7 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
                 this.confirmButton.onClick.AddListener(HandleConfirmClicked);
             }
 
-            SetInteractable(false);
+            HideImmediate();
         }
 
         public void Create(CardVisualInput originalVisualInput,
@@ -210,7 +214,7 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
             await FadeOut();
         }
 
-        private void AttachTooltip(InteractionCard card, UpgradeNodeSO node,
+        private void AttachTooltip(InteractionCard card, UpgradeNodeSO node, int cost,
             CardUpgradeTooltipPanel panel)
         {
             if (!card || !panel)
@@ -221,7 +225,8 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
             panel.gameObject.SetActive(true);
 
             var (title, desc) = UpgradeTextResolver.GetTooltipText(node.Path, node.Stage);
-            panel.Setup(title, desc, node.MarketCost);
+            int originalCost = _cardOriginalCostMap.TryGetValue(card, out int value) ? value : cost;
+            panel.Setup(title, desc, cost, originalCost);
         }
 
         private void HideAllTooltips()
@@ -303,7 +308,9 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
             var node = _cardMap[selected];
             if (costText)
             {
-                costText.text = $"{node.MarketCost}G";
+                int cost = _cardCostMap[selected];
+                int originalCost = _cardOriginalCostMap.TryGetValue(selected, out int value) ? value : cost;
+                costText.text = FormatCostText(cost, originalCost);
             }
 
             foreach (var slot in _candidateSlots)
@@ -351,7 +358,7 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
                 return null;
             }
 
-            AttachTooltip(card, data.UpgradeNode, tooltipPanel);
+            AttachTooltip(card, data.UpgradeNode, data.Cost, tooltipPanel);
 
             var slot = new CandidateSlot
             {
@@ -375,6 +382,8 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
             }
 
             _cardMap.Add(card, data.UpgradeNode);
+            _cardCostMap.Add(card, data.Cost);
+            _cardOriginalCostMap.Add(card, data.OriginalCost);
             _cardBaseScales[card] = card.transform.localScale;
             return card;
         }
@@ -427,16 +436,22 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
                 return;
             }
 
-            var go = new GameObject($"Click Area - {slot.Card.name}", typeof(RectTransform), typeof(Image), typeof(Button));
-            go.transform.SetParent(canvasRect, false);
-
-            var rect = (RectTransform)go.transform;
             Rect localRect = GetSlotLocalRect(slot, canvasRect);
             localRect.xMin -= SlotClickPaddingPx;
             localRect.xMax += SlotClickPaddingPx;
             localRect.yMin -= SlotClickPaddingPx;
             localRect.yMax += SlotClickPaddingPx;
+            localRect = KeepClickAreaOffCommandControls(localRect, canvasRect);
 
+            if (localRect.width <= 0f || localRect.height <= 0f)
+            {
+                return;
+            }
+
+            var go = new GameObject($"Click Area - {slot.Card.name}", typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(canvasRect, false);
+
+            var rect = (RectTransform)go.transform;
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
@@ -467,6 +482,57 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
             }
 
             return cardRect;
+        }
+
+        private Rect KeepClickAreaOffCommandControls(Rect localRect, RectTransform canvasRect)
+        {
+            if (!TryGetCommandControlsRect(canvasRect, out Rect commandControlsRect)
+                || !localRect.Overlaps(commandControlsRect))
+            {
+                return localRect;
+            }
+
+            float protectedTop = commandControlsRect.yMax + CommandControlSafeGapPx;
+            if (localRect.yMin < protectedTop && localRect.yMax > protectedTop)
+            {
+                localRect.yMin = protectedTop;
+            }
+
+            return localRect;
+        }
+
+        private bool TryGetCommandControlsRect(RectTransform canvasRect, out Rect rect)
+        {
+            bool hasRect = TryGetButtonLocalRect(confirmButton, canvasRect, out rect);
+            if (TryGetButtonLocalRect(cancelButton, canvasRect, out Rect cancelRect))
+            {
+                rect = hasRect ? Union(rect, cancelRect) : cancelRect;
+                hasRect = true;
+            }
+
+            return hasRect;
+        }
+
+        private bool TryGetButtonLocalRect(Button button, RectTransform canvasRect, out Rect rect)
+        {
+            rect = default;
+            if (!button || !button.gameObject.activeInHierarchy)
+            {
+                return false;
+            }
+
+            var rectTransform = button.GetComponent<RectTransform>();
+            if (!rectTransform)
+            {
+                return false;
+            }
+
+            rect = GetRectTransformLocalRect(rectTransform, canvasRect, controlsCanvas.worldCamera);
+            rect.xMin -= CommandControlSafeGapPx;
+            rect.xMax += CommandControlSafeGapPx;
+            rect.yMin -= CommandControlSafeGapPx;
+            rect.yMax += CommandControlSafeGapPx;
+            return true;
         }
 
         private Rect GetCardLocalRect(InteractionCard card, RectTransform canvasRect)
@@ -598,6 +664,8 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
             }
 
             _cardMap.Clear();
+            _cardCostMap.Clear();
+            _cardOriginalCostMap.Clear();
             _cardBaseScales.Clear();
             _candidateSlots.Clear();
 
@@ -620,6 +688,25 @@ namespace Cardevil.Card.InWorld.UI.Upgrade
 
             canvasGroup.blocksRaycasts = value;
             canvasGroup.interactable = value;
+        }
+
+        private void HideImmediate()
+        {
+            if (canvasGroup)
+            {
+                canvasGroup.alpha = 0f;
+            }
+
+            SetInteractable(false);
+            HideAllTooltips();
+            HideAllArrows();
+        }
+
+        private static string FormatCostText(int cost, int originalCost)
+        {
+            return cost < originalCost
+                ? $"{cost}G <s><color=#8E8E8E>{originalCost}G</color></s>"
+                : $"{cost}G";
         }
     }
 }

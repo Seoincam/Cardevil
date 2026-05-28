@@ -40,7 +40,7 @@ namespace Cardevil.UI
                 return cached;
             }
 
-            var tooltipDataList = CardevilCore.Database?.Database?.TooltipDataList;
+            var tooltipDataList = CardevilCore.Instance?.DatabaseManager?.Database?.TooltipDataList;
             if (tooltipDataList == null)
             {
                 return null;
